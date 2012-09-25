@@ -1,9 +1,33 @@
 <div>
 <style>
-span{
-  display:block;
+div.listBox {
+  font-family:'Lucida Casual', 'Comic Sans MS';
+  font-size: 18px;
+  color: black;
+  background-color:white;
+  border: 1px solid #fff;
+  overflow: auto;
+}
+.msg{
+  display: block;
+  color:#000;
+  padding: 10px;
+  border: 1px solid #dcbcac;
 }
 </style>
-<span>Hello</span>
-<span>World</span>
-</div>
+
+<div id=chatHist class=listBox></div>
+
+<script>
+var
+chatHist = document.getElementById('chatHist'),
+span;
+
+for(var i=0; i<2; i++){
+  span = document.createElement('span');
+  span.setAttribute('class', 'msg');
+  span.innerHTML = 'hello';
+  chatHist.appendChild(span);
+}
+chatHist.scrollTop = chatHist.scrollHeight;
+</script>
