@@ -101,9 +101,7 @@ pico.embed = function(holder, url, cb){
 
     pico.embedJS(host, scripts, function(){
       pico.loadJS(host, function(){
-        pico.modules[holder.name] = host;
-        console.log('loaded ', holder.name);
-        host.signal('load');
+        pico.modules[holder.getAttribute('name')] = host;
         if (cb) return cb();
       });
     });
@@ -125,6 +123,7 @@ pico.embedJS = function(host, scripts, cb){
     func = new Function('module', script.innerText);
     module = pico.def(script.getAttribute('name'), func);
     pico.loadJS(module, function(){
+      module.signal('load');
       return pico.embedJS(host, scripts, cb);
     });
 };

@@ -25,13 +25,12 @@ var
 me = this,
 chatHist = document.getElementById('chatHist');
 
+console.log('listen to load');
 me.slot('load', function(){
-  console.log('loaded');
   me.memolize.slot('message', function(){
-    console.log('message');
     var span = document.createElement('span');
     span.setAttribute('class', 'msg');
-    span.innerHTML = memolize.popMsg();
+    span.innerHTML = me.memolize.popMsg();
     chatHist.appendChild(span);
     chatHist.scrollTop = chatHist.scrollHeight;
   });

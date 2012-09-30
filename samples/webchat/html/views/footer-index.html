@@ -18,7 +18,8 @@ me.use('memolize');
 var form = document.getElementById('chatForm');
 form.addEventListener('submit', function(e){
   e.preventDefault();
-  me.memolize.pushMsg('Hello');
+  var textareas = form.getElementsByTagName('textarea');
+  me.memolize.pushMsg(textareas[0].value);
   return false;
 });
 
