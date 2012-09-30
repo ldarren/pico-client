@@ -18,16 +18,23 @@ div.listBox {
 
 <div id=chatHist class=listBox></div>
 
-<script>
-var
-chatHist = document.getElementById('chatHist'),
-span;
+<script name=chatHist>
+this.use('memolize');
 
-for(var i=0; i<2; i++){
-  span = document.createElement('span');
-  span.setAttribute('class', 'msg');
-  span.innerHTML = 'hello';
-  chatHist.appendChild(span);
-}
-chatHist.scrollTop = chatHist.scrollHeight;
+var
+me = this,
+chatHist = document.getElementById('chatHist');
+
+me.slot('load', function(){
+  console.log('loaded');
+  me.memolize.slot('message', function(){
+    console.log('message');
+    var span = document.createElement('span');
+    span.setAttribute('class', 'msg');
+    span.innerHTML = memolize.popMsg();
+    chatHist.appendChild(span);
+    chatHist.scrollTop = chatHist.scrollHeight;
+  });
+});
+
 </script>

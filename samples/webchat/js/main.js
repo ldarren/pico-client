@@ -1,6 +1,15 @@
-pico.def('memolize', function(me){
+pico.def('memolize', function(){
 
   var
+  me = this,
+  messages = [],
+  pushMessage = function(msg){
+    messages.push(msg);
+    me.signal('message');
+  },
+  popMessage = function(){
+    return messages.pop();
+  },
   main = function(){
       var
       holders = document.getElementsByClassName('holder'),
@@ -13,4 +22,7 @@ pico.def('memolize', function(me){
   };
 
   pico.slot('load', main);
+
+  me.pushMsg = pushMessage;
+  me.popMsg = popMessage;
 });

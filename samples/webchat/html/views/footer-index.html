@@ -1,6 +1,7 @@
 <div>
+
 <style>
-#chatFrom{
+#chatForm{
   text-align:center;
 }
 textarea{
@@ -8,7 +9,24 @@ textarea{
   margin: 5px auto 0 auto;
 }
 </style>
-<form id=chatFrom>
+
+<script name=chatInput>
+var me = this;
+
+me.use('memolize');
+
+var form = document.getElementById('chatForm');
+form.addEventListener('submit', function(e){
+  e.preventDefault();
+  me.memolize.pushMsg('Hello');
+  return false;
+});
+
+</script>
+
+<form id=chatForm>
 <textarea name=msg rows=2></textarea>
+<input type=submit>submit</input>
 </form>
+
 </div>

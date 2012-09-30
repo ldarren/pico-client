@@ -18,7 +18,7 @@ Object.defineProperty(pico.prototype, 'links', {value:{}, writable:true, configu
 pico.prototype.slot = pico.slot = function(channel, cb){
   var channel = this.slots[channel] = this.slots[channel] || [];
   channel.push(cb);
-}
+};
 
 pico.prototype.signal = pico.signal = function(channel, events){
   var channel = this.slots[channel];
@@ -26,20 +26,22 @@ pico.prototype.signal = pico.signal = function(channel, events){
   for(var i=0, l=channel.length; i<l; i++){
     channel[i].apply(undefined, events);
   }
-}
+};
 
-pico.prototype.use = function(name){ this.deps.push(name);}
+// add dependency
+pico.prototype.use = function(name){ this.deps.push(name);};
 
+// add dependency and link
 pico.prototype.link = function(name, url){
   this.links[name] = url;
   this.use(name);
-}
+};
 
 pico.def = function(name, factory){
   var module = new pico;
-  factory(module);
+  factory.call(module);
   return this.modules[name] = module;
-}
+};
 
 pico.setup = function(names, cb){
   if (!names || !names.length) return cb();
@@ -49,8 +51,9 @@ pico.setup = function(names, cb){
   this.loadJS(module, function(){
     pico.setup(names, cb);
   });
-}
+};
 
+// recurssively load dependencies in a module
 pico.loadJS = function(host, cb){
   if (!cb) cb = function(){};
   var names = host.deps;
@@ -69,7 +72,9 @@ pico.loadJS = function(host, cb){
     var link = host.links[name];
     if(link){
       pico.ajax('get', link, '', function(err, xhr, userData){
-        if (!err){
+        if (err){
+          return pico.loadJS(host, cb);
+        }else{
           var func = new Function('module', xhr.responseText);
 
           module = pico.def(name, func);
@@ -77,15 +82,13 @@ pico.loadJS = function(host, cb){
           return pico.loadJS(module, function(){
             return pico.loadJS(host, cb);
           });
-        }else{
-          return pico.loadJS(host, cb);
         }
       });
     }else{
       return pico.loadJS(host, cb);
     }
   }
-}
+};
 
 pico.embed = function(holder, url, cb){
   pico.ajax('get', url, '', function(err, xhr, userData){
@@ -99,11 +102,13 @@ pico.embed = function(holder, url, cb){
     pico.embedJS(host, scripts, function(){
       pico.loadJS(host, function(){
         pico.modules[holder.name] = host;
+        console.log('loaded ', holder.name);
+        host.signal('load');
         if (cb) return cb();
       });
     });
   });
-}
+};
 
 pico.embedJS = function(host, scripts, cb){
     if (!scripts || !scripts.length) return cb();
@@ -122,7 +127,7 @@ pico.embedJS = function(host, scripts, cb){
     pico.loadJS(module, function(){
       return pico.embedJS(host, scripts, cb);
     });
-}
+};
 
 pico.ajax = function(method, domain, params, cb, userData){
     if (!domain) return cb(new Error('domain not defined'));
@@ -147,7 +152,7 @@ pico.ajax = function(method, domain, params, cb, userData){
         }
     }
     xhr.onerror=function(evt){if (cb) return cb(evt, xhr, userData);}
-}
+};
 
 Object.defineProperty(pico, 'modules', {value:{}, writable:false, configurable:false, enumerable:false});
 Object.defineProperty(pico, 'slots', {value:{}, writable:false, configurable:false, enumerable:false});
