@@ -10,7 +10,7 @@ pico.def('memolize', function(){
   popMessage = function(){
     return messages.pop();
   },
-  main = function(){
+  onStart = function(){
       var
       holders = document.getElementsByClassName('holder'),
       holder;
@@ -19,9 +19,26 @@ pico.def('memolize', function(){
           holder = holders[i];
           pico.embed(holder, 'views/'+holder.getAttribute('templ')+'.html');
       }
-  };
 
-  pico.slot('load', main);
+      document.addEventListener("deviceready", function(){
+          document.addEventListener("menubutton", onMenuBtn, false);
+          document.addEventListener("backbutton", onBackBtn, false);
+          document.addEventListener("searchbutton", onSearchBtn, false);
+          document.addEventListener("online", onOnline, false);
+          document.addEventListener("offline", onOffline, false);
+          document.addEventListener("pause", onPause, false);
+          document.addEventListener("resume", onResume, false);
+      }, false);
+  },
+  onMenuBtn = function(){ alert('menu'); },
+  onBackBtn = function(){ console.log('back'); },
+  onSearchBtn = function(){ console.log('search'); },
+  onOnline = function(){ console.log('online123'); },
+  onOffline = function(){ console.log('offline'); },
+  onPause = function(){ console.log('pause'); },
+  onResume = function(){ console.log('resume'); };
+
+  pico.slot('load', onStart);
 
   me.pushMsg = pushMessage;
   me.popMsg = popMessage;
