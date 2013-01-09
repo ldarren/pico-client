@@ -71,7 +71,7 @@ pico.loadJS = function(host, cb){
   }else{
     var link = host.links[name];
     if(link){
-      pico.ajax('get', link, '', function(err, xhr, userData){
+      pico.ajax('get', link, '', null, function(err, xhr){
         if (err){
           return pico.loadJS(host, cb);
         }else{
@@ -91,7 +91,7 @@ pico.loadJS = function(host, cb){
 };
 
 pico.embed = function(holder, url, cb){
-  pico.ajax('get', url, '', function(err, xhr, userData){
+  pico.ajax('get', url, '', null, function(err, xhr){
     if (err) return cb(err);
     holder.innerHTML = xhr.responseText;
 
@@ -128,22 +128,24 @@ pico.embedJS = function(host, scripts, cb){
     });
 };
 
-pico.ajax = function(method, domain, params, cb, userData){
-    if (!domain) return cb(new Error('domain not defined'));
+pico.ajax = function(method, url, params, headers, cb, userData){
+    if (!url) return cb(new Error('url not defined'));
     var
     xhr = window.XMLHttpRequest ? new window.XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP'),
     post = 'post' === method;
 
     if (!post && params){
-        domain += '?'+params;
+        url += '?'+params;
         params = null;
     }
 
-    xhr.open(method, domain, true);
+    xhr.open(method, url, true);
     
-    if (post) xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    for (var key in headers){
+        xhr.setRequestHeader(key, headers[key]);
+    }
+    if (post && !headers) xhr.setRequestHeader('Content-type', 'application/json');
 
-    xhr.send(params);
     xhr.onreadystatechange=function(){
         if (4 === xhr.readyState){
             if (cb)
@@ -151,6 +153,7 @@ pico.ajax = function(method, domain, params, cb, userData){
         }
     }
     xhr.onerror=function(evt){if (cb) return cb(evt, xhr, userData);}
+    xhr.send(params);
 };
 
 Object.defineProperty(pico, 'modules', {value:{}, writable:false, configurable:false, enumerable:false});
