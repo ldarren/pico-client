@@ -132,7 +132,7 @@ pico.ajax = function(method, url, params, headers, cb, userData){
     if (!url) return cb(new Error('url not defined'));
     var
     xhr = window.XMLHttpRequest ? new window.XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP'),
-    post = 'post' === method;
+    post = 'post' === method.toLowerCase();
 
     if (!post && params){
         url += '?'+params;
