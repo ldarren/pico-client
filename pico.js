@@ -53,6 +53,26 @@ pico.setup = function(names, cb){
   });
 };
 
+pico.route = function(name){
+    window.location.hash 
+};
+
+pico.onRoute = function(evt){
+    var
+    newHash = evt.newURL.split('#')[1] || this.HOME,
+    oldHash = evt.newURL.split('#')[1] || this.HOME;
+
+    if (newHash === oldHash) return;
+
+    var
+    newMod = this.modules[newHash],
+    oldMod = this.modules[oldHash];
+
+    if (newMod) pico.activeMod = newMod;
+    if (oldMod && typeof oldMod.stop === 'function') oldMod.stop();
+    if (newMod && typeof newMod.start === 'function') newMod.start();
+};
+
 // recurssively load dependencies in a module
 pico.loadJS = function(host, cb){
   if (!cb) cb = function(){};
@@ -158,6 +178,8 @@ pico.ajax = function(method, url, params, headers, cb, userData){
 
 Object.defineProperty(pico, 'modules', {value:{}, writable:false, configurable:false, enumerable:false});
 Object.defineProperty(pico, 'slots', {value:{}, writable:false, configurable:false, enumerable:false});
+Object.defineProperty(pico, 'HOME', {value:'home', writable:false, configurable:false, enumerable:false});
+Object.defineProperty(pico, 'activeMod', {value:null, writable:true, configurable:false, enumerable:false});
 Object.defineProperty(pico, 'inner', {value:{
   nn: function(i){
     if (!this._n.length) throw new Error('Nodes not set');
@@ -249,3 +271,7 @@ window.addEventListener('load', function(){
     pico.signal('load');
   });
 });
+
+window.addEventListener('hashchange', function(evt){
+    pico.route(evt);
+}, false);
