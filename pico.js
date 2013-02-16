@@ -53,14 +53,10 @@ pico.setup = function(names, cb){
   });
 };
 
-pico.route = function(name){
-    window.location.hash 
-};
-
 pico.onRoute = function(evt){
     var
     newHash = evt.newURL.split('#')[1] || this.HOME,
-    oldHash = evt.newURL.split('#')[1] || this.HOME;
+    oldHash = evt.oldURL.split('#')[1] || this.HOME;
 
     if (newHash === oldHash) return;
 
@@ -273,5 +269,5 @@ window.addEventListener('load', function(){
 });
 
 window.addEventListener('hashchange', function(evt){
-    pico.route(evt);
+    pico.onRoute(evt);
 }, false);
