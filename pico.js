@@ -52,21 +52,36 @@ pico.setup = function(names, cb){
     pico.setup(names, cb);
   });
 };
+// start module
+pico.startMod = function(name){
+    var mod = this.modules[name];
+
+    if (mod) {
+        pico.activeMod = mod;
+        if ('function' === typeof mod.start) mod.start();
+        return mod;
+    }
+    return null;
+};
+// stop module
+pico.stopMod = function(name){
+    var mod = this.modules[name];
+
+    if (mod && 'function' === typeof mod.stop) {
+        mod.stop();
+        return mod;
+    }
+    return null;
+};
 
 pico.onRoute = function(evt){
     var
-    newHash = evt.newURL.split('#')[1] || this.HOME,
-    oldHash = evt.oldURL.split('#')[1] || this.HOME;
+    newHash = evt.newURL.split('#')[1] || this.ENTRY_POINT,
+    oldHash = evt.oldURL.split('#')[1] || this.ENTRY_POINT;
 
-    if (newHash === oldHash) return;
-
-    var
-    newMod = this.modules[newHash],
-    oldMod = this.modules[oldHash];
-
-    if (newMod) pico.activeMod = newMod;
-    if (oldMod && typeof oldMod.stop === 'function') oldMod.stop();
-    if (newMod && typeof newMod.start === 'function') newMod.start();
+    if (newHash !== oldHash && this.startMod(newHash)){
+        this.stopMod(oldHash);
+    }
 };
 
 // recurssively load dependencies in a module
@@ -174,7 +189,7 @@ pico.ajax = function(method, url, params, headers, cb, userData){
 
 Object.defineProperty(pico, 'modules', {value:{}, writable:false, configurable:false, enumerable:false});
 Object.defineProperty(pico, 'slots', {value:{}, writable:false, configurable:false, enumerable:false});
-Object.defineProperty(pico, 'HOME', {value:'home', writable:false, configurable:false, enumerable:false});
+Object.defineProperty(pico, 'ENTRY_POINT', {value:'entryPoint', writable:false, configurable:false, enumerable:false});
 Object.defineProperty(pico, 'activeMod', {value:null, writable:true, configurable:false, enumerable:false});
 Object.defineProperty(pico, 'inner', {value:{
   nn: function(i){
@@ -264,7 +279,8 @@ Object.freeze(pico);
 
 window.addEventListener('load', function(){
   pico.setup(Object.keys(pico.modules), function(){
-    pico.signal('load');
+      pico.startMod(pico.ENTRY_POINT);
+      pico.signal('load');
   });
 });
 
