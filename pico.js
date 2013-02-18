@@ -7,25 +7,28 @@ pico = function(n){
         (n instanceof Element) ? [n] : Array.prototype.slice.call(document.querySelectorAll(n))}
       });
   }
-
+  // each pico object has their own slots and dependencies
   Object.defineProperty(this, 'slots', {value:{}, writable:false, configurable:false, enumerable:false});
   Object.defineProperty(this, 'deps', {value:[], writable:false, configurable:false, enumerable:false});
   return this;
 };
-
+// shared by all pico objects
 Object.defineProperty(pico.prototype, 'links', {value:{}, writable:true, configurable:false, enumerable:false});
 
-pico.prototype.slot = pico.slot = function(channel, cb){
-  var channel = this.slots[channel] = this.slots[channel] || [];
-  channel.push(cb);
+pico.prototype.slot = pico.slot = function(channel, listener, cb){
+  var channel = this.slots[channel] = this.slots[channel] || {};
+  channel[listener.moduleName] = cb;
 };
 
 pico.prototype.signal = pico.signal = function(channel, events){
-  var channel = this.slots[channel];
-  if (!channel) return;
-  for(var i=0, l=channel.length; i<l; i++){
-    channel[i].apply(undefined, events);
-  }
+    var
+    channel = this.slots[channel],
+    mod;
+    if (!channel) return;
+    for(var key in channel){
+        mod = pico.modules[key];
+        channel[key].apply(mod, events);
+    }
 };
 
 // add dependency
@@ -39,6 +42,7 @@ pico.prototype.link = function(name, url){
 
 pico.def = function(name, factory){
   var module = new pico;
+  Object.defineProperty(module, 'moduleName', {value:name, writable:false, configurable:false, enumerable:true});
   factory.call(module);
   return this.modules[name] = module;
 };
@@ -52,24 +56,21 @@ pico.setup = function(names, cb){
     pico.setup(names, cb);
   });
 };
-// start module
-pico.startMod = function(name){
+pico.modState = function(state, name){
     var mod = this.modules[name];
 
     if (mod) {
-        pico.activeMod = mod;
-        if ('function' === typeof mod.start) mod.start();
-        return mod;
-    }
-    return null;
-};
-// stop module
-pico.stopMod = function(name){
-    var mod = this.modules[name];
-
-    if (mod && 'function' === typeof mod.stop) {
-        mod.stop();
-        return mod;
+        switch(state){
+            case 'focus':
+                pico.states.moduleName = name;
+                pico.signal(state, [{target: mod}]);
+                return mod;
+            case 'blur':
+                pico.signal(state, [{target: mod}]);
+                return mod;
+            default:
+                return null;
+        }
     }
     return null;
 };
@@ -79,8 +80,8 @@ pico.onRoute = function(evt){
     newHash = evt.newURL.split('#')[1] || this.ENTRY_POINT,
     oldHash = evt.oldURL.split('#')[1] || this.ENTRY_POINT;
 
-    if (newHash !== oldHash && this.startMod(newHash)){
-        this.stopMod(oldHash);
+    if (newHash !== oldHash && this.modState('focus', newHash)){
+        this.modState('blur', oldHash);
     }
 };
 
@@ -190,7 +191,7 @@ pico.ajax = function(method, url, params, headers, cb, userData){
 Object.defineProperty(pico, 'modules', {value:{}, writable:false, configurable:false, enumerable:false});
 Object.defineProperty(pico, 'slots', {value:{}, writable:false, configurable:false, enumerable:false});
 Object.defineProperty(pico, 'ENTRY_POINT', {value:'entryPoint', writable:false, configurable:false, enumerable:false});
-Object.defineProperty(pico, 'activeMod', {value:null, writable:true, configurable:false, enumerable:false});
+Object.defineProperty(pico, 'states', {value:{}, writable:true, configurable:false, enumerable:false});
 Object.defineProperty(pico, 'inner', {value:{
   nn: function(i){
     if (!this._n.length) throw new Error('Nodes not set');
@@ -279,7 +280,7 @@ Object.freeze(pico);
 
 window.addEventListener('load', function(){
   pico.setup(Object.keys(pico.modules), function(){
-      pico.startMod(pico.ENTRY_POINT);
+      pico.modState('focus', pico.ENTRY_POINT);
       pico.signal('load');
   });
 });
