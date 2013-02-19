@@ -52,7 +52,7 @@ pico.setup = function(names, cb){
 
   var module = this.modules[names.pop()];
 
-  this.loadJS(module, function(){
+  this.loadDeps(module, function(){
     pico.setup(names, cb);
   });
 };
@@ -85,8 +85,22 @@ pico.onRoute = function(evt){
     }
 };
 
+pico.loadJS = function(name, url, cb){
+    pico.ajax('get', url, '', null, function(err, xhr){
+        if (err) return cb(err);
+        var
+        func = new Function('module', xhr.responseText),
+        module = pico.def(name, func);
+
+        pico.loadDeps(module, function(){
+            module.signal('load');
+            return cb(err, module);
+        });
+    });
+};
+
 // recurssively load dependencies in a module
-pico.loadJS = function(host, cb){
+pico.loadDeps = function(host, cb){
   if (!cb) cb = function(){};
   var names = host.deps;
   if (!names || !names.length) return cb();
@@ -97,27 +111,18 @@ pico.loadJS = function(host, cb){
 
   if (module){
     host[name] = module;
-    return pico.loadJS(module, function(){
-      return pico.loadJS(host, cb);
+    return pico.loadDeps(module, function(){
+      return pico.loadDeps(host, cb);
     });
   }else{
     var link = host.links[name];
     if(link){
-      pico.ajax('get', link, '', null, function(err, xhr){
-        if (err){
-          return pico.loadJS(host, cb);
-        }else{
-          var func = new Function('module', xhr.responseText);
-
-          module = pico.def(name, func);
-          host[name] = module;
-          return pico.loadJS(module, function(){
-            return pico.loadJS(host, cb);
-          });
-        }
-      });
+        pico.loadJS(name, link, function(err, module){
+            if (!err) host[name] = module;
+            return pico.loadDeps(host, cb);
+        });
     }else{
-      return pico.loadJS(host, cb);
+        return pico.loadDeps(host, cb);
     }
   }
 };
@@ -127,36 +132,32 @@ pico.embed = function(holder, url, cb){
     if (err) return cb(err);
     holder.innerHTML = xhr.responseText;
 
-    var
-    scripts = Array.prototype.slice.call(holder.getElementsByTagName('script')),
-    host = new pico;
+    var scripts = Array.prototype.slice.call(holder.getElementsByTagName('script'));
 
-    pico.embedJS(host, scripts, function(){
-      pico.loadJS(host, function(){
-        pico.modules[holder.getAttribute('name')] = host;
+    pico.embedJS(scripts, function(){
         if (cb) return cb();
-      });
     });
   });
 };
 
-pico.embedJS = function(host, scripts, cb){
+pico.embedJS = function(scripts, cb){
     if (!scripts || !scripts.length) return cb();
 
     var
     script = scripts.pop(),
     func, module;
 
-    if (script.getAttribute('templ')) return pico.embedJS(host, scripts, cb); // template node, ignore
+    if (script.getAttribute('templ')) return pico.embedJS(scripts, cb); // template node, ignore
     if (script.src){
-      host.link(script.getAttribute('name'), script.src);
-      return pico.embedJS(host, scripts, cb);
+      pico.loadJS([script.getAttribute('name')], script.src, function(err, module){
+          return pico.embedJS(scripts, cb);
+      });
     }
     func = new Function('module', script.innerText);
     module = pico.def(script.getAttribute('name'), func);
-    pico.loadJS(module, function(){
+    pico.loadDeps(module, function(){
       module.signal('load');
-      return pico.embedJS(host, scripts, cb);
+      return pico.embedJS(scripts, cb);
     });
 };
 
