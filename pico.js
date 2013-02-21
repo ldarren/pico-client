@@ -34,17 +34,31 @@ pico.prototype.signal = pico.signal = function(channel, events){
 // add dependency
 pico.prototype.use = function(name){ this.deps.push(name);};
 
-// add dependency and link
+// add dependency and link, link = url<parentName, if no parentName link = url
 pico.prototype.link = function(name, url){
   this.links[name] = url;
   this.use(name);
 };
 
-pico.def = function(name, factory){
-  var module = new pico;
-  Object.defineProperty(module, 'moduleName', {value:name, writable:false, configurable:false, enumerable:true});
-  factory.call(module);
-  return this.modules[name] = module;
+pico.def = function(name){
+    var module, ancestor, factory;
+
+    if (3 === arguments.length){
+        // with ancestor
+        ancestor = this.modules[arguments[1]];
+        factory = arguments[2];
+    }else{
+        // without ancestor
+        factory = arguments[1];
+    }
+    if (ancestor){
+        module = Object.create(ancestor, {moduleName: {value:name, writable:false, configurable:false, enumerable:true}});
+    }else{
+        module = new pico;
+        Object.defineProperty(module, 'moduleName', {value:name, writable:false, configurable:false, enumerable:true});
+    }
+    factory.call(module);
+    return this.modules[name] = module;
 };
 
 pico.setup = function(names, cb){
@@ -85,12 +99,33 @@ pico.onRoute = function(evt){
     }
 };
 
-pico.loadJS = function(name, url, cb){
+pico.onBeat = function(){
+    var
+    inbox = pico.inbox,
+    outbox = pico.outbox,
+    value;
+
+    // pre update tasks
+    for (var i=0, l=inbox.length; i<l; i++){
+        value = inbox[i];
+        consol.log('inbox', i, value);
+    }
+
+    pico.signal('beat');
+
+    // post update tasks
+    for (var key in outbox){
+        value = outbox[key];
+        consol.log('outbox', key, value);
+    }
+};
+
+pico.loadJS = function(name, parentName, url, cb){
     pico.ajax('get', url, '', null, function(err, xhr){
         if (err) return cb(err);
         var
         func = new Function('module', xhr.responseText),
-        module = pico.def(name, func);
+        module = pico.def(name, parentName, func);
 
         pico.loadDeps(module, function(){
             module.signal('load');
@@ -115,9 +150,13 @@ pico.loadDeps = function(host, cb){
       return pico.loadDeps(host, cb);
     });
   }else{
-    var link = host.links[name];
+    var
+    arr = host.links[name].split('<'),
+    link = arr[0],
+    parentName = arr[1];
+
     if(link){
-        pico.loadJS(name, link, function(err, module){
+        pico.loadJS(name, parentName, link, function(err, module){
             if (!err) host[name] = module;
             return pico.loadDeps(host, cb);
         });
@@ -149,12 +188,12 @@ pico.embedJS = function(scripts, cb){
 
     if (script.getAttribute('templ')) return pico.embedJS(scripts, cb); // template node, ignore
     if (script.src){
-      pico.loadJS([script.getAttribute('name')], script.src, function(err, module){
+      pico.loadJS([script.getAttribute('name')], script.getAttribute('parent'), script.src, function(err, module){
           return pico.embedJS(scripts, cb);
       });
     }
     func = new Function('module', script.innerText);
-    module = pico.def(script.getAttribute('name'), func);
+    module = pico.def(script.getAttribute('name'), script.getAttribute('parent'), func);
     pico.loadDeps(module, function(){
       module.signal('load');
       return pico.embedJS(scripts, cb);
@@ -168,7 +207,7 @@ pico.ajax = function(method, url, params, headers, cb, userData){
     post = 'post' === method.toLowerCase();
 
     if (!post && params){
-        url += '?'+params;
+        url += '?'+encodeURI(params);
         params = null;
     }
 
@@ -186,13 +225,15 @@ pico.ajax = function(method, url, params, headers, cb, userData){
         }
     }
     xhr.onerror=function(evt){if (cb) return cb(evt, xhr, userData);}
-    xhr.send(params);
+    xhr.send(params instanceof String ? params : JSON.stringify(params));
 };
 
 Object.defineProperty(pico, 'modules', {value:{}, writable:false, configurable:false, enumerable:false});
 Object.defineProperty(pico, 'slots', {value:{}, writable:false, configurable:false, enumerable:false});
 Object.defineProperty(pico, 'ENTRY_POINT', {value:'entryPoint', writable:false, configurable:false, enumerable:false});
-Object.defineProperty(pico, 'states', {value:{}, writable:true, configurable:false, enumerable:false});
+Object.defineProperty(pico, 'states', {value:{}, writable:false, configurable:false, enumerable:false});
+Object.defineProperty(pico, 'inbox', {value:[], writable:true, configurable:false, enumerable:false}); // network incoming messages
+Object.defineProperty(pico, 'outbox', {value:{}, writable:true, configurable:false, enumerable:false}); // network outgoing messages
 Object.defineProperty(pico, 'inner', {value:{
   nn: function(i){
     if (!this._n.length) throw new Error('Nodes not set');
@@ -289,3 +330,7 @@ window.addEventListener('load', function(){
 window.addEventListener('hashchange', function(evt){
     pico.onRoute(evt);
 }, false);
+
+window.setInterval(function(){
+    pico.onBeat();
+}, 1000);
