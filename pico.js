@@ -2,8 +2,8 @@ pico = function(n){
   if (n){
     return Object.create(pico.inner,
       {
-        _s: {writable:false, configurable:false, enumerable:false, value:[]},
-        _n: {writable:false, configurable:false, enumerable:false, value: 
+        _s: {writable:false, configurable:false, enumerable:false, value:[]},   // stack
+        _n: {writable:false, configurable:false, enumerable:false, value:       // node list
         (n instanceof Element) ? [n] : Array.prototype.slice.call(document.querySelectorAll(n))}
       });
   }
@@ -192,7 +192,7 @@ pico.embedJS = function(scripts, cb){
           return pico.embedJS(scripts, cb);
       });
     }
-    func = new Function('module', script.innerText);
+    func = new Function('module', script.innerText); // secure this operation
     module = pico.def(script.getAttribute('name'), script.getAttribute('parent'), func);
     pico.loadDeps(module, function(){
       module.signal('load');
@@ -240,7 +240,7 @@ Object.defineProperty(pico, 'inner', {value:{
     if (arguments.length) return this._n[i];
     return this._n;
   },
-  ii: function(err, obj, Type){
+  ii: function(err, obj, Type){ // input to stack
     if (err){
       if (err instanceof Error) throw obj;
       throw new Error(err);
@@ -248,7 +248,7 @@ Object.defineProperty(pico, 'inner', {value:{
     if (Type && !(obj instanceof Type)) throw new Error('push type mismatch');
     this._s.push(obj);
   },
-  oo: function(Type){
+  oo: function(Type){ // output from stack
     if (!this._s.length) throw new Error('Pop a empty stack');
     var obj = this._s.pop();
     if (Type && !(obj instanceof Type)) throw new Error('pop type mismatch');
@@ -316,6 +316,26 @@ Object.defineProperty(pico, 'inner', {value:{
     this.ii(null, list);
     return this;
   },
+  toObj: function(){
+      var
+      obj = {},
+      element = this.nn(0);
+      switch(element.tagName.toLowerCase()){
+          case 'form':
+            var
+            inputs = element.querySelectorAll('input'),
+            input, key, type;
+            for(var i=0,l=inputs.length; i<l; i++){
+                input = inputs[i];
+                key = input.getAttribute('name');
+                if (!key) break;
+                type = input.getAttribute('type');
+                obj[key] = 'number' === type ? parseInt(input.value) : input.value;
+            }
+            break;
+      }
+      return obj;
+  },
   }, writable:false, configurable:false, enumerable:false});
 
 Object.freeze(pico);
@@ -332,5 +352,5 @@ window.addEventListener('hashchange', function(evt){
 }, false);
 
 window.setInterval(function(){
-    pico.onBeat();
+//    pico.onBeat();
 }, 1000);
