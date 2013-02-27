@@ -15,9 +15,15 @@ pico = function(n){
 // shared by all pico objects
 Object.defineProperty(pico.prototype, 'links', {value:{}, writable:true, configurable:false, enumerable:false});
 
-pico.prototype.slot = pico.slot = function(channel, listener, cb){
-  var channel = this.slots[channel] = this.slots[channel] || {};
-  channel[listener.moduleName] = cb;
+pico.prototype.slot = pico.slot = function(channelName){
+    var channel = this.slots[channelName] = this.slots[channelName] || {};
+    if (3 === arguments.length){
+        channel[arguments[1].moduleName] = arguments[2];
+    }else{
+        // function only no object
+        var funcs = channel['funcs'] = channel['funcs'] || [];
+        funcs.push(arguments[1]);
+    }
 };
 
 pico.prototype.signal = pico.signal = function(channel, events){
@@ -25,6 +31,13 @@ pico.prototype.signal = pico.signal = function(channel, events){
     channel = this.slots[channel],
     mod;
     if (!channel) return;
+    var funcs = channel['funcs'];
+    if (funcs){
+        delete channel['funcs'];
+        for (var i=0, l=funcs.length; i<l; i++){
+            funcs[i].apply(null, events);
+        }
+    }
     for(var key in channel){
         mod = pico.modules[key];
         channel[key].apply(mod, events);
@@ -70,6 +83,12 @@ pico.setup = function(names, cb){
     pico.setup(names, cb);
   });
 };
+pico.init = function(config){
+    var cfg = this.config;
+    for (var key in config){
+        cfg[key] = config[key];
+    }
+};
 pico.modState = function(state, name){
     var mod = this.modules[name];
 
@@ -91,32 +110,52 @@ pico.modState = function(state, name){
 
 pico.onRoute = function(evt){
     var
-    newHash = evt.newURL.split('#')[1] || this.ENTRY_POINT,
-    oldHash = evt.oldURL.split('#')[1] || this.ENTRY_POINT;
+    entryPt = this.config.entryPoint,
+    newHash = evt.newURL.split('#')[1] || entryPt,
+    oldHash = evt.oldURL.split('#')[1] || entryPt;
 
     if (newHash !== oldHash && this.modState('focus', newHash)){
         this.modState('blur', oldHash);
     }
 };
 
-pico.onBeat = function(){
+pico.onBeat = function(delay, startTime){
     var
     inbox = pico.inbox,
     outbox = pico.outbox,
-    value;
+    outboxKeys = Object.keys(outbox),
+    value, api;
 
     // pre update tasks
-    for (var i=0, l=inbox.length; i<l; i++){
-        value = inbox[i];
-        consol.log('inbox', i, value);
+    while(inbox.length){
+        value = JSON.parse(inbox.pop());
+        model = pico.modules[value.modelId];
+        model.sync(value.method, value);
+        console.log('inbox', value);
     }
 
     pico.signal('beat');
 
     // post update tasks
-    for (var key in outbox){
-        value = outbox[key];
-        consol.log('outbox', key, value);
+    if (outboxKeys.length){
+        var req = [];
+        outboxKeys.sort();
+        for (var i=0, l=outboxKeys.length; i<l; i++){
+            req.push(outbox[outboxKeys[i]]);
+        }
+        console.log(req);
+        pico.ajax('post', pico.config.pushUrl, req, null, function(err, xhr){
+            if (err) return console.error(err);
+            pico.inbox.push(JSON.parse(xhr.responseText));
+            if (4 === xhr.readyState){
+                var 
+                now = Date.now(),
+                nextTime = delay - (now - startTime);
+                setTimeout(pico.onBeat, nextTime < 0 ? 30 : nextTime, delay, now);
+            }
+        });
+    }else{
+        setTimeout(pico.onBeat, delay, delay, Date.now());
     }
 };
 
@@ -230,8 +269,8 @@ pico.ajax = function(method, url, params, headers, cb, userData){
 
 Object.defineProperty(pico, 'modules', {value:{}, writable:false, configurable:false, enumerable:false});
 Object.defineProperty(pico, 'slots', {value:{}, writable:false, configurable:false, enumerable:false});
-Object.defineProperty(pico, 'ENTRY_POINT', {value:'entryPoint', writable:false, configurable:false, enumerable:false});
 Object.defineProperty(pico, 'states', {value:{}, writable:false, configurable:false, enumerable:false});
+Object.defineProperty(pico, 'config', {value:{}, writable:false, configurable:false, enumerable:false});
 Object.defineProperty(pico, 'inbox', {value:[], writable:true, configurable:false, enumerable:false}); // network incoming messages
 Object.defineProperty(pico, 'outbox', {value:{}, writable:true, configurable:false, enumerable:false}); // network outgoing messages
 Object.defineProperty(pico, 'inner', {value:{
@@ -342,7 +381,7 @@ Object.freeze(pico);
 
 window.addEventListener('load', function(){
   pico.setup(Object.keys(pico.modules), function(){
-      pico.modState('focus', pico.ENTRY_POINT);
+      pico.modState('focus', pico.config.entryPoint);
       pico.signal('load');
   });
 });
@@ -351,6 +390,4 @@ window.addEventListener('hashchange', function(evt){
     pico.onRoute(evt);
 }, false);
 
-window.setInterval(function(){
-//    pico.onBeat();
-}, 1000);
+window.setTimeout(function(){ pico.onBeat(); }, 1000, 5000, Date.now());
