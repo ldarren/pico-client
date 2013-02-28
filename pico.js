@@ -33,7 +33,6 @@ pico.prototype.signal = pico.signal = function(channel, events){
     if (!channel) return;
     var funcs = channel['funcs'];
     if (funcs){
-        delete channel['funcs'];
         for (var i=0, l=funcs.length; i<l; i++){
             funcs[i].apply(null, events);
         }
@@ -77,13 +76,14 @@ pico.def = function(name){
 };
 
 pico.setup = function(names, cb){
-  if (!names || !names.length) return cb();
+    if (!names || !names.length) return cb();
 
-  var module = this.modules[names.pop()];
+    var module = this.modules[names.pop()];
 
-  this.loadDeps(module, function(){
-    pico.setup(names, cb);
-  });
+    this.loadDeps(module, function(){
+        module.signal('load');
+        pico.setup(names, cb);
+    });
 };
 pico.init = function(config){
     var cfg = this.config;
@@ -127,14 +127,16 @@ pico.onRoute = function(evt){
 pico.onBeat = function(delay, startTime){
     var
     outbox = pico.outbox,
+    acks = pico.acks,
     outboxKeys = Object.keys(outbox),
     endPos = 0;
 
     pico.signal('beat');
 
     // post update tasks
-    if (outboxKeys.length){
-        var req = [];
+    if (outboxKeys.length || acks.length){
+        var req = acks;
+        pico.acks = [];
         outboxKeys.sort();
         for (var i=0, l=outboxKeys.length; i<l; i++){
             req.push(outbox[outboxKeys[i]]);
@@ -142,7 +144,7 @@ pico.onBeat = function(delay, startTime){
 console.log('req',req);
         pico.ajax('post', pico.config.pushURL, req, null, function(err, xhr){
             if (err) return console.error(err);
-
+            
             try{
                 var value = JSON.parse(xhr.responseText.substr(endPos));
             }catch(exp){
@@ -150,8 +152,14 @@ console.log('req',req);
                 return;
             }
             endPos = xhr.responseText.length;
-            model = pico.modules[value.modelId];
-            model.sync(value.method, value);
+            if (!value || !value.api) return console.error(value);
+            var
+            apiArr = value.api.split('.'),
+            modelId = apiArr[0],
+            method = '.'+apiArr[1];
+
+            model = pico.modules[modelId];
+            model.sync(method, value);
             console.log('inbox', value);
 
             // schedule next update
@@ -281,7 +289,8 @@ Object.defineProperty(pico, 'modules', {value:{}, writable:false, configurable:f
 Object.defineProperty(pico, 'slots', {value:{}, writable:false, configurable:false, enumerable:false});
 Object.defineProperty(pico, 'states', {value:{}, writable:false, configurable:false, enumerable:false});
 Object.defineProperty(pico, 'config', {value:{}, writable:false, configurable:false, enumerable:false});
-Object.defineProperty(pico, 'outbox', {value:{}, writable:true, configurable:false, enumerable:false}); // network outgoing messages
+Object.defineProperty(pico, 'outbox', {value:{}, writable:true, configurable:false, enumerable:false}); // network outgoing messages, need ack
+Object.defineProperty(pico, 'acks', {value:[], writable:true, configurable:false, enumerable:false}); // network outgoing signals, no ack required
 Object.defineProperty(pico, 'inner', {value:{
   nn: function(i){
     if (!this._n.length) throw new Error('Nodes not set');
