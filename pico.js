@@ -91,8 +91,8 @@ pico.init = function(config){
         cfg[key] = config[key];
     }
     cfg.beatRate = cfg.beatRate || 1000;
-    if (pico.states.beatId) window.clearTimeout(pico.states.beatId);
-    pico.states.beatId = window.setTimeout(pico.onBeat, 1000, pico.config.beatRate, Date.now());
+    if (pico.states.beatId) clearTimeout(pico.states.beatId);
+    pico.states.beatId = setTimeout(pico.onBeat, 1000, pico.config.beatRate, Date.now());
 };
 pico.modState = function(state, name){
     var mod = this.modules[name];
@@ -131,22 +131,30 @@ pico.onBeat = function(delay, startTime){
     outboxKeys = Object.keys(outbox),
     endPos = 0;
 
+    pico.states.beatId = 0;
     pico.signal('beat');
 
     // post update tasks
     if (outboxKeys.length || acks.length){
-        var req = acks;
-        pico.acks = [];
+        var req = acks.slice(0);
+        acks.length = 0;
         outboxKeys.sort();
         for (var i=0, l=outboxKeys.length; i<l; i++){
             req.push(outbox[outboxKeys[i]]);
         }
 console.log('req',req);
         pico.ajax('post', pico.config.pushURL, req, null, function(err, xhr){
+            // schedule next update
+            if (!pico.states.beatId && 4 === xhr.readyState){
+                pico.states.beatId = setTimeout(pico.onBeat, delay, delay, Date.now());
+            }
+
             if (err) return console.error(err);
-            
+
             try{
-                var value = JSON.parse(xhr.responseText.substr(endPos));
+                var
+                json = xhr.responseText.substr(endPos),
+                value = JSON.parse(json);
             }catch(exp){
                 // incomplete json, return first
                 return;
@@ -161,17 +169,9 @@ console.log('req',req);
             model = pico.modules[modelId];
             model.sync(method, value);
             console.log('inbox', value);
-
-            // schedule next update
-            if (4 === xhr.readyState){
-                var 
-                now = Date.now(),
-                nextTime = delay - (now - startTime);
-                setTimeout(pico.onBeat, nextTime < 0 ? 30 : nextTime, delay, now);
-            }
         });
     }else{
-        setTimeout(pico.onBeat, delay, delay, Date.now());
+        pico.states.beatId = setTimeout(pico.onBeat, delay, delay, Date.now());
     }
 };
 
@@ -276,9 +276,8 @@ pico.ajax = function(method, url, params, headers, cb, userData){
     if (post && !headers) xhr.setRequestHeader('Content-type', 'application/json');
 
     xhr.onreadystatechange=function(){
-        if (2 < xhr.readyState){
-            if (cb)
-              return cb(200 === xhr.status ? null : new Error("Error["+xhr.statusText+"] Info: "+xhr.responseText), xhr, userData);
+        if (2 < xhr.readyState && cb){
+            return cb(200 === xhr.status ? null : new Error("Error["+xhr.statusText+"] Info: "+xhr.responseText), xhr, userData);
         }
     }
     xhr.onerror=function(evt){if (cb) return cb(evt, xhr, userData);}
