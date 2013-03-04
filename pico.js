@@ -124,6 +124,19 @@ pico.onRoute = function(evt){
     }
 };
 
+pico.onPageChange = function(evt){
+    var
+    search = location.search.substring(1), // remove leading ?
+    pairs = search.split("&"),
+    pair, obj={};
+    for (i=0, l=pairs.length; i<l; i++){
+        pair = pairs[i].split("=");
+        if (!pair[0]) continue;
+        obj[pair[0]] = pair[1];
+    }
+    pico.signal('pageChange', [obj, evt.state]);
+};
+
 pico.onBeat = function(delay, startTime){
     var
     outbox = pico.outbox,
@@ -173,6 +186,16 @@ console.log('req',req);
     }else{
         pico.states.beatId = setTimeout(pico.onBeat, delay, delay, Date.now());
     }
+};
+
+pico.changePage = function(uri, desc, userData){
+    var search = '?';
+    for (var key in uri){
+        if (!key) continue;
+        search += key + '=' + uri[key] + '&';
+    }
+    // remove last & symbol
+    history.pushState(userData, desc, location.origin + location.pathname + search.substr(0, search.length-1));
 };
 
 pico.loadJS = function(name, parentName, url, cb){
@@ -239,18 +262,18 @@ pico.embed = function(holder, url, cb){
 pico.embedJS = function(scripts, cb){
     if (!scripts || !scripts.length) return cb();
 
-    var
-    script = scripts.pop(),
-    func, module;
+    var script = scripts.pop();
 
     if (script.getAttribute('templ')) return pico.embedJS(scripts, cb); // template node, ignore
     if (script.src){
-      pico.loadJS([script.getAttribute('name')], script.getAttribute('parent'), script.src, function(err, module){
+      return pico.loadJS([script.getAttribute('name')], script.getAttribute('parent'), script.src, function(err, module){
           return pico.embedJS(scripts, cb);
       });
     }
-    func = new Function('module', script.innerText); // secure this operation
+    var
+    func = new Function('module', script.innerText), // secure this operation
     module = pico.def(script.getAttribute('name'), script.getAttribute('parent'), func);
+
     pico.loadDeps(module, function(){
       module.signal('load');
       return pico.embedJS(scripts, cb);
@@ -403,6 +426,10 @@ window.addEventListener('load', function(){
         pico.signal('load');
     });
 });
+
+window.addEventListener('popstate', function(evt){
+    pico.onPageChange(evt);
+}, false);
 
 window.addEventListener('hashchange', function(evt){
     pico.onRoute(evt);
