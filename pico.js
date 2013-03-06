@@ -26,9 +26,9 @@ pico.prototype.slot = pico.slot = function(channelName){
     }
 };
 
-pico.prototype.signal = pico.signal = function(channel, events){
+pico.prototype.signal = pico.signal = function(channelName, events){
     var
-    channel = this.slots[channel],
+    channel = this.slots[channelName],
     mod;
     if (!channel) return;
     var funcs = channel['funcs'];
@@ -36,10 +36,11 @@ pico.prototype.signal = pico.signal = function(channel, events){
         for (var i=0, l=funcs.length; i<l; i++){
             funcs[i].apply(null, events);
         }
-    }
-    for(var key in channel){
-        mod = pico.modules[key];
-        channel[key].apply(mod, events);
+    }else{
+        for(var key in channel){
+            mod = pico.modules[key];
+            channel[key].apply(mod, events);
+        }
     }
 };
 
@@ -167,21 +168,17 @@ console.log('req',req);
             try{
                 var
                 json = xhr.responseText.substr(endPos),
-                value = JSON.parse(json);
+                res = JSON.parse(json);
             }catch(exp){
                 // incomplete json, return first
                 return;
             }
             endPos = xhr.responseText.length;
-            if (!value || !value.api) return console.error(value);
-            var
-            apiArr = value.api.split('.'),
-            modelId = apiArr[0],
-            method = '.'+apiArr[1];
+            if (!res || !res.modelId) return console.error(res);
 
-            model = pico.modules[modelId];
-            model.sync(method, value);
-            console.log('inbox', value);
+            model = pico.modules[res.modelId];
+            model.sync(res);
+            console.log('inbox', res);
         });
     }else{
         pico.states.beatId = setTimeout(pico.onBeat, delay, delay, Date.now());
@@ -196,6 +193,10 @@ pico.changePage = function(uri, desc, userData){
     }
     // remove last & symbol
     history.pushState(userData, desc, location.origin + location.pathname + search.substr(0, search.length-1));
+};
+
+pico.changeUIState = function(hash){
+    window.location.hash = '#' + hash;
 };
 
 pico.loadJS = function(name, parentName, url, cb){
@@ -226,6 +227,11 @@ pico.loadDeps = function(host, cb){
   if (module){
     host[name] = module;
     return pico.loadDeps(module, function(){
+        var mi = pico.states.newModules.indexOf(name);
+        if (-1 !== mi){
+            module.signal('load');
+            pico.states.newModules.splice(mi, 1);
+        }
       return pico.loadDeps(host, cb);
     });
   }else{
@@ -420,8 +426,9 @@ Object.defineProperty(pico, 'inner', {value:{
 Object.freeze(pico);
 
 window.addEventListener('load', function(){
-    window.location.hash = '#'+pico.config.entryPoint;
-    pico.setup(Object.keys(pico.modules), function(){
+    pico.changeUIState(pico.config.entryPoint);
+    var newModules = pico.states.newModules = Object.keys(pico.modules); // signal load event, if newModules being called in loadDeps
+    pico.setup(newModules, function(){
         pico.modState('focus', pico.config.entryPoint);
         pico.signal('load');
     });
