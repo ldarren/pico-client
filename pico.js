@@ -31,13 +31,14 @@ pico.prototype.signal = pico.signal = function(channelName, events){
     channel = this.slots[channelName],
     mod;
     if (!channel) return;
-    var funcs = channel['funcs'];
-    if (funcs){
-        for (var i=0, l=funcs.length; i<l; i++){
-            funcs[i].apply(null, events);
-        }
-    }else{
-        for(var key in channel){
+
+    for(var key in channel){
+        if ('funcs' === key){
+            var funcs = channel[key];
+            for (var i=0, l=funcs.length; i<l; i++){
+                funcs[i].apply(null, events);
+            }
+        }else{
             mod = pico.modules[key];
             channel[key].apply(mod, events);
         }
@@ -94,6 +95,80 @@ pico.init = function(config){
     cfg.beatRate = cfg.beatRate || 1000;
     if (pico.states.beatId) clearTimeout(pico.states.beatId);
     pico.states.beatId = setTimeout(pico.onBeat, 1000, pico.config.beatRate, Date.now());
+};
+pico.detectBrowser = function(){
+    var
+    browser = 'msie',
+    vendor = navigator.vendor,
+    userAgent = navigator.userAgent,
+    // http://www.quirksmode.org/js/detect.html
+    vendorKeys = [{
+            string: navigator.userAgent,
+            subString: "Chrome",
+            identity: "Chrome"
+        },{
+            string: navigator.userAgent,
+            subString: "OmniWeb",
+            versionSearch: "OmniWeb",
+            identity: "OmniWeb"
+        },{
+            string: navigator.vendor,
+            subString: "Apple",
+            identity: "Safari",
+            versionSearch: "Version"
+        },{
+            string: navigator.userAgent,
+            subString: "Opera",
+            identity: "Opera",
+            versionSearch: "Version"
+        },{
+            string: navigator.vendor,
+            subString: "iCab",
+            identity: "iCab"
+        },{
+            string: navigator.vendor,
+            subString: "KDE",
+            identity: "Konqueror"
+        },{
+            string: navigator.userAgent,
+            subString: "Firefox",
+            identity: "Firefox"
+        },{
+            string: navigator.vendor,
+            subString: "Camino",
+            identity: "Camino"
+        },{
+            // for newer Netscapes (6+)
+            string: navigator.userAgent,
+            subString: "Netscape",
+            identity: "Netscape"
+        },{
+            string: navigator.userAgent,
+            subString: "MSIE",
+            identity: "Explorer",
+            versionSearch: "MSIE"
+        },{
+            string: navigator.userAgent,
+            subString: "Gecko",
+            identity: "Mozilla",
+            versionSearch: "rv"
+        },{
+            // for older Netscapes (4-)
+            string: navigator.userAgent,
+            subString: "Mozilla",
+            identity: "Netscape",
+            versionSearch: "Mozilla"
+        }],
+    key;
+
+    for (var i=0, l=vendorKeys.length; i<l; i++){
+        key = vendorKeys[i];
+        if (-1 !== key.string.indexOf(key.subString)){
+            this.states.browser = key.identity;
+        }
+    }
+    if ('Chrome' === this.states.browser || 'Safari' === this.states.browser)
+        this.states.isWebKit = true;
 };
 pico.modState = function(state, name){
     var mod = this.modules[name];
@@ -192,7 +267,10 @@ pico.changePage = function(uri, desc, userData){
         search += key + '=' + uri[key] + '&';
     }
     // remove last & symbol
-    history.pushState(userData, desc, location.origin + location.pathname + search.substr(0, search.length-1));
+    history.pushState(userData, desc, search.substr(0, search.length-1));
+    if (!this.states.isWebKit){
+        this.onPageChange({});
+    }
 };
 
 pico.changeUIState = function(hash){
@@ -277,7 +355,7 @@ pico.embedJS = function(scripts, cb){
       });
     }
     var
-    func = new Function('module', script.innerText), // secure this operation
+    func = new Function('module', script.innerText || script.textContent), // secure this operation
     module = pico.def(script.getAttribute('name'), script.getAttribute('parent'), func);
 
     pico.loadDeps(module, function(){
@@ -426,7 +504,9 @@ Object.defineProperty(pico, 'inner', {value:{
 Object.freeze(pico);
 
 window.addEventListener('load', function(){
+    pico.detectBrowser();
     pico.changeUIState(pico.config.entryPoint);
+    console.log('vendor',navigator.vendor,'userAgent', navigator.userAgent);
     var newModules = pico.states.newModules = Object.keys(pico.modules); // signal load event, if newModules being called in loadDeps
     pico.setup(newModules, function(){
         pico.modState('focus', pico.config.entryPoint);
