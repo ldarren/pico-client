@@ -485,16 +485,20 @@ Object.defineProperty(pico, 'inner', {value:{
       element = this.nn(0);
       switch(element.tagName.toLowerCase()){
           case 'form':
-            var
-            inputs = element.querySelectorAll('input'),
-            input, key, type;
-            for(var i=0,l=inputs.length; i<l; i++){
-                input = inputs[i];
-                key = input.getAttribute('name');
-                if (!key) break;
-                type = input.getAttribute('type');
-                obj[key] = 'number' === type ? parseInt(input.value) : input.value;
-            }
+            var objfy = function(fields){
+                var field, key, type;
+
+                for(var i=0,l=fields.length; i<l; i++){
+                    field = fields[i];
+                    key = field.getAttribute('name');
+                    if (!key) break;
+                    type = field.getAttribute('type');
+                    obj[key] = 'number' === type ? parseInt(field.value) : field.value;
+                }
+            };
+            objfy(element.querySelectorAll('input'));
+            objfy(element.querySelectorAll('textarea'));
+            objfy(element.querySelectorAll('select'));
             break;
       }
       return obj;
