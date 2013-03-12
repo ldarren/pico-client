@@ -191,9 +191,8 @@ pico.modState = function(state, name){
 
 pico.onRoute = function(evt){
     var
-    entryPt = this.config.entryPoint,
-    newHash = evt.newURL.split('#')[1] || entryPt,
-    oldHash = evt.oldURL.split('#')[1] || entryPt;
+    newHash = evt.newURL.split('#')[1] || '',
+    oldHash = evt.oldURL.split('#')[1] || '';
 
     if (newHash !== oldHash && this.modState('focus', newHash)){
         this.modState('blur', oldHash);
@@ -509,11 +508,9 @@ Object.freeze(pico);
 
 window.addEventListener('load', function(){
     pico.detectBrowser();
-    pico.changeUIState(pico.config.entryPoint);
     console.log('vendor',navigator.vendor,'userAgent', navigator.userAgent);
     var newModules = pico.states.newModules = Object.keys(pico.modules); // signal load event, if newModules being called in loadDeps
     pico.setup(newModules, function(){
-        pico.modState('focus', pico.config.entryPoint);
         pico.signal('load');
     });
 });
