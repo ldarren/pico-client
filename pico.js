@@ -25,7 +25,6 @@ pico.prototype.slot = pico.slot = function(channelName){
         funcs.push(arguments[1]);
     }
 };
-
 pico.prototype.signal = pico.signal = function(channelName, events){
     var
     channel = this.slots[channelName],
@@ -44,10 +43,8 @@ pico.prototype.signal = pico.signal = function(channelName, events){
         }
     }
 };
-
 // add dependency
 pico.prototype.use = function(name){ this.deps.push(name);};
-
 // add dependency and link, link = url<parentName, if no parentName link = url
 pico.prototype.link = function(name, url){
   this.links[name] = url;
@@ -76,25 +73,15 @@ pico.def = function(name){
     factory.call(module);
     return this.modules[name] = module;
 };
-
 pico.setup = function(names, cb){
     if (!names || !names.length) return cb();
 
-    var module = this.modules[names.pop()];
+    var module = this.modules[names.shift()];
 
     this.loadDeps(module, function(){
         module.signal('load');
         pico.setup(names, cb);
     });
-};
-pico.init = function(config){
-    var cfg = this.config;
-    for (var key in config){
-        cfg[key] = config[key];
-    }
-    cfg.beatRate = cfg.beatRate || 1000;
-    if (pico.states.beatId) clearTimeout(pico.states.beatId);
-    pico.states.beatId = setTimeout(pico.onBeat, 1000, pico.config.beatRate, Date.now());
 };
 pico.detectBrowser = function(){
     var
@@ -188,7 +175,6 @@ pico.modState = function(state, name){
     }
     return null;
 };
-
 pico.onRoute = function(evt){
     var
     newHash = evt.newURL.split('#')[1] || '',
@@ -198,7 +184,6 @@ pico.onRoute = function(evt){
         this.modState('blur', oldHash);
     }
 };
-
 pico.onPageChange = function(evt){
     var
     search = location.search.substring(1), // remove leading ?
@@ -211,54 +196,6 @@ pico.onPageChange = function(evt){
     }
     pico.signal('pageChange', [obj, evt.state]);
 };
-
-pico.onBeat = function(delay, startTime){
-    var
-    outbox = pico.outbox,
-    acks = pico.acks,
-    outboxKeys = Object.keys(outbox),
-    endPos = 0;
-
-    pico.states.beatId = 0;
-    pico.signal('beat');
-
-    // post update tasks
-    if (outboxKeys.length || acks.length){
-        var req = acks.slice(0);
-        acks.length = 0;
-        outboxKeys.sort();
-        for (var i=0, l=outboxKeys.length; i<l; i++){
-            req.push(outbox[outboxKeys[i]]);
-        }
-console.log('req',req);
-        pico.ajax('post', pico.config.pushURL, req, null, function(err, xhr){
-            // schedule next update
-            if (!pico.states.beatId && 4 === xhr.readyState){
-                pico.states.beatId = setTimeout(pico.onBeat, delay, delay, Date.now());
-            }
-
-            if (err) return console.error(err);
-
-            try{
-                var
-                json = xhr.responseText.substr(endPos),
-                res = JSON.parse(json);
-            }catch(exp){
-                // incomplete json, return first
-                return;
-            }
-            endPos = xhr.responseText.length;
-            if (!res || !res.modelId) return console.error(res);
-
-            model = pico.modules[res.modelId];
-            model.sync(res);
-            console.log('inbox', res);
-        });
-    }else{
-        pico.states.beatId = setTimeout(pico.onBeat, delay, delay, Date.now());
-    }
-};
-
 pico.changePage = function(uri, desc, userData){
     var search = '?';
     for (var key in uri){
@@ -271,11 +208,9 @@ pico.changePage = function(uri, desc, userData){
         this.onPageChange({});
     }
 };
-
 pico.changeUIState = function(hash){
     window.location.hash = '#' + hash;
 };
-
 pico.loadJS = function(name, parentName, url, cb){
     pico.ajax('get', url, '', null, function(err, xhr){
         if (err) return cb(err);
@@ -290,7 +225,6 @@ pico.loadJS = function(name, parentName, url, cb){
         });
     });
 };
-
 // recurssively load dependencies in a module
 pico.loadDeps = function(host, cb){
   if (!cb) cb = function(){};
@@ -327,7 +261,6 @@ pico.loadDeps = function(host, cb){
     }
   }
 };
-
 pico.embed = function(holder, url, cb){
   pico.ajax('get', url, '', null, function(err, xhr){
     if (err) return cb(err);
@@ -341,7 +274,6 @@ pico.embed = function(holder, url, cb){
     });
   });
 };
-
 pico.embedJS = function(scripts, cb){
     if (!scripts || !scripts.length) return cb();
 
@@ -362,7 +294,6 @@ pico.embedJS = function(scripts, cb){
       return pico.embedJS(scripts, cb);
     });
 };
-
 pico.ajax = function(method, url, params, headers, cb, userData){
     if (!url) return cb(new Error('url not defined'));
     var
@@ -393,9 +324,6 @@ pico.ajax = function(method, url, params, headers, cb, userData){
 Object.defineProperty(pico, 'modules', {value:{}, writable:false, configurable:false, enumerable:false});
 Object.defineProperty(pico, 'slots', {value:{}, writable:false, configurable:false, enumerable:false});
 Object.defineProperty(pico, 'states', {value:{}, writable:false, configurable:false, enumerable:false});
-Object.defineProperty(pico, 'config', {value:{}, writable:false, configurable:false, enumerable:false});
-Object.defineProperty(pico, 'outbox', {value:{}, writable:true, configurable:false, enumerable:false}); // network outgoing messages, need ack
-Object.defineProperty(pico, 'acks', {value:[], writable:true, configurable:false, enumerable:false}); // network outgoing signals, no ack required
 Object.defineProperty(pico, 'inner', {value:{
   nn: function(i){
     if (!this._n.length) throw new Error('Nodes not set');
@@ -518,7 +446,6 @@ window.addEventListener('load', function(){
 window.addEventListener('popstate', function(evt){
     pico.onPageChange(evt);
 }, false);
-
 window.addEventListener('hashchange', function(evt){
     pico.onRoute(evt);
 }, false);
