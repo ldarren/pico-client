@@ -294,6 +294,12 @@ pico.embedJS = function(scripts, cb){
       return pico.embedJS(scripts, cb);
     });
 };
+// method: get/post
+// url: path
+// params: null/parameters (optional)
+// headers: header parameter
+// cb: callback
+// userData: optional
 pico.ajax = function(method, url, params, headers, cb, userData){
     if (!url) return cb(new Error('url not defined'));
     var
