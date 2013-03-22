@@ -157,6 +157,18 @@ pico.detectBrowser = function(){
     if ('Chrome' === this.states.browser || 'Safari' === this.states.browser)
         this.states.isWebKit = true;
 };
+// http://perfectionkills.com/detecting-event-support-without-browser-sniffing/
+pico.detectEvent = function(eventName, tagName){
+    var el = document.createElement(tagName || 'div');
+    eventName = 'on' + eventName;
+    var isSupported = (eventName in el);
+    if (!isSupported) {
+        el.setAttribute(eventName, 'return;');
+        isSupported = 'function' === typeof el[eventName];
+    }
+    el = null;
+    return isSupported;
+};
 pico.modState = function(state, name){
     var mod = this.modules[name];
 
