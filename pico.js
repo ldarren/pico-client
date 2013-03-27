@@ -21,8 +21,17 @@ pico.prototype.slot = pico.slot = function(channelName){
         channel[arguments[1].moduleName] = arguments[2];
     }else{
         // function only no object
-        var funcs = channel['funcs'] = channel['funcs'] || [];
-        funcs.push(arguments[1]);
+        var func = arguments[1];
+        channel[func.toString()] = func;
+    }
+};
+pico.prototype.unslot = pico.unslot = function(channelName, identity){
+    var channel = this.slots[channelName] = this.slots[channelName] || {};
+    if (identity.moduleName){
+        delete channel[identity.moduleName];
+    }else{
+        // function only no object
+        delete channel[identity.toString()];
     }
 };
 pico.prototype.signal = pico.signal = function(channelName, events){
@@ -32,15 +41,8 @@ pico.prototype.signal = pico.signal = function(channelName, events){
     if (!channel) return;
 
     for(var key in channel){
-        if ('funcs' === key){
-            var funcs = channel[key];
-            for (var i=0, l=funcs.length; i<l; i++){
-                funcs[i].apply(null, events);
-            }
-        }else{
-            mod = pico.modules[key];
-            channel[key].apply(mod, events);
-        }
+        mod = pico.modules[key];
+        channel[key].apply(mod, events);
     }
 };
 // add dependency
