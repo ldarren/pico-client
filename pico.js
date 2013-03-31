@@ -456,13 +456,15 @@ Object.freeze(pico);
 
 window.addEventListener('load', function(){
     pico.detectBrowser();
-    console.log('vendor',navigator.vendor,'userAgent', navigator.userAgent);
     var newModules = pico.states.newModules = Object.keys(pico.modules); // signal load event, if newModules being called in loadDeps
     pico.setup(newModules, function(){
         pico.signal('load');
     });
 });
 
+window.addEventListener('resize', function(evt){
+    pico.signal('reize',[evt]);
+});
 window.addEventListener('popstate', function(evt){
     pico.onPageChange(evt);
 }, false);
