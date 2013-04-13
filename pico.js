@@ -75,6 +75,9 @@ pico.def = function(name){
     factory.call(module);
     return this.modules[name] = module;
 };
+pico.getModule = function(key){
+    return this.modules[key];
+};
 pico.setup = function(names, cb){
     if (!names || !names.length) return cb();
 
