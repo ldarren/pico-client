@@ -452,7 +452,7 @@ Object.defineProperty(pico, 'inner', {value:{
             break;
       }
       return obj;
-  },
+  }
   }, writable:false, configurable:false, enumerable:false});
 
 Object.freeze(pico);
