@@ -7,9 +7,6 @@ pico = function(n){
         (n instanceof Element) ? [n] : Array.prototype.slice.call(document.querySelectorAll(n))}
       });
   }
-  // each pico object has their own slots and dependencies
-  Object.defineProperty(this, 'slots', {value:{}, writable:false, configurable:false, enumerable:false});
-  Object.defineProperty(this, 'deps', {value:[], writable:false, configurable:false, enumerable:false});
   return this;
 };
 // shared by all pico objects
@@ -22,7 +19,7 @@ pico.prototype.slot = pico.slot = function(channelName){
     }else{
         // function only no object
         var func = arguments[1];
-        channel[func.toString()] = func;
+        channel[pico.hash(func.toString())] = func;
     }
 };
 pico.prototype.unslot = pico.unslot = function(channelName, identity){
@@ -31,7 +28,7 @@ pico.prototype.unslot = pico.unslot = function(channelName, identity){
         delete channel[identity.moduleName];
     }else{
         // function only no object
-        delete channel[identity.toString()];
+        delete channel[pico.hash(identity.toString())];
     }
 };
 pico.prototype.signal = pico.signal = function(channelName, events){
@@ -66,12 +63,14 @@ pico.def = function(name){
     }
     if (ancestor){
         module = Object.create(ancestor, {moduleName: {value:name, writable:false, configurable:false, enumerable:true}});
-        Object.defineProperty(module, 'slots', {value:{}, writable:false, configurable:false, enumerable:false});
-        Object.defineProperty(module, 'deps', {value:[], writable:false, configurable:false, enumerable:false});
     }else{
         module = new pico;
         Object.defineProperty(module, 'moduleName', {value:name, writable:false, configurable:false, enumerable:true});
     }
+    // each pico object has their own slots and dependencies
+    Object.defineProperty(module, 'slots', {value:{}, writable:false, configurable:false, enumerable:false});
+    Object.defineProperty(module, 'deps', {value:[], writable:false, configurable:false, enumerable:false});
+
     factory.call(module);
     return this.modules[name] = module;
 };
@@ -84,9 +83,18 @@ pico.setup = function(names, cb){
     var module = this.modules[names.shift()];
 
     this.loadDeps(module, function(){
-        module.signal('load');
+        module.signal(pico.LOAD);
         pico.setup(names, cb);
     });
+};
+pico.hash = function(str){
+    var hash = 0;
+
+    for (var i = 0, l=str.length; i < l; i++) {
+        hash = ((hash<<5)-hash)+str.charCodeAt(i);
+        hash = hash & hash; // Convert to 32bit integer
+    }
+    return hash;
 };
 pico.detectBrowser = function(){
     var
@@ -211,7 +219,7 @@ pico.onPageChange = function(evt){
         if (!pair[0]) continue;
         obj[pair[0]] = pair[1];
     }
-    pico.signal('pageChange', [obj, evt.state]);
+    pico.signal(pico.PAGE_CHANGE, [obj, evt.state]);
 };
 pico.changePage = function(uri, desc, userData){
     var search = '?';
@@ -237,7 +245,7 @@ pico.loadJS = function(name, parentName, url, cb){
         module = pico.def(name, parentName, func);
 
         pico.loadDeps(module, function(){
-            module.signal('load');
+            module.signal(pico.LOAD);
             return cb(err, module);
         });
     });
@@ -257,7 +265,7 @@ pico.loadDeps = function(host, cb){
     return pico.loadDeps(module, function(){
         var mi = pico.states.newModules.indexOf(name);
         if (-1 !== mi){
-            module.signal('load');
+            module.signal(pico.LOAD);
             pico.states.newModules.splice(mi, 1);
         }
       return pico.loadDeps(host, cb);
@@ -307,7 +315,7 @@ pico.embedJS = function(scripts, cb){
     module = pico.def(script.getAttribute('name'), script.getAttribute('parent'), func);
 
     pico.loadDeps(module, function(){
-      module.signal('load');
+      module.signal(pico.LOAD);
       return pico.embedJS(scripts, cb);
     });
 };
@@ -343,6 +351,10 @@ pico.ajax = function(method, url, params, headers, cb, userData){
     xhr.onerror=function(evt){if (cb) return cb(evt, xhr, userData);}
     xhr.send(params instanceof String ? params : JSON.stringify(params));
 };
+
+Object.defineProperty(pico, 'LOAD', {value:'load', writable:false, configurable:false, enumerable:true});
+Object.defineProperty(pico, 'RESIZE', {value:'resize', writable:false, configurable:false, enumerable:true});
+Object.defineProperty(pico, 'PAGE_CHANGE', {value:'pageChange', writable:false, configurable:false, enumerable:true});
 
 Object.defineProperty(pico, 'modules', {value:{}, writable:false, configurable:false, enumerable:false});
 Object.defineProperty(pico, 'slots', {value:{}, writable:false, configurable:false, enumerable:false});
@@ -461,12 +473,12 @@ window.addEventListener('load', function(){
     pico.detectBrowser();
     var newModules = pico.states.newModules = Object.keys(pico.modules); // signal load event, if newModules being called in loadDeps
     pico.setup(newModules, function(){
-        pico.signal('load');
+        pico.signal(pico.LOAD);
     });
 });
 
 window.addEventListener('resize', function(evt){
-    pico.signal('reize',[evt]);
+    pico.signal(pico.RESIZE,[evt]);
 });
 window.addEventListener('popstate', function(evt){
     pico.onPageChange(evt);
