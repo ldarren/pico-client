@@ -51,6 +51,7 @@ pico.prototype.link = function(name, url){
 };
 
 pico.def = function(name){
+    if (this.modules[name]) return console.error('Module name in used:', name);
     var module, ancestor, factory;
 
     if (3 === arguments.length){
@@ -304,7 +305,7 @@ pico.embedJS = function(scripts, cb){
 
     var script = scripts.pop();
 
-    if (script.getAttribute('templ')) return pico.embedJS(scripts, cb); // template node, ignore
+    if (script.hasAttribute('templ')) return pico.embedJS(scripts, cb); // template node, ignore
     if (script.src){
       return pico.loadJS([script.getAttribute('name')], script.getAttribute('parent'), script.src, function(err, module){
           return pico.embedJS(scripts, cb);
