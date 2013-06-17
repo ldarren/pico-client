@@ -88,6 +88,122 @@ pico.setup = function(names, cb){
         pico.setup(names, cb);
     });
 };
+pico.loadJS = function(name, parentName, url, cb){
+    pico.ajax('get', url, '', null, function(err, xhr){
+        if (err) return cb(err);
+        if (4 !== xhr.readyState) return;
+        var
+        func = new Function('module', xhr.responseText),
+        module = pico.def(name, parentName, func);
+
+        pico.loadDeps(module, function(){
+            module.signal(pico.LOAD);
+            return cb(err, module);
+        });
+    });
+};
+// recurssively load dependencies in a module
+pico.loadDeps = function(host, cb){
+  if (!cb) cb = function(){};
+  var names = host.deps;
+  if (!names || !names.length) return cb();
+
+  var
+  name = names.pop(),
+  module = this.modules[name];
+
+  if (module){
+    host[name] = module;
+    return pico.loadDeps(module, function(){
+        var mi = pico.states.newModules.indexOf(name);
+        if (-1 !== mi){
+            pico.states.newModules.splice(mi, 1);
+            module.signal(pico.LOAD);
+        }
+      return pico.loadDeps(host, cb);
+    });
+  }else{
+    var
+    arr = host.links[name].split('<'),
+    link = arr[0],
+    parentName = arr[1];
+
+    if(link){
+        pico.loadJS(name, parentName, link, function(err, module){
+            if (!err) host[name] = module;
+            return pico.loadDeps(host, cb);
+        });
+    }else{
+        return pico.loadDeps(host, cb);
+    }
+  }
+};
+pico.embed = function(holder, url, cb){
+  pico.ajax('get', url, '', null, function(err, xhr){
+    if (err) return cb(err);
+    if (4 !== xhr.readyState) return;
+    holder.innerHTML = xhr.responseText;
+
+    var scripts = Array.prototype.slice.call(holder.getElementsByTagName('script'));
+
+    pico.embedJS(scripts, function(){
+        if (cb) return cb();
+    });
+  });
+};
+pico.embedJS = function(scripts, cb){
+    if (!scripts || !scripts.length) return cb();
+
+    var script = scripts.pop();
+
+    if (script.hasAttribute('templ')) return pico.embedJS(scripts, cb); // template node, ignore
+    if (script.src){
+      return pico.loadJS([script.getAttribute('name')], script.getAttribute('parent'), script.src, function(err, module){
+          return pico.embedJS(scripts, cb);
+      });
+    }
+    var
+    func = new Function('module', script.innerText || script.textContent), // secure this operation
+    module = pico.def(script.getAttribute('name'), script.getAttribute('parent'), func);
+
+    pico.loadDeps(module, function(){
+      module.signal(pico.LOAD);
+      return pico.embedJS(scripts, cb);
+    });
+};
+// method: get/post
+// url: path
+// params: null/parameters (optional)
+// headers: header parameter
+// cb: callback
+// userData: optional
+pico.ajax = function(method, url, params, headers, cb, userData){
+    if (!url) return cb(new Error('url not defined'));
+    var
+    xhr = window.XMLHttpRequest ? new window.XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP'),
+    post = 'post' === method.toLowerCase();
+
+    if (!post && params){
+        url += '?'+encodeURI(params);
+        params = null;
+    }
+
+    xhr.open(method, url, true);
+    
+    for (var key in headers){
+        xhr.setRequestHeader(key, headers[key]);
+    }
+    if (post && !headers) xhr.setRequestHeader('Content-type', 'application/json');
+
+    xhr.onreadystatechange=function(){
+        if (2 < xhr.readyState && cb){
+            return cb(200 === xhr.status ? null : new Error("Error["+xhr.statusText+"] Info: "+xhr.responseText), xhr, userData);
+        }
+    }
+    xhr.onerror=function(evt){if (cb) return cb(evt, xhr, userData);}
+    xhr.send(params instanceof String ? params : JSON.stringify(params));
+};
+
 pico.hash = function(str){
     var hash = 0;
 
@@ -180,37 +296,10 @@ pico.detectEvent = function(eventName, tagName){
         el.setAttribute(eventName, 'return;');
         isSupported = 'function' === typeof el[eventName];
     }
-    el = null;
+    el = undefined;
     return isSupported;
 };
-pico.modState = function(state, name){
-    var mod = this.modules[name];
-
-    if (mod) {
-        switch(state){
-            case 'focus':
-                pico.states.moduleName = name;
-                pico.signal(state, [{target: mod}]);
-                return mod;
-            case 'blur':
-                pico.signal(state, [{target: mod}]);
-                return mod;
-            default:
-                return null;
-        }
-    }
-    return null;
-};
-pico.onRoute = function(evt){
-    var
-    newHash = evt.newURL.split('#')[1] || '',
-    oldHash = evt.oldURL.split('#')[1] || '';
-
-    if (newHash !== oldHash && this.modState('focus', newHash)){
-        this.modState('blur', oldHash);
-    }
-};
-pico.onPageChange = function(evt){
+pico.onStateChange = function(evt){
     var
     search = location.search.substring(1), // remove leading ?
     pairs = search.split("&"),
@@ -220,9 +309,9 @@ pico.onPageChange = function(evt){
         if (!pair[0]) continue;
         obj[pair[0]] = pair[1];
     }
-    pico.signal(pico.PAGE_CHANGE, [obj, evt.state]);
+    pico.signal(pico.STATE_CHANGE, [obj, evt.state]);
 };
-pico.changePage = function(uri, desc, userData){
+pico.changeState = function(uri, desc, userData){
     var search = '?';
     for (var key in uri){
         if (!key) continue;
@@ -231,131 +320,38 @@ pico.changePage = function(uri, desc, userData){
     // remove last & symbol
     history.pushState(userData, desc, search.substr(0, search.length-1));
     if (!this.states.isWebKit){
-        this.onPageChange({});
+        this.onStateChange({});
     }
 };
-pico.changeUIState = function(hash){
+pico.onHashChange = function(evt){
+    var
+    newHash = evt.newURL.split('#')[1] || '',
+    oldHash = evt.oldURL.split('#')[1] || '';
+
+    pico.signal(pico.HASH_CHANGE, [oldHash, newHash]);
+};
+pico.changeHash = function(hash){
     window.location.hash = '#' + hash;
 };
-pico.loadJS = function(name, parentName, url, cb){
-    pico.ajax('get', url, '', null, function(err, xhr){
-        if (err) return cb(err);
-        if (4 !== xhr.readyState) return;
-        var
-        func = new Function('module', xhr.responseText),
-        module = pico.def(name, parentName, func);
-
-        pico.loadDeps(module, function(){
-            module.signal(pico.LOAD);
-            return cb(err, module);
-        });
-    });
+pico.addFrame = function(holder, id, src){
+    var frame = holder.querySelector('iframe#'+id);
+    if (!frame){
+        frame = document.createElement('iframe');
+        frame.id = id;
+        holder.appendChild(holder);
+    }
+    frame.src = src;
 };
-// recurssively load dependencies in a module
-pico.loadDeps = function(host, cb){
-  if (!cb) cb = function(){};
-  var names = host.deps;
-  if (!names || !names.length) return cb();
-
-  var
-  name = names.pop(),
-  module = this.modules[name];
-
-  if (module){
-    host[name] = module;
-    return pico.loadDeps(module, function(){
-        var mi = pico.states.newModules.indexOf(name);
-        if (-1 !== mi){
-            module.signal(pico.LOAD);
-            pico.states.newModules.splice(mi, 1);
-        }
-      return pico.loadDeps(host, cb);
-    });
-  }else{
-    var
-    arr = host.links[name].split('<'),
-    link = arr[0],
-    parentName = arr[1];
-
-    if(link){
-        pico.loadJS(name, parentName, link, function(err, module){
-            if (!err) host[name] = module;
-            return pico.loadDeps(host, cb);
-        });
-    }else{
-        return pico.loadDeps(host, cb);
-    }
-  }
-};
-pico.embed = function(holder, url, cb){
-  pico.ajax('get', url, '', null, function(err, xhr){
-    if (err) return cb(err);
-    if (4 !== xhr.readyState) return;
-    holder.innerHTML = xhr.responseText;
-
-    var scripts = Array.prototype.slice.call(holder.getElementsByTagName('script'));
-
-    pico.embedJS(scripts, function(){
-        if (cb) return cb();
-    });
-  });
-};
-pico.embedJS = function(scripts, cb){
-    if (!scripts || !scripts.length) return cb();
-
-    var script = scripts.pop();
-
-    if (script.hasAttribute('templ')) return pico.embedJS(scripts, cb); // template node, ignore
-    if (script.src){
-      return pico.loadJS([script.getAttribute('name')], script.getAttribute('parent'), script.src, function(err, module){
-          return pico.embedJS(scripts, cb);
-      });
-    }
-    var
-    func = new Function('module', script.innerText || script.textContent), // secure this operation
-    module = pico.def(script.getAttribute('name'), script.getAttribute('parent'), func);
-
-    pico.loadDeps(module, function(){
-      module.signal(pico.LOAD);
-      return pico.embedJS(scripts, cb);
-    });
-};
-// method: get/post
-// url: path
-// params: null/parameters (optional)
-// headers: header parameter
-// cb: callback
-// userData: optional
-pico.ajax = function(method, url, params, headers, cb, userData){
-    if (!url) return cb(new Error('url not defined'));
-    var
-    xhr = window.XMLHttpRequest ? new window.XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP'),
-    post = 'post' === method.toLowerCase();
-
-    if (!post && params){
-        url += '?'+encodeURI(params);
-        params = null;
-    }
-
-    xhr.open(method, url, true);
-    
-    for (var key in headers){
-        xhr.setRequestHeader(key, headers[key]);
-    }
-    if (post && !headers) xhr.setRequestHeader('Content-type', 'application/json');
-
-    xhr.onreadystatechange=function(){
-        if (2 < xhr.readyState && cb){
-            return cb(200 === xhr.status ? null : new Error("Error["+xhr.statusText+"] Info: "+xhr.responseText), xhr, userData);
-        }
-    }
-    xhr.onerror=function(evt){if (cb) return cb(evt, xhr, userData);}
-    xhr.send(params instanceof String ? params : JSON.stringify(params));
+// effect = {opacity:[0,1], width:['0%','100%']}
+pico.changeFrame = function(holder, id, src, effect){
+    var frame = holder.querySelector('iframe#'+id);
+    if (!frame || !this.detectEvent('transitionend')) return this.addFrame(holder, id, src);
+    var effectKeys = Object.keys(effect);
 };
 
 Object.defineProperty(pico, 'LOAD', {value:'load', writable:false, configurable:false, enumerable:true});
-Object.defineProperty(pico, 'RESIZE', {value:'resize', writable:false, configurable:false, enumerable:true});
-Object.defineProperty(pico, 'PAGE_CHANGE', {value:'pageChange', writable:false, configurable:false, enumerable:true});
+Object.defineProperty(pico, 'STATE_CHANGE', {value:'stateChange', writable:false, configurable:false, enumerable:true});
+Object.defineProperty(pico, 'HASH_CHANGE', {value:'hashChange', writable:false, configurable:false, enumerable:true});
 
 Object.defineProperty(pico, 'modules', {value:{}, writable:false, configurable:false, enumerable:false});
 Object.defineProperty(pico, 'slots', {value:{}, writable:false, configurable:false, enumerable:false});
@@ -478,12 +474,10 @@ window.addEventListener('load', function(){
     });
 });
 
-window.addEventListener('resize', function(evt){
-    pico.signal(pico.RESIZE,[evt]);
-});
 window.addEventListener('popstate', function(evt){
-    pico.onPageChange(evt);
+    // change uri parameter
+    pico.onStateChange(evt);
 }, false);
 window.addEventListener('hashchange', function(evt){
-    pico.onRoute(evt);
+    pico.onHashChange(evt);
 }, false);
