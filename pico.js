@@ -344,7 +344,7 @@ pico.addFrame = function(holder, id, src){
     if (!frame){
         frame = document.createElement('iframe');
         frame.id = id;
-        holder.appendChild(holder);
+        holder.appendChild(frame);
     }
     frame.src = src;
 };
