@@ -286,6 +286,12 @@ pico.detectBrowser = function(){
     }
     if ('Chrome' === this.states.browser || 'Safari' === this.states.browser)
         this.states.isWebKit = true;
+
+    var
+    te = 'transitionend',
+    wkte = 'webkitTransitionEnd';
+
+    this.states.transitionEnd = this.detectEvent(te) ? te : this.detectEvent(wkte) ? wkte : undefined;
 };
 // http://perfectionkills.com/detecting-event-support-without-browser-sniffing/
 pico.detectEvent = function(eventName, tagName){
@@ -342,11 +348,49 @@ pico.addFrame = function(holder, id, src){
     }
     frame.src = src;
 };
-// effect = {opacity:[0,1], width:['0%','100%']}
-pico.changeFrame = function(holder, id, src, effect){
-    var frame = holder.querySelector('iframe#'+id);
-    if (!frame || !this.detectEvent('transitionend')) return this.addFrame(holder, id, src);
-    var effectKeys = Object.keys(effect);
+// effects = {opacity:[0,1,'1s'], left:['0%','100%','0.1s'], property:[startVal, endVal,duration,timing-function,delay]}
+pico.changeFrame = function(holder, id, src, effects){
+    var
+    frame = holder.querySelector('iframe#'+id),
+    te = this.states.transitionEnd;
+
+    if (!frame || !te) return this.addFrame(holder, id, src);
+
+    var
+    style = frame.style,
+    keys = Object.keys(effects),
+    properties=[],durations=[],tfuncs=[],delays=[],
+    vl,key,value,
+    onTransitEnd = function(evt){
+        frame.removeEventListener(te, onTransitEnd);
+        for(var i=0,l=keys.length; i<l; i++){
+            key = keys[i];
+            value = effects[key];
+            style[key] = value[1];
+        }
+    };
+
+    frame.addEventListener(te, onTransitEnd, false);
+
+    for(var i=0,l=keys.length; i<l; i++){
+        key = keys[i];
+        value = effects[key];
+        vl = value.length;
+        if (vl < 3) {
+            frame.removeEventListener(te, onTransitEnd);
+            return console.error('invalid effect:',value);
+        }
+        style[key] = value[0];
+        properties.push(key);
+        durationis.push(value[2]);
+        if (vl > 3) tfuncs.push(value[3]); 
+        if (vl > 4) delays.push(value[4]); 
+    }
+    
+    style['transition-property'] = properties.join(' ');
+    style['transition-duration'] = durations.join(' ');
+    style['transition-timing-function'] = tfuncs.join(' ');
+    style['transition-delay'] = delays.join(' ');
 };
 
 Object.defineProperty(pico, 'LOAD', {value:'load', writable:false, configurable:false, enumerable:true});
