@@ -23,3 +23,17 @@ div.ccenter{
 <button id=loginBtn>Go</button>
 </form>
 </div>
+
+<script name=login>
+    var
+    me = this,
+    onLoad = function(){
+        var btn = document.querySelector('button#loginBtn');
+        btn.addEventListener('click', function(evt){
+            evt.preventDefault();
+            pico.changeFrame(document.body, 'div#page', 'views/chat.html', {opacity:[0,1,'5s']});
+        });
+    };
+
+    this.slot(pico.LOAD, onLoad);
+</script>

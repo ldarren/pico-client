@@ -297,7 +297,7 @@ pico.detectBrowser = function(){
 pico.detectEvent = function(eventName, tagName){
     var el = document.createElement(tagName || 'div');
     eventName = 'on' + eventName;
-    var isSupported = (eventName in el);
+    var isSupported = (eventName in el) || (eventName in window);
     if (!isSupported) {
         el.setAttribute(eventName, 'return;');
         isSupported = 'function' === typeof el[eventName];
@@ -339,22 +339,24 @@ pico.onHashChange = function(evt){
 pico.changeHash = function(hash){
     window.location.hash = '#' + hash;
 };
-pico.addFrame = function(holder, id, src){
-    var frame = holder.querySelector('iframe#'+id);
+// query = tag#id
+pico.addFrame = function(holder, query, url){
+    var frame = holder.querySelector(query);
     if (!frame){
-        frame = document.createElement('iframe');
-        frame.id = id;
+        var tagid = query.split('#');
+        frame = document.createElement(tagid[0]);
+        frame.id = tagid[1];
         holder.appendChild(frame);
     }
-    frame.src = src;
+    this.embed(frame, url);
 };
 // effects = {opacity:[0,1,'1s'], left:['0%','100%','0.1s'], property:[startVal, endVal,duration,timing-function,delay]}
-pico.changeFrame = function(holder, id, src, effects){
+pico.changeFrame = function(holder, query, url, effects){
     var
-    frame = holder.querySelector('iframe#'+id),
+    frame = holder.querySelector(query),
     te = this.states.transitionEnd;
 
-    if (!frame || !te) return this.addFrame(holder, id, src);
+    if (!frame || !te) return this.addFrame(holder, query, url);
 
     var
     style = frame.style,
@@ -368,6 +370,8 @@ pico.changeFrame = function(holder, id, src, effects){
             value = effects[key];
             style[key] = value[1];
         }
+
+        pico.embed(frame, url);
     };
 
     frame.addEventListener(te, onTransitEnd, false);
@@ -382,15 +386,15 @@ pico.changeFrame = function(holder, id, src, effects){
         }
         style[key] = value[0];
         properties.push(key);
-        durationis.push(value[2]);
+        durations.push(value[2]);
         if (vl > 3) tfuncs.push(value[3]); 
         if (vl > 4) delays.push(value[4]); 
     }
     
     style['transition-property'] = properties.join(' ');
     style['transition-duration'] = durations.join(' ');
-    style['transition-timing-function'] = tfuncs.join(' ');
-    style['transition-delay'] = delays.join(' ');
+    if (tfuncs.length) style['transition-timing-function'] = tfuncs.join(' ');
+    if (delays.length) style['transition-delay'] = delays.join(' ');
 };
 
 Object.defineProperty(pico, 'LOAD', {value:'load', writable:false, configurable:false, enumerable:true});
