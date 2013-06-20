@@ -1,0 +1,33 @@
+<div id=box style="background-color:red; width:100px; height:100px;">
+</div>
+<script name=m3Game>
+    var
+    me = this,
+    reactor,
+    selectEntities = function(entities){
+        return entities;
+    },
+    onTouch = function(evt){
+        reactor.go('touch');
+    },
+    onLoad = function(){
+        reactor = me.piReactor.createReactor();
+
+        var
+        audio = me.piComAudio,
+        e = reactor.newEntity('e1');
+
+        e.attach(audio, {id:'bang'});
+
+        reactor.route('touch', [selectEntities, audio.play]);
+
+        var box = document.querySelector('div#box');
+        if (pico.detectEvent('div', 'touchstart')) box.addEventListener('touchstart', onTouch, false);
+        else box.addEventListener('mousedown', onTouch, false);
+    };
+
+    me.use('piReactor');
+    me.use('piComAudio');
+
+    me.slot(pico.LOAD, onLoad);
+</script>

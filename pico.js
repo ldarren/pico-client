@@ -213,86 +213,6 @@ pico.hash = function(str){
     }
     return hash;
 };
-pico.detectBrowser = function(){
-    var
-    browser = 'msie',
-    vendor = navigator.vendor,
-    userAgent = navigator.userAgent,
-    // http://www.quirksmode.org/js/detect.html
-    vendorKeys = [{
-            string: navigator.userAgent,
-            subString: "Chrome",
-            identity: "Chrome"
-        },{
-            string: navigator.userAgent,
-            subString: "OmniWeb",
-            versionSearch: "OmniWeb",
-            identity: "OmniWeb"
-        },{
-            string: navigator.vendor,
-            subString: "Apple",
-            identity: "Safari",
-            versionSearch: "Version"
-        },{
-            string: navigator.userAgent,
-            subString: "Opera",
-            identity: "Opera",
-            versionSearch: "Version"
-        },{
-            string: navigator.vendor,
-            subString: "iCab",
-            identity: "iCab"
-        },{
-            string: navigator.vendor,
-            subString: "KDE",
-            identity: "Konqueror"
-        },{
-            string: navigator.userAgent,
-            subString: "Firefox",
-            identity: "Firefox"
-        },{
-            string: navigator.vendor,
-            subString: "Camino",
-            identity: "Camino"
-        },{
-            // for newer Netscapes (6+)
-            string: navigator.userAgent,
-            subString: "Netscape",
-            identity: "Netscape"
-        },{
-            string: navigator.userAgent,
-            subString: "MSIE",
-            identity: "Explorer",
-            versionSearch: "MSIE"
-        },{
-            string: navigator.userAgent,
-            subString: "Gecko",
-            identity: "Mozilla",
-            versionSearch: "rv"
-        },{
-            // for older Netscapes (4-)
-            string: navigator.userAgent,
-            subString: "Mozilla",
-            identity: "Netscape",
-            versionSearch: "Mozilla"
-        }],
-    key;
-
-    for (var i=0, l=vendorKeys.length; i<l; i++){
-        key = vendorKeys[i];
-        if (-1 !== key.string.indexOf(key.subString)){
-            this.states.browser = key.identity;
-        }
-    }
-    if ('Chrome' === this.states.browser || 'Safari' === this.states.browser)
-        this.states.isWebKit = true;
-
-    var
-    te = 'transitionend',
-    wkte = 'webkitTransitionEnd';
-
-    this.states.transitionEnd = this.detectEvent(te) ? te : this.detectEvent(wkte) ? wkte : undefined;
-};
 // http://perfectionkills.com/detecting-event-support-without-browser-sniffing/
 pico.detectEvent = function(eventName, tagName){
     var el = document.createElement(tagName || 'div');
@@ -365,13 +285,16 @@ pico.changeFrame = function(holder, query, url, effects){
     vl,key,value,
     onTransitEnd = function(evt){
         frame.removeEventListener(te, onTransitEnd);
-        for(var i=0,l=keys.length; i<l; i++){
-            key = keys[i];
-            value = effects[key];
-            style[key] = value[1];
-        }
 
-        pico.embed(frame, url);
+        pico.embed(frame, url, function(err){
+            if (err) return console.error(err);
+
+            for(var i=0,l=keys.length; i<l; i++){
+                key = keys[i];
+                value = effects[key];
+                style[key] = value[1];
+            }
+        });
     };
 
     frame.addEventListener(te, onTransitEnd, false);
@@ -515,7 +438,85 @@ Object.defineProperty(pico, 'inner', {value:{
 Object.freeze(pico);
 
 window.addEventListener('load', function(){
-    pico.detectBrowser();
+    var
+    browser = 'msie',
+    vendor = navigator.vendor,
+    userAgent = navigator.userAgent,
+    // http://www.quirksmode.org/js/detect.html
+    vendorKeys = [{
+            string: navigator.userAgent,
+            subString: "Chrome",
+            identity: "Chrome"
+        },{
+            string: navigator.userAgent,
+            subString: "OmniWeb",
+            versionSearch: "OmniWeb",
+            identity: "OmniWeb"
+        },{
+            string: navigator.vendor,
+            subString: "Apple",
+            identity: "Safari",
+            versionSearch: "Version"
+        },{
+            string: navigator.userAgent,
+            subString: "Opera",
+            identity: "Opera",
+            versionSearch: "Version"
+        },{
+            string: navigator.vendor,
+            subString: "iCab",
+            identity: "iCab"
+        },{
+            string: navigator.vendor,
+            subString: "KDE",
+            identity: "Konqueror"
+        },{
+            string: navigator.userAgent,
+            subString: "Firefox",
+            identity: "Firefox"
+        },{
+            string: navigator.vendor,
+            subString: "Camino",
+            identity: "Camino"
+        },{
+            // for newer Netscapes (6+)
+            string: navigator.userAgent,
+            subString: "Netscape",
+            identity: "Netscape"
+        },{
+            string: navigator.userAgent,
+            subString: "MSIE",
+            identity: "Explorer",
+            versionSearch: "MSIE"
+        },{
+            string: navigator.userAgent,
+            subString: "Gecko",
+            identity: "Mozilla",
+            versionSearch: "rv"
+        },{
+            // for older Netscapes (4-)
+            string: navigator.userAgent,
+            subString: "Mozilla",
+            identity: "Netscape",
+            versionSearch: "Mozilla"
+        }],
+    states = pico.states,
+    key;
+
+    for (var i=0, l=vendorKeys.length; i<l; i++){
+        key = vendorKeys[i];
+        if (-1 !== key.string.indexOf(key.subString)){
+            states.browser = key.identity;
+        }
+    }
+    if ('Chrome' === states.browser || 'Safari' === states.browser) states.isWebKit = true;
+
+    var
+    te = 'transitionend',
+    wkte = 'webkitTransitionEnd';
+
+    states.transitionEnd = pico.detectEvent(te) ? te : pico.detectEvent(wkte) ? wkte : undefined;
+
     var newModules = pico.states.newModules = Object.keys(pico.modules); // signal load event, if newModules being called in loadDeps
     pico.setup(newModules, function(){
         pico.signal(pico.LOAD);
