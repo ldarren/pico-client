@@ -314,10 +314,10 @@ pico.changeFrame = function(holder, query, url, effects){
         if (vl > 4) delays.push(value[4]); 
     }
     
-    style['transition-property'] = properties.join(' ');
-    style['transition-duration'] = durations.join(' ');
-    if (tfuncs.length) style['transition-timing-function'] = tfuncs.join(' ');
-    if (delays.length) style['transition-delay'] = delays.join(' ');
+    style['-webkit-transition-property'] = style['transition-property'] = properties.join(' ');
+    style['-webkit-transition-duration'] = style['transition-duration'] = durations.join(' ');
+    if (tfuncs.length) style['-webkit-transition-timing-function'] = style['transition-timing-function'] = tfuncs.join(' ');
+    if (delays.length) style['-webkit-transition-delay'] = style['transition-delay'] = delays.join(' ');
 };
 
 Object.defineProperty(pico, 'LOAD', {value:'load', writable:false, configurable:false, enumerable:true});
@@ -513,9 +513,9 @@ window.addEventListener('load', function(){
 
     var
     te = 'transitionend',
-    wkte = 'webkitTransitionEnd';
+    wkte = 'webkittransitionend';
 
-    states.transitionEnd = pico.detectEvent(te) ? te : pico.detectEvent(wkte) ? wkte : undefined;
+    states.transitionEnd = pico.detectEvent(te) ? te : pico.detectEvent(wkte) ? 'webkitTransitionEnd' : undefined;
 
     var newModules = pico.states.newModules = Object.keys(pico.modules); // signal load event, if newModules being called in loadDeps
     pico.setup(newModules, function(){
