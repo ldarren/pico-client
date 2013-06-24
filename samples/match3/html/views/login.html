@@ -25,7 +25,7 @@ div.ccenter{
 </div>
 
 <script name=login>
-    this.use('piComAudio');
+    this.use('picAudio');
 
     var
     me = this,
@@ -33,7 +33,7 @@ div.ccenter{
         var btn = document.querySelector('button#loginBtn');
         btn.addEventListener('click', function(evt){
             evt.preventDefault();
-            me.piComAudio.preload();
+            me.picAudio.preload();
             pico.changeFrame(document.body, 'div#page', 'views/game.html', {opacity:[0,1,'5s']});
         });
     };

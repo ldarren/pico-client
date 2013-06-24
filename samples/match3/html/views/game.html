@@ -14,7 +14,7 @@
         reactor = me.piReactor.createReactor();
 
         var
-        audio = me.piComAudio,
+        audio = me.picAudio,
         e = reactor.newEntity('e1');
 
         e.attach(audio, {id:'bang'});
@@ -27,7 +27,7 @@
     };
 
     me.use('piReactor');
-    me.use('piComAudio');
+    me.use('picAudio');
 
     me.slot(pico.LOAD, onLoad);
 </script>
