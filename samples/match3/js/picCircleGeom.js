@@ -1,151 +1,69 @@
 pico.def('picCircleGeom', 'picBase', function(){
+
     var
-    layerUpdate = function(elapsed){
-        var
-        rl = this.drawTaskList,
-        i,l,r,redraw=false;
+    me = this,
+    o, x, y, w, h, // for optimization
+    updateShape = function(rect, data){
+        data.x = rect.x;
+        data.y = rect.y;
 
-        for(var i=0, l=rl.length; i<l; i++){
-            r = rl[i];
-            redraw = r.needRedraw();
-            if (redraw) break;
-        }
+        w = rect.w;
+        h = rect.h;
 
-        if (!redraw) return;
-        this.clear();
-        for(var i=0, l=rl.length; i<l; i++){
-            r = rl[i];
-            r.redraw(elapsed);
-        }
+        data.radius = Math.sqrt(w*w + h*h);
     },
-    update = function(){
-        var
-        keys = Object.keys(layers),
-        l;
+    onEntityDisplayUpdate = function(ent, comName, param, newValue, oldValue){
+        var data = ent.getComponent(me.moduleName);
 
-        for(var i=0, l=keys.length; i<l; i++){
-            l = layers[keys[i]];
-            l.layerUpdate(elapsed);
-        }
+        if (comName !== data.rectComponent) return;
 
-        me.signal(me.UPDATE, [layers, elapsed]);
+        var rect = ent.getComponent(data.rectComponent);
+
+        updateShape(rect, data);
     };
 
-    Renderer.prototype = {
-        createCircle : function(option){
-            var
-            e = this.entities,
-            ent = [CIRCLE, true, option.x, option.y, option.radius]; // 4: radius
+    me.create = function(entity, data){
+        if (undefined === data.rectComponent) return console.error('undefined rectComponent');
+        var rect = entity.getComponent(data.rectComponent);
+        if (!rect) return console.error('rectComponent not found', data.rectComponent);
+        updateShape(rect, data);
 
-            for(var i=0,l=e.length; i<=l; i++){
-                if (!e[i]){
-                    e[i] = ent;
-                    break;
-                }
-            }
-            this.isDirty = true;
-            return i;
-        },
+        if (undefined === data.startAngle) data.startAngle = 0;
+        if (undefined === data.endAngle) data.endAngle = Math.PI * 2;
+        if (undefined === data.anticlockwise) data.anticlockwise = true;
+        //if (undefined === data.strokeStyle) data.strokeStyle = 'rgba(0,0,255,1)';
+        //if (undefined === data.fillStyle) data.fillStyle = 'rgba(0,0,255,1)';
+        if (undefined === data.lineWidth) data.lineWidth = 1;
+        if (undefined === data.lineCap) data.lineCap = 'butt';
+        if (undefined === data.lineJoin) data.lineJoin = 'bevel';
+        if (undefined === data.miterLimit) data.miterLimit = 10;
+        // TODO: linear gradient
+        // TODO: radial gradient
+        // TODO: pattern
+        // TODO: shadow
 
-        update: function(option, ids){
-            var list,i,l,ce;
+        return data;
+    };
 
-            if (!ids){
-                list = this.entities;
-            }else{
-                var e = this.entities;
+    me.draw = function(ctx, ent, elapsed){
+        o = ent.getComponent(me.moduleName);
+        x = o.x;
+        y = o.y;
 
-                list = [];
-
-                for(i=0,l=ids.length; i<l; i++){
-                    ce = e[ids[i]];
-                    if (!ce) continue;
-                    list.push(ce);
-                }
-            }
-            for (i=0,l=list.length;i<l;i++){
-                ce = list[i];
-                if (!ce) continue;
-                if (option.visible !== undefined) ce[1] = option.visible;
-                if (option.x !== undefined) ce[2] = option.x;
-                if (option.y !== undefined) ce[3] = option.y;
-                switch(ce[0]){
-                    case CIRCLE:
-                        if (option.radius !== undefined) ce[4] = option.radius;
-                        break;
-                    case RECT:
-                        break;
-                    case SPRITE:
-                        break;
-                }
-            }
-            
-            this.isDirty = true;
-        },
-
-        remove: function(ids){
-            if (!ids){
-               this.entities = [];
-            }else{
-                var
-                e = this.entities,
-                ce;
-
-                for(var i=0,l=ids.length; i<l; i++){
-                    e[ids[i]] = undefined;
-                }
-            }
-            this.isDirty = true;
-        },
-
-        needRedraw: function() { return this.isDirty; },
-
-        redraw: function(elapsed){
-            var
-            ctx = this.context,
-            e = this.entities,
-            PI2 = 2 * Math.PI,
-            i,l,ce;
-
-            ctx.save();
-            ctx.fillStyle = 'rgba(50,0,50,255)';
-            ctx.beginPath();
-            for(var i=0,l=e.length; i<l; i++){
-                ce = e[i];
-                if (!ce || !ce[1]) continue;
-                switch(ce[0]){
-                    case CIRCLE:
-                        ctx.moveTo(ce[2], ce[3]);
-                        ctx.arc(ce[2], ce[3], ce[4], 0, PI2, true);
-                        break;
-                    case RECT:
-                        break;
-                    case SPRITE:
-                        break;
-                }
-            }
-            ctx.closePath();
+        ctx.save();
+        if (doFill) ctx.fillStyle = o.fillStyle;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.arc(x, y, o.radius, o.startAngle, o.endAngle, o.anticlockwise);
+        ctx.closePath();
+        if (o.fillStyle){
+            ctx.fillStyle = o.fillStyle;
             ctx.fill();
-            ctx.restore();
-
-            this.isDirty = false;
         }
-    };
-
-    this.createRenderer = function(zOrder){
-        var r = new Renderer({
-            context: this.context,
-            zOrder: zOrder
-        });
-        var
-        rl = this.drawTaskList,
-        cr;
-
-        for (var i=0,l=rl.length; i<=rl; i++){
-            cr = rl[i];
-            if (!cr) rl.push(r);
-            else if (zOrder < cr.zOrder) rl.splice(i, 0, r);
+        if (o.strokeStyle){
+            ctx.strokeStyle = o.strokeStyle;
+            ctx.fill();
         }
-        return r;
-    };
+        ctx.restore();
+    }
 });
