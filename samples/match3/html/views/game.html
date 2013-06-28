@@ -4,7 +4,7 @@
     var
     me = this,
     reactor,
-    selectEntities = function(entities){
+    selectEntities = function(elapsed, entities){
         return entities;
     },
     onTouch = function(evt){
@@ -18,7 +18,6 @@
         e = reactor.newEntity('e1');
 
         e.attach(audio, {id:'bang'});
-
         reactor.route('touch', [selectEntities, audio.play]);
 
         var box = document.querySelector('div#box');
