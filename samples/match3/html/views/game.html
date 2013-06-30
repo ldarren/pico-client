@@ -1,8 +1,10 @@
-<div id=box style="background-color:red; width:100px; height:100px;">
-</div>
+<div id=stage></div>
 <script name=m3Game>
     var
     me = this,
+    holder = document.querySelector('div#stage'),
+    canvas,
+    layer,
     reactor,
     selectEntities = function(elapsed, entities){
         return entities;
@@ -10,23 +12,54 @@
     onTouch = function(evt){
         reactor.go('touch');
     },
+    onResize = function(){
+        var
+        style = holder.style,
+        height = this.innerHeight,
+        width = Math.ceil(0.8 * height);
+
+        if (width > this.innerWidth) width = this.innerWidth;
+
+        style.height = height+'px';
+        style.width = width+'px';
+        // center game stage
+        style.position = 'absolute';
+        style.left = '50%';
+        style['margin-left'] = Math.floor(-width/2)+'px';
+
+        canvas.resize(width, height);
+    },
     onLoad = function(){
+       debugger; 
+        canvas = me.piCanvas;
+        onResize.call(window);
+        canvas.init(holder, holder.clientWidth, holder.clientHeight);
+        layer = canvas.addLayer('frontLayer', 100, 100, 100);
+
         reactor = me.piReactor.createReactor();
 
         var
+        rect = me.picRect,
+        tween = me.picTween,
         audio = me.picAudio,
+        renderer = me.picRenderer,
         e = reactor.newEntity('e1');
 
+        e.attach(rect, {x:10, y:10, w:5, h:5, scale:1, head:1});
         e.attach(audio, {id:'bang'});
+
         reactor.route('touch', [selectEntities, audio.play]);
 
-        var box = document.querySelector('div#box');
-        if (pico.detectEvent('div', 'touchstart')) box.addEventListener('touchstart', onTouch, false);
-        else box.addEventListener('mousedown', onTouch, false);
+        canvas.slot(canvas.FINGER_DOWN, onTouch);
     };
 
+    me.use('piCanvas');
     me.use('piReactor');
+    me.use('picRect');
+    me.use('picTween');
     me.use('picAudio');
+    me.use('picRenderer');
 
     me.slot(pico.LOAD, onLoad);
+    window.addEventListener('resize', onResize, false);
 </script>
