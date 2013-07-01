@@ -27,35 +27,44 @@
         style.left = '50%';
         style['margin-left'] = Math.floor(-width/2)+'px';
 
-        canvas.resize(width, height);
+        me.piCanvas.resize(width, height);
     },
     onLoad = function(){
-       debugger; 
         canvas = me.piCanvas;
         onResize.call(window);
         canvas.init(holder, holder.clientWidth, holder.clientHeight);
-        layer = canvas.addLayer('frontLayer', 100, 100, 100);
+        layer = canvas.addLayer('frontLayer');
 
         reactor = me.piReactor.createReactor();
 
         var
         rect = me.picRect,
+        circle = me.picCircleGeom,
         tween = me.picTween,
         audio = me.picAudio,
         renderer = me.picRenderer,
         e = reactor.newEntity('e1');
 
-        e.attach(rect, {x:10, y:10, w:5, h:5, scale:1, head:1});
+        renderer.registerContext('fl', layer.getContext(), 100, [0, 0, holder.clientWidth, holder.clientHeight]);
+
+        e.attach(rect, {x:10, y:10, w:5, h:5, scale:1, head:0});
+        e.attach(circle, {strokeStyle: 'rgba(0,0,255,1)', fillStyle: 'rgba(255,0,0,1)'});
+        e.attach(tween, {picRect: {x:[10, 1], y:[10, 1], w: [5, 1], h: [5, 1], scale: [1, 0.1], head: [0, 0.01]}});
+        e.attach(renderer, {contextId: 'fl', targetName: circle.moduleName, funcName: 'draw'});
         e.attach(audio, {id:'bang'});
 
         reactor.route('touch', [selectEntities, audio.play]);
+        reactor.route('init', [renderer.draw]);
+        reactor.defaultPath(0, [tween.update, renderer.draw]);
 
         canvas.slot(canvas.FINGER_DOWN, onTouch);
+        reactor.go('init');
     };
 
     me.use('piCanvas');
     me.use('piReactor');
     me.use('picRect');
+    me.use('picCircleGeom');
     me.use('picTween');
     me.use('picAudio');
     me.use('picRenderer');
