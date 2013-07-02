@@ -3,6 +3,7 @@ pico.def('picCircleGeom', 'picBase', function(){
     var
     me = this,
     o, x, y, w, h, // for optimization
+    doFill, doStroke,
     updateShape = function(rect, data){
         data.x = rect.x;
         data.y = rect.y;
@@ -49,6 +50,9 @@ pico.def('picCircleGeom', 'picBase', function(){
         o = ent.getComponent(me.moduleName);
         x = o.x;
         y = o.y;
+
+        doFill = o.fillStyle !== undefined;
+        doStroke = o.strokeStyle !== undefined;
 
         ctx.save();
         if (doFill) ctx.fillStyle = o.fillStyle;

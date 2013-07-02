@@ -6,11 +6,28 @@
     canvas,
     layer,
     reactor,
-    selectEntities = function(elapsed, entities){
-        return entities;
+    selectedEntities = [],
+    selectEntities = function(elapsed, evt, entities){
+        selectedEntities.length = 0;
+        var
+        rectName = me.picRect.moduleName,
+        tween = me.picTween,
+        x = evt.x, y = evt.y,
+        e, rect, rx, ry, rw, rh;
+
+        for(var i=0, l=entities.length; i<l; i++){
+            e = entities[i];
+            rect = tween.getValues(e, rectName);
+            rx = rect.x[0], ry = rect.y[0], rw = rect.w[0], rh = rect.h[0], rad = Math.sqrt(rw*rw + rh*rh);
+            if (rx - rad < x && ry - rad < y && rx + rad > x && ry + rad > y){
+                selectedEntities.push(e);
+            }
+        }
+        return selectedEntities;
     },
-    onTouch = function(evt){
-        reactor.go('touch');
+    onTouch = function(evt, x, y){
+        var tlX = canvas.getStageLeft(), tlY = canvas.getStageTop();
+        reactor.go('touch', {x: x-tlX, y: y-tlY});
     },
     onResize = function(){
         var
@@ -48,14 +65,14 @@
         renderer.registerContext('fl', layer.getContext(), 100, [0, 0, holder.clientWidth, holder.clientHeight]);
 
         e.attach(rect, {x:10, y:10, w:5, h:5, scale:1, head:0});
-        e.attach(circle, {strokeStyle: 'rgba(0,0,255,1)', fillStyle: 'rgba(255,0,0,1)'});
+        e.attach(circle, {rectComponent:rect.moduleName, strokeStyle: 'rgba(0,0,255,1)', fillStyle: 'rgba(255,0,0,1)'});
         e.attach(tween, {picRect: {x:[10, 1], y:[10, 1], w: [5, 1], h: [5, 1], scale: [1, 0.1], head: [0, 0.01]}});
         e.attach(renderer, {contextId: 'fl', targetName: circle.moduleName, funcName: 'draw'});
         e.attach(audio, {id:'bang'});
 
         reactor.route('touch', [selectEntities, audio.play]);
         reactor.route('init', [renderer.draw]);
-        reactor.defaultPath(0, [tween.update, renderer.draw]);
+        reactor.addPathTo(0, [tween.update, renderer.draw]);
 
         canvas.slot(canvas.FINGER_DOWN, onTouch);
         reactor.go('init');
