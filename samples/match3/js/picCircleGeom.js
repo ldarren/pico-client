@@ -1,26 +1,31 @@
 pico.def('picCircleGeom', 'picBase', function(){
-
+    this.use('picTween');
     var
     me = this,
+    name = me.moduleName,
     o, x, y, w, h, // for optimization
-    doFill, doStroke,
-    updateShape = function(rect, data){
-        data.x = rect.x;
-        data.y = rect.y;
+    updateShape = function(tween, data){
+        data.x = tween.x[0];
+        data.y = tween.y[0];
 
-        w = rect.w;
-        h = rect.h;
+        w = tween.w[0];
+        h = tween.h[0];
 
         data.radius = Math.sqrt(w*w + h*h);
-    },
-    onEntityDisplayUpdate = function(ent, comName, param, newValue, oldValue){
-        var data = ent.getComponent(me.moduleName);
+    };
 
-        if (comName !== data.rectComponent) return;
+    me.updateShapes = function(elapsed, evt, entities){
+        var
+        tween = me.picTween,
+        e, data, rect;
 
-        var rect = ent.getComponent(data.rectComponent);
-
-        updateShape(rect, data);
+        for(var i=0,l=entities.length; i<l; i++){
+            e = entities[i];
+            data = e.getComponent(name);
+            rect = tween.getValues(e, data.rectComponent);
+            updateShape(rect, data);
+        }
+        return entities;
     };
 
     me.create = function(entity, data){
@@ -51,11 +56,7 @@ pico.def('picCircleGeom', 'picBase', function(){
         x = o.x;
         y = o.y;
 
-        doFill = o.fillStyle !== undefined;
-        doStroke = o.strokeStyle !== undefined;
-
         ctx.save();
-        if (doFill) ctx.fillStyle = o.fillStyle;
         ctx.beginPath();
         ctx.moveTo(x, y);
         ctx.arc(x, y, o.radius, o.startAngle, o.endAngle, o.anticlockwise);

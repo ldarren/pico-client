@@ -7,6 +7,7 @@
     layer,
     reactor,
     selectedEntities = [],
+    elapsedTime = 0,
     selectEntities = function(elapsed, evt, entities){
         selectedEntities.length = 0;
         var
@@ -24,6 +25,24 @@
             }
         }
         return selectedEntities;
+    },
+    moveRandom = function(elapsed, evt, entities){
+
+        elapsedTime += elapsed;
+        if (elapsedTime < 5000) return;
+        elapsedTime = 0;
+
+        var
+        name = me.picRect.moduleName,
+        rect, e;
+        for(var i=0, l=entities.length; i<l; i++){
+            e = entities[i];
+            rect = e.getComponent(name);
+            rect.x = 10 + Math.random() * 300;
+            rect.y = 10 + Math.random() * 300;
+        }
+
+        return entities;
     },
     onTouch = function(evt, x, y){
         var tlX = canvas.getStageLeft(), tlY = canvas.getStageTop();
@@ -45,6 +64,7 @@
         style['margin-left'] = Math.floor(-width/2)+'px';
 
         me.piCanvas.resize(width, height);
+        me.picRenderer.resizeContext('fl', 0, 0, width, height);
     },
     onLoad = function(){
         canvas = me.piCanvas;
@@ -60,19 +80,27 @@
         tween = me.picTween,
         audio = me.picAudio,
         renderer = me.picRenderer,
-        e = reactor.newEntity('e1');
+        e, x, y, head, color;
 
         renderer.registerContext('fl', layer.getContext(), 100, [0, 0, holder.clientWidth, holder.clientHeight]);
 
-        e.attach(rect, {x:10, y:10, w:5, h:5, scale:1, head:0});
-        e.attach(circle, {rectComponent:rect.moduleName, strokeStyle: 'rgba(0,0,255,1)', fillStyle: 'rgba(255,0,0,1)'});
-        e.attach(tween, {picRect: {x:[10, 1], y:[10, 1], w: [5, 1], h: [5, 1], scale: [1, 0.1], head: [0, 0.01]}});
-        e.attach(renderer, {contextId: 'fl', targetName: circle.moduleName, funcName: 'draw'});
-        e.attach(audio, {id:'bang'});
+        for(var i=0; i<10; i++){
+            e = reactor.newEntity('e'+i);
+            x = 10 + Math.random() * 300;
+            y = 10 + Math.random() * 300;
+            head = Math.random();
+            color = 'rgba('+Math.floor(Math.random()*255)+','+Math.floor(Math.random()*255)+','+Math.floor(Math.random()*255)+',0.8)';
+            e.attach(rect, {x:x, y:y, w:10, h:10, scale:1, head:head});
+            e.attach(circle, {rectComponent:rect.moduleName, strokeStyle: 'rgba(0,0,255,1)', fillStyle: color});
+            e.attach(tween, {picRect: {x:[x, 10], y:[y, 10], w: [10, 1], h: [10, 1], scale: [1, 0.1], head: [head, 0.01]}});
+            e.attach(renderer, {contextId: 'fl', targetName: circle.moduleName, funcName: 'draw'});
+            e.attach(audio, {id:'bang'});
+        }
 
         reactor.route('touch', [selectEntities, audio.play]);
         reactor.route('init', [renderer.draw]);
-        reactor.addPathTo(0, [tween.update, renderer.draw]);
+        reactor.addPathTo(0, [tween.update, circle.updateShapes, renderer.draw]);
+        reactor.addPathTo(1, [moveRandom]);
 
         canvas.slot(canvas.FINGER_DOWN, onTouch);
         reactor.go('init');
