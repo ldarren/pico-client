@@ -4,12 +4,12 @@ pico.def('picCircleGeom', 'picBase', function(){
     me = this,
     name = me.moduleName,
     o, x, y, w, h, // for optimization
-    updateShape = function(tween, data){
-        data.x = tween.x[0];
-        data.y = tween.y[0];
+    updateShape = function(rect, data){
+        data.x = rect.x;
+        data.y = rect.y;
 
-        w = tween.w[0];
-        h = tween.h[0];
+        w = rect.w;
+        h = rect.h;
 
         data.radius = Math.sqrt(w*w + h*h);
     };
@@ -23,7 +23,8 @@ pico.def('picCircleGeom', 'picBase', function(){
             e = entities[i];
             data = e.getComponent(name);
             rect = tween.getValues(e, data.rectComponent);
-            updateShape(rect, data);
+            data.x = rect.x[0];
+            data.y = rect.y[0];
         }
         return entities;
     };
