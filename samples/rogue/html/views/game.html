@@ -24,10 +24,10 @@ heroLayer,heroEnt,
 onResize = function(){
     var
     style = towerRoom.style,
-    h = this.clientHeight,
+    h = this.innerHeight,
     w = 0.8 * h;
 
-    if (w > this.clientWidth) w = this.clientWidth;
+    if (w > this.innerWidth) w = this.innerWidth;
     style.width = w + 'px';
     style.height = h + 'px';
     style['margin-left'] = Math.floor(-w/2)+'px';
@@ -56,8 +56,8 @@ onLoad = function(){
 
         reactor = me.piReactor.create();
         heroEnt = reactor.createEntity('hero');
-        reactor.addPath(0, [player.update, map.update, renderer.draw]);
-        reactor.route('move', [player.explore, map.explore]);
+        reactor.addPath(0, [player.update, map.update]);
+        reactor.route('move', [player.explore, map.explore, renderer.draw]);
 
         heroEnt.attach(map, {tileSet:tileSet, tileWidth:32, tileHeight:32, floorWidth:8, floorHeight:8, level:0});
         heroEnt.attach(player, {tileSet:tileSet, job:'assasin'});
