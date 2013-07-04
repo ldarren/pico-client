@@ -75,7 +75,7 @@
         canvas.init(holder, holder.clientWidth, holder.clientHeight);
         layer = canvas.addLayer('frontLayer');
 
-        reactor = me.piReactor.createReactor();
+        reactor = me.piReactor.create();
 
         var
         rect = me.picRect,
@@ -91,7 +91,7 @@
         zoneHeight = holder.clientHeight - ZONE_BORDER * 2;
 
         for(var i=0; i<10; i++){
-            e = reactor.newEntity('e'+i);
+            e = reactor.createEntity('e'+i);
             x = ZONE_BORDER + Math.random() * zoneWidth;
             y = ZONE_BORDER + Math.random() * zoneHeight;
             head = Math.random();
@@ -99,14 +99,14 @@
             e.attach(rect, {x:x, y:y, w:10, h:10, scale:1, head:head});
             e.attach(circle, {rectComponent:rect.moduleName, strokeStyle: 'rgba(0,0,255,1)', fillStyle: color});
             e.attach(tween, {picRect: {x:[x, 10], y:[y, 10], w: [10, 1], h: [10, 1], scale: [1, 0.1], head: [head, 0.01]}});
-            e.attach(renderer, {contextId: 'fl', targetName: circle.moduleName, funcName: 'draw'});
+            e.attach(renderer, {fl: [circle.moduleName]});
             e.attach(audio, {id:'bang'});
         }
 
         reactor.route('touch', [selectEntities, audio.play]);
         reactor.route('init', [moveRandom, renderer.draw]);
-        reactor.addPathTo(0, [moveRandom]);
-        reactor.addPathTo(1, [tween.update, circle.updateShapes, renderer.draw]);
+        reactor.addPath(0, [moveRandom]);
+        reactor.addPath(1, [tween.update, circle.updateShapes, renderer.draw]);
 
         canvas.slot(canvas.FINGER_DOWN, onTouch);
         reactor.go('init');
