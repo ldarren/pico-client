@@ -6,7 +6,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
 <!--<script src="http://jsconsole.com/remote.js?DARREN-TOWER-SWEEPER"></script>-->
 <link rel="shortcut icon" type="image/x-icon" href="../res/img/favicon.ico">
-<title>Dungeon Hunt</title>
+<link rel="stylesheet" href="../css/fantasy.css">
+<title>Dungeon Conquest</title>
 </head>
 <body>
 <script src=../lib/pico/pico.js></script>
@@ -17,8 +18,21 @@
 <script src=../lib/pico/lib/picRect.js></script>
 <script src=../lib/pico/lib/picTween.js></script>
 <script src=../lib/pico/lib/picRenderer.js></script>
-<script src=../js/main.js></script>
-<script src=../js/sweeperMap.js></script>
-<script src=../js/player.js></script>
+<script src=../js/const.js></script>
+<script src=../js/camera.js></script>
+<script src=../js/uiPlayer.js></script>
+<script src=../js/game.js></script>
+<script>
+pico.def('m3Main', function(){
+
+    var
+    me = this,
+    onLoad = function(){
+        pico.addFrame(document.body, 'div#page', 'views/gamePage.html');
+    };
+
+    me.slot(pico.LOAD, onLoad);
+});
+</script>
 </body>
 </html>

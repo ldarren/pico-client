@@ -8,8 +8,8 @@ pico.def('picCircleGeom', 'picBase', function(){
         data.x = rect.x;
         data.y = rect.y;
 
-        w = rect.w;
-        h = rect.h;
+        w = rect.width;
+        h = rect.height;
 
         data.radius = Math.sqrt(w*w + h*h);
     };
