@@ -9,6 +9,7 @@ pico.def('camera', 'picBase', function(){
     };
 
     me.resize = function(elapsed, evt, entities){
+        return entities;
     };
 
     me.draw = function(ctx, ent, elapsed){

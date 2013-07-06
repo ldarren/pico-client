@@ -17,8 +17,7 @@ this.use('uiPlayer');
 
 var
 me = this,
-UI_HEIGHT = 200,
-UI_WIDTH = 200,
+smallDevice = false,
 reactor,
 canvas,
 gameLayer,
@@ -26,10 +25,10 @@ cameraEnt, uiPlayer,
 onMouseDown = function(evt, x, y){
     reactor.go('move', {x:x, y:y});
 },
-onResize = function(){
+resize = function(iw, ih){
     var
     style = gameStage.style,
-    ih = this.innerHeight, iw = this.innerWidth,
+    uiPaneSize = smallDevice ? 100 : 200,
     h, w, vw, vh, ux, uy, uw, uh;
 
     if (ih > iw){
@@ -38,18 +37,18 @@ onResize = function(){
         if (w > iw) w = iw;
 
         vw = uw = w;
-        uy = vh = h - UI_HEIGHT;
+        uy = vh = h - uiPaneSize;
         ux = 0;
-        uh = UI_HEIGHT;
+        uh = uiPaneSize;
     }else{
         w = iw;
         h = Math.ceil(0.8 * w);
         if (h > ih) h = ih;
 
         vh = uh = h;
-        ux = vw = w - UI_WIDTH;
+        ux = vw = w - uiPaneSize;
         uy = 0;
-        uw = UI_WIDTH;
+        uw = uiPaneSize;
     }
 
     style.width = w + 'px';
@@ -61,8 +60,13 @@ onResize = function(){
     me.picRenderer.resizeContext('uiPane', ux, uy, uw, uh);
     reactor.go('resize', {viewPane:[0, 0, vw, vh], uiPane:[ux, uy, uw, uh]});
 },
+onResize = function(){
+    console.log('device resized');
+    resize(this.innerWidth, this.innerHeight);
+},
 onRotate = function(evt){
-    onResize.call(window);
+    console.log('device rotated');
+    resize(this.innerWidth, this.innerHeight);
 },
 onLoad = function(){
     me.piAtlas.create('../res/img/fantasy-tileset.png', '../res/fantasy-tileset.json', function(err, tileSet){
@@ -86,7 +90,7 @@ onLoad = function(){
 
         reactor.addPath(0, [game.update, renderer.draw]);
         reactor.route('move', [game.explore, renderer.draw]);
-        reactor.route('init', [game.init, renderer.draw]);
+        reactor.route('init', [game.init]);
         reactor.route('resize', [camera.resize, uiPlayer.resize, renderer.draw]);
 
         cameraEnt = reactor.createEntity('camera');
@@ -97,11 +101,15 @@ onLoad = function(){
         uiPlayerEnt.attach(uiPlayer, {world:game.moduleName});
         uiPlayerEnt.attach(renderer, {uiPane:[uiPlayer.moduleName]});
 
-        onResize.call(window);
-        reactor.go('init', {tileSet:tileSet, tileWidth:64, tileHeight:64, mapWidth:8, mapHeight:8, mapLevel:0, heroJob:G_HERO.PRIEST});
+        smallDevice = window.innerWidth > 550 || window.innerHeight > 550 ? false : true;
+console.log('smallDevice', smallDevice, window.innerWidth, window.innerHeight);
+        var tileSize = smallDevice ? 32 : 64;
+
+        reactor.go('init', {tileSet:tileSet, tileWidth:tileSize, tileHeight:tileSize, mapWidth:8, mapHeight:8, mapLevel:0, heroJob:G_HERO.PRIEST});
+        resize(window.innerWidth, window.innerHeight);
         canvas.slot(canvas.ON_FINGER_DOWN, onMouseDown);
         window.addEventListener('resize', onResize, false);
-        //window.addEventListener('deviceorientation', onRotate, true);
+        //window.addEventListener('orientationchange', onRotate, true);
     });
 };
 
