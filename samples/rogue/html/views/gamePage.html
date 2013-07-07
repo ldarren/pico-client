@@ -28,27 +28,16 @@ onMouseDown = function(evt, x, y){
 resize = function(iw, ih){
     var
     style = gameStage.style,
-    uiPaneSize = smallDevice ? 100 : 200,
-    h, w, vw, vh, ux, uy, uw, uh;
+    h, w;
 
     if (ih > iw){
         h = ih;
         w = Math.ceil(0.8 * h);
         if (w > iw) w = iw;
-
-        vw = uw = w;
-        uy = vh = h - uiPaneSize;
-        ux = 0;
-        uh = uiPaneSize;
     }else{
         w = iw;
         h = Math.ceil(0.8 * w);
         if (h > ih) h = ih;
-
-        vh = uh = h;
-        ux = vw = w - uiPaneSize;
-        uy = 0;
-        uw = uiPaneSize;
     }
 
     style.width = w + 'px';
@@ -56,9 +45,8 @@ resize = function(iw, ih){
     style['margin-left'] = Math.floor(-w/2)+'px';
 
     me.piCanvas.resize(w, h);
-    me.picRenderer.resizeContext('viewPane', 0, 0, vw, vh);
-    me.picRenderer.resizeContext('uiPane', ux, uy, uw, uh);
-    reactor.go('resize', {viewPane:[0, 0, vw, vh], uiPane:[ux, uy, uw, uh]});
+    me.picRenderer.resizeContext('viewPane', 0, 0, w, h);
+    reactor.go('resize', [0,0,w,h]);
 },
 onResize = function(){
     console.log('device resized');
@@ -84,7 +72,6 @@ onLoad = function(){
         gameLayer = canvas.addLayer('game');
 
         renderer.registerContext('viewPane', gameLayer.getContext());
-        renderer.registerContext('uiPane', gameLayer.getContext());
 
         reactor = me.piReactor.create();
 
@@ -99,7 +86,7 @@ onLoad = function(){
         cameraEnt.attach(camera, {world:game.moduleName});
         cameraEnt.attach(renderer, {viewPane:[camera.moduleName]});
         uiPlayerEnt.attach(uiPlayer, {world:game.moduleName});
-        uiPlayerEnt.attach(renderer, {uiPane:[uiPlayer.moduleName]});
+        uiPlayerEnt.attach(renderer, {viewPane:[uiPlayer.moduleName]});
 
         smallDevice = window.innerWidth > 550 || window.innerHeight > 550 ? false : true;
 console.log('smallDevice', smallDevice, window.innerWidth, window.innerHeight);
