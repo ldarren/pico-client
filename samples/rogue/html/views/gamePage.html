@@ -13,17 +13,17 @@ this.use('piAtlas');
 this.use('picRenderer');
 this.use('game');
 this.use('camera');
+this.use('sweeperMap');
 this.use('uiPlayer');
 
 var
 me = this,
 smallDevice = false,
-reactor,
 canvas,
 gameLayer,
 cameraEnt, uiPlayer,
 onMouseDown = function(evt, x, y){
-    reactor.go('move', {x:x, y:y});
+    me.game.go('move', {x:x, y:y});
 },
 resize = function(iw, ih){
     var
@@ -46,7 +46,7 @@ resize = function(iw, ih){
 
     me.piCanvas.resize(w, h);
     me.picRenderer.resizeContext('viewPane', 0, 0, w, h);
-    reactor.go('resize', [0,0,w,h]);
+    me.game.go('resize', [0,0,w,h]);
 },
 onResize = function(){
     console.log('device resized');
@@ -62,8 +62,10 @@ onLoad = function(){
 
         var
         gameStage = document.querySelector('div#gameStage'),
+        reactor = me.piReactor,
         renderer = me.picRenderer,
         game = me.game,
+        sweeper = me.sweeperMap,
         camera = me.camera,
         uiPlayer = me.uiPlayer;
 
@@ -73,15 +75,15 @@ onLoad = function(){
 
         renderer.registerContext('viewPane', gameLayer.getContext());
 
-        reactor = me.piReactor.create();
+        reactor.addGroup(game);
 
-        reactor.addPath(0, [game.update, renderer.draw]);
-        reactor.route('move', [game.explore, renderer.draw]);
-        reactor.route('init', [game.init]);
-        reactor.route('resize', [camera.resize, uiPlayer.resize, renderer.draw]);
+        game.route('init', [sweeper.init]);
+        game.route('update', [sweeper.update, renderer.draw]);
+        game.route('move', [sweeper.explore, renderer.draw]);
+        game.route('resize', [camera.resize, uiPlayer.resize, renderer.draw]);
 
-        cameraEnt = reactor.createEntity('camera');
-        uiPlayerEnt = reactor.createEntity('uiPlayer');
+        cameraEnt = game.createEntity('camera');
+        uiPlayerEnt = game.createEntity('uiPlayer');
 
         cameraEnt.attach(camera, {world:game.moduleName});
         cameraEnt.attach(renderer, {viewPane:[camera.moduleName]});
@@ -92,11 +94,13 @@ onLoad = function(){
 console.log('smallDevice', smallDevice, window.innerWidth, window.innerHeight);
         var tileSize = smallDevice ? 32 : 64;
 
-        reactor.go('init', {tileSet:tileSet, tileWidth:tileSize, tileHeight:tileSize, mapWidth:8, mapHeight:8, mapLevel:0, heroJob:G_HERO.PRIEST});
+        game.go('init', {tileSet:tileSet, tileWidth:tileSize, tileHeight:tileSize, mapWidth:8, mapHeight:8, mapLevel:0, heroJob:G_HERO.PRIEST});
         resize(window.innerWidth, window.innerHeight);
         canvas.slot(canvas.ON_FINGER_DOWN, onMouseDown);
         window.addEventListener('resize', onResize, false);
         //window.addEventListener('orientationchange', onRotate, true);
+
+        game.go('update');
     });
 };
 
