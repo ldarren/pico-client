@@ -5,7 +5,7 @@
     holder = document.querySelector('div#stage'),
     canvas,
     layer,
-    reactor,
+    group,
     zoneWidth, zoneHeight, ZONE_BORDER = 10,
     selectedEntities = [],
     elapsedTime = 0,
@@ -47,7 +47,7 @@
     },
     onTouch = function(evt, x, y){
         var tlX = canvas.getStageLeft(), tlY = canvas.getStageTop();
-        reactor.go('touch', {x: x-tlX, y: y-tlY});
+        group.go('touch', {x: x-tlX, y: y-tlY});
     },
     onResize = function(){
         var
@@ -75,7 +75,8 @@
         canvas.init(holder, holder.clientWidth, holder.clientHeight);
         layer = canvas.addLayer('frontLayer');
 
-        reactor = me.piReactor.create();
+        group = me.picGroup;
+        me.piReactor.addGroup(group);
 
         var
         rect = me.picRect,
@@ -91,7 +92,7 @@
         zoneHeight = holder.clientHeight - ZONE_BORDER * 2;
 
         for(var i=0; i<10; i++){
-            e = reactor.createEntity('e'+i);
+            e = group.createEntity('e'+i);
             x = ZONE_BORDER + Math.random() * zoneWidth;
             y = ZONE_BORDER + Math.random() * zoneHeight;
             head = Math.random();
@@ -103,17 +104,18 @@
             e.attach(audio, {id:'bang'});
         }
 
-        reactor.route('touch', [selectEntities, audio.play]);
-        reactor.route('random', [moveRandom]);
-        reactor.route('step', [tween.update, circle.updateShapes, renderer.draw]);
+        group.route('touch', [selectEntities, audio.play]);
+        group.route('random', [moveRandom]);
+        group.route('step', [tween.update, circle.updateShapes, renderer.draw]);
 
         canvas.slot(canvas.FINGER_DOWN, onTouch);
-        reactor.startLoop('random');
-        reactor.startLoop('step');
+        group.startLoop('random');
+        group.startLoop('step');
     };
 
     me.use('piCanvas');
     me.use('piReactor');
+    me.use('picGroup');
     me.use('picRect');
     me.use('picCircleGeom');
     me.use('picTween');
