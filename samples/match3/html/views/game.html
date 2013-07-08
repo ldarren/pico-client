@@ -104,12 +104,12 @@
         }
 
         reactor.route('touch', [selectEntities, audio.play]);
-        reactor.route('init', [moveRandom, renderer.draw]);
-        reactor.addPath(0, [moveRandom]);
-        reactor.addPath(1, [tween.update, circle.updateShapes, renderer.draw]);
+        reactor.route('random', [moveRandom]);
+        reactor.route('step', [tween.update, circle.updateShapes, renderer.draw]);
 
         canvas.slot(canvas.FINGER_DOWN, onTouch);
-        reactor.go('init');
+        reactor.startLoop('random');
+        reactor.startLoop('step');
     };
 
     me.use('piCanvas');
