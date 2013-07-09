@@ -20,25 +20,22 @@ pico.def('camera', 'picBase', function(){
         game = o.worldObj,
         tileSet = game.tileSet,
         map = game.map,
+        mapW = game.mapWidth,
+        mapH = game.mapHeight,
+        objects = game.objects,
         heroPos = game.heroPos,
         width = game.tileWidth,
         height = game.tileHeight,
-        x = 0,
-        y = 0,
-        row,
-        w, wl, h, hl;
+        w, wl;
 
         ctx.save();
-        for(h=0, hl=game.mapHeight; h<hl; h++){
-            row = map[h];
-            x = 0;
-            for(w=0, wl=game.mapWidth; w<wl; w++){
-                tileSet.draw(ctx, row[w], x, y, width, height);
-                x += width;
-            }
-            y += height;
+        for(w=0, wl=mapW*mapH; w<wl; w++){
+            if (map[w] & G_TILE_TYPE.HIDE)
+                tileSet.draw(ctx, G_FLOOR.CLEAR, 32 * w%mapW, 32 * w/mapW, width, height);
+            else
+                tileSet.draw(ctx, game.objects[w], 32 * w%mapW, 32 * w/mapW, width, height);
         }
-        tileSet.draw(ctx, game.heroJob, heroPos[0]*width, heroPos[1]*height, width, height);
+        tileSet.draw(ctx, game.heroJob, 32 * heroPos%mapW, 32 * heroPos/mapW, width, height);
         ctx.restore();
     };
 });

@@ -11,7 +11,9 @@ pico.def('game', 'picGroup', function(){
     me.mapWidth = 160;
     me.mapHeight = 160;
     me.mapLevel = 0;
-    me.heroPos = [];
+    me.heroPos = 0;
     me.map = [];
-
+    me.hints = []; // 08:creep, 80:chest, 800:stair:
+    me.objects = [];
+    me.flags = [];
 });
