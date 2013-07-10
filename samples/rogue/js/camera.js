@@ -3,39 +3,44 @@ pico.def('camera', 'picBase', function(){
     me = this,
     name = me.moduleName;
 
-    me.create = function(ent, data){
-        data.worldObj = pico.getModule(data.world);
-        return data;
-    };
-
     me.resize = function(elapsed, evt, entities){
         return entities;
     };
 
     me.draw = function(ctx, ent, elapsed){
-        var o = ent.getComponent(name);
-        if (!o) return;
-
         var
-        game = o.worldObj,
-        tileSet = game.tileSet,
-        map = game.map,
-        mapW = game.mapWidth,
-        mapH = game.mapHeight,
-        objects = game.objects,
-        heroPos = game.heroPos,
-        width = game.tileWidth,
-        height = game.tileHeight,
-        w, wl;
+        tileSet = this.tileSet,
+        map = this.map,
+        mapW = this.mapWidth,
+        mapH = this.mapHeight,
+        objects = this.objects,
+        hints = this.hints,
+        heroPos = this.heroPos,
+        width = this.tileWidth,
+        height = this.tileHeight,
+        hint, colorCode, x, y;
 
         ctx.save();
-        for(w=0, wl=mapW*mapH; w<wl; w++){
-            if (map[w] & G_TILE_TYPE.HIDE)
-                tileSet.draw(ctx, G_FLOOR.CLEAR, 32 * w%mapW, 32 * w/mapW, width, height);
-            else
-                tileSet.draw(ctx, game.objects[w], 32 * w%mapW, 32 * w/mapW, width, height);
+        ctx.font = 'bold 12pt sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        for(var w=0, wl=mapW*mapH; w<wl; w++){
+            x = width * Math.floor(w%mapW), y = height * Math.floor(w/mapW);
+            if (map[w] & G_TILE_TYPE.HIDE){
+                tileSet.draw(ctx, G_FLOOR.UNCLEAR, x, y, width, height);
+            }else{
+                hint = hints[w];
+                tileSet.draw(ctx, G_FLOOR.CLEAR, x, y, width, height);
+                if (objects[w]){
+                    tileSet.draw(ctx, objects[w], x, y, width, height);
+                }else if (hint){
+                    colorCode = (hint > 99 ? 4 : 0) + ((hint | 3) > 9 ? 2 : 0) + ((hint | 1) > 0 ? 1 : 0);
+                    ctx.fillStyle = G_HINT_COLOR[colorCode];
+                    ctx.fillText((hint|4)/100 + (hint|2)/10 + (hint|1), x + width/2, y+height/2, width);
+                }
+            }
         }
-        tileSet.draw(ctx, game.heroJob, 32 * heroPos%mapW, 32 * heroPos/mapW, width, height);
+        tileSet.draw(ctx, this.heroJob, width * Math.floor(heroPos%mapW), height * Math.floor(heroPos/mapW), width, height);
         ctx.restore();
     };
 });

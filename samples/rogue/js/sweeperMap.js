@@ -4,6 +4,23 @@ pico.def('sweeperMap', 'picBase', function(){
     getTileHint = function(type){
         if (!type) return 0;
         return type & G_TILE_TYPE.CREEP ? 1 : type & G_TILE_TYPE.CHEST ? 10 : type & G_TILE_TYPE.STAIR_DOWN ? 100 : 0;
+    },
+    fill = function(map, hints, width, i){
+        var count = 0;
+        if (undefined === map[i] || !(map[i] & G_TILE_TYPE.HIDE)) return count;
+        map[i] &= G_TILE_TYPE.SHOW;
+        count = 1;
+        if (0 === hints[i]){
+            count += fill(map, hints, width, i - width - 1);
+            count += fill(map, hints, width, i - width);
+            count += fill(map, hints, width, i - width + 1);
+            count += fill(map, hints, width, i - 1);
+            count += fill(map, hints, width, i + 1);
+            count += fill(map, hints, width, i + width - 1);
+            count += fill(map, hints, width, i + width);
+            count += fill(map, hints, width, i + width + 1);
+        }
+        return count;
     };
 
     // evt = {tileSet:tileSet, tileWidth:64, tileHeight:64, mapWidth:8, mapHeight:8, level:0, playerJob:game.PRIEST}
@@ -51,25 +68,29 @@ pico.def('sweeperMap', 'picBase', function(){
         }
 
         c = shuffle.splice(Math.floor(Math.random()*shuffle.length), 1)[0];
-        map[c] = G_TILE_TYPE.SHOW | G_TILE_TYPE.STAIR_UP;
-        objects[c] = G_FLOOR.START_UP;
+        map[c] = G_TILE_TYPE.STAIR_UP;
+        objects[c] = G_FLOOR.STAIR_UP;
         this.heroPos = c;
 
         c = shuffle.splice(Math.floor(Math.random()*shuffle.length), 1)[0];
         map[c] |= G_TILE_TYPE.STAIR_DOWN;
-        objects[c] = G_FLOOR.START_DOWN;
+        objects[c] = G_FLOOR.STAIR_DOWN;
 
-        for(i=0,l=mapW+mapH; i<l; i++){
+        for(i=0,l=mapW*mapH; i<l; i++){
             if (map[i] > G_TILE_TYPE.HIDE) continue;
             hints[i] = 
-                getTileHint(map[i-1]) +
-                getTileHint(map[i+1]) +
                 getTileHint(map[i-mapW]) +
-                getTileHint(map[i-mapW+1]) +
-                getTileHint(map[i-mapW-1]) +
-                getTileHint(map[i+mapW]) +
-                getTileHint(map[i+mapW-1]) +
-                getTileHint(map[i+mapW+1])
+                getTileHint(map[i+mapW]);
+                if (0 !== i%mapW){
+                    hints[i] += getTileHint(map[i-1]) +
+                    getTileHint(map[i-mapW-1]) +
+                    getTileHint(map[i+mapW-1]);
+                }
+                if (0 !== (i+1)%mapW){
+                    hints[i] += getTileHint(map[i+1]) +
+                    getTileHint(map[i-mapW+1]) +
+                    getTileHint(map[i+mapW+1]);
+                }
         }
 
         return entities;
@@ -79,6 +100,24 @@ pico.def('sweeperMap', 'picBase', function(){
     };
 
     me.explore = function(elapsed, evt, entities){
-        alert(evt);
+        var
+        map = this.map,
+        hints = this.hints,
+        mapW = this.mapWidth,
+        mapH = this.mapHeight,
+        tileW = this.tileWidth,
+        tileH = this.tileHeight,
+        x = Math.floor(evt.x / tileW),
+        y = Math.floor(evt.y / tileH),
+        id;
+
+        if (y > mapH || x > mapW) return;
+        id = mapW * y + x;
+
+        if (!(map[id] | G_TILE_TYPE.HIDE)) return;
+
+        fill(map, hints, mapW, id);
+
+        return entities;
     };
 });

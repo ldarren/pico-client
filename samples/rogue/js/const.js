@@ -1,10 +1,17 @@
 Object.freeze(G_TILE_TYPE = {
-    SHOW: 0,
+    SHOW: 2+4+8+16,
     HIDE: 1,
     CREEP: 2,
     CHEST: 4,
     STAIR_UP: 8,
     STAIR_DOWN: 16
+});
+
+Object.freeze(G_NUMERIC = {
+    SMALL_LIGHT: 247,
+    SMALL_DARK: 275,
+    LARGE_LIGHT: 227,
+    LARGE_DARK: 257
 });
 
 Object.freeze(G_OBJECT = {
@@ -17,6 +24,17 @@ Object.freeze(G_OBJECT = {
     KEY_05: 38,
     KEY_06: 39
 });
+
+Object.freeze(G_MARK = {
+    PENTAGRAM: 136,     // protection, 4 elements
+    ANKH: 137,          // revive, eternal life
+    EYE_OF_GOD:138,     // spiritual sight, inner vision, higher knowledge, insight into occult mysteries
+    CREATON: 139,       // creation, alchemic creation
+    CHAOS: 140,         // all direction
+    EVOLVE: 141         // mankind, evolve
+});
+
+Object.freeze(G_HINT_COLOR = ['BLACK', 'RED', 'YELLOW', 'ORANGE', 'BLUE', 'PURPLE', 'GREEN', 'WHITE' ]);
 
 Object.freeze(G_HERO = {
     ROGUE: 144,
@@ -37,7 +55,7 @@ Object.freeze(G_CREEP = {
     TOAD: 156,
     BEETLE: 157,
     CENTIPEDE: 158,
-    BOSS_SNAKE: 159,
+    SERPENT: 159,
     MUSHROOM: 160,
     RABBIT: 161,
     BAT: 162,
@@ -61,7 +79,7 @@ Object.freeze(G_CREEP = {
     CYCLOPS: 180,
     WEREWOLF: 181,
     OGRE: 182,
-    MINOTAUR: 183,
+    DEVIL: 183,
 });
 
 Object.freeze(G_FLOOR = {

@@ -10,6 +10,7 @@ div#gameStage{
 this.use('piCanvas');
 this.use('piReactor');
 this.use('piAtlas');
+this.use('picRect');
 this.use('picRenderer');
 this.use('game');
 this.use('camera');
@@ -52,10 +53,6 @@ onResize = function(){
     console.log('device resized');
     resize(this.innerWidth, this.innerHeight);
 },
-onRotate = function(evt){
-    console.log('device rotated');
-    resize(this.innerWidth, this.innerHeight);
-},
 onLoad = function(){
     me.piAtlas.create('../res/img/fantasy-tileset.png', '../res/fantasy-tileset.json', function(err, tileSet){
         if (err) return alert(err);
@@ -63,6 +60,7 @@ onLoad = function(){
         var
         gameStage = document.querySelector('div#gameStage'),
         reactor = me.piReactor,
+        rect = me.picRect,
         renderer = me.picRenderer,
         game = me.game,
         sweeper = me.sweeperMap,
@@ -85,20 +83,19 @@ onLoad = function(){
         cameraEnt = game.createEntity('camera');
         uiPlayerEnt = game.createEntity('uiPlayer');
 
-        cameraEnt.attach(camera, {world:game.moduleName});
+        cameraEnt.attach(rect, {x:0, y:0, width:100, height:100});
+        cameraEnt.attach(camera, {});
         cameraEnt.attach(renderer, {viewPane:[camera.moduleName]});
-        uiPlayerEnt.attach(uiPlayer, {world:game.moduleName});
+        uiPlayerEnt.attach(uiPlayer, {});
         uiPlayerEnt.attach(renderer, {viewPane:[uiPlayer.moduleName]});
 
-        smallDevice = window.innerWidth > 550 || window.innerHeight > 550 ? false : true;
-console.log('smallDevice', smallDevice, window.innerWidth, window.innerHeight);
+        smallDevice = window.innerWidth > 800 || window.innerHeight > 800 ? false : true;
+console.log('smallDevice:', smallDevice, window.innerWidth, window.innerHeight);
         var tileSize = smallDevice ? 32 : 64;
-
         game.go('init', {tileSet:tileSet, tileWidth:tileSize, tileHeight:tileSize, mapWidth:8, mapHeight:8, mapLevel:0, heroJob:G_HERO.PRIEST});
         resize(window.innerWidth, window.innerHeight);
-        canvas.slot(canvas.ON_FINGER_DOWN, onMouseDown);
+        canvas.slot(canvas.FINGER_DOWN, onMouseDown);
         window.addEventListener('resize', onResize, false);
-        //window.addEventListener('orientationchange', onRotate, true);
 
         game.go('update');
     });
