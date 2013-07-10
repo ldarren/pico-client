@@ -1,9 +1,12 @@
 pico.def('sweeperMap', 'picBase', function(){
     var
     me = this,
-    getTileHint = function(type){
-        if (!type) return 0;
-        return type & G_TILE_TYPE.CREEP ? 1 : type & G_TILE_TYPE.CHEST ? 10 : type & G_TILE_TYPE.STAIR_DOWN ? 100 : 0;
+    getTileHint = function(hint, type){
+        if (type & G_TILE_TYPE.OBSTACLES){
+            hint |= type;
+            hint += 0x10;
+        }
+        return hint;
     },
     fill = function(map, hints, width, i){
         var count = 0;
@@ -11,14 +14,18 @@ pico.def('sweeperMap', 'picBase', function(){
         map[i] &= G_TILE_TYPE.SHOW;
         count = 1;
         if (0 === hints[i]){
-            count += fill(map, hints, width, i - width - 1);
             count += fill(map, hints, width, i - width);
-            count += fill(map, hints, width, i - width + 1);
-            count += fill(map, hints, width, i - 1);
-            count += fill(map, hints, width, i + 1);
-            count += fill(map, hints, width, i + width - 1);
             count += fill(map, hints, width, i + width);
-            count += fill(map, hints, width, i + width + 1);
+            if (0 !== i%width){
+                count += fill(map, hints, width, i - 1);
+                count += fill(map, hints, width, i - width - 1);
+                count += fill(map, hints, width, i + width - 1);
+            }
+            if (0 !== (i+1)%width){
+                count += fill(map, hints, width, i + 1);
+                count += fill(map, hints, width, i - width + 1);
+                count += fill(map, hints, width, i + width + 1);
+            }
         }
         return count;
     };
@@ -40,7 +47,7 @@ pico.def('sweeperMap', 'picBase', function(){
         hints = this.hints,
         objects = this.objects,
         flags = this.flags,
-        i, l, c;
+        i, l, c, hint;
 
         map.length = 0;
         hints.length = 0;
@@ -68,30 +75,33 @@ pico.def('sweeperMap', 'picBase', function(){
         }
 
         c = shuffle.splice(Math.floor(Math.random()*shuffle.length), 1)[0];
-        map[c] = G_TILE_TYPE.STAIR_UP;
-        objects[c] = G_FLOOR.STAIR_UP;
-        this.heroPos = c;
-
-        c = shuffle.splice(Math.floor(Math.random()*shuffle.length), 1)[0];
         map[c] |= G_TILE_TYPE.STAIR_DOWN;
         objects[c] = G_FLOOR.STAIR_DOWN;
 
         for(i=0,l=mapW*mapH; i<l; i++){
             if (map[i] > G_TILE_TYPE.HIDE) continue;
-            hints[i] = 
-                getTileHint(map[i-mapW]) +
-                getTileHint(map[i+mapW]);
-                if (0 !== i%mapW){
-                    hints[i] += getTileHint(map[i-1]) +
-                    getTileHint(map[i-mapW-1]) +
-                    getTileHint(map[i+mapW-1]);
-                }
-                if (0 !== (i+1)%mapW){
-                    hints[i] += getTileHint(map[i+1]) +
-                    getTileHint(map[i-mapW+1]) +
-                    getTileHint(map[i+mapW+1]);
-                }
+            hint = 0;
+            hint = getTileHint(hint, map[i-mapW]);
+            hint = getTileHint(hint, map[i+mapW]);
+            if (0 !== i%mapW){
+                hint = getTileHint(hint, map[i-1]);
+                hint = getTileHint(hint, map[i-mapW-1]);
+                hint = getTileHint(hint, map[i+mapW-1]);
+            }
+            if (0 !== (i+1)%mapW){
+                hint = getTileHint(hint, map[i+1]);
+                hint = getTileHint(hint, map[i-mapW+1]);
+                hint = getTileHint(hint, map[i+mapW+1]);
+            }
+            hints[i] = hint;
         }
+
+        fill(map, hints, mapW, this.heroPos);
+
+        c = shuffle.splice(Math.floor(Math.random()*shuffle.length), 1)[0];
+        map[c] = G_TILE_TYPE.STAIR_UP;
+        objects[c] = G_FLOOR.STAIR_UP;
+        this.heroPos = c;
 
         return entities;
     };

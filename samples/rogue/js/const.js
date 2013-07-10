@@ -1,10 +1,11 @@
 Object.freeze(G_TILE_TYPE = {
+    OBSTACLES: 2+4+8,
     SHOW: 2+4+8+16,
     HIDE: 1,
     CREEP: 2,
     CHEST: 4,
-    STAIR_UP: 8,
-    STAIR_DOWN: 16
+    STAIR_DOWN: 8,
+    STAIR_UP: 16
 });
 
 Object.freeze(G_NUMERIC = {

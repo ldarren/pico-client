@@ -18,7 +18,9 @@ pico.def('camera', 'picBase', function(){
         heroPos = this.heroPos,
         width = this.tileWidth,
         height = this.tileHeight,
-        hint, colorCode, x, y;
+        hw = Math.floor(width/2),
+        hh = Math.floor(height/2),
+        hint, x, y;
 
         ctx.save();
         ctx.font = 'bold 12pt sans-serif';
@@ -34,9 +36,8 @@ pico.def('camera', 'picBase', function(){
                 if (objects[w]){
                     tileSet.draw(ctx, objects[w], x, y, width, height);
                 }else if (hint){
-                    colorCode = (hint > 99 ? 4 : 0) + ((hint | 3) > 9 ? 2 : 0) + ((hint | 1) > 0 ? 1 : 0);
-                    ctx.fillStyle = G_HINT_COLOR[colorCode];
-                    ctx.fillText((hint|4)/100 + (hint|2)/10 + (hint|1), x + width/2, y+height/2, width);
+                    ctx.fillStyle = G_HINT_COLOR[Math.floor((hint & 0x0f)*0.5)];
+                    ctx.fillText(Math.floor(hint/16), x + hw, y+hh, width);
                 }
             }
         }
