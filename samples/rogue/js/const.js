@@ -36,6 +36,7 @@ Object.freeze(G_MARK = {
 });
 
 Object.freeze(G_HINT_COLOR = ['BLACK', 'RED', 'YELLOW', 'ORANGE', 'BLUE', 'PURPLE', 'GREEN', 'WHITE' ]);
+Object.freeze(G_COLOR_TONE = ['#d7e894','#aec440','#527f39','#204631']);
 
 Object.freeze(G_HERO = {
     ROGUE: 144,
@@ -97,4 +98,29 @@ Object.freeze(G_FLOOR = {
     STAIR_DOWN: 13,
     STAIR_UP: 14,
     WALL: 19
+});
+
+Object.freeze(G_THEME = {
+    THEME1:{
+        INACTIVE:{
+            TOP:286,
+            TOP_LEFT:285,
+            TOP_RIGHT: 288,
+            RIGHT: 320,
+            BOTTOM_RIGHT:384,
+            BOTTOM:383,
+            BOTTOM_LEFT:381,
+            LEFT:349
+        },
+        ACTIVE:{
+            TOP:287,
+            TOP_LEFT:318,
+            TOP_RIGHT: 319,
+            RIGHT: 352,
+            BOTTOM_RIGHT:351,
+            BOTTOM:382,
+            BOTTOM_LEFT:350,
+            LEFT:317
+        }
+    },
 });

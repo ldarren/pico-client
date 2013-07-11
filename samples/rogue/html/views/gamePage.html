@@ -20,8 +20,6 @@ this.use('uiPlayer');
 var
 me = this,
 smallDevice = false,
-canvas,
-gameLayer,
 cameraEnt, uiPlayer,
 onMouseDown = function(evt, x, y){
     me.game.go('move', {x:x, y:y});
@@ -47,6 +45,7 @@ resize = function(iw, ih){
 
     me.piCanvas.resize(w, h);
     me.picRenderer.resizeContext('viewPane', 0, 0, w, h);
+    me.picRenderer.resizeContext('uiPane', 0, 0, w, h);
     me.game.go('resize', [0,0,w,h]);
 },
 onResize = function(){
@@ -65,34 +64,41 @@ onLoad = function(){
         game = me.game,
         sweeper = me.sweeperMap,
         camera = me.camera,
-        uiPlayer = me.uiPlayer;
-
+        uiPlayer = me.uiPlayer,
         canvas = me.piCanvas;
+
         canvas.init(gameStage);
-        gameLayer = canvas.addLayer('game');
+
+        var
+        gameLayer = canvas.addLayer('game'),
+        uiLayer = canvas.addLayer('ui');
 
         renderer.registerContext('viewPane', gameLayer.getContext());
+        renderer.registerContext('uiPane', uiLayer.getContext());
 
         reactor.addGroup(game);
 
         game.route('init', [sweeper.init]);
         game.route('update', [sweeper.update, renderer.draw]);
-        game.route('move', [sweeper.explore, renderer.draw]);
+        game.route('move', [uiPlayer.click, sweeper.explore, renderer.draw]);
         game.route('resize', [camera.resize, uiPlayer.resize, renderer.draw]);
+
+        smallDevice = window.innerWidth > 800 || window.innerHeight > 800 ? false : true;
+console.log('smallDevice:', smallDevice, window.innerWidth, window.innerHeight);
+        var tileSize = smallDevice ? 32 : 64;
+        game.go('init', {tileSet:tileSet, tileWidth:tileSize, tileHeight:tileSize, mapWidth:8, mapHeight:8, mapLevel:0, heroJob:G_HERO.PRIEST});
 
         cameraEnt = game.createEntity('camera');
         uiPlayerEnt = game.createEntity('uiPlayer');
 
         cameraEnt.attach(rect, {x:0, y:0, width:100, height:100});
         cameraEnt.attach(camera, {});
+        cameraEnt.attach(sweeper, {});
         cameraEnt.attach(renderer, {viewPane:[camera.moduleName]});
-        uiPlayerEnt.attach(uiPlayer, {});
-        uiPlayerEnt.attach(renderer, {viewPane:[uiPlayer.moduleName]});
+        uiPlayerEnt.attach(rect, {x:16, y:16, width:256, height:128});
+        uiPlayerEnt.attach(uiPlayer, {theme: G_THEME.THEME1, background: G_COLOR_TONE[3], box:rect.moduleName});
+        uiPlayerEnt.attach(renderer, {uiPane:[uiPlayer.moduleName]});
 
-        smallDevice = window.innerWidth > 800 || window.innerHeight > 800 ? false : true;
-console.log('smallDevice:', smallDevice, window.innerWidth, window.innerHeight);
-        var tileSize = smallDevice ? 32 : 64;
-        game.go('init', {tileSet:tileSet, tileWidth:tileSize, tileHeight:tileSize, mapWidth:8, mapHeight:8, mapLevel:0, heroJob:G_HERO.PRIEST});
         resize(window.innerWidth, window.innerHeight);
         canvas.slot(canvas.FINGER_DOWN, onMouseDown);
         window.addEventListener('resize', onResize, false);

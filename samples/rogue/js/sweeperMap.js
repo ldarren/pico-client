@@ -1,6 +1,7 @@
 pico.def('sweeperMap', 'picBase', function(){
     var
     me = this,
+    name = me.moduleName,
     getTileHint = function(hint, type){
         if (type & G_TILE_TYPE.OBSTACLES){
             hint |= type;
@@ -110,6 +111,14 @@ pico.def('sweeperMap', 'picBase', function(){
     };
 
     me.explore = function(elapsed, evt, entities){
+        var mapOpt, e;
+        for(var i=0,l=entities.length; i<l; i++){
+            e = entities[i];
+            mapOpt = e.getComponent(name);
+            if (mapOpt) break;
+        }
+        if (!mapOpt) return;
+
         var
         map = this.map,
         hints = this.hints,
