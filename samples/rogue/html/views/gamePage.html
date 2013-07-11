@@ -78,7 +78,7 @@ onLoad = function(){
 
         reactor.addGroup(game);
 
-        game.route('init', [sweeper.init]);
+        game.route('init', [sweeper.init, uiPlayer.init]);
         game.route('update', [sweeper.update, renderer.draw]);
         game.route('move', [uiPlayer.click, sweeper.explore, renderer.draw]);
         game.route('resize', [camera.resize, uiPlayer.resize, renderer.draw]);

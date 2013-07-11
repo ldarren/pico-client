@@ -117,7 +117,7 @@ pico.def('sweeperMap', 'picBase', function(){
             mapOpt = e.getComponent(name);
             if (mapOpt) break;
         }
-        if (!mapOpt) return;
+        if (!mapOpt) return entities;
 
         var
         map = this.map,
