@@ -19,20 +19,13 @@ pico.def('uiPlayer', 'picBase', function(){
         var
         ts = evt.tileSet,
         theme = myOpt.theme,
-        aTheme = theme.ACTIVE,
-        iaTheme = theme.INACTIVE,
-        activeBorders = this.activeBorders,
-        inactiveBorders = this.inactiveBorders;
+        b = theme.BORDERS,
+        borders = this.borders;
 
-        activeBorders.push(ts.cut(aTheme.TOP));
-        activeBorders.push(ts.cut(aTheme.LEFT));
-        activeBorders.push(ts.cut(aTheme.BOTTOM));
-        activeBorders.push(ts.cut(aTheme.RIGHT));
-
-        inactiveBorders.push(ts.cut(iaTheme.TOP));
-        inactiveBorders.push(ts.cut(iaTheme.LEFT));
-        inactiveBorders.push(ts.cut(iaTheme.BOTTOM));
-        inactiveBorders.push(ts.cut(iaTheme.RIGHT));
+        borders.push(ts.cut(b.TOP));
+        borders.push(ts.cut(b.LEFT));
+        borders.push(ts.cut(b.BOTTOM));
+        borders.push(ts.cut(b.RIGHT));
     };
 
     me.resize = function(elapsed, evt, entities){
@@ -64,7 +57,7 @@ pico.def('uiPlayer', 'picBase', function(){
         var
         rectOpt = ent.getComponent(uiOpt.box),
         ts = this.tileSet,
-        theme, borders = this.activeBorders;
+        theme, borders = this.borders;
         
         if (uiOpt.active){
             theme = uiOpt.theme.ACTIVE;
@@ -90,13 +83,9 @@ pico.def('uiPlayer', 'picBase', function(){
         ctx.fillRect(rectOpt.x, rectOpt.y, 8, rectOpt.height);
 
         ts.draw(ctx, theme.TOP_LEFT, rectOpt.x, rectOpt.y);
-        ts.draw(ctx, theme.TOP, rectOpt.x+8, rectOpt.y);
         ts.draw(ctx, theme.TOP_RIGHT, rectOpt.x + rectOpt.width - 8, rectOpt.y);
-        ts.draw(ctx, theme.RIGHT, rectOpt.x + rectOpt.width - 8, rectOpt.y+8);
         ts.draw(ctx, theme.BOTTOM_LEFT, rectOpt.x, rectOpt.y + rectOpt.height - 8);
-        ts.draw(ctx, theme.LEFT, rectOpt.x, rectOpt.y + rectOpt.height - 16);
         ts.draw(ctx, theme.BOTTOM_RIGHT, rectOpt.x + rectOpt.width - 8, rectOpt.y + rectOpt.height - 8);
-        ts.draw(ctx, theme.BOTTOM, rectOpt.x + rectOpt.width - 16, rectOpt.y + rectOpt.height - 8);
         ctx.restore();
 
     };

@@ -96,7 +96,7 @@ console.log('smallDevice:', smallDevice, window.innerWidth, window.innerHeight);
         cameraEnt.attach(sweeper, {});
         cameraEnt.attach(renderer, {viewPane:[camera.moduleName]});
         uiPlayerEnt.attach(rect, {x:16, y:16, width:256, height:128});
-        uiPlayerEnt.attach(uiPlayer, {theme: G_THEME.THEME1, background: G_COLOR_TONE[3], box:rect.moduleName});
+        uiPlayerEnt.attach(uiPlayer, {theme: G_THEME.THEME8, background: G_COLOR_TONE[3], box:rect.moduleName});
         uiPlayerEnt.attach(renderer, {uiPane:[uiPlayer.moduleName]});
 
         resize(window.innerWidth, window.innerHeight);

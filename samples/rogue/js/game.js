@@ -16,6 +16,5 @@ pico.def('game', 'picGroup', function(){
     me.hints = []; // 08:creep, 80:chest, 800:stair:
     me.objects = [];
     me.flags = [];
-    me.activeBorders = [];
-    me.inactiveBorders = [];
+    me.borders = [];
 });
