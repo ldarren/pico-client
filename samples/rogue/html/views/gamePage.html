@@ -11,6 +11,7 @@ this.use('piCanvas');
 this.use('piReactor');
 this.use('piAtlas');
 this.use('picRect');
+this.use('picTween');
 this.use('picRenderer');
 this.use('game');
 this.use('camera');
@@ -19,8 +20,6 @@ this.use('uiPlayer');
 
 var
 me = this,
-smallDevice = false,
-cameraEnt, uiPlayer,
 onMouseDown = function(evt, x, y){
     me.game.go('move', {x:x, y:y});
 },
@@ -60,12 +59,14 @@ onLoad = function(){
         gameStage = document.querySelector('div#gameStage'),
         reactor = me.piReactor,
         rect = me.picRect,
+        tween = me.picTween,
         renderer = me.picRenderer,
         game = me.game,
         sweeper = me.sweeperMap,
         camera = me.camera,
         uiPlayer = me.uiPlayer,
-        canvas = me.piCanvas;
+        canvas = me.piCanvas,
+        smallDevice = window.innerWidth > 800 || window.innerHeight > 800 ? false : true;
 
         canvas.init(gameStage);
 
@@ -79,16 +80,13 @@ onLoad = function(){
         reactor.addGroup(game);
 
         game.route('init', [sweeper.init, uiPlayer.init]);
-        game.route('update', [sweeper.update, renderer.draw]);
         game.route('move', [uiPlayer.click, sweeper.explore, renderer.draw]);
         game.route('resize', [camera.resize, uiPlayer.resize, renderer.draw]);
 
-        smallDevice = window.innerWidth > 800 || window.innerHeight > 800 ? false : true;
-console.log('smallDevice:', smallDevice, window.innerWidth, window.innerHeight);
-        var tileSize = smallDevice ? 32 : 64;
-        game.go('init', {tileSet:tileSet, tileWidth:tileSize, tileHeight:tileSize, mapWidth:8, mapHeight:8, mapLevel:0, heroJob:G_HERO.PRIEST});
+        game.go('init', {tileSet:tileSet, smallDevice: smallDevice, mapLevel:0, heroJob:G_HERO.PRIEST});
 
-        cameraEnt = game.createEntity('camera');
+        var
+        cameraEnt = game.createEntity('camera'),
         uiPlayerEnt = game.createEntity('uiPlayer');
 
         cameraEnt.attach(rect, {x:0, y:0, width:100, height:100});
@@ -96,14 +94,13 @@ console.log('smallDevice:', smallDevice, window.innerWidth, window.innerHeight);
         cameraEnt.attach(sweeper, {});
         cameraEnt.attach(renderer, {viewPane:[camera.moduleName]});
         uiPlayerEnt.attach(rect, {x:16, y:16, width:256, height:128});
+        uiPlayerEnt.attach(tween, {picRect:{x:[], y:[], width:[], height:[]}});
         uiPlayerEnt.attach(uiPlayer, {theme: G_THEME.THEME8, background: G_COLOR_TONE[3], box:rect.moduleName});
         uiPlayerEnt.attach(renderer, {uiPane:[uiPlayer.moduleName]});
 
         resize(window.innerWidth, window.innerHeight);
         canvas.slot(canvas.FINGER_DOWN, onMouseDown);
         window.addEventListener('resize', onResize, false);
-
-        game.go('update');
     });
 };
 

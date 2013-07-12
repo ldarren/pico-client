@@ -5,6 +5,7 @@ pico.def('uiPlayer', 'picBase', function(){
 
     me.create = function(ent, data){
         data.active = false;
+        data.maximized = false;
 
         return data;
     };

@@ -5,6 +5,7 @@ pico.def('game', 'picGroup', function(){
     JOB_NAMES = ['Rogue', 'Priest', 'Barbarian', 'Druid', 'Hunter', 'Knight', 'Wizard', 'Warlock'];
 
     me.tileSet = null;
+    me.smallDevice = false;
     me.heroJob = G_HERO.ROGUE;
     me.tileWidth = 16;
     me.tileHeight = 16;
@@ -12,6 +13,8 @@ pico.def('game', 'picGroup', function(){
     me.mapHeight = 160;
     me.mapLevel = 0;
     me.heroPos = 0;
+    me.creepCount = 0;
+    me.chestCount = 0;
     me.map = [];
     me.hints = []; // 08:creep, 80:chest, 800:stair:
     me.objects = [];

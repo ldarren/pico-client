@@ -35,11 +35,15 @@ pico.def('sweeperMap', 'picBase', function(){
     me.init = function(elapsed, evt, entities){
         this.tileSet = evt.tileSet;
         this.heroJob = evt.heroJob;
-        this.tileWidth = evt.tileWidth;
-        this.tileHeight = evt.tileHeight;
         this.mapLevel = evt.mapLevel;
-        this.mapWidth = evt.mapWidth;
-        this.mapHeight = evt.mapHeight;
+        var sd = this.smallDevice = evt.smallDevice;
+        this.tileWidth = sd ? 32 : 64;
+        this.tileHeight = sd ? 32 : 64;
+        mapParams = G_MAP_PARAMS[this.mapLevel];
+        this.mapWidth = mapParams[0];
+        this.mapHeight = mapParams[1];
+        this.creepCount = mapParams[2];
+        this.chestCount = mapParams[3];
 
         var
         shuffle = [],
@@ -62,14 +66,14 @@ pico.def('sweeperMap', 'picBase', function(){
         }
 
         // add creeps
-        for(i=0,l=((this.mapLevel * 10) + 1); i<l; i++){
+        for(i=0,l=this.creepCount; i<l; i++){
             c = shuffle.splice(Math.floor(Math.random()*shuffle.length), 1)[0];
             map[c] |= G_TILE_TYPE.CREEP;
             objects[c] = G_CREEP.WOLF;
         }
 
         // add chests
-        for(i=0,l=((this.mapLevel * 3) + 1); i<l; i++){
+        for(i=0,l=this.chestCount; i<l; i++){
             c = shuffle.splice(Math.floor(Math.random()*shuffle.length), 1)[0];
             map[c] |= G_TILE_TYPE.CHEST;
             objects[c] = G_OBJECT.CHEST_CLOSED;
@@ -97,17 +101,15 @@ pico.def('sweeperMap', 'picBase', function(){
             hints[i] = hint;
         }
 
-        fill(map, hints, mapW, this.heroPos);
-
         c = shuffle.splice(Math.floor(Math.random()*shuffle.length), 1)[0];
-        map[c] = G_TILE_TYPE.STAIR_UP;
         objects[c] = G_FLOOR.STAIR_UP;
         this.heroPos = c;
 
-        return entities;
-    };
+        fill(map, hints, mapW, this.heroPos);
 
-    me.update = function(elapsed, evt, entities){
+        map[c] = G_TILE_TYPE.STAIR_UP; // must do after fill, becos fill will ignore revealed tile
+
+        return entities;
     };
 
     me.explore = function(elapsed, evt, entities){

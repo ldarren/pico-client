@@ -100,6 +100,13 @@ Object.freeze(G_FLOOR = {
     WALL: 19
 });
 
+Object.freeze(G_MAP_PARAMS = [
+    [8, 8, 1, 1], // width, height, creeps, chests
+    [10, 10, 5, 2],
+    [12, 12, 6, 2],
+    [14, 14, 7, 2]
+]);
+
 Object.freeze(G_THEME = {
     THEME1:{
         BRANCHES:{ TOP:286, RIGHT:320, BOTTOM:383, LEFT:349 },
