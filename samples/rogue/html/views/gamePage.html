@@ -79,7 +79,7 @@ onLoad = function(){
 
         reactor.addGroup(game);
 
-        game.route('init', [sweeper.init, uiPlayer.init]);
+        game.route('init', [sweeper.init]);
         game.route('move', [uiPlayer.click, sweeper.explore, renderer.draw]);
         game.route('resize', [camera.resize, uiPlayer.resize, renderer.draw]);
 
@@ -93,9 +93,9 @@ onLoad = function(){
         cameraEnt.attach(camera, {});
         cameraEnt.attach(sweeper, {});
         cameraEnt.attach(renderer, {viewPane:[camera.moduleName]});
-        uiPlayerEnt.attach(rect, {x:16, y:16, width:256, height:128});
-        uiPlayerEnt.attach(tween, {picRect:{x:[], y:[], width:[], height:[]}});
-        uiPlayerEnt.attach(uiPlayer, {theme: G_THEME.THEME8, background: G_COLOR_TONE[3], box:rect.moduleName});
+        uiPlayerEnt.attach(rect, {x:0, y:0, width:0, height:0});
+        uiPlayerEnt.attach(tween, {picRect:{x:[0, 1], y:[0, 1], width:[0, 1], height:[0, 1]}});
+        uiPlayerEnt.attach(uiPlayer, {theme: G_THEME.THEME8, background: G_COLOR_TONE[3], box:tween.moduleName});
         uiPlayerEnt.attach(renderer, {uiPane:[uiPlayer.moduleName]});
 
         resize(window.innerWidth, window.innerHeight);

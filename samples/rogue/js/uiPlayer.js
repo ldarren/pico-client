@@ -1,25 +1,22 @@
 pico.def('uiPlayer', 'picBase', function(){
+    this.use('picTween');
+
     var
     me = this,
-    name = me.moduleName;
-
-    me.create = function(ent, data){
-        data.active = false;
-        data.maximized = false;
-
-        return data;
+    name = me.moduleName,
+    getMyComponent = function(entities){
+        var myCom;
+        for(var i=0, l=entities.length; i<l; i++){
+            myCom = entities[i].getComponent(name);
+            if (myCom) break;
+        }
+        return myCom;
     };
 
-    me.init = function(elapsed, evt, entities){
-        var myOpt;
-        for(var i=0, l=entities.length; i<l; i++){
-            myOpt = entities[i].getComponent(name);
-            if (myOpt) break;
-        }
-
+    me.create = function(ent, data){
         var
-        ts = evt.tileSet,
-        theme = myOpt.theme,
+        ts = this.tileSet,
+        theme = data.theme,
         b = theme.BORDERS,
         borders = this.borders;
 
@@ -27,9 +24,42 @@ pico.def('uiPlayer', 'picBase', function(){
         borders.push(ts.cut(b.LEFT));
         borders.push(ts.cut(b.BOTTOM));
         borders.push(ts.cut(b.RIGHT));
+
+        data.active = false;
+        data.maximized = false;
+        data.minWidth = this.smallDevice ? 320 : 640;
+        data.minHeight = this.tileHeight;
+
+        return data;
     };
 
     me.resize = function(elapsed, evt, entities){
+        var com = getMyComponent(entities);
+        if (!com) return entities;
+
+        var
+        tween = me.picTween,
+        e = com.host,
+        tweenCom = e.getComponent(com.box),
+        x, y, width, height;
+
+        if (com.minimized){
+            width = com.minWidth;
+            height = com.minHeight;
+            x = Math.floor((evt.width - width)/2);
+            y = Math.floor(evt.height - height);
+        }else{
+            width = evt.width;
+            height = evt.height;
+            x = 0;
+            y = 0;
+        }
+
+        tween.set(tweenCom, 'x', x);
+        tween.set(tweenCom, 'y', y);
+        tween.set(tweenCom, 'width', width);
+        tween.set(tweenCom, 'height', height);
+
         return entities;
     };
 
@@ -46,6 +76,8 @@ pico.def('uiPlayer', 'picBase', function(){
                 return [e];
             }
             uiOpt.active = active;
+
+
         }
         return entities;
     };
