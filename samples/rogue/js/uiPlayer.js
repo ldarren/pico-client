@@ -4,13 +4,14 @@ pico.def('uiPlayer', 'picBase', function(){
     var
     me = this,
     name = me.moduleName,
+    layouts = [],
     getMyComponent = function(entities){
-        var myCom;
+        var com;
         for(var i=0, l=entities.length; i<l; i++){
-            myCom = entities[i].getComponent(name);
-            if (myCom) break;
+            com = entities[i].getComponent(name);
+            if (com) break;
         }
-        return myCom;
+        return com;
     };
 
     me.create = function(ent, data){
@@ -26,7 +27,7 @@ pico.def('uiPlayer', 'picBase', function(){
         borders.push(ts.cut(b.RIGHT));
 
         data.active = false;
-        data.maximized = false;
+        data.maximized = 0;
         data.minWidth = this.smallDevice ? 320 : 640;
         data.minHeight = this.tileHeight;
 
@@ -42,21 +43,21 @@ pico.def('uiPlayer', 'picBase', function(){
         e = com.host,
         tweenCom = e.getComponent(com.tween),
         boxName = com.box,
-        x, y, width, height;
+        boxCom = e.getComponent(boxName),
+        tweenBox = tween.get(tweenCom, boxName),
+        layout;
 
-        if (com.minimized){
-            width = com.minWidth;
-            height = com.minHeight;
-            x = Math.floor((evt.width - width)/2);
-            y = Math.floor(evt.height - height);
-        }else{
-            width = evt.width;
-            height = evt.height;
-            x = 0;
-            y = 0;
-        }
+        layouts.length = 0;
 
-        tween.set(tweenCom, boxName, {x:x, y:y, width:width, height:height});
+        layouts.push([Math.floor((evt.width - com.minWidth)/2), evt.height - com.minHeight, com.minWidth, com.minHeight]);
+        layouts.push([0, 0, evt.width, evt.height]);
+
+        layout = layouts[com.minimized];
+
+        boxCom.x = tweenBox.x = layout[0];
+        boxCom.y = tweenBox.y = layout[1];
+        boxCom.width = tweenBox.width = layout[2];
+        boxCom.height = tweenBox.height = layout[3];
 
         return entities;
     };
@@ -70,7 +71,14 @@ pico.def('uiPlayer', 'picBase', function(){
             rectOpt = e.getComponent(uiOpt.box);
             active = (rectOpt.x < evt.x && (rectOpt.x + rectOpt.width) > evt.x && rectOpt.y < evt.y && (rectOpt.y + rectOpt.height) > evt.y);
             if (active !== uiOpt.active){
+                com.minimized = com.minimized ? 0 : 1;
+                var layout = layouts[com.minimized];
+                rectOpt.x = layout[0];
+                rectOpt.y = layout[1];
+                rectOpt.width = layout[2];
+                rectOpt.height = layout[3];
                 uiOpt.active = active;
+                this.startLoop('uiResize');
                 return [e];
             }
         }

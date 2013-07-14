@@ -94,7 +94,7 @@ onLoad = function(){
         cameraEnt.attach(sweeper, {});
         cameraEnt.attach(renderer, {viewPane:[camera.moduleName]});
         uiPlayerEnt.attach(rect, {x:0, y:0, width:0, height:0});
-        uiPlayerEnt.attach(tween, {picRect:{x:[0, 1], y:[0, 1], width:[0, 1], height:[0, 1]}});
+        uiPlayerEnt.attach(tween, {picRect:{x:1, y:1, width:1, height:1}});
         uiPlayerEnt.attach(uiPlayer, {theme: G_THEME.THEME8, background: G_COLOR_TONE[3], tween:tween.moduleName, box:rect.moduleName});
         uiPlayerEnt.attach(renderer, {uiPane:[uiPlayer.moduleName]});
 
