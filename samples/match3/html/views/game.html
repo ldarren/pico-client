@@ -99,7 +99,7 @@
             color = 'rgba('+Math.floor(Math.random()*255)+','+Math.floor(Math.random()*255)+','+Math.floor(Math.random()*255)+',0.8)';
             e.attach(rect, {x:x, y:y, width:10, height:10, scale:1, head:head});
             e.attach(circle, {rectComponent:rect.moduleName, strokeStyle: 'rgba(0,0,255,1)', fillStyle: color});
-            e.attach(tween, {picRect: {x:[x, 10], y:[y, 10], width: [10, 1], height: [10, 1], scale: [1, 0.1], head: [head, 0.01]}});
+            e.attach(tween, {picRect: {x:10, y:10, width:1, height:1, scale:0.1, head:0.01}});
             e.attach(renderer, {fl: [circle.moduleName]});
             e.attach(audio, {id:'bang'});
         }

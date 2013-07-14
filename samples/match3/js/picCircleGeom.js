@@ -22,9 +22,9 @@ pico.def('picCircleGeom', 'picBase', function(){
         for(var i=0,l=entities.length; i<l; i++){
             e = entities[i];
             data = e.getComponent(name);
-            rect = tween.getValues(e, data.rectComponent);
-            data.x = rect.x[0];
-            data.y = rect.y[0];
+            rect = tween.getByEntity(e, data.rectComponent);
+            data.x = rect.x;
+            data.y = rect.y;
         }
         return entities;
     };
@@ -53,7 +53,7 @@ pico.def('picCircleGeom', 'picBase', function(){
     };
 
     me.draw = function(ctx, ent, elapsed){
-        o = ent.getComponent(me.moduleName);
+        o = ent.getComponent(name);
         x = o.x;
         y = o.y;
 
