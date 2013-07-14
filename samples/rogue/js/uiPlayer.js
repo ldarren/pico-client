@@ -40,7 +40,8 @@ pico.def('uiPlayer', 'picBase', function(){
         var
         tween = me.picTween,
         e = com.host,
-        tweenCom = e.getComponent(com.box),
+        tweenCom = e.getComponent(com.tween),
+        boxName = com.box,
         x, y, width, height;
 
         if (com.minimized){
@@ -55,10 +56,7 @@ pico.def('uiPlayer', 'picBase', function(){
             y = 0;
         }
 
-        tween.set(tweenCom, 'x', x);
-        tween.set(tweenCom, 'y', y);
-        tween.set(tweenCom, 'width', width);
-        tween.set(tweenCom, 'height', height);
+        tween.set(tweenCom, boxName, {x:x, y:y, width:width, height:height});
 
         return entities;
     };
@@ -75,9 +73,6 @@ pico.def('uiPlayer', 'picBase', function(){
                 uiOpt.active = active;
                 return [e];
             }
-            uiOpt.active = active;
-
-
         }
         return entities;
     };
