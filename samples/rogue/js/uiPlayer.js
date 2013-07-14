@@ -5,13 +5,9 @@ pico.def('uiPlayer', 'picBase', function(){
     me = this,
     name = me.moduleName,
     layouts = [],
-    getMyComponent = function(entities){
-        var com;
-        for(var i=0, l=entities.length; i<l; i++){
-            com = entities[i].getComponent(name);
-            if (com) break;
-        }
-        return com;
+    tween,
+    onStop = function(game, ent, tweenName, targetName){
+        if (targetName === 'picRect') game.stopLoop('uiAnim');
     };
 
     me.create = function(ent, data){
@@ -31,16 +27,23 @@ pico.def('uiPlayer', 'picBase', function(){
         data.minWidth = this.smallDevice ? 320 : 640;
         data.minHeight = this.tileHeight;
 
+        tween = me.picTween;
+        tween.slot('stop', onStop);
+
         return data;
     };
 
     me.resize = function(elapsed, evt, entities){
-        var com = getMyComponent(entities);
+        var com, e;
+        for(var i=0, l=entities.length; i<l; i++){
+            e = entities[i];
+            com = e.getComponent(name);
+            if (com) break;
+        }
         if (!com) return entities;
 
         var
         tween = me.picTween,
-        e = com.host,
         tweenCom = e.getComponent(com.tween),
         boxName = com.box,
         boxCom = e.getComponent(boxName),
@@ -49,10 +52,10 @@ pico.def('uiPlayer', 'picBase', function(){
 
         layouts.length = 0;
 
-        layouts.push([Math.floor((evt.width - com.minWidth)/2), evt.height - com.minHeight, com.minWidth, com.minHeight]);
-        layouts.push([0, 0, evt.width, evt.height]);
+        layouts.push([evt[0] + Math.floor((evt[2] - com.minWidth)/2), evt[1] + evt[3] - com.minHeight, com.minWidth, com.minHeight]);
+        layouts.push([evt[0], evt[1], evt[2], evt[3]]);
 
-        layout = layouts[com.minimized];
+        layout = layouts[com.maximized];
 
         boxCom.x = tweenBox.x = layout[0];
         boxCom.y = tweenBox.y = layout[1];
@@ -70,15 +73,17 @@ pico.def('uiPlayer', 'picBase', function(){
             if (!uiOpt) continue;
             rectOpt = e.getComponent(uiOpt.box);
             active = (rectOpt.x < evt.x && (rectOpt.x + rectOpt.width) > evt.x && rectOpt.y < evt.y && (rectOpt.y + rectOpt.height) > evt.y);
-            if (active !== uiOpt.active){
-                com.minimized = com.minimized ? 0 : 1;
-                var layout = layouts[com.minimized];
+            if (active){
+                uiOpt.maximized = uiOpt.maximized ? 0 : 1;
+                var layout = layouts[uiOpt.maximized];
                 rectOpt.x = layout[0];
                 rectOpt.y = layout[1];
                 rectOpt.width = layout[2];
                 rectOpt.height = layout[3];
+                this.startLoop('uiAnim');
+            }
+            if (active !== uiOpt.active){
                 uiOpt.active = active;
-                this.startLoop('uiResize');
                 return [e];
             }
         }
@@ -91,7 +96,8 @@ pico.def('uiPlayer', 'picBase', function(){
         if (!uiOpt) return;
 
         var
-        rectOpt = ent.getComponent(uiOpt.box),
+        tweenOpt = ent.getComponent(uiOpt.tween),
+        rectOpt = tween.get(tweenOpt, uiOpt.box),
         ts = this.tileSet,
         theme, borders = this.borders;
         

@@ -32,26 +32,26 @@ pico.def('sweeperMap', 'picBase', function(){
     };
 
     // evt = {tileSet:tileSet, tileWidth:64, tileHeight:64, mapWidth:8, mapHeight:8, level:0, playerJob:game.PRIEST}
-    me.init = function(elapsed, evt, entities){
-        this.tileSet = evt.tileSet;
-        this.heroJob = evt.heroJob;
-        this.mapLevel = evt.mapLevel;
-        var sd = this.smallDevice = evt.smallDevice;
-        this.tileWidth = sd ? 32 : 64;
-        this.tileHeight = sd ? 32 : 64;
-        mapParams = G_MAP_PARAMS[this.mapLevel];
-        this.mapWidth = mapParams[0];
-        this.mapHeight = mapParams[1];
-        this.creepCount = mapParams[2];
-        this.chestCount = mapParams[3];
+    me.init = function(game, data){
+        game.tileSet = data.tileSet;
+        game.heroJob = data.heroJob;
+        game.mapLevel = data.mapLevel;
+        var sd = game.smallDevice = data.smallDevice;
+        game.tileWidth = sd ? 32 : 64;
+        game.tileHeight = sd ? 32 : 64;
+        mapParams = G_MAP_PARAMS[game.mapLevel];
+        game.mapWidth = mapParams[0];
+        game.mapHeight = mapParams[1];
+        game.creepCount = mapParams[2];
+        game.chestCount = mapParams[3];
 
         var
         shuffle = [],
-        map = this.map,
-        mapW = this.mapWidth, mapH = this.mapHeight,
-        hints = this.hints,
-        objects = this.objects,
-        flags = this.flags,
+        map = game.map,
+        mapW = game.mapWidth, mapH = game.mapHeight,
+        hints = game.hints,
+        objects = game.objects,
+        flags = game.flags,
         i, l, c, hint;
 
         map.length = 0;
@@ -66,14 +66,14 @@ pico.def('sweeperMap', 'picBase', function(){
         }
 
         // add creeps
-        for(i=0,l=this.creepCount; i<l; i++){
+        for(i=0,l=game.creepCount; i<l; i++){
             c = shuffle.splice(Math.floor(Math.random()*shuffle.length), 1)[0];
             map[c] |= G_TILE_TYPE.CREEP;
             objects[c] = G_CREEP.WOLF;
         }
 
         // add chests
-        for(i=0,l=this.chestCount; i<l; i++){
+        for(i=0,l=game.chestCount; i<l; i++){
             c = shuffle.splice(Math.floor(Math.random()*shuffle.length), 1)[0];
             map[c] |= G_TILE_TYPE.CHEST;
             objects[c] = G_OBJECT.CHEST_CLOSED;
@@ -103,13 +103,11 @@ pico.def('sweeperMap', 'picBase', function(){
 
         c = shuffle.splice(Math.floor(Math.random()*shuffle.length), 1)[0];
         objects[c] = G_FLOOR.STAIR_UP;
-        this.heroPos = c;
+        game.heroPos = c;
 
-        fill(map, hints, mapW, this.heroPos);
+        fill(map, hints, mapW, game.heroPos);
 
         map[c] = G_TILE_TYPE.STAIR_UP; // must do after fill, becos fill will ignore revealed tile
-
-        return entities;
     };
 
     me.explore = function(elapsed, evt, entities){
