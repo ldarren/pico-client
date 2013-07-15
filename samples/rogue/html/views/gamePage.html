@@ -40,7 +40,7 @@ resize = function(iw, ih){
 
     style.width = w + 'px';
     style.height = h + 'px';
-    style['margin-left'] = Math.floor(-w/2)+'px';
+    style.margin = '0 0 0 '+Math.floor(-w/2)+'px';
 
     me.piCanvas.resize(w, h);
     me.picRenderer.resizeContext('viewPane', 0, 0, w, h);
