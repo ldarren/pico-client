@@ -59,7 +59,6 @@ onLoad = function(){
         gameStage = document.querySelector('div#gameStage'),
         reactor = me.piReactor,
         rect = me.picRect,
-        tween = me.picTween,
         renderer = me.picRenderer,
         game = me.game,
         sweeper = me.sweeperMap,
@@ -83,7 +82,6 @@ onLoad = function(){
 
         game.route('move', [uiPlayer.click, sweeper.explore, renderer.draw]);
         game.route('resize', [camera.resize, uiPlayer.resize, renderer.draw]);
-        game.route('uiAnim', [tween.update, renderer.draw]);
 
         var
         cameraEnt = game.createEntity('camera'),
@@ -94,8 +92,7 @@ onLoad = function(){
         cameraEnt.attach(sweeper, {});
         cameraEnt.attach(renderer, {viewPane:[camera.moduleName]});
         uiPlayerEnt.attach(rect, {x:0, y:0, width:0, height:0});
-        uiPlayerEnt.attach(tween, {picRect:{x:50, y:50, width:100, height:100}});
-        uiPlayerEnt.attach(uiPlayer, {theme: G_THEME.THEME8, background: G_COLOR_TONE[3], tween:tween.moduleName, box:rect.moduleName});
+        uiPlayerEnt.attach(uiPlayer, {theme: G_THEME.THEME8, background: G_COLOR_TONE[3], box:rect.moduleName});
         uiPlayerEnt.attach(renderer, {uiPane:[uiPlayer.moduleName]});
 
         resize(window.innerWidth, window.innerHeight);

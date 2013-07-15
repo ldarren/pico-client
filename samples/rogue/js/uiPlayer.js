@@ -1,14 +1,9 @@
 pico.def('uiPlayer', 'picBase', function(){
-    this.use('picTween');
 
     var
     me = this,
     name = me.moduleName,
-    layouts = [],
-    tween,
-    onStop = function(game, ent, tweenName, targetName){
-        if (targetName === 'picRect') game.stopLoop('uiAnim');
-    };
+    layouts = [];
 
     me.create = function(ent, data){
         var
@@ -27,9 +22,6 @@ pico.def('uiPlayer', 'picBase', function(){
         data.minWidth = this.smallDevice ? 320 : 640;
         data.minHeight = this.tileHeight;
 
-        tween = me.picTween;
-        tween.slot('stop', onStop);
-
         return data;
     };
 
@@ -43,11 +35,8 @@ pico.def('uiPlayer', 'picBase', function(){
         if (!com) return entities;
 
         var
-        tween = me.picTween,
-        tweenCom = e.getComponent(com.tween),
         boxName = com.box,
         boxCom = e.getComponent(boxName),
-        tweenBox = tween.get(tweenCom, boxName),
         layout;
 
         layouts.length = 0;
@@ -57,10 +46,10 @@ pico.def('uiPlayer', 'picBase', function(){
 
         layout = layouts[com.maximized];
 
-        boxCom.x = tweenBox.x = layout[0];
-        boxCom.y = tweenBox.y = layout[1];
-        boxCom.width = tweenBox.width = layout[2];
-        boxCom.height = tweenBox.height = layout[3];
+        boxCom.x = layout[0];
+        boxCom.y = layout[1];
+        boxCom.width = layout[2];
+        boxCom.height = layout[3];
 
         return entities;
     };
@@ -80,7 +69,6 @@ pico.def('uiPlayer', 'picBase', function(){
                 rectOpt.y = layout[1];
                 rectOpt.width = layout[2];
                 rectOpt.height = layout[3];
-                this.startLoop('uiAnim');
             }
             if (active !== uiOpt.active){
                 uiOpt.active = active;
@@ -96,8 +84,7 @@ pico.def('uiPlayer', 'picBase', function(){
         if (!uiOpt) return;
 
         var
-        tweenOpt = ent.getComponent(uiOpt.tween),
-        rectOpt = tween.get(tweenOpt, uiOpt.box),
+        rectOpt = ent.getComponent(uiOpt.box),
         ts = this.tileSet,
         theme, borders = this.borders;
         
