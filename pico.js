@@ -10,7 +10,7 @@ pico = function(n){
   return this;
 };
 // shared by all pico objects
-Object.defineProperty(pico.prototype, 'links', {value:{}, writable:true, configurable:false, enumerable:false});
+pico.prototype.links = {};
 
 pico.prototype.slot = pico.slot = function(channelName){
     var channel = this.slots[channelName] = this.slots[channelName] || {};
@@ -62,15 +62,17 @@ pico.def = function(name){
         // without ancestor
         factory = arguments[1];
     }
+    var properties = {
+        moduleName: {value:name, writable:false, configurable:false, enumerable:true},
+        slots: {value:{}, writable:false, configurable:false, enumerable:false},
+        deps: {value:[], writable:false, configurable:false, enumerable:false}
+    };
     if (ancestor){
-        module = Object.create(ancestor, {moduleName: {value:name, writable:false, configurable:false, enumerable:true}});
+        module = Object.create(ancestor, properties);
     }else{
-        module = new pico;
-        Object.defineProperty(module, 'moduleName', {value:name, writable:false, configurable:false, enumerable:true});
+        module = Object.create(pico.prototype, properties);
     }
     // each pico object has their own slots and dependencies
-    Object.defineProperty(module, 'slots', {value:{}, writable:false, configurable:false, enumerable:false});
-    Object.defineProperty(module, 'deps', {value:[], writable:false, configurable:false, enumerable:false});
 
     factory.call(module);
     return this.modules[name] = module;
@@ -435,6 +437,7 @@ Object.defineProperty(pico, 'inner', {value:{
   }
   }, writable:false, configurable:false, enumerable:false});
 
+if (!Object.freeze) Object.freeze = function(){};
 Object.freeze(pico);
 
 window.addEventListener('load', function(){
