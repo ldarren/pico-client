@@ -16,7 +16,7 @@ this.use('picRenderer');
 this.use('game');
 this.use('camera');
 this.use('sweeperMap');
-this.use('uiPlayer');
+this.use('uiWindow');
 
 var
 me = this,
@@ -48,7 +48,6 @@ resize = function(iw, ih){
     me.game.go('resize', [0,0,w,h]);
 },
 onResize = function(){
-    console.log('device resized');
     resize(this.innerWidth, this.innerHeight);
 },
 onLoad = function(){
@@ -63,7 +62,7 @@ onLoad = function(){
         game = me.game,
         sweeper = me.sweeperMap,
         camera = me.camera,
-        uiPlayer = me.uiPlayer,
+        uiWindow = me.uiWindow,
         canvas = me.piCanvas,
         smallDevice = window.innerWidth > 800 || window.innerHeight > 800 ? false : true;
 
@@ -75,26 +74,36 @@ onLoad = function(){
 
         renderer.registerContext('viewPane', gameLayer.getContext());
         renderer.registerContext('uiPane', uiLayer.getContext());
-        renderer.setBG('viewPane', '#204631')
+        renderer.setBG('viewPane', G_COLOR_TONE[3]);
 
         reactor.addGroup(game);
 
         sweeper.init(game, {tileSet:tileSet, smallDevice: smallDevice, mapLevel:0, heroJob:G_HERO.PRIEST});
 
-        game.route('move', [uiPlayer.click, sweeper.explore, renderer.draw]);
-        game.route('resize', [camera.resize, uiPlayer.resize, renderer.draw]);
+        game.route('move', [uiWindow.click, sweeper.explore, renderer.draw]);
+        game.route('resize', [camera.resize, uiWindow.resize, renderer.draw]);
 
         var
         cameraEnt = game.createEntity('camera'),
-        uiPlayerEnt = game.createEntity('uiPlayer');
+        uiWinEnts = [],
+        uiWinEnt;
+
+        uiWinEnts[0] = game.createEntity('uiPlayer');
+        uiWinEnts[1] = game.createEntity('uiSkills');
+        uiWinEnts[2] = game.createEntity('uiInventory');
+        uiWinEnts[3] = game.createEntity('uiCreep');
 
         cameraEnt.attach(rect, {x:0, y:0, width:100, height:100});
         cameraEnt.attach(camera, {});
         cameraEnt.attach(sweeper, {});
         cameraEnt.attach(renderer, {viewPane:[camera.moduleName]});
-        uiPlayerEnt.attach(rect, {x:0, y:0, width:0, height:0});
-        uiPlayerEnt.attach(uiPlayer, {theme: G_THEME.THEME8, background: G_COLOR_TONE[3], box:rect.moduleName});
-        uiPlayerEnt.attach(renderer, {uiPane:[uiPlayer.moduleName]});
+
+        for(var i=0, l=uiWinEnts.length; i<l; i++){
+            uiWinEnt = uiWinEnts[i];
+            uiWinEnt.attach(rect, {x:0, y:0, width:0, height:0});
+            uiWinEnt.attach(uiWindow, {id:uiWinEnt.name, theme: G_THEME.THEME8, background: G_COLOR_TONE[3], box:rect.moduleName});
+            uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName]});
+        }
 
         resize(window.innerWidth, window.innerHeight);
         canvas.slot(canvas.FINGER_DOWN, onMouseDown);
