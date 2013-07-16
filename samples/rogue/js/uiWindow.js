@@ -6,7 +6,6 @@ pico.def('uiWindow', 'picUIWindow', function(){
     skillsId = 'uiSkills',
     inventoryId = 'uiInventory',
     creepId = 'uiCreep',
-    maximizedId = null,
     name = me.moduleName;
 
     me.create = function(ent, data){
@@ -20,7 +19,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         var gs = data.gridSize = this.smallDevice ? 8 : 16;
         data.layouts = [];
 
-        switch(data.id){
+        switch(ent.name){
             case playerId:
                 data.docks = [8+4+1, 8+4+2+1];
                 data.minWidth = this.smallDevice ? 320 : 640;
@@ -68,7 +67,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
             layouts.length = 0;
 
-            switch(com.id){
+            switch(e.name){
                 case playerId:
                     layouts.push(me.fitIntoGrid(
                         [evt[0] + Math.floor((evt[2] - com.minWidth)/2), evt[1] + evt[3] - com.minHeight, com.minWidth, com.minHeight],
@@ -104,7 +103,6 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
     me.click = function(elapsed, evt, entities){
         var e, active, uiOpt, rectOpt;
-        maximizedId = null;
         for (var i=0, l=entities.length; i<l; i++){
             e = entities[i];
             uiOpt = e.getComponent(name);
@@ -116,7 +114,17 @@ pico.def('uiWindow', 'picUIWindow', function(){
             }
             if (active){
                 uiOpt.maximized = uiOpt.maximized ? 0 : 1;
-                if (uiOpt.maximized) maximizedId = uiOpt.id;
+                if (uiOpt.maximized){
+                    if (playerId !== e.name) this.hideEntity(playerId);
+                    if (skillsId !== e.name) this.hideEntity(skillsId);
+                    if (inventoryId !== e.name) this.hideEntity(inventoryId);
+                    if (creepId !== e.name) this.hideEntity(creepId);
+                }else{
+                    this.showEntity(playerId);
+                    this.showEntity(skillsId);
+                    this.showEntity(inventoryId);
+                    this.showEntity(creepId);
+                }
                 var layout = uiOpt.layouts[uiOpt.maximized];
                 rectOpt.x = layout[0];
                 rectOpt.y = layout[1];
@@ -124,7 +132,6 @@ pico.def('uiWindow', 'picUIWindow', function(){
                 rectOpt.height = layout[3];
                 return [e];
             }
-            if (uiOpt.maximized) maximizedId = uiOpt.id;
         }
         return entities;
     };
@@ -133,7 +140,6 @@ pico.def('uiWindow', 'picUIWindow', function(){
         var uiOpt = ent.getComponent(name);
 
         if (!uiOpt) return;
-        if (maximizedId && maximizedId !== uiOpt.id) return;
 
         var
         gs = uiOpt.gridSize,

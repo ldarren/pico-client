@@ -92,7 +92,7 @@
         zoneHeight = holder.clientHeight - ZONE_BORDER * 2;
 
         for(var i=0; i<10; i++){
-            e = group.createEntity('e'+i);
+            e = group.addEntity('e'+i);
             x = ZONE_BORDER + Math.random() * zoneWidth;
             y = ZONE_BORDER + Math.random() * zoneHeight;
             head = Math.random();
