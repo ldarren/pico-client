@@ -17,6 +17,7 @@ this.use('game');
 this.use('camera');
 this.use('sweeperMap');
 this.use('uiWindow');
+this.use('skillBook');
 
 var
 me = this,
@@ -63,6 +64,7 @@ onLoad = function(){
         sweeper = me.sweeperMap,
         camera = me.camera,
         uiWindow = me.uiWindow,
+        skillBook = me.skillBook,
         canvas = me.piCanvas,
         smallDevice = window.innerWidth > 800 || window.innerHeight > 800 ? false : true;
 
@@ -88,22 +90,32 @@ onLoad = function(){
         uiWinEnts = [],
         uiWinEnt;
 
-        uiWinEnts[0] = game.addEntity('uiPlayer');
-        uiWinEnts[1] = game.addEntity('uiSkills');
-        uiWinEnts[2] = game.addEntity('uiInventory');
-        uiWinEnts[3] = game.addEntity('uiCreep');
-
         cameraEnt.attach(rect, {x:0, y:0, width:100, height:100});
         cameraEnt.attach(camera, {});
         cameraEnt.attach(sweeper, {});
         cameraEnt.attach(renderer, {viewPane:[camera.moduleName]});
 
+        uiWinEnts[0] = game.addEntity('uiPlayer');
+        uiWinEnts[1] = game.addEntity('uiSkills');
+        uiWinEnts[2] = game.addEntity('uiInventory');
+        uiWinEnts[3] = game.addEntity('uiCreep');
+        game.hideEntity('uiCreep');
+
         for(var i=0, l=uiWinEnts.length; i<l; i++){
             uiWinEnt = uiWinEnts[i];
             uiWinEnt.attach(rect, {x:0, y:0, width:0, height:0});
             uiWinEnt.attach(uiWindow, {theme: G_THEME.THEME8, background: G_COLOR_TONE[3], box:rect.moduleName});
-            uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName]});
         }
+        uiWinEnt = uiWinEnts[0];
+        uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName]});
+        uiWinEnt = uiWinEnts[1];
+        uiWinEnt.attach(skillBook, {});
+        uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, skillBook.moduleName]});
+        uiWinEnt = uiWinEnts[2];
+        uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName]});
+        uiWinEnt = uiWinEnts[3];
+        uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName]});
+
 
         resize(window.innerWidth, window.innerHeight);
         canvas.slot(canvas.FINGER_DOWN, onMouseDown);
