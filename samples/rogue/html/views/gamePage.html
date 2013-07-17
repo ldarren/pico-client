@@ -29,12 +29,12 @@ resize = function(iw, ih){
     h, w;
 
     if (ih > iw){
-        h = ih;
-        w = Math.ceil(0.8 * h);
+        w = h = ih;
+        //w = Math.ceil(0.8 * h);
         if (w > iw) w = iw;
     }else{
-        w = iw;
-        h = Math.ceil(0.8 * w);
+        h = w = iw;
+        //h = Math.ceil(0.8 * w);
         if (h > ih) h = ih;
     }
 
@@ -108,6 +108,8 @@ onLoad = function(){
         resize(window.innerWidth, window.innerHeight);
         canvas.slot(canvas.FINGER_DOWN, onMouseDown);
         window.addEventListener('resize', onResize, false);
+
+        window.scrollTo(0, 1);
     });
 };
 
