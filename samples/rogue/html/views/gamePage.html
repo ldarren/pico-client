@@ -18,6 +18,7 @@ this.use('camera');
 this.use('sweeperMap');
 this.use('uiWindow');
 this.use('skillBook');
+this.use('info');
 
 var
 me = this,
@@ -65,6 +66,7 @@ onLoad = function(){
         camera = me.camera,
         uiWindow = me.uiWindow,
         skillBook = me.skillBook,
+        info = me.info,
         canvas = me.piCanvas,
         smallDevice = window.innerWidth > 800 || window.innerHeight > 800 ? false : true;
 
@@ -83,7 +85,9 @@ onLoad = function(){
         sweeper.init(game, {tileSet:tileSet, smallDevice: smallDevice, mapLevel:0, heroJob:G_HERO.PRIEST});
 
         game.route('move', [uiWindow.click, sweeper.explore, renderer.draw]);
-        game.route('resize', [camera.resize, uiWindow.resize, renderer.draw]);
+        game.route('resize', [camera.resize, uiWindow.resize, info.checkInfo, renderer.draw]);
+        game.route('showInfo', [info.open, renderer.draw]);
+        game.route('hideInfo', [info.close, renderer.draw]);
 
         var
         cameraEnt = game.addEntity('camera'),
@@ -95,11 +99,10 @@ onLoad = function(){
         cameraEnt.attach(sweeper, {});
         cameraEnt.attach(renderer, {viewPane:[camera.moduleName]});
 
-        uiWinEnts[0] = game.addEntity('uiPlayer');
-        uiWinEnts[1] = game.addEntity('uiSkills');
-        uiWinEnts[2] = game.addEntity('uiInventory');
-        uiWinEnts[3] = game.addEntity('uiCreep');
-        game.hideEntity('uiCreep');
+        uiWinEnts[0] = game.addEntity(G_WIN_ID.PLAYER);
+        uiWinEnts[1] = game.addEntity(G_WIN_ID.SKILLS);
+        uiWinEnts[2] = game.addEntity(G_WIN_ID.BAG);
+        uiWinEnts[3] = game.addEntity(G_WIN_ID.INFO);
 
         for(var i=0, l=uiWinEnts.length; i<l; i++){
             uiWinEnt = uiWinEnts[i];
@@ -114,14 +117,12 @@ onLoad = function(){
         uiWinEnt = uiWinEnts[2];
         uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName]});
         uiWinEnt = uiWinEnts[3];
-        uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName]});
-
+        uiWinEnt.attach(info, {});
+        uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, info.moduleName]});
 
         resize(window.innerWidth, window.innerHeight);
         canvas.slot(canvas.FINGER_DOWN, onMouseDown);
         window.addEventListener('resize', onResize, false);
-
-        window.scrollTo(0, 1);
     });
 };
 

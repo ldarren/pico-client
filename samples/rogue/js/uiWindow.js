@@ -2,10 +2,10 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
     var
     me = this,
-    playerId = 'uiPlayer',
-    skillsId = 'uiSkills',
-    inventoryId = 'uiInventory',
-    creepId = 'uiCreep',
+    playerId = G_WIN_ID.PLAYER,
+    skillsId = G_WIN_ID.SKILLS,
+    inventoryId = G_WIN_ID.BAG,
+    infoId = G_WIN_ID.INFO,
     name = me.moduleName;
 
     me.create = function(ent, data){
@@ -35,7 +35,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
                 data.minWidth = this.tileWidth;
                 data.minHeight = this.smallDevice ? 180 : 360;
                 break;
-            case creepId:
+            case infoId:
                 data.docks = [4+2+1, 8+4+2+1];
                 data.minWidth = this.smallDevice ? 320 : 640;
                 data.minHeight = this.tileHeight;
@@ -83,7 +83,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
                         [evt[0], evt[1] + Math.floor((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight],
                         gs, gs, false));
                     break;
-                case creepId:
+                case infoId:
                     layouts.push(me.fitIntoGrid(
                         [evt[0] + Math.floor((evt[2] - com.minWidth)/2), evt[1], com.minWidth, com.minHeight],
                         gs, gs, false));
@@ -118,12 +118,14 @@ pico.def('uiWindow', 'picUIWindow', function(){
                     if (playerId !== e.name) this.hideEntity(playerId);
                     if (skillsId !== e.name) this.hideEntity(skillsId);
                     if (inventoryId !== e.name) this.hideEntity(inventoryId);
-                    if (creepId !== e.name) this.hideEntity(creepId);
+                    if (infoId !== e.name) this.hideEntity(infoId);
+                    this.hideEntity('camera');
                 }else{
                     this.showEntity(playerId);
                     this.showEntity(skillsId);
                     this.showEntity(inventoryId);
-                    this.showEntity(creepId);
+                    this.showEntity(infoId);
+                    this.showEntity('camera');
                 }
                 var layout = uiOpt.layouts[uiOpt.maximized];
                 rectOpt.x = layout[0];

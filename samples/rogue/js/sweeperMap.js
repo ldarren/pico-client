@@ -128,12 +128,16 @@ pico.def('sweeperMap', 'picBase', function(){
         tileH = this.tileHeight,
         x = Math.floor(evt.x / tileW),
         y = Math.floor(evt.y / tileH),
-        id;
+        id, tileType;
 
         if (y > mapH || x > mapW) return;
         id = mapW * y + x;
+        tileType = map[id];
 
-        if (!(map[id] | G_TILE_TYPE.HIDE)) return;
+        if (tileType & G_TILE_TYPE.CREEP) this.go('showInfo', {creepId:this.objects[id]});
+        else this.go('hideInfo');
+
+        if (!(tileType | G_TILE_TYPE.HIDE)) return;
 
         fill(map, hints, mapW, id);
 

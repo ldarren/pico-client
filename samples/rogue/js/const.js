@@ -8,6 +8,14 @@ Object.freeze(G_TILE_TYPE = {
     STAIR_UP: 16
 });
 
+Object.freeze(G_WIN_ID = {
+    PLAYER: 'uiPlayer',
+    SKILLS: 'uiSkills',
+    BAG: 'uiBag',
+    INFO: 'uiInfo',
+    POPUP: 'uiPopup',
+});
+
 Object.freeze(G_NUMERIC = {
     SMALL_LIGHT: 247,
     SMALL_DARK: 275,
@@ -82,6 +90,41 @@ Object.freeze(G_CREEP = {
     WEREWOLF: 181,
     OGRE: 182,
     DEVIL: 183,
+});
+
+Object.freeze(G_CREEP_NAME = {
+    152: 'Mouse',
+    153: 'Spiders',
+    154: 'Lizard',
+    155: 'Spider Champion',
+    156: 'Toad',
+    157: 'Beetle',
+    158: 'Centipede',
+    159: 'Serpent',
+    160: 'Mushroom',
+    161: 'Rabbit',
+    162: 'Bat',
+    163: 'Bat Champion',
+    164: 'Snake',
+    165: 'Wolf',
+    166: 'Wild Boar',
+    167: 'Bear',
+    168: 'Slime',
+    169: 'Slime Champion',
+    170: 'Scorpion',
+    171: 'Octopus',
+    172: 'Vampire',
+    173: 'Mummy',
+    174: 'Spectre',
+    175: 'Guath',
+    176: 'Goblin',
+    177: 'Zombie',
+    178: 'Undead',
+    179: 'Orc',
+    180: 'Cyclops',
+    181: 'Werewolf',
+    182: 'Ogre',
+    183: 'Devil'
 });
 
 Object.freeze(G_FLOOR = {
