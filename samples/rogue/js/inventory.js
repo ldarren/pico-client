@@ -1,4 +1,4 @@
-pico.def('skillBook', 'picUIWindow', function(){
+pico.def('inventory', 'picUIWindow', function(){
     var
     me = this,
     name = me.moduleName,
@@ -16,7 +16,7 @@ pico.def('skillBook', 'picUIWindow', function(){
         ctx.fillStyle = fontColor;
 
         block = layout[0];
-        ctx.fillText('Skills', block[0]+block[2]/2, block[1]+block[3]/2, block[2]);
+        ctx.fillText('Bag', block[0]+block[2]/2, block[1]+block[3]/2, block[2]);
         
         for(var i=1, l=layout.length; i<l; i++){
             block = layout[i];
@@ -46,11 +46,11 @@ pico.def('skillBook', 'picUIWindow', function(){
             gs = win.gridSize;
 
             wLay = win.layouts[0];
-            layout = me.generateGridLayout([wLay[0]+gs, wLay[1]+16+gs, wLay[2]-gs, wLay[3]-16-gs*2], tw, th, 4, 1);
-            layout.unshift([wLay[0]+gs, wLay[1]+gs, wLay[2]-gs, 16]);
+            layout = me.generateGridLayout([wLay[0], wLay[1]+16+gs, wLay[2]-gs, wLay[3]-16-gs*2], tw, th, 4, 1);
+            layout.unshift([wLay[0], wLay[1]+gs, wLay[2]-gs, 16]);
             layouts.push(layout);
             wLay = win.layouts[1];
-            layout = me.generateGridLayout([wLay[0]+gs*2, wLay[1]+32+gs*2, wLay[2]-gs*4, wLay[3]-32-gs*4], tw, th, 4, 4);
+            layout = me.generateGridLayout([wLay[0]+gs*2, wLay[1]+32+gs*2, wLay[2]-gs*4, wLay[3]-32-gs*4], tw, th, 4, 6);
             layout.unshift([wLay[0]+gs*2, wLay[1]+gs*2, wLay[2]-gs*4, 32]);
             layouts.push(layout);
         }

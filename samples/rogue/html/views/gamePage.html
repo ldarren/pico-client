@@ -13,12 +13,14 @@ this.use('piAtlas');
 this.use('picRect');
 this.use('picTween');
 this.use('picRenderer');
+this.use('m3Main');
 this.use('game');
 this.use('camera');
-this.use('sweeperMap');
 this.use('uiWindow');
 this.use('skillBook');
 this.use('info');
+this.use('inventory');
+this.use('player');
 
 var
 me = this,
@@ -62,11 +64,12 @@ onLoad = function(){
         rect = me.picRect,
         renderer = me.picRenderer,
         game = me.game,
-        sweeper = me.sweeperMap,
         camera = me.camera,
         uiWindow = me.uiWindow,
         skillBook = me.skillBook,
         info = me.info,
+        inventory = me.inventory,
+        player = me.player,
         canvas = me.piCanvas,
         smallDevice = window.innerWidth > 800 || window.innerHeight > 800 ? false : true;
 
@@ -82,10 +85,10 @@ onLoad = function(){
 
         reactor.addGroup(game);
 
-        sweeper.init(game, {tileSet:tileSet, smallDevice: smallDevice, mapLevel:0, heroJob:G_HERO.PRIEST});
+        game.init({tileSet:tileSet, smallDevice: smallDevice, mapLevel:0, heroJob:Math.floor(G_HERO.ROGUE + Math.random()*(G_HERO.WARLOCK-G_HERO.ROGUE))});
 
-        game.route('move', [uiWindow.click, sweeper.explore, renderer.draw]);
-        game.route('resize', [camera.resize, uiWindow.resize, info.openIfValid, renderer.draw]);
+        game.route('move', [uiWindow.click, camera.click, renderer.draw]);
+        game.route('resize', [camera.resize, uiWindow.resize, inventory.resize, skillBook.resize, info.openIfValid, renderer.draw]);
         game.route('showInfo', [info.open, renderer.draw]);
         game.route('hideInfo', [info.close, renderer.draw]);
 
@@ -96,7 +99,6 @@ onLoad = function(){
 
         cameraEnt.attach(rect, {x:0, y:0, width:100, height:100});
         cameraEnt.attach(camera, {});
-        cameraEnt.attach(sweeper, {});
         cameraEnt.attach(renderer, {viewPane:[camera.moduleName]});
 
         uiWinEnts[0] = game.addEntity(G_WIN_ID.PLAYER);
@@ -110,19 +112,23 @@ onLoad = function(){
             uiWinEnt.attach(uiWindow, {theme: G_THEME.THEME8, background: G_COLOR_TONE[3], box:rect.moduleName});
         }
         uiWinEnt = uiWinEnts[0];
-        uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName]});
+        uiWinEnt.attach(player, {win:uiWindow.moduleName, font:'bold 12pt sans-serif', fontColor:G_COLOR_TONE[1]});
+        uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, player.moduleName]});
         uiWinEnt = uiWinEnts[1];
-        uiWinEnt.attach(skillBook, {});
+        uiWinEnt.attach(skillBook, {win:uiWindow.moduleName, font:'bold 12pt sans-serif', fontColor:G_COLOR_TONE[1]});
         uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, skillBook.moduleName]});
         uiWinEnt = uiWinEnts[2];
-        uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName]});
+        uiWinEnt.attach(inventory, {win:uiWindow.moduleName, font:'bold 12pt sans-serif', fontColor:G_COLOR_TONE[1]});
+        uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, inventory.moduleName]});
         uiWinEnt = uiWinEnts[3];
-        uiWinEnt.attach(info, {box:rect.moduleName, font:'bold 12pt sans-serif', fontColor:G_COLOR_TONE[1]});
+        uiWinEnt.attach(info, {win:uiWindow.moduleName, font:'bold 12pt sans-serif', fontColor:G_COLOR_TONE[1]});
         uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, info.moduleName]});
 
         resize(window.innerWidth, window.innerHeight);
         canvas.slot(canvas.FINGER_DOWN, onMouseDown);
         window.addEventListener('resize', onResize, false);
+
+        me.m3Main.hideLoading();
     });
 };
 

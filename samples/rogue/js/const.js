@@ -43,18 +43,33 @@ Object.freeze(G_MARK = {
     EVOLVE: 141         // mankind, evolve
 });
 
+Object.freeze(G_UI = {
+    SLOT: 15,
+});
+
 Object.freeze(G_HINT_COLOR = ['BLACK', 'RED', 'YELLOW', 'ORANGE', 'BLUE', 'PURPLE', 'GREEN', 'WHITE' ]);
 Object.freeze(G_COLOR_TONE = ['#d7e894','#aec440','#527f39','#204631']);
 
 Object.freeze(G_HERO = {
     ROGUE: 144,
-    PRIEST: 145,
+    MONK: 145,
     BARBARIAN: 146,
     DRUID: 147,
     HUNTER: 148,
-    KNIGHT: 149,
+    PALADIN: 149,
     WIZARD: 150,
     WARLOCK: 151
+});
+
+Object.freeze(G_HERO_CLASS = {
+    144: 'Rogue',
+    145: 'Monk',
+    146: 'Barbarian',
+    147: 'Druid',
+    148: 'Hunter',
+    149: 'Paladin',
+    150: 'Wizard',
+    151: 'Warlock'
 });
 
 Object.freeze(G_CREEP = {

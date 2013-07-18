@@ -32,6 +32,7 @@
 <title>Dungeon Academy</title>
 </head>
 <body>
+<div id=loading></div>
 <script src=../lib/pico/pico.js></script>
 <script src=../lib/pico/lib/piAtlas.js></script>
 <script src=../lib/pico/lib/piCanvas.js></script>
@@ -45,16 +46,26 @@
 <script src=../js/game.js></script>
 <script src=../js/camera.js></script>
 <script src=../js/uiWindow.js></script>
-<script src=../js/sweeperMap.js></script>
 <script src=../js/skillBook.js></script>
 <script src=../js/info.js></script>
+<script src=../js/inventory.js></script>
+<script src=../js/player.js></script>
 <script>
 pico.def('m3Main', function(){
-
     var
     me = this,
+    loadPageStyle,
     onLoad = function(){
+        loadPageStyle = document.querySelector('div#loading').style;
         pico.addFrame(document.body, 'div#page', 'views/gamePage.html');
+    };
+
+    me.showLoading = function(){
+        loadPageStyle.display = 'block';
+    };
+
+    me.hideLoading = function(){
+        loadPageStyle.display = 'none';
     };
 
     me.slot(pico.LOAD, onLoad);

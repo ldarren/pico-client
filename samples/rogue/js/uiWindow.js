@@ -25,22 +25,22 @@ pico.def('uiWindow', 'picUIWindow', function(){
             case playerId:
                 data.docks = [8+4+1, 8+4+2+1];
                 data.minWidth = this.smallDevice ? 320 : 640;
-                data.minHeight = this.tileHeight;
+                data.minHeight = this.tileHeight+gs;
                 break;
             case skillsId:
                 data.docks = [8+2+1, 8+4+2+1];
-                data.minWidth = this.tileWidth;
+                data.minWidth = this.tileWidth+gs;
                 data.minHeight = this.smallDevice ? 180 : 360;
                 break;
             case inventoryId:
                 data.docks = [8+4+2, 8+4+2+1];
-                data.minWidth = this.tileWidth;
+                data.minWidth = this.tileWidth+gs;
                 data.minHeight = this.smallDevice ? 180 : 360;
                 break;
             case infoId:
                 data.docks = [4+2+1, 8+4+2+1];
                 data.minWidth = this.smallDevice ? 320 : 640;
-                data.minHeight = this.tileHeight+16;
+                data.minHeight = this.tileHeight+gs;
                 break;
         }
 
