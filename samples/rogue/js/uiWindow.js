@@ -1,5 +1,7 @@
 pico.def('uiWindow', 'picUIWindow', function(){
 
+    this.use('info');
+
     var
     me = this,
     playerId = G_WIN_ID.PLAYER,
@@ -38,7 +40,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
             case infoId:
                 data.docks = [4+2+1, 8+4+2+1];
                 data.minWidth = this.smallDevice ? 320 : 640;
-                data.minHeight = this.tileHeight;
+                data.minHeight = this.tileHeight+16;
                 break;
         }
 
@@ -124,7 +126,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
                     this.showEntity(playerId);
                     this.showEntity(skillsId);
                     this.showEntity(inventoryId);
-                    this.showEntity(infoId);
+                    me.info.openIfValid.call(this);
                     this.showEntity('camera');
                 }
                 var layout = uiOpt.layouts[uiOpt.maximized];

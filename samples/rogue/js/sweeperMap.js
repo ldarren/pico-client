@@ -69,7 +69,7 @@ pico.def('sweeperMap', 'picBase', function(){
         for(i=0,l=game.creepCount; i<l; i++){
             c = shuffle.splice(Math.floor(Math.random()*shuffle.length), 1)[0];
             map[c] |= G_TILE_TYPE.CREEP;
-            objects[c] = G_CREEP.WOLF;
+            objects[c] = G_CREEP.MOUSE + Math.floor(Math.random() * (G_CREEP.DEVIL - G_CREEP.MOUSE));
         }
 
         // add chests

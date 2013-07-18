@@ -85,7 +85,7 @@ onLoad = function(){
         sweeper.init(game, {tileSet:tileSet, smallDevice: smallDevice, mapLevel:0, heroJob:G_HERO.PRIEST});
 
         game.route('move', [uiWindow.click, sweeper.explore, renderer.draw]);
-        game.route('resize', [camera.resize, uiWindow.resize, info.checkInfo, renderer.draw]);
+        game.route('resize', [camera.resize, uiWindow.resize, info.openIfValid, renderer.draw]);
         game.route('showInfo', [info.open, renderer.draw]);
         game.route('hideInfo', [info.close, renderer.draw]);
 
@@ -117,7 +117,7 @@ onLoad = function(){
         uiWinEnt = uiWinEnts[2];
         uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName]});
         uiWinEnt = uiWinEnts[3];
-        uiWinEnt.attach(info, {});
+        uiWinEnt.attach(info, {box:rect.moduleName, font:'bold 12pt sans-serif', fontColor:G_COLOR_TONE[1]});
         uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, info.moduleName]});
 
         resize(window.innerWidth, window.innerHeight);

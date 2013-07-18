@@ -2,8 +2,44 @@ pico.def('info', 'picUIWindow', function(){
     var
     me = this,
     name = me.moduleName,
-    rectName = 'picRect',
-    info;
+    winName = 'uiWindow',
+    info,
+    drawSmall = function(ctx, win, com, rect){
+        var
+        ts = this.tileSet,
+        center = rect.y + (rect.height-win.gridSize)/2,
+        tw = this.tileWidth,
+        th = this.tileHeight,
+        x = rect.x + win.gridSize + 8,
+        y = center - (th/2);
+
+        ctx.save();
+        ts.draw(ctx, info.creepId, x, y, tw, th);
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        ctx.font = com.font;
+        ctx.fillStyle = com.fontColor;
+        ctx.fillText(G_CREEP_NAME[info.creepId], x + tw + 8, center, rect.width);
+        ctx.restore();
+    },
+    drawBig = function(ctx, win, com, rect){
+        var
+        ts = this.tileSet,
+        tw = this.tileWidth,
+        th = this.tileHeight,
+        gs = win.gridSize,
+        x = rect.x + gs + 8,
+        y = rect.y + gs + 8;
+
+        ctx.save();
+        ts.draw(ctx, info.creepId, x, y, tw, th);
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.font = com.font;
+        ctx.fillStyle = com.fontColor;
+        ctx.fillText(G_CREEP_NAME[info.creepId], x + tw/2, y + th, rect.width);
+        ctx.restore();
+    };
 
     me.open = function(elapsed, evt, entities){
         this.showEntity(G_WIN_ID.INFO);
@@ -17,11 +53,11 @@ pico.def('info', 'picUIWindow', function(){
         return entities;
     };
 
-    me.checkInfo = function(elapsed, evt, entities){
+    me.openIfValid = function(elapsed, evt, entities){
         if (info){
-            return me.open.call(this, elapsed, evt, entities);
+            return me.open.call(this, elapsed, info, entities);
         }else{
-            return me.close.call(this, elapsed, evt, entities);
+            return me.close.call(this, elapsed, info, entities);
         }
     };
 
@@ -30,14 +66,15 @@ pico.def('info', 'picUIWindow', function(){
             me.close.call(this);
             return;
         }
-        var rect = ent.getComponent(rectName);
-        ctx.save();
-        this.tileSet.draw(ctx, info.creepId, rect.x, rect.y, this.tileWidth, this.tileHeight);
-        ctx.font = 'bold 12pt sans-serif';
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'middle';
-        ctx.fillStyle = G_COLOR_TONE[1];
-        ctx.fillText(G_CREEP_NAME[info.creepId], rect.x + (this.tileWidth * 2), rect.y, rect.width);
-        ctx.restore();
+        var
+        com = ent.getComponent(name),
+        rect = ent.getComponent(com.box),
+        win = ent.getComponent(winName);
+
+        if (rect.height > (this.tileWidth * 3)){
+            return drawBig.call(this, ctx, win, com, rect);
+        }else{
+            return drawSmall.call(this, ctx, win, com, rect);
+        }
     };
 });
