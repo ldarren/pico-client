@@ -121,14 +121,19 @@ pico.def('bag', 'picUIWindow', function(){
                 switch(targetName){
                     case inventoryId:
                         if (this.inventory[evt.index]){
-                            com.activated[evt.index+1] ^= true;
+                            if(com.activated[evt.index+1] ^= true){
+                            }else{
+                            }
                             return [e];
                         }
                         break;
                     case skillsId:
                         if (this.skillBook[evt.index]){
-                            com.activated[evt.index+1] ^= true;
-                            this.activatedSkill = this.skillBook[evt.index];
+                            if(com.activated[evt.index+1] ^= true){
+                                this.activatedSkill = this.skillBook[evt.index];
+                            }else{
+                                this.activatedSkill = undefined;
+                            }
                             return [e];
                         }
                         break;

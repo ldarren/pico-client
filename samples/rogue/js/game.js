@@ -33,12 +33,12 @@ pico.def('game', 'picGroup', function(){
 
     me.tileSet = null;
     me.smallDevice = false;
-    me.heroJob = G_HERO.ROGUE;
     me.tileWidth = 16;
     me.tileHeight = 16;
     me.mapWidth = 160;
     me.mapHeight = 160;
     me.mapLevel = 0;
+    me.heroJob = G_HERO.ROGUE;
     me.heroPos = 0;
     me.creepCount = 0;
     me.chestCount = 0;
@@ -129,8 +129,25 @@ pico.def('game', 'picGroup', function(){
         map[c] = G_TILE_TYPE.STAIR_UP; // must do after fill, becos fill will ignore revealed tile
     };
 
-    me.useItem = function(elapsed, evt, entities){
-        return entities;
+    me.checkResult = function(elapsed, evt, entities){
+        var
+        mapW = this.mapWidth,
+        mapH = this.mapHeight,
+        objects = this.objects,
+        flags = this.flags,
+        won = true;
+        for(var w=0, wl=mapW*mapH; w<wl; w++){
+            if (objects[w] >= G_CREEP.MOUSE && objects[w] <= G_CREEP.DEVIL && !flags[w]){
+                won = false;
+                break;
+            }
+        }
+        if (won) {
+            alert('You have Won!');
+            this.init({tileSet:this.tileSet, smallDevice: this.smallDevice, mapLevel:this.mapLevel+1, heroJob:this.heroJob});
+            this.go('resize', [0, 0, window.innerWidth, innerHeight]);
+            return entities;
+        }
     };
 
     me.fillTiles = function(i){

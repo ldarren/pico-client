@@ -33,12 +33,24 @@ pico.def('camera', 'picBase', function(){
         id = mapW * y + x;
         tileType = map[id];
 
-        if (tileType & G_TILE_TYPE.CREEP) this.go('showInfo', {creepId:this.objects[id]});
-        else this.go('hideInfo');
+        if (tileType & G_TILE_TYPE.HIDE) {
+            if (this.activatedSkill){
+                this.flags[id] = true;
+            }else{
+                this.fillTiles(id);
+                this.flags[id] = undefined;
+            }
+        }
 
-        if (!(tileType | G_TILE_TYPE.HIDE)) return;
+        tileType = map[id];
+        if (!(tileType & G_TILE_TYPE.HIDE)){
+            if(tileType & G_TILE_TYPE.CREEP) this.go('showInfo', {creepId:this.objects[id]});
+            else this.go('hideInfo');
 
-        this.fillTiles(id);
+            if(tileType & G_TILE_TYPE.STAIR_DOWN){
+                this.go('checkResult');
+            }
+        }
 
         return entities;
     };
@@ -50,6 +62,7 @@ pico.def('camera', 'picBase', function(){
         mapW = this.mapWidth,
         mapH = this.mapHeight,
         objects = this.objects,
+        flags = this.flags,
         hints = this.hints,
         heroPos = this.heroPos,
         width = this.tileWidth,
@@ -69,6 +82,7 @@ pico.def('camera', 'picBase', function(){
             tileId = map[w];
             if (tileId & G_TILE_TYPE.HIDE){
                 tileSet.draw(ctx, G_FLOOR.UNCLEAR, x, y, width, height);
+                if (flags[w]) tileSet.draw(ctx, G_MARK.EYE_OF_GOD, x, y, width, height);
             }else{
                 hint = hints[w];
                 objectId = objects[w];
