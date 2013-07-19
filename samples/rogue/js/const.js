@@ -34,6 +34,17 @@ Object.freeze(G_OBJECT = {
     KEY_06: 39
 });
 
+Object.freeze(G_OBJECT_NAME = {
+    32: 'Chest',
+    33: 'Empty Chest',
+    34: 'Normal Key',
+    35: 'Crown Key',
+    36: 'Gold Key',
+    37: 'Stone Key',
+    38: 'Secret Key',
+    39: 'Bone Key'
+});
+
 Object.freeze(G_MARK = {
     PENTAGRAM: 136,     // protection, 4 elements
     ANKH: 137,          // revive, eternal life
@@ -47,6 +58,7 @@ Object.freeze(G_UI = {
     SLOT: 15,
 });
 
+Object.freeze(G_SHADE = [0, 1, 2, 3, 4, 5, 6, 7 ]);
 Object.freeze(G_HINT_COLOR = ['BLACK', 'RED', 'YELLOW', 'ORANGE', 'BLUE', 'PURPLE', 'GREEN', 'WHITE' ]);
 Object.freeze(G_COLOR_TONE = ['#d7e894','#aec440','#527f39','#204631']);
 

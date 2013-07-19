@@ -104,13 +104,16 @@ pico.def('uiWindow', 'picUIWindow', function(){
     };
 
     me.click = function(elapsed, evt, entities){
-        var e, active, uiOpt, rectOpt;
+        var
+        x = evt[0], y = evt[1],
+        e, active, uiOpt, rectOpt;
+
         for (var i=0, l=entities.length; i<l; i++){
             e = entities[i];
             uiOpt = e.getComponent(name);
             if (!uiOpt) continue;
             rectOpt = e.getComponent(uiOpt.box);
-            active = (rectOpt.x < evt.x && (rectOpt.x + rectOpt.width) > evt.x && rectOpt.y < evt.y && (rectOpt.y + rectOpt.height) > evt.y);
+            active = (rectOpt.x < x && (rectOpt.x + rectOpt.width) > x && rectOpt.y < y && (rectOpt.y + rectOpt.height) > y);
             if (active !== uiOpt.active){
                 uiOpt.active = active;
             }

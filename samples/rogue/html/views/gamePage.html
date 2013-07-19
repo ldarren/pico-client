@@ -17,15 +17,14 @@ this.use('m3Main');
 this.use('game');
 this.use('camera');
 this.use('uiWindow');
-this.use('skillBook');
+this.use('bag');
 this.use('info');
-this.use('inventory');
 this.use('player');
 
 var
 me = this,
 onMouseDown = function(evt, x, y){
-    me.game.go('move', {x:x, y:y});
+    me.game.go('move', [x, y]);
 },
 resize = function(iw, ih){
     var
@@ -66,9 +65,8 @@ onLoad = function(){
         game = me.game,
         camera = me.camera,
         uiWindow = me.uiWindow,
-        skillBook = me.skillBook,
+        bag = me.bag,
         info = me.info,
-        inventory = me.inventory,
         player = me.player,
         canvas = me.piCanvas,
         smallDevice = window.innerWidth > 800 || window.innerHeight > 800 ? false : true;
@@ -87,8 +85,9 @@ onLoad = function(){
 
         game.init({tileSet:tileSet, smallDevice: smallDevice, mapLevel:0, heroJob:Math.floor(G_HERO.ROGUE + Math.random()*(G_HERO.WARLOCK-G_HERO.ROGUE))});
 
-        game.route('move', [uiWindow.click, camera.click, renderer.draw]);
-        game.route('resize', [camera.resize, uiWindow.resize, inventory.resize, skillBook.resize, info.openIfValid, renderer.draw]);
+        game.route('move', [bag.click, uiWindow.click, camera.click, renderer.draw]);
+        game.route('useItem', [bag.useItem, renderer.draw]);
+        game.route('resize', [camera.resize, uiWindow.resize, bag.resize, info.openIfValid, renderer.draw]);
         game.route('showInfo', [info.open, renderer.draw]);
         game.route('hideInfo', [info.close, renderer.draw]);
 
@@ -115,11 +114,11 @@ onLoad = function(){
         uiWinEnt.attach(player, {win:uiWindow.moduleName, font:'bold 12pt sans-serif', fontColor:G_COLOR_TONE[1]});
         uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, player.moduleName]});
         uiWinEnt = uiWinEnts[1];
-        uiWinEnt.attach(skillBook, {win:uiWindow.moduleName, font:'bold 12pt sans-serif', fontColor:G_COLOR_TONE[1]});
-        uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, skillBook.moduleName]});
+        uiWinEnt.attach(bag, {name:'Skills', win:uiWindow.moduleName, font:'bold 12pt sans-serif', fontColor:G_COLOR_TONE[1]});
+        uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, bag.moduleName]});
         uiWinEnt = uiWinEnts[2];
-        uiWinEnt.attach(inventory, {win:uiWindow.moduleName, font:'bold 12pt sans-serif', fontColor:G_COLOR_TONE[1]});
-        uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, inventory.moduleName]});
+        uiWinEnt.attach(bag, {name:'Bag', win:uiWindow.moduleName, font:'bold 12pt sans-serif', fontColor:G_COLOR_TONE[1]});
+        uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, bag.moduleName]});
         uiWinEnt = uiWinEnts[3];
         uiWinEnt.attach(info, {win:uiWindow.moduleName, font:'bold 12pt sans-serif', fontColor:G_COLOR_TONE[1]});
         uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, info.moduleName]});

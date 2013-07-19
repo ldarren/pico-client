@@ -25,8 +25,8 @@ pico.def('camera', 'picBase', function(){
         mapH = this.mapHeight,
         tileW = this.tileWidth,
         tileH = this.tileHeight,
-        x = Math.floor((evt.x - ctrX) / tileW),
-        y = Math.floor((evt.y - ctrY) / tileH),
+        x = Math.floor((evt[0] - ctrX) / tileW),
+        y = Math.floor((evt[1] - ctrY) / tileH),
         id, tileType;
 
         if (y > mapH || x > mapW) return;

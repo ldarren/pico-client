@@ -46,7 +46,9 @@ pico.def('game', 'picGroup', function(){
     me.hints = []; // 08:creep, 80:chest, 800:stair:
     me.objects = [];
     me.flags = [];
-    me.skillBooks = [G_MARK.EYE_OF_GOD];
+    me.skillBook = [G_MARK.EYE_OF_GOD];
+    me.inventory = [G_OBJECT.KEY_02];
+    me.activatedSkill = 0;
 
     // evt = {tileSet:tileSet, tileWidth:64, tileHeight:64, mapWidth:8, mapHeight:8, level:0, playerJob:game.PRIEST}
     me.init = function(data){
@@ -125,6 +127,10 @@ pico.def('game', 'picGroup', function(){
         fill(map, hints, mapW, me.heroPos);
 
         map[c] = G_TILE_TYPE.STAIR_UP; // must do after fill, becos fill will ignore revealed tile
+    };
+
+    me.useItem = function(elapsed, evt, entities){
+        return entities;
     };
 
     me.fillTiles = function(i){
