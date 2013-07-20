@@ -80,29 +80,29 @@ pico.def('bag', 'picUIWindow', function(){
 
     me.click = function(elapsed, evt, entities){
         var
+        e = entities[0],
+        com = e.getComponent(name);
+
+        if (!com) return entities;
+        
+        var
         tw = this.tileWidth,
         th = this.tileHeight,
+        win = e.getComponent(com.win),
+        rect = e.getComponent(win.box),
+        layout = (rect.width > (tw * 3)) ? com.layouts[1] : com.layouts[0],
         x = evt[0],
         y = evt[1],
-        e, com, win, rect, layout, tile, j, jl, tx, ty;
+        tile, tx, ty;
 
-        for(var i=0, l=entities.length; i<l; i++){
-            e = entities[i];
-            com = e.getComponent(name);
-            if (!com) continue;
-            win = e.getComponent(com.win);
-            rect = e.getComponent(win.box);
-            layout = (rect.width > (tw * 3)) ? com.layouts[1] : com.layouts[0],
-            tile;
 
-            for(j=1,jl=layout.length; j<jl; j++){
-                tile = layout[j];
-                tx = tile[0];
-                ty = tile[1];
-                if (tx < x && (tx + tw) > x && ty < y && (ty + th) > y){
-                    this.go('useItem', {bag:e.name, index:j-1});
-                    return;
-                }
+        for(var j=1,jl=layout.length; j<jl; j++){
+            tile = layout[j];
+            tx = tile[0];
+            ty = tile[1];
+            if (tx < x && (tx + tw) > x && ty < y && (ty + th) > y){
+                this.go('useItem', {bag:e.name, index:j-1});
+                return;
             }
         }
         

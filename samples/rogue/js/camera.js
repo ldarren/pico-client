@@ -10,14 +10,36 @@ pico.def('camera', 'picBase', function(){
         return entities;
     };
 
-    me.click = function(elapsed, evt, entities){
-        var mapOpt, e;
-        for(var i=0,l=entities.length; i<l; i++){
+    me.checkBound = function(elapsed, evt, entities){
+        var
+        x = evt[0], y = evt[1],
+        mapW = this.mapWidth,
+        mapH = this.mapHeight,
+        tileW = this.tileWidth,
+        tileH = this.tileHeight,
+        ret = [],
+        e, opt;
+
+        for (var i=0, l=entities.length; i<l; i++){
             e = entities[i];
-            mapOpt = e.getComponent(name);
-            if (mapOpt) break;
+            opt = e.getComponent(name);
+            if (!opt) {
+                ret.push(e);
+                continue;
+            }
+            if (x > ctrX && y > ctrY && x < ctrX + mapW*tileW && y < ctrY + mapH*tileH)
+                ret.push(e);
         }
-        if (!mapOpt) return entities;
+
+        return ret;
+    };
+
+    me.click = function(elapsed, evt, entities){
+        var
+        e = entities[0],
+        com = e.getComponent(name);
+
+        if (!com) return entities;
 
         var
         map = this.map,
@@ -56,6 +78,15 @@ pico.def('camera', 'picBase', function(){
     };
 
     me.swipe = function(elapsed, evt, entities){
+        var
+        e = entities[0],
+        com = e.getComponent(name);
+
+        if (!com) return entities;
+
+        ctrX += evt[0] - evt[2];
+        ctrY += evt[1] - evt[3];
+
         return entities;
     };
 
@@ -73,8 +104,6 @@ pico.def('camera', 'picBase', function(){
         height = this.tileHeight,
         hw = Math.floor(width/2),
         hh = Math.floor(height/2),
-        ctrX = clip[0] + (clip[2] - mapW * width)/2,
-        ctrY = clip[1] + (clip[3] - mapH * height)/2,
         hint, x, y, objectId, tileId;
 
         ctx.save();

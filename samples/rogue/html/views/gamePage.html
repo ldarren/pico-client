@@ -23,21 +23,25 @@ this.use('player');
 
 var
 me = this,
-isAClick = false,
+fingerStartPos = [0, 0],
+fingerPrevPos = [0,0],
 onFingerDown = function(evt, x, y){
-    isAClick = true;
+    fingerStartPos[0] = fingerPrevPos[0] = x;
+    fingerStartPos[1] = fingerPrevPos[1] = y;
+    me.game.go('fingerDown', [x, y]);
 },
 onFingerUp = function(evt, x, y){
-    if (isAClick)
-        me.game.go('click', [x, y]);
-    isAClick = false;
+    var d = Math.abs(x - fingerStartPos[0]) + Math.abs(y - fingerStartPos[1]);
+    if (d > 10) me.game.go('fingerOut'); // is a move not a click
+    else me.game.go('fingerUp', [x, y]);
 },
 onFingerMove = function(evt, x, y){
-    isAClick = false;
-    me.game.go('swipe', [x, y]);
+    me.game.go('fingerMove', [x, y, fingerPrevPos[0], fingerPrevPos[1]]);
+    fingerPrevPos[0] = x;
+    fingerPrevPos[1] = y;
 },
 onFingerOut = function(evt, x, y){
-    isAClick = false;
+    me.game.go('fingerOut');
 },
 resize = function(iw, ih){
     var
@@ -98,9 +102,11 @@ onLoad = function(){
 
         game.init({tileSet:tileSet, smallDevice: smallDevice, mapLevel:0, heroJob:Math.floor(G_HERO.ROGUE + Math.random()*(G_HERO.WARLOCK-G_HERO.ROGUE))});
 
-        game.route('click', [bag.click, uiWindow.click, camera.click, renderer.draw]);
-        game.route('swipe', [uiWindow.swipe, camera.swipe, renderer.draw]);
-        game.route('useItem', [bag.useItem, renderer.draw]);
+        game.route('fingerDown', [uiWindow.checkBound, camera.checkBound, game.captureSelected]);
+        game.route('fingerUp', [game.useSelected, bag.click, uiWindow.click, camera.click, renderer.draw, game.releaseSelected]);
+        game.route('fingerMove', [game.useSelected, uiWindow.swipe, camera.swipe, renderer.draw]);
+        game.route('fingerOut', [game.releaseSelected]);
+        game.route('useItem', [bag.useItem, renderer.draw, game.releaseSelected]);
         game.route('resize', [camera.resize, uiWindow.resize, bag.resize, info.openIfValid, renderer.draw]);
         game.route('checkResult', [game.checkResult, renderer.draw]);
         game.route('showInfo', [info.open, renderer.draw]);

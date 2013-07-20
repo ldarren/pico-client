@@ -103,43 +103,61 @@ pico.def('uiWindow', 'picUIWindow', function(){
         return entities;
     };
 
-    me.click = function(elapsed, evt, entities){
+    me.checkBound = function(elapsed, evt, entities){
         var
         x = evt[0], y = evt[1],
+        ret = [],
         e, active, uiOpt, rectOpt;
 
         for (var i=0, l=entities.length; i<l; i++){
             e = entities[i];
             uiOpt = e.getComponent(name);
-            if (!uiOpt) continue;
+            if (!uiOpt) {
+                ret.push(e);
+                continue;
+            }
             rectOpt = e.getComponent(uiOpt.box);
             active = (rectOpt.x < x && (rectOpt.x + rectOpt.width) > x && rectOpt.y < y && (rectOpt.y + rectOpt.height) > y);
             if (active !== uiOpt.active){
                 uiOpt.active = active;
             }
-            if (active){
-                uiOpt.maximized = uiOpt.maximized ? 0 : 1;
-                if (uiOpt.maximized){
-                    if (playerId !== e.name) this.hideEntity(playerId);
-                    if (skillsId !== e.name) this.hideEntity(skillsId);
-                    if (inventoryId !== e.name) this.hideEntity(inventoryId);
-                    if (infoId !== e.name) this.hideEntity(infoId);
-                    this.hideEntity('camera');
-                }else{
-                    this.showEntity(playerId);
-                    this.showEntity(skillsId);
-                    this.showEntity(inventoryId);
-                    me.info.openIfValid.call(this);
-                    this.showEntity('camera');
-                }
-                var layout = uiOpt.layouts[uiOpt.maximized];
-                rectOpt.x = layout[0];
-                rectOpt.y = layout[1];
-                rectOpt.width = layout[2];
-                rectOpt.height = layout[3];
-                return [e];
-            }
+            if (active) ret.push(e);
         }
+
+        return ret;
+    };
+
+    me.click = function(elapsed, evt, entities){
+        var
+        e = entities[0],
+        uiOpt = e.getComponent(name);
+
+        if (!uiOpt) return entities;
+
+        var
+        x = evt[0], y = evt[1],
+        rectOpt = e.getComponent(uiOpt.box);
+
+        uiOpt.maximized = uiOpt.maximized ? 0 : 1;
+        if (uiOpt.maximized){
+            if (playerId !== e.name) this.hideEntity(playerId);
+            if (skillsId !== e.name) this.hideEntity(skillsId);
+            if (inventoryId !== e.name) this.hideEntity(inventoryId);
+            if (infoId !== e.name) this.hideEntity(infoId);
+            this.hideEntity('camera');
+        }else{
+            this.showEntity(playerId);
+            this.showEntity(skillsId);
+            this.showEntity(inventoryId);
+            me.info.openIfValid.call(this);
+            this.showEntity('camera');
+        }
+        var layout = uiOpt.layouts[uiOpt.maximized];
+        rectOpt.x = layout[0];
+        rectOpt.y = layout[1];
+        rectOpt.width = layout[2];
+        rectOpt.height = layout[3];
+
         return entities;
     };
 
