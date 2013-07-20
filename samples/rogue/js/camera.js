@@ -55,6 +55,10 @@ pico.def('camera', 'picBase', function(){
         return entities;
     };
 
+    me.swipe = function(elapsed, evt, entities){
+        return entities;
+    };
+
     me.draw = function(ctx, ent, clip){
         var
         tileSet = this.tileSet,

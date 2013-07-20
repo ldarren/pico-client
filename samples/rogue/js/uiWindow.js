@@ -143,6 +143,10 @@ pico.def('uiWindow', 'picUIWindow', function(){
         return entities;
     };
 
+    me.swipe = function(elapsed, evt, entities){
+        return entities;
+    };
+
     me.draw = function(ctx, ent, clip){
         var uiOpt = ent.getComponent(name);
 
