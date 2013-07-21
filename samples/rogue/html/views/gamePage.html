@@ -102,10 +102,10 @@ onLoad = function(){
 
         game.init({tileSet:tileSet, smallDevice: smallDevice, mapLevel:0, heroJob:Math.floor(G_HERO.ROGUE + Math.random()*(G_HERO.WARLOCK-G_HERO.ROGUE))});
 
-        game.route('fingerDown', [uiWindow.checkBound, camera.checkBound, game.captureSelected]);
+        game.route('fingerDown', [uiWindow.checkBound, camera.checkBound, game.captureSelected, renderer.captureScreenshot]);
         game.route('fingerUp', [game.useSelected, bag.click, uiWindow.click, camera.click, renderer.draw, game.releaseSelected]);
-        game.route('fingerMove', [game.useSelected, uiWindow.swipe, camera.swipe, renderer.draw]);
-        game.route('fingerOut', [game.releaseSelected]);
+        game.route('fingerMove', [game.useSelected, uiWindow.swipe, camera.swipe, renderer.drawScreenshot]);
+        game.route('fingerOut', [game.releaseSelected, renderer.releaseScreenshot, renderer.draw]);
         game.route('useItem', [bag.useItem, renderer.draw, game.releaseSelected]);
         game.route('resize', [camera.resize, uiWindow.resize, bag.resize, info.openIfValid, renderer.draw]);
         game.route('checkResult', [game.checkResult, renderer.draw]);

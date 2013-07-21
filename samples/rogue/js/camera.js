@@ -2,7 +2,8 @@ pico.def('camera', 'picBase', function(){
     var
     me = this,
     name = me.moduleName,
-    ctrX=0, ctrY=0;
+    ctrX=0, ctrY=0,
+    screenshotX=0, screenshotY=0;
 
     me.resize = function(elapsed, evt, entities){
         ctrX = evt[0] + (evt[2] - this.mapWidth * this.tileWidth)/2;
@@ -17,21 +18,21 @@ pico.def('camera', 'picBase', function(){
         mapH = this.mapHeight,
         tileW = this.tileWidth,
         tileH = this.tileHeight,
-        ret = [],
+        unknowns = [],
         e, opt;
 
         for (var i=0, l=entities.length; i<l; i++){
             e = entities[i];
             opt = e.getComponent(name);
             if (!opt) {
-                ret.push(e);
+                unknowns.push(e);
                 continue;
             }
             if (x > ctrX && y > ctrY && x < ctrX + mapW*tileW && y < ctrY + mapH*tileH)
-                ret.push(e);
+                return [e];
         }
 
-        return ret;
+        return unknowns;
     };
 
     me.click = function(elapsed, evt, entities){
@@ -104,6 +105,8 @@ pico.def('camera', 'picBase', function(){
         height = this.tileHeight,
         hw = Math.floor(width/2),
         hh = Math.floor(height/2),
+        screenshotX = ctrX,
+        screenshotY = ctrY,
         hint, x, y, objectId, tileId;
 
         ctx.save();
@@ -142,6 +145,12 @@ pico.def('camera', 'picBase', function(){
             ctx.fillStyle = G_HINT_COLOR[Math.floor((hint & 0x0f)*0.5)];
             ctx.fillText(Math.floor(hint/16), x+width, y+height, width);
         }
+        ctx.restore();
+    };
+
+    me.drawScreenshot = function(ctx, ent, clip, bitmap){
+        ctx.save();
+        ctx.drawImage(bitmap, ctrX-screenshotX, ctrY-screenshotY);
         ctx.restore();
     };
 });

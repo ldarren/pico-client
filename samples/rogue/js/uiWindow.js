@@ -106,14 +106,14 @@ pico.def('uiWindow', 'picUIWindow', function(){
     me.checkBound = function(elapsed, evt, entities){
         var
         x = evt[0], y = evt[1],
-        ret = [],
+        unknowns = [],
         e, active, uiOpt, rectOpt;
 
         for (var i=0, l=entities.length; i<l; i++){
             e = entities[i];
             uiOpt = e.getComponent(name);
             if (!uiOpt) {
-                ret.push(e);
+                unknowns.push(e);
                 continue;
             }
             rectOpt = e.getComponent(uiOpt.box);
@@ -121,10 +121,10 @@ pico.def('uiWindow', 'picUIWindow', function(){
             if (active !== uiOpt.active){
                 uiOpt.active = active;
             }
-            if (active) ret.push(e);
+            if (active) return [e];
         }
 
-        return ret;
+        return unknowns;
     };
 
     me.click = function(elapsed, evt, entities){
