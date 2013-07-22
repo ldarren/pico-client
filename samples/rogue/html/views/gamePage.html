@@ -24,24 +24,33 @@ this.use('player');
 var
 me = this,
 fingerStartPos = [0, 0],
-fingerPrevPos = [0,0],
+fingerTracker,
+cancelTracking = function(){
+    me.game.stopLoop('fingerMove');
+    me.game.go('fingerOut');
+    fingerTracker = undefined;
+},
 onFingerDown = function(evt, x, y){
-    fingerStartPos[0] = fingerPrevPos[0] = x;
-    fingerStartPos[1] = fingerPrevPos[1] = y;
+    fingerStartPos[0] = x;
+    fingerStartPos[1] = y;
     me.game.go('fingerDown', [x, y]);
 },
 onFingerUp = function(evt, x, y){
     var d = Math.abs(x - fingerStartPos[0]) + Math.abs(y - fingerStartPos[1]);
-    if (d > 10) me.game.go('fingerOut'); // is a move not a click
+    if (d > 10) cancelTracking() // is a move not a click
     else me.game.go('fingerUp', [x, y]);
 },
 onFingerMove = function(evt, x, y){
-    me.game.go('fingerMove', [x, y, fingerPrevPos[0], fingerPrevPos[1]]);
-    fingerPrevPos[0] = x;
-    fingerPrevPos[1] = y;
+    if (fingerTracker){
+        fingerTracker[0] = x;
+        fingerTracker[1] = y;
+    }else{
+        fingerTracker = [x, y, fingerStartPos[0], fingerStartPos[1]];
+        me.game.startLoop('fingerMove', fingerTracker);
+    }
 },
 onFingerOut = function(evt, x, y){
-    me.game.go('fingerOut');
+    cancelTracking();
 },
 resize = function(iw, ih){
     var

@@ -8,6 +8,7 @@ pico.def('camera', 'picBase', function(){
     me.resize = function(elapsed, evt, entities){
         ctrX = evt[0] + (evt[2] - this.mapWidth * this.tileWidth)/2;
         ctrY = evt[1] + (evt[3] - this.mapHeight * this.tileHeight)/2;
+        screenshotX=0, screenshotY=0;
         return entities;
     };
 
@@ -88,6 +89,8 @@ pico.def('camera', 'picBase', function(){
         ctrX += evt[0] - evt[2];
         ctrY += evt[1] - evt[3];
 
+        evt[2] = evt[0];
+        evt[3] = evt[1];
         return entities;
     };
 
@@ -105,9 +108,9 @@ pico.def('camera', 'picBase', function(){
         height = this.tileHeight,
         hw = Math.floor(width/2),
         hh = Math.floor(height/2),
-        screenshotX = ctrX,
-        screenshotY = ctrY,
         hint, x, y, objectId, tileId;
+
+        screenshotX = ctrX, screenshotY = ctrY;
 
         ctx.save();
         ctx.font = 'bold 12pt sans-serif';
