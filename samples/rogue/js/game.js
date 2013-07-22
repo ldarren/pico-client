@@ -143,11 +143,15 @@ pico.def('game', 'picGroup', function(){
             }
         }
         if (won) {
-            alert('You have Won!');
-            this.init({tileSet:this.tileSet, smallDevice: this.smallDevice, mapLevel:this.mapLevel+1, heroJob:this.heroJob});
-            this.go('resize', [0, 0, window.innerWidth, innerHeight]);
+            this.go('showDialog', ['Congratulations!', 'you have cleared stage'+this.mapLevel, 'Pressed on message box to proceed to '+this.mapLevel+1]);
             return entities;
         }
+    };
+
+    me.nextLevel = function(elapsed, evt, entities){
+        me.init({tileSet:this.tileSet, smallDevice: this.smallDevice, mapLevel:this.mapLevel+1, heroJob:this.heroJob});
+        me.go('resize', [0, 0, window.innerWidth, innerHeight]);
+        return entities;
     };
 
     me.fillTiles = function(i){

@@ -14,6 +14,7 @@ Object.freeze(G_WIN_ID = {
     BAG: 'uiBag',
     INFO: 'uiInfo',
     POPUP: 'uiPopup',
+    DIALOG: 'uiDialog',
 });
 
 Object.freeze(G_NUMERIC = {

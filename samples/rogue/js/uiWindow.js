@@ -1,6 +1,7 @@
 pico.def('uiWindow', 'picUIWindow', function(){
 
     this.use('info');
+    this.use('dialogMsg');
 
     var
     me = this,
@@ -8,6 +9,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
     skillsId = G_WIN_ID.SKILLS,
     inventoryId = G_WIN_ID.BAG,
     infoId = G_WIN_ID.INFO,
+    dialogId = G_WIN_ID.DIALOG,
     name = me.moduleName;
 
     me.create = function(ent, data){
@@ -41,6 +43,11 @@ pico.def('uiWindow', 'picUIWindow', function(){
                 data.docks = [4+2+1, 8+4+2+1];
                 data.minWidth = this.smallDevice ? 320 : 640;
                 data.minHeight = this.tileHeight+gs;
+                break;
+            case dialogId:
+                data.docks = [8+4+2+1, 8+4+2+1];
+                data.minWidth = this.smallDevice ? 80 : 160;
+                data.minHeight = this.smallDevice ? 20 : 40;
                 break;
         }
 
@@ -144,12 +151,14 @@ pico.def('uiWindow', 'picUIWindow', function(){
             if (skillsId !== e.name) this.hideEntity(skillsId);
             if (inventoryId !== e.name) this.hideEntity(inventoryId);
             if (infoId !== e.name) this.hideEntity(infoId);
+            if (dialogId !== e.name) this.hideEntity(dialogId);
             this.hideEntity('camera');
         }else{
             this.showEntity(playerId);
             this.showEntity(skillsId);
             this.showEntity(inventoryId);
             me.info.openIfValid.call(this);
+            me.dialogMsg.openIfValid.call(this);
             this.showEntity('camera');
         }
         var layout = uiOpt.layouts[uiOpt.maximized];
