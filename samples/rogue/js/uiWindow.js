@@ -128,7 +128,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
             if (active !== uiOpt.active){
                 uiOpt.active = active;
             }
-            if (active) return [e];
+            if (active) {return [e]};
         }
 
         return unknowns;

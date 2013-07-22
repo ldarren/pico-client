@@ -43,8 +43,9 @@ pico.def('dialogMsg', 'picUIWindow', function(){
             e = entities[i];
             com = e.getComponent(name);
             if (!com) continue;
+            this.go('hideDialog');
             this.go('nextLevel');
-            return me.close.call(this, elapsed, info, entities);
+            return;
         }
         return entities;
     };

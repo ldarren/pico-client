@@ -37,8 +37,7 @@ onFingerDown = function(evt, x, y){
     me.game.go('fingerDown', [x, y]);
 },
 onFingerUp = function(evt, x, y){
-    var d = Math.abs(x - fingerStartPos[0]) + Math.abs(y - fingerStartPos[1]);
-    if (d > 10) cancelTracking() // is a move not a click
+    if (fingerTracker) cancelTracking() // is a move not a click
     else me.game.go('fingerUp', [x, y]);
 },
 onFingerMove = function(evt, x, y){
@@ -124,6 +123,7 @@ onLoad = function(){
         game.route('showInfo', [info.open, renderer.draw]);
         game.route('hideInfo', [info.close, renderer.draw]);
         game.route('showDialog', [dialogMsg.open, renderer.draw]);
+        game.route('hideDialog', [dialogMsg.close, renderer.draw, game.releaseSelected]);
 
         var
         cameraEnt = game.addEntity('camera'),
