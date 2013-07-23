@@ -47,17 +47,15 @@ pico.def('camera', 'picBase', function(){
         map = this.map,
         mapW = this.mapWidth,
         mapH = this.mapHeight,
-        tileW = this.tileWidth,
-        tileH = this.tileHeight,
-        x = Math.floor((evt[0] - ctrX) / tileW),
-        y = Math.floor((evt[1] - ctrY) / tileH),
+        x = Math.floor((evt[0] - ctrX) / this.tileWidth),
+        y = Math.floor((evt[1] - ctrY) / this.tileHeight),
         id, tileType;
 
         if (y > mapH || x > mapW) return;
         id = mapW * y + x;
         tileType = map[id];
 
-        if (tileType & G_TILE_TYPE.HIDE) {
+        if (tileType & G_TILE_TYPE.HIDE && this.nearToHero(id)) {
             if (this.activatedSkill){
                 this.flags[id] = this.activatedSkill;
             }else{
@@ -68,10 +66,21 @@ pico.def('camera', 'picBase', function(){
 
         tileType = map[id];
         if (!(tileType & G_TILE_TYPE.HIDE)){
-            if(tileType & G_TILE_TYPE.CREEP) this.go('showInfo', {creepId:this.objects[id]});
-            else this.go('hideInfo');
+            if(this.objects[id]){
+                this.go('showInfo', {creepId:this.objects[id]});
+            }else{
+                this.objects[this.heroPos] = undefined;
+                this.heroPos = id;
+                this.objects[this.heroPos] = this.heroJob;
+                this.go('hideInfo');
+            }
 
-            if(tileType & G_TILE_TYPE.STAIR_DOWN){
+            if(tileType & G_TILE_TYPE.STAIR_UP){
+                this.go('showDialog', {
+                    info: ['Warning!', 'you are leaving level '+this.mapLevel, 'Click on message box to proceed to level '+(this.mapLevel-1)],
+                    callback: 'prevLevel'});
+                return;
+            }else if(tileType & G_TILE_TYPE.STAIR_DOWN){
                 this.go('checkResult');
             }
         }

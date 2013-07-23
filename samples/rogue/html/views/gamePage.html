@@ -120,9 +120,10 @@ onLoad = function(){
         game.route('resize', [camera.resize, uiWindow.resize, bag.resize, info.openIfValid, dialogMsg.openIfValid, renderer.draw]);
         game.route('checkResult', [game.checkResult, renderer.draw]);
         game.route('nextLevel', [game.nextLevel, renderer.draw]);
+        game.route('prevLevel', [game.prevLevel, renderer.draw]);
         game.route('showInfo', [info.open, renderer.draw]);
         game.route('hideInfo', [info.close, renderer.draw]);
-        game.route('showDialog', [dialogMsg.open, renderer.draw]);
+        game.route('showDialog', [dialogMsg.open, renderer.draw, game.releaseSelected]);
         game.route('hideDialog', [dialogMsg.close, renderer.draw, game.releaseSelected]);
 
         var

@@ -168,18 +168,38 @@ pico.def('game', 'picGroup', function(){
             }
         }
         if (won) {
-            this.go('showDialog', ['Congratulations!', 'you have cleared level '+this.mapLevel, 'Click on message box to proceed to level '+(this.mapLevel+1)]);
+            this.go('showDialog', {
+                info: ['Congratulations!', 'you have cleared level '+this.mapLevel, 'Click on message box to proceed to level '+(this.mapLevel+1)],
+                callback: 'nextLevel'});
             return entities;
         }
     };
 
     me.nextLevel = function(elapsed, evt, entities){
         me.init({tileSet:this.tileSet, smallDevice: this.smallDevice, mapLevel:this.mapLevel+1, heroJob:this.heroJob});
-        me.go('resize', [0, 0, window.innerWidth, innerHeight]);
+        me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);
+        return entities;
+    };
+
+    me.prevLevel = function(elapsed, evt, entities){
+        me.init({tileSet:this.tileSet, smallDevice: this.smallDevice, mapLevel:this.mapLevel-1, heroJob:this.heroJob});
+        me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);
         return entities;
     };
 
     me.fillTiles = function(i){
         return fill(me.map, me.hints, me.mapWidth, i);
+    };
+
+    me.nearToHero = function(i){
+        var
+        mapW = this.mapWidth,
+        mapH = this.mapHeight,
+        p = this.heroPos;
+
+        if (i === (p-mapW) || i === (p+mapW) ||
+            (0 !== (p%mapW) && (i === (p-1) || i === (p-mapW-1) || i === (p+mapW-1))) ||
+            (0 !== ((p+1)%mapW) && (i === (p+1) || i === (p-mapW+1) || i === (p+mapW+1)))) return true;
+        return false;
     };
 });
