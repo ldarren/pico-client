@@ -1,11 +1,12 @@
 Object.freeze(G_TILE_TYPE = {
-    OBSTACLES: 2+4+8,
+    EMPTY: 0,
     SHOW: 2+4+8+16,
     HIDE: 1,
     CREEP: 2,
     CHEST: 4,
     STAIR_DOWN: 8,
-    STAIR_UP: 16
+    STAIR_UP: 16,
+    OBSTACLES: 2+4+8,
 });
 
 Object.freeze(G_WIN_ID = {
@@ -160,22 +161,60 @@ Object.freeze(G_FLOOR = {
     UNCLEAR: 10,
     STAIR_DOWN: 13,
     STAIR_UP: 14,
-    WALL: 19
+    WALL: 19,
+    BROKEN_WALL: 20,
+    PILLARS: 24,
+    PILLAR_DOOR: 25,
+    PRISON: 26,
+    TRAP: 27,
+    TILES: 28,
+    WATER: 29,
+    SAND: 30,
+    SPACE: 31
 });
 
-Object.freeze(G_FLOOR = {
-    CLEAR: 8,
-    UNCLEAR: 10,
-    STAIR_DOWN: 13,
-    STAIR_UP: 14,
-    WALL: 19
+Object.freeze(G_TOWN_MAP = {
+    heroPos: 5,
+    map:[
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, G_TILE_TYPE.STAIR_DOWN, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+    ],
+    terrain:[
+        30, 30, 30, 30, 30, 30, 30, 30,
+        30, 30, 30, 30, 30, 30, 30, 30,
+        30, 30, 30, 30, 30, 30, 30, 30,
+        30, 30, 30, 30, 30, 30, 30, 30,
+        30, 30, 30, 30, 30, 30, 30, 30,
+        30, 30, 30, 30, 30, 30, 30, 30,
+        30, 30, 30, 30, 30, 30, G_FLOOR.STAIR_DOWN, 30,
+        30, 30, 30, 30, 30, 30, 30, 30,
+    ],
+    objects:[
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0,
+    ],
 });
 
 Object.freeze(G_MAP_PARAMS = [
+    [8, 8, 0, 0], // level 0 is a town
     [8, 8, 1, 1], // width, height, creeps, chests
     [10, 10, 5, 2],
     [12, 12, 6, 2],
-    [14, 14, 7, 2]
+    [14, 14, 7, 3],
+    [15, 15, 14, 3],
+    [16, 16, 20, 4],
 ]);
 
 Object.freeze(G_THEME = {

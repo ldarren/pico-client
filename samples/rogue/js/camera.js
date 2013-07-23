@@ -59,7 +59,7 @@ pico.def('camera', 'picBase', function(){
 
         if (tileType & G_TILE_TYPE.HIDE) {
             if (this.activatedSkill){
-                this.flags[id] = true;
+                this.flags[id] = this.activatedSkill;
             }else{
                 this.fillTiles(id);
                 this.flags[id] = undefined;
@@ -98,12 +98,12 @@ pico.def('camera', 'picBase', function(){
         var
         tileSet = this.tileSet,
         map = this.map,
+        terrain = this.terrain,
         mapW = this.mapWidth,
         mapH = this.mapHeight,
         objects = this.objects,
         flags = this.flags,
         hints = this.hints,
-        heroPos = this.heroPos,
         width = this.tileWidth,
         height = this.tileHeight,
         hw = Math.floor(width/2),
@@ -121,32 +121,18 @@ pico.def('camera', 'picBase', function(){
             tileId = map[w];
             if (tileId & G_TILE_TYPE.HIDE){
                 tileSet.draw(ctx, G_FLOOR.UNCLEAR, x, y, width, height);
-                if (flags[w]) tileSet.draw(ctx, G_MARK.EYE_OF_GOD, x, y, width, height);
+                if (flags[w]) tileSet.draw(ctx, flags[w], x, y, width, height);
             }else{
                 hint = hints[w];
                 objectId = objects[w];
-                tileSet.draw(ctx, G_FLOOR.CLEAR, x, y, width, height);
+                tileSet.draw(ctx, terrain[w], x, y, width, height);
                 if (objectId){
                     tileSet.draw(ctx, objectId, x, y, width, height);
-                    if (hint && tileId & G_TILE_TYPE.STAIR_UP){
-                        ctx.fillStyle = G_HINT_COLOR[Math.floor((hint & 0x0f)*0.5)];
-                        ctx.fillText(Math.floor(hint/16), x+hw, y+hh, width);
-                    }
                 }else if (hint){
                     ctx.fillStyle = G_HINT_COLOR[Math.floor((hint & 0x0f)*0.5)];
                     ctx.fillText(Math.floor(hint/16), x+hw, y+hh, width);
                 }
             }
-        }
-        x = ctrX + width * Math.floor(heroPos%mapW);
-        y = ctrY + height * Math.floor(heroPos/mapW);
-        tileSet.draw(ctx, this.heroJob, x, y, width, height);
-        hint = hints[heroPos];
-        if (hint){
-            ctx.textAlign = 'right';
-            ctx.textBaseline = 'bottom';
-            ctx.fillStyle = G_HINT_COLOR[Math.floor((hint & 0x0f)*0.5)];
-            ctx.fillText(Math.floor(hint/16), x+width, y+height, width);
         }
         ctx.restore();
     };
