@@ -128,7 +128,8 @@ pico.def('camera', 'picBase', function(){
                 tileSet.draw(ctx, terrain[w], x, y, width, height);
                 if (objectId){
                     tileSet.draw(ctx, objectId, x, y, width, height);
-                }else if (hint){
+                }
+                if (hint && hint > 9){
                     ctx.fillStyle = G_HINT_COLOR[Math.floor((hint & 0x0f)*0.5)];
                     ctx.fillText(Math.floor(hint/16), x+hw, y+hh, width);
                 }

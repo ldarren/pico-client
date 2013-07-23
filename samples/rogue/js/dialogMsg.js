@@ -4,6 +4,7 @@ pico.def('dialogMsg', 'picUIWindow', function(){
     info,
     name = me.moduleName,
     findMyFirstEntity = function(entities){
+        if (!entities) return;
         var e, com;
         for(var i=0, l=entities.length; i<l; i++){
             e = entities[i];
