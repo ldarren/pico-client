@@ -87,12 +87,21 @@ pico.def('camera', 'picBase', function(){
         id = mapW * y + x;
         tileType = map[id];
 
-        if (tileType & G_TILE_TYPE.HIDE && this.nearToHero(id)) {
-            if (this.activatedSkill){
-                this.flags[id] = this.activatedSkill;
+        if (tileType & G_TILE_TYPE.HIDE){
+            if (this.nearToHero(id)) {
+                if (this.activatedSkill){
+                    this.flags[id] = this.activatedSkill;
+                }else{
+                    this.fillTiles(id);
+                    this.flags[id] = undefined;
+                }
             }else{
-                this.fillTiles(id);
-                this.flags[id] = undefined;
+                var h = this.tileNextTo(id);
+                if (-1 !== h){
+                    this.objects[this.heroPos] = undefined;
+                    this.heroPos = h;
+                    this.objects[h] = this.heroJob;
+                }
             }
         }
 
@@ -103,7 +112,7 @@ pico.def('camera', 'picBase', function(){
             }else{
                 this.objects[this.heroPos] = undefined;
                 this.heroPos = id;
-                this.objects[this.heroPos] = this.heroJob;
+                this.objects[id] = this.heroJob;
                 this.go('hideInfo');
             }
 
@@ -181,7 +190,6 @@ pico.def('camera', 'picBase', function(){
             }
             w += viewWrap;
         }
-        console.log('draw', viewWidth*viewHeight);
         ctx.restore();
     };
 

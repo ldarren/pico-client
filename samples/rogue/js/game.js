@@ -202,4 +202,35 @@ pico.def('game', 'picGroup', function(){
             (0 !== ((p+1)%mapW) && (i === (p+1) || i === (p-mapW+1) || i === (p+mapW+1)))) return true;
         return false;
     };
+
+    me.tileNextTo = function(i){
+        var
+        map = this.map,
+        mapW = this.mapWidth,
+        mapH = this.mapHeight,
+        h,
+        check = function(){return (undefined !== h && !(h & G_TILE_TYPE.HIDE));};
+
+        h = map[i+mapW];
+        if (check()) return h;
+        h = map[i-mapW];
+        if (check()) return h;
+        if (0 !== (i%mapW)){
+            h = map[i-1];
+            if (check()) return h;
+            h = map[i-mapW-1];
+            if (check()) return h;
+            h = map[i+mapW-1];
+            if (check()) return h;
+        }
+        if (0 !== ((i+1)%mapW)){
+            h = map[i+1];
+            if (check()) return h;
+            h = map[i-mapW+1];
+            if (check()) return h;
+            h = map[i+mapW+1];
+            if (check()) return h;
+        }
+        return -1;
+    };
 });

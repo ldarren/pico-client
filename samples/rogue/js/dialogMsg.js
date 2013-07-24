@@ -20,7 +20,6 @@ pico.def('dialogMsg', 'picUIWindow', function(){
     };
 
     me.close = function(elapsed, evt, entities){
-console.log('dialog close');
         var e = findMyFirstEntity(entities);
         if (e){
             this.hideEntity(G_WIN_ID.DIALOG);
