@@ -96,11 +96,12 @@ pico.def('camera', 'picBase', function(){
                     this.flags[id] = undefined;
                 }
             }else{
-                var h = this.tileNextTo(id);
-                if (-1 !== h){
-                    this.objects[this.heroPos] = undefined;
-                    this.heroPos = h;
-                    this.objects[h] = this.heroJob;
+                var 
+                hp = this.heroPos,
+                h = this.nextTile(id, hp);
+                if (hp !== h){
+                    this.stopLoop('pathTo');
+                    this.startLoop('pathTo', h);
                 }
             }
         }
@@ -110,9 +111,8 @@ pico.def('camera', 'picBase', function(){
             if(this.objects[id]){
                 this.go('showInfo', {creepId:this.objects[id]});
             }else{
-                this.objects[this.heroPos] = undefined;
-                this.heroPos = id;
-                this.objects[id] = this.heroJob;
+                this.stopLoop('pathTo');
+                this.startLoop('pathTo', id);
                 this.go('hideInfo');
             }
 

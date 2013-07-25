@@ -118,6 +118,7 @@ onLoad = function(){
         game.route('fingerOut', [game.releaseSelected, renderer.releaseScreenshot, renderer.draw]);
         game.route('useItem', [bag.useItem, renderer.draw, game.releaseSelected]);
         game.route('resize', [camera.resize, uiWindow.resize, bag.resize, info.openIfValid, dialogMsg.openIfValid, renderer.draw]);
+        game.route('pathTo', [game.pathTo, renderer.draw]);
         game.route('checkResult', [game.checkResult, renderer.draw]);
         game.route('nextLevel', [game.nextLevel, renderer.draw]);
         game.route('prevLevel', [game.prevLevel, renderer.draw]);

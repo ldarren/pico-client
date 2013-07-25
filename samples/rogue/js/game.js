@@ -2,6 +2,22 @@ pico.def('game', 'picGroup', function(){
 
     var
     me = this,
+    Max = Math.max,
+    Abs = Math.abs,
+    Floor = Math.floor,
+    Random = Math.random,
+    pathElapsed = 0,
+    closedPath = [],
+    isOpen = function(i){
+        var
+        o = me.objects[i],
+        m = me.map[i];
+        return (undefined !== m && undefined === closedPath[i] && !(m & G_TILE_TYPE.HIDE) && !o);
+    },
+    heuristic = function(from, to){
+        var mw = me.mapWidth
+        return Max(Abs(from%mw - to%mw), Abs(Floor(from/mw) - Floor(to/mw)));
+    },
     getTileHint = function(hint, type){
         if (type & G_TILE_TYPE.OBSTACLES){
             hint |= type;
@@ -72,19 +88,19 @@ pico.def('game', 'picGroup', function(){
 
         // add creeps
         for(i=0,l=me.creepCount; i<l; i++){
-            c = shuffle.splice(Math.floor(Math.random()*shuffle.length), 1)[0];
+            c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
             map[c] |= G_TILE_TYPE.CREEP;
-            objects[c] = G_CREEP.MOUSE + Math.floor(Math.random() * (G_CREEP.DEVIL - G_CREEP.MOUSE));
+            objects[c] = G_CREEP.MOUSE + Floor(Random() * (G_CREEP.DEVIL - G_CREEP.MOUSE));
         }
 
         // add chests
         for(i=0,l=me.chestCount; i<l; i++){
-            c = shuffle.splice(Math.floor(Math.random()*shuffle.length), 1)[0];
+            c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
             map[c] |= G_TILE_TYPE.CHEST;
             objects[c] = G_OBJECT.CHEST_CLOSED;
         }
 
-        c = shuffle.splice(Math.floor(Math.random()*shuffle.length), 1)[0];
+        c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
         map[c] |= G_TILE_TYPE.STAIR_DOWN;
         terrain[c] = G_FLOOR.STAIR_DOWN;
 
@@ -106,7 +122,7 @@ pico.def('game', 'picGroup', function(){
             hints[i] = hint;
         }
 
-        c = shuffle.splice(Math.floor(Math.random()*shuffle.length), 1)[0];
+        c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
         terrain[c] = G_FLOOR.STAIR_UP;
         objects[c] = me.heroJob;
         me.heroPos = c;
@@ -203,37 +219,62 @@ pico.def('game', 'picGroup', function(){
         return false;
     };
 
-    me.tileNextTo = function(i){
+    me.nextTile = function(at, toward){
         var
         map = this.map,
         mapW = this.mapWidth,
         mapH = this.mapHeight,
-        h,
-        check = function(){
-            var m = map[h];
-            return (undefined !== m && !(m & G_TILE_TYPE.HIDE));
-        };
+        bestPos = at,
+        minCost = mapW * mapH,
+        pos, cost;
 
-        h = i+mapW;
-        if (check()) return h;
-        h = i-mapW;
-        if (check()) return h;
-        if (0 !== (i%mapW)){
-            h = i-1;
-            if (check()) return h;
-            h = i-mapW-1;
-            if (check()) return h;
-            h = i+mapW-1;
-            if (check()) return h;
+        if (isOpen(pos = at+mapW) && minCost > (cost = heuristic(pos, toward))) { bestPos = pos; minCost = cost;}
+        if (isOpen(pos = at-mapW) && minCost > (cost = heuristic(pos, toward))) { bestPos = pos; minCost = cost;}
+        if (0 !== (at%mapW)){
+            if (isOpen(pos = at-1) && minCost > (cost = heuristic(pos, toward))) { bestPos = pos; minCost = cost;}
+            if (isOpen(pos = at-mapW-1) && minCost > (cost = heuristic(pos, toward))) { bestPos = pos; minCost = cost;}
+            if (isOpen(pos = at+mapW-1) && minCost > (cost = heuristic(pos, toward))) { bestPos = pos; minCost = cost;}
         }
-        if (0 !== ((i+1)%mapW)){
-            h = i+1;
-            if (check()) return h;
-            h = i-mapW+1;
-            if (check()) return h;
-            h = i+mapW+1;
-            if (check()) return h;
+        if (0 !== ((at+1)%mapW)){
+            if (isOpen(pos = at+1) && minCost > (cost = heuristic(pos, toward))) { bestPos = pos; minCost = cost;}
+            if (isOpen(pos = at-mapW+1) && minCost > (cost = heuristic(pos, toward))) { bestPos = pos; minCost = cost;}
+            if (isOpen(pos = at+mapW+1) && minCost > (cost = heuristic(pos, toward))) { bestPos = pos; minCost = cost;}
         }
-        return -1;
+        return bestPos;
+    };
+
+    me.pathTo = function(elapsed, evt, entities){
+        pathElapsed += elapsed;
+        if (pathElapsed < 100) return;
+        pathElapsed = 0;
+
+        var e, o;
+        for(var i=0, l=entities.length; i<l; i++){
+            e = entities[i];
+            o = e.getComponent('camera');
+            if (o) break;
+        }
+        if (!o) return;
+
+        var hp = this.heroPos;
+        if (hp === evt) {
+            this.stopLoop('pathTo');
+            closedPath.length = 0;
+            return;
+        }
+        closedPath[hp] = 1;
+
+        var pos = this.nextTile(hp, evt);
+        if (pos !== hp){
+            this.objects[hp] = undefined;
+            this.heroPos = pos;
+            this.objects[pos] = this.heroJob;
+            return [e];
+        }else{
+            this.stopLoop('pathTo');
+            closedPath.length = 0;
+        }
+
+        return;
     };
 });
