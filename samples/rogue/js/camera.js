@@ -97,9 +97,8 @@ pico.def('camera', 'picBase', function(){
                 }
             }else{
                 var 
-                hp = this.heroPos,
-                h = this.nextTile(id, hp);
-                if (hp !== h){
+                h = this.aStar(this.heroPos, id);
+                if (h.length){
                     this.stopLoop('pathTo');
                     this.startLoop('pathTo', h);
                 }

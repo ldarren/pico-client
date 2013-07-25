@@ -8,6 +8,10 @@ pico.def('game', 'picGroup', function(){
     Random = Math.random,
     pathElapsed = 0,
     closedPath = [],
+    openPath = [],
+    costFG = [],
+    costF = [],
+    path = [],
     isOpen = function(i){
         var
         o = me.objects[i],
@@ -17,6 +21,22 @@ pico.def('game', 'picGroup', function(){
     heuristic = function(from, to){
         var mw = me.mapWidth
         return Max(Abs(from%mw - to%mw), Abs(Floor(from/mw) - Floor(to/mw)));
+    },
+    getNeighbours = function(map, mapW, at, neighbours){
+        var pos;
+        if (isOpen(pos = at+mapW)) { neightbours.push(pos);}
+        if (isOpen(pos = at-mapW)) { neightbours.push(pos);}
+        if (0 !== (at%mapW)){
+            if (isOpen(pos = at-1)) { neightbours.push(pos);}
+            if (isOpen(pos = at-mapW-1)) { neightbours.push(pos);}
+            if (isOpen(pos = at+mapW-1)) { neightbours.push(pos);}
+        }
+        if (0 !== ((at+1)%mapW)){
+            if (isOpen(pos = at+1)) { neightbours.push(pos);}
+            if (isOpen(pos = at-mapW+1)) { neightbours.push(pos);}
+            if (isOpen(pos = at+mapW+1)) { neightbours.push(pos);}
+        }
+        return neightbours;
     },
     getTileHint = function(hint, type){
         if (type & G_TILE_TYPE.OBSTACLES){
@@ -243,6 +263,56 @@ pico.def('game', 'picGroup', function(){
         return bestPos;
     };
 
+    me.AStar = function(from, to){
+        costG.length = 0;
+        costF.length = 0;
+        openPath.length = 0;
+        closedPath.length = 0;
+
+        var
+        map = this.map,
+        mapW = this.mapWidth,
+        current = from,
+        prev = undefined,
+        g, f,
+        l, n, nl, o, node, nodeO;
+
+        openPath.push(from);
+        costG[current] = 0;
+
+        while(l = openPath.length){
+            current = openPath.pop();
+            closedPath[current] = prev;
+            path.length = 0;
+            if(current === to){
+                path.push(current);
+                while(current = closedPath[current]){
+                    path.push(current);
+                }
+                path.reverse();
+            }else{
+                path = getNeighbours(map, mapW, current, path);
+                prev = current;
+                for(n=0,nl=path.length;n<nl;n++){
+                    node = path[n];
+                    if (!costF[node]){
+                        costG[node] = g = costG[current] + heuristic(node, current);
+                        costF[node] = f = g + heuristic(node, current);
+                        for(o=openPath.length;0!==o;o--){
+                            nodeO = openPath[o];
+                            if (costF[nodeO] > f){
+                                openPath.splice(o, 0, node);
+                            }
+                            if (0===o) openPath.unshift(node);
+                        }
+                    }
+                }
+            }
+        }
+
+        return path;
+    };
+
     me.pathTo = function(elapsed, evt, entities){
         pathElapsed += elapsed;
         if (pathElapsed < 100) return;
@@ -256,25 +326,18 @@ pico.def('game', 'picGroup', function(){
         }
         if (!o) return;
 
-        var hp = this.heroPos;
-        if (hp === evt) {
+        if (!evt || !evt.length) {
             this.stopLoop('pathTo');
-            closedPath.length = 0;
             return;
         }
-        closedPath[hp] = 1;
 
-        var pos = this.nextTile(hp, evt);
-        if (pos !== hp){
-            this.objects[hp] = undefined;
-            this.heroPos = pos;
-            this.objects[pos] = this.heroJob;
-            return [e];
-        }else{
-            this.stopLoop('pathTo');
-            closedPath.length = 0;
-        }
+        var
+        hp = this.heroPos,
+        p = evt.pop();
 
-        return;
+        this.objects[hp] = undefined;
+        this.heroPos = p;
+        this.objects[p] = this.heroJob;
+        return [e];
     };
 });
