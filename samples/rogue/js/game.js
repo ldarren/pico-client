@@ -153,8 +153,6 @@ pico.def('game', 'pigSqrMap', function(){
     me.smallDevice = false;
     me.tileWidth = 16;
     me.tileHeight = 16;
-    me.mapWidth = 160;
-    me.mapHeight = 160;
     me.mapLevel = 0;
     me.heroJob = G_HERO.ROGUE;
     me.heroPos = 0;
