@@ -97,7 +97,8 @@ pico.def('camera', 'picBase', function(){
                 }
             }else{
                 var 
-                h = this.aStar(this.heroPos, id);
+                hp = this.heroPos,
+                h = this.findPath(hp, this.nextTile(id, hp));
                 if (h.length){
                     this.stopLoop('pathTo');
                     this.startLoop('pathTo', h);
@@ -110,8 +111,11 @@ pico.def('camera', 'picBase', function(){
             if(this.objects[id]){
                 this.go('showInfo', {creepId:this.objects[id]});
             }else{
-                this.stopLoop('pathTo');
-                this.startLoop('pathTo', id);
+                var h = this.findPath(this.heroPos, id);
+                if (h.length){
+                    this.stopLoop('pathTo');
+                    this.startLoop('pathTo', h);
+                }
                 this.go('hideInfo');
             }
 

@@ -6,37 +6,39 @@ pico.def('game', 'picGroup', function(){
     Abs = Math.abs,
     Floor = Math.floor,
     Random = Math.random,
+    Pow = Math.pow,
+    Sqrt = Math.sqrt,
     pathElapsed = 0,
     closedPath = [],
     openPath = [],
-    costFG = [],
+    costG = [],
     costF = [],
     path = [],
     isOpen = function(i){
         var
         o = me.objects[i],
         m = me.map[i];
-        return (undefined !== m && undefined === closedPath[i] && !(m & G_TILE_TYPE.HIDE) && !o);
+        return (undefined !== m && !(m & G_TILE_TYPE.HIDE) && !o);
     },
     heuristic = function(from, to){
         var mw = me.mapWidth
-        return Max(Abs(from%mw - to%mw), Abs(Floor(from/mw) - Floor(to/mw)));
+        return Sqrt(Pow(from%mw - to%mw, 2) + Pow(Floor(from/mw) - Floor(to/mw), 2));
     },
     getNeighbours = function(map, mapW, at, neighbours){
         var pos;
-        if (isOpen(pos = at+mapW)) { neightbours.push(pos);}
-        if (isOpen(pos = at-mapW)) { neightbours.push(pos);}
+        if (isOpen(pos = at+mapW)) { neighbours.push(pos);}
+        if (isOpen(pos = at-mapW)) { neighbours.push(pos);}
         if (0 !== (at%mapW)){
-            if (isOpen(pos = at-1)) { neightbours.push(pos);}
-            if (isOpen(pos = at-mapW-1)) { neightbours.push(pos);}
-            if (isOpen(pos = at+mapW-1)) { neightbours.push(pos);}
+            if (isOpen(pos = at-1)) { neighbours.push(pos);}
+            if (isOpen(pos = at-mapW-1)) { neighbours.push(pos);}
+            if (isOpen(pos = at+mapW-1)) { neighbours.push(pos);}
         }
         if (0 !== ((at+1)%mapW)){
-            if (isOpen(pos = at+1)) { neightbours.push(pos);}
-            if (isOpen(pos = at-mapW+1)) { neightbours.push(pos);}
-            if (isOpen(pos = at+mapW+1)) { neightbours.push(pos);}
+            if (isOpen(pos = at+1)) { neighbours.push(pos);}
+            if (isOpen(pos = at-mapW+1)) { neighbours.push(pos);}
+            if (isOpen(pos = at+mapW+1)) { neighbours.push(pos);}
         }
-        return neightbours;
+        return neighbours;
     },
     getTileHint = function(hint, type){
         if (type & G_TILE_TYPE.OBSTACLES){
@@ -263,7 +265,7 @@ pico.def('game', 'picGroup', function(){
         return bestPos;
     };
 
-    me.AStar = function(from, to){
+    me.findPath = function(from, to){
         costG.length = 0;
         costF.length = 0;
         openPath.length = 0;
@@ -279,32 +281,33 @@ pico.def('game', 'picGroup', function(){
 
         openPath.push(from);
         costG[current] = 0;
+        closedPath[current] = undefined;
 
         while(l = openPath.length){
             current = openPath.pop();
-            closedPath[current] = prev;
             path.length = 0;
             if(current === to){
                 path.push(current);
                 while(current = closedPath[current]){
                     path.push(current);
                 }
-                path.reverse();
+                openPath.length = 0;
             }else{
                 path = getNeighbours(map, mapW, current, path);
-                prev = current;
-                for(n=0,nl=path.length;n<nl;n++){
+                DONE: for(n=0,nl=path.length;n<nl;n++){
                     node = path[n];
                     if (!costF[node]){
+                        closedPath[node] = current;
                         costG[node] = g = costG[current] + heuristic(node, current);
-                        costF[node] = f = g + heuristic(node, current);
-                        for(o=openPath.length;0!==o;o--){
+                        costF[node] = f = g + heuristic(node, to);
+                        for(o=openPath.length-1;-1!==o;o--){
                             nodeO = openPath[o];
-                            if (costF[nodeO] > f){
-                                openPath.splice(o, 0, node);
+                            if (costF[nodeO] >= f){
+                                openPath.splice(o+1, 0, node);
+                                continue DONE;
                             }
-                            if (0===o) openPath.unshift(node);
                         }
+                        openPath.unshift(node);
                     }
                 }
             }
