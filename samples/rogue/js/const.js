@@ -38,17 +38,6 @@ Object.freeze(G_OBJECT = {
     SHRINE: 133,
 });
 
-Object.freeze(G_OBJECT_NAME = {
-    32: 'Chest',
-    33: 'Empty Chest',
-    34: 'Normal Key',
-    35: 'Crown Key',
-    36: 'Gold Key',
-    37: 'Stone Key',
-    38: 'Secret Key',
-    39: 'Bone Key'
-});
-
 Object.freeze(G_MARK = {
     PENTAGRAM: 136,     // protection, 4 elements
     ANKH: 137,          // revive, eternal life
@@ -75,17 +64,6 @@ Object.freeze(G_HERO = {
     PALADIN: 149,
     WIZARD: 150,
     WARLOCK: 151
-});
-
-Object.freeze(G_HERO_CLASS = {
-    144: 'Rogue',
-    145: 'Monk',
-    146: 'Barbarian',
-    147: 'Druid',
-    148: 'Hunter',
-    149: 'Paladin',
-    150: 'Wizard',
-    151: 'Warlock'
 });
 
 Object.freeze(G_CREEP = {
@@ -123,7 +101,42 @@ Object.freeze(G_CREEP = {
     DEVIL: 183,
 });
 
-Object.freeze(G_CREEP_NAME = {
+Object.freeze(G_FLOOR = {
+    CLEAR: 8,
+    UNCLEAR: 10,
+    STAIR_DOWN: 13,
+    STAIR_UP: 14,
+    WALL: 19,
+    BROKEN_WALL: 20,
+    PILLARS: 24,
+    PILLAR_DOOR: 25,
+    PRISON: 26,
+    TRAP: 27,
+    TILES: 28,
+    WATER: 29,
+    SAND: 30,
+    SPACE: 31
+});
+
+Object.freeze(G_OBJECT_NAME = {
+    32: 'Chest',
+    33: 'Empty Chest',
+    34: 'Normal Key',
+    35: 'Crown Key',
+    36: 'Gold Key',
+    37: 'Stone Key',
+    38: 'Secret Key',
+    39: 'Bone Key',
+    132: 'Altar',
+    133: 'Shrine',
+    144: 'Rogue',
+    145: 'Monk',
+    146: 'Barbarian',
+    147: 'Druid',
+    148: 'Hunter',
+    149: 'Paladin',
+    150: 'Wizard',
+    151: 'Warlock',
     152: 'Mouse',
     153: 'Spiders',
     154: 'Lizard',
@@ -156,23 +169,6 @@ Object.freeze(G_CREEP_NAME = {
     181: 'Werewolf',
     182: 'Ogre',
     183: 'Devil'
-});
-
-Object.freeze(G_FLOOR = {
-    CLEAR: 8,
-    UNCLEAR: 10,
-    STAIR_DOWN: 13,
-    STAIR_UP: 14,
-    WALL: 19,
-    BROKEN_WALL: 20,
-    PILLARS: 24,
-    PILLAR_DOOR: 25,
-    PRISON: 26,
-    TRAP: 27,
-    TILES: 28,
-    WATER: 29,
-    SAND: 30,
-    SPACE: 31
 });
 
 Object.freeze(G_TOWN_MAP = {

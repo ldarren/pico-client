@@ -225,6 +225,12 @@ pico.def('game', 'picGroup', function(){
         return entities;
     };
 
+    me.reborn = function(elapsed, evt, entities){
+        me.init({tileSet:this.tileSet, smallDevice: this.smallDevice, mapLevel:0, heroJob:Math.floor(G_HERO.ROGUE + Math.random()*(G_HERO.WARLOCK-G_HERO.ROGUE))});
+        me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);
+        return entities;
+    };
+
     me.fillTiles = function(i){
         return fill(me.map, me.hints, me.mapWidth, i);
     };

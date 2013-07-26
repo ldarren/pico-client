@@ -122,6 +122,7 @@ onLoad = function(){
         game.route('checkResult', [game.checkResult, renderer.draw]);
         game.route('nextLevel', [game.nextLevel, renderer.draw]);
         game.route('prevLevel', [game.prevLevel, renderer.draw]);
+        game.route('reborn', [game.reborn, renderer.draw]);
         game.route('showInfo', [info.open, renderer.draw]);
         game.route('hideInfo', [info.close, renderer.draw]);
         game.route('showDialog', [dialogMsg.open, renderer.draw, game.releaseSelected]);

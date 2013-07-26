@@ -109,7 +109,15 @@ pico.def('camera', 'picBase', function(){
         tileType = map[id];
         if (!(tileType & G_TILE_TYPE.HIDE)){
             if(this.objects[id]){
-                this.go('showInfo', {creepId:this.objects[id]});
+                var
+                objId = this.objects[id],
+                objName = G_OBJECT_NAME[objId];
+                this.go('showInfo', {creepId:objId});
+                if (tileType & G_TILE_TYPE.CREEP){
+                    this.go('showDialog', {
+                        info: ['RIP', 'you were killed by '+objName+' at level '+this.mapLevel, ' but your lineage will continue...'],
+                        callback: 'reborn'});
+                }
             }else{
                 var h = this.findPath(this.heroPos, id);
                 if (h.length){

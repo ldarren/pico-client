@@ -18,7 +18,7 @@ pico.def('info', 'picUIWindow', function(){
         ctx.textBaseline = 'middle';
         ctx.font = com.font;
         ctx.fillStyle = com.fontColor;
-        ctx.fillText(G_CREEP_NAME[info.creepId], x + tw + 8, center, rect.width);
+        ctx.fillText(G_OBJECT_NAME[info.creepId], x + tw + 8, center, rect.width);
         ctx.restore();
     },
     drawBig = function(ctx, win, com, rect){
@@ -36,7 +36,7 @@ pico.def('info', 'picUIWindow', function(){
         ctx.textBaseline = 'top';
         ctx.font = com.font;
         ctx.fillStyle = com.fontColor;
-        ctx.fillText(G_CREEP_NAME[info.creepId], x + tw/2, y + th, rect.width);
+        ctx.fillText(G_OBJECT_NAME[info.creepId], x + tw/2, y + th, rect.width);
         ctx.restore();
     };
 
