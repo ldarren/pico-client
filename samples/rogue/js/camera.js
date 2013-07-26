@@ -10,26 +10,28 @@ pico.def('camera', 'picBase', function(){
         mapW = mapWidth * tileWidth, mapH = mapHeight * tileHeight,
         viewTop, viewLeft, viewBottom, viewRight;
 
-        if (undefined === viewX){
-            // center view if it is undefined
-            viewX = camX + (camWidth - mapW)/2;
-            viewY = camY + (camHeight - mapH)/2;
-        }
+        do{
+            if (undefined === viewX || viewHeight <= 0 || viewWidth <= 0){
+                // center view if it is undefined
+                viewX = camX + (camWidth - mapW)/2;
+                viewY = camY + (camHeight - mapH)/2;
+            }
 
-        viewTop = viewY > camY ? viewY : camY;
-        viewLeft = viewX > camX ? viewX : camX;
-        viewBottom = viewY+mapH < camY+camHeight ? viewY+mapH : camY+camHeight;
-        viewRight = viewX+mapW < camX+camWidth ? viewX+mapW : camX+camWidth;
+            viewTop = viewY > camY ? viewY : camY;
+            viewLeft = viewX > camX ? viewX : camX;
+            viewBottom = viewY+mapH < camY+camHeight ? viewY+mapH : camY+camHeight;
+            viewRight = viewX+mapW < camX+camWidth ? viewX+mapW : camX+camWidth;
 
-        viewTop = Math.floor((viewTop-viewY)/tileHeight);
-        viewLeft = Math.floor((viewLeft-viewX)/tileWidth);
-        viewBottom = Math.ceil((viewBottom-viewY)/tileHeight);
-        viewRight = Math.ceil((viewRight-viewX)/tileWidth);
+            viewTop = Math.floor((viewTop-viewY)/tileHeight);
+            viewLeft = Math.floor((viewLeft-viewX)/tileWidth);
+            viewBottom = Math.ceil((viewBottom-viewY)/tileHeight);
+            viewRight = Math.ceil((viewRight-viewX)/tileWidth);
 
-        viewStart = (viewTop*mapWidth) + viewLeft;
-        viewWidth = viewRight - viewLeft;
-        viewHeight = viewBottom - viewTop;
-        viewWrap = mapWidth - viewWidth;
+            viewStart = (viewTop*mapWidth) + viewLeft;
+            viewWidth = viewRight - viewLeft;
+            viewHeight = viewBottom - viewTop;
+            viewWrap = mapWidth - viewWidth;
+        }while(viewHeight <= 0 || viewWidth <= 0);
     };
 
     me.resize = function(elapsed, evt, entities){

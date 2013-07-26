@@ -1,4 +1,4 @@
-pico.def('game', 'picGroup', function(){
+pico.def('game', 'pigSqrMap', function(){
 
     var
     me = this,
@@ -9,11 +9,6 @@ pico.def('game', 'picGroup', function(){
     Pow = Math.pow,
     Sqrt = Math.sqrt,
     pathElapsed = 0,
-    closedPath = [],
-    openPath = [],
-    costG = [],
-    costF = [],
-    path = [],
     isOpen = function(i){
         var
         o = me.objects[i],
@@ -49,7 +44,7 @@ pico.def('game', 'picGroup', function(){
     },
     fill = function(map, hints, width, i){
         var count = 0;
-        if (undefined === map[i] || !(map[i] & G_TILE_TYPE.HIDE)) return count;
+        if (isOpen(i)) return count;
         map[i] &= G_TILE_TYPE.SHOW;
         count = 1;
         if (0 === hints[i]){
@@ -165,7 +160,6 @@ pico.def('game', 'picGroup', function(){
     me.heroPos = 0;
     me.creepCount = 0;
     me.chestCount = 0;
-    me.map = [];
     me.terrain = [];
     me.hints = []; // 08:creep, 80:chest, 800:stair:
     me.objects = [];
@@ -176,15 +170,15 @@ pico.def('game', 'picGroup', function(){
 
     // evt = {tileSet:tileSet, tileWidth:64, tileHeight:64, mapWidth:8, mapHeight:8, level:0, playerJob:game.PRIEST}
     me.init = function(data){
+        var mapParams = G_MAP_PARAMS[me.mapLevel];
+        Object.getPrototypeOf(this).init(mapParams[0], mapParams[1]);
+
         me.tileSet = data.tileSet;
         me.heroJob = data.heroJob;
         me.mapLevel = data.mapLevel;
         var sd = me.smallDevice = data.smallDevice;
         me.tileWidth = sd ? 32 : 64;
         me.tileHeight = sd ? 32 : 64;
-        var mapParams = G_MAP_PARAMS[me.mapLevel];
-        me.mapWidth = mapParams[0];
-        me.mapHeight = mapParams[1];
         me.creepCount = mapParams[2];
         me.chestCount = mapParams[3];
 
@@ -236,90 +230,15 @@ pico.def('game', 'picGroup', function(){
     };
 
     me.nearToHero = function(i){
-        var
-        mapW = this.mapWidth,
-        mapH = this.mapHeight,
-        p = this.heroPos;
-
-        if (i === (p-mapW) || i === (p+mapW) ||
-            (0 !== (p%mapW) && (i === (p-1) || i === (p-mapW-1) || i === (p+mapW-1))) ||
-            (0 !== ((p+1)%mapW) && (i === (p+1) || i === (p-mapW+1) || i === (p+mapW+1)))) return true;
-        return false;
+        return this.isTouching(this.heroPos, i);
     };
 
     me.nextTile = function(at, toward){
-        var
-        map = this.map,
-        mapW = this.mapWidth,
-        mapH = this.mapHeight,
-        bestPos = at,
-        minCost = mapW * mapH,
-        pos, cost;
-
-        if (isOpen(pos = at+mapW) && minCost > (cost = heuristic(pos, toward))) { bestPos = pos; minCost = cost;}
-        if (isOpen(pos = at-mapW) && minCost > (cost = heuristic(pos, toward))) { bestPos = pos; minCost = cost;}
-        if (0 !== (at%mapW)){
-            if (isOpen(pos = at-1) && minCost > (cost = heuristic(pos, toward))) { bestPos = pos; minCost = cost;}
-            if (isOpen(pos = at-mapW-1) && minCost > (cost = heuristic(pos, toward))) { bestPos = pos; minCost = cost;}
-            if (isOpen(pos = at+mapW-1) && minCost > (cost = heuristic(pos, toward))) { bestPos = pos; minCost = cost;}
-        }
-        if (0 !== ((at+1)%mapW)){
-            if (isOpen(pos = at+1) && minCost > (cost = heuristic(pos, toward))) { bestPos = pos; minCost = cost;}
-            if (isOpen(pos = at-mapW+1) && minCost > (cost = heuristic(pos, toward))) { bestPos = pos; minCost = cost;}
-            if (isOpen(pos = at+mapW+1) && minCost > (cost = heuristic(pos, toward))) { bestPos = pos; minCost = cost;}
-        }
-        return bestPos;
+        return this.getAdjacent(at, toward, isOpen, heuristic);
     };
 
     me.findPath = function(from, to){
-        costG.length = 0;
-        costF.length = 0;
-        openPath.length = 0;
-        closedPath.length = 0;
-
-        var
-        map = this.map,
-        mapW = this.mapWidth,
-        current = from,
-        prev = undefined,
-        g, f,
-        l, n, nl, o, node, nodeO;
-
-        openPath.push(from);
-        costG[current] = 0;
-        closedPath[current] = undefined;
-
-        while(l = openPath.length){
-            current = openPath.pop();
-            path.length = 0;
-            if(current === to){
-                path.push(current);
-                while(current = closedPath[current]){
-                    path.push(current);
-                }
-                openPath.length = 0;
-            }else{
-                path = getNeighbours(map, mapW, current, path);
-                DONE: for(n=0,nl=path.length;n<nl;n++){
-                    node = path[n];
-                    if (!costF[node]){
-                        closedPath[node] = current;
-                        costG[node] = g = costG[current] + heuristic(node, current);
-                        costF[node] = f = g + heuristic(node, to);
-                        for(o=openPath.length-1;-1!==o;o--){
-                            nodeO = openPath[o];
-                            if (costF[nodeO] >= f){
-                                openPath.splice(o+1, 0, node);
-                                continue DONE;
-                            }
-                        }
-                        openPath.unshift(node);
-                    }
-                }
-            }
-        }
-
-        return path;
+        return this.aStar(from, to, getNeighbours, heuristic);
     };
 
     me.pathTo = function(elapsed, evt, entities){
