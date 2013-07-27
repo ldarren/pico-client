@@ -19,22 +19,6 @@ pico.def('game', 'pigSqrMap', function(){
         var mw = me.mapWidth
         return Sqrt(Pow(from%mw - to%mw, 2) + Pow(Floor(from/mw) - Floor(to/mw), 2));
     },
-    getNeighbours = function(map, mapW, at, neighbours){
-        var pos;
-        if (isOpen(pos = at+mapW)) { neighbours.push(pos);}
-        if (isOpen(pos = at-mapW)) { neighbours.push(pos);}
-        if (0 !== (at%mapW)){
-            if (isOpen(pos = at-1)) { neighbours.push(pos);}
-            if (isOpen(pos = at-mapW-1)) { neighbours.push(pos);}
-            if (isOpen(pos = at+mapW-1)) { neighbours.push(pos);}
-        }
-        if (0 !== ((at+1)%mapW)){
-            if (isOpen(pos = at+1)) { neighbours.push(pos);}
-            if (isOpen(pos = at-mapW+1)) { neighbours.push(pos);}
-            if (isOpen(pos = at+mapW+1)) { neighbours.push(pos);}
-        }
-        return neighbours;
-    },
     getTileHint = function(hint, type){
         if (type & G_TILE_TYPE.OBSTACLES){
             hint |= type;
@@ -168,17 +152,19 @@ pico.def('game', 'pigSqrMap', function(){
 
     // evt = {tileSet:tileSet, tileWidth:64, tileHeight:64, mapWidth:8, mapHeight:8, level:0, playerJob:game.PRIEST}
     me.init = function(data){
-        var mapParams = G_MAP_PARAMS[me.mapLevel];
-        Object.getPrototypeOf(this).init(mapParams[0], mapParams[1]);
 
         me.tileSet = data.tileSet;
         me.heroJob = data.heroJob;
         me.mapLevel = data.mapLevel;
+
+        var mapParams = G_MAP_PARAMS[me.mapLevel];
+        Object.getPrototypeOf(this).init(mapParams[0], mapParams[1]);
+        me.creepCount = mapParams[2];
+        me.chestCount = mapParams[3];
+
         var sd = me.smallDevice = data.smallDevice;
         me.tileWidth = sd ? 32 : 64;
         me.tileHeight = sd ? 32 : 64;
-        me.creepCount = mapParams[2];
-        me.chestCount = mapParams[3];
 
         if (me.mapLevel) generateRandomLevel();
         else populateStaticLevel();
@@ -232,11 +218,11 @@ pico.def('game', 'pigSqrMap', function(){
     };
 
     me.nextTile = function(at, toward){
-        return this.getAdjacent(at, toward, isOpen, heuristic);
+        return this.getNeighbour(at, toward, isOpen, heuristic);
     };
 
     me.findPath = function(from, to){
-        return this.aStar(from, to, getNeighbours, heuristic);
+        return this.aStar(from, to, isOpen, this.getNeighbours, heuristic);
     };
 
     me.pathTo = function(elapsed, evt, entities){
