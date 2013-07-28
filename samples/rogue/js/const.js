@@ -4,8 +4,8 @@ Object.freeze(G_TILE_TYPE = {
     HIDE: 1,
     CREEP: 2,
     CHEST: 4,
-    STAIR_DOWN: 8,
-    STAIR_UP: 16,
+    EXIT: 8,
+    ENTRANCE: 16,
     OBSTACLES: 2+4+8,
 });
 
@@ -181,7 +181,7 @@ Object.freeze(G_TOWN_MAP = {
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, G_TILE_TYPE.STAIR_DOWN, 0,
+        0, 0, 0, 0, 0, 0, G_TILE_TYPE.EXIT, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
     ],
     terrain:[

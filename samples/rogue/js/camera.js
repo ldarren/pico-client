@@ -102,8 +102,8 @@ pico.def('camera', 'picBase', function(){
                 hp = this.heroPos,
                 h = this.findPath(hp, this.nextTile(id, hp));
                 if (h.length){
-                    this.stopLoop('pathTo');
-                    this.startLoop('pathTo', h);
+                    this.stopLoop('heroMove');
+                    this.startLoop('heroMove', h);
                 }
             }
         }
@@ -117,25 +117,16 @@ pico.def('camera', 'picBase', function(){
                 this.go('showInfo', {creepId:objId});
                 if (tileType & G_TILE_TYPE.CREEP){
                     this.go('showDialog', {
-                        info: ['RIP', 'you were killed by '+objName+' at level '+this.mapLevel, ' but your lineage will continue...'],
+                        info: ['RIP', 'you were killed by '+objName+' at level '+this.currentLevel, ' but your lineage will continue...'],
                         callback: 'reborn'});
                 }
             }else{
                 var h = this.findPath(this.heroPos, id);
                 if (h.length){
-                    this.stopLoop('pathTo');
-                    this.startLoop('pathTo', h);
+                    this.stopLoop('heroMove');
+                    this.startLoop('heroMove', h);
                 }
                 this.go('hideInfo');
-            }
-
-            if(tileType & G_TILE_TYPE.STAIR_UP){
-                this.go('showDialog', {
-                    info: ['Warning!', 'you are leaving level '+this.mapLevel, 'Click on message box to proceed to level '+(this.mapLevel-1)],
-                    callback: 'prevLevel'});
-                return;
-            }else if(tileType & G_TILE_TYPE.STAIR_DOWN){
-                this.go('checkResult');
             }
         }
 

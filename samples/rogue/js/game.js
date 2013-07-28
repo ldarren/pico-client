@@ -63,7 +63,7 @@ pico.def('game', 'pigSqrMap', function(){
         me.heroPos = G_TOWN_MAP.heroPos;
         me.objects[me.heroPos] = me.heroJob;
     },
-    generateRandomLevel = function(){
+    generateRandomLevel = function(lastLevel){
         var
         shuffle = [],
         map = me.map,
@@ -102,8 +102,8 @@ pico.def('game', 'pigSqrMap', function(){
         }
 
         c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
-        map[c] |= G_TILE_TYPE.STAIR_DOWN;
-        terrain[c] = G_FLOOR.STAIR_DOWN;
+        map[c] |= G_TILE_TYPE.EXIT;
+        terrain[c] = me.nextLevel > me.currentLevel ? G_FLOOR.STAIR_DOWN : G_FLOOR.STAIR_UP;
 
         for(i=0,l=mapW*mapH; i<l; i++){
             if (map[i] > G_TILE_TYPE.HIDE) continue;
@@ -124,20 +124,22 @@ pico.def('game', 'pigSqrMap', function(){
         }
 
         c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
-        terrain[c] = G_FLOOR.STAIR_UP;
+        terrain[c] = me.prevLevel < me.currentLevel ? G_FLOOR.STAIR_UP : G_FLOOR.STAIR_DOWN;
         objects[c] = me.heroJob;
         me.heroPos = c;
 
         fill(map, hints, mapW, me.heroPos);
 
-        map[c] = G_TILE_TYPE.STAIR_UP; // must do after fill, becos fill will ignore revealed tile
+        map[c] = G_TILE_TYPE.ENTRANCE; // must do after fill, becos fill will ignore revealed tile
     };
 
     me.tileSet = null;
     me.smallDevice = false;
     me.tileWidth = 16;
     me.tileHeight = 16;
-    me.mapLevel = 0;
+    me.currentLevel = 0;
+    me.prevLevel = 0;
+    me.nextLevel = 0;
     me.heroJob = G_HERO.ROGUE;
     me.heroPos = 0;
     me.creepCount = 0;
@@ -152,12 +154,13 @@ pico.def('game', 'pigSqrMap', function(){
 
     // evt = {tileSet:tileSet, tileWidth:64, tileHeight:64, mapWidth:8, mapHeight:8, level:0, playerJob:game.PRIEST}
     me.init = function(data){
-
         me.tileSet = data.tileSet;
         me.heroJob = data.heroJob;
-        me.mapLevel = data.mapLevel;
+        me.prevLevel = me.currentLevel;
+        me.currentLevel = data.mapLevel;
+        me.nextLevel = (me.currentLevel < me.prevLevel) ? me.currentLevel-1 : me.currentLevel+1;
 
-        var mapParams = G_MAP_PARAMS[me.mapLevel];
+        var mapParams = G_MAP_PARAMS[me.currentLevel];
         Object.getPrototypeOf(this).init(mapParams[0], mapParams[1]);
         me.creepCount = mapParams[2];
         me.chestCount = mapParams[3];
@@ -166,39 +169,12 @@ pico.def('game', 'pigSqrMap', function(){
         me.tileWidth = sd ? 32 : 64;
         me.tileHeight = sd ? 32 : 64;
 
-        if (me.mapLevel) generateRandomLevel();
+        if (me.currentLevel) generateRandomLevel();
         else populateStaticLevel();
     };
 
-    me.checkResult = function(elapsed, evt, entities){
-        var
-        mapW = this.mapWidth,
-        mapH = this.mapHeight,
-        objects = this.objects,
-        flags = this.flags,
-        won = true;
-        for(var w=0, wl=mapW*mapH; w<wl; w++){
-            if (objects[w] >= G_CREEP.MOUSE && objects[w] <= G_CREEP.DEVIL && !flags[w]){
-                won = false;
-                break;
-            }
-        }
-        if (won) {
-            this.go('showDialog', {
-                info: ['Congratulations!', 'you have cleared level '+this.mapLevel, 'Click on message box to proceed to level '+(this.mapLevel+1)],
-                callback: 'nextLevel'});
-            return entities;
-        }
-    };
-
-    me.nextLevel = function(elapsed, evt, entities){
-        me.init({tileSet:this.tileSet, smallDevice: this.smallDevice, mapLevel:this.mapLevel+1, heroJob:this.heroJob});
-        me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);
-        return entities;
-    };
-
-    me.prevLevel = function(elapsed, evt, entities){
-        me.init({tileSet:this.tileSet, smallDevice: this.smallDevice, mapLevel:this.mapLevel-1, heroJob:this.heroJob});
+    me.gotoLevel = function(elapsed, evt, entities){
+        me.init({tileSet:this.tileSet, smallDevice: this.smallDevice, mapLevel:evt, heroJob:this.heroJob});
         me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);
         return entities;
     };
@@ -225,7 +201,7 @@ pico.def('game', 'pigSqrMap', function(){
         return this.aStar(from, to, isOpen, this.getNeighbours, heuristic);
     };
 
-    me.pathTo = function(elapsed, evt, entities){
+    me.heroMove = function(elapsed, evt, entities){
         pathElapsed += elapsed;
         if (pathElapsed < 100) return;
         pathElapsed = 0;
@@ -239,7 +215,8 @@ pico.def('game', 'pigSqrMap', function(){
         if (!o) return;
 
         if (!evt || !evt.length) {
-            this.stopLoop('pathTo');
+            this.stopLoop('heroMove');
+            this.go('heroStop');
             return;
         }
 
@@ -251,5 +228,39 @@ pico.def('game', 'pigSqrMap', function(){
         this.heroPos = p;
         this.objects[p] = this.heroJob;
         return [e];
+    };
+
+    me.heroStop = function(elapsed, evt, entities){
+        var tileType = this.map[this.heroPos];
+        if(tileType & G_TILE_TYPE.ENTRANCE){
+            this.go('showDialog', {
+                info: ['Warning!', 'you are leaving level '+this.currentLevel, 'Click on message box to proceed to level '+(this.prevLevel)],
+                callback: 'gotoLevel',
+                evt:this.prevLevel});
+        }else if(tileType & G_TILE_TYPE.EXIT){
+            var
+            mapW = this.mapWidth,
+            mapH = this.mapHeight,
+            objects = this.objects,
+            flags = this.flags,
+            won = true;
+            for(var w=0, wl=mapW*mapH; w<wl; w++){
+                if (objects[w] >= G_CREEP.MOUSE && objects[w] <= G_CREEP.DEVIL && !flags[w]){
+                    won = false;
+                    break;
+                }
+            }
+            if (won) {
+                this.go('showDialog', {
+                    info: ['Congratulations!', 'you have cleared level '+this.currentLevel, 'Click on message box to proceed to level '+(this.nextLevel)],
+                    callback: 'gotoLevel',
+                    evt: this.nextLevel});
+            }else{
+                this.go('showDialog', {
+                    info: ['Sorry', 'Level '+this.currentLevel+' is not cleared yet', 'Click on message box to close']});
+                return entities;
+            }
+            return entities;
+        }
     };
 });
