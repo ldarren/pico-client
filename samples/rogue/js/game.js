@@ -92,7 +92,6 @@ pico.def('game', 'pigSqrMap', function(){
             c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
             map[c] |= G_TILE_TYPE.CREEP;
             objects[c] = G_CREEP.MOUSE + Floor(Random() * (G_CREEP.DEVIL - G_CREEP.MOUSE));
-            terrain.push(G_FLOOR.BROKEN);
         }
 
         // add chests
