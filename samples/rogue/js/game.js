@@ -28,7 +28,7 @@ pico.def('game', 'pigSqrMap', function(){
     },
     fill = function(map, hints, width, i){
         var count = 0;
-        if (isOpen(i)) return count;
+        if (i < 0 || isOpen(i)) return count;
         map[i] &= G_TILE_TYPE.SHOW;
         count = 1;
         if (0 === hints[i]){
@@ -92,6 +92,7 @@ pico.def('game', 'pigSqrMap', function(){
             c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
             map[c] |= G_TILE_TYPE.CREEP;
             objects[c] = G_CREEP.MOUSE + Floor(Random() * (G_CREEP.DEVIL - G_CREEP.MOUSE));
+            terrain.push(G_FLOOR.BROKEN);
         }
 
         // add chests

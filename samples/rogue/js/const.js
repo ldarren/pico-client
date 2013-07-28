@@ -102,8 +102,9 @@ Object.freeze(G_CREEP = {
 });
 
 Object.freeze(G_FLOOR = {
-    CLEAR: 8,
-    UNCLEAR: 10,
+    UNCLEAR: 8,
+    CLEAR: 10,
+    BROKEN: 11,
     STAIR_DOWN: 13,
     STAIR_UP: 14,
     WALL: 19,
