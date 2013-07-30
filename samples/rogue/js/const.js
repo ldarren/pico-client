@@ -97,7 +97,7 @@ Object.freeze(G_CREEP = {
     ORC: 179,
     CYCLOPS: 180,
     WEREWOLF: 181,
-    OGRE: 182,
+    WEREBEAR: 182,
     DEVIL: 183,
 });
 
@@ -168,7 +168,7 @@ Object.freeze(G_OBJECT_NAME = {
     179: 'Orc',
     180: 'Cyclops',
     181: 'Werewolf',
-    182: 'Ogre',
+    182: 'Werebear',
     183: 'Devil'
 });
 
