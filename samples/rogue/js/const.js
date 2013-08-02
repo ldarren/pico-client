@@ -67,7 +67,7 @@ Object.freeze(G_HERO = {
 });
 
 Object.freeze(G_CREEP = {
-    MOUSE: 152,
+    Rat: 152,
     SPIDERS: 153,
     LIZARD: 154,
     BOSS_SPIDER: 155,
@@ -89,7 +89,7 @@ Object.freeze(G_CREEP = {
     Kraken: 171,
     VAMPIRE: 172,
     MUMMY: 173,
-    SPECTRE: 174,
+    Wraith: 174,
     CARABIA: 175,
     GOBLIN: 176,
     ZOMBIE: 177,
@@ -138,7 +138,7 @@ Object.freeze(G_OBJECT_NAME = {
     149: 'Paladin',
     150: 'Wizard',
     151: 'Warlock',
-    152: 'Mouse',
+    152: 'Rat',
     153: 'Spiders',
     154: 'Lizard',
     155: 'Spider Champion',
@@ -160,7 +160,7 @@ Object.freeze(G_OBJECT_NAME = {
     171: 'Kraken',
     172: 'Vampire',
     173: 'Mummy',
-    174: 'Spectre',
+    174: 'Wraith',
     175: 'Carabia',
     176: 'Goblin',
     177: 'Zombie',
