@@ -91,7 +91,7 @@ pico.def('game', 'pigSqrMap', function(){
         for(i=0,l=me.creepCount; i<l; i++){
             c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
             map[c] |= G_TILE_TYPE.CREEP;
-            objects[c] = G_CREEP.RAT + Floor(Random() * (G_CREEP.DEVIL - G_CREEP.MOUSE));
+            objects[c] = G_CREEP.RAT + Floor(Random() * (G_CREEP.DEVIL - G_CREEP.RAT));
         }
 
         // add chests

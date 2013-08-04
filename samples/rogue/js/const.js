@@ -67,7 +67,7 @@ Object.freeze(G_HERO = {
 });
 
 Object.freeze(G_CREEP = {
-    Rat: 152,
+    RAT: 152,
     SPIDERS: 153,
     LIZARD: 154,
     BOSS_SPIDER: 155,
