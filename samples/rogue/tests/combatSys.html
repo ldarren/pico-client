@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<link rel="shortcut icon" type="image/x-icon" href=../res/img/favicon.ico>
+<link rel=stylesheet href=../css/fantasy.css>
+<style>
+div.panel{
+    color:#aec440;
+    border: 3px solid #d7e894;
+    border-radius: 2em/2em;
+    margin:5px;
+    padding:5px;
+}
+div.left{
+    float:left;
+}
+div#gameStage{
+}
+</style>
+<title>Rogue Combat System</title>
+</head>
+<body>
+<div class=left>
+<div id=player class=panel>Player Type: Rogue</div>
+<div id=selected class=panel>Selected Type: Creep</div>
+<div id=result class=panel>Result:</div>
+</div>
+<div id=gameStage class=left></div>
+<script src=../lib/pico/pico.js></script>
+<script src=../lib/pico/lib/piAtlas.js></script>
+<script src=../lib/pico/lib/piCanvas.js></script>
+<script src=../lib/pico/lib/piReactor.js></script>
+<script src=../lib/pico/lib/picRenderer.js></script>
+<script src=../js/const.js></script>
+<script>
+pico.def('game', 'picGroup', function(){
+    var
+    me = this,
+    maxLevel = level = 0,
+    tileSet;
+
+    me.init = function(option){
+        tileSet = option.tileSet;
+        level = option.mapLevel || 1;
+        if (level > maxLevel) maxLevel = level;
+    };
+});
+pico.def('combatSysMain', function(){
+    this.use('piCanvas');
+    this.use('piReactor');
+    this.use('piAtlas');
+    this.use('picRenderer');
+    this.use('game');
+
+    var
+    me = this,
+    onFingerUp = function(evt){
+    },
+    onLoad = function(){
+        me.piAtlas.create('../res/img/fantasy-tileset.png', '../res/fantasy-tileset.json', function(err, tileSet){
+            if (err) return alert(err);
+
+            var
+            gameStage = document.querySelector('div#gameStage'),
+            reactor = me.piReactor,
+            rect = me.picRect,
+            renderer = me.picRenderer,
+            game = me.game,
+            canvas = me.piCanvas,
+            h = window.innerHeight,
+            w = Math.ceil(0.8 * h);
+
+            gameStage.style.width = w+'px';
+            gameStage.style.height = h+'px';
+
+            canvas.init(gameStage);
+
+            var gameLayer = canvas.addLayer('game');
+            var gameLayer1 = canvas.addLayer('game1');
+            var gameLayer2 = canvas.addLayer('game2');
+            var gameLayer3 = canvas.addLayer('game3');
+            renderer.registerContext('viewPane', gameLayer.getContext());
+            renderer.setBG('viewPane', G_COLOR_TONE[3]);
+        
+            reactor.addGroup(game);
+
+            game.init({tileSet:tileSet, mapLevel:0});
+/*
+            game.route('fingerDown', [uiWindow.checkBound, camera.checkBound, game.captureSelected, renderer.captureScreenshot]);
+            game.route('fingerUp', [game.useSelected, bag.click, dialogMsg.click, uiWindow.click, camera.click, renderer.draw, game.releaseSelected]);
+            game.route('fingerMove', [game.useSelected, uiWindow.swipe, camera.swipe, renderer.drawScreenshot]);
+            game.route('fingerOut', [game.releaseSelected, renderer.releaseScreenshot, renderer.draw]);
+            game.route('useItem', [bag.useItem, renderer.draw, game.releaseSelected]);
+            game.route('gotoLevel', [game.gotoLevel, renderer.draw]);
+            game.route('reborn', [game.reborn, renderer.draw]);
+*/
+            canvas.resize(w, h);
+            renderer.resizeContext('viewPane', 0, 0, w, h);
+
+            canvas.slot(canvas.FINGER_UP, onFingerUp);
+        });
+    },
+    onGameSet = function(){
+    };
+
+    me.slot(pico.LOAD, onLoad);
+    pico.slot(pico.STATE_CHANGE, onGameSet);
+});
+</script>
+</body>
+</html>

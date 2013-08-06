@@ -13,7 +13,7 @@ this.use('piAtlas');
 this.use('picRect');
 this.use('picTween');
 this.use('picRenderer');
-this.use('m3Main');
+this.use('rogueMain');
 this.use('game');
 this.use('camera');
 this.use('uiWindow');
@@ -24,6 +24,7 @@ this.use('dialogMsg');
 
 var
 me = this,
+gameStage,
 fingerStartPos = [0, 0],
 fingerTracker,
 cancelTracking = function(){
@@ -71,7 +72,7 @@ resize = function(iw, ih){
     style.height = h + 'px';
     style.margin = '0 0 0 '+Math.floor(-w/2)+'px';
 
-    me.piCanvas.resize(w, h);
+    me.piCanvas.resize();
     me.picRenderer.resizeContext('viewPane', 0, 0, w, h);
     me.picRenderer.resizeContext('uiPane', 0, 0, w, h);
     me.game.go('resize', [0,0,w,h]);
@@ -83,8 +84,9 @@ onLoad = function(){
     me.piAtlas.create('../res/img/fantasy-tileset.png', '../res/fantasy-tileset.json', function(err, tileSet){
         if (err) return alert(err);
 
+        gameStage = document.querySelector('div#gameStage');
+
         var
-        gameStage = document.querySelector('div#gameStage'),
         reactor = me.piReactor,
         rect = me.picRect,
         renderer = me.picRenderer,
@@ -170,7 +172,7 @@ onLoad = function(){
         canvas.slot(canvas.FINGER_OUT, onFingerOut);
         window.addEventListener('resize', onResize, false);
 
-        me.m3Main.hideLoading();
+        me.rogueMain.hideLoading();
     });
 };
 
