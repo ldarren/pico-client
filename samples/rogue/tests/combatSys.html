@@ -50,7 +50,19 @@ pico.def('game', 'picGroup', function(){
     var
     me = this,
     panelPlayer = document.querySelector('div#player'),
-    templPlayer = document.querySelector('script[templ=player]').textContent;
+    templPlayer = document.querySelector('script[templ=player]').textContent,
+    getMapSize = function(level){
+        var
+        w = 8 + Math.floor(level/10),
+        h = 8 + Math.floor((level-5)/10);
+        return [w, h];
+    },
+    getCreepCount = function(level, w, h){
+        return Math.floor(w*h*(0.1+(level/1000))+(level/5));
+    },
+    getChestCount = function(level){
+        return Math.floor(w*h*(0.01+(level/2000))+(level/5));
+    };
 
     this.maxLevel = this.level = 0,
     this.tileSet = null;
