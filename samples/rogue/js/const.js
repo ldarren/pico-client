@@ -101,6 +101,18 @@ Object.freeze(G_CREEP = {
     DEVIL: 183,
 });
 
+Object.freeze(G_CREEP_TEAM_ARR = [
+    {
+        G_CREEP.VAMPIRE: 1,
+        G_CREEP.BATS: 10,
+        G_CREEP.BAT_CHAMPION: 2,
+    }
+]);
+
+Object.freeze(G_CREEP_TEAM = {
+    'vampire': G_CREEP_TEAM_ARR[0]
+});
+
 Object.freeze(G_FLOOR = {
     UNCLEAR: 8,
     CLEAR: 10,

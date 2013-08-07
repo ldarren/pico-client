@@ -33,17 +33,37 @@ div#gameStage{
 <script src=../lib/pico/lib/piReactor.js></script>
 <script src=../lib/pico/lib/picRenderer.js></script>
 <script src=../js/const.js></script>
+<script templ=player type=text/templ>
+type: TYPE<br>
+level: LEVEL<br>
+theme: THEME<br>
+</script>
 <script>
+pico.def('camera', 'picBase', function(){
+    var me = this;
+    me.draw = function(ctx, ent, clip){
+        var ts = this.tileSet;
+        ts.draw(ctx, G_HERO.ROGUE, 0, 0);
+    };
+});
 pico.def('game', 'picGroup', function(){
     var
     me = this,
-    maxLevel = level = 0,
-    tileSet;
+    panelPlayer = document.querySelector('div#player'),
+    templPlayer = document.querySelector('script[templ=player]').textContent;
+
+    this.maxLevel = this.level = 0,
+    this.tileSet = null;
 
     me.init = function(option){
-        tileSet = option.tileSet;
-        level = option.mapLevel || 1;
-        if (level > maxLevel) maxLevel = level;
+        this.tileSet = option.tileSet;
+        this.level = option.mapLevel || 1;
+        if (this.level > this.maxLevel) this.maxLevel = this.level;
+    };
+
+    me.reset = function(elapsed, evt, entities){
+        panelPlayer.innerHTML = templPlayer.replace('TYPE', evt.type).replace('LEVEL', evt.level).replace('THEME', evt.theme);
+        return entities;
     };
 });
 pico.def('combatSysMain', function(){
@@ -52,9 +72,11 @@ pico.def('combatSysMain', function(){
     this.use('piAtlas');
     this.use('picRenderer');
     this.use('game');
+    this.use('camera');
 
     var
     me = this,
+    gameSetting,
     onFingerUp = function(evt){
     },
     onLoad = function(){
@@ -67,6 +89,7 @@ pico.def('combatSysMain', function(){
             rect = me.picRect,
             renderer = me.picRenderer,
             game = me.game,
+            camera = me.camera,
             canvas = me.piCanvas,
             h = window.innerHeight,
             w = Math.ceil(0.8 * h);
@@ -77,15 +100,13 @@ pico.def('combatSysMain', function(){
             canvas.init(gameStage);
 
             var gameLayer = canvas.addLayer('game');
-            var gameLayer1 = canvas.addLayer('game1');
-            var gameLayer2 = canvas.addLayer('game2');
-            var gameLayer3 = canvas.addLayer('game3');
             renderer.registerContext('viewPane', gameLayer.getContext());
             renderer.setBG('viewPane', G_COLOR_TONE[3]);
         
             reactor.addGroup(game);
 
             game.init({tileSet:tileSet, mapLevel:0});
+            game.route('testReset', [game.reset, renderer.draw]);
 /*
             game.route('fingerDown', [uiWindow.checkBound, camera.checkBound, game.captureSelected, renderer.captureScreenshot]);
             game.route('fingerUp', [game.useSelected, bag.click, dialogMsg.click, uiWindow.click, camera.click, renderer.draw, game.releaseSelected]);
@@ -95,13 +116,21 @@ pico.def('combatSysMain', function(){
             game.route('gotoLevel', [game.gotoLevel, renderer.draw]);
             game.route('reborn', [game.reborn, renderer.draw]);
 */
+
+            var cameraEnt = game.addEntity('camera');
+            cameraEnt.attach(renderer, {viewPane:[camera.moduleName]});
+
             canvas.resize(w, h);
             renderer.resizeContext('viewPane', 0, 0, w, h);
 
             canvas.slot(canvas.FINGER_UP, onFingerUp);
+            if (gameSetting) game.go('testReset', gameSetting);
         });
     },
-    onGameSet = function(){
+    onGameSet = function(obj, state){
+        gameSetting = obj;
+        console.log('onGameSet', JSON.stringify(obj));
+        if (me.game.host) me.game.go('testReset', obj);
     };
 
     me.slot(pico.LOAD, onLoad);
