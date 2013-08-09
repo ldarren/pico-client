@@ -199,7 +199,11 @@ pico.ajax = function(method, url, params, headers, cb, userData){
 
     xhr.onreadystatechange=function(){
         if (2 < xhr.readyState && cb){
-            return cb(200 === xhr.status ? null : new Error("Error["+xhr.statusText+"] Info: "+xhr.responseText), xhr, userData);
+            var st = xhr.status;
+            return cb(
+                (200 === st || !st) ? null : new Error("Error["+xhr.statusText+"] Info: "+xhr.responseText),
+                xhr,
+                userData);
         }
     }
     xhr.onerror=function(evt){if (cb) return cb(evt, xhr, userData);}

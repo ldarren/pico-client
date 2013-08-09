@@ -8,7 +8,7 @@
 div.panel{
     color:#aec440;
     border: 3px solid #d7e894;
-    border-radius: 2em/2em;
+    border-radius: 15px;
     margin:5px;
     padding:5px;
 }
@@ -50,19 +50,7 @@ pico.def('game', 'picGroup', function(){
     var
     me = this,
     panelPlayer = document.querySelector('div#player'),
-    templPlayer = document.querySelector('script[templ=player]').textContent,
-    getMapSize = function(level){
-        var
-        w = 8 + Math.floor(level/10),
-        h = 8 + Math.floor((level-5)/10);
-        return [w, h];
-    },
-    getCreepCount = function(level, w, h){
-        return Math.floor(w*h*(0.1+(level/1000))+(level/5));
-    },
-    getChestCount = function(level){
-        return Math.floor(w*h*(0.01+(level/2000))+(level/5));
-    };
+    templPlayer = document.querySelector('script[templ=player]').textContent;
 
     this.maxLevel = this.level = 0,
     this.tileSet = null;
@@ -74,7 +62,16 @@ pico.def('game', 'picGroup', function(){
     };
 
     me.reset = function(elapsed, evt, entities){
-        panelPlayer.innerHTML = templPlayer.replace('TYPE', evt.type).replace('LEVEL', evt.level).replace('THEME', evt.theme);
+        var
+        type = evt.type || G_HERO.ROGUE + Math.floor(Math.random()*(G_HERO.WARLOCK-G_HERO.ROGUE+0.9)),
+        level = evt.level || Math.floor(Math.random()*240),
+        theme = evt.theme;
+
+        if (!theme){
+            var keys = Object.keys(G_CREEP_TEAM);
+            theme = keys[Math.floor(Math.random()*keys.length)];
+        }
+        panelPlayer.innerHTML = templPlayer.replace('TYPE', G_OBJECT_NAME[type]).replace('LEVEL', level).replace('THEME', theme);
         return entities;
     };
 });
@@ -141,7 +138,6 @@ pico.def('combatSysMain', function(){
     },
     onGameSet = function(obj, state){
         gameSetting = obj;
-        console.log('onGameSet', JSON.stringify(obj));
         if (me.game.host) me.game.go('testReset', obj);
     };
 
