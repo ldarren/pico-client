@@ -22,8 +22,8 @@ div#gameStage{
 </head>
 <body>
 <div class=left>
-<div id=player class=panel>Player Type: Rogue</div>
-<div id=selected class=panel>Selected Type: Creep</div>
+<div id=player class=panel>Player Type: Rogue 100x100 (1000) (100)</div>
+<div id=selected class=panel>type: undefined</div>
 <div id=result class=panel>Result:</div>
 </div>
 <div id=gameStage class=left></div>
@@ -35,25 +35,62 @@ div#gameStage{
 <script src=../js/const.js></script>
 <script templ=player type=text/templ>
 type: TYPE<br>
-level: LEVEL<br>
+level: LEVEL: WIDTHxHEIGHT (CR) (CH)<br>
 theme: THEME<br>
+</script>
+<script templ=selected type=text/templ>
+type: TYPE<br>
+level: LEVEL<br>
+</script>
+<script templ=result type=text/templ>
+You roll:UROLL+UATK, target def:DEF<br>
+Target roll:ROLL+ATK, your def:UDEF
 </script>
 <script>
 pico.def('camera', 'picBase', function(){
     var me = this;
     me.draw = function(ctx, ent, clip){
-        var ts = this.tileSet;
-        ts.draw(ctx, G_HERO.ROGUE, 0, 0);
+        var
+        creeps = this.creeps,
+        ts = this.tileSet,
+        x=0, y=0;
+
+        for(var i=0,l=creeps.length; i<l; i++){
+            if (x > 608) {
+                x = 0;
+                y+=32;
+            }
+            ts.draw(ctx, creeps[i], x, y);
+            x+=32;
+        }
     };
 });
 pico.def('game', 'picGroup', function(){
     var
     me = this,
     panelPlayer = document.querySelector('div#player'),
-    templPlayer = document.querySelector('script[templ=player]').textContent;
+    templPlayer = document.querySelector('script[templ=player]').textContent,
+    panelSelected = document.querySelector('div#selected'),
+    templSelected = document.querySelector('script[templ=selected]').textContent,
+    panelResult = document.querySelector('div#result'),
+    templResult = document.querySelector('script[templ=result]').textContent,
+    interpolate = function(key, keyMin, keyMax, valMin, valMax){
+        return Math.floor(valMin - (valMax-valMin)*(keyMin-key)/(keyMax-keyMin));
+    },
+    d20Roll = function(){
+        var r = Math.floor(Math.random()*21);
+        if (r === 21) r = 0;
+        return r;
+    },
+    setLevel = function(lvl){
+        me.level = lvl;
+        if (lvl > me.maxLevel) me.maxLevel = lvl;
+    };
 
     this.maxLevel = this.level = 0,
     this.tileSet = null;
+    this.target = 0;
+    this.creeps = [];
 
     me.init = function(option){
         this.tileSet = option.tileSet;
@@ -63,18 +100,106 @@ pico.def('game', 'picGroup', function(){
 
     me.reset = function(elapsed, evt, entities){
         var
-        type = evt.type || G_HERO.ROGUE + Math.floor(Math.random()*(G_HERO.WARLOCK-G_HERO.ROGUE+0.9)),
-        level = evt.level || Math.floor(Math.random()*240),
+        type = evt.type || G_HERO.ROGUE + Math.floor(Math.random()*(G_HERO.WARLOCK-G_HERO.ROGUE+0.9999)),
+        level = evt.level || Math.floor(Math.random()*125),
+        lvlMinIdx = 1+Math.floor((level-1)/5),
+        lvlMaxIdx = lvlMinIdx+1,
+        lvlInfoMin = G_MAP_PARAMS[lvlMinIdx],
+        lvlInfoMax = G_MAP_PARAMS[lvlMaxIdx],
+        lvlMin = 1+(lvlMinIdx-1)*5,
+        lvlMax = lvlMin+5,
+        creepCount = interpolate(level, lvlMin, lvlMax, lvlInfoMin[2], lvlInfoMax[2]),
+        chestCount = interpolate(level, lvlMin, lvlMax, lvlInfoMin[3], lvlInfoMax[3]),
         theme = evt.theme;
 
         if (!theme){
             var keys = Object.keys(G_CREEP_TEAM);
             theme = keys[Math.floor(Math.random()*keys.length)];
         }
-        panelPlayer.innerHTML = templPlayer.replace('TYPE', G_OBJECT_NAME[type]).replace('LEVEL', level).replace('THEME', theme);
+        setLevel(level);
+
+        var
+        creeps = this.creeps,
+        teamRaw = G_CREEP_TEAM[theme],
+        team = [],
+        creepType, count, i, l, j, k;
+
+        for(i=0, l=teamRaw.length; i<l; i+=2){
+            creepType = teamRaw[i];
+            count = teamRaw[i+1];
+
+            while(count-- > 0){
+                team.push(creepType);
+            }
+        }
+
+        creeps.length = 0;
+        i=0;
+        l = team.length;
+        for(j=0, k=creepCount; j<k; j++){
+            if (i>=l) i = 0;
+            creeps.push(team[i]);
+            i++;
+        }
+
+        panelPlayer.innerHTML = templPlayer
+            .replace('TYPE', G_OBJECT_NAME[type])
+            .replace('LEVEL', level)
+            .replace('THEME', theme)
+            .replace('WIDTH', lvlInfoMin[0])
+            .replace('HEIGHT', lvlInfoMin[1])
+            .replace('CR', creepCount)
+            .replace('CH', chestCount);
+
+        return entities;
+    };
+
+    me.select = function(elapsed, evt, entities){
+        var
+        x = Math.floor(evt[0]/32),
+        y = Math.floor(evt[1]/32);
+
+        if (x > 32*19) return;
+
+        var selected = 20 * y + x;
+        if (!this.creeps[selected]) return;
+
+        if (selected === this.target){
+            this.go('fight', {});
+            return;
+        }
+        this.target = selected;
+        return entities;
+    };
+
+    me.fight = function(elapsed, evt, entities){
+        var
+        rollU = d20Roll(),
+        rollTarget = d20Roll();
+        evt.uroll = rollU;
+        evt.roll = rollTarget;
+        return entities;
+    };
+
+    me.showSelectInfo = function(elapsed, evt, entities){
+        panelSelected.innerHTML = templSelected
+            .replace('TYPE', G_OBJECT_NAME[this.creeps[this.target]])
+            .replace('LEVEL', this.level);
+        return entities;
+    };
+
+    me.showFightInfo = function(elapsed, evt, entities){
+        panelResult.innerHTML = templResult
+            .replace('UROLL', evt.uroll)
+            .replace('ROLL', evt.roll)
+            .replace('UATK', 10)
+            .replace('ATK', 3)
+            .replace('UDEF', 10)
+            .replace('DEF', 3);
         return entities;
     };
 });
+
 pico.def('combatSysMain', function(){
     this.use('piCanvas');
     this.use('piReactor');
@@ -87,6 +212,7 @@ pico.def('combatSysMain', function(){
     me = this,
     gameSetting,
     onFingerUp = function(evt){
+        me.game.go('fingerUp', [evt.offsetX, evt.offsetY]);
     },
     onLoad = function(){
         me.piAtlas.create('../res/img/fantasy-tileset.png', '../res/fantasy-tileset.json', function(err, tileSet){
@@ -100,7 +226,7 @@ pico.def('combatSysMain', function(){
             game = me.game,
             camera = me.camera,
             canvas = me.piCanvas,
-            h = window.innerHeight,
+            h = 800,
             w = Math.ceil(0.8 * h);
 
             gameStage.style.width = w+'px';
@@ -115,16 +241,10 @@ pico.def('combatSysMain', function(){
             reactor.addGroup(game);
 
             game.init({tileSet:tileSet, mapLevel:0});
+
             game.route('testReset', [game.reset, renderer.draw]);
-/*
-            game.route('fingerDown', [uiWindow.checkBound, camera.checkBound, game.captureSelected, renderer.captureScreenshot]);
-            game.route('fingerUp', [game.useSelected, bag.click, dialogMsg.click, uiWindow.click, camera.click, renderer.draw, game.releaseSelected]);
-            game.route('fingerMove', [game.useSelected, uiWindow.swipe, camera.swipe, renderer.drawScreenshot]);
-            game.route('fingerOut', [game.releaseSelected, renderer.releaseScreenshot, renderer.draw]);
-            game.route('useItem', [bag.useItem, renderer.draw, game.releaseSelected]);
-            game.route('gotoLevel', [game.gotoLevel, renderer.draw]);
-            game.route('reborn', [game.reborn, renderer.draw]);
-*/
+            game.route('fingerUp', [game.select, game.showSelectInfo]);
+            game.route('fight', [game.fight, game.showFightInfo]);
 
             var cameraEnt = game.addEntity('camera');
             cameraEnt.attach(renderer, {viewPane:[camera.moduleName]});
