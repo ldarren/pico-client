@@ -34,13 +34,22 @@ div#gameStage{
 <script src=../lib/pico/lib/picRenderer.js></script>
 <script src=../js/const.js></script>
 <script templ=player type=text/templ>
+<h2>Hero Info</h2>
 type: TYPE<br>
+hp[HP] dex[DEX] luck[LUCK]<br>
+atk: ATK, RATK, MATK<br>
+def: DEF, RDEF, MDEF<br>
+<h2>Area Info</h2>
 level: LEVEL: WIDTHxHEIGHT (CR) (CH)<br>
 theme: THEME<br>
 </script>
 <script templ=selected type=text/templ>
 type: TYPE<br>
+family: FAMILY<br>
 level: LEVEL<br>
+hp: HP<br>
+atk: ATK, RATK, MATK<br>
+def: DEF, RDEF, MDEF<br>
 </script>
 <script templ=result type=text/templ>
 You roll:UROLL+UATK, target def:DEF<br>
@@ -60,7 +69,7 @@ pico.def('camera', 'picBase', function(){
                 x = 0;
                 y+=32;
             }
-            ts.draw(ctx, creeps[i], x, y);
+            ts.draw(ctx, creeps[i][0], x, y);
             x+=32;
         }
     };
@@ -82,6 +91,28 @@ pico.def('game', 'picGroup', function(){
         if (r === 21) r = 0;
         return r;
     },
+    createHeroStat = function(heroId, level){
+        var s = G_HERO_STAT[heroId-G_HERO.ROGUE].slice();
+        s[2] = Math.ceil(s[2]*level);
+        s[3] = Math.ceil(s[3]*level);
+        s[4] = Math.ceil(s[4]*level);
+        s[5] = Math.ceil(s[5]*level);
+        s[6] = Math.ceil(s[6]*level);
+        s[7] = Math.ceil(s[7]*level);
+        s[8] = Math.ceil(s[8]*level);
+        s[9] = Math.ceil(s[9]*level);
+        return s;
+    },
+    createCreepStat = function(creepId, level){
+        var s = G_CREEP_STAT[creepId-G_CREEP.RAT].slice();
+        s[3] = Math.ceil(s[3]*level);
+        s[4] = Math.ceil(s[4]*level);
+        s[5] = Math.ceil(s[5]*level);
+        s[6] = Math.ceil(s[6]*level);
+        s[7] = Math.ceil(s[7]*level);
+        s[8] = Math.ceil(s[8]*level);
+        return s;
+    },
     setLevel = function(lvl){
         me.level = lvl;
         if (lvl > me.maxLevel) me.maxLevel = lvl;
@@ -90,6 +121,7 @@ pico.def('game', 'picGroup', function(){
     this.maxLevel = this.level = 0,
     this.tileSet = null;
     this.target = 0;
+    this.hero = [];
     this.creeps = [];
 
     me.init = function(option){
@@ -118,6 +150,8 @@ pico.def('game', 'picGroup', function(){
         }
         setLevel(level);
 
+        this.hero = createHeroStat(type, level);
+
         var
         creeps = this.creeps,
         teamRaw = G_CREEP_TEAM[theme],
@@ -138,12 +172,22 @@ pico.def('game', 'picGroup', function(){
         l = team.length;
         for(j=0, k=creepCount; j<k; j++){
             if (i>=l) i = 0;
-            creeps.push(team[i]);
+            creeps.push(createCreepStat(team[i], level));
             i++;
         }
 
+        hero = this.hero;
         panelPlayer.innerHTML = templPlayer
-            .replace('TYPE', G_OBJECT_NAME[type])
+            .replace('TYPE', G_OBJECT_NAME[hero[0]])
+            .replace('HP', hero[1])
+            .replace('DEX', hero[8])
+            .replace('LUCK', hero[9])
+            .replace('ATK', hero[2])
+            .replace('RATK', hero[3])
+            .replace('MATK', hero[4])
+            .replace('DEF', hero[5])
+            .replace('RDEF', hero[6])
+            .replace('MDEF', hero[7])
             .replace('LEVEL', level)
             .replace('THEME', theme)
             .replace('WIDTH', lvlInfoMin[0])
@@ -182,9 +226,18 @@ pico.def('game', 'picGroup', function(){
     };
 
     me.showSelectInfo = function(elapsed, evt, entities){
+        var creep = this.creeps[this.target];
         panelSelected.innerHTML = templSelected
-            .replace('TYPE', G_OBJECT_NAME[this.creeps[this.target]])
-            .replace('LEVEL', this.level);
+            .replace('TYPE', G_OBJECT_NAME[creep[0]])
+            .replace('FAMILY', G_CREEP_TYPE_NAME[creep[1]])
+            .replace('LEVEL', this.level)
+            .replace('HP', creep[2])
+            .replace('ATK', creep[3])
+            .replace('RATK', creep[4])
+            .replace('MATK', creep[5])
+            .replace('DEF', creep[6])
+            .replace('RDEF', creep[7])
+            .replace('MDEF', creep[8]);
         return entities;
     };
 

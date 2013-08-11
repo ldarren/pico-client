@@ -210,7 +210,7 @@ Object.freeze(G_OBJECT_NAME = {
     113: 'Scepter',
     114: 'Wand',
     115: 'Sacred Globe',
-    116: 'Stone'
+    116: 'Stone',
     132: 'Altar',
     133: 'Shrine',
     144: 'Rogue',
@@ -257,17 +257,17 @@ Object.freeze(G_OBJECT_NAME = {
 
 // hp, [atk, ratk, matk], [def, rdef, mdef], dex, luck, [veg, insect, beast, undead, demon]
 Object.freeze(G_HERO_STAT = [
-    [2,    0.1, 0.2, 0,    0.1, 0.2, 0,    1, 1,       1,1,1,1,1], //rogue
-    [3,    0.2, 0.1, 0.1,  0.2, 0.1, 0.1,  0.1, 0,     1,1,1,1.2,1.2], //monk
-    [4,    0.3, 0.1, 0,    0.3, 0.1, 0,    0.2, 0.1,   1,1,1,1,1], //Barbarian
-    [3,    0.2, 0.1, 0.1,  0.2, 0.1, 0.1,  0.2, 0.1,   1,1,1,1,1], //Druid
-    [2.5,  0.2, 0.4, 0.1,  0.2, 0.4, 0.1,  0.2, 0.1,   1,1,1.5,1,1], //Hunter
-    [3,    0.2, 0.1, 0.1,  0.4, 0.2, 0.1,  0, 0,       1,1,1,1.5,1], //Paladin
-    [1,    0.1, 0.1, 0.3,  0.1, 0.1, 0.4,  0, 0.1,     1,1,1,1,1], //Wizard
-    [1,    0.1, 0.1, 0.4,  0.1, 0.1, 0.3,  0, 0,       1,1,1,1,1], //Warlock
+    [144, 2,    0.1, 0.2, 0,    0.1, 0.2, 0,    1, 1,       1,1,1,1,1], //rogue
+    [145, 3,    0.2, 0.1, 0.1,  0.2, 0.1, 0.1,  0.1, 0,     1,1,1,1.2,1.2], //monk
+    [146, 4,    0.3, 0.1, 0,    0.3, 0.1, 0,    0.2, 0.1,   1,1,1,1,1], //Barbarian
+    [147, 3,    0.2, 0.1, 0.1,  0.2, 0.1, 0.1,  0.2, 0.1,   1,1,1,1,1], //Druid
+    [148, 2,    0.2, 0.4, 0.1,  0.2, 0.4, 0.1,  0.2, 0.1,   1,1,1.5,1,1], //Hunter
+    [149, 3,    0.2, 0.1, 0.1,  0.4, 0.2, 0.1,  0, 0,       1,1,1,1.5,1], //Paladin
+    [150, 1,    0.1, 0.1, 0.3,  0.1, 0.1, 0.4,  0, 0.1,     1,1,1,1,1], //Wizard
+    [151, 1,    0.1, 0.1, 0.4,  0.1, 0.1, 0.3,  0, 0,       1,1,1,1,1], //Warlock
 ]);
 
-Object.freeze(G_CREATURE_TYPE = {
+Object.freeze(G_CREEP_TYPE = {
     PLANT: 1,
     INSECT: 2,
     BEAST: 3,
@@ -275,39 +275,48 @@ Object.freeze(G_CREATURE_TYPE = {
     DEMON: 5
 });
 
-Object.freeze(G_CREATURE_STATE = [
-    152: [G_CREATURE_TYPE.BEAST,    1,  0.1, 0, 0,  0.1, 0, 0], //Rat
-    153: [G_CREATURE_TYPE.INSECT,   1,  0.1, 0, 0,  0.1, 0, 0], //'Spiders',
-    154: [G_CREATURE_TYPE.BEAST,    1,  0.1, 0, 0,  0.1, 0, 0], //'Lizard',
-    155: [G_CREATURE_TYPE.INSECT,   2,  0.1, 0, 0,  0.1, 0, 0], //'Spider Champion',
-    156: [G_CREATURE_TYPE.BEAST,    1,  0.1, 0, 0,  0.1, 0, 0], //'Toad',
-    157: [G_CREATURE_TYPE.INSECT,   1,  0.1, 0, 0,  0.1, 0, 0], //'Scarab',
-    158: [G_CREATURE_TYPE.INSECT,   1,  0.1, 0, 0,  0.1, 0, 0], //'Centipede',
-    159: [G_CREATURE_TYPE.BEAST,    2,  0.1, 0, 0,  0.1, 0, 0], //'Serpent',
-    160: [G_CREATURE_TYPE.PLANT,    2,  0, 0, 0,    0, 0, 0],   //'Fungi',
-    161: [G_CREATURE_TYPE.BEAST,    1,  0.1, 0, 0,  0.1, 0, 0], //'Hare',
-    162: [G_CREATURE_TYPE.BEAST,    1,  0.1, 0, 0,  0.1, 0, 0], //'Bat',
-    163: [G_CREATURE_TYPE.BEAST,    2,  0.2, 0, 0,  0.1, 0, 0], //'Bat Champion',
-    164: [G_CREATURE_TYPE.BEAST,    1,  0.2, 0, 0,  0.1, 0, 0], //'Snake',
-    165: [G_CREATURE_TYPE.BEAST,    2,  0.2, 0, 0,  0.1, 0, 0], //'Wolf',
-    166: [G_CREATURE_TYPE.BEAST,    2,  0.2, 0, 0,  0.1, 0, 0], //'Wild Boar',
-    167: [G_CREATURE_TYPE.BEAST,    3,  0.2, 0, 0,  0.1, 0, 0], //'Bear',
-    168: [G_CREATURE_TYPE.DEMON,    1,  0.1, 0, 0,  0.1, 0, 0], //'Slime',
-    169: [G_CREATURE_TYPE.DEMON,    2,  0.2, 0, 0,  0.1, 0, 0], //'Slime Champion',
-    170: [G_CREATURE_TYPE.INSECT,   1,  0.1, 0, 0,  0.1, 0, 0], //'Scorpion',
-    171: [G_CREATURE_TYPE.DEMON,    4,  0.6, 0, 0,  0.1, 0, 0], //'Kraken',
-    172: [G_CREATURE_TYPE.UNDEAD,   3,  0.3, 0, 0,  0.1, 0, 0], //'Vampire',
-    173: [G_CREATURE_TYPE.UNDEAD,   2,  0.1, 0, 0,  0.1, 0, 0], //'Mummy',
-    174: [G_CREATURE_TYPE.UNDEAD,   2,  0.3, 0, 0,  0.1, 0, 0], //'Wraith',
-    175: [G_CREATURE_TYPE.DEMON,    4,  0.5, 0, 0,  0.1, 0, 0], //'Carabia',
-    176: [G_CREATURE_TYPE.DEMON,    1,  0.1, 0, 0,  0.1, 0, 0], //'Goblin',
-    177: [G_CREATURE_TYPE.UNDEAD,   2,  0.1, 0, 0,  0.1, 0, 0], //'Zombie',
-    178: [G_CREATURE_TYPE.UNDEAD,   2,  0.1, 0, 0,  0.1, 0, 0], //'Undead',
-    179: [G_CREATURE_TYPE.DEMON,    3,  0.3, 0, 0,  0.1, 0, 0], //'Orc',
-    180: [G_CREATURE_TYPE.DEMON,    3,  1, 0, 0,  0.1, 0, 0], //'Cyclops',
-    181: [G_CREATURE_TYPE.DEMON,    3,  0.7, 0, 0,  0.1, 0, 0], //'Werewolf',
-    182: [G_CREATURE_TYPE.DEMON,    6,  0.5, 0, 0,  0.1, 0, 0], //'Werebear',
-    183: [G_CREATURE_TYPE.DEMON,    7,  2, 1, 2,    1, 1, 1], //'Devil'
+Object.freeze(G_CREEP_TYPE_NAME = [
+    'NA',
+    'Plant',
+    'Insect',
+    'Beast',
+    'Undead',
+    'Demon',
+]);
+
+Object.freeze(G_CREEP_STAT = [
+    [152, G_CREEP_TYPE.BEAST,    1,  0.1, 0, 0,     0.1, 0, 0], //Rat
+    [153, G_CREEP_TYPE.INSECT,   1,  0.1, 0, 0,     0.1, 0, 0], //'Spiders',
+    [154, G_CREEP_TYPE.BEAST,    1,  0.1, 0, 0,     0.1, 0, 0], //'Lizard',
+    [155, G_CREEP_TYPE.INSECT,   2,  0.1, 0, 0,     0.1, 0, 0], //'Spider Champion',
+    [156, G_CREEP_TYPE.BEAST,    1,  0.1, 0, 0,     0.1, 0, 0], //'Toad',
+    [157, G_CREEP_TYPE.INSECT,   1,  0.1, 0, 0,     0.1, 0, 0], //'Scarab',
+    [158, G_CREEP_TYPE.INSECT,   1,  0.1, 0, 0,     0.1, 0, 0], //'Centipede',
+    [159, G_CREEP_TYPE.BEAST,    2,  0.1, 0, 0,     0.1, 0, 0], //'Serpent',
+    [160, G_CREEP_TYPE.PLANT,    2,  0, 0, 0,       0, 0, 0],   //'Fungi',
+    [161, G_CREEP_TYPE.BEAST,    1,  0.1, 0, 0,     0.1, 0, 0], //'Hare',
+    [162, G_CREEP_TYPE.BEAST,    1,  0.1, 0, 0,     0.1, 0, 0], //'Bat',
+    [163, G_CREEP_TYPE.BEAST,    2,  0.2, 0, 0,     0.1, 0, 0], //'Bat Champion',
+    [164, G_CREEP_TYPE.BEAST,    1,  0.2, 0, 0,     0.1, 0, 0], //'Snake',
+    [165, G_CREEP_TYPE.BEAST,    2,  0.2, 0, 0,     0.1, 0, 0], //'Wolf',
+    [166, G_CREEP_TYPE.BEAST,    2,  0.2, 0, 0,     0.1, 0, 0], //'Wild Boar',
+    [167, G_CREEP_TYPE.BEAST,    3,  0.2, 0, 0,     0.1, 0, 0], //'Bear',
+    [168, G_CREEP_TYPE.DEMON,    1,  0.1, 0, 0,     0.1, 0, 0], //'Slime',
+    [169, G_CREEP_TYPE.DEMON,    2,  0.2, 0, 0,     0.1, 0, 0], //'Slime Champion',
+    [170, G_CREEP_TYPE.INSECT,   1,  0.1, 0, 0,     0.1, 0, 0], //'Scorpion',
+    [171, G_CREEP_TYPE.DEMON,    4,  0.6, 0, 0,     0.1, 0, 0], //'Kraken',
+    [172, G_CREEP_TYPE.UNDEAD,   3,  0.3, 0, 0,     0.1, 0, 0], //'Vampire',
+    [173, G_CREEP_TYPE.UNDEAD,   2,  0.1, 0, 0,     0.1, 0, 0], //'Mummy',
+    [174, G_CREEP_TYPE.UNDEAD,   2,  0.3, 0, 0,     0.1, 0, 0], //'Wraith',
+    [175, G_CREEP_TYPE.DEMON,    4,  0.5, 0, 0,     0.1, 0, 0], //'Carabia',
+    [176, G_CREEP_TYPE.DEMON,    1,  0.1, 0, 0,     0.1, 0, 0], //'Goblin',
+    [177, G_CREEP_TYPE.UNDEAD,   2,  0.1, 0, 0,     0.1, 0, 0], //'Zombie',
+    [178, G_CREEP_TYPE.UNDEAD,   2,  0.1, 0, 0,     0.1, 0, 0], //'Undead',
+    [179, G_CREEP_TYPE.DEMON,    3,  0.3, 0, 0,     0.1, 0, 0], //'Orc',
+    [180, G_CREEP_TYPE.DEMON,    3,  1, 0, 0,       0.1, 0, 0], //'Cyclops',
+    [181, G_CREEP_TYPE.DEMON,    3,  0.7, 0, 0,     0.1, 0, 0], //'Werewolf',
+    [182, G_CREEP_TYPE.DEMON,    6,  0.5, 0, 0,     0.1, 0, 0], //'Werebear',
+    [183, G_CREEP_TYPE.DEMON,    7,  2, 1, 2,       1, 1, 1], //'Devil'
 ]);
 
 Object.freeze(G_TOWN_MAP = {
