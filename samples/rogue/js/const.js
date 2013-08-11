@@ -134,6 +134,38 @@ Object.freeze(G_OBJECT_NAME = {
     37: 'Stone Key',
     38: 'Secret Key',
     39: 'Bone Key',
+    40: 'Antidot',
+    41: 'Medicine',
+    42: 'Holy Water',
+    43: 'Alcohol',
+    44: 'Lucky Potion',
+    45: 'Small Healing Potion',
+    46: 'Healing Potion',
+    47: 'Large Healing Potion',
+    48: 'Spell Script',
+    49: 'Identify Scroll',
+    50: 'Teleport Scroll',
+    51: 'Map',
+    52: 'Spell Book',
+    53: 'Spell Book',
+    54: 'Spell Book',
+    55: 'Spell Book',
+    56: 'Dagger',
+    57: 'Scimitar',
+    58: 'Gladius',
+    59: 'Broadsword',
+    60: 'Cutlass',
+    61: 'Claymore',
+    62: 'Giant Sword',
+    63: 'Kris',
+    64: 'One Hand Ax',
+    65: 'Two Hand Ax',
+    66: 'Two Hand Ax',
+    67: 'Two Hand Ax',
+    68: 'Double Ax',
+    69: 'Double Ax',
+    70: 'Double Ax',
+    71: 'War Ax',
     132: 'Altar',
     133: 'Shrine',
     144: 'Rogue',
@@ -178,15 +210,19 @@ Object.freeze(G_OBJECT_NAME = {
     183: 'Devil'
 });
 
-Object.freeze(G_CREATURE_STAT = {
-    144: [100, 10, 10],
-    145: 'Monk',
-    146: 'Barbarian',
-    147: 'Druid',
-    148: 'Hunter',
-    149: 'Paladin',
-    150: 'Wizard',
-    151: 'Warlock',
+// hp, [atk, ratk, matk], [def, rdef, mdef], dex, luck, [veg, insect, beast, undead, demon]
+Object.freeze(G_HERO_STAT = [
+    [2,    0.1, 0.2, 0,    0.1, 0.2, 0,    1, 1,       1,1,1,1,1], //rogue
+    [3,    0.2, 0.1, 0.1,  0.2, 0.1, 0.1,  0.1, 0,     1,1,1,1.2,1.2], //monk
+    [4,    0.3, 0.1, 0,    0.3, 0.1, 0,    0.2, 0.1,   1,1,1,1,1], //Barbarian
+    [3,    0.2, 0.1, 0.1,  0.2, 0.1, 0.1,  0.2, 0.1,   1,1,1,1,1], //Druid
+    [2.5,  0.2, 0.4, 0.1,  0.2, 0.4, 0.1,  0.2, 0.1,   1,1,1.5,1,1], //Hunter
+    [3,    0.2, 0.1, 0.1,  0.4, 0.2, 0.1,  0, 0,       1,1,1,1.5,1], //Paladin
+    [1,    0.1, 0.1, 0.3,  0.1, 0.1, 0.4,  0, 0.1,     1,1,1,1,1], //Wizard
+    [1,    0.1, 0.1, 0.4,  0.1, 0.1, 0.3,  0, 0,       1,1,1,1,1], //Warlock
+]);
+
+Object.freeze(G_CREATURE_STATE = [
     152: 'Rat',
     153: 'Spiders',
     154: 'Lizard',
@@ -219,7 +255,7 @@ Object.freeze(G_CREATURE_STAT = {
     181: 'Werewolf',
     182: 'Werebear',
     183: 'Devil'
-});
+]);
 
 Object.freeze(G_TOWN_MAP = {
     heroPos: 15,
