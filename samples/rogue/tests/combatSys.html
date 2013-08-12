@@ -61,15 +61,22 @@ pico.def('camera', 'picBase', function(){
     me.draw = function(ctx, ent, clip){
         var
         creeps = this.creeps,
+        graveyard = this.graveyard,
         ts = this.tileSet,
-        x=0, y=0;
+        x=0, y=0,
+        creep;
 
         for(var i=0,l=creeps.length; i<l; i++){
             if (x > 608) {
                 x = 0;
                 y+=32;
             }
-            ts.draw(ctx, creeps[i][0], x, y);
+            creep = creeps[i];
+            grave = graveyard[i];
+            if (creep[2] > 0)
+                ts.draw(ctx, creep[0], x, y);
+            else if (grave)
+                ts.draw(ctx, grave[0], x, y);
             x+=32;
         }
     };
@@ -122,7 +129,10 @@ pico.def('game', 'picGroup', function(){
     this.tileSet = null;
     this.target = 0;
     this.hero = [];
+    this.levelInfo = [];
     this.creeps = [];
+    this.graveyard = [];
+    this.chests = [];
 
     me.init = function(option){
         this.tileSet = option.tileSet;
@@ -151,9 +161,11 @@ pico.def('game', 'picGroup', function(){
         setLevel(level);
 
         this.hero = createHeroStat(type, level);
+        this.levelInfo = lvlInfoMin.slice();
 
         var
         creeps = this.creeps,
+        chests = this.chests,
         teamRaw = G_CREEP_TEAM[theme],
         team = [],
         creepType, count, i, l, j, k;
@@ -167,7 +179,9 @@ pico.def('game', 'picGroup', function(){
             }
         }
 
+        chests.length = chestCount;
         creeps.length = 0;
+
         i=0;
         l = team.length;
         for(j=0, k=creepCount; j<k; j++){
@@ -175,7 +189,6 @@ pico.def('game', 'picGroup', function(){
             creeps.push(createCreepStat(team[i], level));
             i++;
         }
-
 
         return entities;
     };
@@ -190,10 +203,17 @@ pico.def('game', 'picGroup', function(){
         var selected = 20 * y + x;
         if (!this.creeps[selected]) return;
 
-        if (selected === this.target){
+        if (selected === this.target && this.creeps[selected][2] > 0){
             this.go('fight', {});
             return;
         }
+        if (this.graveyard[selected]){
+            this.hero[1] += this.graveyard[selected][1];
+            this.graveyard[selected] = undefined;
+            this.go('regen');
+            return;
+        }
+
         this.target = selected;
         return entities;
     };
@@ -209,7 +229,16 @@ pico.def('game', 'picGroup', function(){
         evt.roll = roll;
         
         if (uroll + hero[2] > creep[6]) creep[2] -= 1; 
-        if (roll + creep[3] > hero[6]) hero[1] -= 1; 
+        if (roll + creep[3] > hero[6]) hero[1] -= 1;
+
+        if (!hero[1]){
+            alert('U r dead!');
+            this.go('testReset', {});
+            return;
+        }
+        if (!creep[2]){
+            this.graveyard[this.target] = [G_OBJECT.HEALTH_GLOBE, 1];
+        }
 
         return entities;
     };
@@ -229,10 +258,10 @@ pico.def('game', 'picGroup', function(){
             .replace('MDEF', hero[7])
             .replace('LEVEL', this.level)
             .replace('THEME', this.theme)
-            .replace('WIDTH', lvlInfoMin[0])
-            .replace('HEIGHT', lvlInfoMin[1])
-            .replace('CR', creepCount)
-            .replace('CH', chestCount);
+            .replace('WIDTH', this.levelInfo[0])
+            .replace('HEIGHT', this.levelInfo[1])
+            .replace('CR', this.creeps.length)
+            .replace('CH', this.chests.length);
 
         return entities;
     };
@@ -307,9 +336,10 @@ pico.def('combatSysMain', function(){
 
             game.init({tileSet:tileSet, mapLevel:0});
 
-            game.route('testReset', [game.reset, renderer.draw]);
+            game.route('testReset', [game.reset, game.showHeroInfo, renderer.draw]);
+            game.route('regen', [game.showHeroInfo, renderer.draw]);
             game.route('fingerUp', [game.select, game.showSelectInfo]);
-            game.route('fight', [game.fight, game.showFightInfo, game.showHeroInfo, game.showSelectInfo]);
+            game.route('fight', [game.fight, game.showFightInfo, game.showHeroInfo, game.showSelectInfo, renderer.draw]);
 
             var cameraEnt = game.addEntity('camera');
             cameraEnt.attach(renderer, {viewPane:[camera.moduleName]});
