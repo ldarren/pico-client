@@ -21,12 +21,12 @@ div#gameStage{
 <title>Rogue Combat System</title>
 </head>
 <body>
+<div id=gameStage class=left></div>
 <div class=left>
 <div id=player class=panel>Player Type: Rogue 100x100 (1000) (100)</div>
 <div id=selected class=panel>type: undefined</div>
 <div id=result class=panel>Result:</div>
 </div>
-<div id=gameStage class=left></div>
 <script src=../lib/pico/pico.js></script>
 <script src=../lib/pico/lib/piAtlas.js></script>
 <script src=../lib/pico/lib/piCanvas.js></script>
@@ -120,24 +120,27 @@ pico.def('game', 'picGroup', function(){
         s[8] = Math.ceil(s[8]*level);
         return s;
     },
-    setLevel = function(lvl){
-        me.level = lvl;
-        if (lvl > me.maxLevel) me.maxLevel = lvl;
+    setLevelInfo = function(theme, level, width, height, creepCount, chestCount){
+        var lvli = me.levelInfo;
+        lvli[0] = theme;
+        lvli[1] = level;
+        lvli[3] = width;
+        lvli[4] = height;
+        lvli[5] = creepCount;
+        lvli[6] = chestCount;
+        if (lvli[1] > lvli[2]) lvli[2] = level;
     };
 
-    this.maxLevel = this.level = 0,
     this.tileSet = null;
     this.target = 0;
     this.hero = [];
-    this.levelInfo = [];
+    this.levelInfo = ['vampire', 0, 0, 8, 8, 0, 0]; // theme, level, maxlevel, width, height, creepCount, chestCount
     this.creeps = [];
     this.graveyard = [];
     this.chests = [];
 
-    me.init = function(option){
-        this.tileSet = option.tileSet;
-        this.level = option.mapLevel || 1;
-        if (this.level > this.maxLevel) this.maxLevel = this.level;
+    me.init = function(tileSet){
+        this.tileSet = tileSet;
     };
 
     me.reset = function(elapsed, evt, entities){
@@ -158,10 +161,9 @@ pico.def('game', 'picGroup', function(){
             var keys = Object.keys(G_CREEP_TEAM);
             theme = keys[Math.floor(Math.random()*keys.length)];
         }
-        setLevel(level);
+        setLevelInfo(theme, level, lvlInfoMin[0], lvlInfoMin[1], creepCount, chestCount);
 
         this.hero = createHeroStat(type, level);
-        this.levelInfo = lvlInfoMin.slice();
 
         var
         creeps = this.creeps,
@@ -229,7 +231,7 @@ pico.def('game', 'picGroup', function(){
         evt.roll = roll;
         
         if (uroll + hero[2] > creep[6]) creep[2] -= 1; 
-        if (roll + creep[3] > hero[6]) hero[1] -= 1;
+        if (roll + creep[3] > hero[5]) hero[1] -= 1;
 
         if (!hero[1]){
             alert('U r dead!');
@@ -244,7 +246,10 @@ pico.def('game', 'picGroup', function(){
     };
 
     me.showHeroInfo = function(elapsed, evt, entities){
-        var hero = this.hero;
+        var
+        hero = this.hero,
+        levelInfo = this.levelInfo;
+
         panelPlayer.innerHTML = templPlayer
             .replace('TYPE', G_OBJECT_NAME[hero[0]])
             .replace('HP', hero[1])
@@ -256,12 +261,12 @@ pico.def('game', 'picGroup', function(){
             .replace('DEF', hero[5])
             .replace('RDEF', hero[6])
             .replace('MDEF', hero[7])
-            .replace('LEVEL', this.level)
-            .replace('THEME', this.theme)
-            .replace('WIDTH', this.levelInfo[0])
-            .replace('HEIGHT', this.levelInfo[1])
-            .replace('CR', this.creeps.length)
-            .replace('CH', this.chests.length);
+            .replace('LEVEL', levelInfo[1])
+            .replace('THEME', levelInfo[0])
+            .replace('WIDTH', levelInfo[3])
+            .replace('HEIGHT', levelInfo[4])
+            .replace('CR', levelInfo[5])
+            .replace('CH', levelInfo[6]);
 
         return entities;
     };
@@ -271,7 +276,7 @@ pico.def('game', 'picGroup', function(){
         panelSelected.innerHTML = templSelected
             .replace('TYPE', G_OBJECT_NAME[creep[0]])
             .replace('FAMILY', G_CREEP_TYPE_NAME[creep[1]])
-            .replace('LEVEL', this.level)
+            .replace('LEVEL', this.levelInfo[1])
             .replace('HP', creep[2])
             .replace('ATK', creep[3])
             .replace('RATK', creep[4])
@@ -283,13 +288,23 @@ pico.def('game', 'picGroup', function(){
     };
 
     me.showFightInfo = function(elapsed, evt, entities){
+        var
+        hero = this.hero,
+        creep = this.creeps[this.target];
+
         panelResult.innerHTML = templResult
             .replace('UROLL', evt.uroll)
             .replace('ROLL', evt.roll)
-            .replace('UATK', 10)
-            .replace('ATK', 3)
-            .replace('UDEF', 10)
-            .replace('DEF', 3);
+            .replace('UATK', hero[2])
+            .replace('ATK', creep[3])
+            .replace('UDEF', hero[5])
+            .replace('DEF', creep[6]);
+        return entities;
+    };
+
+    me.hideFightInfo = function(elapsed, evt, entities){
+        panelResult.innerHTML = '';
+
         return entities;
     };
 });
@@ -334,11 +349,11 @@ pico.def('combatSysMain', function(){
         
             reactor.addGroup(game);
 
-            game.init({tileSet:tileSet, mapLevel:0});
+            game.init(tileSet);
 
-            game.route('testReset', [game.reset, game.showHeroInfo, renderer.draw]);
+            game.route('testReset', [game.reset, game.showHeroInfo, game.hideFightInfo, renderer.draw]);
             game.route('regen', [game.showHeroInfo, renderer.draw]);
-            game.route('fingerUp', [game.select, game.showSelectInfo]);
+            game.route('fingerUp', [game.select, game.showSelectInfo, game.hideFightInfo]);
             game.route('fight', [game.fight, game.showFightInfo, game.showHeroInfo, game.showSelectInfo, renderer.draw]);
 
             var cameraEnt = game.addEntity('camera');
