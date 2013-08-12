@@ -176,24 +176,6 @@ pico.def('game', 'picGroup', function(){
             i++;
         }
 
-        hero = this.hero;
-        panelPlayer.innerHTML = templPlayer
-            .replace('TYPE', G_OBJECT_NAME[hero[0]])
-            .replace('HP', hero[1])
-            .replace('DEX', hero[8])
-            .replace('LUCK', hero[9])
-            .replace('ATK', hero[2])
-            .replace('RATK', hero[3])
-            .replace('MATK', hero[4])
-            .replace('DEF', hero[5])
-            .replace('RDEF', hero[6])
-            .replace('MDEF', hero[7])
-            .replace('LEVEL', level)
-            .replace('THEME', theme)
-            .replace('WIDTH', lvlInfoMin[0])
-            .replace('HEIGHT', lvlInfoMin[1])
-            .replace('CR', creepCount)
-            .replace('CH', chestCount);
 
         return entities;
     };
@@ -218,10 +200,40 @@ pico.def('game', 'picGroup', function(){
 
     me.fight = function(elapsed, evt, entities){
         var
-        rollU = d20Roll(),
-        rollTarget = d20Roll();
-        evt.uroll = rollU;
-        evt.roll = rollTarget;
+        hero = this.hero,
+        creep = this.creeps[this.target],
+        uroll = d20Roll(),
+        roll = d20Roll();
+
+        evt.uroll = uroll;
+        evt.roll = roll;
+        
+        if (uroll + hero[2] > creep[6]) creep[2] -= 1; 
+        if (roll + creep[3] > hero[6]) hero[1] -= 1; 
+
+        return entities;
+    };
+
+    me.showHeroInfo = function(elapsed, evt, entities){
+        var hero = this.hero;
+        panelPlayer.innerHTML = templPlayer
+            .replace('TYPE', G_OBJECT_NAME[hero[0]])
+            .replace('HP', hero[1])
+            .replace('DEX', hero[8])
+            .replace('LUCK', hero[9])
+            .replace('ATK', hero[2])
+            .replace('RATK', hero[3])
+            .replace('MATK', hero[4])
+            .replace('DEF', hero[5])
+            .replace('RDEF', hero[6])
+            .replace('MDEF', hero[7])
+            .replace('LEVEL', this.level)
+            .replace('THEME', this.theme)
+            .replace('WIDTH', lvlInfoMin[0])
+            .replace('HEIGHT', lvlInfoMin[1])
+            .replace('CR', creepCount)
+            .replace('CH', chestCount);
+
         return entities;
     };
 
@@ -297,7 +309,7 @@ pico.def('combatSysMain', function(){
 
             game.route('testReset', [game.reset, renderer.draw]);
             game.route('fingerUp', [game.select, game.showSelectInfo]);
-            game.route('fight', [game.fight, game.showFightInfo]);
+            game.route('fight', [game.fight, game.showFightInfo, game.showHeroInfo, game.showSelectInfo]);
 
             var cameraEnt = game.addEntity('camera');
             cameraEnt.attach(renderer, {viewPane:[camera.moduleName]});
