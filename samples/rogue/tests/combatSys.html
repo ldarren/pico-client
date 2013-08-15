@@ -61,22 +61,27 @@ pico.def('camera', 'picBase', function(){
     me.draw = function(ctx, ent, clip){
         var
         creeps = this.creeps,
+        chests = this.chests,
         graveyard = this.graveyard,
         ts = this.tileSet,
         x=0, y=0,
-        creep;
+        creep, chest;
 
         for(var i=0,l=creeps.length; i<l; i++){
             if (x > 608) {
                 x = 0;
-                y+=32;
+                y+=64;
             }
+            chest = chests[i];
+            if (chest)
+                ts.draw(ctx, chest[0], x, y);
+
             creep = creeps[i];
             grave = graveyard[i];
             if (creep[2] > 0)
-                ts.draw(ctx, creep[0], x, y);
+                ts.draw(ctx, creep[0], x, y+32);
             else if (grave)
-                ts.draw(ctx, grave[0], x, y);
+                ts.draw(ctx, grave[0], x, y+32);
             x+=32;
         }
     };
@@ -181,15 +186,21 @@ pico.def('game', 'picGroup', function(){
             }
         }
 
-        chests.length = chestCount;
-        creeps.length = 0;
-
+        var shuffle = [];
         i=0;
         l = team.length;
+        creeps.length = 0;
         for(j=0, k=creepCount; j<k; j++){
             if (i>=l) i = 0;
             creeps.push(createCreepStat(team[i], level));
             i++;
+            shuffle.push(j);
+        }
+
+        for(i=0,l=chestCount; i<l; i++){
+            j = shuffle.splice(Math.floor(Math.random()*shuffle.length), 1)[0];
+            if (!i) chests[j] = [G_OBJECT.CHEST, G_OBJECT.KEY_01];
+            else chests[j] = [G_OBJECT.CHEST, G_OBJECT.SOUL_STONE];
         }
 
         return entities;
