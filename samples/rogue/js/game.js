@@ -98,7 +98,7 @@ pico.def('game', 'pigSqrMap', function(){
         for(i=0,l=me.chestCount; i<l; i++){
             c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
             map[c] |= G_TILE_TYPE.CHEST;
-            objects[c] = G_OBJECT.CHEST_CLOSED;
+            objects[c] = G_OBJECT.CHEST;
         }
 
         c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
@@ -156,7 +156,7 @@ pico.def('game', 'pigSqrMap', function(){
     me.init = function(data){
         me.tileSet = data.tileSet;
         me.heroJob = data.heroJob;
-        me.prevLevel = me.currentLevel;
+        me.prevLevel = data.mapLevel ? me.currentLevel : 0;
         me.currentLevel = data.mapLevel;
         me.nextLevel = (me.currentLevel < me.prevLevel) ? me.currentLevel-1 : me.currentLevel+1;
 
@@ -199,6 +199,42 @@ pico.def('game', 'pigSqrMap', function(){
 
     me.findPath = function(from, to){
         return this.aStar(from, to, isOpen, this.getNeighbours, heuristic);
+    };
+
+    me.solve = function(pos){
+        var
+        hints = this.hints,
+        hint = hints[pos];
+        if (10 > hint) return false;
+
+        hint = Floor(hint/16);
+
+        var
+        map = this.map,
+        objects = this.objects,
+        flags = this.flags,
+        width = this.mapWidth,
+        neighbours = this.getNeighbours(pos, function(){return true;}),
+        count = 0,
+        tileIdx, tile, i, l;
+
+        for(i=0,l=neighbours.length; i<l; i++){
+            tileIdx = neighbours[i];
+            tile = map[tileIdx];
+            
+            if ((tile & G_TILE_TYPE.HIDE) && (tile & G_TILE_TYPE.CREEP) && flags[tileIdx]) // mark creep
+                count++;
+            else if (!(tile & G_TILE_TYPE.HIDE) && (tile & G_TILE_TYPE.EXIT || objects[tileIdx])) // uncovered bonus
+                count++;
+        }
+        if (count !== hint) return false;
+
+        for(i=0,l=neighbours.length; i<l; i++){
+            tileIdx = neighbours[i];
+            if (map[tileIdx] & G_TILE_TYPE.HIDE && !flags[tileIdx]) fill(map, hints, width, tileIdx);
+        }
+
+        return true;
     };
 
     me.heroMove = function(elapsed, evt, entities){

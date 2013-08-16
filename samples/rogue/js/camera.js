@@ -108,17 +108,20 @@ pico.def('camera', 'picBase', function(){
             }
         }
 
-        tileType = map[id];
+        tileType = map[id]; // last action might hv updated tileType
         if (!(tileType & G_TILE_TYPE.HIDE)){
             if(this.objects[id]){
-                var
-                objId = this.objects[id],
-                objName = G_OBJECT_NAME[objId];
-                this.go('showInfo', {creepId:objId});
-                if (tileType & G_TILE_TYPE.CREEP){
-                    this.go('showDialog', {
-                        info: ['RIP', 'you were killed by '+objName+' at level '+this.currentLevel, ' but your lineage will continue...'],
-                        callback: 'reborn'});
+                var objId = this.objects[id];
+
+                if (objId === this.heroJob){
+                    if (!this.solve(this.heroPos)) return;
+                }else{
+                    this.go('showInfo', {creepId:objId});
+                    if (tileType & G_TILE_TYPE.CREEP){
+                        this.go('showDialog', {
+                            info: ['RIP', 'you were killed by '+G_OBJECT_NAME[objId]+' at level '+this.currentLevel, ' but your lineage will continue...'],
+                            callback: 'reborn'});
+                    }
                 }
             }else{
                 var h = this.findPath(this.heroPos, id);
@@ -186,7 +189,7 @@ pico.def('camera', 'picBase', function(){
                     if (objectId){
                         tileSet.draw(ctx, objectId, x, y, width, height);
                     }
-                    if (hint && hint > 9){
+                    if (hint > 9){
                         ctx.fillStyle = G_HINT_COLOR[Math.floor((hint & 0x0f)*0.5)];
                         ctx.fillText(Math.floor(hint/16), x+hw, y+hh, width);
                     }
