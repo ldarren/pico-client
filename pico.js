@@ -158,7 +158,7 @@ pico.embedJS = function(scripts, cb){
 
     var script = scripts.pop();
 
-    if (script.hasAttribute('templ')) return pico.embedJS(scripts, cb); // template node, ignore
+    if (script.type && -1 === script.type.indexOf('javascript')) return pico.embedJS(scripts, cb); // template node, ignore
     if (script.src){
       return pico.loadJS([script.getAttribute('name')], script.getAttribute('parent'), script.src, function(err, module){
           return pico.embedJS(scripts, cb);
