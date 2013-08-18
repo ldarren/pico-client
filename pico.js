@@ -164,9 +164,15 @@ pico.embedJS = function(scripts, cb){
           return pico.embedJS(scripts, cb);
       });
     }
-    var
-    func = new Function('module', script.innerText || script.textContent), // secure this operation
-    module = pico.def(script.getAttribute('name'), script.getAttribute('parent'), func);
+
+    try{
+        var func = new Function('module', script.textContent || script.innerText); // secure this operation
+    }catch(exp){
+        console.error('Syntax Error at script: ',script.getAttribute('name'));
+        return pico.embedJS(scripts, cb);
+    }
+
+    var module = pico.def(script.getAttribute('name'), script.getAttribute('parent'), func);
 
     pico.loadDeps(module, function(){
       module.signal(pico.LOAD);
