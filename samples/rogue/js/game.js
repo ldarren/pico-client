@@ -26,23 +26,23 @@ pico.def('game', 'pigSqrMap', function(){
         }
         return hint;
     },
-    fill = function(map, hints, width, i){
+    fill = function(map, hints, flags, width, i){
         var count = 0;
-        if (i < 0 || isOpen(i)) return count;
+        if (i < 0 || isOpen(i) || flags[i]) return count;
         map[i] &= G_TILE_TYPE.SHOW;
         count = 1;
         if (0 === hints[i]){
-            count += fill(map, hints, width, i - width);
-            count += fill(map, hints, width, i + width);
+            count += fill(map, hints, flags, width, i - width);
+            count += fill(map, hints, flags, width, i + width);
             if (0 !== i%width){
-                count += fill(map, hints, width, i - 1);
-                count += fill(map, hints, width, i - width - 1);
-                count += fill(map, hints, width, i + width - 1);
+                count += fill(map, hints, flags, width, i - 1);
+                count += fill(map, hints, flags, width, i - width - 1);
+                count += fill(map, hints, flags, width, i + width - 1);
             }
             if (0 !== (i+1)%width){
-                count += fill(map, hints, width, i + 1);
-                count += fill(map, hints, width, i - width + 1);
-                count += fill(map, hints, width, i + width + 1);
+                count += fill(map, hints, flags, width, i + 1);
+                count += fill(map, hints, flags, width, i - width + 1);
+                count += fill(map, hints, flags, width, i + width + 1);
             }
         }
         return count;
@@ -128,7 +128,7 @@ pico.def('game', 'pigSqrMap', function(){
         objects[c] = me.heroJob;
         me.heroPos = c;
 
-        fill(map, hints, mapW, me.heroPos);
+        fill(map, hints, flags, mapW, me.heroPos);
 
         map[c] = G_TILE_TYPE.ENTRANCE; // must do after fill, becos fill will ignore revealed tile
     };
@@ -186,7 +186,7 @@ pico.def('game', 'pigSqrMap', function(){
     };
 
     me.fillTiles = function(i){
-        return fill(me.map, me.hints, me.mapWidth, i);
+        return fill(me.map, me.hints, me.flags, me.mapWidth, i);
     };
 
     me.nearToHero = function(i){
@@ -207,31 +207,36 @@ pico.def('game', 'pigSqrMap', function(){
         hint = hints[pos];
         if (10 > hint) return false;
 
-        hint = Floor(hint/16);
-
         var
         map = this.map,
         objects = this.objects,
         flags = this.flags,
         width = this.mapWidth,
         neighbours = this.getNeighbours(pos, function(){return true;}),
-        count = 0,
+        count = 1, // hint always has one
         tileIdx, tile, i, l;
 
         for(i=0,l=neighbours.length; i<l; i++){
             tileIdx = neighbours[i];
             tile = map[tileIdx];
             
-            if ((tile & G_TILE_TYPE.HIDE) && (tile & G_TILE_TYPE.CREEP) && flags[tileIdx]) // mark creep
-                count++;
-            else if (!(tile & G_TILE_TYPE.HIDE) && (tile & G_TILE_TYPE.EXIT || objects[tileIdx])) // uncovered bonus
-                count++;
+            if (tile & G_TILE_TYPE.HIDE){ 
+                if (flags[tileIdx] || tile & G_TILE_TYPE.CREEP){
+                    // mark creep
+                    count |= G_TILE_TYPE.CREEP;
+                    count += 0x10;
+                }
+            }else if (tile & G_TILE_TYPE.EXIT || objects[tileIdx]){
+                // uncovered exit or chest
+                count |= tile;
+                count += 0x10;
+            }
         }
         if (count !== hint) return false;
 
         for(i=0,l=neighbours.length; i<l; i++){
             tileIdx = neighbours[i];
-            if (map[tileIdx] & G_TILE_TYPE.HIDE && !flags[tileIdx]) fill(map, hints, width, tileIdx);
+            if (map[tileIdx] & G_TILE_TYPE.HIDE && !flags[tileIdx]) fill(map, hints, flags, width, tileIdx);
         }
 
         return true;
@@ -281,7 +286,7 @@ pico.def('game', 'pigSqrMap', function(){
             flags = this.flags,
             won = true;
             for(var w=0, wl=mapW*mapH; w<wl; w++){
-                if (objects[w] >= G_CREEP.RAT && objects[w] <= G_CREEP.DEVIL && !flags[w]){
+                if ((objects[w] >= G_CREEP.RAT && objects[w] <= G_CREEP.DEVIL && !flags[w]) || (!objects[w] && flags[w])){
                     won = false;
                     break;
                 }

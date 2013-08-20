@@ -105,7 +105,6 @@ pico.def('bag', 'picUIWindow', function(){
                 return;
             }
         }
-        
         return entities;
     };
 

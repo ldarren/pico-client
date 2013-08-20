@@ -97,6 +97,14 @@ pico.def('camera', 'picBase', function(){
             if (this.nearToHero(id)) {
                 if (this.activatedSkill){
                     this.flags[id] = this.activatedSkill;
+                    if (!(tileType & G_TILE_TYPE.CREEP)){
+                        this.go('showDialog', {
+                            info: [
+                                'RIP', 
+                                'You were killed by the curse of "'+G_OBJECT_NAME[this.activatedSkill]+'" at level '+this.currentLevel,
+                                'but your lineage will continue...'],
+                            callback: 'reborn'});
+                    }
                 }else{
                     this.fillTiles(id);
                     this.flags[id] = undefined;
@@ -124,7 +132,10 @@ pico.def('camera', 'picBase', function(){
                     this.go('showInfo', {creepId:objId});
                     if (tileType & G_TILE_TYPE.CREEP){
                         this.go('showDialog', {
-                            info: ['RIP', 'you were killed by '+G_OBJECT_NAME[objId]+' at level '+this.currentLevel, ' but your lineage will continue...'],
+                            info: [
+                                'RIP',
+                                'you were killed by '+G_OBJECT_NAME[objId]+' at level '+this.currentLevel,
+                                'but your lineage will continue...'],
                             callback: 'reborn'});
                     }
                 }
