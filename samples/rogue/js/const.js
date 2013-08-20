@@ -111,12 +111,20 @@ Object.freeze(G_CREEP_TEAM = {
 
 Object.freeze(G_FLOOR = {
     UNCLEAR: 8,
+    PYRAMID: 9,
     CLEAR: 10,
     BROKEN: 11,
     STAIR_DOWN: 13,
     STAIR_UP: 14,
+    PITFALL: 15,
+    TELEPORT: 16,
+    CHECKPOINT: 17,
+    STONE: 18,
     WALL: 19,
     BROKEN_WALL: 20,
+    WOODEN_GATE: 21,
+    DARWEN_GATE: 22,
+    LOCKED_GATE: 23,
     PILLARS: 24,
     PILLAR_DOOR: 25,
     PRISON: 26,
@@ -341,7 +349,7 @@ Object.freeze(G_CREEP_STAT = [
 ]);
 
 Object.freeze(G_TOWN_MAP = {
-    heroPos: 15,
+    heroPos: 27,
     map:[
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
@@ -355,12 +363,12 @@ Object.freeze(G_TOWN_MAP = {
     terrain:[
         24, 24, 24, 25, 24, 24, 24, 24,
         28, 28, 28, 28, 28, 28, 28, 28,
-        28, 30, 30, 30, 30, 30, 30, 28,
-        28, 30, 30, 30, 30, 30, 30, 28,
-        28, 30, 30, 30, 30, 30, 30, 28,
-        28, 30, 30, 30, 30, 30, 30, 28,
-        30, 30, 30, 30, 30, 30, G_FLOOR.STAIR_DOWN, 30,
-        30, 30, 30, 30, 30, 30, 30, 30,
+        28, 28, 28, 28, 28, 28, 28, 28,
+        28, 28, 28, G_FLOOR.TELEPORT, 28, 28, 28, 28,
+        28, 28, 28, 28, 28, 28, 28, 28,
+        28, 28, 28, 28, 28, 28, 28, 28,
+        28, 28, 28, 28, 28, 28, G_FLOOR.STAIR_DOWN, 28,
+        28, 28, 28, 28, 28, 28, 28, 28,
     ],
     objects:[
         0, 0, 0, 0, 0, 0, 0, 0,

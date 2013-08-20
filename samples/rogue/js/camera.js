@@ -1,6 +1,10 @@
 pico.def('camera', 'picBase', function(){
     var
     me = this,
+    UNCLEAR = G_FLOOR.UNCLEAR,
+    STONE = G_FLOOR.STONE,
+    Floor = Math.floor,
+    Ceil = Math.ceil,
     name = me.moduleName,
     screenshotX=screenshotY=0,
     camX, camY, camWidth, camHeight,
@@ -22,10 +26,10 @@ pico.def('camera', 'picBase', function(){
             viewBottom = viewY+mapH < camY+camHeight ? viewY+mapH : camY+camHeight;
             viewRight = viewX+mapW < camX+camWidth ? viewX+mapW : camX+camWidth;
 
-            viewTop = Math.floor((viewTop-viewY)/tileHeight);
-            viewLeft = Math.floor((viewLeft-viewX)/tileWidth);
-            viewBottom = Math.ceil((viewBottom-viewY)/tileHeight);
-            viewRight = Math.ceil((viewRight-viewX)/tileWidth);
+            viewTop = Floor((viewTop-viewY)/tileHeight);
+            viewLeft = Floor((viewLeft-viewX)/tileWidth);
+            viewBottom = Ceil((viewBottom-viewY)/tileHeight);
+            viewRight = Ceil((viewRight-viewX)/tileWidth);
 
             viewStart = (viewTop*mapWidth) + viewLeft;
             viewWidth = viewRight - viewLeft;
@@ -50,7 +54,7 @@ pico.def('camera', 'picBase', function(){
         tw = this.tileWidth,
         th = this.tileHeight,
         vx = viewX + (viewStart % this.mapWidth)*tw,
-        vy = viewY + Math.floor(viewStart / this.mapWidth)*tw,
+        vy = viewY + Floor(viewStart / this.mapWidth)*tw,
         vw = viewWidth*tw,
         vh = viewHeight*th,
         unknowns = [],
@@ -81,8 +85,8 @@ pico.def('camera', 'picBase', function(){
         map = this.map,
         mapW = this.mapWidth,
         mapH = this.mapHeight,
-        x = Math.floor((evt[0] - viewX) / this.tileWidth),
-        y = Math.floor((evt[1] - viewY) / this.tileHeight),
+        x = Floor((evt[0] - viewX) / this.tileWidth),
+        y = Floor((evt[1] - viewY) / this.tileHeight),
         id, tileType;
 
         if (y > mapH || x > mapW) return;
@@ -96,6 +100,7 @@ pico.def('camera', 'picBase', function(){
                 }else{
                     this.fillTiles(id);
                     this.flags[id] = undefined;
+                    if (map[id] & G_TILE_TYPE.EXIT) return entities; // prevent walking to exit
                 }
             }else{
                 var 
@@ -162,10 +167,10 @@ pico.def('camera', 'picBase', function(){
         objects = this.objects,
         flags = this.flags,
         hints = this.hints,
-        width = this.tileWidth,
-        height = this.tileHeight,
-        hw = Math.floor(width/2),
-        hh = Math.floor(height/2),
+        tileW = this.tileWidth,
+        tileH = this.tileHeight,
+        hw = Floor(tileW/2),
+        hh = Floor(tileH/2),
         w = viewStart,
         hint, x, y, i, j, objectId, tileId;
 
@@ -177,26 +182,41 @@ pico.def('camera', 'picBase', function(){
         ctx.textBaseline = 'middle';
         for(i=0; i<viewHeight; i++){
             for(j=0; j<viewWidth; j++, w++){
-                x = viewX + width * (w%mapW), y = viewY + height * Math.floor(w/mapW);
+                x = viewX + tileW * (w%mapW), y = viewY + tileH * Floor(w/mapW);
                 tileId = map[w];
                 if (tileId & G_TILE_TYPE.HIDE){
-                    tileSet.draw(ctx, G_FLOOR.UNCLEAR, x, y, width, height);
-                    if (flags[w]) tileSet.draw(ctx, flags[w], x, y, width, height);
+                    tileSet.draw(ctx, UNCLEAR, x, y, tileW, tileH);
+                    if (flags[w]) tileSet.draw(ctx, flags[w], x, y, tileW, tileH);
                 }else{
                     hint = hints[w];
                     objectId = objects[w];
-                    tileSet.draw(ctx, terrain[w], x, y, width, height);
+                    tileSet.draw(ctx, terrain[w], x, y, tileW, tileH);
                     if (objectId){
-                        tileSet.draw(ctx, objectId, x, y, width, height);
+                        tileSet.draw(ctx, objectId, x, y, tileW, tileH);
                     }
                     if (hint > 9){
-                        ctx.fillStyle = G_HINT_COLOR[Math.floor((hint & 0x0f)*0.5)];
-                        ctx.fillText(Math.floor(hint/16), x+hw, y+hh, width);
+                        ctx.fillStyle = G_HINT_COLOR[Floor((hint & 0x0f)*0.5)];
+                        ctx.fillText(Floor(hint/16), x+hw, y+hh, tileW);
                     }
                 }
             }
             w += viewWrap;
         }
+        // draw borders
+        j = viewY - tileH + tileH * Floor(viewStart/mapW);
+        y += tileH;
+        w = x+tileW;
+        for (i=viewX - tileW + tileW * (viewStart%mapW); x > i; x-=tileW){
+            tileSet.draw(ctx, STONE, x, j, tileW, tileH);
+            tileSet.draw(ctx, STONE, x, y, tileW, tileH);
+        }
+
+        x = w;
+        for (j-=tileH; y > j; y-=tileH){
+            tileSet.draw(ctx, STONE, x, y, tileW, tileH);
+            tileSet.draw(ctx, STONE, i, y, tileW, tileH);
+        }
+
         ctx.restore();
     };
 
