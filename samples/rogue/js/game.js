@@ -220,7 +220,7 @@ pico.def('game', 'pigSqrMap', function(){
             tile = map[tileIdx];
             
             if (tile & G_TILE_TYPE.HIDE){ 
-                if (flags[tileIdx] || tile & G_TILE_TYPE.CREEP){
+                if (flags[tileIdx] && tile & G_TILE_TYPE.CREEP){
                     // mark creep
                     count |= G_TILE_TYPE.CREEP;
                     count += 0x10;
