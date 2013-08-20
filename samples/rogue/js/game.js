@@ -16,7 +16,7 @@ pico.def('game', 'pigSqrMap', function(){
         return (undefined !== m && !(m & G_TILE_TYPE.HIDE) && !o);
     },
     heuristic = function(from, to){
-        var mw = me.mapWidth
+        var mw = me.mapWidth;
         return Sqrt(Pow(from%mw - to%mw, 2) + Pow(Floor(from/mw) - Floor(to/mw), 2));
     },
     getTileHint = function(hint, type){
@@ -274,8 +274,9 @@ pico.def('game', 'pigSqrMap', function(){
         var tileType = this.map[this.heroPos];
         if(tileType & G_TILE_TYPE.ENTRANCE){
             this.go('showDialog', {
-                info: ['Warning!', 'you are leaving level '+this.currentLevel, 'Click on message box to proceed to level '+(this.prevLevel)],
-                callback: 'gotoLevel',
+                info: ['Warning!', 'you are leaving level '+this.currentLevel, 'Click on Yes to proceed to level '+(this.prevLevel)],
+                labels: ['Yes', 'No'],
+                callbacks: ['gotoLevel', null],
                 evt:this.prevLevel});
         }else if(tileType & G_TILE_TYPE.EXIT){
             var
@@ -293,7 +294,7 @@ pico.def('game', 'pigSqrMap', function(){
             if (won) {
                 this.go('showDialog', {
                     info: ['Congratulations!', 'you have cleared level '+this.currentLevel, 'Click on message box to proceed to level '+(this.nextLevel)],
-                    callback: 'gotoLevel',
+                    callbacks: ['gotoLevel'],
                     evt: this.nextLevel});
             }else{
                 this.go('showDialog', {

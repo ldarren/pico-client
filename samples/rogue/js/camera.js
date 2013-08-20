@@ -103,7 +103,7 @@ pico.def('camera', 'picBase', function(){
                                 'RIP', 
                                 'You were killed by the curse of "'+G_OBJECT_NAME[this.activatedSkill]+'" at level '+this.currentLevel,
                                 'but your lineage will continue...'],
-                            callback: 'reborn'});
+                            callbacks: ['reborn']});
                     }
                 }else{
                     this.fillTiles(id);
@@ -136,7 +136,7 @@ pico.def('camera', 'picBase', function(){
                                 'RIP',
                                 'you were killed by '+G_OBJECT_NAME[objId]+' at level '+this.currentLevel,
                                 'but your lineage will continue...'],
-                            callback: 'reborn'});
+                            callbacks: ['reborn']});
                     }
                 }
             }else{

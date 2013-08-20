@@ -1,8 +1,9 @@
 pico.def('dialogMsg', 'picUIWindow', function(){
     var
     me = this,
-    msg,
     name = me.moduleName,
+    layouts = [],
+    msg,
     findMyFirstEntity = function(entities){
         if (!entities) return;
         var e, com;
@@ -14,9 +15,33 @@ pico.def('dialogMsg', 'picUIWindow', function(){
     };
 
     me.open = function(elapsed, evt, entities){
-        this.showEntity(G_WIN_ID.DIALOG);
+        var ent = this.showEntity(G_WIN_ID.DIALOG);
         msg = evt;
-        return entities;
+        layouts.length = 0;
+
+        if (!msg.callbacks) return [ent];
+
+        var btnCount = msg.callbacks.length;
+
+        if (btnCount > 1){
+            var
+            com = ent.getComponent(name),
+            win = ent.getComponent(com.win),
+            gs2 = win.gridSize * 2,
+            rect = ent.getComponent(win.box),
+            rectW = rect.width,
+            rectH = rect.height,
+            btnW = this.tileWidth*3, btnH = this.tileHeight,
+            gap, x, y;
+
+            gap = Math.floor((rectW - btnW * btnCount - gs2*2)/(btnCount-1));
+            y = rect.y + rect.height - gs2 - btnH;
+            for(var i=0; i<btnCount; i++){
+                layouts.push([rect.x + gs2 + i * (btnW+gap), y, btnW, btnH]);
+            }
+        }
+
+        return [ent];
     };
 
     me.close = function(elapsed, evt, entities){
@@ -42,12 +67,32 @@ pico.def('dialogMsg', 'picUIWindow', function(){
         e = entities[0],
         com = e.getComponent(name);
         if (!com) return entities;
-        this.go('hideDialog');
-        if (msg.callback) this.go(msg.callback, msg.evt);
+        if (msg.callbacks){
+            if (layouts.length){
+                var
+                x = evt[0],
+                y = evt[1],
+                btn;
+                for(var i=0, l=layouts.length; i<l; i++){
+                    btn = layouts[i];
+                    if (x > btn[0] && x < btn[0]+btn[2] && y > btn[1] && y < btn[1]+btn[3]){
+                        this.go('hideDialog');
+                        if (msg.callbacks[i]) this.go(msg.callbacks[i], msg.evt);
+                        break;
+                    }
+                }
+            }else{
+                this.go('hideDialog');
+                if (msg.callbacks[0]) this.go(msg.callbacks[0], msg.evt);
+            }
+        }else{
+            this.go('hideDialog');
+        }
         return;
     };
 
     me.draw = function(ctx, ent, clip){
+
         if (!msg){
             me.close.call(this);
             return;
@@ -63,15 +108,29 @@ pico.def('dialogMsg', 'picUIWindow', function(){
         th = this.tileHeight,
         x = rect.x + gs2,
         y = rect.y + gs2,
-        info = msg.info;
+        info = msg.info,
+        labels = msg.labels,
+        btn, i, l;
 
         ctx.save();
         ctx.textAlign = 'left';
         ctx.textBaseline = 'top';
         ctx.font = com.font;
         ctx.fillStyle = com.fontColor;
-        for(var i=0, l=info.length; i<l; i++){
+        for(i=0, l=info.length; i<l; i++){
             ctx.fillText(info[i], x, y+th*i, rectW);
+        }
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = com.font;
+        for(i=0, l=layouts.length; i<l; i++){
+            ctx.fillStyle = G_COLOR_TONE[2];
+            ctx.strokeStyle = G_COLOR_TONE[1];
+            btn = layouts[i];
+            ctx.fillRect.apply(ctx, btn);
+            ctx.strokeRect.apply(ctx, btn);
+            ctx.fillStyle = com.fontColor;
+            ctx.fillText(labels[i], btn[0]+btn[2]/2, btn[1]+btn[3]/2, btn[2]);
         }
         ctx.restore();
     };
