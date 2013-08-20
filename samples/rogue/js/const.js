@@ -51,6 +51,7 @@ Object.freeze(G_MARK = {
 
 Object.freeze(G_UI = {
     SLOT: 15,
+    FLAG: 202,
 });
 
 Object.freeze(G_SHADE = [0, 1, 2, 3, 4, 5, 6, 7 ]);

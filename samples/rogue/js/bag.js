@@ -133,7 +133,7 @@ pico.def('bag', 'picUIWindow', function(){
                             }else{
                                 this.activatedSkill = undefined;
                             }
-                            return [e];
+                            return entities;
                         }
                         break;
                 }

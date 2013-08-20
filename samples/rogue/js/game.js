@@ -209,7 +209,6 @@ pico.def('game', 'pigSqrMap', function(){
 
         var
         map = this.map,
-        objects = this.objects,
         flags = this.flags,
         width = this.mapWidth,
         neighbours = this.getNeighbours(pos, function(){return true;}),
@@ -226,7 +225,7 @@ pico.def('game', 'pigSqrMap', function(){
                     count |= G_TILE_TYPE.CREEP;
                     count += 0x10;
                 }
-            }else if (tile & G_TILE_TYPE.EXIT || objects[tileIdx]){
+            }else if (tile & G_TILE_TYPE.EXIT || tile & G_TILE_TYPE.CHEST){
                 // uncovered exit or chest
                 count |= tile;
                 count += 0x10;

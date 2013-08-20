@@ -38,8 +38,9 @@ onFingerDown = function(evt, x, y){
     me.game.go('fingerDown', [x, y]);
 },
 onFingerUp = function(evt, x, y){
-    if (fingerTracker) cancelTracking() // is a move not a click
-    else me.game.go('fingerUp', [x, y]);
+    if (fingerTracker) return cancelTracking() // is a move not a click
+    me.game.go('fingerUp', [x, y]);
+console.debug('fu');
 },
 onFingerMove = function(evt, x, y){
     if (fingerTracker){
