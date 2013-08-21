@@ -173,9 +173,9 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
         uiOpt.maximized = uiOpt.maximized ? 0 : 1;
         if (uiOpt.maximized){
-            me.hideAll(elapsed, evt, entities);
+            me.hideAll.call(this, elapsed, evt, entities);
         }else{
-            me.showAll(elapsed, evt, entities);
+            me.showAll.call(this, elapsed, evt, entities);
         }
         var layout = uiOpt.layouts[uiOpt.maximized];
         rectOpt.x = layout[0];
