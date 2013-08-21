@@ -231,7 +231,7 @@ pico.def('camera', 'picBase', function(){
         // draw player active skill
         if (this.activatedSkill){
             x = viewX + tileW * (this.heroPos%mapW), y = viewY + tileH * Floor(this.heroPos/mapW);
-            tileSet.draw(ctx, G_UI.FLAG, x, y, tileW/4, tileH/4);
+            tileSet.draw(ctx, G_UI.FLAG, x, y, hw, hh);
         }
 
         ctx.restore();
