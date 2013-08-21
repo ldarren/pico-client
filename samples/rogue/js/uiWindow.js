@@ -134,6 +134,32 @@ pico.def('uiWindow', 'picUIWindow', function(){
         return unknowns;
     };
 
+    me.showAll = function(elapsed, evt, entities){
+        this.showEntity(playerId);
+        this.showEntity(skillsId);
+        this.showEntity(inventoryId);
+        me.info.openIfValid.call(this, elapsed, evt, entities);
+        me.dialogMsg.openIfValid.call(this, elapsed, evt, entities);
+        this.showEntity('camera');
+
+        return entities;
+    };
+
+    me.hideAll = function(elapsed, evt, entities){
+        var
+        e = entities[0],
+        ename = e ? e.name : "";
+
+        if (playerId !== ename) this.hideEntity(playerId);
+        if (skillsId !== ename) this.hideEntity(skillsId);
+        if (inventoryId !== ename) this.hideEntity(inventoryId);
+        if (infoId !== ename) this.hideEntity(infoId);
+        if (dialogId !== ename && !evt && !evt.info) this.hideEntity(dialogId);
+        this.hideEntity('camera');
+
+        return entities;
+    };
+
     me.click = function(elapsed, evt, entities){
         var
         e = entities[0],
@@ -147,19 +173,9 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
         uiOpt.maximized = uiOpt.maximized ? 0 : 1;
         if (uiOpt.maximized){
-            if (playerId !== e.name) this.hideEntity(playerId);
-            if (skillsId !== e.name) this.hideEntity(skillsId);
-            if (inventoryId !== e.name) this.hideEntity(inventoryId);
-            if (infoId !== e.name) this.hideEntity(infoId);
-            if (dialogId !== e.name) this.hideEntity(dialogId);
-            this.hideEntity('camera');
+            me.hideAll(elapsed, evt, entities);
         }else{
-            this.showEntity(playerId);
-            this.showEntity(skillsId);
-            this.showEntity(inventoryId);
-            me.info.openIfValid.call(this);
-            me.dialogMsg.openIfValid.call(this);
-            this.showEntity('camera');
+            me.showAll(elapsed, evt, entities);
         }
         var layout = uiOpt.layouts[uiOpt.maximized];
         rectOpt.x = layout[0];

@@ -126,8 +126,8 @@ onLoad = function(){
         game.route('reborn', [game.reborn, renderer.draw]);
         game.route('showInfo', [info.open, renderer.draw]);
         game.route('hideInfo', [info.close, renderer.draw]);
-        game.route('showDialog', [dialogMsg.open, renderer.draw, game.releaseSelected]);
-        game.route('hideDialog', [dialogMsg.close, renderer.draw, game.releaseSelected]);
+        game.route('showDialog', [dialogMsg.open, uiWindow.hideAll, renderer.draw, game.releaseSelected]);
+        game.route('hideDialog', [dialogMsg.close, uiWindow.showAll, renderer.draw, game.releaseSelected]);
 
         var
         cameraEnt = game.addEntity('camera'),

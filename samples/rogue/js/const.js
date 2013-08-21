@@ -55,7 +55,7 @@ Object.freeze(G_UI = {
 });
 
 Object.freeze(G_SHADE = [0, 1, 2, 3, 4, 5, 6, 7 ]);
-Object.freeze(G_HINT_COLOR = ['BLACK', 'RED', 'YELLOW', 'ORANGE', 'BLUE', 'PURPLE', 'GREEN', 'WHITE' ]);
+Object.freeze(G_HINT_COLOR = ['BLACK', 'RED', 'YELLOW', 'ORANGE', 'BLUE', 'PURPLE', '#aec440', 'WHITE' ]);
 Object.freeze(G_COLOR_TONE = ['#d7e894','#aec440','#527f39','#204631']);
 
 Object.freeze(G_HERO = {
@@ -369,13 +369,13 @@ Object.freeze(G_TOWN_MAP = {
     ],
     terrain:[
         24, 24, 24, 25, 24, 24, 24, 24,
-        28, 28, 28, 28, 28, 28, 28, 28,
-        28, 28, 28, 28, 28, 28, 28, 28,
-        28, 28, 28, G_FLOOR.TELEPORT, 28, 28, 28, 28,
-        28, 28, 28, 28, 28, 28, 28, 28,
-        28, 28, 28, 28, 28, 28, 28, 28,
-        28, 28, 28, 28, 28, 28, G_FLOOR.STAIR_DOWN, 28,
-        28, 28, 28, 28, 28, 28, 28, 28,
+        10, 10, 10, 10, 10, 10, 10, 10,
+        10, 10, 10, 10, 10, 10, 10, 10,
+        10, 10, 10, G_FLOOR.TELEPORT, 10, 10, 10, 10,
+        10, 10, 10, 10, 10, 10, 10, 10,
+        10, 10, 10, 10, 10, 10, 10, 10,
+        10, 10, 10, 10, 10, 10, G_FLOOR.STAIR_DOWN, 10,
+        10, 10, 10, 10, 10, 10, 10, 10,
     ],
     objects:[
         0, 0, 0, 0, 0, 0, 0, 0,

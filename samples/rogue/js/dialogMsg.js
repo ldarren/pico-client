@@ -51,6 +51,7 @@ pico.def('dialogMsg', 'picUIWindow', function(){
             msg = undefined;
             return [e];
         }
+        return entities;
     };
 
     me.openIfValid = function(elapsed, evt, entities){
