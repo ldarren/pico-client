@@ -69,6 +69,10 @@ Object.freeze(G_HERO = {
     WARLOCK: 151
 });
 
+Object.freeze(G_NPC = {
+    FARMER: 413,
+});
+
 Object.freeze(G_CREEP = {
     RAT: 152,
     SPIDERS: 153,
@@ -288,7 +292,9 @@ Object.freeze(G_OBJECT_NAME = {
     180: 'Cyclops',
     181: 'Werewolf',
     182: 'Werebear',
-    183: 'Devil'
+    183: 'Devil',
+
+    413: 'Farmer',
 });
 
 // hp, [atk, ratk, matk], [def, rdef, mdef], dex, luck, [veg, insect, beast, undead, demon]
@@ -382,7 +388,7 @@ Object.freeze(G_TOWN_MAP = {
         0, 0, 0, 0, G_HERO.PALADIN, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
         G_OBJECT.SHRINE, 0, 0, 0, 0, 0, 0, G_OBJECT.ALTAR,
-        G_HERO.MONK, 0, 0, 0, 0, 0, 0, G_HERO.WIZARD,
+        G_HERO.MONK, 0, 0, 0, 0, 0, 0, G_NPC.FARMER,
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
