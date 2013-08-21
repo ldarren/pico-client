@@ -191,8 +191,10 @@ pico.ajax = function(method, url, params, headers, cb, userData){
     xhr = window.XMLHttpRequest ? new window.XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP'),
     post = 'post' === method.toLowerCase();
 
+    url += '?appVer='+pico.states.appVer;
+
     if (!post && params){
-        url += '?'+encodeURI(params);
+        url += encodeURI(params);
         params = null;
     }
 
@@ -529,6 +531,9 @@ window.addEventListener('load', function(){
     wkte = 'webkittransitionend';
 
     states.transitionEnd = pico.detectEvent(te) ? te : pico.detectEvent(wkte) ? 'webkitTransitionEnd' : undefined;
+
+    var appVerTag = document.querySelector('meta[name=app-version]');
+    states.appVer = appVerTag ? appVerTag.getAttribute('content') : '0';
 
     var newModules = pico.states.newModules = Object.keys(pico.modules); // signal load event, if newModules being called in loadDeps
     pico.setup(newModules, function(){
