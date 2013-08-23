@@ -119,8 +119,10 @@ pico.def('dialogMsg', 'picUIWindow', function(){
         ctx.font = com.font;
         ctx.fillStyle = com.fontColor;
         for(i=0, l=info.length; i<l; i++){
-            ctx.fillText(info[i], x, y+th*i, rectW);
+            y = me.fillWrapText(ctx, info[i], x, y, rectW, th);
+            //ctx.fillText(info[i], x, y+th*i, rectW);
         }
+        // draw buttons
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.font = com.font;
