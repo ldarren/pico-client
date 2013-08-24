@@ -183,14 +183,18 @@ pico.def('camera', 'picBase', function(){
         hw = Floor(tileW/2),
         hh = Floor(tileH/2),
         w = viewStart,
+        fw = 8 * tileW/32,
+        fh = 16 * tileH/32,
+        fx = Floor((tileW - fw)/2),
+        fy = Floor((tileH - fh)/2),
         hint, x, y, i, j, objectId, tileId;
 
         screenshotX = viewX, screenshotY = viewY;
 
         ctx.save();
-        ctx.font = 'bold 12pt sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
+        //ctx.font = 'bold 12pt sans-serif';
+        //ctx.textAlign = 'center';
+        //ctx.textBaseline = 'middle';
         for(i=0; i<viewHeight; i++){
             for(j=0; j<viewWidth; j++, w++){
                 x = viewX + tileW * (w%mapW), y = viewY + tileH * Floor(w/mapW);
@@ -206,8 +210,9 @@ pico.def('camera', 'picBase', function(){
                         tileSet.draw(ctx, objectId, x, y, tileW, tileH);
                     }
                     if (hint > 9){
-                        ctx.fillStyle = G_HINT_COLOR[Floor((hint & 0x0f)*0.5)];
-                        ctx.fillText(Floor(hint/16), x+hw, y+hh, tileW);
+                        //ctx.fillStyle = G_HINT_COLOR[Floor((hint & 0x0f)*0.5)];
+                        //ctx.fillText(Floor(hint/16), x+hw, y+hh, tileW);
+                        tileSet.draw(ctx, G_NUMERIC.LARGE_LIGHT + Floor(hint/16), x+fx, y+fy, fw, fh);
                     }
                 }
             }
