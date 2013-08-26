@@ -43,7 +43,8 @@ pico.def('game', 'pigSqrMap', function(){
                 objects: me.objects,
                 flags: me.flags,
                 heaven: me.heaven,
-                heroPos: me.hero.getPosition()
+                mortal: me.mortal,
+                mortalLoc: me.hero.getPosition()
             }));
     },
     createLevel = function(level){
@@ -99,17 +100,21 @@ pico.def('game', 'pigSqrMap', function(){
         var
         ai = me.ai,
         hero = me.hero,
-        mapW = me.mapWidth, mapH = me.mapHeight,
+        objects = me.objects,
         hints = me.hints,
         flags = me.flags,
-        i, l, c;
+        OBJ = G_TOWN_MAP.objects;
 
+        objects.length = 0;
         hints.length = 0;
         flags.length = 0;
+        
+        for(var i=0,l=OBJ.length; i<l; i++){
+            objects[i] = OBJ[i];
+        }
 
         me.map = G_TOWN_MAP.map.slice();
         me.terrain = G_TOWN_MAP.terrain.slice();
-        me.objects = G_TOWN_MAP.objects.slice();
         hero.move(G_TOWN_MAP.heroPos);
     },
     generateRandomLevel = function(creepCount, chestCount){
@@ -185,12 +190,16 @@ pico.def('game', 'pigSqrMap', function(){
 
     me.tileSet = null;
     me.smallDevice = false;
+    me.mapWidth = 8;
+    me.mapHeight = 8;
     me.tileWidth = 16;
     me.tileHeight = 16;
     me.currentLevel = 0;
     me.prevLevel = 0;
     me.nextLevel = 0;
-    me.heaven = {};
+    me.heaven = undefined;
+    me.mortal = undefined;
+    me.mortalLoc = undefined;
     me.terrain = [];
     me.hints = []; // 08:creep, 80:chest, 800:stair:
     me.objects = [];
@@ -212,7 +221,7 @@ pico.def('game', 'pigSqrMap', function(){
         }
 
         me.god.init(me.heaven);
-        me.hero.init(me.objects, me.heroPos);
+        me.hero.init(me.objects, me.mortal, me.mortalLoc);
         me.ai.init(me.theme, me.objects);
 
         if (!loaded)

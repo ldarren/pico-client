@@ -3,7 +3,7 @@ pico.def('hero', function(){
 
     var
     me = this,
-    db = window.localStorage,
+    Floor = Math.floor, Ceil = Math.ceil, Random = Math.random,
     objects,
     position,
     activatedSkill = 0,
@@ -13,17 +13,12 @@ pico.def('hero', function(){
     bag,
     tome;
 
-    me.init = function(objs, index){
-        objects = objs;
-        heroObj = objects[index];
+    me.init = function(objs, mortal, index){
+        heroObj = mortal;
         if (!heroObj){
-            heroObj = {
-                appearance: {},
-                stats: {},
-                bag:[],
-                tome:[]
-            };
+            heroObj = me.god.createHero()
         }
+        objects = objs;
         position = index;
         appearance = heroObj.appearance;
         stats = heroObj.stats;
@@ -40,9 +35,10 @@ pico.def('hero', function(){
     me.move = function(index){
         delete objects[position];
         position = index;
-        objects[index] = heroObj;
+        objects[index] = appearance.job;
     };
 
+    me.getActiveSpell = function(){ return undefined; };
     me.getPosition = function(){ return position; };
     me.getBag = function(){ return bag; };
     me.getTome = function(){ return tome; };

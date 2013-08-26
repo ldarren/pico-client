@@ -1,10 +1,7 @@
 pico.def('god', function(){
     var
     me = this,
-    save = function(){
-    },
-    load = function(){
-    };
+    Floor = Math.floor, Ceil = Math.ceil, Random = Math.random;
 
     me.init = function(){
     };

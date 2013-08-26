@@ -87,8 +87,9 @@ pico.def('camera', 'picBase', function(){
         mapH = this.mapHeight,
         x = Floor((evt[0] - viewX) / this.tileWidth),
         y = Floor((evt[1] - viewY) / this.tileHeight),
-        as = this.activatedSkill,
-        hp = this.heroPos,
+        hero = this.hero,
+        as = hero.getActiveSpell(),
+        hp = hero.getPosition(),
         id, tileType;
 
         if (y > mapH || x > mapW) return;
@@ -187,7 +188,7 @@ pico.def('camera', 'picBase', function(){
         fh = 16 * tileH/32,
         fx = Floor((tileW - fw)/2),
         fy = Floor((tileH - fh)/2),
-        hp = this.heroPos,
+        hp = this.hero.getPosition(),
         hint, x, y, i, j, objectId, tileId;
 
         screenshotX = viewX, screenshotY = viewY;
@@ -204,12 +205,12 @@ pico.def('camera', 'picBase', function(){
                     tileSet.draw(ctx, UNCLEAR, x, y, tileW, tileH);
                     if (flags[w]) tileSet.draw(ctx, flags[w], x, y, tileW, tileH);
                 }else{
-                    hint = hints[w];
-                    objectId = objects[w];
                     tileSet.draw(ctx, terrain[w], x, y, tileW, tileH);
+                    objectId = objects[w];
                     if (objectId){
                         tileSet.draw(ctx, objectId, x, y, tileW, tileH);
                     }
+                    hint = hints[w];
                     if (hint > 9){
                         //ctx.fillStyle = G_HINT_COLOR[Floor((hint & 0x0f)*0.5)];
                         //ctx.fillText(Floor(hint/16), x+hw, y+hh, tileW);
