@@ -87,6 +87,8 @@ pico.def('camera', 'picBase', function(){
         mapH = this.mapHeight,
         x = Floor((evt[0] - viewX) / this.tileWidth),
         y = Floor((evt[1] - viewY) / this.tileHeight),
+        as = this.activatedSkill,
+        hp = this.heroPos,
         id, tileType;
 
         if (y > mapH || x > mapW) return;
@@ -95,13 +97,13 @@ pico.def('camera', 'picBase', function(){
 
         if (tileType & G_TILE_TYPE.HIDE){
             if (this.nearToHero(id)) {
-                if (this.activatedSkill){
-                    this.flags[id] = this.activatedSkill;
+                if (as){
+                    this.flags[id] = as;
                     if (!(tileType & G_TILE_TYPE.CREEP)){
                         this.go('showDialog', {
                             info: [
                                 'RIP', 
-                                'You were killed by the curse of "'+G_OBJECT_NAME[this.activatedSkill]+'" at level '+this.currentLevel,
+                                'You were killed by the curse of "'+G_OBJECT_NAME[as]+'" at level '+this.currentLevel,
                                 'but your lineage will continue...'],
                             callbacks: ['reborn']});
                     }
@@ -111,9 +113,7 @@ pico.def('camera', 'picBase', function(){
                     if (map[id] & G_TILE_TYPE.EXIT) return entities; // prevent walking to exit
                 }
             }else{
-                var 
-                hp = this.heroPos,
-                h = this.findPath(hp, this.nextTile(id, hp));
+                var h = this.findPath(hp, this.nextTile(id, hp));
                 if (h.length){
                     this.stopLoop('heroMove');
                     this.startLoop('heroMove', h);
@@ -127,7 +127,7 @@ pico.def('camera', 'picBase', function(){
                 var objId = this.objects[id];
 
                 if (objId === this.heroJob){
-                    if (!this.solve(this.heroPos)) return;
+                    if (!this.solve(hp)) return;
                 }else{
                     this.go('showInfo', {creepId:objId});
                     if (tileType & G_TILE_TYPE.CREEP){
@@ -140,7 +140,7 @@ pico.def('camera', 'picBase', function(){
                     }
                 }
             }else{
-                var h = this.findPath(this.heroPos, id);
+                var h = this.findPath(hp, id);
                 if (h.length){
                     this.stopLoop('heroMove');
                     this.startLoop('heroMove', h);
@@ -187,6 +187,7 @@ pico.def('camera', 'picBase', function(){
         fh = 16 * tileH/32,
         fx = Floor((tileW - fw)/2),
         fy = Floor((tileH - fh)/2),
+        hp = this.heroPos,
         hint, x, y, i, j, objectId, tileId;
 
         screenshotX = viewX, screenshotY = viewY;
@@ -197,8 +198,8 @@ pico.def('camera', 'picBase', function(){
         //ctx.textBaseline = 'middle';
         for(i=0; i<viewHeight; i++){
             for(j=0; j<viewWidth; j++, w++){
-                x = viewX + tileW * (w%mapW), y = viewY + tileH * Floor(w/mapW);
                 tileId = map[w];
+                x = viewX + tileW * (w%mapW), y = viewY + tileH * Floor(w/mapW);
                 if (tileId & G_TILE_TYPE.HIDE){
                     tileSet.draw(ctx, UNCLEAR, x, y, tileW, tileH);
                     if (flags[w]) tileSet.draw(ctx, flags[w], x, y, tileW, tileH);
@@ -235,7 +236,7 @@ pico.def('camera', 'picBase', function(){
 
         // draw player active skill
         if (this.activatedSkill){
-            x = viewX + tileW * (this.heroPos%mapW), y = viewY + tileH * Floor(this.heroPos/mapW);
+            x = viewX + tileW * (hp%mapW), y = viewY + tileH * Floor(hp/mapW);
             tileSet.draw(ctx, G_UI.FLAG, x, y, hw, hh);
         }
 

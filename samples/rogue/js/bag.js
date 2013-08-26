@@ -146,7 +146,8 @@ pico.def('bag', 'picUIWindow', function(){
         com = ent.getComponent(name),
         win = ent.getComponent(com.win),
         rect = ent.getComponent(win.box),
-        items = ent.name === inventoryId ? this.inventory : this.skillBook;
+        hero = this.hero,
+        items = ent.name === inventoryId ? hero.getBag() : hero.getTome();
 
         if (rect.width > (this.tileWidth * 3)){
             return draw.call(this, ctx, items, com.layouts[1], com);

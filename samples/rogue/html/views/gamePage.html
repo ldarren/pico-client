@@ -112,7 +112,7 @@ onLoad = function(){
 
         reactor.addGroup(game);
 
-        game.init({tileSet:tileSet, smallDevice: smallDevice, mapLevel:0, heroJob:Math.floor(G_HERO.ROGUE + Math.random()*(G_HERO.WARLOCK-G_HERO.ROGUE))});
+        game.init({tileSet:tileSet, smallDevice: smallDevice});
 
         game.route('fingerDown', [uiWindow.checkBound, camera.checkBound, game.captureSelected, renderer.captureScreenshot]);
         game.route('fingerUp', [game.useSelected, game.releaseSelected, bag.click, dialogMsg.click, uiWindow.click, camera.click, renderer.draw]);
@@ -171,6 +171,7 @@ onLoad = function(){
         canvas.slot(canvas.FINGER_UP, onFingerUp);
         canvas.slot(canvas.FINGER_OUT, onFingerOut);
         window.addEventListener('resize', onResize, false);
+        window.addEventListener('unload', game.tini, false);
 
         me.rogueMain.hideLoading();
     });

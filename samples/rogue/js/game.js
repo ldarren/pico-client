@@ -1,7 +1,11 @@
 pico.def('game', 'pigSqrMap', function(){
+    this.use('god');
+    this.use('hero');
+    this.use('ai');
 
     var
     me = this,
+    db = window.localStorage,
     Max = Math.max,
     Abs = Math.abs,
     Floor = Math.floor,
@@ -9,6 +13,50 @@ pico.def('game', 'pigSqrMap', function(){
     Pow = Math.pow,
     Sqrt = Math.sqrt,
     pathElapsed = 0,
+    loadGame = function(){
+        var text = db.getItem(me.moduleName);
+        if (!text) return false;
+
+        var
+        obj = JSON.parse(text);
+        keys = Object.keys(obj),
+        key;
+
+        Object.getPrototypeOf(me).init(data.mapWidth, data.mapHeight);
+
+        for(var i=0,l=keys.length; i<l; i++){
+            key = keys[i];
+            me[key] = obj[key];
+        }
+        return true;
+    },
+    saveGame = function(){
+        db.setItem(me.moduleName, JSON.stringify({
+                currentLevel: me.currentLevel,
+                prevLevel: me.prevLevel,
+                nextLevel: me.nextLevel,
+                mapWidth: me.mapWidth,
+                mapHeight: me.mapHeight,
+                map: me.map,
+                terrain: me.terrain,
+                hints: me.hints,
+                objects: me.objects,
+                flags: me.flags,
+                heaven: me.heaven,
+                heroPos: me.hero.getPosition()
+            }));
+    },
+    createLevel = function(level){
+        me.prevLevel = level ? me.currentLevel : 0;
+        me.currentLevel = level;
+        me.nextLevel = (me.currentLevel < me.prevLevel) ? me.currentLevel-1 : me.currentLevel+1;
+
+        var mapParams = G_MAP_PARAMS[level];
+        Object.getPrototypeOf(me).init(mapParams[0], mapParams[1]);
+
+        if (me.currentLevel) generateRandomLevel(mapParams[2], mapParams[3]);
+        else populateStaticLevel();
+    },
     isOpen = function(i){
         var
         o = me.objects[i],
@@ -49,6 +97,8 @@ pico.def('game', 'pigSqrMap', function(){
     },
     populateStaticLevel = function(){
         var
+        ai = me.ai,
+        hero = me.hero,
         mapW = me.mapWidth, mapH = me.mapHeight,
         hints = me.hints,
         flags = me.flags,
@@ -60,18 +110,19 @@ pico.def('game', 'pigSqrMap', function(){
         me.map = G_TOWN_MAP.map.slice();
         me.terrain = G_TOWN_MAP.terrain.slice();
         me.objects = G_TOWN_MAP.objects.slice();
-        me.heroPos = G_TOWN_MAP.heroPos;
-        me.objects[me.heroPos] = me.heroJob;
+        hero.move(G_TOWN_MAP.heroPos);
     },
-    generateRandomLevel = function(lastLevel){
+    generateRandomLevel = function(creepCount, chestCount){
         var
-        shuffle = [],
+        ai = me.ai,
+        hero = me.hero,
         map = me.map,
+        mapW = me.mapWidth, mapH = me.mapHeight, mapSize = mapW*mapH,
         terrain = me.terrain,
-        mapW = me.mapWidth, mapH = me.mapHeight,
         hints = me.hints,
         objects = me.objects,
         flags = me.flags,
+        shuffle = [],
         i, l, c, hint;
 
         map.length = 0;
@@ -80,7 +131,7 @@ pico.def('game', 'pigSqrMap', function(){
         objects.length = 0;
         flags.length = 0;
 
-        for(i=0, l=mapW*mapH; i<l; i++){
+        for(i=0, l=mapSize; i<l; i++){
             map.push(G_TILE_TYPE.HIDE);
             terrain.push(G_FLOOR.CLEAR);
             hints.push(9); // default is invalid count
@@ -88,24 +139,20 @@ pico.def('game', 'pigSqrMap', function(){
         }
 
         // add creeps
-        for(i=0,l=me.creepCount; i<l; i++){
+        for(i=0,l=creepCount; i<l; i++){
             c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
             map[c] |= G_TILE_TYPE.CREEP;
-            objects[c] = G_CREEP.RAT + Floor(Random() * (G_CREEP.DEVIL - G_CREEP.RAT));
+            objects[c] = ai.spawnCreep();
         }
 
         // add chests
-        for(i=0,l=me.chestCount; i<l; i++){
+        for(i=0,l=chestCount; i<l; i++){
             c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
             map[c] |= G_TILE_TYPE.CHEST;
-            objects[c] = G_OBJECT.CHEST;
+            objects[c] = ai.spawnChest;
         }
 
-        c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
-        map[c] |= G_TILE_TYPE.EXIT;
-        terrain[c] = me.nextLevel > me.currentLevel ? G_FLOOR.STAIR_DOWN : G_FLOOR.STAIR_UP;
-
-        for(i=0,l=mapW*mapH; i<l; i++){
+        for(i=0,l=mapSize; i<l; i++){
             if (map[i] > G_TILE_TYPE.HIDE) continue;
             hint = 0;
             hint = getTileHint(hint, map[i-mapW]);
@@ -124,11 +171,14 @@ pico.def('game', 'pigSqrMap', function(){
         }
 
         c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
-        terrain[c] = me.prevLevel < me.currentLevel ? G_FLOOR.STAIR_UP : G_FLOOR.STAIR_DOWN;
-        objects[c] = me.heroJob;
-        me.heroPos = c;
+        map[c] |= G_TILE_TYPE.EXIT;
+        terrain[c] = G_FLOOR.LOCKED;
 
-        fill(map, hints, flags, mapW, me.heroPos);
+        c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
+        terrain[c] = me.prevLevel < me.currentLevel ? G_FLOOR.STAIR_UP : G_FLOOR.STAIR_DOWN;
+        hero.move(c);
+
+        fill(map, hints, flags, mapW, c);
 
         map[c] = G_TILE_TYPE.ENTRANCE; // must do after fill, becos fill will ignore revealed tile
     };
@@ -140,47 +190,51 @@ pico.def('game', 'pigSqrMap', function(){
     me.currentLevel = 0;
     me.prevLevel = 0;
     me.nextLevel = 0;
-    me.heroJob = G_HERO.ROGUE;
-    me.heroPos = 0;
-    me.creepCount = 0;
-    me.chestCount = 0;
+    me.heaven = {};
     me.terrain = [];
     me.hints = []; // 08:creep, 80:chest, 800:stair:
     me.objects = [];
     me.flags = [];
-    me.skillBook = [G_MARK.EYE_OF_GOD];
-    me.inventory = [G_OBJECT.KEY_02];
-    me.activatedSkill = 0;
 
-    // evt = {tileSet:tileSet, tileWidth:64, tileHeight:64, mapWidth:8, mapHeight:8, level:0, playerJob:game.PRIEST}
+    // data = {tileSet:tileSet, smallDevice: 0:1}
     me.init = function(data){
         me.tileSet = data.tileSet;
-        me.heroJob = data.heroJob;
-        me.prevLevel = data.mapLevel ? me.currentLevel : 0;
-        me.currentLevel = data.mapLevel;
-        me.nextLevel = (me.currentLevel < me.prevLevel) ? me.currentLevel-1 : me.currentLevel+1;
-
-        var mapParams = G_MAP_PARAMS[me.currentLevel];
-        Object.getPrototypeOf(this).init(mapParams[0], mapParams[1]);
-        me.creepCount = mapParams[2];
-        me.chestCount = mapParams[3];
 
         var sd = me.smallDevice = data.smallDevice;
         me.tileWidth = sd ? 32 : 64;
         me.tileHeight = sd ? 32 : 64;
 
-        if (me.currentLevel) generateRandomLevel();
-        else populateStaticLevel();
+        var loaded = loadGame();
+
+        if (!loaded){
+            var keys = Object.keys(G_CREEP_TEAM);
+            me.theme = keys[Floor(Random()*keys.length)];
+        }
+
+        me.god.init(me.heaven);
+        me.hero.init(me.objects, me.heroPos);
+        me.ai.init(me.theme, me.objects);
+
+        if (!loaded)
+            createLevel(0);
+    };
+
+    me.exit = function(evt){
+        me.hero.exit();
+        me.creeps.exit();
+        me.hero.exit();
+
+        saveGame();
     };
 
     me.gotoLevel = function(elapsed, evt, entities){
-        me.init({tileSet:this.tileSet, smallDevice: this.smallDevice, mapLevel:evt, heroJob:this.heroJob});
+        createLevel(evt);
         me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);
         return entities;
     };
 
     me.reborn = function(elapsed, evt, entities){
-        me.init({tileSet:this.tileSet, smallDevice: this.smallDevice, mapLevel:0, heroJob:Math.floor(G_HERO.ROGUE + Math.random()*(G_HERO.WARLOCK-G_HERO.ROGUE))});
+        createLevel(0);
         me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);
         return entities;
     };
@@ -190,7 +244,7 @@ pico.def('game', 'pigSqrMap', function(){
     };
 
     me.nearToHero = function(i){
-        return this.isTouching(this.heroPos, i);
+        return this.isTouching(me.hero.getPosition(), i);
     };
 
     me.nextTile = function(at, toward){
@@ -260,18 +314,15 @@ pico.def('game', 'pigSqrMap', function(){
             return;
         }
 
-        var
-        hp = this.heroPos,
-        p = evt.pop();
+        var p = evt.pop();
 
-        this.objects[hp] = undefined;
-        this.heroPos = p;
-        this.objects[p] = this.heroJob;
+        me.hero.move(p);
+
         return [e];
     };
 
     me.heroStop = function(elapsed, evt, entities){
-        var tileType = this.map[this.heroPos];
+        var tileType = this.map[me.hero.getPosition()];
         if(tileType & G_TILE_TYPE.ENTRANCE){
             this.go('showDialog', {
                 info: ['Warning!', 'you are leaving level '+this.currentLevel, 'Click on Yes to proceed to level '+(this.prevLevel)],

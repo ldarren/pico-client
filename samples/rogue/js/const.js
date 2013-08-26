@@ -6,7 +6,7 @@ Object.freeze(G_TILE_TYPE = {
     CHEST: 4,
     EXIT: 8,
     ENTRANCE: 16,
-    OBSTACLES: 2+4+8,
+    OBSTACLES: 2+4,
 });
 
 Object.freeze(G_WIN_ID = {
@@ -119,6 +119,7 @@ Object.freeze(G_FLOOR = {
     PYRAMID: 9,
     CLEAR: 10,
     BROKEN: 11,
+    LOCKED: 12,
     STAIR_DOWN: 13,
     STAIR_UP: 14,
     PITFALL: 15,
