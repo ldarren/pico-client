@@ -16,7 +16,7 @@ pico.def('hero', function(){
     me.init = function(objs, mortal, index){
         heroObj = mortal;
         if (!heroObj){
-            heroObj = me.god.createHero()
+            heroObj = me.god.createHero();
         }
         objects = objs;
         position = index;
@@ -24,6 +24,8 @@ pico.def('hero', function(){
         stats = heroObj.stats;
         bag = heroObj.bag;
         tome = heroObj.tome;
+
+        return heroObj;
     };
 
     me.exit = function(){

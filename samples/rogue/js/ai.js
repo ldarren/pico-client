@@ -6,6 +6,7 @@ pico.def('ai', function(){
 
     me.init = function(theme, objs){
         objects = objs;
+        return objects;
     };
 
     me.exit = function(){

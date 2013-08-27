@@ -3,7 +3,8 @@ pico.def('god', function(){
     me = this,
     Floor = Math.floor, Ceil = Math.ceil, Random = Math.random;
 
-    me.init = function(){
+    me.init = function(heaven){
+        return heaven;
     };
 
     me.exit = function(){

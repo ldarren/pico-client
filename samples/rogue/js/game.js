@@ -18,11 +18,11 @@ pico.def('game', 'pigSqrMap', function(){
         if (!text) return false;
 
         var
-        obj = JSON.parse(text);
+        obj = JSON.parse(text),
         keys = Object.keys(obj),
         key;
 
-        Object.getPrototypeOf(me).init(data.mapWidth, data.mapHeight);
+        Object.getPrototypeOf(me).init(obj.mapWidth, obj.mapHeight);
 
         for(var i=0,l=keys.length; i<l; i++){
             key = keys[i];
@@ -220,18 +220,18 @@ pico.def('game', 'pigSqrMap', function(){
             me.theme = keys[Floor(Random()*keys.length)];
         }
 
-        me.god.init(me.heaven);
-        me.hero.init(me.objects, me.mortal, me.mortalLoc);
-        me.ai.init(me.theme, me.objects);
+        me.heaven = me.god.init(me.heaven);
+        me.mortal = me.hero.init(me.objects, me.mortal, me.mortalLoc);
+        me.objects = me.ai.init(me.theme, me.objects);
 
         if (!loaded)
             createLevel(0);
     };
 
     me.exit = function(evt){
+        me.ai.exit();
         me.hero.exit();
-        me.creeps.exit();
-        me.hero.exit();
+        me.god.exit();
 
         saveGame();
     };

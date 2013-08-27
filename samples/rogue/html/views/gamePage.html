@@ -171,7 +171,7 @@ onLoad = function(){
         canvas.slot(canvas.FINGER_UP, onFingerUp);
         canvas.slot(canvas.FINGER_OUT, onFingerOut);
         window.addEventListener('resize', onResize, false);
-        window.addEventListener('unload', game.tini, false);
+        window.addEventListener('unload', game.exit, false);
 
         me.rogueMain.hideLoading();
     });
