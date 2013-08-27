@@ -6,7 +6,6 @@ pico.def('hero', function(){
     Floor = Math.floor, Ceil = Math.ceil, Random = Math.random,
     objects,
     position,
-    activatedSkill = 0,
     heroObj,
     appearance,
     stats,
@@ -40,8 +39,10 @@ pico.def('hero', function(){
         objects[index] = appearance.job;
     };
 
-    me.getActiveSpell = function(){ return undefined; };
+    me.getActiveSpell = function(){ return appearance.activatedSkill; };
+    me.setActiveSpell = function(skill){ appearance.activatedSkill = skill; };
     me.getPosition = function(){ return position; };
+    me.getJob = function(){ return appearance.job; };
     me.getBag = function(){ return bag; };
     me.getTome = function(){ return tome; };
 

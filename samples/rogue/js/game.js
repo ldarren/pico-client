@@ -35,6 +35,8 @@ pico.def('game', 'pigSqrMap', function(){
                 currentLevel: me.currentLevel,
                 prevLevel: me.prevLevel,
                 nextLevel: me.nextLevel,
+                deepestLevel: me.deepestLevel,
+                exitIndex: me.exitIndex,
                 mapWidth: me.mapWidth,
                 mapHeight: me.mapHeight,
                 map: me.map,
@@ -75,23 +77,23 @@ pico.def('game', 'pigSqrMap', function(){
         }
         return hint;
     },
-    fill = function(map, hints, flags, width, i){
+    fill = function(map, hints, width, i){
         var count = 0;
-        if (i < 0 || isOpen(i) || flags[i]) return count;
+        if (i < 0 || isOpen(i)) return count;
         map[i] &= G_TILE_TYPE.SHOW;
         count = 1;
         if (0 === hints[i]){
-            count += fill(map, hints, flags, width, i - width);
-            count += fill(map, hints, flags, width, i + width);
+            count += fill(map, hints, width, i - width);
+            count += fill(map, hints, width, i + width);
             if (0 !== i%width){
-                count += fill(map, hints, flags, width, i - 1);
-                count += fill(map, hints, flags, width, i - width - 1);
-                count += fill(map, hints, flags, width, i + width - 1);
+                count += fill(map, hints, width, i - 1);
+                count += fill(map, hints, width, i - width - 1);
+                count += fill(map, hints, width, i + width - 1);
             }
             if (0 !== (i+1)%width){
-                count += fill(map, hints, flags, width, i + 1);
-                count += fill(map, hints, flags, width, i - width + 1);
-                count += fill(map, hints, flags, width, i + width + 1);
+                count += fill(map, hints, width, i + 1);
+                count += fill(map, hints, width, i - width + 1);
+                count += fill(map, hints, width, i + width + 1);
             }
         }
         return count;
@@ -128,7 +130,7 @@ pico.def('game', 'pigSqrMap', function(){
         objects = me.objects,
         flags = me.flags,
         shuffle = [],
-        i, l, c, hint;
+        i, l, c;
 
         map.length = 0;
         terrain.length = 0;
@@ -157,27 +159,12 @@ pico.def('game', 'pigSqrMap', function(){
             objects[c] = ai.spawnChest;
         }
 
-        for(i=0,l=mapSize; i<l; i++){
-            if (map[i] > G_TILE_TYPE.HIDE) continue;
-            hint = 0;
-            hint = getTileHint(hint, map[i-mapW]);
-            hint = getTileHint(hint, map[i+mapW]);
-            if (0 !== i%mapW){
-                hint = getTileHint(hint, map[i-1]);
-                hint = getTileHint(hint, map[i-mapW-1]);
-                hint = getTileHint(hint, map[i+mapW-1]);
-            }
-            if (0 !== (i+1)%mapW){
-                hint = getTileHint(hint, map[i+1]);
-                hint = getTileHint(hint, map[i-mapW+1]);
-                hint = getTileHint(hint, map[i+mapW+1]);
-            }
-            hints[i] = hint;
-        }
+        me.recalHints();
 
         c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
+        me.exitIndex = c;
         map[c] |= G_TILE_TYPE.EXIT;
-        terrain[c] = G_FLOOR.LOCKED;
+        terrain[c] = me.deepestLevel < me.currentLevel ? G_FLOOR.LOCKED : me.prevLevel < me.currentLevel ? G_FLOOR.STAIR_DOWN : G_FLOOR.STAIR_UP;
 
         c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
         terrain[c] = me.prevLevel < me.currentLevel ? G_FLOOR.STAIR_UP : G_FLOOR.STAIR_DOWN;
@@ -197,6 +184,7 @@ pico.def('game', 'pigSqrMap', function(){
     me.currentLevel = 0;
     me.prevLevel = 0;
     me.nextLevel = 0;
+    me.deepestLevel = 0;
     me.heaven = undefined;
     me.mortal = undefined;
     me.mortalLoc = undefined;
@@ -233,11 +221,18 @@ pico.def('game', 'pigSqrMap', function(){
         me.hero.exit();
         me.god.exit();
 
-        saveGame();
+        //saveGame();
     };
 
-    me.gotoLevel = function(elapsed, evt, entities){
-        createLevel(evt);
+    me.unlockLevel = function(level){
+        if (me.deepestLevel < level){
+            me.deepestLevel = level;
+            me.terrain[c] = me.prevLevel < me.currentLevel ? G_FLOOR.STAIR_DOWN : G_FLOOR.STAIR_UP;
+        }
+    };
+
+    me.gotoLevel = function(elapsed, level, entities){
+        createLevel(level);
         me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);
         return entities;
     };
@@ -248,8 +243,36 @@ pico.def('game', 'pigSqrMap', function(){
         return entities;
     };
 
+    me.recalHints = function(){
+        var
+        map = me.map,
+        hints = me.hints,
+        mapW = me.mapWidth, mapH = me.mapHeight,
+        hint;
+
+        hints.length = 0;
+
+        for(var i=0,l=mapW*mapH; i<l; i++){
+            if (map[i] > G_TILE_TYPE.HIDE) continue;
+            hint = 0;
+            hint = getTileHint(hint, map[i-mapW]);
+            hint = getTileHint(hint, map[i+mapW]);
+            if (0 !== i%mapW){
+                hint = getTileHint(hint, map[i-1]);
+                hint = getTileHint(hint, map[i-mapW-1]);
+                hint = getTileHint(hint, map[i+mapW-1]);
+            }
+            if (0 !== (i+1)%mapW){
+                hint = getTileHint(hint, map[i+1]);
+                hint = getTileHint(hint, map[i-mapW+1]);
+                hint = getTileHint(hint, map[i+mapW+1]);
+            }
+            hints[i] = hint;
+        }
+    };
+
     me.fillTiles = function(i){
-        return fill(me.map, me.hints, me.flags, me.mapWidth, i);
+        return fill(me.map, me.hints, me.mapWidth, i);
     };
 
     me.nearToHero = function(i){
@@ -298,7 +321,7 @@ pico.def('game', 'pigSqrMap', function(){
 
         for(i=0,l=neighbours.length; i<l; i++){
             tileIdx = neighbours[i];
-            if (map[tileIdx] & G_TILE_TYPE.HIDE && !flags[tileIdx]) fill(map, hints, flags, width, tileIdx);
+            if (map[tileIdx] & G_TILE_TYPE.HIDE && !flags[tileIdx]) fill(map, hints, width, tileIdx);
         }
 
         return true;
@@ -343,23 +366,12 @@ pico.def('game', 'pigSqrMap', function(){
             mapW = this.mapWidth,
             mapH = this.mapHeight,
             objects = this.objects,
-            flags = this.flags,
-            won = true;
-            for(var w=0, wl=mapW*mapH; w<wl; w++){
-                if ((objects[w] >= G_CREEP.RAT && objects[w] <= G_CREEP.DEVIL && !flags[w]) || (!objects[w] && flags[w])){
-                    won = false;
-                    break;
-                }
-            }
-            if (won) {
+            flags = this.flags;
+            if (me.deepestLevel >= me.currentLevel) {
                 this.go('showDialog', {
                     info: ['Congratulations!', 'you have cleared level '+this.currentLevel, 'Click on message box to proceed to level '+(this.nextLevel)],
                     callbacks: ['gotoLevel'],
                     evt: this.nextLevel});
-            }else{
-                this.go('showDialog', {
-                    info: ['Sorry', 'Level '+this.currentLevel+' is not cleared yet', 'Click on message box to close']});
-                return entities;
             }
             return entities;
         }

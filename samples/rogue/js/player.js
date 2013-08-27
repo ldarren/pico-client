@@ -5,19 +5,20 @@ pico.def('player', 'picUIWindow', function(){
     drawSmall = function(ctx, win, com, rect){
         var
         ts = this.tileSet,
-        center = rect.y + win.gridSize + (rect.height-win.gridSize)/2,
         tw = this.tileWidth,
         th = this.tileHeight,
+        job = this.hero.getJob(),
+        center = rect.y + win.gridSize + (rect.height-win.gridSize)/2,
         x = rect.x + win.gridSize + 8,
         y = center - (th/2);
 
         ctx.save();
-        ts.draw(ctx, this.heroJob, x, y, tw, th);
+        ts.draw(ctx, job, x, y, tw, th);
         ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
         ctx.font = com.font;
         ctx.fillStyle = com.fontColor;
-        ctx.fillText(G_OBJECT_NAME[this.heroJob], x + tw + 8, center, rect.width);
+        ctx.fillText(G_OBJECT_NAME[job], x + tw + 8, center, rect.width);
         ctx.restore();
     },
     drawBig = function(ctx, win, com, rect){
@@ -25,17 +26,18 @@ pico.def('player', 'picUIWindow', function(){
         ts = this.tileSet,
         tw = this.tileWidth,
         th = this.tileHeight,
+        job = this.hero.getJob(),
         gs = win.gridSize,
         x = rect.x + gs + 8,
         y = rect.y + gs + 8;
 
         ctx.save();
-        ts.draw(ctx, this.heroJob, x, y, tw, th);
+        ts.draw(ctx, job, x, y, tw, th);
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
         ctx.font = com.font;
         ctx.fillStyle = com.fontColor;
-        ctx.fillText(G_OBJECT_NAME[this.heroJob], x + tw/2, y + th, rect.width);
+        ctx.fillText(G_OBJECT_NAME[job], x + tw/2, y + th, rect.width);
         ctx.restore();
     };
 

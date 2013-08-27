@@ -23,7 +23,8 @@ pico.def('god', function(){
                 off: -1,
                 ring1: -1,
                 ring2: -1,
-                amulet: -1
+                amulet: -1,
+                activatedSkill: 0
             },
             stats: {
                 hp: 1,
@@ -36,7 +37,7 @@ pico.def('god', function(){
                 luck: 1
             },
             bag: [],
-            tome: []
+            tome: [G_MARK.EYE_OF_GOD]
         };
     };
 

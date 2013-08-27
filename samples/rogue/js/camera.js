@@ -88,6 +88,7 @@ pico.def('camera', 'picBase', function(){
         x = Floor((evt[0] - viewX) / this.tileWidth),
         y = Floor((evt[1] - viewY) / this.tileHeight),
         hero = this.hero,
+        objects = this.objects,
         as = hero.getActiveSpell(),
         hp = hero.getPosition(),
         id, tileType;
@@ -100,19 +101,14 @@ pico.def('camera', 'picBase', function(){
             if (this.nearToHero(id)) {
                 if (as){
                     this.flags[id] = as;
-                    if (!(tileType & G_TILE_TYPE.CREEP)){
-                        this.go('showDialog', {
-                            info: [
-                                'RIP', 
-                                'You were killed by the curse of "'+G_OBJECT_NAME[as]+'" at level '+this.currentLevel,
-                                'but your lineage will continue...'],
-                            callbacks: ['reborn']});
+                    if (!objects[id]){
+                        objects[id] = this.ai.spawnCreep();
+                        this.recalHints();
                     }
                 }else{
-                    this.fillTiles(id);
                     this.flags[id] = undefined;
-                    if (map[id] & G_TILE_TYPE.EXIT) return entities; // prevent walking to exit
                 }
+                this.fillTiles(id);
             }else{
                 var h = this.findPath(hp, this.nextTile(id, hp));
                 if (h.length){
@@ -124,20 +120,20 @@ pico.def('camera', 'picBase', function(){
 
         tileType = map[id]; // last action might hv updated tileType
         if (!(tileType & G_TILE_TYPE.HIDE)){
-            if(this.objects[id]){
-                var objId = this.objects[id];
+            if(objects[id]){
+                var objId = objects[id];
 
-                if (objId === this.heroJob){
+                if (objId === hero.getJob()){
                     if (!this.solve(hp)) return;
                 }else{
                     this.go('showInfo', {creepId:objId});
                     if (tileType & G_TILE_TYPE.CREEP){
-                        this.go('showDialog', {
+/*                        this.go('showDialog', {
                             info: [
                                 'RIP',
                                 'you were killed by '+G_OBJECT_NAME[objId]+' at level '+this.currentLevel,
                                 'but your lineage will continue...'],
-                            callbacks: ['reborn']});
+                            callbacks: ['reborn']});*/
                     }
                 }
             }else{
@@ -203,11 +199,12 @@ pico.def('camera', 'picBase', function(){
                 x = viewX + tileW * (w%mapW), y = viewY + tileH * Floor(w/mapW);
                 if (tileId & G_TILE_TYPE.HIDE){
                     tileSet.draw(ctx, UNCLEAR, x, y, tileW, tileH);
-                    if (flags[w]) tileSet.draw(ctx, flags[w], x, y, tileW, tileH);
                 }else{
                     tileSet.draw(ctx, terrain[w], x, y, tileW, tileH);
                     objectId = objects[w];
-                    if (objectId){
+                    if (flags[w]){
+                        tileSet.draw(ctx, flags[w], x, y, tileW, tileH);
+                    }else if (objectId){
                         tileSet.draw(ctx, objectId, x, y, tileW, tileH);
                     }
                     hint = hints[w];
@@ -239,6 +236,18 @@ pico.def('camera', 'picBase', function(){
         if (this.activatedSkill){
             x = viewX + tileW * (hp%mapW), y = viewY + tileH * Floor(hp/mapW);
             tileSet.draw(ctx, G_UI.FLAG, x, y, hw, hh);
+        }
+
+        // draw transparent objects
+        ctx.globalAlpha = 0.5;
+        w = viewStart;
+        for(i=0; i<viewHeight; i++){
+            for(j=0; j<viewWidth; j++, w++){
+                if (!flags[w]) continue;
+                x = viewX + tileW * (w%mapW), y = viewY + tileH * Floor(w/mapW);
+                tileSet.draw(ctx, objects[i], x, y, tileW, tileH);
+            }
+            w += viewWrap;
         }
 
         ctx.restore();

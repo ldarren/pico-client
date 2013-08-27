@@ -119,7 +119,8 @@ pico.def('bag', 'picUIWindow', function(){
                 if (!com) continue;
                 switch(targetName){
                     case inventoryId:
-                        if (this.inventory[evt.index]){
+                        var items = this.hero.getBag();
+                        if (items[evt.index]){
                             if(com.activated[evt.index+1] ^= true){
                             }else{
                             }
@@ -127,11 +128,14 @@ pico.def('bag', 'picUIWindow', function(){
                         }
                         break;
                     case skillsId:
-                        if (this.skillBook[evt.index]){
+                        var
+                        hero = this.hero,
+                        items = hero.getTome();
+                        if (items[evt.index]){
                             if(com.activated[evt.index+1] ^= true){
-                                this.activatedSkill = this.skillBook[evt.index];
+                                hero.setActiveSpell(items[evt.index]);
                             }else{
-                                this.activatedSkill = undefined;
+                                hero.setActiveSpell(undefined);
                             }
                             return entities;
                         }
