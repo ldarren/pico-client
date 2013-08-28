@@ -41,6 +41,7 @@ Object.freeze(G_OBJECT = {
 });
 
 Object.freeze(G_MARK = {
+    POISONED: 128,
     PENTAGRAM: 136,     // protection, 4 elements
     ANKH: 137,          // revive, eternal life
     EYE_OF_GOD:138,     // spiritual sight, inner vision, higher knowledge, insight into occult mysteries
@@ -50,8 +51,18 @@ Object.freeze(G_MARK = {
 });
 
 Object.freeze(G_UI = {
-    SLOT: 15,
     FLAG: 202,
+    HP: 237,
+    HP_EMPTY: 242,
+    SLOT: 15,
+    WILL: 194,
+    DEX: 414,
+    LUCK: 193,
+    ATK: 190,
+    DEF: 192,
+    MAT_GEM: 189,
+    MAT_GOLD: 195,
+    MAT_SKULL: 196,
 });
 
 Object.freeze(G_SHADE = [0, 1, 2, 3, 4, 5, 6, 7 ]);
@@ -110,7 +121,7 @@ Object.freeze(G_CREEP = {
 
 Object.freeze(G_CREEP_TEAM = {
     'vampire': [G_CREEP.BAT, 5, G_CREEP.BAT_CHAMPION, 2, G_CREEP.VAMPIRE, 1],
-    'vegie': [G_CREEP.SLIME, 5, G_CREEP.SLIME_CHAMPION, 2, G_CREEP.FUNGI, 1],
+    'veggie': [G_CREEP.SLIME, 5, G_CREEP.SLIME_CHAMPION, 2, G_CREEP.FUNGI, 1],
     'undead': [G_CREEP.UNDEAD, 2, G_CREEP.MUMMY, 2, G_CREEP.ZOMBIE, 2, G_CREEP.WRAITH, 1],
 });
 
@@ -298,16 +309,16 @@ Object.freeze(G_OBJECT_NAME = {
     413: 'Farmer',
 });
 
-// hp, [atk, ratk, matk], [def, rdef, mdef], dex, luck, [veg, insect, beast, undead, demon]
+// hp, will, dex, luck, [atk, ratk, matk], [def, rdef, mdef], [veg, insect, beast, undead, demon]
 Object.freeze(G_HERO_STAT = [
-    [144, 2,    0.1, 0.2, 0,    0.1, 0.2, 0,    1, 1,       1,1,1,1,1], //rogue
-    [145, 3,    0.2, 0.1, 0.1,  0.2, 0.1, 0.1,  0.1, 0,     1,1,1,1.2,1.2], //monk
-    [146, 4,    0.3, 0.1, 0,    0.3, 0.1, 0,    0.2, 0.1,   1,1,1,1,1], //Barbarian
-    [147, 3,    0.2, 0.1, 0.1,  0.2, 0.1, 0.1,  0.2, 0.1,   1,1,1,1,1], //Druid
-    [148, 2,    0.2, 0.4, 0.1,  0.2, 0.4, 0.1,  0.2, 0.1,   1,1,1.5,1,1], //Hunter
-    [149, 3,    0.2, 0.1, 0.1,  0.4, 0.2, 0.1,  0, 0,       1,1,1,1.5,1], //Paladin
-    [150, 1,    0.1, 0.1, 0.3,  0.1, 0.1, 0.4,  0, 0.1,     1,1,1,1,1], //Wizard
-    [151, 1,    0.1, 0.1, 0.4,  0.1, 0.1, 0.3,  0, 0,       1,1,1,1,1], //Warlock
+    [2, 2, 1, 1,       0.1, 0.2, 0,    0.1, 0.2, 0,    1,1,1,1,1],     //rogue
+    [3, 3, 0.1, 0,     0.2, 0.1, 0.1,  0.2, 0.1, 0.1,  1,1,1,1.2,1.2], //monk
+    [4, 1, 0.2, 0.1,   0.3, 0.1, 0,    0.3, 0.1, 0,    1,1,1,1,1],     //Barbarian
+    [3, 3, 0.2, 0.1,   0.2, 0.1, 0.1,  0.2, 0.1, 0.1,  1,1,1,1,1],     //Druid
+    [2, 2, 0.2, 0.1,   0.2, 0.4, 0.1,  0.2, 0.4, 0.1,  1,1,1.5,1,1],   //Hunter
+    [3, 3, 0, 0,       0.2, 0.1, 0.1,  0.4, 0.2, 0.1,  1,1,1,1.5,1],   //Paladin
+    [1, 4, 0, 0.1,     0.1, 0.1, 0.3,  0.1, 0.1, 0.4,  1,1,1,1,1],     //Wizard
+    [1, 4, 0, 0,       0.1, 0.1, 0.4,  0.1, 0.1, 0.3,  1,1,1,1,1],     //Warlock
 ]);
 
 Object.freeze(G_CREEP_TYPE = {

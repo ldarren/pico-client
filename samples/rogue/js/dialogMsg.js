@@ -14,6 +14,11 @@ pico.def('dialogMsg', 'picUIWindow', function(){
         }
     };
 
+    me.create = function(ent, data){
+        data.font = this.smallDevice ? data.fontSmall : data.fontBig;
+        return data;
+    };
+
     me.open = function(elapsed, evt, entities){
         var ent = this.showEntity(G_WIN_ID.DIALOG);
         msg = evt;

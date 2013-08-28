@@ -35,6 +35,7 @@ pico.def('bag', 'picUIWindow', function(){
     me.create = function(ent, data){
         data.layouts = [];
         data.activated = [];
+        data.font = this.smallDevice ? data.fontSmall : data.fontBig;
         return data;
     };
 

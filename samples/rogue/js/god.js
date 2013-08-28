@@ -14,28 +14,13 @@ pico.def('god', function(){
     };
     
     me.createHero = function(){
+        var job = Floor(G_HERO.ROGUE + Random()*(G_HERO.WARLOCK-G_HERO.ROGUE));
         return {
-            appearance: {
-                job: Floor(G_HERO.ROGUE + Random()*(G_HERO.WARLOCK-G_HERO.ROGUE)),
-                helm: -1,
-                armor: -1,
-                main: -1,
-                off: -1,
-                ring1: -1,
-                ring2: -1,
-                amulet: -1,
-                activatedSkill: 0
-            },
-            stats: {
-                hp: 1,
-                will: 1,
-                strength: 1,
-                defence: 1,
-                wisdom: 1,
-                protection: 1,
-                dexterity: 1,
-                luck: 1
-            },
+            // job, helm, armor, main hand, off hand, ring1, ring2, amulet, gem, gold, skull
+            appearance: [job, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            stats: G_HERO_STAT[job-G_HERO.ROGUE].slice(),
+            spells: [],
+            debuf: [5, 7, 8],
             bag: [],
             tome: [G_MARK.EYE_OF_GOD]
         };

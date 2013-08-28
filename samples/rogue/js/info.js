@@ -40,6 +40,11 @@ pico.def('info', 'picUIWindow', function(){
         ctx.restore();
     };
 
+    me.create = function(ent, data){
+        data.font = this.smallDevice ? data.fontSmall : data.fontBig;
+        return data;
+    };
+
     me.open = function(elapsed, evt, entities){
         this.showEntity(G_WIN_ID.INFO);
         info = evt;
