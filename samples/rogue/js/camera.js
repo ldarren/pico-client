@@ -100,11 +100,12 @@ pico.def('camera', 'picBase', function(){
         if (tileType & G_TILE_TYPE.HIDE){
             if (this.nearToHero(id)) {
                 if (as){
-                    this.flags[id] = as;
                     if (!objects[id]){
                         map[id] |= G_TILE_TYPE.CREEP;
                         objects[id] = this.ai.spawnCreep();
                         this.recalHints();
+                    }else{
+                        this.flags[id] = as;
                     }
                 }else{
                     this.flags[id] = undefined;
@@ -240,7 +241,7 @@ pico.def('camera', 'picBase', function(){
         }
 
         // draw transparent objects
-        ctx.globalAlpha = 0.5;
+        ctx.globalAlpha = 0.6;
         w = viewStart;
         for(i=0; i<viewHeight; i++){
             for(j=0; j<viewWidth; j++, w++){
