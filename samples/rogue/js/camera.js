@@ -102,6 +102,7 @@ pico.def('camera', 'picBase', function(){
                 if (as){
                     this.flags[id] = as;
                     if (!objects[id]){
+                        map[id] |= G_TILE_TYPE.CREEP;
                         objects[id] = this.ai.spawnCreep();
                         this.recalHints();
                     }
@@ -182,8 +183,8 @@ pico.def('camera', 'picBase', function(){
         w = viewStart,
         fw = 8 * tileW/32,
         fh = 16 * tileH/32,
-        fx = Floor((tileW - fw)/2),
-        fy = Floor((tileH - fh)/2),
+        fx = tileW - fw,
+        fy = tileH - fh,
         hp = this.hero.getPosition(),
         hint, x, y, i, j, objectId, tileId;
 
@@ -245,7 +246,7 @@ pico.def('camera', 'picBase', function(){
             for(j=0; j<viewWidth; j++, w++){
                 if (!flags[w]) continue;
                 x = viewX + tileW * (w%mapW), y = viewY + tileH * Floor(w/mapW);
-                tileSet.draw(ctx, objects[i], x, y, tileW, tileH);
+                tileSet.draw(ctx, objects[w], x, y, tileW, tileH);
             }
             w += viewWrap;
         }

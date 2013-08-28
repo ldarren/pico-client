@@ -156,7 +156,7 @@ pico.def('game', 'pigSqrMap', function(){
         for(i=0,l=chestCount; i<l; i++){
             c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
             map[c] |= G_TILE_TYPE.CHEST;
-            objects[c] = ai.spawnChest;
+            objects[c] = ai.spawnChest();
         }
 
         me.recalHints();
@@ -170,15 +170,13 @@ pico.def('game', 'pigSqrMap', function(){
         terrain[c] = me.prevLevel < me.currentLevel ? G_FLOOR.STAIR_UP : G_FLOOR.STAIR_DOWN;
         hero.move(c);
 
-        fill(map, hints, flags, mapW, c);
+        fill(map, hints, mapW, c);
 
         map[c] = G_TILE_TYPE.ENTRANCE; // must do after fill, becos fill will ignore revealed tile
     };
 
     me.tileSet = null;
     me.smallDevice = false;
-    me.mapWidth = 8;
-    me.mapHeight = 8;
     me.tileWidth = 16;
     me.tileHeight = 16;
     me.currentLevel = 0;
@@ -253,7 +251,7 @@ pico.def('game', 'pigSqrMap', function(){
         hints.length = 0;
 
         for(var i=0,l=mapW*mapH; i<l; i++){
-            if (map[i] > G_TILE_TYPE.HIDE) continue;
+            if (map[i] & G_TILE_TYPE.OBSTACLES) continue;
             hint = 0;
             hint = getTileHint(hint, map[i-mapW]);
             hint = getTileHint(hint, map[i+mapW]);

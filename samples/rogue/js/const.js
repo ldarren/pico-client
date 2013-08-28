@@ -398,7 +398,7 @@ Object.freeze(G_TOWN_MAP = {
 
 Object.freeze(G_MAP_PARAMS = [
     [8, 8, 0, 0], // level 0 is a town
-    [8, 8, 5, 2], // width, height, creeps, chests
+    [4, 4, 5, 2], // width, height, creeps, chests
     [10, 8, 7, 4],
     [12, 8, 10, 6],
     [14, 8, 13, 8],
