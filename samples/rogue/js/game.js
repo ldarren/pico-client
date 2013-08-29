@@ -206,12 +206,12 @@ pico.def('game', 'pigSqrMap', function(){
             me.theme = keys[Floor(Random()*keys.length)];
         }
 
-        me.heaven = me.god.init(me.heaven);
-        me.mortal = me.hero.init(me.objects, me.mortal, me.mortalLoc);
-        me.objects = me.ai.init(me.theme, me.objects);
+        me.heaven = me.god.init.call(me);
+        me.mortal = me.hero.init.call(me);
+        me.objects = me.ai.init.call(me);
 
         if (!loaded)
-            createLevel(0);
+            createLevel(me.currentLevel);
     };
 
     me.exit = function(evt){

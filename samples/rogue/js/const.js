@@ -316,26 +316,26 @@ Object.freeze(G_OBJECT_NAME = {
 
 // hp, will, dex, luck, [atk, ratk, matk], [def, mdef], [veg, insect, beast, undead, demon]
 Object.freeze(G_HERO_STAT = [
-    [2, 0, 1, 1,       0.1, 0.2, 0,    0.1, 0,    1,1,1,1,1],     //rogue
-    [3, 0, 0.1, 0,     0.2, 0.1, 0.1,  0.2, 0.1,  1,1,1,1.2,1.2], //monk
-    [4, 0, 0.2, 0.1,   0.3, 0.1, 0,    0.3, 0,    1,1,1,1,1],     //Barbarian
-    [3, 0, 0.2, 0.1,   0.2, 0.1, 0.1,  0.2, 0.1,  1,1,1,1,1],     //Druid
-    [2, 0, 0.2, 0.1,   0.2, 0.4, 0.1,  0.2, 0.1,  1,1,1.5,1,1],   //Hunter
-    [3, 0, 0, 0,       0.2, 0.1, 0.1,  0.4, 0.1,  1,1,1,1.5,1],   //Paladin
-    [1, 0, 0, 0.1,     0.1, 0.1, 0.3,  0.1, 0.4,  1,1,1,1,1],     //Wizard
-    [1, 0, 0, 0,       0.1, 0.1, 0.4,  0.1, 0.3,  1,1,1,1,1],     //Warlock
+    [144,   2, 0, 1, 1,       0.1, 0.2, 0,    0.1, 0,    1,1,1,1,1],     //rogue
+    [145,   3, 0, 0.1, 0,     0.2, 0.1, 0.1,  0.2, 0.1,  1,1,1,1.2,1.2], //monk
+    [146,   4, 0, 0.2, 0.1,   0.3, 0.1, 0,    0.3, 0,    1,1,1,1,1],     //Barbarian
+    [147,   3, 0, 0.2, 0.1,   0.2, 0.1, 0.1,  0.2, 0.1,  1,1,1,1,1],     //Druid
+    [148,   2, 0, 0.2, 0.1,   0.2, 0.4, 0.1,  0.2, 0.1,  1,1,1.5,1,1],   //Hunter
+    [149,   3, 0, 0, 0,       0.2, 0.1, 0.1,  0.4, 0.1,  1,1,1,1.5,1],   //Paladin
+    [150,   1, 0, 0, 0.1,     0.1, 0.1, 0.3,  0.1, 0.4,  1,1,1,1,1],     //Wizard
+    [151,   1, 0, 0, 0,       0.1, 0.1, 0.4,  0.1, 0.3,  1,1,1,1,1],     //Warlock
 ]);
 
 
 // name, ui_id, difficulty, cooldown, stat1, stat2, statn
 Object.freeze(G_SPELL = {
-    POISON:     ['Poison', 128, 5, 3, 0],
-    PENTAGRAM:  ['Poison', 136, 5, 3, 0],    // protection, 4 elements
-    ANKH:       ['Poison', 137, 5, 3, 0],    // revive, eternal life
-    ALL_SEEING: ['Poison', 138, 0, 3, 0],    // spiritual sight, inner vision, higher knowledge, insight into occult mysteries
-    CREATON:    ['Poison', 139, 5, 3, 0],    // creation, alchemic creation
-    CHAOS:      ['Poison', 140, 5, 3, 0],    // all direction
-    EVOLVE:     ['Poison', 141, 5, 3, 0],    // mankind, evolve
+    POISON:     [128, 5, 3, 0],
+    PENTAGRAM:  [136, 5, 3, 0],    // protection, 4 elements
+    ANKH:       [137, 5, 3, 0],    // revive, eternal life
+    ALL_SEEING: [138, 0, 3, 0],    // spiritual sight, inner vision, higher knowledge, insight into occult mysteries
+    CREATON:    [139, 5, 3, 0],    // creation, alchemic creation
+    CHAOS:      [140, 5, 3, 0],    // all direction
+    EVOLVE:     [141, 5, 3, 0],    // mankind, evolve
 });
 
 Object.freeze(G_CREEP_TYPE = {
@@ -414,10 +414,10 @@ Object.freeze(G_TOWN_MAP = {
     ],
     objects:[
         0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, G_HERO.PALADIN, 0, 0, 0,
+        0, 0, 0, 0, [G_HERO.PALADIN], 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
-        G_OBJECT.SHRINE, 0, 0, 0, 0, 0, 0, G_OBJECT.ALTAR,
-        G_HERO.MONK, 0, 0, 0, 0, 0, 0, G_HERO.WIZARD,
+        [G_OBJECT.SHRINE], 0, 0, 0, 0, 0, 0, [G_OBJECT.ALTAR],
+        [G_HERO.MONK], 0, 0, 0, 0, 0, 0, [G_HERO.WIZARD],
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,

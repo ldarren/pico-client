@@ -124,7 +124,7 @@ pico.def('camera', 'picBase', function(){
         tileType = map[id]; // last action might hv updated tileType
         if (!(tileType & G_TILE_TYPE.HIDE)){
             if(objects[id]){
-                var objId = objects[id];
+                var objId = objects[id][0];
 
                 if (objId === hero.getJob()){
                     if (!this.solve(hp)) return;
@@ -190,7 +190,7 @@ pico.def('camera', 'picBase', function(){
         fx = tileW - fw,
         fy = tileH - fh,
         hp = this.hero.getPosition(),
-        hint, flag, x, y, i, j, objectId, tileId;
+        hint, flag, x, y, i, j, object, tileId;
 
         screenshotX = viewX, screenshotY = viewY;
 
@@ -206,12 +206,12 @@ pico.def('camera', 'picBase', function(){
                     tileSet.draw(ctx, UNCLEAR, x, y, tileW, tileH);
                 }else{
                     tileSet.draw(ctx, terrain[w], x, y, tileW, tileH);
-                    objectId = objects[w];
+                    object = objects[w];
                     flag = flags[w];
                     if (flag){
-                        tileSet.draw(ctx, flag[1], x, y, tileW, tileH);
-                    }else if (objectId){
-                        tileSet.draw(ctx, objectId, x, y, tileW, tileH);
+                        tileSet.draw(ctx, flag[0], x, y, tileW, tileH);
+                    }else if (object){
+                        tileSet.draw(ctx, object[0], x, y, tileW, tileH);
                     }
                     hint = hints[w];
                     if (hint > 9){
