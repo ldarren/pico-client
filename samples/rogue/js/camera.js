@@ -89,7 +89,7 @@ pico.def('camera', 'picBase', function(){
         y = Floor((evt[1] - viewY) / this.tileHeight),
         hero = this.hero,
         objects = this.objects,
-        as = hero.getActiveSpell(),
+        as = hero.getSelectedSpell(),
         hp = hero.getPosition(),
         id, tileType;
 
@@ -110,6 +110,7 @@ pico.def('camera', 'picBase', function(){
                 }else{
                     this.flags[id] = undefined;
                 }
+                hero.explore(id);
                 this.fillTiles(id);
             }else{
                 var h = this.findPath(hp, this.nextTile(id, hp));
@@ -127,9 +128,11 @@ pico.def('camera', 'picBase', function(){
 
                 if (objId === hero.getJob()){
                     if (!this.solve(hp)) return;
+                    hero.explore();
                 }else{
                     this.go('showInfo', {creepId:objId});
                     if (tileType & G_TILE_TYPE.CREEP){
+                        hero.attack(objId);
 /*                        this.go('showDialog', {
                             info: [
                                 'RIP',
@@ -187,7 +190,7 @@ pico.def('camera', 'picBase', function(){
         fx = tileW - fw,
         fy = tileH - fh,
         hp = this.hero.getPosition(),
-        hint, x, y, i, j, objectId, tileId;
+        hint, flag, x, y, i, j, objectId, tileId;
 
         screenshotX = viewX, screenshotY = viewY;
 
@@ -204,8 +207,9 @@ pico.def('camera', 'picBase', function(){
                 }else{
                     tileSet.draw(ctx, terrain[w], x, y, tileW, tileH);
                     objectId = objects[w];
-                    if (flags[w]){
-                        tileSet.draw(ctx, flags[w], x, y, tileW, tileH);
+                    flag = flags[w];
+                    if (flag){
+                        tileSet.draw(ctx, flag[1], x, y, tileW, tileH);
                     }else if (objectId){
                         tileSet.draw(ctx, objectId, x, y, tileW, tileH);
                     }

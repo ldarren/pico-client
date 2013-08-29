@@ -21,11 +21,12 @@ pico.def('bag', 'picUIWindow', function(){
         block = layout[0];
         ctx.fillText(com.name, block[0]+block[2]/2, block[1]+block[3]/2, block[2]);
         
-        for(var i=1, l=layout.length; i<l; i++){
+        for(var i=1,j=0, l=layout.length; i<l; i++,j++){
             block = layout[i];
             ts.draw(ctx, G_UI.SLOT, block[0], block[1], tw, th);
-            item = items[i-1];
-            if (item) ts.draw(ctx, item, block[0], block[1], tw, th);
+            item = items[j];
+            if (!item) continue;
+            ts.draw(ctx, item[1], block[0], block[1], tw, th);
             if (activated[i]) ts.draw(ctx, G_SHADE[0], block[0], block[1], tw, th);
         }
 
@@ -134,9 +135,9 @@ pico.def('bag', 'picUIWindow', function(){
                         items = hero.getTome();
                         if (items[evt.index]){
                             if(com.activated[evt.index+1] ^= true){
-                                hero.setActiveSpell(items[evt.index]);
+                                hero.selectSpell(items[evt.index]);
                             }else{
-                                hero.setActiveSpell(undefined);
+                                hero.selectSpell(undefined);
                             }
                             return entities;
                         }

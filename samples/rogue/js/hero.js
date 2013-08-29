@@ -5,22 +5,26 @@ pico.def('hero', 'picUIWindow', function(){
     me = this,
     name = me.moduleName,
     Floor = Math.floor, Ceil = Math.ceil, Random = Math.random,
-    DEBUF_ICON = [G_MARK.EVOLVE, G_MARK.CHAOS, G_MARK.POISONED],
     objects,
     position,
+    selectedSpell,
     heroObj,
     appearance,
     stats,
-    spells,
-    debuf,
+    effects,
     bag,
     tome,
-    drawData = function(ctx, ts, icon, text, x, y, center, uiSize, margin){
+    drawData = function(ctx, ts, icon, text, x, y, center, uiSize, margin, textWidth){
         ts.draw(ctx, icon, x, y, uiSize, uiSize);
-        var metrics = ctx.measureText(''+text);
         x += uiSize;
-        ctx.fillText(text, x, center);
-        x += metrics.width + margin;
+        if (textWidth){
+            ctx.fillText(text, x, center, textWidth);
+            x += textWidth;
+        }else{
+            ctx.fillText(text, x, center);
+            var metrics = ctx.measureText(''+text);
+            x += metrics.width + margin;
+        }
         return x;
     },
     drawSmall = function(ctx, win, com, rect){
@@ -29,14 +33,16 @@ pico.def('hero', 'picUIWindow', function(){
         tw = this.tileWidth,
         th = this.tileHeight,
         job = this.hero.getJob(),
-        gs = win.gridSize,
         sd = this.smallDevice,
+        gs = win.gridSize,
         margin = sd ? 2 : 4,
         pw = (rect.width - gs*2 - margin*2)/3,
         x = rect.x + gs + margin,
         y = rect.y + gs + margin,
         uiSize = sd ? 8 : 16,
         uiSize2 = uiSize/2,
+        textWidth3 = sd ? 20 : 30,
+        textWidth2 = sd ? 20 : 30,
         center = y + uiSize2,
         i, l;
 
@@ -46,53 +52,50 @@ pico.def('hero', 'picUIWindow', function(){
         ctx.font = com.font;
         ctx.fillStyle = com.fontColor;
 
-        text = G_OBJECT_NAME[job];
-        metrics = ctx.measureText(text);
-        ctx.fillText(text, x, center, rect.width);
+        ctx.fillText(G_OBJECT_NAME[job], x, center, rect.width);
+
+        x = rect.x + gs + margin;
+        y += uiSize*2;
+        uiSize = sd ? 8 : 16;
         
         // draw hp
-        x += metrics.width + margin;
         for(i=0, l=stats[0]; i<l; i++){
             ts.draw(ctx, G_UI.HP, x, y, uiSize, uiSize);
             x += uiSize;
         }
 
-        x = rect.x + gs + margin;
-        y += uiSize*2;
+        x = rect.x + gs + margin + pw;
+        y = rect.y + gs + margin;
         uiSize = sd ? 16 : 32;
         uiSize2 = uiSize/2,
         center = y + uiSize2;
 
-        x = drawData(ctx, ts, G_UI.WILL, stats[1], x, y, center, uiSize, margin);
-        x = drawData(ctx, ts, G_UI.DEX, stats[2], x, y, center, uiSize, margin);
-        x = drawData(ctx, ts, G_UI.LUCK, stats[3], x, y, center, uiSize, margin);
-
-        x = rect.x + gs + margin + pw;
-        y = rect.y + gs + margin;
-        center = y + uiSize2;
-
-        x = drawData(ctx, ts, G_UI.MAT_GEM, appearance[8], x, y, center, uiSize, margin);
-        x = drawData(ctx, ts, G_UI.MAT_GOLD, appearance[9], x, y, center, uiSize, margin);
-        x = drawData(ctx, ts, G_UI.MAT_SKULL, appearance[10], x, y, center, uiSize, margin);
+        x = drawData(ctx, ts, G_UI.LEVEL, this.deepestLevel, x, y, center, uiSize, margin, textWidth3);
+        x = drawData(ctx, ts, G_UI.DEX, stats[2], x, y, center, uiSize, margin, textWidth3);
+        x = drawData(ctx, ts, G_UI.LUCK, stats[3], x, y, center, uiSize, margin, textWidth3);
 
         x = rect.x + gs + margin + pw;
         y += uiSize;
-        uiSize = sd ? 16 : 32;
         center = y + uiSize2;
-        for(i=0, l=debuf.length; i<l; i++){
-            if (!debuf[i]) continue;
-            x = drawData(ctx, ts, DEBUF_ICON[i], debuf[i], x, y, center, uiSize, margin);
-        }
+
+        x = drawData(ctx, ts, G_UI.GOLD, appearance[8], x, y, center, uiSize, margin, textWidth2);
+        x = drawData(ctx, ts, G_UI.SKULL, appearance[9], x, y, center, uiSize, margin, textWidth2);
 
         x = rect.x + gs + margin + pw*2;
         y = rect.y + gs + margin;
         center = y + uiSize2;
         
-        x = drawData(ctx, ts, G_UI.ATK, stats[4]+', '+stats[5]+', '+stats[6], x, y, center, uiSize, margin);
+        x = drawData(ctx, ts, G_UI.PATK, stats[4], x, y, center, uiSize, margin, textWidth3);
+        x = drawData(ctx, ts, G_UI.RATK, stats[5], x, y, center, uiSize, margin, textWidth3);
+        x = drawData(ctx, ts, G_UI.MATK, stats[6], x, y, center, uiSize, margin, textWidth3);
+
         x = rect.x + gs + margin + pw*2;
         y += uiSize;
         center = y + uiSize2;
-        x = drawData(ctx, ts, G_UI.DEF, stats[7]+', '+stats[8]+', '+stats[9], x, y, center, uiSize, margin);
+
+        x = drawData(ctx, ts, G_UI.PDEF, stats[7], x, y, center, uiSize, margin, textWidth3);
+        x = drawData(ctx, ts, G_UI.MDEF, stats[8], x, y, center, uiSize, margin, textWidth3);
+        x = drawData(ctx, ts, G_UI.WILL, stats[1], x, y, center, uiSize, margin, textWidth3);
 
         ctx.restore();
     },
@@ -130,8 +133,7 @@ pico.def('hero', 'picUIWindow', function(){
         position = index;
         appearance = heroObj.appearance;
         stats = heroObj.stats;
-        spells = heroObj.spells;
-        debuf = heroObj.debuf;
+        effects = heroObj.effects;
         bag = heroObj.bag;
         tome = heroObj.tome;
 
@@ -141,7 +143,10 @@ pico.def('hero', 'picUIWindow', function(){
     me.exit = function(){
     };
 
-    me.update = function(){
+    me.explore = function(){
+    };
+
+    me.attack = function(){
     };
 
     me.move = function(index){
@@ -150,8 +155,8 @@ pico.def('hero', 'picUIWindow', function(){
         objects[index] = appearance[0];
     };
 
-    me.getActiveSpell = function(){ return spells[0]; };
-    me.setActiveSpell = function(skill){ spells[0] = skill; };
+    me.selectSpell = function(spell){ selectedSpell = spell; };
+    me.getSelectedSpell = function(){ return selectedSpell; };
     me.getPosition = function(){ return position; };
     me.getJob = function(){ return appearance[0]; };
     me.getBag = function(){ return bag; };
