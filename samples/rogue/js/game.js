@@ -222,6 +222,12 @@ pico.def('game', 'pigSqrMap', function(){
         //saveGame();
     };
 
+    me.step = function(){
+        me.god.step.call(me);
+        me.hero.step.call(me);
+        me.ai.step.call(me);
+    };
+
     me.unlockLevel = function(level){
         if (me.deepestLevel < level){
             me.deepestLevel = level;

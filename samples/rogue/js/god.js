@@ -10,7 +10,7 @@ pico.def('god', function(){
     me.exit = function(){
     };
 
-    me.update = function(){
+    me.step = function(){
     };
     
     me.createHero = function(){
@@ -19,10 +19,9 @@ pico.def('god', function(){
             // job, helm, armor, main hand, off hand, ring1, ring2, amulet, gold, skull
             appearance: [job, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             stats: G_HERO_STAT[job-G_HERO.ROGUE].slice(),
-            spells: [],
-            debuf: [5, 7, 8],
+            effects: [],
             bag: [],
-            tome: [G_SPELL.ALL_SEEING]
+            tome: [G_SPELL.ALL_SEEING.slice()]
         };
     };
 

@@ -19,6 +19,7 @@ this.use('camera');
 this.use('uiWindow');
 this.use('hero');
 this.use('bag');
+this.use('tome');
 this.use('info');
 this.use('dialogMsg');
 
@@ -94,6 +95,7 @@ onLoad = function(){
         camera = me.camera,
         uiWindow = me.uiWindow,
         bag = me.bag,
+        tome = me.tome,
         info = me.info,
         hero = me.hero,
         dialogMsg = me.dialogMsg,
@@ -115,11 +117,12 @@ onLoad = function(){
         game.init({tileSet:tileSet, smallDevice: smallDevice});
 
         game.route('fingerDown', [uiWindow.checkBound, camera.checkBound, game.captureSelected, renderer.captureScreenshot]);
-        game.route('fingerUp', [game.useSelected, game.releaseSelected, bag.click, dialogMsg.click, uiWindow.click, camera.click, renderer.draw]);
+        game.route('fingerUp', [game.useSelected, game.releaseSelected, tome.click, bag.click, dialogMsg.click, uiWindow.click, camera.click, renderer.draw]);
         game.route('fingerMove', [game.useSelected, uiWindow.swipe, camera.swipe, renderer.drawScreenshot]);
         game.route('fingerOut', [game.releaseSelected, renderer.releaseScreenshot, renderer.draw]);
         game.route('useItem', [bag.useItem, renderer.draw, game.releaseSelected]);
-        game.route('resize', [camera.resize, uiWindow.resize, bag.resize, info.openIfValid, dialogMsg.openIfValid, renderer.draw]);
+        game.route('castSpell', [tome.castSpell, renderer.draw, game.releaseSelected]);
+        game.route('resize', [camera.resize, uiWindow.resize, tome.resize, bag.resize, info.openIfValid, dialogMsg.openIfValid, renderer.draw]);
         game.route('heroMove', [game.heroMove, renderer.draw]);
         game.route('heroStop', [game.heroStop, renderer.draw]);
         game.route('gotoLevel', [game.gotoLevel, renderer.draw]);
@@ -153,8 +156,8 @@ onLoad = function(){
         uiWinEnt.attach(hero, {win:uiWindow.moduleName, fontBig:'bold 12pt sans-serif', fontSmall:'8pt sans-serif', fontColor:G_COLOR_TONE[1]});
         uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, hero.moduleName]});
         uiWinEnt = uiWinEnts[1];
-        uiWinEnt.attach(bag, {name:'Tome', win:uiWindow.moduleName, fontBig:'bold 12pt sans-serif', fontSmall:'8pt sans-serif', fontColor:G_COLOR_TONE[1]});
-        uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, bag.moduleName]});
+        uiWinEnt.attach(tome, {name:'Tome', win:uiWindow.moduleName, fontBig:'bold 12pt sans-serif', fontSmall:'8pt sans-serif', fontColor:G_COLOR_TONE[1]});
+        uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, tome.moduleName]});
         uiWinEnt = uiWinEnts[2];
         uiWinEnt.attach(bag, {name:'Bag', win:uiWindow.moduleName, fontBig:'bold 12pt sans-serif', fontSmall:'8pt sans-serif', fontColor:G_COLOR_TONE[1]});
         uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, bag.moduleName]});

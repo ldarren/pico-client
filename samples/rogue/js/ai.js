@@ -6,14 +6,11 @@ pico.def('ai', function(){
     currIndex = 0,
     level = 0,
     objects,
-    createCreepStat = function(creepId, level){
+    createCreepStat = function(creepId){
         var s = G_CREEP_STAT[creepId-G_CREEP.RAT].slice();
-        s[3] = Ceil(s[3]*level);
-        s[4] = Ceil(s[4]*level);
-        s[5] = Ceil(s[5]*level);
-        s[6] = Ceil(s[6]*level);
-        s[7] = Ceil(s[7]*level);
-        s[8] = Ceil(s[8]*level);
+        for(var i=4; i<10; i++){
+            s[i] = Ceil(s[i]*level);
+        }
         return s;
     };
 
@@ -60,7 +57,7 @@ pico.def('ai', function(){
     };
 
     me.spawnChest = function(){
-        return [G_OBJECT.CHEST];
+        return [G_OBJECT.CHEST, G_OBJECT_TYPE.CHEST];
     };
 
     me.openChest = function(){

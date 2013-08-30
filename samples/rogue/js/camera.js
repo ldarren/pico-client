@@ -89,18 +89,19 @@ pico.def('camera', 'picBase', function(){
         y = Floor((evt[1] - viewY) / this.tileHeight),
         hero = this.hero,
         objects = this.objects,
-        as = hero.getSelectedSpell(),
         hp = hero.getPosition(),
-        id, tileType;
+        id, tileType, object;
 
         if (y > mapH || x > mapW) return;
         id = mapW * y + x;
         tileType = map[id];
+        object = objects[id];
 
         if (tileType & G_TILE_TYPE.HIDE){
             if (this.nearToHero(id)) {
+                var as = hero.getSelectedSpell();
                 if (as){
-                    if (!objects[id]){
+                    if (!object){
                         map[id] |= G_TILE_TYPE.CREEP;
                         objects[id] = this.ai.spawnCreep();
                         this.recalHints();
@@ -108,9 +109,8 @@ pico.def('camera', 'picBase', function(){
                         this.flags[id] = as;
                     }
                 }else{
-                    this.flags[id] = undefined;
+                    delete this.flags[id];
                 }
-                hero.explore(id);
                 this.fillTiles(id);
             }else{
                 var h = this.findPath(hp, this.nextTile(id, hp));
@@ -123,14 +123,13 @@ pico.def('camera', 'picBase', function(){
 
         tileType = map[id]; // last action might hv updated tileType
         if (!(tileType & G_TILE_TYPE.HIDE)){
-            if(objects[id]){
-                var objId = objects[id][0];
+            if(object){
+                var objId = object[0];
 
                 if (objId === hero.getJob()){
                     if (!this.solve(hp)) return;
-                    hero.explore();
                 }else{
-                    this.go('showInfo', {creepId:objId});
+                    this.go('showInfo', object);
                     if (tileType & G_TILE_TYPE.CREEP){
                         hero.attack(objId);
 /*                        this.go('showDialog', {
@@ -141,6 +140,7 @@ pico.def('camera', 'picBase', function(){
                             callbacks: ['reborn']});*/
                     }
                 }
+                this.step();
             }else{
                 var h = this.findPath(hp, id);
                 if (h.length){

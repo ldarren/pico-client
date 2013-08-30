@@ -327,7 +327,7 @@ Object.freeze(G_HERO_STAT = [
 ]);
 
 
-// name, ui_id, difficulty, cooldown, stat1, stat2, statn
+// name, ui_id, difficulty, cooldown, currCooldown, stat1, stat2, statn
 Object.freeze(G_SPELL = {
     POISON:     [128, 5, 3, 0],
     PENTAGRAM:  [136, 5, 3, 0],    // protection, 4 elements
@@ -356,38 +356,38 @@ Object.freeze(G_CREEP_TYPE_NAME = [
 ]);
 
 Object.freeze(G_CREEP_STAT = [
-    [152, G_CREEP_TYPE.BEAST,    1,  0.1, 0, 0,     0.1, 0, 0], //Rat
-    [153, G_CREEP_TYPE.INSECT,   1,  0.1, 0, 0,     0.1, 0, 0], //'Spiders',
-    [154, G_CREEP_TYPE.BEAST,    1,  0.1, 0, 0,     0.1, 0, 0], //'Lizard',
-    [155, G_CREEP_TYPE.INSECT,   2,  0.1, 0, 0,     0.1, 0, 0], //'Spider Champion',
-    [156, G_CREEP_TYPE.BEAST,    1,  0.1, 0, 0,     0.1, 0, 0], //'Toad',
-    [157, G_CREEP_TYPE.INSECT,   1,  0.1, 0, 0,     0.1, 0, 0], //'Scarab',
-    [158, G_CREEP_TYPE.INSECT,   1,  0.1, 0, 0,     0.1, 0, 0], //'Centipede',
-    [159, G_CREEP_TYPE.BEAST,    2,  0.1, 0, 0,     0.1, 0, 0], //'Serpent',
-    [160, G_CREEP_TYPE.PLANT,    2,  0, 0, 0,       0, 0, 0],   //'Fungi',
-    [161, G_CREEP_TYPE.BEAST,    1,  0.1, 0, 0,     0.1, 0, 0], //'Hare',
-    [162, G_CREEP_TYPE.BEAST,    1,  0.1, 0, 0,     0.1, 0, 0], //'Bat',
-    [163, G_CREEP_TYPE.BEAST,    2,  0.2, 0, 0,     0.1, 0, 0], //'Bat Champion',
-    [164, G_CREEP_TYPE.BEAST,    1,  0.2, 0, 0,     0.1, 0, 0], //'Snake',
-    [165, G_CREEP_TYPE.BEAST,    2,  0.2, 0, 0,     0.1, 0, 0], //'Wolf',
-    [166, G_CREEP_TYPE.BEAST,    2,  0.2, 0, 0,     0.1, 0, 0], //'Wild Boar',
-    [167, G_CREEP_TYPE.BEAST,    3,  0.2, 0, 0,     0.1, 0, 0], //'Bear',
-    [168, G_CREEP_TYPE.DEMON,    1,  0.1, 0, 0,     0.1, 0, 0], //'Slime',
-    [169, G_CREEP_TYPE.DEMON,    2,  0.2, 0, 0,     0.1, 0, 0], //'Slime Champion',
-    [170, G_CREEP_TYPE.INSECT,   1,  0.1, 0, 0,     0.1, 0, 0], //'Scorpion',
-    [171, G_CREEP_TYPE.DEMON,    4,  0.6, 0, 0,     0.1, 0, 0], //'Kraken',
-    [172, G_CREEP_TYPE.UNDEAD,   3,  0.3, 0, 0,     0.1, 0, 0], //'Vampire',
-    [173, G_CREEP_TYPE.UNDEAD,   2,  0.1, 0, 0,     0.1, 0, 0], //'Mummy',
-    [174, G_CREEP_TYPE.UNDEAD,   2,  0.3, 0, 0,     0.1, 0, 0], //'Wraith',
-    [175, G_CREEP_TYPE.DEMON,    4,  0.5, 0, 0,     0.1, 0, 0], //'Carabia',
-    [176, G_CREEP_TYPE.DEMON,    1,  0.1, 0, 0,     0.1, 0, 0], //'Goblin',
-    [177, G_CREEP_TYPE.UNDEAD,   2,  0.1, 0, 0,     0.1, 0, 0], //'Zombie',
-    [178, G_CREEP_TYPE.UNDEAD,   2,  0.1, 0, 0,     0.1, 0, 0], //'Undead',
-    [179, G_CREEP_TYPE.DEMON,    3,  0.3, 0, 0,     0.1, 0, 0], //'Orc',
-    [180, G_CREEP_TYPE.DEMON,    3,  1, 0, 0,       0.1, 0, 0], //'Cyclops',
-    [181, G_CREEP_TYPE.DEMON,    3,  0.7, 0, 0,     0.1, 0, 0], //'Werewolf',
-    [182, G_CREEP_TYPE.DEMON,    6,  0.5, 0, 0,     0.1, 0, 0], //'Werebear',
-    [183, G_CREEP_TYPE.DEMON,    7,  2, 1, 2,       1, 1, 1], //'Devil'
+    [152, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  0.1, 0, 0,     0.1, 0, 0], //Rat
+    [153, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.INSECT,   1,  0.1, 0, 0,     0.1, 0, 0], //'Spiders',
+    [154, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  0.1, 0, 0,     0.1, 0, 0], //'Lizard',
+    [155, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.INSECT,   2,  0.1, 0, 0,     0.1, 0, 0], //'Spider Champion',
+    [156, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  0.1, 0, 0,     0.1, 0, 0], //'Toad',
+    [157, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.INSECT,   1,  0.1, 0, 0,     0.1, 0, 0], //'Scarab',
+    [158, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.INSECT,   1,  0.1, 0, 0,     0.1, 0, 0], //'Centipede',
+    [159, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    2,  0.1, 0, 0,     0.1, 0, 0], //'Serpent',
+    [160, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.PLANT,    2,  0, 0, 0,       0, 0, 0],   //'Fungi',
+    [161, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  0.1, 0, 0,     0.1, 0, 0], //'Hare',
+    [162, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  0.1, 0, 0,     0.1, 0, 0], //'Bat',
+    [163, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    2,  0.2, 0, 0,     0.1, 0, 0], //'Bat Champion',
+    [164, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  0.2, 0, 0,     0.1, 0, 0], //'Snake',
+    [165, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    2,  0.2, 0, 0,     0.1, 0, 0], //'Wolf',
+    [166, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    2,  0.2, 0, 0,     0.1, 0, 0], //'Wild Boar',
+    [167, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    3,  0.2, 0, 0,     0.1, 0, 0], //'Bear',
+    [168, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    1,  0.1, 0, 0,     0.1, 0, 0], //'Slime',
+    [169, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    2,  0.2, 0, 0,     0.1, 0, 0], //'Slime Champion',
+    [170, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.INSECT,   1,  0.1, 0, 0,     0.1, 0, 0], //'Scorpion',
+    [171, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    4,  0.6, 0, 0,     0.1, 0, 0], //'Kraken',
+    [172, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.UNDEAD,   3,  0.3, 0, 0,     0.1, 0, 0], //'Vampire',
+    [173, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.UNDEAD,   2,  0.1, 0, 0,     0.1, 0, 0], //'Mummy',
+    [174, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.UNDEAD,   2,  0.3, 0, 0,     0.1, 0, 0], //'Wraith',
+    [175, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    4,  0.5, 0, 0,     0.1, 0, 0], //'Carabia',
+    [176, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    1,  0.1, 0, 0,     0.1, 0, 0], //'Goblin',
+    [177, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.UNDEAD,   2,  0.1, 0, 0,     0.1, 0, 0], //'Zombie',
+    [178, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.UNDEAD,   2,  0.1, 0, 0,     0.1, 0, 0], //'Undead',
+    [179, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    3,  0.3, 0, 0,     0.1, 0, 0], //'Orc',
+    [180, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    3,  1, 0, 0,       0.1, 0, 0], //'Cyclops',
+    [181, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    3,  0.7, 0, 0,     0.1, 0, 0], //'Werewolf',
+    [182, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    6,  0.5, 0, 0,     0.1, 0, 0], //'Werebear',
+    [183, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    7,  2, 1, 2,       1, 1, 1], //'Devil'
 ]);
 
 Object.freeze(G_TOWN_MAP = {
@@ -414,10 +414,10 @@ Object.freeze(G_TOWN_MAP = {
     ],
     objects:[
         0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, [G_HERO.PALADIN], 0, 0, 0,
+        0, 0, 0, 0, [G_HERO.PALADIN, G_OBJECT_TYPE.NPC], 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
-        [G_OBJECT.SHRINE], 0, 0, 0, 0, 0, 0, [G_OBJECT.ALTAR],
-        [G_HERO.MONK], 0, 0, 0, 0, 0, 0, [G_HERO.WIZARD],
+        [G_OBJECT.SHRINE, G_OBJECT_TYPE.ENV], 0, 0, 0, 0, 0, 0, [G_OBJECT.ALTAR, G_OBJECT_TYPE.ENV],
+        [G_HERO.MONK, G_OBJECT_TYPE.NPC], 0, 0, 0, 0, 0, 0, [G_HERO.WIZARD, G_OBJECT_TYPE.NPC],
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
@@ -426,7 +426,7 @@ Object.freeze(G_TOWN_MAP = {
 
 Object.freeze(G_MAP_PARAMS = [
     [8, 8, 0, 0], // level 0 is a town
-    [4, 4, 5, 2], // width, height, creeps, chests
+    [8, 8, 5, 2], // width, height, creeps, chests
     [10, 8, 7, 4],
     [12, 8, 10, 6],
     [14, 8, 13, 8],

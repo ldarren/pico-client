@@ -1,4 +1,4 @@
-pico.def('bag', 'picUIWindow', function(){
+pico.def('tome', 'picUIWindow', function(){
     var
     me = this,
     name = me.moduleName,
@@ -103,14 +103,14 @@ pico.def('bag', 'picUIWindow', function(){
             tx = tile[0];
             ty = tile[1];
             if (tx < x && (tx + tw) > x && ty < y && (ty + th) > y){
-                this.go('useItem', {bag:e.name, index:j-1});
+                this.go('castSpell', {bag:e.name, index:j-1});
                 return;
             }
         }
         return entities;
     };
 
-    me.useItem = function(elapsed, evt, entities){
+    me.castSpell = function(elapsed, evt, entities){
         var
         targetName = evt.bag,
         e, com;
