@@ -99,14 +99,14 @@ pico.def('camera', 'picBase', function(){
 
         if (tileType & G_TILE_TYPE.HIDE){
             if (this.nearToHero(id)) {
-                var as = hero.getSelectedSpell();
-                if (as){
+                var effect = hero.castSpell();
+                if (effect){
                     if (!object){
                         map[id] |= G_TILE_TYPE.CREEP;
                         objects[id] = this.ai.spawnCreep();
                         this.recalHints();
                     }else{
-                        this.flags[id] = as;
+                        this.flags[id] = effect;
                     }
                 }else{
                     delete this.flags[id];
@@ -189,7 +189,9 @@ pico.def('camera', 'picBase', function(){
         fh = 16 * tileH/32,
         fx = tileW - fw,
         fy = tileH - fh,
-        hp = this.hero.getPosition(),
+        hero = this.hero,
+        hp = hero.getPosition(),
+        selectedSpell = hero.getSelectedSpell(),
         hint, flag, x, y, i, j, object, tileId;
 
         screenshotX = viewX, screenshotY = viewY;
@@ -239,7 +241,7 @@ pico.def('camera', 'picBase', function(){
         }
 
         // draw player active skill
-        if (this.activatedSkill){
+        if (selectedSpell && selectedSpell[0] === G_SPELL.ALL_SEEING[0]){
             x = viewX + tileW * (hp%mapW), y = viewY + tileH * Floor(hp/mapW);
             tileSet.draw(ctx, G_UI.FLAG, x, y, hw, hh);
         }
@@ -249,9 +251,10 @@ pico.def('camera', 'picBase', function(){
         w = viewStart;
         for(i=0; i<viewHeight; i++){
             for(j=0; j<viewWidth; j++, w++){
-                if (!flags[w]) continue;
+                object = objects[w];
+                if (!flags[w] || !object) continue;
                 x = viewX + tileW * (w%mapW), y = viewY + tileH * Floor(w/mapW);
-                tileSet.draw(ctx, objects[w], x, y, tileW, tileH);
+                tileSet.draw(ctx, object[0], x, y, tileW, tileH);
             }
             w += viewWrap;
         }

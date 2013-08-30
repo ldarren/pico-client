@@ -156,9 +156,9 @@ pico.def('bag', 'picUIWindow', function(){
         items = ent.name === inventoryId ? hero.getBag() : hero.getTome();
 
         if (rect.width > (this.tileWidth * 3)){
-            return drawBag.call(this, ctx, items, com.layouts[1], com);
+            return draw.call(this, ctx, items, com.layouts[1], com);
         }else{
-            return drawBag.call(this, ctx, items, com.layouts[0], com);
+            return draw.call(this, ctx, items, com.layouts[0], com);
         }
     };
 });

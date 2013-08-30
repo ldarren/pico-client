@@ -181,7 +181,7 @@ pico.def('hero', 'picUIWindow', function(){
     };
 
     me.selectSpell = function(spell){
-        if (!spell || spell[3]) return;
+        if (spell && spell[3]) return;
         selectedSpell = spell;
     };
 

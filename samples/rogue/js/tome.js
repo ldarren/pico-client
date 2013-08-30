@@ -2,14 +2,13 @@ pico.def('tome', 'picUIWindow', function(){
     var
     me = this,
     name = me.moduleName,
-    inventoryId = G_WIN_ID.BAG,
     skillsId = G_WIN_ID.SKILLS,
     draw = function(ctx, items, layout, com){
         var
         ts = this.tileSet,
         tw = this.tileWidth,
         th = this.tileHeight,
-        activated = com.activated,
+        selectedSpell = this.hero.getSelectedSpell(),
         block, item;
 
         ctx.save();
@@ -27,7 +26,7 @@ pico.def('tome', 'picUIWindow', function(){
             item = items[j];
             if (!item) continue;
             ts.draw(ctx, item[0], block[0], block[1], tw, th);
-            if (activated[i]) ts.draw(ctx, G_SHADE[0], block[0], block[1], tw, th);
+            if (item === selectedSpell) ts.draw(ctx, G_SHADE[0], block[0], block[1], tw, th);
         }
 
         ctx.restore();
@@ -35,47 +34,37 @@ pico.def('tome', 'picUIWindow', function(){
 
     me.create = function(ent, data){
         data.layouts = [];
-        data.activated = [];
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
         return data;
     };
 
     me.resize = function(elapsed, evt, entities){
-        var
-        tw = this.tileWidth, th = this.tileHeight,
-        e, com, win, wLay, layouts, gs;
+        var e, com;
 
         for(var i=0, l=entities.length; i<l; i++){
             e = entities[i];
             com = e.getComponent(name);
             if (!com) continue;
-            layouts = com.layouts;
-            layouts.length = 0;
-            win = e.getComponent(com.win);
-            gs = win.gridSize;
 
-            switch(e.name){
-                case skillsId:
-                    wLay = win.layouts[0];
-                    layout = me.generateGridLayout([wLay[0]+gs, wLay[1]+16+gs, wLay[2]-gs, wLay[3]-16-gs*2], tw, th, 4, 1);
-                    layout.unshift([wLay[0]+gs, wLay[1]+gs, wLay[2]-gs, 16]);
-                    layouts.push(layout);
-                    wLay = win.layouts[1];
-                    layout = me.generateGridLayout([wLay[0]+gs*2, wLay[1]+32+gs*2, wLay[2]-gs*4, wLay[3]-32-gs*4], tw, th, 4, 4);
-                    layout.unshift([wLay[0]+gs*2, wLay[1]+gs*2, wLay[2]-gs*4, 32]);
-                    layouts.push(layout);
-                    break;
-                case inventoryId:
-                    wLay = win.layouts[0];
-                    layout = me.generateGridLayout([wLay[0], wLay[1]+16+gs, wLay[2]-gs, wLay[3]-16-gs*2], tw, th, 4, 1);
-                    layout.unshift([wLay[0], wLay[1]+gs, wLay[2]-gs, 16]);
-                    layouts.push(layout);
-                    wLay = win.layouts[1];
-                    layout = me.generateGridLayout([wLay[0]+gs*2, wLay[1]+32+gs*2, wLay[2]-gs*4, wLay[3]-32-gs*4], tw, th, 4, 6);
-                    layout.unshift([wLay[0]+gs*2, wLay[1]+gs*2, wLay[2]-gs*4, 32]);
-                    layouts.push(layout);
-                    break;
-            }
+            var
+            tw = this.tileWidth, th = this.tileHeight,
+            layouts = com.layouts,
+            win = e.getComponent(com.win),
+            gs = win.gridSize,
+            wLay = win.layouts[0],
+            layout;
+
+            layouts.length = 0;
+
+            layout = me.generateGridLayout([wLay[0]+gs, wLay[1]+16+gs, wLay[2]-gs, wLay[3]-16-gs*2], tw, th, 4, 1);
+            layout.unshift([wLay[0]+gs, wLay[1]+gs, wLay[2]-gs, 16]);
+            layouts.push(layout);
+            wLay = win.layouts[1];
+            layout = me.generateGridLayout([wLay[0]+gs*2, wLay[1]+32+gs*2, wLay[2]-gs*4, wLay[3]-32-gs*4], tw, th, 4, 4);
+            layout.unshift([wLay[0]+gs*2, wLay[1]+gs*2, wLay[2]-gs*4, 32]);
+            layouts.push(layout);
+
+            break;
         }
         return entities;
     };
@@ -90,60 +79,39 @@ pico.def('tome', 'picUIWindow', function(){
         var
         tw = this.tileWidth,
         th = this.tileHeight,
+        hero = this.hero,
         win = e.getComponent(com.win),
         rect = e.getComponent(win.box),
         layout = (rect.width > (tw * 3)) ? com.layouts[1] : com.layouts[0],
         x = evt[0],
         y = evt[1],
-        tile, tx, ty;
-
+        tile, spell, tx, ty;
 
         for(var j=1,jl=layout.length; j<jl; j++){
             tile = layout[j];
             tx = tile[0];
             ty = tile[1];
             if (tx < x && (tx + tw) > x && ty < y && (ty + th) > y){
-                this.go('castSpell', {bag:e.name, index:j-1});
+                spell = hero.getTome()[j-1];
+                this.go('selectSpell', hero.getSelectedSpell() === spell ? undefined : spell); // call even if tome[j-1] is undefined
                 return;
             }
         }
         return entities;
     };
 
-    me.castSpell = function(elapsed, evt, entities){
-        var
-        targetName = evt.bag,
-        e, com;
+    // use this so that all entities can be updated
+    me.selectSpell = function(elapsed, evt, entities){
+        var e, com;
+
         for(var i=0,l=entities.length; i<l; i++){
             e = entities[i];
-            if (targetName === e.name){
-                com = e.getComponent(name);
-                if (!com) continue;
-                switch(targetName){
-                    case inventoryId:
-                        var items = this.hero.getBag();
-                        if (items[evt.index]){
-                            if(com.activated[evt.index+1] ^= true){
-                            }else{
-                            }
-                            return [e];
-                        }
-                        break;
-                    case skillsId:
-                        var
-                        hero = this.hero,
-                        items = hero.getTome();
-                        if (items[evt.index]){
-                            if(com.activated[evt.index+1] ^= true){
-                                hero.selectSpell(items[evt.index]);
-                            }else{
-                                hero.selectSpell(undefined);
-                            }
-                            return entities;
-                        }
-                        break;
-                }
-            }
+            com = e.getComponent(name);
+            if (!com) continue;
+
+            this.hero.selectSpell(evt);
+
+            return entities;
         }
     };
 
@@ -151,14 +119,12 @@ pico.def('tome', 'picUIWindow', function(){
         var
         com = ent.getComponent(name),
         win = ent.getComponent(com.win),
-        rect = ent.getComponent(win.box),
-        hero = this.hero,
-        items = ent.name === inventoryId ? hero.getBag() : hero.getTome();
+        rect = ent.getComponent(win.box);
 
         if (rect.width > (this.tileWidth * 3)){
-            return drawBag.call(this, ctx, items, com.layouts[1], com);
+            return draw.call(this, ctx, this.hero.getTome(), com.layouts[1], com);
         }else{
-            return drawBag.call(this, ctx, items, com.layouts[0], com);
+            return draw.call(this, ctx, this.hero.getTome(), com.layouts[0], com);
         }
     };
 });
