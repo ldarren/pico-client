@@ -241,6 +241,15 @@ pico.def('game', 'pigSqrMap', function(){
         }
     };
 
+    me.openChest = function(elapsed, level, entities){
+    };
+
+    me.attackAnim = function(elapsed, level, entities){
+    };
+
+    me.counterAnim = function(elapsed, level, entities){
+    };
+
     me.gotoLevel = function(elapsed, level, entities){
         createLevel(level);
         me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);

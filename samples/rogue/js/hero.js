@@ -2,18 +2,24 @@ pico.def('hero', 'picUIWindow', function(){
     var
     me = this,
     name = me.moduleName,
-    Floor = Math.floor, Ceil = Math.ceil, Random = Math.random,
+    Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
+    ATTACK_WIN = "You rolled a TOTAL(ROLL+ATK) beat NAME's defence DEF, you've dealt DMG damage",
+    ATTACK_LOST = "You missed by rolled a TOTAL(ROLL+ATK) lowered than NAME's defense DEF",
+    COUNTER_WIN = "",
+    COUNTER_LOST = "",
     objects,
     position, level, selectedSpell,
     heroObj,
     appearance, stats, effects, bag, tome,
     currStats,
+    d20Roll = function(){
+        return Round(Random()*21);
+    },
     drawSmall = function(ctx, win, com, rect){
         var
         ts = this.tileSet,
         tw = this.tileWidth,
         th = this.tileHeight,
-        job = this.hero.getJob(),
         sd = this.smallDevice,
         gs = win.gridSize,
         margin = sd ? 2 : 4,
@@ -31,22 +37,22 @@ pico.def('hero', 'picUIWindow', function(){
         ctx.font = com.font;
         ctx.fillStyle = com.fontColor;
 
-        ctx.fillText(G_OBJECT_NAME[job], x, y + uiSize/2, rect.width);
+        ctx.fillText(G_OBJECT_NAME[currStats[0]], x, y + uiSize/2, rect.width);
 
         x = rect.x + gs + margin;
         y += uiSize;
         uiSize = sd ? 16 : 32;
 
         x = me.drawData(ctx, ts, G_UI.LEVEL, level, x, y, uiSize, margin, textWidth3);
-        x = me.drawData(ctx, ts, G_UI.DEX, currStats[3], x, y, uiSize, margin, textWidth3);
-        x = me.drawData(ctx, ts, G_UI.LUCK, currStats[4], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.DEX, currStats[4], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.LUCK, currStats[5], x, y, uiSize, margin, textWidth3);
 
         x = rect.x + gs + margin + pw;
         y = rect.y + gs + margin;
         uiSize = sd ? 8 : 16;
         
         // draw hp
-        for(i=0, l=currStats[1]; i<l; i++){
+        for(i=0, l=currStats[2]; i<l; i++){
             ts.draw(ctx, G_UI.HP, x, y+margin, uiSize, uiSize);
             x += uiSize;
         }
@@ -61,16 +67,16 @@ pico.def('hero', 'picUIWindow', function(){
         x = rect.x + gs + margin + pw*2;
         y = rect.y + gs + margin;
         
-        x = me.drawData(ctx, ts, G_UI.PATK, currStats[5], x, y, uiSize, margin, textWidth3);
-        x = me.drawData(ctx, ts, G_UI.RATK, currStats[6], x, y, uiSize, margin, textWidth3);
-        x = me.drawData(ctx, ts, G_UI.MATK, currStats[7], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.PATK, currStats[6], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.RATK, currStats[7], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.MATK, currStats[8], x, y, uiSize, margin, textWidth3);
 
         x = rect.x + gs + margin + pw*2;
         y += uiSize;
 
-        x = me.drawData(ctx, ts, G_UI.PDEF, currStats[8], x, y, uiSize, margin, textWidth3);
-        x = me.drawData(ctx, ts, G_UI.MDEF, currStats[9], x, y, uiSize, margin, textWidth3);
-        x = me.drawData(ctx, ts, G_UI.WILL, currStats[2], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.PDEF, currStats[9], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.MDEF, currStats[10], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.WILL, currStats[3], x, y, uiSize, margin, textWidth3);
 
         ctx.restore();
     },
@@ -131,7 +137,20 @@ pico.def('hero', 'picUIWindow', function(){
         }
     };
 
-    me.attack = function(object){
+    me.battle = function(creep, flag, accident){
+        var
+        creepName = G_OBJECT_NAME[creep[0]],
+        attack = accident ? undefined : [d20Roll(), currStats[6], creep[7]],
+        counter = flag ? undefined : [d20Roll(), creep[4], currStats[9]],
+        msg = '';
+
+        msg += attack ? 'You rolled a '+attack[0]+'+'+attack[1]+ (attack[0]+attack[1] > attack[2] ? 
+            ', which beat '+creepName+' defense '+attack[2] : 
+            ', which is lowerd than '+creepName+' defense '+attack[2]) : '';
+        msg += counter ? creepName+' rolled a '+counter[0]+'+'+counter[1]+ (counter[0]+counter[1] > counter[2] ? 
+            ', which beat your defense '+counter[2] : 
+            ', which is lowerd than your defense '+counter[2]) : '';
+        return [attack, counter, msg];
     };
 
     me.move = function(pos){
@@ -147,7 +166,7 @@ pico.def('hero', 'picUIWindow', function(){
         if (lvl < level) return currStats;
         level = lvl;
         currStats = stats.slice();
-        for(var i=2; i<10; i++){
+        for(var i=3; i<11; i++){
             currStats[i] = Ceil(currStats[i]*level);
         }
         return currStats;
@@ -173,6 +192,7 @@ pico.def('hero', 'picUIWindow', function(){
     me.getJob = function(){ return appearance[0]; };
     me.getBag = function(){ return bag; };
     me.getTome = function(){ return tome; };
+    me.equal = function(obj){ return obj[0] === currStats[0] && obj[1] === currStats[1]; };
 
     me.draw = function(ctx, ent, clip){
         var

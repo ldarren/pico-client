@@ -5,9 +5,10 @@ Object.freeze(G_OBJECT_TYPE = {
     CREEP: 3,
     CHEST: 4,
     ENV: 5,
-    ITEM: 6,
-    SKILL: 7,
-    EFFECT: 8,
+    HEALTH: 6,
+    ITEM: 7,
+    SKILL: 8,
+    EFFECT: 9,
 });
 
 Object.freeze(G_TILE_TYPE = {
@@ -50,6 +51,8 @@ Object.freeze(G_OBJECT = {
     SHRINE: 133,
     SOUL_STONE: 134,
     HEALTH_GLOBE: 135,
+    GOLD: 195,
+    SKULL: 196,
 });
 
 Object.freeze(G_UI = {
@@ -316,14 +319,14 @@ Object.freeze(G_OBJECT_NAME = {
 
 // hp, will, dex, luck, [atk, ratk, matk], [def, mdef], [veg, insect, beast, undead, demon]
 Object.freeze(G_HERO_STAT = [
-    [144,   2, 0, 1, 1,       0.1, 0.2, 0,    0.1, 0,    1,1,1,1,1],     //rogue
-    [145,   3, 0, 0.1, 0,     0.2, 0.1, 0.1,  0.2, 0.1,  1,1,1,1.2,1.2], //monk
-    [146,   4, 0, 0.2, 0.1,   0.3, 0.1, 0,    0.3, 0,    1,1,1,1,1],     //Barbarian
-    [147,   3, 0, 0.2, 0.1,   0.2, 0.1, 0.1,  0.2, 0.1,  1,1,1,1,1],     //Druid
-    [148,   2, 0, 0.2, 0.1,   0.2, 0.4, 0.1,  0.2, 0.1,  1,1,1.5,1,1],   //Hunter
-    [149,   3, 0, 0, 0,       0.2, 0.1, 0.1,  0.4, 0.1,  1,1,1,1.5,1],   //Paladin
-    [150,   1, 0, 0, 0.1,     0.1, 0.1, 0.3,  0.1, 0.4,  1,1,1,1,1],     //Wizard
-    [151,   1, 0, 0, 0,       0.1, 0.1, 0.4,  0.1, 0.3,  1,1,1,1,1],     //Warlock
+    [144,   G_OBJECT_TYPE.HERO, 2, 0, 1, 1,       0.1, 0.2, 0,    0.1, 0,    1,1,1,1,1],     //rogue
+    [145,   G_OBJECT_TYPE.HERO, 3, 0, 0.1, 0,     0.2, 0.1, 0.1,  0.2, 0.1,  1,1,1,1.2,1.2], //monk
+    [146,   G_OBJECT_TYPE.HERO, 4, 0, 0.2, 0.1,   0.3, 0.1, 0,    0.3, 0,    1,1,1,1,1],     //Barbarian
+    [147,   G_OBJECT_TYPE.HERO, 3, 0, 0.2, 0.1,   0.2, 0.1, 0.1,  0.2, 0.1,  1,1,1,1,1],     //Druid
+    [148,   G_OBJECT_TYPE.HERO, 2, 0, 0.2, 0.1,   0.2, 0.4, 0.1,  0.2, 0.1,  1,1,1.5,1,1],   //Hunter
+    [149,   G_OBJECT_TYPE.HERO, 3, 0, 0, 0,       0.2, 0.1, 0.1,  0.4, 0.1,  1,1,1,1.5,1],   //Paladin
+    [150,   G_OBJECT_TYPE.HERO, 1, 0, 0, 0.1,     0.1, 0.1, 0.3,  0.1, 0.4,  1,1,1,1,1],     //Wizard
+    [151,   G_OBJECT_TYPE.HERO, 1, 0, 0, 0,       0.1, 0.1, 0.4,  0.1, 0.3,  1,1,1,1,1],     //Warlock
 ]);
 
 

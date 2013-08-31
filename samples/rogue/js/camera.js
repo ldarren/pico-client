@@ -126,13 +126,13 @@ pico.def('camera', 'picBase', function(){
                 }
             }
         }else if(object){
-            var objId = object[0];
 
-            if (objId === hero.getJob()){
+            if (hero.equal(object)){
                 steps = this.solve(hp);
                 if (!steps) return;
                 this.go('gameStep', steps);
             }else{
+                var objId = object[0];
                 this.go('showInfo', object);
                 if (tileType & G_TILE_TYPE.CREEP){
                     hero.attack(objId);
