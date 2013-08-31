@@ -122,6 +122,8 @@ onLoad = function(){
         game.route('fingerOut', [game.releaseSelected, renderer.releaseScreenshot, renderer.draw]);
         game.route('useItem', [bag.useItem, renderer.draw, game.releaseSelected]);
         game.route('selectSpell', [tome.selectSpell, renderer.draw, game.releaseSelected]);
+        game.route('gameStep', [game.step, renderer.draw]);
+        game.route('forceRefresh', [renderer.draw]);
         game.route('resize', [camera.resize, uiWindow.resize, tome.resize, bag.resize, info.openIfValid, dialogMsg.openIfValid, renderer.draw]);
         game.route('heroMove', [game.heroMove, renderer.draw]);
         game.route('heroStop', [game.heroStop, renderer.draw]);

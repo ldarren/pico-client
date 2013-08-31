@@ -10,7 +10,7 @@ pico.def('god', function(){
     me.exit = function(){
     };
 
-    me.step = function(){
+    me.step = function(steps){
     };
     
     me.createHero = function(){

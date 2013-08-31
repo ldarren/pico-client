@@ -59,6 +59,8 @@ pico.def('game', 'pigSqrMap', function(){
 
         if (me.currentLevel) generateRandomLevel(mapParams[2], mapParams[3]);
         else populateStaticLevel();
+
+        me.hero.levelUp(level);
     },
     isOpen = function(i){
         var
@@ -222,12 +224,16 @@ pico.def('game', 'pigSqrMap', function(){
         //saveGame();
     };
 
-    me.step = function(){
-        me.god.step.call(me);
-        me.hero.step.call(me);
-        me.ai.step.call(me);
+    me.step = function(elapsed, steps, entities){
+        if (!steps) return;
+        me.god.step.call(me, steps);
+        me.hero.step.call(me, steps);
+        me.ai.step.call(me, steps);
+
+        return entities;
     };
 
+    // call when player obtain the key
     me.unlockLevel = function(level){
         if (me.deepestLevel < level){
             me.deepestLevel = level;
@@ -295,40 +301,36 @@ pico.def('game', 'pigSqrMap', function(){
         var
         hints = this.hints,
         hint = hints[pos];
-        if (10 > hint) return false;
+        if (10 > hint) return 0;
 
         var
         map = this.map,
         flags = this.flags,
         width = this.mapWidth,
         neighbours = this.getNeighbours(pos, function(){return true;}),
-        count = 1, // hint always has one
+        count = 1, // hint always has one/hidden
         tileIdx, tile, i, l;
 
         for(i=0,l=neighbours.length; i<l; i++){
             tileIdx = neighbours[i];
             tile = map[tileIdx];
             
-            if (tile & G_TILE_TYPE.HIDE){ 
-                if (flags[tileIdx] && tile & G_TILE_TYPE.CREEP){
-                    // mark creep
-                    count |= G_TILE_TYPE.CREEP;
-                    count += 0x10;
-                }
-            }else if (tile & G_TILE_TYPE.EXIT || tile & G_TILE_TYPE.CHEST){
-                // uncovered exit or chest
+            if (!(tile & G_TILE_TYPE.HIDE) && ((tile & G_TILE_TYPE.CHEST || tile & G_TILE_TYPE.CREEP))){
+                // mark creep
                 count |= tile;
                 count += 0x10;
             }
         }
-        if (count !== hint) return false;
+        if (count !== hint) return 0;
 
+        count = 0;
         for(i=0,l=neighbours.length; i<l; i++){
             tileIdx = neighbours[i];
-            if (map[tileIdx] & G_TILE_TYPE.HIDE && !flags[tileIdx]) fill(map, hints, width, tileIdx);
+            if (map[tileIdx] & G_TILE_TYPE.HIDE && !flags[tileIdx])
+                count += fill(map, hints, width, tileIdx);
         }
 
-        return true;
+        return count;
     };
 
     me.heroMove = function(elapsed, evt, entities){

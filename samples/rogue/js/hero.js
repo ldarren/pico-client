@@ -140,11 +140,14 @@ pico.def('hero', 'picUIWindow', function(){
     me.exit = function(){
     };
 
-    me.step = function(){
-        var spell
+    me.step = function(steps){
+        var spell;
         for(var i=0, l=tome.length; i<l; i++){
             spell = tome[i];
-            if (spell[3]) spell[3]--;
+            if (spell[3]) {
+                spell[3] -= steps;
+                if (spell[3] < 0) spell[3] = 0;
+            }
         }
     };
 

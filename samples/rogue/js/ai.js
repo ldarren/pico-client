@@ -25,7 +25,7 @@ pico.def('ai', function(){
     me.exit = function(){
     };
 
-    me.step = function(){
+    me.step = function(steps){
     };
 
     me.changeTheme = function(theme){

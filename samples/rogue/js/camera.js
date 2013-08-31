@@ -90,7 +90,7 @@ pico.def('camera', 'picBase', function(){
         hero = this.hero,
         objects = this.objects,
         hp = hero.getPosition(),
-        id, tileType, object;
+        id, tileType, object, steps;
 
         if (y > mapH || x > mapW) return;
         id = mapW * y + x;
@@ -105,13 +105,19 @@ pico.def('camera', 'picBase', function(){
                         map[id] |= G_TILE_TYPE.CREEP;
                         objects[id] = this.ai.spawnCreep();
                         this.recalHints();
+                        // TODO: creep auto attack player
                     }else{
                         this.flags[id] = effect;
                     }
+                    map[id] &= G_TILE_TYPE.SHOW;
+                    this.go('forceRefresh'); // TODO: find a better way to show cooldown counter
                 }else{
-                    delete this.flags[id];
+                    this.go('gameStep', this.fillTiles(id));
+
+                    if (tileType & G_TILE_TYPE.CREEP){
+                        // TODO: creep auto attack player
+                    }
                 }
-                this.fillTiles(id);
             }else{
                 var h = this.findPath(hp, this.nextTile(id, hp));
                 if (h.length){
@@ -119,36 +125,37 @@ pico.def('camera', 'picBase', function(){
                     this.startLoop('heroMove', h);
                 }
             }
+        }else if(object){
+            var objId = object[0];
+
+            if (objId === hero.getJob()){
+                steps = this.solve(hp);
+                if (!steps) return;
+                this.go('gameStep', steps);
+            }else{
+                this.go('showInfo', object);
+                if (tileType & G_TILE_TYPE.CREEP){
+                    hero.attack(objId);
+/*                        this.go('showDialog', {
+                        info: [
+                            'RIP',
+                            'you were killed by '+G_OBJECT_NAME[objId]+' at level '+this.currentLevel,
+                            'but your lineage will continue...'],
+                        callbacks: ['reborn']});*/
+                }
+                this.go('gameStep', 1);
+            }
         }
 
         tileType = map[id]; // last action might hv updated tileType
-        if (!(tileType & G_TILE_TYPE.HIDE)){
-            if(object){
-                var objId = object[0];
-
-                if (objId === hero.getJob()){
-                    if (!this.solve(hp)) return;
-                }else{
-                    this.go('showInfo', object);
-                    if (tileType & G_TILE_TYPE.CREEP){
-                        hero.attack(objId);
-/*                        this.go('showDialog', {
-                            info: [
-                                'RIP',
-                                'you were killed by '+G_OBJECT_NAME[objId]+' at level '+this.currentLevel,
-                                'but your lineage will continue...'],
-                            callbacks: ['reborn']});*/
-                    }
-                }
-                this.step();
-            }else{
-                var h = this.findPath(hp, id);
-                if (h.length){
-                    this.stopLoop('heroMove');
-                    this.startLoop('heroMove', h);
-                }
-                this.go('hideInfo');
+        object = objects[id];
+        if (!(tileType & G_TILE_TYPE.HIDE) && !object){
+            var h = this.findPath(hp, id);
+            if (h.length){
+                this.stopLoop('heroMove');
+                this.startLoop('heroMove', h);
             }
+            this.go('hideInfo');
         }
 
         return entities;
@@ -182,11 +189,12 @@ pico.def('camera', 'picBase', function(){
         hints = this.hints,
         tileW = this.tileWidth,
         tileH = this.tileHeight,
+        sd = this.smallDevice,
         hw = Floor(tileW/2),
         hh = Floor(tileH/2),
         w = viewStart,
-        fw = 8 * tileW/32,
-        fh = 16 * tileH/32,
+        fw = sd ? 8 : 16,
+        fh = sd ? 16 : 32,
         fx = tileW - fw,
         fy = tileH - fh,
         hero = this.hero,

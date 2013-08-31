@@ -8,8 +8,13 @@ pico.def('tome', 'picUIWindow', function(){
         ts = this.tileSet,
         tw = this.tileWidth,
         th = this.tileHeight,
+        sd = this.smallDevice,
+        fw = sd ? 8 : 16,
+        fh = sd ? 16 : 32,
+        fx = (tw - fw)/2,
+        fy = (th - fh)/2,
         selectedSpell = this.hero.getSelectedSpell(),
-        block, item;
+        block, item, x, y;
 
         ctx.save();
         ctx.textAlign = 'center';
@@ -22,11 +27,13 @@ pico.def('tome', 'picUIWindow', function(){
         
         for(var i=1,j=0, l=layout.length; i<l; i++,j++){
             block = layout[i];
-            ts.draw(ctx, G_UI.SLOT, block[0], block[1], tw, th);
+            x = block[0], y = block[1];
+            ts.draw(ctx, G_UI.SLOT, x, y, tw, th);
             item = items[j];
             if (!item) continue;
-            ts.draw(ctx, item[0], block[0], block[1], tw, th);
-            if (item === selectedSpell) ts.draw(ctx, G_SHADE[0], block[0], block[1], tw, th);
+            ts.draw(ctx, item[0], x, y, tw, th);
+            if (item[3]) ts.draw(ctx, G_NUMERIC.LARGE_LIGHT + item[3], x+fx, y+fy, fw, fh);
+            else if (item === selectedSpell) ts.draw(ctx, G_SHADE[0], x, y, tw, th);
         }
 
         ctx.restore();
