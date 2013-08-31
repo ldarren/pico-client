@@ -8,19 +8,6 @@ pico.def('hero', 'picUIWindow', function(){
     heroObj,
     appearance, stats, effects, bag, tome,
     currStats,
-    drawData = function(ctx, ts, icon, text, x, y, center, uiSize, margin, textWidth){
-        ts.draw(ctx, icon, x, y, uiSize, uiSize);
-        x += uiSize;
-        if (textWidth){
-            ctx.fillText(text, x, center, textWidth);
-            x += textWidth;
-        }else{
-            ctx.fillText(text, x, center);
-            var metrics = ctx.measureText(''+text);
-            x += metrics.width + margin;
-        }
-        return x;
-    },
     drawSmall = function(ctx, win, com, rect){
         var
         ts = this.tileSet,
@@ -32,12 +19,10 @@ pico.def('hero', 'picUIWindow', function(){
         margin = sd ? 2 : 4,
         pw = (rect.width - gs*2 - margin*2)/3,
         textWidth3 = sd ? 15 : 30,
-        textWidth2 = sd ? 15 : 30,
+        textWidth2 = sd ? 20 : 50,
         x = rect.x + gs + margin,
         y = rect.y + gs + margin,
         uiSize = sd ? 16 : 32,
-        uiSize2 = uiSize/2,
-        center = y + uiSize2,
         i, l;
 
         ctx.save();
@@ -46,51 +31,46 @@ pico.def('hero', 'picUIWindow', function(){
         ctx.font = com.font;
         ctx.fillStyle = com.fontColor;
 
-        ctx.fillText(G_OBJECT_NAME[job], x, center, rect.width);
+        ctx.fillText(G_OBJECT_NAME[job], x, y + uiSize/2, rect.width);
 
         x = rect.x + gs + margin;
         y += uiSize;
+        uiSize = sd ? 16 : 32;
+
+        x = me.drawData(ctx, ts, G_UI.LEVEL, level, x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.DEX, currStats[3], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.LUCK, currStats[4], x, y, uiSize, margin, textWidth3);
+
+        x = rect.x + gs + margin + pw;
+        y = rect.y + gs + margin;
         uiSize = sd ? 8 : 16;
-        uiSize2 = uiSize/2;
         
         // draw hp
         for(i=0, l=currStats[1]; i<l; i++){
-            ts.draw(ctx, G_UI.HP, x, y, uiSize, uiSize);
+            ts.draw(ctx, G_UI.HP, x, y+margin, uiSize, uiSize);
             x += uiSize;
         }
 
         x = rect.x + gs + margin + pw;
-        y = rect.y + gs + margin;
         uiSize = sd ? 16 : 32;
-        uiSize2 = uiSize/2,
-        center = y + uiSize2;
-
-        x = drawData(ctx, ts, G_UI.LEVEL, level, x, y, center, uiSize, margin, textWidth3);
-        x = drawData(ctx, ts, G_UI.DEX, currStats[3], x, y, center, uiSize, margin, textWidth3);
-        x = drawData(ctx, ts, G_UI.LUCK, currStats[4], x, y, center, uiSize, margin, textWidth3);
-
-        x = rect.x + gs + margin + pw;
         y += uiSize;
-        center = y + uiSize2;
 
-        x = drawData(ctx, ts, G_UI.GOLD, appearance[8], x, y, center, uiSize, margin, textWidth2);
-        x = drawData(ctx, ts, G_UI.SKULL, appearance[9], x, y, center, uiSize, margin, textWidth2);
+        x = me.drawData(ctx, ts, G_UI.GOLD, appearance[8], x, y, uiSize, margin, textWidth2);
+        x = me.drawData(ctx, ts, G_UI.SKULL, appearance[9], x, y, uiSize, margin, textWidth2);
 
         x = rect.x + gs + margin + pw*2;
         y = rect.y + gs + margin;
-        center = y + uiSize2;
         
-        x = drawData(ctx, ts, G_UI.PATK, currStats[5], x, y, center, uiSize, margin, textWidth3);
-        x = drawData(ctx, ts, G_UI.RATK, currStats[6], x, y, center, uiSize, margin, textWidth3);
-        x = drawData(ctx, ts, G_UI.MATK, currStats[7], x, y, center, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.PATK, currStats[5], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.RATK, currStats[6], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.MATK, currStats[7], x, y, uiSize, margin, textWidth3);
 
         x = rect.x + gs + margin + pw*2;
         y += uiSize;
-        center = y + uiSize2;
 
-        x = drawData(ctx, ts, G_UI.PDEF, currStats[8], x, y, center, uiSize, margin, textWidth3);
-        x = drawData(ctx, ts, G_UI.MDEF, currStats[9], x, y, center, uiSize, margin, textWidth3);
-        x = drawData(ctx, ts, G_UI.WILL, currStats[2], x, y, center, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.PDEF, currStats[8], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.MDEF, currStats[9], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.WILL, currStats[2], x, y, uiSize, margin, textWidth3);
 
         ctx.restore();
     },

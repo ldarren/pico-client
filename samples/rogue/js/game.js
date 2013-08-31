@@ -151,7 +151,7 @@ pico.def('game', 'pigSqrMap', function(){
         for(i=0,l=creepCount; i<l; i++){
             c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
             map[c] |= G_TILE_TYPE.CREEP;
-            objects[c] = ai.spawnCreep();
+            objects[c] = ai.spawnCreep(me.currentLevel);
         }
 
         // add chests

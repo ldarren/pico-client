@@ -6,7 +6,7 @@ pico.def('ai', function(){
     currIndex = 0,
     level = 0,
     objects,
-    createCreepStat = function(creepId){
+    createCreepStat = function(creepId, level){
         var s = G_CREEP_STAT[creepId-G_CREEP.RAT].slice();
         for(var i=4; i<10; i++){
             s[i] = Ceil(s[i]*level);
@@ -16,7 +16,6 @@ pico.def('ai', function(){
 
     me.init = function(){
         objects = this.objects;
-        level = this.currentLevel;
         me.changeTheme(this.theme);
 
         return objects;
@@ -51,7 +50,7 @@ pico.def('ai', function(){
         }
     };
 
-    me.spawnCreep = function(){
+    me.spawnCreep = function(level){
         if (currIndex >= team.length) currIndex = 0;
         return createCreepStat(team[currIndex++], level);
     };

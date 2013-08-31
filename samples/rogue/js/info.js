@@ -6,19 +6,61 @@ pico.def('info', 'picUIWindow', function(){
     drawSmall = function(ctx, win, com, rect){
         var
         ts = this.tileSet,
-        center = rect.y + (rect.height-win.gridSize)/2,
         tw = this.tileWidth,
         th = this.tileHeight,
-        x = rect.x + win.gridSize + 8,
-        y = center - (th/2);
+        job = this.hero.getJob(),
+        sd = this.smallDevice,
+        gs = win.gridSize,
+        margin = sd ? 2 : 4,
+        pw = (rect.width - gs*2 - margin*2)/2,
+        textWidth3 = sd ? 15 : 30,
+        textWidth2 = sd ? 15 : 30,
+        x = rect.x + gs + margin,
+        y = rect.y + margin,
+        uiSize = sd ? 16 : 32,
+        i, l;
 
         ctx.save();
-        ts.draw(ctx, info[0], x, y, tw, th);
         ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
         ctx.font = com.font;
         ctx.fillStyle = com.fontColor;
-        ctx.fillText(G_OBJECT_NAME[info[0]], x + tw + 8, center, rect.width);
+
+        switch(info[1]){
+            case G_OBJECT_TYPE.CREEP:
+
+                ctx.fillText(G_OBJECT_NAME[info[0]]+' ('+G_CREEP_TYPE_NAME[info[2]]+')', x, y + uiSize/2, rect.width);
+
+                x = rect.x + gs + margin;
+                y += uiSize;
+                uiSize = sd ? 8 : 16;
+                
+                // draw hp
+                for(i=0, l=info[3]; i<l; i++){
+                    ts.draw(ctx, G_UI.HP, x, y, uiSize, uiSize);
+                    x += uiSize;
+                }
+
+                x = rect.x + gs + margin + pw;
+                y = rect.y + margin;
+                uiSize = sd ? 16 : 32;
+                
+                x = me.drawData(ctx, ts, G_UI.PATK, info[4], x, y, uiSize, margin, textWidth3);
+                x = me.drawData(ctx, ts, G_UI.RATK, info[5], x, y, uiSize, margin, textWidth3);
+                x = me.drawData(ctx, ts, G_UI.MATK, info[6], x, y, uiSize, margin, textWidth3);
+
+                x = rect.x + gs + margin + pw;
+                y += uiSize;
+
+                x = me.drawData(ctx, ts, G_UI.PDEF, info[7], x, y, uiSize, margin, textWidth3);
+                x = me.drawData(ctx, ts, G_UI.MDEF, info[8], x, y, uiSize, margin, textWidth3);
+                break;
+            default:
+                ts.draw(ctx, info[0], x, y, tw, th);
+                ctx.fillText(G_OBJECT_NAME[info[0]], x + tw + margin, y + th/2);
+                break;
+        }
+
         ctx.restore();
     },
     drawBig = function(ctx, win, com, rect){

@@ -103,7 +103,7 @@ pico.def('camera', 'picBase', function(){
                 if (effect){
                     if (!object){
                         map[id] |= G_TILE_TYPE.CREEP;
-                        objects[id] = this.ai.spawnCreep();
+                        objects[id] = this.ai.spawnCreep(this.deepestLevel);
                         this.recalHints();
                         // TODO: creep auto attack player
                     }else{
