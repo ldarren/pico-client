@@ -116,7 +116,7 @@ pico.def('dialogMsg', 'picUIWindow', function(){
         y = rect.y + gs2,
         info = msg.info,
         labels = msg.labels,
-        btn, i, l;
+        i, l;
 
         ctx.save();
         ctx.textAlign = 'left';
@@ -128,18 +128,8 @@ pico.def('dialogMsg', 'picUIWindow', function(){
             //ctx.fillText(info[i], x, y+th*i, rectW);
         }
         // draw buttons
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.font = com.font;
-        for(i=0, l=layouts.length; i<l; i++){
-            ctx.fillStyle = G_COLOR_TONE[2];
-            ctx.strokeStyle = G_COLOR_TONE[1];
-            btn = layouts[i];
-            ctx.fillRect.apply(ctx, btn);
-            ctx.strokeRect.apply(ctx, btn);
-            ctx.fillStyle = com.fontColor;
-            ctx.fillText(labels[i], btn[0]+btn[2]/2, btn[1]+btn[3]/2, btn[2]);
-        }
+        me.drawButtons(ctx, layouts, labels, com.fontColor, G_COLOR_TONE[2], G_COLOR_TONE[1]);
+
         ctx.restore();
     };
 });

@@ -89,6 +89,7 @@ pico.def('camera', 'picBase', function(){
         y = Floor((evt[1] - viewY) / this.tileHeight),
         hero = this.hero,
         objects = this.objects,
+        flags = this.flags,
         hp = hero.getPosition(),
         id, tileType, object, steps;
 
@@ -105,9 +106,10 @@ pico.def('camera', 'picBase', function(){
                         map[id] |= G_TILE_TYPE.CREEP;
                         objects[id] = this.ai.spawnCreep(this.deepestLevel);
                         this.recalHints();
-                        // TODO: creep auto attack player
+
+                        hero.battle(object, flags[id], true);
                     }else{
-                        this.flags[id] = effect;
+                        flags[id] = effect;
                     }
                     map[id] &= G_TILE_TYPE.SHOW;
                     this.go('forceRefresh'); // TODO: find a better way to show cooldown counter
@@ -115,7 +117,7 @@ pico.def('camera', 'picBase', function(){
                     this.go('gameStep', this.fillTiles(id));
 
                     if (tileType & G_TILE_TYPE.CREEP){
-                        // TODO: creep auto attack player
+                        hero.battle(object, flags[id], true);
                     }
                 }
             }else{
@@ -132,16 +134,15 @@ pico.def('camera', 'picBase', function(){
                 if (!steps) return;
                 this.go('gameStep', steps);
             }else{
-                var objId = object[0];
                 this.go('showInfo', object);
                 if (tileType & G_TILE_TYPE.CREEP){
-                    hero.attack(objId);
-/*                        this.go('showDialog', {
-                        info: [
-                            'RIP',
-                            'you were killed by '+G_OBJECT_NAME[objId]+' at level '+this.currentLevel,
-                            'but your lineage will continue...'],
-                        callbacks: ['reborn']});*/
+                    hero.battle(object, flags[id], false);
+                    /*this.go('showDialog', {
+                    info: [
+                        'RIP',
+                        'you were killed by '+G_OBJECT_NAME[objId]+' at level '+this.currentLevel,
+                        'but your lineage will continue...'],
+                    callbacks: ['reborn']});*/
                 }
                 this.go('gameStep', 1);
             }

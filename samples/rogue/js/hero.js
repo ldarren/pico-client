@@ -3,10 +3,10 @@ pico.def('hero', 'picUIWindow', function(){
     me = this,
     name = me.moduleName,
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
-    ATTACK_WIN = "You rolled a TOTAL(ROLL+ATK) beat NAME's defence DEF, you've dealt DMG damage",
-    ATTACK_LOST = "You missed by rolled a TOTAL(ROLL+ATK) lowered than NAME's defense DEF",
-    COUNTER_WIN = "",
-    COUNTER_LOST = "",
+    ATTACK_WIN = "You rolled a TOTAL(ROLL+ATK) beat NAME's defense DEF, you've dealt DMG damage",
+    ATTACK_LOST = "You missed by rolling a TOTAL(ROLL+ATK) lowered than NAME's defense DEF",
+    COUNTER_WIN = "NAME has rolled a TOTAL(ROLL+ATK) which is over your defense DEF, you lost HP hp",
+    COUNTER_LOST = "NAME missed by rolling a TOTAL(ROLL+ATK) less than your defense DEF",
     objects,
     position, level, selectedSpell,
     heroObj,
@@ -142,15 +142,12 @@ pico.def('hero', 'picUIWindow', function(){
         creepName = G_OBJECT_NAME[creep[0]],
         attack = accident ? undefined : [d20Roll(), currStats[6], creep[7]],
         counter = flag ? undefined : [d20Roll(), creep[4], currStats[9]],
-        msg = '';
-
-        msg += attack ? 'You rolled a '+attack[0]+'+'+attack[1]+ (attack[0]+attack[1] > attack[2] ? 
-            ', which beat '+creepName+' defense '+attack[2] : 
-            ', which is lowerd than '+creepName+' defense '+attack[2]) : '';
-        msg += counter ? creepName+' rolled a '+counter[0]+'+'+counter[1]+ (counter[0]+counter[1] > counter[2] ? 
-            ', which beat your defense '+counter[2] : 
-            ', which is lowerd than your defense '+counter[2]) : '';
-        return [attack, counter, msg];
+        attackMsg = (attack[0]+attack[1] > attack[2] ? ATTACK_WIN : ATTACK_LOST)
+        .replace('NAME', creepName).replace('TOTAL', attack[0]+attack[1]).replace('ROLL', attack[0]).replace('ATK', attack[1]).replace('DEF', attack[2]),
+        counterMsg = (counter[0]+counter[1] > counter[2] ? COUNTER_WIN : COUNTER_LOST)
+        .replace('NAME', creepName).replace('TOTAL', counter[0]+counter[1]).replace('ROLL', counter[0]).replace('ATK', counter[1]).replace('DEF', counter[2]);
+        
+        return [[attackMsg, counterMsg], [attack, counter]];
     };
 
     me.move = function(pos){
