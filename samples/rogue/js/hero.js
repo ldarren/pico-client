@@ -7,8 +7,10 @@ pico.def('hero', 'picUIWindow', function(){
     ATTACK_LOST = "You missed by rolling a TOTAL(ROLL+ATK) lowered than NAME's defense DEF",
     COUNTER_WIN = "NAME has rolled a TOTAL(ROLL+ATK) which is over your defense DEF, you lost HP hp",
     COUNTER_LOST = "NAME missed by rolling a TOTAL(ROLL+ATK) less than your defense DEF",
+    CREEP_KILL = "and you have defeated NAME",
+    HERO_KILL = "and you have been killed by NAME",
     objects,
-    position, level, selectedSpell,
+    position, level, selectedSpell, target,
     heroObj,
     appearance, stats, effects, bag, tome,
     currStats,
@@ -138,17 +140,39 @@ pico.def('hero', 'picUIWindow', function(){
     };
 
     me.battle = function(creep, flag, accident){
+        target = creep;
         var
         creepName = G_OBJECT_NAME[creep[0]],
         attack = accident ? undefined : [d20Roll(), currStats[6], creep[7]],
         counter = flag ? undefined : [d20Roll(), creep[4], currStats[9]],
-        attackMsg = (attack[0]+attack[1] > attack[2] ? ATTACK_WIN : ATTACK_LOST)
-        .replace('NAME', creepName).replace('TOTAL', attack[0]+attack[1]).replace('ROLL', attack[0]).replace('ATK', attack[1]).replace('DEF', attack[2]),
-        counterMsg = (counter[0]+counter[1] > counter[2] ? COUNTER_WIN : COUNTER_LOST)
-        .replace('NAME', creepName).replace('TOTAL', counter[0]+counter[1]).replace('ROLL', counter[0]).replace('ATK', counter[1]).replace('DEF', counter[2]);
-        
+        totalAttack = attack[0]+attack[1],
+        totalCounter = counter[0]+counter[1],
+        attackHit = totalAttack > attack[2],
+        counterHit = totalCounter > counter[2],
+        attackMsg = (attackHit ? ATTACK_WIN : ATTACK_LOST)
+        .replace('NAME', creepName).replace('TOTAL', totalAttack).replace('ROLL', attack[0]).replace('ATK', attack[1]).replace('DEF', attack[2]),
+        counterMsg = (counterHit ? COUNTER_WIN : COUNTER_LOST)
+        .replace('NAME', creepName).replace('TOTAL', totalCounter).replace('ROLL', counter[0]).replace('ATK', counter[1]).replace('DEF', counter[2]);
+        if (attackHit) creep[3]--;
+        if (counterHit) currStats[2]--;
+
+        if (creep[3] < 1){
+            attackMsg += CREEP_KILL.replace('NAME', creepName);
+            target = undefined;
+        }
+        if (currStats[3] < 1){
+            counterMsg += HERO_KILL.replace('NAME', creepName);
+            target = undefined;
+        }
+
         return [[attackMsg, counterMsg], [attack, counter]];
     };
+
+    me.flee = function(){
+        if (!target) return false;
+        var fleeRoll = d20Roll();
+        if (fleeRoll > target[4]) return true;
+    }
 
     me.move = function(pos){
         delete objects[position];

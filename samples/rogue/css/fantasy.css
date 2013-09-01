@@ -5,6 +5,16 @@
 body{
     background-color:#204631;
 }
+@font-face {
+    font-family: 'alagardmedium';
+    src:    url('alagard.eot');
+    src:    url('alagard.eot?#iefix') format('embedded-opentype'),
+            url('alagard.woff') format('woff'),
+            url('alagard.ttf') format('truetype'),
+            url('alagard.svg#alagardmedium') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
 div#loading{
     position: absolute;
     top: 50%;

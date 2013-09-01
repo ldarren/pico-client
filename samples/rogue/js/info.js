@@ -2,6 +2,7 @@ pico.def('info', 'picUIWindow', function(){
     var
     me = this,
     name = me.moduleName,
+    layouts = [],
     info,
     drawSmall = function(ctx, win, com, rect){
         var
