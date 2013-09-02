@@ -119,7 +119,7 @@ Object.freeze(G_CREEP = {
     CARABIA: 175,
     GOBLIN: 176,
     ZOMBIE: 177,
-    UNDEAD: 178,
+    SKELETON: 178,
     ORC: 179,
     CYCLOPS: 180,
     WEREWOLF: 181,
@@ -130,7 +130,7 @@ Object.freeze(G_CREEP = {
 Object.freeze(G_CREEP_TEAM = {
     'vampire': [G_CREEP.BAT, 5, G_CREEP.BAT_CHAMPION, 2, G_CREEP.VAMPIRE, 1],
     'veggie': [G_CREEP.SLIME, 5, G_CREEP.SLIME_CHAMPION, 2, G_CREEP.FUNGI, 1],
-    'undead': [G_CREEP.UNDEAD, 2, G_CREEP.MUMMY, 2, G_CREEP.ZOMBIE, 2, G_CREEP.WRAITH, 1],
+    'undead': [G_CREEP.SKELETON, 2, G_CREEP.MUMMY, 2, G_CREEP.ZOMBIE, 2, G_CREEP.WRAITH, 1],
 });
 
 Object.freeze(G_FLOOR = {
@@ -307,7 +307,7 @@ Object.freeze(G_OBJECT_NAME = {
     175: 'Carabia',
     176: 'Goblin',
     177: 'Zombie',
-    178: 'Undead',
+    178: 'Skeleton',
     179: 'Orc',
     180: 'Cyclops',
     181: 'Werewolf',

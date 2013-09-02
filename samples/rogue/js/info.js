@@ -98,7 +98,7 @@ pico.def('info', 'picUIWindow', function(){
         var ent = this.showEntity(G_WIN_ID.INFO);
         info = evt;
 
-        return me.click.call(this, elapsed, evt, entities);
+        return me.resize.call(this, elapsed, evt, entities);
     };
 
     me.close = function(elapsed, evt, entities){
@@ -116,6 +116,47 @@ pico.def('info', 'picUIWindow', function(){
     };
 
     me.click = function(elapsed, evt, entities){
+        if (!layouts.length) return entities;
+
+        var 
+        e = entities[0],
+        com = e.getComponent(name);
+
+        if (!com) return entities;
+
+        var
+        x = evt[0], y = evt[1],
+        btn, label;
+
+        for(var i=0, l=layouts.length; i<l; i++){
+            btn = layouts[i];
+            if (x > btn[0] && x < btn[0]+btn[2] && y > btn[1] && y < btn[1]+btn[3]){
+                label = labels[i];
+                break;
+            }
+        }
+
+        switch(label){
+            case 'Fight':
+                break;
+            case 'Flee':
+                break;
+            case 'Open':
+                break;
+            case 'Speak':
+                break;
+            case 'Use':
+                break;
+            case 'Inspect':
+                break;
+            default:
+                return entities;
+        }
+
+        return;
+    };
+
+    me.resize = function(elapsed, evt, entities){
         var ent = me.findMyFirstEntity(entities, name);
         if (!ent) return entities;
 
@@ -152,23 +193,25 @@ pico.def('info', 'picUIWindow', function(){
         }
 
         var btnCount = labels.length;
-        if (rectH > (tileH * 3)){
+        if (!btnCount) return entities;
+
+        if (win.maximized){
             var
             btnW = tileW*2, btnH = tileH,
-            gap = btnCount > 1 ? Floor((rectW - btnW * btnCount - gs)/(btnCount-1)) : 0,
+            gap = Floor((rectW - btnW * btnCount - gs)/(btnCount+1)),
             y = rect.y + rectH - gs - btnH;
 
             for(var i=0; i<btnCount; i++){
-                layouts.push([rect.x + gs + i * (btnW+gap), y, btnW, btnH]);
+                layouts.push([rect.x + gap + gs + i * (btnW+gap), y, btnW, btnH]);
             }
         }else{
             var
             btnW = tileW, btnH = tileH/2,
-            gap = btnCount > 1 ? Floor((rectH - btnH * btnCount - gs)/(btnCount-1)) : 0,
+            gap = Floor((rectH - btnH * btnCount - gs)/(btnCount+1)),
             x = rect.x + rectW - gs - btnW;
 
             for(var i=0; i<btnCount; i++){
-                layouts.push([x, rect.y + gs + i * (btnH+gap), btnW, btnH]);
+                layouts.push([x, rect.y + gap + i * (btnH+gap), btnW, btnH]);
             }
         }
 

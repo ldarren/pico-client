@@ -63,6 +63,7 @@ pico.def('dialogMsg', 'picUIWindow', function(){
         var 
         e = entities[0],
         com = e.getComponent(name);
+
         if (!com) return entities;
 
         if (msg.callbacks){

@@ -120,11 +120,12 @@ onLoad = function(){
         game.route('fingerUp', [
             game.useSelected, 
             game.releaseSelected, 
+            info.click,
             tome.click, 
             bag.click, 
             dialogMsg.click, 
             uiWindow.click, 
-            info.click,
+            info.resize,
             camera.click, 
             renderer.draw
         ]);
