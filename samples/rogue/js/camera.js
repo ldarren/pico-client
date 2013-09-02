@@ -93,7 +93,7 @@ pico.def('camera', 'picBase', function(){
         hp = hero.getPosition(),
         id, tileType, object, steps;
 
-        if (y > mapH || x > mapW) return;
+        if (y > mapH || x > mapW) return entities;
         id = mapW * y + x;
         tileType = map[id];
         object = objects[id];
@@ -131,7 +131,7 @@ pico.def('camera', 'picBase', function(){
 
             if (hero.equal(object)){
                 steps = this.solve(hp);
-                if (!steps) return;
+                if (!steps) return entities;
                 this.go('gameStep', steps);
             }else{
                 this.go('showInfo', object);

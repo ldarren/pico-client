@@ -1,8 +1,10 @@
 pico.def('info', 'picUIWindow', function(){
     var
     me = this,
+    Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
     name = me.moduleName,
     layouts = [],
+    labels = [],
     info,
     drawSmall = function(ctx, win, com, rect){
         var
@@ -13,7 +15,7 @@ pico.def('info', 'picUIWindow', function(){
         sd = this.smallDevice,
         gs = win.gridSize,
         margin = sd ? 2 : 4,
-        pw = (rect.width - gs*2 - margin*2)/2,
+        pw = (rect.width - gs*2 - margin*2)/3,
         textWidth3 = sd ? 15 : 30,
         textWidth2 = sd ? 15 : 30,
         x = rect.x + gs + margin,
@@ -62,6 +64,8 @@ pico.def('info', 'picUIWindow', function(){
                 break;
         }
 
+        me.drawButtons(ctx, layouts, labels, com.fontColor, G_COLOR_TONE[2], G_COLOR_TONE[1]);
+
         ctx.restore();
     },
     drawBig = function(ctx, win, com, rect){
@@ -80,6 +84,8 @@ pico.def('info', 'picUIWindow', function(){
         ctx.font = com.font;
         ctx.fillStyle = com.fontColor;
         ctx.fillText(G_OBJECT_NAME[info[0]], x + tw/2, y + th, rect.width);
+
+        me.drawButtons(ctx, layouts, labels, com.fontColor, G_COLOR_TONE[2], G_COLOR_TONE[1]);
         ctx.restore();
     };
 
@@ -89,9 +95,10 @@ pico.def('info', 'picUIWindow', function(){
     };
 
     me.open = function(elapsed, evt, entities){
-        this.showEntity(G_WIN_ID.INFO);
+        var ent = this.showEntity(G_WIN_ID.INFO);
         info = evt;
-        return entities;
+
+        return me.click.call(this, elapsed, evt, entities);
     };
 
     me.close = function(elapsed, evt, entities){
@@ -108,6 +115,66 @@ pico.def('info', 'picUIWindow', function(){
         }
     };
 
+    me.click = function(elapsed, evt, entities){
+        var ent = me.findMyFirstEntity(entities, name);
+        if (!ent) return entities;
+
+        layouts.length = 0;
+        labels.length = 0;
+
+        var
+        com = ent.getComponent(name),
+        win = ent.getComponent(com.win),
+        gs = win.gridSize,
+        rect = ent.getComponent(win.box),
+        rectW = rect.width,
+        rectH = rect.height,
+        tileW = this.tileWidth,
+        tileH = this.tileHeight;
+
+        switch(info[1]){
+            case G_OBJECT_TYPE.CREEP:
+                labels.push('Fight');
+                if (this.hero.isTarget(info)) labels.push('Flee');
+                break;
+            case G_OBJECT_TYPE.CHEST:
+                labels.push('Open');
+                break;
+            case G_OBJECT_TYPE.NPC:
+                labels.push('Speak');
+                break;
+            case G_OBJECT_TYPE.HEALTH:
+                labels.push('Use');
+                break;
+            case G_OBJECT_TYPE.ENV:
+                labels.push('Inspect');
+                break;
+        }
+
+        var btnCount = labels.length;
+        if (rectH > (tileH * 3)){
+            var
+            btnW = tileW*2, btnH = tileH,
+            gap = btnCount > 1 ? Floor((rectW - btnW * btnCount - gs)/(btnCount-1)) : 0,
+            y = rect.y + rectH - gs - btnH;
+
+            for(var i=0; i<btnCount; i++){
+                layouts.push([rect.x + gs + i * (btnW+gap), y, btnW, btnH]);
+            }
+        }else{
+            var
+            btnW = tileW, btnH = tileH/2,
+            gap = btnCount > 1 ? Floor((rectH - btnH * btnCount - gs)/(btnCount-1)) : 0,
+            x = rect.x + rectW - gs - btnW;
+
+            for(var i=0; i<btnCount; i++){
+                layouts.push([x, rect.y + gs + i * (btnH+gap), btnW, btnH]);
+            }
+        }
+
+        return entities;
+    };
+
     me.draw = function(ctx, ent, clip){
         if (!info){
             me.close.call(this);
@@ -118,7 +185,7 @@ pico.def('info', 'picUIWindow', function(){
         win = ent.getComponent(com.win),
         rect = ent.getComponent(win.box);
 
-        if (rect.height > (this.tileWidth * 3)){
+        if (win.maximized){
             return drawBig.call(this, ctx, win, com, rect);
         }else{
             return drawSmall.call(this, ctx, win, com, rect);

@@ -3,16 +3,7 @@ pico.def('dialogMsg', 'picUIWindow', function(){
     me = this,
     name = me.moduleName,
     layouts = [],
-    msg,
-    findMyFirstEntity = function(entities){
-        if (!entities) return;
-        var e, com;
-        for(var i=0, l=entities.length; i<l; i++){
-            e = entities[i];
-            com = e.getComponent(name);
-            if (com) return e;
-        }
-    };
+    msg;
 
     me.create = function(ent, data){
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
@@ -50,7 +41,7 @@ pico.def('dialogMsg', 'picUIWindow', function(){
     };
 
     me.close = function(elapsed, evt, entities){
-        var e = findMyFirstEntity(entities);
+        var e = me.findMyFirstEntity(entities, name);
         if (e){
             this.hideEntity(G_WIN_ID.DIALOG);
             msg = undefined;
@@ -73,6 +64,7 @@ pico.def('dialogMsg', 'picUIWindow', function(){
         e = entities[0],
         com = e.getComponent(name);
         if (!com) return entities;
+
         if (msg.callbacks){
             if (layouts.length){
                 var

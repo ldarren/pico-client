@@ -128,7 +128,7 @@ pico.def('tome', 'picUIWindow', function(){
         win = ent.getComponent(com.win),
         rect = ent.getComponent(win.box);
 
-        if (rect.width > (this.tileWidth * 3)){
+        if (win.maximized){
             return draw.call(this, ctx, this.hero.getTome(), com.layouts[1], com);
         }else{
             return draw.call(this, ctx, this.hero.getTome(), com.layouts[0], com);

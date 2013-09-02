@@ -21,7 +21,7 @@ pico.def('god', function(){
             stats: G_HERO_STAT[job-G_HERO.ROGUE].slice(),
             effects: [],
             bag: [],
-            tome: [G_SPELL.ALL_SEEING.slice()]
+            tome: [G_SPELL.ALL_SEEING.slice(),G_SPELL.ALL_SEEING.slice()]
         };
     };
 

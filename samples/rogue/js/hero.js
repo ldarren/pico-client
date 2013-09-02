@@ -7,8 +7,8 @@ pico.def('hero', 'picUIWindow', function(){
     ATTACK_LOST = "You missed by rolling a TOTAL(ROLL+ATK) lowered than NAME's defense DEF",
     COUNTER_WIN = "NAME has rolled a TOTAL(ROLL+ATK) which is over your defense DEF, you lost HP hp",
     COUNTER_LOST = "NAME missed by rolling a TOTAL(ROLL+ATK) less than your defense DEF",
-    CREEP_KILL = "and you have defeated NAME",
-    HERO_KILL = "and you have been killed by NAME",
+    CREEP_KILL = ", and you have defeated NAME",
+    HERO_KILL = ", and you have been killed by NAME",
     objects,
     position, level, selectedSpell, target,
     heroObj,
@@ -145,24 +145,45 @@ pico.def('hero', 'picUIWindow', function(){
         creepName = G_OBJECT_NAME[creep[0]],
         attack = accident ? undefined : [d20Roll(), currStats[6], creep[7]],
         counter = flag ? undefined : [d20Roll(), creep[4], currStats[9]],
-        totalAttack = attack[0]+attack[1],
-        totalCounter = counter[0]+counter[1],
-        attackHit = totalAttack > attack[2],
-        counterHit = totalCounter > counter[2],
-        attackMsg = (attackHit ? ATTACK_WIN : ATTACK_LOST)
-        .replace('NAME', creepName).replace('TOTAL', totalAttack).replace('ROLL', attack[0]).replace('ATK', attack[1]).replace('DEF', attack[2]),
-        counterMsg = (counterHit ? COUNTER_WIN : COUNTER_LOST)
-        .replace('NAME', creepName).replace('TOTAL', totalCounter).replace('ROLL', counter[0]).replace('ATK', counter[1]).replace('DEF', counter[2]);
-        if (attackHit) creep[3]--;
-        if (counterHit) currStats[2]--;
+        total, hit, attackMsg, counterMsg;
 
-        if (creep[3] < 1){
-            attackMsg += CREEP_KILL.replace('NAME', creepName);
-            target = undefined;
+        if (attack){
+            total = attack[0]+attack[1];
+            hit = total > attack[2];
+
+            attackMsg = (hit ? ATTACK_WIN : ATTACK_LOST)
+            .replace('NAME', creepName)
+            .replace('TOTAL', total)
+            .replace('ROLL', attack[0])
+            .replace('ATK', attack[1])
+            .replace('DEF', attack[2])
+            .replace('HP', 1);
+
+            if (hit) creep[3]--;
+
+            if (creep[3] < 1){
+                attackMsg += CREEP_KILL.replace('NAME', creepName);
+                target = undefined;
+            }
         }
-        if (currStats[3] < 1){
-            counterMsg += HERO_KILL.replace('NAME', creepName);
-            target = undefined;
+        if (counter){
+            total = counter[0]+counter[1];
+            hit = total > counter[2];
+
+            counterMsg = (hit ? COUNTER_WIN : COUNTER_LOST)
+            .replace('NAME', creepName)
+            .replace('TOTAL', total)
+            .replace('ROLL', counter[0])
+            .replace('ATK', counter[1])
+            .replace('DEF', counter[2])
+            .replace('HP', 1);
+
+            if (hit) currStats[2]--;
+
+            if (currStats[2] < 1){
+                counterMsg += HERO_KILL.replace('NAME', creepName);
+                target = undefined;
+            }
         }
 
         return [[attackMsg, counterMsg], [attack, counter]];
@@ -214,6 +235,7 @@ pico.def('hero', 'picUIWindow', function(){
     me.getBag = function(){ return bag; };
     me.getTome = function(){ return tome; };
     me.equal = function(obj){ return obj[0] === currStats[0] && obj[1] === currStats[1]; };
+    me.isTarget = function(creep){ return target && creep && creep[0] === target[0] && creep[1] === target[1]; };
 
     me.draw = function(ctx, ent, clip){
         var
@@ -221,7 +243,7 @@ pico.def('hero', 'picUIWindow', function(){
         win = ent.getComponent(com.win),
         rect = ent.getComponent(win.box);
 
-        if (rect.height > (this.tileWidth * 3)){
+        if (win.maximized){
             return drawBig.call(this, ctx, win, com, rect);
         }else{
             return drawSmall.call(this, ctx, win, com, rect);

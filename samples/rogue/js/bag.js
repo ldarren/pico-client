@@ -155,7 +155,7 @@ pico.def('bag', 'picUIWindow', function(){
         hero = this.hero,
         items = ent.name === inventoryId ? hero.getBag() : hero.getTome();
 
-        if (rect.width > (this.tileWidth * 3)){
+        if (win.maximized){
             return draw.call(this, ctx, items, com.layouts[1], com);
         }else{
             return draw.call(this, ctx, items, com.layouts[0], com);
