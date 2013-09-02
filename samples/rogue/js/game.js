@@ -245,10 +245,65 @@ pico.def('game', 'pigSqrMap', function(){
     };
 
     me.attackAnim = function(elapsed, evt, entities){
-        this.go('showInfo', evt[0][0]);
+        var msg = evt[0];
+        if (!msg) {
+            this.go('counter', evt);
+            return;
+        }
+        this.go('showInfo', msg);
+
+        var
+        hero = this.hero,
+        objects = this.objects,
+        targetId = hero.getTargetId(),
+        creep = objects[targetId];
+
+        hero.move(hero.getTargetId());
+
+        setTimeout(function(){
+            if (creep[3] < 1){
+                objects[targetId] = [G_OBJECT.HEALTH_GLOBE, G_OBJECT.HEALTH];
+            }else{
+                objects[targetId] = creep;
+            }
+            hero.move(pos);
+            me.go('forceRefresh');
+            me.go('counter', evt);
+        }, 500);
+
+        return entities;
     };
 
     me.counterAnim = function(elapsed, evt, entities){
+        var msg = evt[1];
+        if (!msg) return;
+        this.go('showInfo', msg);
+
+        var
+        hero = this.hero,
+        objects = this.objects,
+        targetId = hero.getTargetId(),
+        pos = hero.getPosition(),
+        creep = objects[targetId];
+
+        objects[targetId] = undefined;
+        objects[pos] = creep;
+        setTimeout(function(){
+            if (creep[3] < 1) hero.setTargetId(undefined);
+            if (hero.isDead()){
+                hero.setTargetId(undefined);
+                me.go('showDialog', {
+                info: [
+                    'RIP',
+                    'you were killed by '+G_OBJECT_NAME[creep[0]]+' at level '+me.currentLevel,
+                    'but your lineage will continue...'],
+                callbacks: ['reborn']});
+            }else{
+                objects[targetId] = creep;
+                hero.move(pos);
+            }
+            me.go('forceRefresh');
+        }, 500);
     };
 
     me.gotoLevel = function(elapsed, level, entities){

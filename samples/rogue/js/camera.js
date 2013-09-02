@@ -107,7 +107,7 @@ pico.def('camera', 'picBase', function(){
                         objects[id] = this.ai.spawnCreep(this.deepestLevel);
                         this.recalHints();
 
-                        this.go('battle', hero.battle(id, true));
+                        this.go('attack', hero.battle(id, true));
                     }else{
                         flags[id] = effect;
                     }
@@ -117,7 +117,7 @@ pico.def('camera', 'picBase', function(){
                     this.go('gameStep', this.fillTiles(id));
 
                     if (tileType & G_TILE_TYPE.CREEP){
-                        this.go('battle', hero.battle(id, true));
+                        this.go('attack', hero.battle(id, true));
                     }
                 }
             }else{
@@ -135,14 +135,6 @@ pico.def('camera', 'picBase', function(){
                 this.go('gameStep', steps);
             }else{
                 this.go('showInfo', id);
-                if (tileType & G_TILE_TYPE.CREEP){
-                    /*this.go('showDialog', {
-                    info: [
-                        'RIP',
-                        'you were killed by '+G_OBJECT_NAME[objId]+' at level '+this.currentLevel,
-                        'but your lineage will continue...'],
-                    callbacks: ['reborn']});*/
-                }
                 this.go('gameStep', 1);
             }
         }

@@ -10,7 +10,7 @@ pico.def('hero', 'picUIWindow', function(){
     CREEP_KILL = ", and you have defeated NAME",
     HERO_KILL = ", and you have been killed by NAME",
     objects, flags,
-    position, level, selectedSpell, target,
+    position, level, selectedSpell, targetId,
     heroObj,
     appearance, stats, effects, bag, tome,
     currStats,
@@ -119,6 +119,11 @@ pico.def('hero', 'picUIWindow', function(){
         effects = heroObj.effects;
         bag = heroObj.bag;
         tome = heroObj.tome;
+        target = appearance[10];
+
+        if (target){
+            this.go('showInfo', target);
+        }
 
         me.levelUp(this.deepestLevel);
         me.move(this.mortalLoc);
@@ -141,7 +146,7 @@ pico.def('hero', 'picUIWindow', function(){
     };
 
     me.battle = function(id, accident){
-        targetId = id;
+        me.setTargetId(id);
 
         var
         target = objects[id],
@@ -167,7 +172,6 @@ pico.def('hero', 'picUIWindow', function(){
 
             if (target[3] < 1){
                 attackMsg += CREEP_KILL.replace('NAME', creepName);
-                target = undefined;
             }
         }
         if (counter){
@@ -186,11 +190,10 @@ pico.def('hero', 'picUIWindow', function(){
 
             if (currStats[2] < 1){
                 counterMsg += HERO_KILL.replace('NAME', creepName);
-                target = undefined;
             }
         }
 
-        return [[attackMsg, counterMsg], [attack, counter]];
+        return [attackMsg, counterMsg];
     };
 
     me.flee = function(){
@@ -200,7 +203,11 @@ pico.def('hero', 'picUIWindow', function(){
         target = objects[targetId],
         fleeRoll = d20Roll();
 
-        if (fleeRoll > target[4]) return true;
+        if (fleeRoll > target[4]) {
+            me.setTargetId(undefined);
+            return true;
+        }
+        return false;
     }
 
     me.move = function(pos){
@@ -244,6 +251,9 @@ pico.def('hero', 'picUIWindow', function(){
     me.getTome = function(){ return tome; };
     me.equal = function(obj){ return obj[0] === currStats[0] && obj[1] === currStats[1]; };
     me.isTarget = function(id){ return targetId === id; };
+    me.getTargetId = function(){ return targetId; };
+    me.setTargetId = function(id){ return appearance[10] = targetId = id; };
+    me.isDead = function(){ return currStats[2] < 1; };
 
     me.draw = function(ctx, ent, clip){
         var

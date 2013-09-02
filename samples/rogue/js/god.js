@@ -16,8 +16,8 @@ pico.def('god', function(){
     me.createHero = function(){
         var job = Floor(G_HERO.ROGUE + Random()*(G_HERO.WARLOCK-G_HERO.ROGUE));
         return {
-            // job, helm, armor, main hand, off hand, ring1, ring2, amulet, gold, skull
-            appearance: [job, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            // job, helm, armor, main hand, off hand, ring1, ring2, amulet, gold, skull, enemy
+            appearance: [job, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             stats: G_HERO_STAT[job-G_HERO.ROGUE].slice(),
             effects: [],
             bag: [],

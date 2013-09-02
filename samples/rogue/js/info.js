@@ -24,48 +24,57 @@ pico.def('info', 'picUIWindow', function(){
         i, l;
 
         ctx.save();
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'middle';
-        ctx.font = com.font;
-        ctx.fillStyle = com.fontColor;
 
-        switch(target[1]){
-            case G_OBJECT_TYPE.CREEP:
+        if (target){
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'middle';
+            ctx.font = com.font;
+            ctx.fillStyle = com.fontColor;
 
-                ctx.fillText(G_OBJECT_NAME[target[0]]+' ('+G_CREEP_TYPE_NAME[target[2]]+')', x, y + uiSize/2, rect.width);
+            switch(target[1]){
+                case G_OBJECT_TYPE.CREEP:
 
-                x = rect.x + gs + margin;
-                y += uiSize;
-                uiSize = sd ? 8 : 16;
-                
-                // draw hp
-                for(i=0, l=target[3]; i<l; i++){
-                    ts.draw(ctx, G_UI.HP, x, y, uiSize, uiSize);
-                    x += uiSize;
-                }
+                    ctx.fillText(G_OBJECT_NAME[target[0]]+' ('+G_CREEP_TYPE_NAME[target[2]]+')', x, y + uiSize/2, rect.width);
 
-                x = rect.x + gs + margin + pw;
-                y = rect.y + margin;
-                uiSize = sd ? 16 : 32;
-                
-                x = me.drawData(ctx, ts, G_UI.PATK, target[4], x, y, uiSize, margin, textWidth3);
-                x = me.drawData(ctx, ts, G_UI.RATK, target[5], x, y, uiSize, margin, textWidth3);
-                x = me.drawData(ctx, ts, G_UI.MATK, target[6], x, y, uiSize, margin, textWidth3);
+                    x = rect.x + gs + margin;
+                    y += uiSize;
+                    uiSize = sd ? 8 : 16;
+                    
+                    // draw hp
+                    for(i=0, l=target[3]; i<l; i++){
+                        ts.draw(ctx, G_UI.HP, x, y, uiSize, uiSize);
+                        x += uiSize;
+                    }
 
-                x = rect.x + gs + margin + pw;
-                y += uiSize;
+                    x = rect.x + gs + margin + pw;
+                    y = rect.y + margin;
+                    uiSize = sd ? 16 : 32;
+                    
+                    x = me.drawData(ctx, ts, G_UI.PATK, target[4], x, y, uiSize, margin, textWidth3);
+                    x = me.drawData(ctx, ts, G_UI.RATK, target[5], x, y, uiSize, margin, textWidth3);
+                    x = me.drawData(ctx, ts, G_UI.MATK, target[6], x, y, uiSize, margin, textWidth3);
 
-                x = me.drawData(ctx, ts, G_UI.PDEF, target[7], x, y, uiSize, margin, textWidth3);
-                x = me.drawData(ctx, ts, G_UI.MDEF, target[8], x, y, uiSize, margin, textWidth3);
-                break;
-            default:
-                ts.draw(ctx, target[0], x, y, tw, th);
-                ctx.fillText(G_OBJECT_NAME[target[0]], x + tw + margin, y + th/2);
-                break;
+                    x = rect.x + gs + margin + pw;
+                    y += uiSize;
+
+                    x = me.drawData(ctx, ts, G_UI.PDEF, target[7], x, y, uiSize, margin, textWidth3);
+                    x = me.drawData(ctx, ts, G_UI.MDEF, target[8], x, y, uiSize, margin, textWidth3);
+                    break;
+                default:
+                    ts.draw(ctx, target[0], x, y, tw, th);
+                    ctx.fillText(G_OBJECT_NAME[target[0]], x + tw + margin, y + th/2);
+                    break;
+            }
+
+            me.drawButtons(ctx, layouts, labels, com.fontColor, G_COLOR_TONE[2], G_COLOR_TONE[1]);
+        }else{
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            ctx.font = com.font;
+            ctx.fillStyle = com.fontColor;
+
+            me.fillWrapText(ctx, targetId, x, y, pw*3, 20);
         }
-
-        me.drawButtons(ctx, layouts, labels, com.fontColor, G_COLOR_TONE[2], G_COLOR_TONE[1]);
-
         ctx.restore();
     },
     drawBig = function(ctx, win, com, rect){
@@ -78,14 +87,23 @@ pico.def('info', 'picUIWindow', function(){
         y = rect.y + gs + 8;
 
         ctx.save();
-        ts.draw(ctx, target[0], x, y, tw, th);
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'top';
-        ctx.font = com.font;
-        ctx.fillStyle = com.fontColor;
-        ctx.fillText(G_OBJECT_NAME[target[0]], x + tw/2, y + th, rect.width);
+        if(target){
+            ts.draw(ctx, target[0], x, y, tw, th);
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            ctx.font = com.font;
+            ctx.fillStyle = com.fontColor;
+            ctx.fillText(G_OBJECT_NAME[target[0]], x + tw/2, y + th, rect.width);
 
-        me.drawButtons(ctx, layouts, labels, com.fontColor, G_COLOR_TONE[2], G_COLOR_TONE[1]);
+            me.drawButtons(ctx, layouts, labels, com.fontColor, G_COLOR_TONE[2], G_COLOR_TONE[1]);
+        }else{
+            ctx.textAlign = 'left';
+            ctx.textBaseline = 'top';
+            ctx.font = com.font;
+            ctx.fillStyle = com.fontColor;
+
+            me.fillWrapText(ctx, targetId, x, y, rect.width - gs*2 - 16, 20);
+        }
         ctx.restore();
     };
 
@@ -97,8 +115,13 @@ pico.def('info', 'picUIWindow', function(){
     me.open = function(elapsed, evt, entities){
         var ent = this.showEntity(G_WIN_ID.INFO);
 
-        targetId = evt;
-        target = this.objects[targetId];
+        if (typeof evt === 'string'){
+            targetId = evt;
+            target = undefined;
+        }else{
+            targetId = evt;
+            target = this.objects[targetId];
+        }
 
         return me.resize.call(this, elapsed, evt, entities);
     };
@@ -140,7 +163,7 @@ pico.def('info', 'picUIWindow', function(){
 
         switch(label){
             case 'Fight':
-                this.go('battle', this.hero.battle(id, false));
+                this.go('attack', this.hero.battle(targetId, false));
                 break;
             case 'Flee':
                 break;
@@ -160,6 +183,7 @@ pico.def('info', 'picUIWindow', function(){
     };
 
     me.resize = function(elapsed, evt, entities){
+        if (!target) return entities;
         var ent = me.findMyFirstEntity(entities, name);
         if (!ent) return entities;
 
