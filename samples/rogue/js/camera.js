@@ -107,7 +107,7 @@ pico.def('camera', 'picBase', function(){
                         objects[id] = this.ai.spawnCreep(this.deepestLevel);
                         this.recalHints();
 
-                        hero.battle(object, flags[id], true);
+                        this.go('battle', hero.battle(id, true));
                     }else{
                         flags[id] = effect;
                     }
@@ -117,7 +117,7 @@ pico.def('camera', 'picBase', function(){
                     this.go('gameStep', this.fillTiles(id));
 
                     if (tileType & G_TILE_TYPE.CREEP){
-                        hero.battle(object, flags[id], true);
+                        this.go('battle', hero.battle(id, true));
                     }
                 }
             }else{
@@ -134,9 +134,8 @@ pico.def('camera', 'picBase', function(){
                 if (!steps) return entities;
                 this.go('gameStep', steps);
             }else{
-                this.go('showInfo', object);
+                this.go('showInfo', id);
                 if (tileType & G_TILE_TYPE.CREEP){
-                    hero.battle(object, flags[id], false);
                     /*this.go('showDialog', {
                     info: [
                         'RIP',

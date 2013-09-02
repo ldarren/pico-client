@@ -9,7 +9,7 @@ pico.def('hero', 'picUIWindow', function(){
     COUNTER_LOST = "NAME missed by rolling a TOTAL(ROLL+ATK) less than your defense DEF",
     CREEP_KILL = ", and you have defeated NAME",
     HERO_KILL = ", and you have been killed by NAME",
-    objects,
+    objects, flags,
     position, level, selectedSpell, target,
     heroObj,
     appearance, stats, effects, bag, tome,
@@ -113,6 +113,7 @@ pico.def('hero', 'picUIWindow', function(){
             heroObj = this.god.createHero();
         }
         objects = this.objects;
+        flags = this.flags;
         appearance = heroObj.appearance;
         stats = heroObj.stats;
         effects = heroObj.effects;
@@ -139,12 +140,15 @@ pico.def('hero', 'picUIWindow', function(){
         }
     };
 
-    me.battle = function(creep, flag, accident){
-        target = creep;
+    me.battle = function(id, accident){
+        targetId = id;
+
         var
-        creepName = G_OBJECT_NAME[creep[0]],
-        attack = accident ? undefined : [d20Roll(), currStats[6], creep[7]],
-        counter = flag ? undefined : [d20Roll(), creep[4], currStats[9]],
+        target = objects[id],
+        flag = flags[id],
+        creepName = G_OBJECT_NAME[target[0]],
+        attack = accident ? undefined : [d20Roll(), currStats[6], target[7]],
+        counter = flag ? undefined : [d20Roll(), target[4], currStats[9]],
         total, hit, attackMsg, counterMsg;
 
         if (attack){
@@ -159,9 +163,9 @@ pico.def('hero', 'picUIWindow', function(){
             .replace('DEF', attack[2])
             .replace('HP', 1);
 
-            if (hit) creep[3]--;
+            if (hit) target[3]--;
 
-            if (creep[3] < 1){
+            if (target[3] < 1){
                 attackMsg += CREEP_KILL.replace('NAME', creepName);
                 target = undefined;
             }
@@ -190,8 +194,12 @@ pico.def('hero', 'picUIWindow', function(){
     };
 
     me.flee = function(){
-        if (!target) return false;
-        var fleeRoll = d20Roll();
+        if (!targetId) return false;
+
+        var
+        target = objects[targetId],
+        fleeRoll = d20Roll();
+
         if (fleeRoll > target[4]) return true;
     }
 
@@ -235,7 +243,7 @@ pico.def('hero', 'picUIWindow', function(){
     me.getBag = function(){ return bag; };
     me.getTome = function(){ return tome; };
     me.equal = function(obj){ return obj[0] === currStats[0] && obj[1] === currStats[1]; };
-    me.isTarget = function(creep){ return target && creep && creep[0] === target[0] && creep[1] === target[1]; };
+    me.isTarget = function(id){ return targetId === id; };
 
     me.draw = function(ctx, ent, clip){
         var

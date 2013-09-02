@@ -5,7 +5,7 @@ pico.def('info', 'picUIWindow', function(){
     name = me.moduleName,
     layouts = [],
     labels = [],
-    info,
+    targetId, target,
     drawSmall = function(ctx, win, com, rect){
         var
         ts = this.tileSet,
@@ -29,17 +29,17 @@ pico.def('info', 'picUIWindow', function(){
         ctx.font = com.font;
         ctx.fillStyle = com.fontColor;
 
-        switch(info[1]){
+        switch(target[1]){
             case G_OBJECT_TYPE.CREEP:
 
-                ctx.fillText(G_OBJECT_NAME[info[0]]+' ('+G_CREEP_TYPE_NAME[info[2]]+')', x, y + uiSize/2, rect.width);
+                ctx.fillText(G_OBJECT_NAME[target[0]]+' ('+G_CREEP_TYPE_NAME[target[2]]+')', x, y + uiSize/2, rect.width);
 
                 x = rect.x + gs + margin;
                 y += uiSize;
                 uiSize = sd ? 8 : 16;
                 
                 // draw hp
-                for(i=0, l=info[3]; i<l; i++){
+                for(i=0, l=target[3]; i<l; i++){
                     ts.draw(ctx, G_UI.HP, x, y, uiSize, uiSize);
                     x += uiSize;
                 }
@@ -48,19 +48,19 @@ pico.def('info', 'picUIWindow', function(){
                 y = rect.y + margin;
                 uiSize = sd ? 16 : 32;
                 
-                x = me.drawData(ctx, ts, G_UI.PATK, info[4], x, y, uiSize, margin, textWidth3);
-                x = me.drawData(ctx, ts, G_UI.RATK, info[5], x, y, uiSize, margin, textWidth3);
-                x = me.drawData(ctx, ts, G_UI.MATK, info[6], x, y, uiSize, margin, textWidth3);
+                x = me.drawData(ctx, ts, G_UI.PATK, target[4], x, y, uiSize, margin, textWidth3);
+                x = me.drawData(ctx, ts, G_UI.RATK, target[5], x, y, uiSize, margin, textWidth3);
+                x = me.drawData(ctx, ts, G_UI.MATK, target[6], x, y, uiSize, margin, textWidth3);
 
                 x = rect.x + gs + margin + pw;
                 y += uiSize;
 
-                x = me.drawData(ctx, ts, G_UI.PDEF, info[7], x, y, uiSize, margin, textWidth3);
-                x = me.drawData(ctx, ts, G_UI.MDEF, info[8], x, y, uiSize, margin, textWidth3);
+                x = me.drawData(ctx, ts, G_UI.PDEF, target[7], x, y, uiSize, margin, textWidth3);
+                x = me.drawData(ctx, ts, G_UI.MDEF, target[8], x, y, uiSize, margin, textWidth3);
                 break;
             default:
-                ts.draw(ctx, info[0], x, y, tw, th);
-                ctx.fillText(G_OBJECT_NAME[info[0]], x + tw + margin, y + th/2);
+                ts.draw(ctx, target[0], x, y, tw, th);
+                ctx.fillText(G_OBJECT_NAME[target[0]], x + tw + margin, y + th/2);
                 break;
         }
 
@@ -78,12 +78,12 @@ pico.def('info', 'picUIWindow', function(){
         y = rect.y + gs + 8;
 
         ctx.save();
-        ts.draw(ctx, info[0], x, y, tw, th);
+        ts.draw(ctx, target[0], x, y, tw, th);
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
         ctx.font = com.font;
         ctx.fillStyle = com.fontColor;
-        ctx.fillText(G_OBJECT_NAME[info[0]], x + tw/2, y + th, rect.width);
+        ctx.fillText(G_OBJECT_NAME[target[0]], x + tw/2, y + th, rect.width);
 
         me.drawButtons(ctx, layouts, labels, com.fontColor, G_COLOR_TONE[2], G_COLOR_TONE[1]);
         ctx.restore();
@@ -96,22 +96,24 @@ pico.def('info', 'picUIWindow', function(){
 
     me.open = function(elapsed, evt, entities){
         var ent = this.showEntity(G_WIN_ID.INFO);
-        info = evt;
+
+        targetId = evt;
+        target = this.objects[targetId];
 
         return me.resize.call(this, elapsed, evt, entities);
     };
 
     me.close = function(elapsed, evt, entities){
         this.hideEntity(G_WIN_ID.INFO);
-        info = undefined;
+        targetId = target = undefined;
         return entities;
     };
 
     me.openIfValid = function(elapsed, evt, entities){
-        if (info){
-            return me.open.call(this, elapsed, info, entities);
+        if (targetId){
+            return me.open.call(this, elapsed, targetId, entities);
         }else{
-            return me.close.call(this, elapsed, info, entities);
+            return me.close.call(this, elapsed, targetId, entities);
         }
     };
 
@@ -138,6 +140,7 @@ pico.def('info', 'picUIWindow', function(){
 
         switch(label){
             case 'Fight':
+                this.go('battle', this.hero.battle(id, false));
                 break;
             case 'Flee':
                 break;
@@ -173,10 +176,10 @@ pico.def('info', 'picUIWindow', function(){
         tileW = this.tileWidth,
         tileH = this.tileHeight;
 
-        switch(info[1]){
+        switch(target[1]){
             case G_OBJECT_TYPE.CREEP:
                 labels.push('Fight');
-                if (this.hero.isTarget(info)) labels.push('Flee');
+                if (this.hero.isTarget(targetId)) labels.push('Flee');
                 break;
             case G_OBJECT_TYPE.CHEST:
                 labels.push('Open');
@@ -219,7 +222,7 @@ pico.def('info', 'picUIWindow', function(){
     };
 
     me.draw = function(ctx, ent, clip){
-        if (!info){
+        if (!targetId){
             me.close.call(this);
             return;
         }
