@@ -34,6 +34,8 @@ pico.def('info', 'picUIWindow', function(){
             switch(target[1]){
                 case G_OBJECT_TYPE.CREEP:
 
+                    var stat = G_CREEP_STAT[target[0]-G_CREEP.RAT];
+
                     ctx.fillText(G_OBJECT_NAME[target[0]]+' ('+G_CREEP_TYPE_NAME[target[2]]+')', x, y + uiSize/2, rect.width);
 
                     x = rect.x + gs + margin;
@@ -41,8 +43,8 @@ pico.def('info', 'picUIWindow', function(){
                     uiSize = sd ? 8 : 16;
                     
                     // draw hp
-                    for(i=0, l=target[3]; i<l; i++){
-                        ts.draw(ctx, G_UI.HP, x, y, uiSize, uiSize);
+                    for(i=0, l=stat[3]; i<l; i++){
+                        ts.draw(ctx, i<target[3] ? G_UI.HP : G_UI.HP_EMPTY, x, y, uiSize, uiSize);
                         x += uiSize;
                     }
 
@@ -161,9 +163,12 @@ pico.def('info', 'picUIWindow', function(){
             }
         }
 
+        var
+        hero = this.hero;
+
         switch(label){
             case 'Fight':
-                this.go('attack', this.hero.battle(targetId, false));
+                this.go('attack', hero.battle(targetId, false));
                 break;
             case 'Flee':
                 break;
@@ -172,23 +177,43 @@ pico.def('info', 'picUIWindow', function(){
             case 'Speak':
                 break;
             case 'Use':
+                delete this.objects[targetId];
+                hero.incrHp(1);
+                var 
+                hp = hero.getPosition(),
+                h = this.findPath(hp, targetId);
+                if (h.length){
+                    this.stopLoop('heroMove');
+                    this.startLoop('heroMove', h);
+                }
                 break;
             case 'Inspect':
+                break;
+            case 'Move':
+                var
+                hp = hero.getPosition(),
+                h = this.findPath(hp, this.nextTile(targetId, hp));
+                if (h.length){
+                    this.stopLoop('heroMove');
+                    this.startLoop('heroMove', h);
+                }
                 break;
             default:
                 return entities;
         }
+        this.go('hideInfo');
 
         return;
     };
 
     me.resize = function(elapsed, evt, entities){
-        if (!target) return entities;
-        var ent = me.findMyFirstEntity(entities, name);
-        if (!ent) return entities;
 
         layouts.length = 0;
         labels.length = 0;
+
+        if (!target) return entities;
+        var ent = me.findMyFirstEntity(entities, name);
+        if (!ent) return entities;
 
         var
         com = ent.getComponent(name),
@@ -200,23 +225,27 @@ pico.def('info', 'picUIWindow', function(){
         tileW = this.tileWidth,
         tileH = this.tileHeight;
 
-        switch(target[1]){
-            case G_OBJECT_TYPE.CREEP:
-                labels.push('Fight');
-                if (this.hero.isTarget(targetId)) labels.push('Flee');
-                break;
-            case G_OBJECT_TYPE.CHEST:
-                labels.push('Open');
-                break;
-            case G_OBJECT_TYPE.NPC:
-                labels.push('Speak');
-                break;
-            case G_OBJECT_TYPE.HEALTH:
-                labels.push('Use');
-                break;
-            case G_OBJECT_TYPE.ENV:
-                labels.push('Inspect');
-                break;
+        if (this.nearToHero(targetId)){
+            switch(target[1]){
+                case G_OBJECT_TYPE.CREEP:
+                    labels.push('Fight');
+                    if (this.hero.isTarget(targetId)) labels.push('Flee');
+                    break;
+                case G_OBJECT_TYPE.CHEST:
+                    labels.push('Open');
+                    break;
+                case G_OBJECT_TYPE.NPC:
+                    labels.push('Speak');
+                    break;
+                case G_OBJECT_TYPE.HEALTH:
+                    labels.push('Use');
+                    break;
+                case G_OBJECT_TYPE.ENV:
+                    labels.push('Inspect');
+                    break;
+            }
+        }else{
+            labels.push('Move');
         }
 
         var btnCount = labels.length;

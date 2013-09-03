@@ -54,8 +54,8 @@ pico.def('hero', 'picUIWindow', function(){
         uiSize = sd ? 8 : 16;
         
         // draw hp
-        for(i=0, l=currStats[2]; i<l; i++){
-            ts.draw(ctx, G_UI.HP, x, y+margin, uiSize, uiSize);
+        for(i=0, l=stats[2]; i<l; i++){
+            ts.draw(ctx, (i < currStats[2]) ? G_UI.HP : G_UI.HP_EMPTY, x, y+margin, uiSize, uiSize);
             x += uiSize;
         }
 
@@ -108,7 +108,7 @@ pico.def('hero', 'picUIWindow', function(){
     };
 
     me.init = function(){
-        heroObj = this.heroObj;
+        heroObj = this.mortal;
         if (!heroObj){
             heroObj = this.god.createHero();
         }
@@ -124,7 +124,7 @@ pico.def('hero', 'picUIWindow', function(){
         if (target){
             this.go('showInfo', target);
         }
-
+        level = 0;
         me.levelUp(this.deepestLevel);
         me.move(this.mortalLoc);
 
@@ -147,7 +147,7 @@ pico.def('hero', 'picUIWindow', function(){
 
     me.battle = function(id, accident){
         me.setTargetId(id);
-
+console.log('battle',arguments.callee.caller.name, id, objects[id]);
         var
         target = objects[id],
         flag = flags[id],
@@ -166,7 +166,7 @@ pico.def('hero', 'picUIWindow', function(){
             .replace('ROLL', attack[0])
             .replace('ATK', attack[1])
             .replace('DEF', attack[2])
-            .replace('HP', 1);
+            .replace('DMG', 1);
 
             if (hit) target[3]--;
 
@@ -192,6 +192,8 @@ pico.def('hero', 'picUIWindow', function(){
                 counterMsg += HERO_KILL.replace('NAME', creepName);
             }
         }
+
+        delete flags[id];
 
         return [attackMsg, counterMsg];
     };
@@ -249,6 +251,7 @@ pico.def('hero', 'picUIWindow', function(){
     me.getJob = function(){ return appearance[0]; };
     me.getBag = function(){ return bag; };
     me.getTome = function(){ return tome; };
+    me.incrHp = function(inc) { currStats[2] += inc; };
     me.equal = function(obj){ return obj[0] === currStats[0] && obj[1] === currStats[1]; };
     me.isTarget = function(id){ return targetId === id; };
     me.getTargetId = function(){ return targetId; };

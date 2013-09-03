@@ -256,17 +256,14 @@ pico.def('game', 'pigSqrMap', function(){
         hero = this.hero,
         objects = this.objects,
         targetId = hero.getTargetId(),
+        pos = hero.getPosition(),
         creep = objects[targetId];
 
-        hero.move(hero.getTargetId());
+        hero.move(targetId);
 
         setTimeout(function(){
-            if (creep[3] < 1){
-                objects[targetId] = [G_OBJECT.HEALTH_GLOBE, G_OBJECT.HEALTH];
-            }else{
-                objects[targetId] = creep;
-            }
-            hero.move(pos);
+            hero.move(pos); // hero must move first
+            objects[targetId] = creep;
             me.go('forceRefresh');
             me.go('counter', evt);
         }, 500);
@@ -289,7 +286,6 @@ pico.def('game', 'pigSqrMap', function(){
         objects[targetId] = undefined;
         objects[pos] = creep;
         setTimeout(function(){
-            if (creep[3] < 1) hero.setTargetId(undefined);
             if (hero.isDead()){
                 hero.setTargetId(undefined);
                 me.go('showDialog', {
@@ -299,21 +295,38 @@ pico.def('game', 'pigSqrMap', function(){
                     'but your lineage will continue...'],
                 callbacks: ['reborn']});
             }else{
-                objects[targetId] = creep;
                 hero.move(pos);
+            }
+            if (creep[3] < 1){
+                me.terrain[targetId] = G_FLOOR.BROKEN;
+                objects[targetId] = [G_OBJECT.HEALTH_GLOBE, G_OBJECT_TYPE.HEALTH];
+                hero.setTargetId(undefined);
+            }else{
+                objects[targetId] = creep;
             }
             me.go('forceRefresh');
         }, 500);
     };
 
     me.gotoLevel = function(elapsed, level, entities){
+        var keys = Object.keys(G_CREEP_TEAM);
+        me.theme = keys[Floor(Random()*keys.length)];
+
+        me.objects = me.ai.init.call(me);
+
         createLevel(level);
+
         me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);
         return entities;
     };
 
     me.reborn = function(elapsed, evt, entities){
+        me.deepestLevel = 0;
+        me.mortal = undefined;
+        me.mortal = me.hero.init.call(me);
+
         createLevel(0);
+
         me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);
         return entities;
     };
