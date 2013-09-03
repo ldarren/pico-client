@@ -264,8 +264,14 @@ pico.def('game', 'pigSqrMap', function(){
         setTimeout(function(){
             hero.move(pos); // hero must move first
             objects[targetId] = creep;
+            if (evt[1]){
+                me.go('counter', evt);
+            }else{
+                if (me.ai.bury(targetId)){
+                    hero.setTargetId(undefined);
+                }
+            }
             me.go('forceRefresh');
-            me.go('counter', evt);
         }, 500);
 
         return entities;
@@ -274,12 +280,13 @@ pico.def('game', 'pigSqrMap', function(){
     me.counterAnim = function(elapsed, evt, entities){
         var msg = evt[1];
         if (!msg) return;
+
         this.go('showInfo', msg);
 
         var
         hero = this.hero,
-        objects = this.objects,
         targetId = hero.getTargetId(),
+        objects = this.objects,
         pos = hero.getPosition(),
         creep = objects[targetId];
 
@@ -296,15 +303,13 @@ pico.def('game', 'pigSqrMap', function(){
                 callbacks: ['reborn']});
             }else{
                 hero.move(pos);
-            }
-            if (creep[3] < 1){
-                me.terrain[targetId] = G_FLOOR.BROKEN;
-                objects[targetId] = [G_OBJECT.HEALTH_GLOBE, G_OBJECT_TYPE.HEALTH];
-                hero.setTargetId(undefined);
-            }else{
+
                 objects[targetId] = creep;
+                if (me.ai.bury(targetId)){
+                    hero.setTargetId(undefined);
+                }
+                me.go('forceRefresh');
             }
-            me.go('forceRefresh');
         }, 500);
     };
 

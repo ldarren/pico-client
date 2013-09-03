@@ -136,7 +136,6 @@ pico.def('camera', 'picBase', function(){
                 this.go('gameStep', steps);
             }else{
                 this.go('showInfo', id);
-                this.go('gameStep', 1);
             }
         }
 

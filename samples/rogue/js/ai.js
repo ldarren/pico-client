@@ -6,8 +6,9 @@ pico.def('ai', function(){
     currIndex = 0,
     level = 0,
     objects,
+    terrain,
     createCreepStat = function(creepId, level){
-        var s = G_CREEP_STAT[creepId-G_CREEP.RAT].slice();
+        var s = me.getStatByCreepId(creepId).slice();
         for(var i=4; i<10; i++){
             s[i] = Ceil(s[i]*level);
         }
@@ -16,6 +17,7 @@ pico.def('ai', function(){
 
     me.init = function(){
         objects = this.objects;
+        terrain = this.terrain;
         me.changeTheme(this.theme);
 
         return objects;
@@ -61,6 +63,47 @@ pico.def('ai', function(){
 
     me.openChest = function(){
         return G_OBJECT.KEY_01;
+    };
+
+    me.getStatByTileId = function(id){
+        return me.getStatByObject(objects[id]);
+    };
+
+    me.getStatByObject = function(creep){
+        return me.getStatByCreepId(creep[0]);
+    };
+
+    me.getStatByCreepId = function(id){
+        return G_CREEP_STAT[id-G_CREEP.RAT];
+    };
+
+    me.incrHp = function(id, inc){
+        var creep = objects[id];
+
+        if (!creep || creep[3] > 0) return;
+        var stat = me.getStatByObject(creep);
+        creep[3] += inc;
+        if (creep[3] > stat[3]) creep[3] = stat[3];
+    };
+
+    me.incrHpAll = function(inc){
+        var creep, stat;
+        for(var i=0, l=objects.length; i<l; i++){
+            creep = objects[i];
+            if (!creep || creep[1] !== G_OBJECT_TYPE.CREEP) continue;
+            stat = me.getStatByObject(creep);
+            creep[3] += inc;
+            if (creep[3] > stat[3]) creep[3] = stat[3];
+        }
+    };
+
+    me.bury = function(id){
+        var creep = objects[id];
+        if (!creep || creep[3] > 0) return false;
+
+        terrain[id] = G_FLOOR.BROKEN;
+        objects[id] = [G_OBJECT.HEALTH_GLOBE, G_OBJECT_TYPE.HEALTH];
+        return true;
     };
 
 });

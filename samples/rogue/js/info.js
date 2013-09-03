@@ -11,8 +11,8 @@ pico.def('info', 'picUIWindow', function(){
         ts = this.tileSet,
         tw = this.tileWidth,
         th = this.tileHeight,
-        job = this.hero.getJob(),
         sd = this.smallDevice,
+        ai = this.ai,
         gs = win.gridSize,
         margin = sd ? 2 : 4,
         pw = (rect.width - gs*2 - margin*2)/3,
@@ -34,7 +34,7 @@ pico.def('info', 'picUIWindow', function(){
             switch(target[1]){
                 case G_OBJECT_TYPE.CREEP:
 
-                    var stat = G_CREEP_STAT[target[0]-G_CREEP.RAT];
+                    var stat = ai.getStatByObject(target);
 
                     ctx.fillText(G_OBJECT_NAME[target[0]]+' ('+G_CREEP_TYPE_NAME[target[2]]+')', x, y + uiSize/2, rect.width);
 
@@ -179,6 +179,7 @@ pico.def('info', 'picUIWindow', function(){
             case 'Use':
                 delete this.objects[targetId];
                 hero.incrHp(1);
+                this.ai.incrHpAll(1);
                 var 
                 hp = hero.getPosition(),
                 h = this.findPath(hp, targetId);
@@ -275,7 +276,7 @@ pico.def('info', 'picUIWindow', function(){
     };
 
     me.draw = function(ctx, ent, clip){
-        if (!targetId){
+        if (undefined === targetId){
             me.close.call(this);
             return;
         }
