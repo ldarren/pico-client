@@ -65,17 +65,9 @@ pico.def('ai', function(){
         return G_OBJECT.KEY_01;
     };
 
-    me.getStatByTileId = function(id){
-        return me.getStatByObject(objects[id]);
-    };
-
-    me.getStatByObject = function(creep){
-        return me.getStatByCreepId(creep[0]);
-    };
-
-    me.getStatByCreepId = function(id){
-        return G_CREEP_STAT[id-G_CREEP.RAT];
-    };
+    me.getStatByTileId = function(id){ return me.getStatByObject(objects[id]); };
+    me.getStatByObject = function(creep){ return me.getStatByCreepId(creep[0]); };
+    me.getStatByCreepId = function(id){ return G_CREEP_STAT[id-G_CREEP.RAT]; };
 
     me.incrHp = function(id, inc){
         var creep = objects[id];

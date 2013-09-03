@@ -313,6 +313,18 @@ pico.def('game', 'pigSqrMap', function(){
         }, 500);
     };
 
+    me.flee = function(elapsed, evt, entities){
+        var ret = this.hero.flee();
+        if (!ret) return;
+
+        if (!ret[0]){
+            this.go('counter', [undefined, ret[1]]);
+            return;
+        }
+        this.go('showInfo', ret[1]);
+        return entities;
+    };
+
     me.gotoLevel = function(elapsed, level, entities){
         var keys = Object.keys(G_CREEP_TEAM);
         me.theme = keys[Floor(Random()*keys.length)];
@@ -417,6 +429,16 @@ pico.def('game', 'pigSqrMap', function(){
     };
 
     me.heroMove = function(elapsed, evt, entities){
+        if (me.hero.getTargetId()){
+            this.stopLoop('heroMove');
+            me.go('showDialog', {
+            info: [
+                'Flee?',
+                'Flee from battle? you might get damage if you failed'],
+            labels: ['Flee', 'Stay'],
+            callbacks: ['flee', null]});
+            return;
+        }
         pathElapsed += elapsed;
         if (pathElapsed < 100) return;
         pathElapsed = 0;

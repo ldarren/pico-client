@@ -136,6 +136,7 @@ onLoad = function(){
         game.route('openChest', [game.openChest, renderer.draw]);
         game.route('attack', [game.attackAnim, renderer.draw]);
         game.route('counter', [game.counterAnim, renderer.draw]);
+        game.route('flee', [game.flee, renderer.draw]);
         game.route('gameStep', [game.step, renderer.draw]);
         game.route('forceRefresh', [renderer.draw]);
         game.route('resize', [camera.resize, uiWindow.resize, tome.resize, bag.resize, info.openIfValid, dialogMsg.openIfValid, renderer.draw]);

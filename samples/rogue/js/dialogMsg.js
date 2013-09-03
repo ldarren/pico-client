@@ -12,6 +12,8 @@ pico.def('dialogMsg', 'picUIWindow', function(){
 
     me.open = function(elapsed, evt, entities){
         var ent = this.showEntity(G_WIN_ID.DIALOG);
+        if (!ent) return;
+
         msg = evt;
         layouts.length = 0;
 

@@ -9,6 +9,8 @@ pico.def('hero', 'picUIWindow', function(){
     COUNTER_LOST = "NAME missed by rolling a TOTAL(ROLL+ATK) less than your defense DEF",
     CREEP_KILL = ", and you have defeated NAME",
     HERO_KILL = ", and you have been killed by NAME",
+    FLEE_WIN = "You rolled a TOTAL(ROLL+DEX) beat NAME's attack ATK, you fleed the scene",
+    FLEE_LOST = "You failed to flee by rolling a TOTAL(ROLL+DEX) lower than NAME's attack ATK, you lost HP hp",
     objects, flags,
     position, level, selectedSpell, targetId,
     heroObj,
@@ -199,17 +201,29 @@ console.log('battle',arguments.callee.caller.name, id, objects[id]);
     };
 
     me.flee = function(){
-        if (!targetId) return false;
+        if (!targetId) return false; // return error?
 
         var
         target = objects[targetId],
-        fleeRoll = d20Roll();
+        roll = d20Roll(),
+        total = roll + currStats[4];
 
-        if (fleeRoll > target[4]) {
+        if (total > target[4]) {
             me.setTargetId(undefined);
-            return true;
+            return [true, FLEE_WIN
+                .replace('TOTAL', total)
+                .replace('ROLL', roll)
+                .replace('DEX', currStats[4])
+                .replace('NAME', G_OBJECT_NAME[target[0]])
+                .replace('ATK', target[4])];
         }
-        return false;
+        return [false, FLEE_LOST
+                .replace('TOTAL', total)
+                .replace('ROLL', roll)
+                .replace('DEX', currStats[4])
+                .replace('NAME', G_OBJECT_NAME[target[0]])
+                .replace('ATK', target[4])
+                .replace('HP', 1)];
     }
 
     me.move = function(pos){

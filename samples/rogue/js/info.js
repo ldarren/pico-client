@@ -171,6 +171,7 @@ pico.def('info', 'picUIWindow', function(){
                 this.go('attack', hero.battle(targetId, false));
                 break;
             case 'Flee':
+                this.go('flee');
                 break;
             case 'Open':
                 break;
