@@ -155,7 +155,7 @@ console.log('battle',arguments.callee.caller.name, id, objects[id]);
         flag = flags[id],
         creepName = G_OBJECT_NAME[target[0]],
         attack = accident ? undefined : [d20Roll(), currStats[6], target[7]],
-        counter = flag ? undefined : [d20Roll(), target[4], currStats[9]],
+        counter = flag || G_CREEP_TYPE.PLANT === target[2] ? undefined : [d20Roll(), target[4], currStats[9]],
         total, hit, attackMsg, counterMsg;
 
         if (attack){
