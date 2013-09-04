@@ -17,7 +17,7 @@ pico.def('info', 'picUIWindow', function(){
         ai = this.ai,
         gs = win.gridSize,
         margin = sd ? 2 : 4,
-        pw = (rect.width - gs*2 - margin*2)/3,
+        pw = (rect.width - gs*2 - margin*2)/2,
         textWidth3 = sd ? 15 : 30,
         textWidth2 = sd ? 15 : 30,
         x = rect.x + gs + margin,
@@ -42,7 +42,15 @@ pico.def('info', 'picUIWindow', function(){
 
                     x = rect.x + gs + margin;
                     y += uiSize;
+                    uiSize = sd ? 16 : 32;
+ 
+                    x = me.drawData(ctx, ts, G_UI.PATK, target[4], x, y, uiSize, margin, textWidth3);
+                    x = me.drawData(ctx, ts, G_UI.RATK, target[5], x, y, uiSize, margin, textWidth3);
+                    x = me.drawData(ctx, ts, G_UI.MATK, target[6], x, y, uiSize, margin, textWidth3);
+
+                    x = rect.x + gs + margin + pw;
                     uiSize = sd ? 8 : 16;
+                    y = rect.y + uiSize;
                     
                     // draw hp
                     for(i=0, l=stat[3]; i<l; i++){
@@ -51,15 +59,8 @@ pico.def('info', 'picUIWindow', function(){
                     }
 
                     x = rect.x + gs + margin + pw;
-                    y = rect.y + margin;
+                    y += uiSize + margin;
                     uiSize = sd ? 16 : 32;
-                    
-                    x = me.drawData(ctx, ts, G_UI.PATK, target[4], x, y, uiSize, margin, textWidth3);
-                    x = me.drawData(ctx, ts, G_UI.RATK, target[5], x, y, uiSize, margin, textWidth3);
-                    x = me.drawData(ctx, ts, G_UI.MATK, target[6], x, y, uiSize, margin, textWidth3);
-
-                    x = rect.x + gs + margin + pw;
-                    y += uiSize;
 
                     x = me.drawData(ctx, ts, G_UI.PDEF, target[7], x, y, uiSize, margin, textWidth3);
                     x = me.drawData(ctx, ts, G_UI.MDEF, target[8], x, y, uiSize, margin, textWidth3);
@@ -77,7 +78,7 @@ pico.def('info', 'picUIWindow', function(){
             ctx.font = com.font;
             ctx.fillStyle = com.fontColor;
 
-            me.fillWrapText(ctx, targetId, x, y, pw*3, 20);
+            me.fillWrapText(ctx, targetId, x, y, pw*2, 20);
         }
         ctx.restore();
     },
@@ -176,6 +177,7 @@ pico.def('info', 'picUIWindow', function(){
                 this.go('flee');
                 break;
             case 'Open':
+                
                 break;
             case 'Speak':
                 break;
@@ -256,7 +258,7 @@ pico.def('info', 'picUIWindow', function(){
         var btnCount = labels.length;
         if (!btnCount) return entities;
 
-        if (win.maximized){
+       // if (win.maximized){
             var
             btnW = tileW*2, btnH = tileH,
             gap = Floor((rectW - btnW * btnCount - gs)/(btnCount+1)),
@@ -265,7 +267,7 @@ pico.def('info', 'picUIWindow', function(){
             for(var i=0; i<btnCount; i++){
                 layouts.push([rect.x + gap + gs + i * (btnW+gap), y, btnW, btnH]);
             }
-        }else{
+        /*}else{
             var
             btnW = tileW, btnH = tileH/2,
             gap = Floor((rectH - btnH * btnCount - gs)/(btnCount+1)),
@@ -274,7 +276,7 @@ pico.def('info', 'picUIWindow', function(){
             for(var i=0; i<btnCount; i++){
                 layouts.push([x, rect.y + gap + i * (btnH+gap), btnW, btnH]);
             }
-        }
+        }*/
 
         return entities;
     };

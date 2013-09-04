@@ -42,7 +42,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
             case infoId:
                 data.docks = [4+2+1, 8+4+2+1];
                 data.minWidth = this.smallDevice ? 320 : 640;
-                data.minHeight = this.tileHeight+gs;
+                data.minHeight = (this.tileHeight+gs)*2;
                 break;
             case dialogId:
                 data.docks = [8+4+2+1, 8+4+2+1];
