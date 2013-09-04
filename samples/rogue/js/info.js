@@ -1,4 +1,6 @@
 pico.def('info', 'picUIWindow', function(){
+    this.use('uiWindow');
+
     var
     me = this,
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
@@ -203,6 +205,7 @@ pico.def('info', 'picUIWindow', function(){
             default:
                 return entities;
         }
+        me.uiWindow.showAll.call(this, elapsed, evt, entities);
         this.go('hideInfo');
 
         return;
