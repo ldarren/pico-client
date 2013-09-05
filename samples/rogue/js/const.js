@@ -10,11 +10,13 @@ Object.freeze(G_OBJECT_TYPE = {
     POTION: 8,
     SCROLL: 9,
     WEAPON: 10,
-    ARMOR: 11,
-    JEWEL: 12,
-    MONEY: 13,
-    SKILL: 14,
-    EFFECT: 15,
+    AMMO: 11,
+    ARMOR: 12,
+    JEWEL: 13,
+    MATERIAL: 14,
+    MONEY: 15,
+    SPELL: 16,
+    EFFECT: 17,
 });
 
 Object.freeze(G_TILE_TYPE = {
@@ -28,23 +30,45 @@ Object.freeze(G_TILE_TYPE = {
     OBSTACLES: 2+4,
 });
 
-Object.freeze(G_WIN_ID = {
-    PLAYER: 'uiPlayer',
-    SKILLS: 'uiSkills',
-    BAG: 'uiBag',
-    INFO: 'uiInfo',
-    POPUP: 'uiPopup',
-    DIALOG: 'uiDialog',
+Object.freeze(G_HERO_CLASS = {
+    ROGUE: 1,
+    MONK: 2,
+    BARBARIAN: 4,
+    DRUID: 8,
+    HUNTER: 16,
+    PALADIN: 32,
+    WIZARD: 64,
+    WARLOCK: 128
 });
 
-Object.freeze(G_NUMERIC = {
-    SMALL_LIGHT: 247,
-    SMALL_DARK: 275,
-    LARGE_LIGHT: 227,
-    LARGE_DARK: 257
+Object.freeze(G_FLOOR = {
+    UNCLEAR: 8,
+    PYRAMID: 9,
+    CLEAR: 10,
+    BROKEN: 11,
+    LOCKED: 12,
+    STAIR_DOWN: 13,
+    STAIR_UP: 14,
+    PITFALL: 15,
+    TELEPORT: 16,
+    CHECKPOINT: 17,
+    STONE: 18,
+    WALL: 19,
+    BROKEN_WALL: 20,
+    WOODEN_GATE: 21,
+    DARWEN_GATE: 22,
+    LOCKED_GATE: 23,
+    PILLARS: 24,
+    PILLAR_DOOR: 25,
+    PRISON: 26,
+    TRAP: 27,
+    TILES: 28,
+    WATER: 29,
+    SAND: 30,
+    SPACE: 31
 });
 
-Object.freeze(G_OBJECT = {
+Object.freeze(G_ICON = {
     CHEST: 32,
     CHEST_EMPTY: 33,
     KEY_CHEST: 34,
@@ -150,51 +174,207 @@ Object.freeze(G_OBJECT = {
     SOUL_STONE: 134,
     HEALTH_GLOBE: 135,
 });
-Object.freeze(G_ITEM_RATE = [
-    [], // money
-    [], // potion
-    [], // scroll
-    [], // weapon
-    [], // armor
-]);
+
+// icon, difficulty, cooldown, currCooldown, stat1, stat2, statn
+Object.freeze(G_SPELL = {
+    POISON:     [128, 5, 3, 0],
+    PENTAGRAM:  [136, 5, 3, 0],    // protection, 4 elements
+    ANKH:       [137, 5, 3, 0],    // revive, eternal life
+    ALL_SEEING: [138, 0, 3, 0],    // spiritual sight, inner vision, higher knowledge, insight into occult mysteries
+    CREATON:    [139, 5, 3, 0],    // creation, alchemic creation
+    CHAOS:      [140, 5, 3, 0],    // all direction
+    EVOLVE:     [141, 5, 3, 0],    // mankind, evolve
+});
+Object.freeze(G_GRADE_TYPE = {
+    COMMON: 0,
+    CHARMED: 1,
+    ENCHANTED: 2,
+    LEGENDARY: 3,
+});
 Object.freeze(G_GRADE_RATE = [
-    [], // legend, 4 enchantments
-    [], // rare, 2 enchantments
-    [], // magical, 1 enchantment
-    [], // normal
-    [], // damage
+    [G_GRADE_TYPE.LEGENDARY, 1], // legend, 2 enchants, 2 charms
+    [G_GRADE_TYPE.ENCHANTED, 5], // enchanted, 1 enchant, 1 charms
+    [G_GRADE_TYPE.CHARMED, 20], // charmed, 1 charm
+    [G_GRADE_TYPE.COMMON, 100], // common
 ]);
-Object.freeze(G_ENCHANT = {
+// drop rate, enchant1, enchant2, charm1, charm2
+Object.freeze(G_LEGENDARY = [
+    [10, 0, 1, 0, 1],
+    [10, 2, 3, 2, 3],
+]);
+// drop rate, class
+Object.freeze(G_ENCHANT = [
+]);
+Object.freeze(G_CHARM = [
+]);
+Object.freeze(G_ITEM_RATE = [
+    [G_OBJECT_TYPE.MONEY, 10], // money
+    [G_OBJECT_TYPE.POTION, 80], // potion
+    [G_OBJECT_TYPE.SCROLL, 25], // scroll
+    [G_OBJECT_TYPE.WEAPON, 40], // weapon
+    [G_OBJECT_TYPE.AMMO, 60], // ammo 
+    [G_OBJECT_TYPE.ARMOR, 40], // armor
+    [G_OBJECT_TYPE.JEWEL, 1], // jewel 
+]);
+Object.freeze(G_MONEY_TYPE = {
+    GOLD: 1,
+    SKULL: 2,
+});
+// icons, drop rate, min count, max count
+Object.freeze(G_MONEY = [
+    [G_ICON.COINS, 100, 1, 5],
+    [G_ICON.COIN_STACK, 1, 6, 100],
+    [G_ICON.SKULL, 0, 1, 1],
+    [G_ICON.SKULLS, 0, 2, 10]
+]);
+Object.freeze(G_POTION_TYPE = {
+    ANTIDOT: 1,
+    BEAR: 2,
+    HOLY: 3,
+    MEDICINE: 4,
+    LUCK: 5,
+    HP: 6
+});
+// icon, drop rate
+Object.freeze(G_POTION = [
+    [G_ICON.ANTIDOT, 10],
+    [G_ICON.FIRE_WATER, 50],
+    [G_ICON.HOLY_WATER, 10],
+    [G_ICON.MEDICINAL_POTION, 10],
+    [G_ICON.POTION_OF_LUCK, 1],
+    [G_ICON.SMALL_HP, 50],
+    [G_ICON.MEDIUM_HP, 10],
+    [G_ICON.LARGE_HP, 1],
+]);
+Object.freeze(G_SCROLL_TYPE = [
+    MANUSCRIPT: 1,
+    IDENTITY: 2,
+    TELEPORT: 3,
+    MAP: 4,
+]);
+// icon, drop rate, difficulty, cooldown, currCooldown, stat1, stat2, statn
+Object.freeze(G_SCROLL = {
+    [G_ICON.IDENTITY_SCROLL, 100, G_SCROLL_TYPE.IDENTITY],
+    [G_ICON.TELEPORT_SCROLL, 50, G_SCROLL_TYPE.TELEPORT],
+    [G_ICON.MAP, 10, G_SCROLL_TYPE.MAP],
+    [G_ICON.MANUSCRIPT, 5, G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.POISON],
+    [G_ICON.MANUSCRIPT, 5, G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.PENTAGRAM],
+    [G_ICON.MANUSCRIPT, 5, G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.ANKH],
+    [G_ICON.MANUSCRIPT, 1, G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.ALL_SEEING],
+    [G_ICON.MANUSCRIPT, 5, G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.CREATON],
+    [G_ICON.MANUSCRIPT, 5, G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.CHAOS],
+    [G_ICON.MANUSCRIPT, 5, G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.EVOLVE],
+});
+Object.freeze(G_WEAPON_TYPE = {
+    SWORD: 1,
+    AXE: 2,
+    THROW: 3,
+    BOW: 4,
+    CROSSBOW: 5,
+    STAFF: 6,
 });
 Object.freeze(G_WEAPON = [
-
+    DAGGER: 56,
+    SCIMITAR: 57,
+    GLADIUS: 58,
+    XIPHOS: 59,
+    CUTLASS: 60,
+    CLAYMORE: 61,
+    ESPADON: 62,
+    FLAMEBERGE: 63,
+    HATCHET: 64,
+    CLEAVER: 65,
+    TOMAHAWK: 66,
+    TABARZIN: 67,
+    DOUBLE_HATCHET: 68,
+    DOUBLE_AXE: 69,
+    BATTLE_AXE: 70,
+    LABRYS: 71,
+    SHURIKEN: 72,
+    FUUMA_SHURIKEN: 73,
+    DART: 74,
+    RECURVE_BOW: 75,
+    LONG_BOW: 76,
+    REFLEX_BOW: 77,
+    CROSS_BOW: 78,
+    CHUKONU: 79,
+    GRENADES: 80,
+    FIRE_BOMB: 81,
+    THUNDER_CRASH_BOMB: 82,
+    ORB: 112,
+    MACE: 113,
+    WAND: 114,
+    STAFF: 115,
+    AQUILA: 116,
+    CADUCEUS: 117,
+    SCEPTER: 118,
+    SKULL_WAND: 119,
 ]);
-Object.freeze(G_ARMOR = [
-
-]);
-
-Object.freeze(G_UI = {
-    FLAG: 202,
-    HP: 237,
-    HP_EMPTY: 242,
-    SLOT: 15,
-    LEVEL: 216,
-    WILL: 670,
-    DEX: 613,
-    LUCK: 193,
-    PATK: 190,
-    RATK: 568,
-    MATK: 671,
-    PDEF: 192,
-    MDEF: 191,
-    GOLD: 195,
-    SKULL: 196,
+Object.freeze(G_AMMO = {
+    ARROW: 1,
+    BOLT: 2,
 });
-
-Object.freeze(G_SHADE = [0, 1, 2, 3, 4, 5, 6, 7 ]);
-Object.freeze(G_HINT_COLOR = ['BLACK', 'RED', 'YELLOW', 'ORANGE', 'BLUE', 'PURPLE', '#aec440', 'WHITE' ]);
-Object.freeze(G_COLOR_TONE = ['#d7e894','#aec440','#527f39','#204631']);
-
+Object.freeze(G_AMMO = [
+    HUNTER_ARROWS: 83,
+    OUTFITTER_ARROWS: 84,
+    BLOODLINE_ARROWS: 85,
+    HUNTER_BOLTS: 86,
+    MILITARY_BOLTS: 87,
+]);
+Object.freeze(G_ARMOR_TYPE = {
+    HELM: 1,
+    ARMOR: 2,
+    SHEILD: 3,
+});
+Object.freeze(G_ARMOR = [
+    ROBE: 88,
+    LEATHER_ARMOR: 89,
+    SCALE_ARMOR: 90,
+    CUIRASS: 91,
+    PLATE_MAIL: 92,
+    LIGHT_PLATE: 93,
+    FIELD_PLATE: 94,
+    FULL_PLATE: 95,
+    HOOD: 96,
+    SALLET: 97,
+    SPANGEN: 98,
+    CORINTHIAN: 99,
+    GREAT_HELM: 100,
+    VIKING_HELM: 101,
+    WINGED_HELM: 102,
+    BARBUTE: 103,
+    BUCKLER: 104,
+    PARMA: 105,
+    RONDACHE: 106,
+    HEATER: 107,
+    KITE: 108,
+    PAVISE: 109,
+    SCUTUM: 110,
+    HERALDRY: 111,
+]);
+Object.freeze(G_JEWEL_TYPE = {
+    RING: 1,
+    AMULET: 2,
+    CHARM: 3,
+});
+Object.freeze(G_JEWEL = [
+    RING1: 124,
+    RING2: 125,
+    AMULET1: 126,
+    AMULET2: 127,
+]);
+Object.freeze(G_MATERIAL_TYPE = {
+    PEARL: 1,
+    GEM: 2,
+    BONE: 3,
+    SOUL: 4,
+});
+Object.freeze(G_JEWEL = [
+    PEARLS: 122,
+    DIAMONDS: 123,
+    SKELETON: 130,
+    SOUL_STONE: 134,
+]);
 Object.freeze(G_HERO = {
     ROGUE: 144,
     MONK: 145,
@@ -251,33 +431,6 @@ Object.freeze(G_CREEP_TEAM = {
     'undead': [G_CREEP.SKELETON, 2, G_CREEP.MUMMY, 2, G_CREEP.ZOMBIE, 2, G_CREEP.WRAITH, 1],
 });
 
-Object.freeze(G_FLOOR = {
-    UNCLEAR: 8,
-    PYRAMID: 9,
-    CLEAR: 10,
-    BROKEN: 11,
-    LOCKED: 12,
-    STAIR_DOWN: 13,
-    STAIR_UP: 14,
-    PITFALL: 15,
-    TELEPORT: 16,
-    CHECKPOINT: 17,
-    STONE: 18,
-    WALL: 19,
-    BROKEN_WALL: 20,
-    WOODEN_GATE: 21,
-    DARWEN_GATE: 22,
-    LOCKED_GATE: 23,
-    PILLARS: 24,
-    PILLAR_DOOR: 25,
-    PRISON: 26,
-    TRAP: 27,
-    TILES: 28,
-    WATER: 29,
-    SAND: 30,
-    SPACE: 31
-});
-
 // hp, will, dex, luck, [atk, ratk, matk], [def, mdef], [veg, insect, beast, undead, demon]
 Object.freeze(G_HERO_STAT = [
     [144,   G_OBJECT_TYPE.HERO, 2, 0, 1, 1,       0.1, 0.2, 0,    0.1, 0,    1,1,1,1,1],     //rogue
@@ -289,18 +442,6 @@ Object.freeze(G_HERO_STAT = [
     [150,   G_OBJECT_TYPE.HERO, 1, 0, 0, 0.1,     0.1, 0.1, 0.3,  0.1, 0.4,  1,1,1,1,1],     //Wizard
     [151,   G_OBJECT_TYPE.HERO, 1, 0, 0, 0,       0.1, 0.1, 0.4,  0.1, 0.3,  1,1,1,1,1],     //Warlock
 ]);
-
-
-// name, ui_id, difficulty, cooldown, currCooldown, stat1, stat2, statn
-Object.freeze(G_SPELL = {
-    POISON:     [128, 5, 3, 0],
-    PENTAGRAM:  [136, 5, 3, 0],    // protection, 4 elements
-    ANKH:       [137, 5, 3, 0],    // revive, eternal life
-    ALL_SEEING: [138, 0, 3, 0],    // spiritual sight, inner vision, higher knowledge, insight into occult mysteries
-    CREATON:    [139, 5, 3, 0],    // creation, alchemic creation
-    CHAOS:      [140, 5, 3, 0],    // all direction
-    EVOLVE:     [141, 5, 3, 0],    // mankind, evolve
-});
 
 Object.freeze(G_CREEP_TYPE = {
     PLANT: 1,
@@ -371,7 +512,7 @@ Object.freeze(G_TOWN_MAP = {
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, [G_HERO.PALADIN, G_OBJECT_TYPE.NPC], 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
-        [G_OBJECT.SHRINE, G_OBJECT_TYPE.ENV], 0, 0, 0, 0, 0, 0, [G_OBJECT.ALTAR, G_OBJECT_TYPE.ENV],
+        [G_ICON.SHRINE, G_OBJECT_TYPE.ENV], 0, 0, 0, 0, 0, 0, [G_ICON.ALTAR, G_OBJECT_TYPE.ENV],
         [G_HERO.MONK, G_OBJECT_TYPE.NPC], 0, 0, 0, 0, 0, 0, [G_HERO.WIZARD, G_OBJECT_TYPE.NPC],
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
@@ -408,6 +549,44 @@ Object.freeze(G_MAP_PARAMS = [
     [32, 32, 170, 50],
     [32, 32, 200, 52],
 ]);
+
+Object.freeze(G_WIN_ID = {
+    PLAYER: 'uiPlayer',
+    SKILLS: 'uiSkills',
+    BAG: 'uiBag',
+    INFO: 'uiInfo',
+    POPUP: 'uiPopup',
+    DIALOG: 'uiDialog',
+});
+
+Object.freeze(G_SHADE = [0, 1, 2, 3, 4, 5, 6, 7 ]);
+Object.freeze(G_HINT_COLOR = ['BLACK', 'RED', 'YELLOW', 'ORANGE', 'BLUE', 'PURPLE', '#aec440', 'WHITE' ]);
+Object.freeze(G_COLOR_TONE = ['#d7e894','#aec440','#527f39','#204631']);
+
+Object.freeze(G_UI = {
+    SLOT: 15,
+    PATK: 190,
+    MDEF: 191,
+    PDEF: 192,
+    LUCK: 193,
+    GOLD: 195,
+    SKULL: 196,
+    FLAG: 202,
+    LEVEL: 216,
+    HP: 237,
+    HP_EMPTY: 242,
+    RATK: 568,
+    DEX: 613,
+    WILL: 670,
+    MATK: 671,
+});
+
+Object.freeze(G_NUMERIC = {
+    SMALL_LIGHT: 247,
+    SMALL_DARK: 275,
+    LARGE_LIGHT: 227,
+    LARGE_DARK: 257
+});
 
 Object.freeze(G_THEME = {
     THEME1:{

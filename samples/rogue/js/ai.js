@@ -58,11 +58,11 @@ pico.def('ai', function(){
     };
 
     me.spawnChest = function(){
-        return [G_OBJECT.CHEST, G_OBJECT_TYPE.CHEST];
+        return [G_ICON.CHEST, G_OBJECT_TYPE.CHEST];
     };
 
     me.openChest = function(){
-        return G_OBJECT.KEY_01;
+        return G_ICON.KEY_CHEST;
     };
 
     me.getStatByTileId = function(id){ return me.getStatByObject(objects[id]); };
@@ -94,7 +94,7 @@ pico.def('ai', function(){
         if (!creep || creep[3] > 0) return false;
 
         terrain[id] = G_FLOOR.BROKEN;
-        objects[id] = [G_OBJECT.HEALTH_GLOBE, G_OBJECT_TYPE.HEALTH];
+        objects[id] = [G_ICON.HEALTH_GLOBE, G_OBJECT_TYPE.HEALTH];
         return true;
     };
 

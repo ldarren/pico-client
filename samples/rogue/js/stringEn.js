@@ -6,6 +6,17 @@ Object.freeze(G_CREEP_TYPE_NAME = [
     'Undead',
     'Demon',
 ]);
+Object.freeze(G_HERO_CLASS_NAME = {
+    1: 'Rogue',
+    2: 'Monk',
+    4: 'Barbarian',
+    8: 'Druid',
+    16: 'Hunter',
+    32: 'Paladin',
+    64: 'Wizard',
+    128: 'Warlock',
+    255: 'All'
+});
 Object.freeze(G_WEAPON_PREFIX = [
 ]);
 Object.freeze(G_ARMOR_PREFIX = [
