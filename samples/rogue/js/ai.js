@@ -106,7 +106,13 @@ pico.def('ai', function(){
         maxLvl = level > 256 ? 260 : level + 3,
         lvl = minLvl + Round(Random()*(maxLvl - minLvl)),
         itemType = pick(G_ITEM_RATE, luck),
-        items = G_ITEM_TYPE[itemType[0]];
+        items = G_ITEM_TYPE[itemType[0]],
+        gradeType = pick(G_GRADE_RATE, luck);
+
+        switch(gradeType[0]){
+            case G_GRADE.COMMON:
+                break;
+        }
 
         return pick(items, luck);
     };
