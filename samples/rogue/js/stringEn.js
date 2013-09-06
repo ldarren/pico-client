@@ -15,26 +15,25 @@ Object.freeze(G_HERO_CLASS_NAME = {
     32: 'Paladin',
     64: 'Wizard',
     128: 'Warlock',
+    17: 'Rogue, Hunter',
+    34: 'Monk, Hunter',
+    42: 'Monk, Druid, Paladin',
+    46: 'Monk, Barbarian, Druid, Paladin',
+    192: 'Wizard, Warlock',
+    220: 'Barbarian, Druid, Hunter, Wizard, Warlock',
     255: 'All'
 });
-Object.freeze(G_WEAPON_PREFIX = [
+Object.freeze(G_LEGENDARY_AFFIX = [
+    ["Glimmerborg's", "Brave"]
+    ["Negablade's", "Ordeal"]
 ]);
-Object.freeze(G_ARMOR_PREFIX = [
+Object.freeze(G_ENCHANT_PREFIX = [
+'Burning','Strong','Heavy','Nimble','Crafty','Sharp','Thin','Grim','Stalwart','Bendy','Balanced','Weak','Grand','Broad','Pointy','Immovable'
 ]);
-Object.freeze(G_LEGEND_BLESS_POSTFIX = [
-]);
-Object.freeze(G_RARE_BLESS_POSTFIX = [
-]);
-Object.freeze(G_MAGIC_BLESS_POSTFIX = [
-]);
-Object.freeze(G_LEGEND_CURSED_POSTFIX = [
-    'Beleaguer', 'Ordeal',
-]);
-Object.freeze(G_RARE_CURSED_POSTFIX = [
-    'Anguish', 'Torment', 'Nightmare',
-]);
-Object.freeze(G_MAGIC_CURSED_POSTFIX = [
-    'Agony', 'Misery', 'Burden', 'Torture', 
+Object.freeze(G_CHARM_POSTFIX = [
+'the Phoenix','Strength','Agility','Luck','Health','Precision','Heartseeking','Armor','Defense','Magical Attraction',
+'the Heavy','the Thief','Blades','the Golem','the Ninja','the Lion','the Bounty Hunter','the Loser','the Hermit','Kings',
+'Beleaguer','Ordeal','Anguish','Torment','Nightmare','Agony','Misery','Burden','Torture',
 ]);
 
 Object.freeze(G_OBJECT_NAME = {
@@ -90,8 +89,8 @@ Object.freeze(G_OBJECT_NAME = {
     81: 'Fire Bomb',
     82: 'Thunder Crash Bomb',
     83: 'Hunter Arrows',
-    84: 'Outfitter Arrows',
-    85: 'Bloodline Arrows',
+    84: 'Broadhead Arrows',
+    85: 'Warship Arrows',
     86: 'Hunter Bolts',
     87: 'Military Bolts',
     88: 'Robe',
@@ -129,7 +128,7 @@ Object.freeze(G_OBJECT_NAME = {
     120: 'Coins',
     121: 'Coin Stack',
     122: 'Pearls',
-    123: 'Diamonds',
+    123: 'Diamond',
     124: 'Ring',
     125: 'Ring',
     126: 'Amulet',

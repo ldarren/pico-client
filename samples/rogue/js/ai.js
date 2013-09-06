@@ -1,7 +1,7 @@
 pico.def('ai', function(){
     var
     me = this,
-    Floor = Math.floor, Ceil = Math.ceil, Random = Math.random,
+    Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round,
     team = [],
     currIndex = 0,
     level = 0,
@@ -13,6 +13,45 @@ pico.def('ai', function(){
             s[i] = Ceil(s[i]*level);
         }
         return s;
+    },
+    pick = function(list, luck){
+        var
+        luckMed = luck,
+        luckHi = Round(luck/10),
+        cap = 0,
+        unit, select, i, l;
+
+        for(i=0,l=list.length; i<l; i++){
+            unit = list[i];
+            cap += unit[1];
+            switch(unit[2]){
+                case G_QUALITY.MEDIUM:
+                    cap += luckMed;
+                    break;
+                case G_QUALITY.HIGH:
+                    cap += luckHi;
+                    break;
+            }
+        }
+
+        select = Round(Random()*cap);
+
+        cap = 0;
+        for(i=0,l=list.length; i<l; i++){
+            unit = list[i];
+            cap += unit[1];
+            switch(unit[2]){
+                case G_QUALITY.MEDIUM:
+                    cap += luckMed;
+                    break;
+                case G_QUALITY.HIGH:
+                    cap += luckHi;
+                    break;
+            }
+            if (cap >= select) return unit; 
+        }
+
+        return unit;
     };
 
     me.init = function(){
@@ -61,8 +100,15 @@ pico.def('ai', function(){
         return [G_ICON.CHEST, G_OBJECT_TYPE.CHEST];
     };
 
-    me.openChest = function(){
-        return G_ICON.KEY_CHEST;
+    me.openChest = function(luck, level){
+        var
+        minLvl = level < 4 ? 3 : level - 3,
+        maxLvl = level > 256 ? 260 : level + 3,
+        lvl = minLvl + Round(Random()*(maxLvl - minLvl)),
+        itemType = pick(G_ITEM_RATE, luck),
+        items = G_ITEM_TYPE[itemType[0]];
+
+        return pick(items, luck);
     };
 
     me.getStatByTileId = function(id){ return me.getStatByObject(objects[id]); };
