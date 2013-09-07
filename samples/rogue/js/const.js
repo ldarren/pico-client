@@ -208,7 +208,7 @@ Object.freeze(G_GRADE = {
     G12: 12,
     G33: 1,
     G23: 6,
-    G13: 8
+    G13: 8,
     ALL: 15,
 });
 // id, rate, luck factor, grade
@@ -312,7 +312,7 @@ Object.freeze(G_POTION = [
     [G_ICON.LUCK_POTION,    1,  G_QUALITY.LOW,      G_GRADE.G12],
     [G_ICON.SMALL_HP,       50, G_QUALITY.LOW,      G_GRADE.G13],
     [G_ICON.MEDIUM_HP,      10, G_QUALITY.MEDIUM,   G_GRADE.G23],
-    [G_ICON.LARGE_HP,       1], G_QUALITY.HIGH,     G_GRADE.G33],
+    [G_ICON.LARGE_HP,       1,  G_QUALITY.HIGH,     G_GRADE.G33],
 ]);
 Object.freeze(G_SCROLL_TYPE = {
     MANUSCRIPT: 1,
