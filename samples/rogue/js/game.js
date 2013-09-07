@@ -162,7 +162,7 @@ pico.def('game', 'pigSqrMap', function(){
         }
 
         for(i=0;i<25;i++){
-            console.log(G_OBJECT_NAME[ai.openChest(0, 5)[0]]);
+            console.log(ai.openChest(0, 5));
         }
 
         me.recalHints();
