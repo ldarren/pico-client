@@ -199,12 +199,6 @@ Object.freeze(G_SPELL = {
     EVOLVE:     [141, 5, 3, 0],    // mankind, evolve
 });
 Object.freeze(G_GRADE = {
-<<<<<<< HEAD
-    COMMON: 0,
-    CHARMED: 1,
-    ENCHANTED: 2,
-    LEGENDARY: 3,
-=======
     NONE: 0,
     COMMON: 1,
     CHARMED: 2,
@@ -216,84 +210,21 @@ Object.freeze(G_GRADE = {
     G23: 6,
     G33: 8,
     ALL: 15,
->>>>>>> 68264e97d26a7c4d7a1a851d5bcaf41e9823949d
 });
 // id, rate, luck factor, grade
 Object.freeze(G_GRADE_RATE = [
-<<<<<<< HEAD
-    [G_GRADE.LEGENDARY,    1,      G_QUALITY.HIGH], // legend, 2 enchants, 2 charms
-    [G_GRADE.ENCHANTED,    5,      G_QUALITY.HIGH], // enchanted, 1 enchant, 1 charms
-    [G_GRADE.CHARMED,      20,     G_QUALITY.MEDIUM], // charmed, 1 charm
-    [G_GRADE.COMMON,       100,    G_QUALITY.LOW], // common
-=======
     [G_GRADE.LEGENDARY,    1,      G_QUALITY.HIGH,     G_GRADE.ALL], // legend, 2 enchants, 2 charms
     [G_GRADE.ENCHANTED,    5,      G_QUALITY.HIGH,     G_GRADE.ALL], // enchanted, 1 enchant, 1 charms
     [G_GRADE.CHARMED,      20,     G_QUALITY.MEDIUM,   G_GRADE.ALL], // charmed, 1 charm
     [G_GRADE.COMMON,       100,    G_QUALITY.LOW,      G_GRADE.ALL], // common
->>>>>>> 68264e97d26a7c4d7a1a851d5bcaf41e9823949d
 ]);
 // id, drop rate, luck factor, grade, enchant1, enchant2, charm1, charm2
 Object.freeze(G_LEGENDARY = [
-<<<<<<< HEAD
-    [0, 10, G_QUALITY.LOW, 0, 1, 0, 1],
-    [1, 10, G_QUALITY.MEDIUM, 2, 3, 2, 3],
-=======
     [0, 10, G_QUALITY.HIGH,     G_GRADE.G13,    0, 1, 0, 1],
     [1, 10, G_QUALITY.MEDIUM,   G_GRADE.G13,    2, 3, 2, 3],
->>>>>>> 68264e97d26a7c4d7a1a851d5bcaf41e9823949d
 ]);
 // id, drop rate, luck factor, grade, class
 Object.freeze(G_ENCHANT = [
-<<<<<<< HEAD
-    [0, 10, G_QUALITY.LOW, G_HERO_CLASS.ROGUE],
-    [1, 10, G_QUALITY.LOW, G_HERO_CLASS.MONK],
-    [2, 10, G_QUALITY.LOW, G_HERO_CLASS.BARBARIAN],
-    [3, 10, G_QUALITY.LOW, G_HERO_CLASS.DRUID],
-    [4, 10, G_QUALITY.LOW, G_HERO_CLASS.HUNTER],
-    [5, 10, G_QUALITY.LOW, G_HERO_CLASS.PALADIN],
-    [6, 10, G_QUALITY.LOW, G_HERO_CLASS.WIZARD],
-    [7, 10, G_QUALITY.LOW, G_HERO_CLASS.WARLOCK],
-    [8, 10, G_QUALITY.MEDIUM, G_HERO_CLASS.RANGER],
-    [9, 10, G_QUALITY.MEDIUM, G_HERO_CLASS.HEALER],
-    [10, 10, G_QUALITY.MEDIUM, G_HERO_CLASS.TANKER],
-    [11, 10, G_QUALITY.MEDIUM, G_HERO_CLASS.MELEE],
-    [12, 10, G_QUALITY.MEDIUM, G_HERO_CLASS.SPELLCASTER],
-    [13, 10, G_QUALITY.MEDIUM, G_HERO_CLASS.DPS],
-    [14, 10, G_QUALITY.MEDIUM, G_HERO_CLASS.MONK + G_HERO_CLASS.ROGUE],
-    [15, 10, G_QUALITY.HIGH, G_HERO_CLASS.ALL],
-]);
-// drop rate
-Object.freeze(G_CHARM = [
-    [0, 10, G_QUALITY.LOW],
-    [1, 10, G_QUALITY.LOW],
-    [2, 10, G_QUALITY.LOW],
-    [3, 10, G_QUALITY.LOW],
-    [4, 10, G_QUALITY.LOW],
-    [5, 10, G_QUALITY.LOW],
-    [6, 10, G_QUALITY.LOW],
-    [7, 10, G_QUALITY.LOW],
-    [8, 10, G_QUALITY.LOW],
-    [9, 10, G_QUALITY.LOW],
-    [10, 10, G_QUALITY.LOW],
-    [11, 10, G_QUALITY.LOW],
-    [12, 10, G_QUALITY.LOW],
-    [13, 10, G_QUALITY.LOW],
-    [14, 10, G_QUALITY.LOW],
-    [15, 10, G_QUALITY.LOW],
-    [16, 10, G_QUALITY.LOW],
-    [17, 10, G_QUALITY.LOW],
-    [18, 10, G_QUALITY.LOW],
-    [19, 10, G_QUALITY.LOW],
-    [20, 10, G_QUALITY.LOW],
-    [21, 10, G_QUALITY.LOW],
-    [22, 10, G_QUALITY.LOW],
-    [23, 10, G_QUALITY.LOW],
-    [24, 10, G_QUALITY.LOW],
-    [25, 10, G_QUALITY.LOW],
-    [26, 10, G_QUALITY.LOW],
-    [27, 10, G_QUALITY.LOW],
-    [28, 10, G_QUALITY.LOW],
-=======
     [0,     10, G_QUALITY.LOW,      G_HERO_CLASS.ROGUE,                     G_GRADE.ALL],
     [1,     10, G_QUALITY.LOW,      G_HERO_CLASS.MONK,                      G_GRADE.ALL],
     [2,     10, G_QUALITY.LOW,      G_HERO_CLASS.BARBARIAN,                 G_GRADE.ALL],
@@ -342,14 +273,7 @@ Object.freeze(G_CHARM = [
     [25, 10, G_QUALITY.LOW, G_GRADE.ALL],
     [26, 10, G_QUALITY.LOW, G_GRADE.ALL],
     [27, 10, G_QUALITY.LOW, G_GRADE.ALL],
->>>>>>> 68264e97d26a7c4d7a1a851d5bcaf41e9823949d
 ]);
-Object.freeze(G_GRADE_TYPE = {
-    0: undefined,
-    1: G_CHARMED,
-    2: G_ENCHANTED,
-    3: G_LEGENDARY
-});
 Object.freeze(G_ITEM_RATE = [
     [G_OBJECT_TYPE.MONEY,   10, G_QUALITY.HIGH,     G_GRADE.ALL], // money
     [G_OBJECT_TYPE.POTION,  80, G_QUALITY.LOW,      G_GRADE.ALL], // potion
