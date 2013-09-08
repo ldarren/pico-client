@@ -178,7 +178,7 @@ pico.def('info', 'picUIWindow', function(){
                 this.go('flee');
                 break;
             case 'Open':
-                ai.openChest(hero.getLuck(), this.currentLevel);
+                this.go('openChest', targetId);
                 break;
             case 'Speak':
                 break;

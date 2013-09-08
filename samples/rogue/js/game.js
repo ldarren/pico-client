@@ -242,6 +242,8 @@ pico.def('game', 'pigSqrMap', function(){
     };
 
     me.openChest = function(elapsed, evt, entities){
+        ai.openChest(hero.getLuck(), this.currentLevel);
+        return entities;
     };
 
     me.attackAnim = function(elapsed, evt, entities){
