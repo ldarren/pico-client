@@ -161,10 +161,6 @@ pico.def('game', 'pigSqrMap', function(){
             objects[c] = ai.spawnChest();
         }
 
-        for(i=0;i<25;i++){
-            console.log(ai.openChest(0, 5));
-        }
-
         me.recalHints();
 
         c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];

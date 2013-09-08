@@ -167,7 +167,8 @@ pico.def('info', 'picUIWindow', function(){
         }
 
         var
-        hero = this.hero;
+        hero = this.hero,
+        ai = this.ai;
 
         switch(label){
             case 'Fight':
@@ -177,14 +178,14 @@ pico.def('info', 'picUIWindow', function(){
                 this.go('flee');
                 break;
             case 'Open':
-                
+                ai.openChest(hero.getLuck(), this.currentLevel);
                 break;
             case 'Speak':
                 break;
             case 'Use':
                 delete this.objects[targetId];
                 hero.incrHp(1);
-                this.ai.incrHpAll(1);
+                ai.incrHpAll(1);
                 var 
                 hp = hero.getPosition(),
                 h = this.findPath(hp, targetId);
