@@ -204,11 +204,11 @@ Object.freeze(G_GRADE = {
     CHARMED: 2,
     ENCHANTED: 4,
     LEGENDARY: 8,
-    G22: 3,
-    G12: 12,
-    G33: 1,
+    G12: 3,
+    G22: 12,
+    G13: 1,
     G23: 6,
-    G13: 8,
+    G33: 8,
     ALL: 15,
 });
 // id, rate, luck factor, grade
