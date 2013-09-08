@@ -14,7 +14,7 @@ pico.def('ai', function(){
         }
         return s;
     },
-    pick = function(list, luck){
+    pick = function(list, luck, grade){
         var
         luckMed = luck,
         luckHi = Round(luck/10),
@@ -23,14 +23,12 @@ pico.def('ai', function(){
 
         for(i=0,l=list.length; i<l; i++){
             unit = list[i];
-            cap += unit[1];
-            switch(unit[2]){
-                case G_QUALITY.MEDIUM:
-                    cap += luckMed;
-                    break;
-                case G_QUALITY.HIGH:
-                    cap += luckHi;
-                    break;
+            if (grade & unit[3]){
+                cap += unit[1];
+                switch(unit[2]){
+                    case G_QUALITY.MEDIUM: cap += luckMed; break;
+                    case G_QUALITY.HIGH: cap += luckHi; break;
+                }
             }
         }
 
@@ -39,16 +37,14 @@ pico.def('ai', function(){
         cap = 0;
         for(i=0,l=list.length; i<l; i++){
             unit = list[i];
-            cap += unit[1];
-            switch(unit[2]){
-                case G_QUALITY.MEDIUM:
-                    cap += luckMed;
-                    break;
-                case G_QUALITY.HIGH:
-                    cap += luckHi;
-                    break;
+            if (grade & unit[3]){
+                cap += unit[1];
+                switch(unit[2]){
+                    case G_QUALITY.MEDIUM: cap += luckMed; break;
+                    case G_QUALITY.HIGH: cap += luckHi; break;
+                }
+                if (cap >= select) return unit; 
             }
-            if (cap >= select) return unit; 
         }
 
         return unit;
@@ -105,16 +101,65 @@ pico.def('ai', function(){
         minLvl = level < 4 ? 3 : level - 3,
         maxLvl = level > 256 ? 260 : level + 3,
         lvl = minLvl + Round(Random()*(maxLvl - minLvl)),
-        itemType = pick(G_ITEM_RATE, luck),
-        items = G_ITEM_TYPE[itemType[0]],
-        gradeType = pick(G_GRADE_RATE, luck);
+        grade = pick(G_GRADE_RATE, luck, G_GRADE.ALL),
+        gradeType = grade[0],
+        itemTypeInfo = pick(G_ITEM_RATE, luck, gradeType),
+        itemType = itemTypeInfo[0],
+        items = G_ITEM_TYPE[itemType],
+        item = pick(items, luck, gradeType),
+        itemName = G_OBJECT_NAME[item[0]],
+        modifier, affix;
 
-        switch(gradeType[0]){
-            case G_GRADE.COMMON:
+        switch(itemType){
+            case G_OBJECT_TYPE.WEAPON:
+            case G_OBJECT_TYPE.ARMOR:
+                switch(gradeType){
+                    case G_GRADE.LEGENDARY:
+                        modifier = pick(G_LEGENDARY, luck, gradeType);
+                        affix = G_LEGENDARY_AFFIX[modifier[0]];
+                        itemName = affix[0] + ' ' + itemName + ' of ' + affix[1];
+                        break;
+                    case G_GRADE.ENCHANTED:
+                        modifier = pick(G_ENCHANT, luck, gradeType);
+                        affix = G_ENCHANT_PREFIX[modifier[0]];
+                        itemName = affix + ' ' + itemName;
+                        modifier = pick(G_CHARM, luck, gradeType);
+                        affix = G_CHARM_POSTFIX[modifier[0]];
+                        itemName = itemName + ' of ' + affix;
+                        break;
+                    case G_GRADE.CHARMED:
+                        modifier = pick(G_CHARM, luck, gradeType);
+                        affix = G_CHARM_POSTFIX[modifier[0]];
+                        itemName = itemName + ' of ' + affix;
+                        break;
+                }
+                break;
+            case G_OBJECT_TYPE.JEWEL:
+                switch(gradeType){
+                    case G_GRADE.LEGENDARY:
+                        modifier = pick(G_LEGENDARY, luck, gradeType);
+                        affix = G_LEGENDARY_AFFIX[modifier[0]];
+                        itemName = affix[0] + ' ' + itemName + ' of ' + affix[1];
+                        break;
+                    case G_GRADE.ENCHANTED:
+                        modifier = pick(G_ENCHANT, luck, gradeType);
+                        affix = G_ENCHANT_PREFIX[modifier[0]];
+                        itemName = affix + ' ' + itemName;
+                        modifier = pick(G_CHARM, luck, gradeType);
+                        affix = G_CHARM_POSTFIX[modifier[0]];
+                        itemName = itemName + ' of ' + affix;
+                        break;
+                    case G_GRADE.CHARMED:
+                    case G_GRADE.COMMON:
+                        modifier = pick(G_CHARM, luck, gradeType);
+                        affix = G_CHARM_POSTFIX[modifier[0]];
+                        itemName = itemName + ' of ' + affix;
+                        break;
+                }
                 break;
         }
 
-        return pick(items, luck);
+        return [itemName, item];
     };
 
     me.getStatByTileId = function(id){ return me.getStatByObject(objects[id]); };

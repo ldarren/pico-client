@@ -263,6 +263,7 @@ console.log('battle',arguments.callee.caller.name, id, objects[id]);
     me.getSelectedSpell = function(){ return selectedSpell; };
     me.getPosition = function(){ return position; };
     me.getJob = function(){ return appearance[0]; };
+    me.getLuck = function(){ return currStats[5]; };
     me.getBag = function(){ return bag; };
     me.getTome = function(){ return tome; };
     me.incrHp = function(inc) { currStats[2] += inc; };

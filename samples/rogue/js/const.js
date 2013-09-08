@@ -93,8 +93,8 @@ Object.freeze(G_ICON = {
     ANTIDOT: 40,
     FIRE_WATER: 41,
     HOLY_WATER: 42,
-    MEDICINAL_POTION: 43,
-    POTION_OF_LUCK: 44,
+    MEDICINE: 43,
+    LUCK_POTION: 44,
     SMALL_HP: 45,
     MEDIUM_HP: 46,
     LARGE_HP: 47,
@@ -199,24 +199,52 @@ Object.freeze(G_SPELL = {
     EVOLVE:     [141, 5, 3, 0],    // mankind, evolve
 });
 Object.freeze(G_GRADE = {
+<<<<<<< HEAD
     COMMON: 0,
     CHARMED: 1,
     ENCHANTED: 2,
     LEGENDARY: 3,
+=======
+    NONE: 0,
+    COMMON: 1,
+    CHARMED: 2,
+    ENCHANTED: 4,
+    LEGENDARY: 8,
+    G12: 3,
+    G22: 12,
+    G13: 1,
+    G23: 6,
+    G33: 8,
+    ALL: 15,
+>>>>>>> 68264e97d26a7c4d7a1a851d5bcaf41e9823949d
 });
+// id, rate, luck factor, grade
 Object.freeze(G_GRADE_RATE = [
+<<<<<<< HEAD
     [G_GRADE.LEGENDARY,    1,      G_QUALITY.HIGH], // legend, 2 enchants, 2 charms
     [G_GRADE.ENCHANTED,    5,      G_QUALITY.HIGH], // enchanted, 1 enchant, 1 charms
     [G_GRADE.CHARMED,      20,     G_QUALITY.MEDIUM], // charmed, 1 charm
     [G_GRADE.COMMON,       100,    G_QUALITY.LOW], // common
+=======
+    [G_GRADE.LEGENDARY,    1,      G_QUALITY.HIGH,     G_GRADE.ALL], // legend, 2 enchants, 2 charms
+    [G_GRADE.ENCHANTED,    5,      G_QUALITY.HIGH,     G_GRADE.ALL], // enchanted, 1 enchant, 1 charms
+    [G_GRADE.CHARMED,      20,     G_QUALITY.MEDIUM,   G_GRADE.ALL], // charmed, 1 charm
+    [G_GRADE.COMMON,       100,    G_QUALITY.LOW,      G_GRADE.ALL], // common
+>>>>>>> 68264e97d26a7c4d7a1a851d5bcaf41e9823949d
 ]);
-// drop rate, enchant1, enchant2, charm1, charm2
+// id, drop rate, luck factor, grade, enchant1, enchant2, charm1, charm2
 Object.freeze(G_LEGENDARY = [
+<<<<<<< HEAD
     [0, 10, G_QUALITY.LOW, 0, 1, 0, 1],
     [1, 10, G_QUALITY.MEDIUM, 2, 3, 2, 3],
+=======
+    [0, 10, G_QUALITY.HIGH,     G_GRADE.G13,    0, 1, 0, 1],
+    [1, 10, G_QUALITY.MEDIUM,   G_GRADE.G13,    2, 3, 2, 3],
+>>>>>>> 68264e97d26a7c4d7a1a851d5bcaf41e9823949d
 ]);
-// drop rate, class
+// id, drop rate, luck factor, grade, class
 Object.freeze(G_ENCHANT = [
+<<<<<<< HEAD
     [0, 10, G_QUALITY.LOW, G_HERO_CLASS.ROGUE],
     [1, 10, G_QUALITY.LOW, G_HERO_CLASS.MONK],
     [2, 10, G_QUALITY.LOW, G_HERO_CLASS.BARBARIAN],
@@ -265,6 +293,56 @@ Object.freeze(G_CHARM = [
     [26, 10, G_QUALITY.LOW],
     [27, 10, G_QUALITY.LOW],
     [28, 10, G_QUALITY.LOW],
+=======
+    [0,     10, G_QUALITY.LOW,      G_HERO_CLASS.ROGUE,                     G_GRADE.ALL],
+    [1,     10, G_QUALITY.LOW,      G_HERO_CLASS.MONK,                      G_GRADE.ALL],
+    [2,     10, G_QUALITY.LOW,      G_HERO_CLASS.BARBARIAN,                 G_GRADE.ALL],
+    [3,     10, G_QUALITY.LOW,      G_HERO_CLASS.DRUID,                     G_GRADE.ALL],
+    [4,     10, G_QUALITY.LOW,      G_HERO_CLASS.HUNTER,                    G_GRADE.ALL],
+    [5,     10, G_QUALITY.LOW,      G_HERO_CLASS.PALADIN,                   G_GRADE.ALL],
+    [6,     10, G_QUALITY.LOW,      G_HERO_CLASS.WIZARD,                    G_GRADE.ALL],
+    [7,     10, G_QUALITY.LOW,      G_HERO_CLASS.WARLOCK,                   G_GRADE.ALL],
+    [8,     10, G_QUALITY.MEDIUM,   G_HERO_CLASS.RANGER,                    G_GRADE.ALL],
+    [9,     10, G_QUALITY.MEDIUM,   G_HERO_CLASS.HEALER,                    G_GRADE.ALL],
+    [10,    10, G_QUALITY.MEDIUM,   G_HERO_CLASS.TANKER,                    G_GRADE.ALL],
+    [11,    10, G_QUALITY.MEDIUM,   G_HERO_CLASS.MELEE,                     G_GRADE.ALL],
+    [12,    10, G_QUALITY.MEDIUM,   G_HERO_CLASS.SPELLCASTER,               G_GRADE.ALL],
+    [13,    10, G_QUALITY.MEDIUM,   G_HERO_CLASS.DPS,                       G_GRADE.ALL],
+    [14,    10, G_QUALITY.MEDIUM,   G_HERO_CLASS.MONK + G_HERO_CLASS.ROGUE, G_GRADE.ALL],
+    [15,    10, G_QUALITY.HIGH,     G_HERO_CLASS.ALL,                       G_GRADE.ALL],
+]);
+// drop rate
+Object.freeze(G_CHARM = [
+    [0, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [1, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [2, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [3, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [4, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [5, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [6, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [7, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [8, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [9, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [10, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [11, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [12, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [13, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [14, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [15, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [16, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [16, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [17, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [18, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [19, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [20, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [21, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [22, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [23, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [24, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [25, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [26, 10, G_QUALITY.LOW, G_GRADE.ALL],
+    [27, 10, G_QUALITY.LOW, G_GRADE.ALL],
+>>>>>>> 68264e97d26a7c4d7a1a851d5bcaf41e9823949d
 ]);
 Object.freeze(G_GRADE_TYPE = {
     0: undefined,
@@ -273,14 +351,14 @@ Object.freeze(G_GRADE_TYPE = {
     3: G_LEGENDARY
 });
 Object.freeze(G_ITEM_RATE = [
-    [G_OBJECT_TYPE.MONEY,   10, G_QUALITY.HIGH], // money
-    [G_OBJECT_TYPE.POTION,  80, G_QUALITY.LOW], // potion
-    [G_OBJECT_TYPE.SCROLL,  25, G_QUALITY.MEDIUM], // scroll
-    [G_OBJECT_TYPE.WEAPON,  40, G_QUALITY.MEDIUM], // weapon
-    [G_OBJECT_TYPE.AMMO,    60, G_QUALITY.LOW], // ammo 
-    [G_OBJECT_TYPE.ARMOR,   40, G_QUALITY.MEDIUM], // armor
-    [G_OBJECT_TYPE.JEWEL,   1,  G_QUALITY.HIGH], // jewel 
-    [G_OBJECT_TYPE.MATERIAL,1,  G_QUALITY.MEDIUM], // material
+    [G_OBJECT_TYPE.MONEY,   10, G_QUALITY.HIGH,     G_GRADE.ALL], // money
+    [G_OBJECT_TYPE.POTION,  80, G_QUALITY.LOW,      G_GRADE.ALL], // potion
+    [G_OBJECT_TYPE.SCROLL,  25, G_QUALITY.MEDIUM,   G_GRADE.ALL], // scroll
+    [G_OBJECT_TYPE.WEAPON,  40, G_QUALITY.MEDIUM,   G_GRADE.ALL], // weapon
+    [G_OBJECT_TYPE.AMMO,    60, G_QUALITY.LOW,      G_GRADE.ALL], // ammo 
+    [G_OBJECT_TYPE.ARMOR,   40, G_QUALITY.MEDIUM,   G_GRADE.ALL], // armor
+    [G_OBJECT_TYPE.JEWEL,   1,  G_QUALITY.HIGH,     G_GRADE.ALL], // jewel 
+    [G_OBJECT_TYPE.MATERIAL,1,  G_QUALITY.MEDIUM,   G_GRADE.ALL], // material
 ]);
 Object.freeze(G_MONEY_TYPE = {
     GOLD: 1,
@@ -288,10 +366,10 @@ Object.freeze(G_MONEY_TYPE = {
 });
 // icons, drop rate, min count, max count
 Object.freeze(G_MONEY = [
-    [G_ICON.COINS, 100, 1, 5],
-    [G_ICON.COIN_STACK, 1, 6, 100],
-    [G_ICON.SKULL, 0, 1, 1],
-    [G_ICON.SKULLS, 0, 2, 10]
+    [G_ICON.COINS,      100,    G_QUALITY.MEDIUM,   G_GRADE.G12, 1, 5],
+    [G_ICON.COIN_STACK, 1,      G_QUALITY.HIGH,     G_GRADE.G22, 6, 100],
+    [G_ICON.SKULL,      0,      G_QUALITY.HIGH,     G_GRADE.G33, 1, 1],
+    [G_ICON.SKULLS,     0,      G_QUALITY.HIGH,     G_GRADE.G33, 2, 10]
 ]);
 Object.freeze(G_POTION_TYPE = {
     ANTIDOT: 1,
@@ -303,14 +381,14 @@ Object.freeze(G_POTION_TYPE = {
 });
 // icon, drop rate
 Object.freeze(G_POTION = [
-    [G_ICON.ANTIDOT, 10],
-    [G_ICON.FIRE_WATER, 50],
-    [G_ICON.HOLY_WATER, 10],
-    [G_ICON.MEDICINAL_POTION, 10],
-    [G_ICON.POTION_OF_LUCK, 1],
-    [G_ICON.SMALL_HP, 50],
-    [G_ICON.MEDIUM_HP, 10],
-    [G_ICON.LARGE_HP, 1],
+    [G_ICON.ANTIDOT,        10, G_QUALITY.LOW,      G_GRADE.G12],
+    [G_ICON.FIRE_WATER,     50, G_QUALITY.LOW,      G_GRADE.G12],
+    [G_ICON.HOLY_WATER,     10, G_QUALITY.LOW,      G_GRADE.G12],
+    [G_ICON.MEDICINE,       10, G_QUALITY.LOW,      G_GRADE.G12],
+    [G_ICON.LUCK_POTION,    1,  G_QUALITY.LOW,      G_GRADE.G12],
+    [G_ICON.SMALL_HP,       50, G_QUALITY.LOW,      G_GRADE.G13],
+    [G_ICON.MEDIUM_HP,      10, G_QUALITY.MEDIUM,   G_GRADE.G23],
+    [G_ICON.LARGE_HP,       1,  G_QUALITY.HIGH,     G_GRADE.G33],
 ]);
 Object.freeze(G_SCROLL_TYPE = {
     MANUSCRIPT: 1,
@@ -318,18 +396,18 @@ Object.freeze(G_SCROLL_TYPE = {
     TELEPORT: 3,
     MAP: 4,
 });
-// icon, drop rate, difficulty, cooldown, currCooldown, stat1, stat2, statn
+// icon, drop rate, quality, scroll type
 Object.freeze(G_SCROLL = [
-    [G_ICON.IDENTITY_SCROLL, 100, G_SCROLL_TYPE.IDENTITY],
-    [G_ICON.TELEPORT_SCROLL, 50, G_SCROLL_TYPE.TELEPORT],
-    [G_ICON.MAP, 10, G_SCROLL_TYPE.MAP],
-    [G_ICON.MANUSCRIPT, 5, G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.POISON],
-    [G_ICON.MANUSCRIPT, 5, G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.PENTAGRAM],
-    [G_ICON.MANUSCRIPT, 5, G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.ANKH],
-    [G_ICON.MANUSCRIPT, 1, G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.ALL_SEEING],
-    [G_ICON.MANUSCRIPT, 5, G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.CREATON],
-    [G_ICON.MANUSCRIPT, 5, G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.CHAOS],
-    [G_ICON.MANUSCRIPT, 5, G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.EVOLVE],
+    [G_ICON.IDENTITY_SCROLL,    100,G_QUALITY.LOW,  G_GRADE.G12,   G_SCROLL_TYPE.IDENTITY],
+    [G_ICON.TELEPORT_SCROLL,    50, G_QUALITY.LOW,  G_GRADE.G12,     G_SCROLL_TYPE.TELEPORT],
+    [G_ICON.MAP,                10, G_QUALITY.LOW,  G_GRADE.G12,     G_SCROLL_TYPE.MAP],
+    [G_ICON.MANUSCRIPT,         5,  G_QUALITY.HIGH, G_GRADE.G22,      G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.POISON],
+    [G_ICON.MANUSCRIPT,         5,  G_QUALITY.HIGH, G_GRADE.G22,      G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.PENTAGRAM],
+    [G_ICON.MANUSCRIPT,         5,  G_QUALITY.HIGH, G_GRADE.G22,      G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.ANKH],
+    [G_ICON.MANUSCRIPT,         1,  G_QUALITY.HIGH, G_GRADE.G33,      G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.ALL_SEEING],
+    [G_ICON.MANUSCRIPT,         5,  G_QUALITY.HIGH, G_GRADE.G22,      G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.CREATON],
+    [G_ICON.MANUSCRIPT,         5,  G_QUALITY.HIGH, G_GRADE.G22,      G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.CHAOS],
+    [G_ICON.MANUSCRIPT,         5,  G_QUALITY.HIGH, G_GRADE.G22,      G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.EVOLVE],
 ]);
 Object.freeze(G_WEAPON_TYPE = {
     SWORD: 1,
@@ -340,52 +418,52 @@ Object.freeze(G_WEAPON_TYPE = {
     SCEPTER: 6,
 });
 Object.freeze(G_WEAPON = [
-    [G_ICON.DAGGER,             80],
-    [G_ICON.SCIMITAR,           70],
-    [G_ICON.GLADIUS,            60],
-    [G_ICON.XIPHOS,             50],
-    [G_ICON.CUTLASS,            40],
-    [G_ICON.CLAYMORE,           30],
-    [G_ICON.ESPADON,            20],
-    [G_ICON.FLAMEBERGE,         10],
-    [G_ICON.HATCHET,            80],
-    [G_ICON.CLEAVER,            70],
-    [G_ICON.TOMAHAWK,           60],
-    [G_ICON.TABARZIN,           50],
-    [G_ICON.DOUBLE_HATCHET,     40],
-    [G_ICON.DOUBLE_AXE,         30],
-    [G_ICON.BATTLE_AXE,         20],
-    [G_ICON.LABRYS,             10],
-    [G_ICON.SHURIKEN,           50],
-    [G_ICON.FUUMA_SHURIKEN,     10],
-    [G_ICON.DART,               80],
-    [G_ICON.GRENADES,           30],
-    [G_ICON.FIRE_BOMB,          20],
-    [G_ICON.THUNDER_CRASH_BOMB, 10],
-    [G_ICON.RECURVE_BOW,        50],
-    [G_ICON.LONG_BOW,           30],
-    [G_ICON.REFLEX_BOW,         10],
-    [G_ICON.CROSS_BOW,          50],
-    [G_ICON.CHUKONU,            10],
-    [G_ICON.ORB,                80],
-    [G_ICON.MACE,               70],
-    [G_ICON.WAND,               60],
-    [G_ICON.STAFF,              50],
-    [G_ICON.AQUILA,             40],
-    [G_ICON.CADUCEUS,           30],
-    [G_ICON.SCEPTER,            20],
-    [G_ICON.SKULL_WAND,         10],
+    [G_ICON.DAGGER,             80, G_QUALITY.LOW,  G_GRADE.ALL],
+    [G_ICON.SCIMITAR,           70, G_QUALITY.LOW,  G_GRADE.ALL],
+    [G_ICON.GLADIUS,            60, G_QUALITY.MEDIUM,  G_GRADE.ALL],
+    [G_ICON.XIPHOS,             50, G_QUALITY.MEDIUM,  G_GRADE.ALL],
+    [G_ICON.CUTLASS,            40, G_QUALITY.MEDIUM,  G_GRADE.ALL],
+    [G_ICON.CLAYMORE,           30, G_QUALITY.MEDIUM,  G_GRADE.ALL],
+    [G_ICON.ESPADON,            20, G_QUALITY.HIGH,  G_GRADE.ALL],
+    [G_ICON.FLAMEBERGE,         10, G_QUALITY.HIGH,  G_GRADE.ALL],
+    [G_ICON.HATCHET,            80, G_QUALITY.LOW,  G_GRADE.ALL],
+    [G_ICON.CLEAVER,            70, G_QUALITY.LOW,  G_GRADE.ALL],
+    [G_ICON.TOMAHAWK,           60, G_QUALITY.MEDIUM,  G_GRADE.ALL],
+    [G_ICON.TABARZIN,           50, G_QUALITY.MEDIUM,  G_GRADE.ALL],
+    [G_ICON.DOUBLE_HATCHET,     40, G_QUALITY.MEDIUM,  G_GRADE.ALL],
+    [G_ICON.DOUBLE_AXE,         30, G_QUALITY.MEDIUM,  G_GRADE.ALL],
+    [G_ICON.BATTLE_AXE,         20, G_QUALITY.HIGH,  G_GRADE.ALL],
+    [G_ICON.LABRYS,             10, G_QUALITY.HIGH,  G_GRADE.ALL],
+    [G_ICON.SHURIKEN,           50, G_QUALITY.MEDIUM,  G_GRADE.ALL],
+    [G_ICON.FUUMA_SHURIKEN,     10, G_QUALITY.HIGH,  G_GRADE.ALL],
+    [G_ICON.DART,               80, G_QUALITY.LOW,  G_GRADE.ALL],
+    [G_ICON.GRENADES,           30, G_QUALITY.LOW,  G_GRADE.ALL],
+    [G_ICON.FIRE_BOMB,          20, G_QUALITY.MEDIUM,  G_GRADE.ALL],
+    [G_ICON.THUNDER_CRASH_BOMB, 10, G_QUALITY.HIGH,  G_GRADE.ALL],
+    [G_ICON.RECURVE_BOW,        50, G_QUALITY.LOW,  G_GRADE.ALL],
+    [G_ICON.LONG_BOW,           30, G_QUALITY.MEDIUM,  G_GRADE.ALL],
+    [G_ICON.REFLEX_BOW,         10, G_QUALITY.HIGH,  G_GRADE.ALL],
+    [G_ICON.CROSS_BOW,          50, G_QUALITY.LOW,  G_GRADE.ALL],
+    [G_ICON.CHUKONU,            10, G_QUALITY.HIGH,  G_GRADE.ALL],
+    [G_ICON.ORB,                80, G_QUALITY.LOW,  G_GRADE.ALL],
+    [G_ICON.MACE,               70, G_QUALITY.LOW,  G_GRADE.ALL],
+    [G_ICON.WAND,               60, G_QUALITY.LOW,  G_GRADE.ALL],
+    [G_ICON.STAFF,              50, G_QUALITY.MEDIUM,  G_GRADE.ALL],
+    [G_ICON.AQUILA,             40, G_QUALITY.MEDIUM,  G_GRADE.ALL],
+    [G_ICON.CADUCEUS,           30, G_QUALITY.MEDIUM,  G_GRADE.ALL],
+    [G_ICON.SCEPTER,            20, G_QUALITY.HIGH,  G_GRADE.ALL],
+    [G_ICON.SKULL_WAND,         10, G_QUALITY.HIGH,  G_GRADE.ALL],
 ]);
 Object.freeze(G_AMMO_TYPE = {
     ARROW: 1,
     BOLT: 2,
 });
 Object.freeze(G_AMMO = [
-    [G_ICON.HUNTER_ARROWS,      80],
-    [G_ICON.BROADHEAD_ARROWS,   40],
-    [G_ICON.WARSHIP_ARROWS,     10],
-    [G_ICON.HUNTER_BOLTS,       50],
-    [G_ICON.MILITARY_BOLTS,     10],
+    [G_ICON.HUNTER_ARROWS,      80, G_QUALITY.LOW,  G_GRADE.ALL],
+    [G_ICON.BROADHEAD_ARROWS,   40, G_QUALITY.MEDIUM, G_GRADE.ALL],
+    [G_ICON.WARSHIP_ARROWS,     10, G_QUALITY.HIGH, G_GRADE.ALL],
+    [G_ICON.HUNTER_BOLTS,       50, G_QUALITY.LOW,  G_GRADE.ALL],
+    [G_ICON.MILITARY_BOLTS,     10, G_QUALITY.HIGH, G_GRADE.ALL],
 ]);
 Object.freeze(G_ARMOR_TYPE = {
     HELM: 1,
@@ -394,40 +472,40 @@ Object.freeze(G_ARMOR_TYPE = {
 });
 
 Object.freeze(G_ARMOR = [
-    [G_ICON.ROBE,           80],         
-    [G_ICON.LEATHER_ARMOR,  70],
-    [G_ICON.SCALE_ARMOR,    60],
-    [G_ICON.CUIRASS,        50],
-    [G_ICON.PLATE_MAIL,     40],
-    [G_ICON.LIGHT_PLATE,    30],
-    [G_ICON.FIELD_PLATE,    20],
-    [G_ICON.FULL_PLATE,     10],
-    [G_ICON.HOOD,           80],
-    [G_ICON.SALLET,         70],
-    [G_ICON.SPANGEN,        60],
-    [G_ICON.CORINTHIAN,     50],
-    [G_ICON.GREAT_HELM,     40],
-    [G_ICON.VIKING_HELM,    30],
-    [G_ICON.WINGED_HELM,    20],
-    [G_ICON.BARBUTE,        10],
-    [G_ICON.BUCKLER,        80],
-    [G_ICON.PARMA,          70],
-    [G_ICON.RONDACHE,       60],
-    [G_ICON.HEATER,         50],
-    [G_ICON.KITE,           40],
-    [G_ICON.PAVISE,         30],
-    [G_ICON.SCUTUM,         20],
-    [G_ICON.HERALDRY,       10],
+    [G_ICON.ROBE,           80, G_QUALITY.LOW, G_GRADE.ALL], 
+    [G_ICON.LEATHER_ARMOR,  70, G_QUALITY.LOW, G_GRADE.ALL],
+    [G_ICON.SCALE_ARMOR,    60, G_QUALITY.MEDIUM, G_GRADE.ALL],
+    [G_ICON.CUIRASS,        50, G_QUALITY.MEDIUM, G_GRADE.ALL],
+    [G_ICON.PLATE_MAIL,     40, G_QUALITY.MEDIUM, G_GRADE.ALL],
+    [G_ICON.LIGHT_PLATE,    30, G_QUALITY.MEDIUM, G_GRADE.ALL],
+    [G_ICON.FIELD_PLATE,    20, G_QUALITY.HIGH, G_GRADE.ALL],
+    [G_ICON.FULL_PLATE,     10, G_QUALITY.HIGH, G_GRADE.ALL],
+    [G_ICON.HOOD,           80, G_QUALITY.LOW, G_GRADE.ALL],
+    [G_ICON.SALLET,         70, G_QUALITY.LOW, G_GRADE.ALL],
+    [G_ICON.SPANGEN,        60, G_QUALITY.LOW, G_GRADE.ALL],
+    [G_ICON.CORINTHIAN,     50, G_QUALITY.MEDIUM, G_GRADE.ALL],
+    [G_ICON.GREAT_HELM,     40, G_QUALITY.MEDIUM, G_GRADE.ALL],
+    [G_ICON.VIKING_HELM,    30, G_QUALITY.MEDIUM, G_GRADE.ALL],
+    [G_ICON.WINGED_HELM,    20, G_QUALITY.HIGH, G_GRADE.ALL],
+    [G_ICON.BARBUTE,        10, G_QUALITY.HIGH, G_GRADE.ALL],
+    [G_ICON.BUCKLER,        80, G_QUALITY.LOW, G_GRADE.ALL],
+    [G_ICON.PARMA,          70, G_QUALITY.LOW, G_GRADE.ALL],
+    [G_ICON.RONDACHE,       60, G_QUALITY.LOW, G_GRADE.ALL],
+    [G_ICON.HEATER,         50, G_QUALITY.MEDIUM, G_GRADE.ALL],
+    [G_ICON.KITE,           40, G_QUALITY.MEDIUM, G_GRADE.ALL],
+    [G_ICON.PAVISE,         30, G_QUALITY.MEDIUM, G_GRADE.ALL],
+    [G_ICON.SCUTUM,         20, G_QUALITY.HIGH, G_GRADE.ALL],
+    [G_ICON.HERALDRY,       10, G_QUALITY.HIGH, G_GRADE.ALL],
 ]);
 Object.freeze(G_JEWEL_TYPE = {
     RING: 1,
     AMULET: 2,
 });
 Object.freeze(G_JEWEL = [
-    [G_ICON.RING1,      50],
-    [G_ICON.RING2,      10],
-    [G_ICON.AMULET1,    50],
-    [G_ICON.AMULET2,    10],
+    [G_ICON.RING1,      50, G_QUALITY.LOW,  G_GRADE.G12],
+    [G_ICON.RING2,      10, G_QUALITY.HIGH, G_GRADE.G22],
+    [G_ICON.AMULET1,    50, G_QUALITY.LOW,  G_GRADE.G12],
+    [G_ICON.AMULET2,    10, G_QUALITY.HIGH, G_GRADE.G22],
 ]);
 Object.freeze(G_MATERIAL_TYPE = {
     PEARL: 1,
@@ -436,10 +514,10 @@ Object.freeze(G_MATERIAL_TYPE = {
     SOUL: 4,
 });
 Object.freeze(G_MATERIAL = [
-    [G_ICON.PEARLS,         50],
-    [G_ICON.DIAMOND,        40],
-    [G_ICON.SKELETON,       30],
-    [G_ICON.SOUL_STONES,    5],
+    [G_ICON.PEARLS,         40, G_QUALITY.MEDIUM, G_GRADE.G12],
+    [G_ICON.DIAMOND,        20, G_QUALITY.HIGH, G_GRADE.G22],
+    [G_ICON.SKELETON,       50, G_QUALITY.MEDIUM, G_GRADE.G12],
+    [G_ICON.SOUL_STONES,    5, G_QUALITY.HIGH, G_GRADE.G22],
 ]);
 Object.freeze(G_ITEM_TYPE = {
     15: G_MONEY,
