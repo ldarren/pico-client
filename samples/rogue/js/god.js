@@ -14,11 +14,11 @@ pico.def('god', function(){
     };
     
     me.createHero = function(){
-        var job = Floor(G_HERO.ROGUE + Random()*(G_HERO.WARLOCK-G_HERO.ROGUE));
+        var job = Floor(G_ICON.ROGUE + Random()*(G_ICON.WARLOCK-G_ICON.ROGUE));
         return {
             // job, helm, armor, main hand, off hand, ring1, ring2, amulet, gold, skull, enemy
             appearance: [job, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            stats: G_HERO_STAT[job-G_HERO.ROGUE].slice(),
+            stats: G_ICON_STAT[job-G_ICON.ROGUE].slice(),
             effects: [],
             bag: [],
             tome: [G_SPELL.ALL_SEEING.slice(),G_SPELL.ALL_SEEING.slice()]

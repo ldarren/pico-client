@@ -110,30 +110,12 @@ pico.def('ai', function(){
         itemName = G_OBJECT_NAME[item[0]],
         modifier, affix;
 
+        // there's no common jewel :p
+        if (G_OBJECT_TYPE.JEWEL === itemType && G_GRADE.COMMON === gradeType) gradeType = G_GRADE.CHARMED;
+
         switch(itemType){
             case G_OBJECT_TYPE.WEAPON:
             case G_OBJECT_TYPE.ARMOR:
-                switch(gradeType){
-                    case G_GRADE.LEGENDARY:
-                        modifier = pick(G_LEGENDARY, luck, gradeType);
-                        affix = G_LEGENDARY_AFFIX[modifier[0]];
-                        itemName = affix[0] + ' ' + itemName + ' of ' + affix[1];
-                        break;
-                    case G_GRADE.ENCHANTED:
-                        modifier = pick(G_ENCHANT, luck, gradeType);
-                        affix = G_ENCHANT_PREFIX[modifier[0]];
-                        itemName = affix + ' ' + itemName;
-                        modifier = pick(G_CHARM, luck, gradeType);
-                        affix = G_CHARM_POSTFIX[modifier[0]];
-                        itemName = itemName + ' of ' + affix;
-                        break;
-                    case G_GRADE.CHARMED:
-                        modifier = pick(G_CHARM, luck, gradeType);
-                        affix = G_CHARM_POSTFIX[modifier[0]];
-                        itemName = itemName + ' of ' + affix;
-                        break;
-                }
-                break;
             case G_OBJECT_TYPE.JEWEL:
                 switch(gradeType){
                     case G_GRADE.LEGENDARY:
@@ -150,7 +132,6 @@ pico.def('ai', function(){
                         itemName = itemName + ' of ' + affix;
                         break;
                     case G_GRADE.CHARMED:
-                    case G_GRADE.COMMON:
                         modifier = pick(G_CHARM, luck, gradeType);
                         affix = G_CHARM_POSTFIX[modifier[0]];
                         itemName = itemName + ' of ' + affix;
@@ -164,7 +145,7 @@ pico.def('ai', function(){
 
     me.getStatByTileId = function(id){ return me.getStatByObject(objects[id]); };
     me.getStatByObject = function(creep){ return me.getStatByCreepId(creep[0]); };
-    me.getStatByCreepId = function(id){ return G_CREEP_STAT[id-G_CREEP.RAT]; };
+    me.getStatByCreepId = function(id){ return G_CREEP_STAT[id-G_ICON.RAT]; };
 
     me.incrHp = function(id, inc){
         var creep = objects[id];

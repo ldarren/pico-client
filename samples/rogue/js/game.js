@@ -242,7 +242,7 @@ pico.def('game', 'pigSqrMap', function(){
     };
 
     me.openChest = function(elapsed, evt, entities){
-        ai.openChest(hero.getLuck(), this.currentLevel);
+        this.ai.openChest(this.hero.getLuck(), this.currentLevel);
         return entities;
     };
 

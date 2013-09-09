@@ -19,6 +19,13 @@ Object.freeze(G_OBJECT_TYPE = {
     EFFECT: 17,
 });
 
+// determine how luck affect the drop rate
+Object.freeze(G_QUALITY = {
+    LOW: 0,
+    MEDIUM: 1,
+    HIGH: 2,
+});
+
 Object.freeze(G_TILE_TYPE = {
     EMPTY: 0,
     SHOW: 2+4+8+16,
@@ -73,12 +80,6 @@ Object.freeze(G_FLOOR = {
     WATER: 29,
     SAND: 30,
     SPACE: 31
-});
-
-Object.freeze(G_QUALITY = {
-    LOW: 0,
-    MEDIUM: 1,
-    HIGH: 2,
 });
 
 Object.freeze(G_ICON = {
@@ -186,6 +187,54 @@ Object.freeze(G_ICON = {
     SHRINE: 133,
     SOUL_STONE: 134,
     HEALTH_GLOBE: 135,
+    PENTAGRAM: 136,
+    ANKH: 137,
+    ALL_SEEING: 138,
+    CREATION: 139,
+    CHAOS: 140,
+    EVOLVE: 141,
+    BANNER: 142,
+    MESSAGE_BOARD: 143,
+    ROGUE: 144,
+    MONK: 145,
+    BARBARIAN: 146,
+    DRUID: 147,
+    HUNTER: 148,
+    PALADIN: 149,
+    WIZARD: 150,
+    WARLOCK: 151,
+    RAT: 152,
+    SPIDERS: 153,
+    KOMODO: 154,
+    SPIDER_CHAMPION: 155,
+    TOAD: 156,
+    SCARAB: 157,
+    CENTIPEDE: 158,
+    SERPENT: 159,
+    FUNGI: 160,
+    Hare: 161,
+    BAT: 162,
+    BAT_CHAMPION: 163,
+    SNAKE: 164,
+    WOLF: 165,
+    WILD_BOAR: 166,
+    BEAR: 167,
+    SLIME: 168,
+    SLIME_CHAMPION: 169,
+    SCORPION: 170,
+    Kraken: 171,
+    VAMPIRE: 172,
+    MUMMY: 173,
+    WRAITH: 174,
+    BEHOLDER: 175,
+    GOBLIN: 176,
+    ZOMBIE: 177,
+    SKELETON: 178,
+    ORC: 179,
+    CYCLOPS: 180,
+    WEREWOLF: 181,
+    WEREBEAR: 182,
+    DEVIL: 183,
 });
 
 // icon, difficulty, cooldown, currCooldown, stat1, stat2, statn
@@ -194,7 +243,7 @@ Object.freeze(G_SPELL = {
     PENTAGRAM:  [136, 5, 3, 0],    // protection, 4 elements
     ANKH:       [137, 5, 3, 0],    // revive, eternal life
     ALL_SEEING: [138, 0, 3, 0],    // spiritual sight, inner vision, higher knowledge, insight into occult mysteries
-    CREATON:    [139, 5, 3, 0],    // creation, alchemic creation
+    CREATION:   [139, 5, 3, 0],    // creation, alchemic creation
     CHAOS:      [140, 5, 3, 0],    // all direction
     EVOLVE:     [141, 5, 3, 0],    // mankind, evolve
 });
@@ -453,61 +502,13 @@ Object.freeze(G_ITEM_TYPE = {
     13: G_JEWEL, 
     14: G_MATERIAL,
 });
-
-Object.freeze(G_HERO = {
-    ROGUE: 144,
-    MONK: 145,
-    BARBARIAN: 146,
-    DRUID: 147,
-    HUNTER: 148,
-    PALADIN: 149,
-    WIZARD: 150,
-    WARLOCK: 151
-});
-
-Object.freeze(G_NPC = {
-    FARMER: 613,
-});
-
-Object.freeze(G_CREEP = {
-    RAT: 152,
-    SPIDERS: 153,
-    KOMODO: 154,
-    SPIDER_CHAMPION: 155,
-    TOAD: 156,
-    SCARAB: 157,
-    CENTIPEDE: 158,
-    SERPENT: 159,
-    FUNGI: 160,
-    Hare: 161,
-    BAT: 162,
-    BAT_CHAMPION: 163,
-    SNAKE: 164,
-    WOLF: 165,
-    WILD_BOAR: 166,
-    BEAR: 167,
-    SLIME: 168,
-    SLIME_CHAMPION: 169,
-    SCORPION: 170,
-    Kraken: 171,
-    VAMPIRE: 172,
-    MUMMY: 173,
-    WRAITH: 174,
-    BEHOLDER: 175,
-    GOBLIN: 176,
-    ZOMBIE: 177,
-    SKELETON: 178,
-    ORC: 179,
-    CYCLOPS: 180,
-    WEREWOLF: 181,
-    WEREBEAR: 182,
-    DEVIL: 183,
+Object.freeze(G_OBJECT = {
 });
 
 Object.freeze(G_CREEP_TEAM = {
-    'vampire': [G_CREEP.BAT, 5, G_CREEP.BAT_CHAMPION, 2, G_CREEP.VAMPIRE, 1],
-    'veggie': [G_CREEP.SLIME, 1, G_CREEP.SLIME_CHAMPION, 1, G_CREEP.FUNGI, 1],
-    'undead': [G_CREEP.SKELETON, 2, G_CREEP.MUMMY, 2, G_CREEP.ZOMBIE, 2, G_CREEP.WRAITH, 1],
+    'vampire': [G_ICON.BAT, 5, G_ICON.BAT_CHAMPION, 2, G_ICON.VAMPIRE, 1],
+    'veggie': [G_ICON.SLIME, 1, G_ICON.SLIME_CHAMPION, 1, G_ICON.FUNGI, 1],
+    'undead': [G_ICON.SKELETON, 2, G_ICON.MUMMY, 2, G_ICON.ZOMBIE, 2, G_ICON.WRAITH, 1],
 });
 
 // hp, will, dex, luck, [atk, ratk, matk], [def, mdef], [veg, insect, beast, undead, demon]
@@ -589,10 +590,10 @@ Object.freeze(G_TOWN_MAP = {
     ],
     objects:[
         0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, [G_HERO.PALADIN, G_OBJECT_TYPE.NPC], 0, 0, 0,
+        0, 0, 0, 0, [G_ICON.PALADIN, G_OBJECT_TYPE.NPC], 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
         [G_ICON.SHRINE, G_OBJECT_TYPE.ENV], 0, 0, 0, 0, 0, 0, [G_ICON.ALTAR, G_OBJECT_TYPE.ENV],
-        [G_HERO.MONK, G_OBJECT_TYPE.NPC], 0, 0, 0, 0, 0, 0, [G_HERO.WIZARD, G_OBJECT_TYPE.NPC],
+        [G_ICON.MONK, G_OBJECT_TYPE.NPC], 0, 0, 0, 0, 0, 0, [G_ICON.WIZARD, G_OBJECT_TYPE.NPC],
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
