@@ -1,13 +1,6 @@
 pico.def('ai', function(){
     var
     me = this,
-    ITEM_ICON = 0, ITEM_TYPE = 1, ITEM_NAME = 2, ITEM_SUB_TYPE = 3,
-    WEAPON_HANDED = 4, WEAPON_HP = 5, WEAPON_WILL = 6, WEAPON_DEX = 7, WEAPON_LUCK = 8,
-    WEAPON_ATK = 9, WEAPON_RATK = 10, WEAPON_MATK = 11, WEAPON_DEF = 12, WEAPON_MDEF = 13,
-    WEAPON_VEG = 14, WEAPON_INSECT = 15, WEAPON_BEAST = 16, WEAPON_UNDEAD = 17, WEAPON_DEMON = 18,
-    ARMOR_HP = 4, ARMOR_WILL = 5, ARMOR_DEX = 6, ARMOR_LUCK = 7,
-    ARMOR_ATK = 8, ARMOR_RATK = 9, ARMOR_MATK = 10, ARMOR_DEF = 11, ARMOR_MDEF = 12,
-    ARMOR_VEG = 13, ARMOR_INSECT = 14, ARMOR_BEAST = 15, ARMOR_UNDEAD = 16, ARMOR_DEMON = 17,
     Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round,
     team = [],
     currIndex = 0,
@@ -16,9 +9,10 @@ pico.def('ai', function(){
     terrain,
     createCreepStat = function(creepId, level){
         var s = me.getStatByCreepId(creepId).slice();
-        for(var i=4; i<10; i++){
+        for(var i=CREEP_ATK; i<=CREEP_MDEF; i++){
             s[i] = Ceil(s[i]*level);
         }
+        s[OBJECT_NAME] = OBJECT_NAME[s[OBJECT_ICON]];
         return s;
     },
     pick = function(list, luck, grade){
@@ -26,13 +20,13 @@ pico.def('ai', function(){
         luckMed = luck,
         luckHi = Round(luck/10),
         cap = 0,
-        unit, select, i, l;
+        drop, select, i, l;
 
         for(i=0,l=list.length; i<l; i++){
-            unit = list[i];
-            if (grade & unit[3]){
-                cap += unit[1];
-                switch(unit[2]){
+            drop = list[i];
+            if (grade & drop[DROP_GRADE]){
+                cap += drop[DROP_RATE];
+                switch(drop[DROP_QUALITY]){
                     case G_QUALITY.MEDIUM: cap += luckMed; break;
                     case G_QUALITY.HIGH: cap += luckHi; break;
                 }
@@ -43,18 +37,18 @@ pico.def('ai', function(){
 
         cap = 0;
         for(i=0,l=list.length; i<l; i++){
-            unit = list[i];
-            if (grade & unit[3]){
-                cap += unit[1];
-                switch(unit[2]){
+            drop = list[i];
+            if (grade & drop[DROP_GRADE]){
+                cap += drop[DROP_RATE];
+                switch(drop[DROP_QUALITY]){
                     case G_QUALITY.MEDIUM: cap += luckMed; break;
                     case G_QUALITY.HIGH: cap += luckHi; break;
                 }
-                if (cap >= select) return unit; 
+                if (cap >= select) return drop; 
             }
         }
 
-        return unit;
+        return drop;
     };
 
     me.init = function(){
@@ -100,26 +94,26 @@ pico.def('ai', function(){
     };
 
     me.spawnChest = function(){
-        return [G_ICON.CHEST, G_OBJECT_TYPE.CHEST];
+        var c = G_OBJECT[G_ICON.CHEST].slice();
+        c[OBJECT_NAME] = G_OBJECT_NAME[c[OBJECT_ICON]];
+        return c;
     };
 
-    me.openChest = function(luck, level){
+    me.openChest = function(job, luck, level){
         var
+        capLvl = (G_MAP_PARAMS.length - 1)*5,
         minLvl = level < 4 ? 3 : level - 3,
-        maxLvl = level > 256 ? 260 : level + 3,
+        maxLvl = level > capLvl-4 ? capLvl : level + 3,
         lvl = minLvl + Round(Random()*(maxLvl - minLvl)),
         grade = pick(G_GRADE_RATE, luck, G_GRADE.ALL),
-        gradeType = grade[0],
-        itemTypeInfo = pick(G_ITEM_RATE, luck, gradeType),
-        itemType = itemTypeInfo[0],
-        itemRates = G_ITEM_SUB_RATE[itemType],
+        gradeType = grade[DROP_ID],
+        dropInfo = pick(G_ITEM_RATE, luck, gradeType),
+        dropType = dropInfo[DROP_ID],
+        itemRates = G_ITEM_SUB_RATE[dropType],
         itemRate = pick(itemRates, luck, gradeType),
-        item = G_OBJECT[itemRate[0]].slice(),
-        itemName = G_OBJECT_NAME[item[0]],
-        modifier, affix;
-
-        // there's no common jewel :p
-        if (G_OBJECT_TYPE.JEWEL === itemType && G_GRADE.COMMON === gradeType) gradeType = G_GRADE.CHARMED;
+        item = G_OBJECT[itemRate[DROP_ID]].slice(),
+        itemName = G_OBJECT_NAME[item[OBJECT_ICON]],
+        modifier, affix, stat, i, l, j, k;
 
         switch(itemType){
             case G_OBJECT_TYPE.WEAPON:
@@ -128,23 +122,56 @@ pico.def('ai', function(){
                 switch(gradeType){
                     case G_GRADE.LEGENDARY:
                         modifier = pick(G_LEGENDARY, luck, gradeType);
-                        affix = G_LEGENDARY_AFFIX[modifier[0]];
-                        itemName = affix[0] + ' ' + itemName + ' of ' + affix[1];
+                        affix = G_LEGENDARY_AFFIX[modifier[DROP_ID]];
+                        itemName = affix[0] + ' ' + itemName + POSTFIX_SEPARATOR + affix[1];
+                        for(i=DROP_GRADE+1, l=DROP_GRADE+3; i<l; i++){
+                            stat = G_ENCHANTED[modifier[i]];
+                            if (!(job & stat[ENCHANTED_CLASS])) continue;
+                            for(j=ENCHANTED_HP,k=ENCHANTED_DEMON; j<k; j++){
+                                item[j] += stat[j];
+                            }
+                        }
+                        for(i=DROP_GRADE+3, l=DROP_GRADE+5; i<l; i++){
+                            stat = G_CHARMED[modifier[i]];
+                            for(j=CHARMED_HP,k=CHARMED_DEMON; j<k; j++){
+                                item[j] += stat[j];
+                            }
+                        }
                         break;
                     case G_GRADE.ENCHANTED:
                         modifier = pick(G_ENCHANTED, luck, gradeType);
-                        affix = G_ENCHANTED_PREFIX[modifier[0]];
+                        affix = G_ENCHANTED_PREFIX[modifier[DROP_ID]];
                         itemName = affix + ' ' + itemName;
+                        if (job & modifier[ENCHANTED_CLASS]){
+                            for(j=ENCHANTED_HP,k=ENCHANTED_DEMON; j<k; j++){
+                                item[j] += modifier[j];
+                            }
+                        }
                         // fall through
                     case G_GRADE.CHARMED:
                         modifier = pick(G_CHARMED, luck, gradeType);
-                        affix = G_CHARMED_POSTFIX[modifier[0]];
-                        itemName = itemName + ' of ' + affix;
+                        affix = G_CHARMED_POSTFIX[modifier[DROP_ID]];
+                        itemName = itemName + POSTFIX_SEPARATOR + affix;
+                        for(j=CHARMED_HP,k=CHARMED_DEMON; j<k; j++){
+                            item[j] += modifier[j];
+                        }
                         break;
                 }
                 break;
         }
-
+        
+        item[OBJECT_NAME] = itemName;
+        item[OBJECT_LEVEL] = lvl;
+        item[OBJECT_GRADE] = gradeType;
+        switch(itemType){
+            case G_OBJECT_TYPE.WEAPON:
+            case G_OBJECT_TYPE.ARMOR:
+            case G_OBJECT_TYPE.JEWEL:
+                for(i=WEAPON_HP+1,l=WEAPON_DEMON; i<l; i++){
+                    item[i] = Round(item[i]*lvl);
+                }
+                break;
+        }
         return item;
     };
 

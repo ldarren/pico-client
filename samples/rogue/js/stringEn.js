@@ -1,3 +1,5 @@
+POSTFIX_SEPARATOR = ' of ';
+
 Object.freeze(G_CREEP_TYPE_NAME = [
     'NA',
     'Plant',
@@ -24,8 +26,8 @@ Object.freeze(G_HERO_CLASS_NAME = {
     255: 'All'
 });
 Object.freeze(G_LEGENDARY_AFFIX = [
-    ["Glimmerborg's", "Brave"]
-    ["Negablade's", "Ordeal"]
+    ["Glimmerborg's", "of Brave"]
+    ["Negablade's", "of Ordeal"]
 ]);
 Object.freeze(G_ENCHANTED_PREFIX = [
 'Burning','Strong','Heavy','Nimble','Crafty','Sharp','Thin','Grim','Stalwart','Bendy','Balanced','Weak','Grand','Broad','Pointy','Immovable'
