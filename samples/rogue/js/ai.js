@@ -1,6 +1,13 @@
 pico.def('ai', function(){
     var
     me = this,
+    ITEM_ICON = 0, ITEM_TYPE = 1, ITEM_NAME = 2, ITEM_SUB_TYPE = 3,
+    WEAPON_HANDED = 4, WEAPON_HP = 5, WEAPON_WILL = 6, WEAPON_DEX = 7, WEAPON_LUCK = 8,
+    WEAPON_ATK = 9, WEAPON_RATK = 10, WEAPON_MATK = 11, WEAPON_DEF = 12, WEAPON_MDEF = 13,
+    WEAPON_VEG = 14, WEAPON_INSECT = 15, WEAPON_BEAST = 16, WEAPON_UNDEAD = 17, WEAPON_DEMON = 18,
+    ARMOR_HP = 4, ARMOR_WILL = 5, ARMOR_DEX = 6, ARMOR_LUCK = 7,
+    ARMOR_ATK = 8, ARMOR_RATK = 9, ARMOR_MATK = 10, ARMOR_DEF = 11, ARMOR_MDEF = 12,
+    ARMOR_VEG = 13, ARMOR_INSECT = 14, ARMOR_BEAST = 15, ARMOR_UNDEAD = 16, ARMOR_DEMON = 17,
     Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round,
     team = [],
     currIndex = 0,
@@ -107,7 +114,7 @@ pico.def('ai', function(){
         itemType = itemTypeInfo[0],
         itemRates = G_ITEM_SUB_RATE[itemType],
         itemRate = pick(itemRates, luck, gradeType),
-        item = G_OBJECT[itemRate[0]],
+        item = G_OBJECT[itemRate[0]].slice(),
         itemName = G_OBJECT_NAME[item[0]],
         modifier, affix;
 
