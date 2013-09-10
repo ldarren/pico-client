@@ -143,7 +143,7 @@ pico.def('ai', function(){
 
     me.getStatByTileId = function(id){ return me.getStatByObject(objects[id]); };
     me.getStatByObject = function(creep){ return me.getStatByCreepId(creep[0]); };
-    me.getStatByCreepId = function(id){ return G_CREEP_STAT[id-G_ICON.RAT]; };
+    me.getStatByCreepId = function(id){ return G_OBJECT[id]; };
 
     me.incrHp = function(id, inc){
         var creep = objects[id];

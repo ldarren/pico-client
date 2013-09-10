@@ -512,7 +512,7 @@ Object.freeze(G_ITEM_SUB_RATE = {
     13: G_JEWEL_RATE, 
     14: G_MATERIAL_RATE,
 });
-Object.freeze(G_OBJECT = {
+Object.freeze(G_OBJECT = [
     undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
     undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
     undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
@@ -672,7 +672,7 @@ Object.freeze(G_OBJECT = {
     [181, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    3,  0.7, 0, 0,     0.1, 0], //'Werewolf',
     [182, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    6,  0.5, 0, 0,     0.1, 0], //'Werebear',
     [183, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    7,  2, 1, 2,       1, 1],   //'Devil'
-});
+]);
 
 Object.freeze(G_CREEP_TEAM = {
     'vampire': [G_ICON.BAT, 5, G_ICON.BAT_CHAMPION, 2, G_ICON.VAMPIRE, 1],
