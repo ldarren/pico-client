@@ -27,10 +27,10 @@ Object.freeze(G_LEGENDARY_AFFIX = [
     ["Glimmerborg's", "Brave"]
     ["Negablade's", "Ordeal"]
 ]);
-Object.freeze(G_ENCHANT_PREFIX = [
+Object.freeze(G_ENCHANTED_PREFIX = [
 'Burning','Strong','Heavy','Nimble','Crafty','Sharp','Thin','Grim','Stalwart','Bendy','Balanced','Weak','Grand','Broad','Pointy','Immovable'
 ]);
-Object.freeze(G_CHARM_POSTFIX = [
+Object.freeze(G_CHARMED_POSTFIX = [
 'the Phoenix','Strength','Agility','Luck','Health','Precision','Heartseeking','Armor','Defense','Magical Attraction',
 'the Heavy','the Thief','Blades','the Golem','the Ninja','the Lion','the Bounty Hunter','the Loser','the Hermit','Kings',
 'Beleaguer','Ordeal','Anguish','Torment','Nightmare','Agony','Misery','Burden','Torture',
@@ -66,9 +66,9 @@ Object.freeze(G_OBJECT_NAME = {
     58: 'Gladius',
     59: 'Xiphos',
     60: 'Cutlass',
-    61: 'Claymore',
-    62: 'Espadon',
-    63: 'Flameberge',
+    61: 'Bastard Sword',
+    62: 'Claymore',
+    63: 'Flamebards',
     64: 'Hatchet',
     65: 'Cleaver',
     66: 'Tomahawk',
@@ -141,12 +141,12 @@ Object.freeze(G_OBJECT_NAME = {
     133: 'Shrine',
     134: 'Soulstones',
     135: 'Health Globe',
-    136: 'Symbol of Pentagram',
-    137: 'Symbol of Ankh',
+    136: 'Symbol of Protection', // Pentagram
+    137: 'Key of Life', // ankh
     138: 'Mark of All Seeing Eye',
-    139: 'Mark of Creation',
-    140: 'Mark of Chaotic',
-    141: 'Mark of Evolution',
+    139: 'Cycle of Blood',
+    140: 'Rein in the Chaos',
+    141: 'The Rite of Sacrifice',
     142: 'Banner',
     143: 'Message Board',
     144: 'Rogue',
@@ -190,6 +190,6 @@ Object.freeze(G_OBJECT_NAME = {
     182: 'Werebear',
     183: 'Devil',
 
-    413: 'Farmer',
+    613: 'Farmer',
 });
 

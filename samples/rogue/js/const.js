@@ -26,6 +26,21 @@ Object.freeze(G_QUALITY = {
     HIGH: 2,
 });
 
+// item affix
+Object.freeze(G_GRADE = {
+    NONE: 0,
+    COMMON: 1,
+    CHARMED: 2,
+    ENCHANTED: 4,
+    LEGENDARY: 8,
+    G12: 3,
+    G22: 12,
+    G13: 1,
+    G23: 6,
+    G33: 8,
+    ALL: 15,
+});
+
 Object.freeze(G_TILE_TYPE = {
     EMPTY: 0,
     SHOW: 2+4+8+16,
@@ -53,6 +68,14 @@ Object.freeze(G_HERO_CLASS = {
     SPELLCASTER: 192,
     DPS: 220,
     ALL: 255
+});
+
+Object.freeze(G_CREEP_TYPE = {
+    PLANT: 1,
+    INSECT: 2,
+    BEAST: 3,
+    UNDEAD: 4,
+    DEMON: 5
 });
 
 Object.freeze(G_FLOOR = {
@@ -247,19 +270,6 @@ Object.freeze(G_SPELL = {
     CHAOS:      [140, 5, 3, 0],    // all direction
     EVOLVE:     [141, 5, 3, 0],    // mankind, evolve
 });
-Object.freeze(G_GRADE = {
-    NONE: 0,
-    COMMON: 1,
-    CHARMED: 2,
-    ENCHANTED: 4,
-    LEGENDARY: 8,
-    G12: 3,
-    G22: 12,
-    G13: 1,
-    G23: 6,
-    G33: 8,
-    ALL: 15,
-});
 // id, rate, luck factor, grade
 Object.freeze(G_GRADE_RATE = [
     [G_GRADE.LEGENDARY,    1,      G_QUALITY.HIGH,     G_GRADE.ALL], // legend, 2 enchants, 2 charms
@@ -268,12 +278,12 @@ Object.freeze(G_GRADE_RATE = [
     [G_GRADE.COMMON,       100,    G_QUALITY.LOW,      G_GRADE.ALL], // common
 ]);
 // id, drop rate, luck factor, grade, enchant1, enchant2, charm1, charm2
-Object.freeze(G_LEGENDARY = [
+Object.freeze(G_LEGENDARY_RATE = [
     [0, 10, G_QUALITY.HIGH,     G_GRADE.G13,    0, 1, 0, 1],
     [1, 10, G_QUALITY.MEDIUM,   G_GRADE.G13,    2, 3, 2, 3],
 ]);
 // id, drop rate, luck factor, grade, class
-Object.freeze(G_ENCHANT = [
+Object.freeze(G_ENCHANTED_RATE = [
     [0,     10, G_QUALITY.LOW,      G_HERO_CLASS.ROGUE,                     G_GRADE.ALL],
     [1,     10, G_QUALITY.LOW,      G_HERO_CLASS.MONK,                      G_GRADE.ALL],
     [2,     10, G_QUALITY.LOW,      G_HERO_CLASS.BARBARIAN,                 G_GRADE.ALL],
@@ -292,7 +302,7 @@ Object.freeze(G_ENCHANT = [
     [15,    10, G_QUALITY.HIGH,     G_HERO_CLASS.ALL,                       G_GRADE.ALL],
 ]);
 // drop rate
-Object.freeze(G_CHARM = [
+Object.freeze(G_CHARMED_RATE = [
     [0, 10, G_QUALITY.LOW, G_GRADE.ALL],
     [1, 10, G_QUALITY.LOW, G_GRADE.ALL],
     [2, 10, G_QUALITY.LOW, G_GRADE.ALL],
@@ -337,23 +347,23 @@ Object.freeze(G_MONEY_TYPE = {
     GOLD: 1,
     SKULL: 2,
 });
-// icons, drop rate, min count, max count
-Object.freeze(G_MONEY = [
-    [G_ICON.COINS,      100,    G_QUALITY.MEDIUM,   G_GRADE.G12, 1, 5],
-    [G_ICON.COIN_STACK, 1,      G_QUALITY.HIGH,     G_GRADE.G22, 6, 100],
-    [G_ICON.SKULL,      0,      G_QUALITY.HIGH,     G_GRADE.G33, 1, 1],
-    [G_ICON.SKULLS,     0,      G_QUALITY.HIGH,     G_GRADE.G33, 2, 10]
+// icons, drop rate
+Object.freeze(G_MONEY_RATE = [
+    [G_ICON.COINS,      100,    G_QUALITY.MEDIUM,   G_GRADE.G12],
+    [G_ICON.COIN_STACK, 1,      G_QUALITY.HIGH,     G_GRADE.G22],
+    [G_ICON.SKULL,      0,      G_QUALITY.HIGH,     G_GRADE.G33],
+    [G_ICON.SKULLS,     0,      G_QUALITY.HIGH,     G_GRADE.G33]
 ]);
 Object.freeze(G_POTION_TYPE = {
     ANTIDOT: 1,
-    BEAR: 2,
+    BEER: 2,
     HOLY: 3,
     MEDICINE: 4,
     LUCK: 5,
     HP: 6
 });
 // icon, drop rate
-Object.freeze(G_POTION = [
+Object.freeze(G_POTION_RATE = [
     [G_ICON.ANTIDOT,        10, G_QUALITY.LOW,      G_GRADE.G12],
     [G_ICON.FIRE_WATER,     50, G_QUALITY.LOW,      G_GRADE.G12],
     [G_ICON.HOLY_WATER,     10, G_QUALITY.LOW,      G_GRADE.G12],
@@ -370,17 +380,17 @@ Object.freeze(G_SCROLL_TYPE = {
     MAP: 4,
 });
 // icon, drop rate, quality, scroll type
-Object.freeze(G_SCROLL = [
-    [G_ICON.IDENTITY_SCROLL,    100,G_QUALITY.LOW,  G_GRADE.G12,   G_SCROLL_TYPE.IDENTITY],
-    [G_ICON.TELEPORT_SCROLL,    50, G_QUALITY.LOW,  G_GRADE.G12,     G_SCROLL_TYPE.TELEPORT],
-    [G_ICON.MAP,                10, G_QUALITY.LOW,  G_GRADE.G12,     G_SCROLL_TYPE.MAP],
-    [G_ICON.MANUSCRIPT,         5,  G_QUALITY.HIGH, G_GRADE.G22,      G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.POISON],
-    [G_ICON.MANUSCRIPT,         5,  G_QUALITY.HIGH, G_GRADE.G22,      G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.PENTAGRAM],
-    [G_ICON.MANUSCRIPT,         5,  G_QUALITY.HIGH, G_GRADE.G22,      G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.ANKH],
-    [G_ICON.MANUSCRIPT,         1,  G_QUALITY.HIGH, G_GRADE.G33,      G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.ALL_SEEING],
-    [G_ICON.MANUSCRIPT,         5,  G_QUALITY.HIGH, G_GRADE.G22,      G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.CREATON],
-    [G_ICON.MANUSCRIPT,         5,  G_QUALITY.HIGH, G_GRADE.G22,      G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.CHAOS],
-    [G_ICON.MANUSCRIPT,         5,  G_QUALITY.HIGH, G_GRADE.G22,      G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.EVOLVE],
+Object.freeze(G_SCROLL_RATE = [
+    [G_ICON.IDENTITY_SCROLL,    100,G_QUALITY.LOW,  G_GRADE.G12,    G_SCROLL_TYPE.IDENTITY],
+    [G_ICON.TELEPORT_SCROLL,    50, G_QUALITY.LOW,  G_GRADE.G12,    G_SCROLL_TYPE.TELEPORT],
+    [G_ICON.MAP,                10, G_QUALITY.LOW,  G_GRADE.G12,    G_SCROLL_TYPE.MAP],
+    [G_ICON.MANUSCRIPT,         5,  G_QUALITY.HIGH, G_GRADE.G22,    G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.POISON],
+    [G_ICON.MANUSCRIPT,         5,  G_QUALITY.HIGH, G_GRADE.G22,    G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.PENTAGRAM],
+    [G_ICON.MANUSCRIPT,         5,  G_QUALITY.HIGH, G_GRADE.G22,    G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.ANKH],
+    [G_ICON.MANUSCRIPT,         1,  G_QUALITY.HIGH, G_GRADE.G33,    G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.ALL_SEEING],
+    [G_ICON.MANUSCRIPT,         5,  G_QUALITY.HIGH, G_GRADE.G22,    G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.CREATON],
+    [G_ICON.MANUSCRIPT,         5,  G_QUALITY.HIGH, G_GRADE.G22,    G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.CHAOS],
+    [G_ICON.MANUSCRIPT,         5,  G_QUALITY.HIGH, G_GRADE.G22,    G_SCROLL_TYPE.MANUSCRIPT, G_SPELL.EVOLVE],
 ]);
 Object.freeze(G_WEAPON_TYPE = {
     SWORD: 1,
@@ -390,15 +400,15 @@ Object.freeze(G_WEAPON_TYPE = {
     CROSSBOW: 5,
     SCEPTER: 6,
 });
-Object.freeze(G_WEAPON = [
+Object.freeze(G_WEAPON_RATE = [
     [G_ICON.DAGGER,             80, G_QUALITY.LOW,  G_GRADE.ALL],
     [G_ICON.SCIMITAR,           70, G_QUALITY.LOW,  G_GRADE.ALL],
     [G_ICON.GLADIUS,            60, G_QUALITY.MEDIUM,  G_GRADE.ALL],
     [G_ICON.XIPHOS,             50, G_QUALITY.MEDIUM,  G_GRADE.ALL],
     [G_ICON.CUTLASS,            40, G_QUALITY.MEDIUM,  G_GRADE.ALL],
-    [G_ICON.CLAYMORE,           30, G_QUALITY.MEDIUM,  G_GRADE.ALL],
-    [G_ICON.ESPADON,            20, G_QUALITY.HIGH,  G_GRADE.ALL],
-    [G_ICON.FLAMEBERGE,         10, G_QUALITY.HIGH,  G_GRADE.ALL],
+    [G_ICON.BASTARD,            30, G_QUALITY.MEDIUM,  G_GRADE.ALL],
+    [G_ICON.CLAYMORE,           20, G_QUALITY.HIGH,  G_GRADE.ALL],
+    [G_ICON.FLAMEBARDS,         10, G_QUALITY.HIGH,  G_GRADE.ALL],
     [G_ICON.HATCHET,            80, G_QUALITY.LOW,  G_GRADE.ALL],
     [G_ICON.CLEAVER,            70, G_QUALITY.LOW,  G_GRADE.ALL],
     [G_ICON.TOMAHAWK,           60, G_QUALITY.MEDIUM,  G_GRADE.ALL],
@@ -431,7 +441,7 @@ Object.freeze(G_AMMO_TYPE = {
     ARROW: 1,
     BOLT: 2,
 });
-Object.freeze(G_AMMO = [
+Object.freeze(G_AMMO_RATE = [
     [G_ICON.HUNTER_ARROWS,      80, G_QUALITY.LOW,  G_GRADE.ALL],
     [G_ICON.BROADHEAD_ARROWS,   40, G_QUALITY.MEDIUM, G_GRADE.ALL],
     [G_ICON.WARSHIP_ARROWS,     10, G_QUALITY.HIGH, G_GRADE.ALL],
@@ -444,7 +454,7 @@ Object.freeze(G_ARMOR_TYPE = {
     SHEILD: 3,
 });
 
-Object.freeze(G_ARMOR = [
+Object.freeze(G_ARMOR_RATE = [
     [G_ICON.ROBE,           80, G_QUALITY.LOW, G_GRADE.ALL], 
     [G_ICON.LEATHER_ARMOR,  70, G_QUALITY.LOW, G_GRADE.ALL],
     [G_ICON.SCALE_ARMOR,    60, G_QUALITY.MEDIUM, G_GRADE.ALL],
@@ -474,7 +484,7 @@ Object.freeze(G_JEWEL_TYPE = {
     RING: 1,
     AMULET: 2,
 });
-Object.freeze(G_JEWEL = [
+Object.freeze(G_JEWEL_RATE = [
     [G_ICON.RING1,      50, G_QUALITY.LOW,  G_GRADE.G12],
     [G_ICON.RING2,      10, G_QUALITY.HIGH, G_GRADE.G22],
     [G_ICON.AMULET1,    50, G_QUALITY.LOW,  G_GRADE.G12],
@@ -486,52 +496,150 @@ Object.freeze(G_MATERIAL_TYPE = {
     BONE: 3,
     SOUL: 4,
 });
-Object.freeze(G_MATERIAL = [
+Object.freeze(G_MATERIAL_RATE = [
     [G_ICON.PEARLS,         40, G_QUALITY.MEDIUM, G_GRADE.G12],
     [G_ICON.DIAMOND,        20, G_QUALITY.HIGH, G_GRADE.G22],
     [G_ICON.SKELETON,       50, G_QUALITY.MEDIUM, G_GRADE.G12],
     [G_ICON.SOUL_STONES,    5, G_QUALITY.HIGH, G_GRADE.G22],
 ]);
-Object.freeze(G_ITEM_TYPE = {
-    15: G_MONEY,
-    8: G_POTION,
-    9: G_SCROLL,
-    10: G_WEAPON,
-    11: G_AMMO, 
-    12: G_ARMOR,
-    13: G_JEWEL, 
-    14: G_MATERIAL,
+Object.freeze(G_ITEM_SUB_RATE = {
+    15: G_MONEY_RATE,
+    8: G_POTION_RATE,
+    9: G_SCROLL_RATE,
+    10: G_WEAPON_RATE,
+    11: G_AMMO_RATE, 
+    12: G_ARMOR_RATE,
+    13: G_JEWEL_RATE, 
+    14: G_MATERIAL_RATE,
 });
 Object.freeze(G_OBJECT = {
-});
-
-Object.freeze(G_CREEP_TEAM = {
-    'vampire': [G_ICON.BAT, 5, G_ICON.BAT_CHAMPION, 2, G_ICON.VAMPIRE, 1],
-    'veggie': [G_ICON.SLIME, 1, G_ICON.SLIME_CHAMPION, 1, G_ICON.FUNGI, 1],
-    'undead': [G_ICON.SKELETON, 2, G_ICON.MUMMY, 2, G_ICON.ZOMBIE, 2, G_ICON.WRAITH, 1],
-});
-
-// hp, will, dex, luck, [atk, ratk, matk], [def, mdef], [veg, insect, beast, undead, demon]
-Object.freeze(G_HERO_STAT = [
-    [144,   G_OBJECT_TYPE.HERO, 2, 0, 1, 1,       0.1, 0.2, 0,    0.1, 0,    1,1,1,1,1],     //rogue
-    [145,   G_OBJECT_TYPE.HERO, 3, 0, 0.1, 0,     0.2, 0.1, 0.1,  0.2, 0.1,  1,1,1,1.2,1.2], //monk
-    [146,   G_OBJECT_TYPE.HERO, 4, 0, 0.2, 0.1,   0.3, 0.1, 0,    0.3, 0,    1,1,1,1,1],     //Barbarian
-    [147,   G_OBJECT_TYPE.HERO, 3, 0, 0.2, 0.1,   0.2, 0.1, 0.1,  0.2, 0.1,  1,1,1,1,1],     //Druid
-    [148,   G_OBJECT_TYPE.HERO, 2, 0, 0.2, 0.1,   0.2, 0.4, 0.1,  0.2, 0.1,  1,1,1.5,1,1],   //Hunter
-    [149,   G_OBJECT_TYPE.HERO, 3, 0, 0, 0,       0.2, 0.1, 0.1,  0.4, 0.1,  1,1,1,1.5,1],   //Paladin
-    [150,   G_OBJECT_TYPE.HERO, 1, 0, 0, 0.1,     0.1, 0.1, 0.3,  0.1, 0.4,  1,1,1,1,1],     //Wizard
-    [151,   G_OBJECT_TYPE.HERO, 1, 0, 0, 0,       0.1, 0.1, 0.4,  0.1, 0.3,  1,1,1,1,1],     //Warlock
-]);
-
-Object.freeze(G_CREEP_TYPE = {
-    PLANT: 1,
-    INSECT: 2,
-    BEAST: 3,
-    UNDEAD: 4,
-    DEMON: 5
-});
-
-Object.freeze(G_CREEP_STAT = [
+    undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+    undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+    undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+    undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+    [32, G_OBJECT_TYPE.CHEST, '', 1],
+    [33, G_OBJECT_TYPE.CHEST, '', 0],
+    [34, G_OBJECT_TYPE.KEY, ''],
+    [35, G_OBJECT_TYPE.KEY, ''],
+    [36, G_OBJECT_TYPE.KEY, ''],
+    [37, G_OBJECT_TYPE.KEY, ''],
+    [38, G_OBJECT_TYPE.KEY, ''],
+    [39, G_OBJECT_TYPE.KEY, ''],
+    [40, G_OBJECT_TYPE.POTION, '', G_POTION_TYPE.ANTIDOT],
+    [41, G_OBJECT_TYPE.POTION, '', G_POTION_TYPE.BEER],
+    [42, G_OBJECT_TYPE.POTION, '', G_POTION_TYPE.HOLY],
+    [43, G_OBJECT_TYPE.POTION, '', G_POTION_TYPE.MEDICINE],
+    [44, G_OBJECT_TYPE.POTION, '', G_POTION_TYPE.LUCK],
+    [45, G_OBJECT_TYPE.POTION, '', G_POTION_TYPE.HP, 1],
+    [46, G_OBJECT_TYPE.POTION, '', G_POTION_TYPE.HP, 2],
+    [47, G_OBJECT_TYPE.POTION, '', G_POTION_TYPE.HP, 3],
+    [48, G_OBJECT_TYPE.SCROLL, '', G_SCROLL_TYPE.MANUSCRIPT],
+    [49, G_OBJECT_TYPE.SCROLL, '', G_SCROLL_TYPE.IDENTITY],
+    [50, G_OBJECT_TYPE.SCROLL, '', G_SCROLL_TYPE.TELEPORT],
+    [51, G_OBJECT_TYPE.SCROLL, '', G_SCROLL_TYPE.MAP],
+    // handed, hp, will, dex, luck, [atk, ratk, matk], [def, mdef], [veg, insect, beast, undead, demon]
+    [52, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.SHIELD, 0, 0, 0, 0,       0, 0, 0.2,    0, 0.1,    1,1,1,1,1],
+    [53, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.SHIELD, 0, 0, 0, 0,       0, 0, 0.3,    0, 0.1,    1,1,1,1,1],
+    [54, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.SHIELD, 0, 0, 0, 0,       0, 0, 0.1,    0, 0.2,    1,1,1,1,1],
+    [55, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.SHIELD, 0, 0, 0, 0,       0, 0, 0.1,    0, 0.3,    1,1,1,1,1],
+    [56, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.SWORD, 1, 0, 0, 0, 0,      0.1, 0, 0,    0, 0,    1,1,1,1,1],
+    [57, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.SWORD, 1, 0, 0, -0.1, 0,   0.2, 0, 0,    0, 0,    1,1,1,1,1],
+    [58, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.SWORD, 1, 0, 0, -0.2, 0,   0.3, 0, 0,    0, 0,    1,1,1,1,1],
+    [59, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.SWORD, 1, 0, 0, -0.3, 0,   0.4, 0, 0,    0, 0,    1,1,1,1,1],
+    [60, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.SWORD, 1, 0, 0, -0.4, 0,   0.5, 0, 0,    0, 0,    1,1,1,1,1],
+    [61, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.SWORD, 2, 0, 0, -0.5, 0,   0.6, 0, 0,    0, 0,    1,1,1,1,1],
+    [62, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.SWORD, 2, 0, 0, -0.8, 0,   0.7, 0, 0,    0, 0,    1,1,1,1,1],
+    [63, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.SWORD, 2, 0, 0, -1, 0,     0.8, 0, 0,    0, 0,    1,1,1,1,1],
+    [64, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.AXE, 1, 0, 0, -0.1, 0,     0.1, 0, 0,    0, 0,    1,1,1,1.1,1],
+    [65, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.AXE, 1, 0, 0, -0.2, 0,     0.3, 0, 0,    0, 0,    1,1,1,1.1,1],
+    [66, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.AXE, 1, 0, 0, -0.3, 0,     0.4, 0, 0,    0, 0,    1,1,1,1.1,1],
+    [67, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.AXE, 2, 0, 0, -0.5, 0,     0.5, 0, 0,    0, 0,    1,1,1,1.1,1],
+    [68, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.AXE, 1, 0, 0, -0.2, 0,     0.5, 0, 0,    0, 0,    1,1,1,1.1,1],
+    [69, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.AXE, 2, 0, 0, -0.8, 0,     1.6, 0, 0,    0, 0,    1,1,1,1.1,1],
+    [70, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.AXE, 2, 0, 0, -0.8, 0,     1.7, 0, 0,    0, 0,    1,1,1,1.1,1],
+    [71, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.AXE, 2, 0, 0, -1.2, 0,     1.8, 0, 0,    0, 0,    1,1,1,1.1,1],
+    [72, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.THROW, 1, 0, 0, 0, 0,     0, 0.2, 0,    0, 0,    1,1,1,1.1,1],
+    [73, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.THROW, 2, 0, 0, 0, 0,     0, 1.0, 0,    0, 0,    1,1,1,1,1],
+    [74, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.THROW, 1, 0, 0, 0, 0,     0, 0.1, 0,    0, 0,    1,1,1,1,1],
+    [75, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.BOW, 2, 0, 0, 0, 0,     0, 0.8, 0,    0, 0,    1,1,1,1,1],
+    [76, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.BOW, 2, 0, 0, 0, 0,     0, 1.2, 0,    0, 0,    1,1,1,1,1],
+    [77, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.BOW, 2, 0, 0, 0, 0,     0, 1.5, 0,    0, 0,    1,1,1,1,1],
+    [78, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.CROSSBOW, 2, 0, 0, 0, 0,     0, 1.0, 0,    0, 0,    1,1,1,1,1],
+    [79, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.CROSSBOW, 2, 0, 0, 0, 0,     0, 1.5, 0,    0, 0,    1,1,1,1,1],
+    [80, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.THROW, 1, 0, 0, 0, 0,     0, 1.0, 0,    0, 0,    1,1,1,1,1],
+    [81, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.THROW, 2, 0, 0, -1, 0,     0, 2.0, 0,    0, 0,    1,1,1,1,1],
+    [82, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.THROW, 2, 0, 0, -2, 0,     0, 3.0, 0,    0, 0,    1,1,1,1,1],
+    [83, G_OBJECT_TYPE.AMMO, '', G_AMMO_TYPE.ARROW, 0, 0, -0.2, 0,     0, 0.1, 0,    0, 0,    1,1,1,1,1],
+    [84, G_OBJECT_TYPE.AMMO, '', G_AMMO_TYPE.ARROW, 0, 0, -0.3, 0,     0, 0.2, 0,    0, 0,    1,1,1,1,1],
+    [85, G_OBJECT_TYPE.AMMO, '', G_AMMO_TYPE.ARROW, 0, 0, -0.6, 0,     0, 0.8, 0,    0, 0,    1,1,1,1,1],
+    [86, G_OBJECT_TYPE.AMMO, '', G_AMMO_TYPE.BOLT, 0, 0, -0.1, 0,     0, 0.1, 0,    0, 0,    1,1,1,1,1],
+    [87, G_OBJECT_TYPE.AMMO, '', G_AMMO_TYPE.BOLT, 0, 0, -0.2, 0,     0, 0.2, 0,    0, 0,    1,1,1,1,1],
+    [88, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.ARMOR, 0, 0, 0, 0,     0, 0, 0,    0.1, 0.5,    1,1,1,1,1],
+    [89, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.ARMOR, 0, 0, -0.1, 0,     0, 0, 0,    0.2, 0.5,    1,1,1,1,1],
+    [90, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.ARMOR, 0, 0, -0.2, 0,     0, 0, 0,    0.8, -0.5,    1,1,1,1,1],
+    [91, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.ARMOR, 0, 0, -0.3, 0,     0, 0, 0,    1.0, -0.5,    1,1,1,1,1],
+    [92, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.ARMOR, 0, 0, -0.5, 0,     0, 0, 0,    1.5, -1,    1,1,1,1,1],
+    [93, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.ARMOR, 0, 0, -0.8, 0,     0, 0, 0,    2.0, -1,    1,1,1,1,1],
+    [94, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.ARMOR, 0, 0, -1.0, 0,     0, 0, 0,    3.0, -1.5,    1,1,1,1,1],
+    [95, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.ARMOR, 0, 0, -2.0, 0,     0, 0, 0,    4.0, -2,    1,1,1,1,1],
+    [96, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.HELM, 0, 0, 0, 0,     0, 0, 0,    0.1, 0,    1,1,1,1,1],
+    [97, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.HELM, 0, 0, 0, 0,     0, 0, 0,    0.3, -0.5,    1,1,1,1,1],
+    [98, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.HELM, 0, 0, -0.1, 0,     0, 0, 0,    0.5, -0.8,    1,1,1,1,1],
+    [99, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.HELM, 0, 0, -0.1, 0,     0, 0, 0,    0.8, -1,    1,1,1,1,1],
+    [100, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.HELM, 0, 0, -0.3, 0,     0, 0, 0,    1.0, -2,    1,1,1,1,1],
+    [101, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.HELM, 0, 0, -0.3, 0,     0, 0, 0,    1.2, -2.5,    1,1,1,1,1],
+    [102, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.HELM, 0, 0, -0.3, 0,     0, 0, 0,    1.4, -3.0,    1,1,1,1,1],
+    [103, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.HELM, 0, 0, -0.5, 0,     0, 0, 0,    1.6, -4.0,    1,1,1,1,1],
+    [104, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.SHEILD, 0, 0, 0, 0,     0, 0, 0,    1.0, 0,    1,1,1,1,1],
+    [105, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.SHEILD, 0, 0, -0.1, 0,     0, 0, 0,    1.2, -0.1,    1,1,1,1,1],
+    [106, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.SHEILD, 0, 0, -0.5, 0,     0, 0, 0,    1.4, -0.2,    1,1,1,1,1],
+    [107, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.SHEILD, 0, 0, -0.5, 0,     0, 0, 0,    1.6, -0.5,    1,1,1,1,1],
+    [108, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.SHEILD, 0, 0, -0.5, 0,     0, 0, 0,    1.8, -0.7,    1,1,1,1,1],
+    [109, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.SHEILD, 0, 0, -1.0, 0,     0, 0, 0,    2.0, -1.0,    1,1,1,1,1],
+    [110, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.SHEILD, 0, 0, -1.0, 0,     0, 0, 0,    3.0, -2.0,    1,1,1,1,1],
+    [111, G_OBJECT_TYPE.ARMOR, '', G_ARMOR_TYPE.SHEILD, 0, 0, -2.0, 0,     0, 0, 0,    4.0, -3.0,    1,1,1,1,1],
+    [112, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.SCEPTOR, 1, 0, 0, -0.1, 0,     0.2, 0, 1,    0, 0,    1,1,1,1,1],
+    [113, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.SCEPTOR, 1, 0, 0, -0.2, 0,     0.2, 0, 2,    0, 0,    1,1,1,1,1],
+    [114, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.SCEPTOR, 1, 0, 0, -0.3, 0,     0.4, 0, 1.0,    0, 0,    1,1,1,1,1],
+    [115, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.SCEPTOR, 1, 0, 0, -0.5, 0,     0.4, 0, 1.2,    0, 0,    1,1,1,1,1],
+    [116, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.SCEPTOR, 1, 0, 0, -1.0, 0,     0.6, 0, 1.4,    0, 0,    1,1,1,1,1],
+    [117, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.SCEPTOR, 1, 0, 0, -1.2, 0,     0.6, 0, 1.6,    0, 0,    1,1,1,1,1],
+    [118, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.SCEPTOR, 1, 0, 0, -1.4, 0,     0.8, 0, 2,    0, 0,    1,1,1,1,1],
+    [119, G_OBJECT_TYPE.WEAPON, '', G_WEAPON_TYPE.SCEPTOR, 1, 0, 0, -1.6, 0,     0.2, 0, 4,    0, 0,    1,1,1,1,1],
+    // min, max amount
+    [120, G_OBJECT_TYPE.MONEY, '', G_MONEY_TYPE.GOLD, 1, 10],
+    [121, G_OBJECT_TYPE.MONEY, '', G_MONEY_TYPE.GOLD, 11, 100],
+    [122, G_OBJECT_TYPE.MATERIAL, '', G_MATERIAL_TYPE.PEARL],
+    [123, G_OBJECT_TYPE.MATERIAL, '', G_MATERIAL_TYPE.GEM],
+    [124, G_OBJECT_TYPE.JEWEL, '', G_JEWEL_TYPE.RING, 0, 0, 0, 0,     0, 0, 4,    0, 1,    1,1,1,1,1],
+    [125, G_OBJECT_TYPE.JEWEL, '', G_JEWEL_TYPE.RING, 0, 0, 0, 0,     0.1, 0, 4,    0.1, 2,    1,1,1,1,1],
+    [126, G_OBJECT_TYPE.JEWEL, '', G_JEWEL_TYPE.AMULET, 0, 0, 0, 0,     0.1, 0, 4,    0.1, 2,    1,1,1,1,1],
+    [127, G_OBJECT_TYPE.JEWEL, '', G_JEWEL_TYPE.AMULET, 0, 0, 0, 0,     0.2, 0, 6,    0.1, 4,    1,1,1,1,1],
+    [128, G_OBJECT_TYPE.MONEY, '', G_MONEY_TYPE.SKULL, 2, 4],
+    [129, G_OBJECT_TYPE.MONEY, '', G_MONEY_TYPE.SKULL, 1, 1],
+    [130, G_OBJECT_TYPE.MATERIAL, '', G_MATERIAL_TYPE.BONE],
+    [131, G_OBJECT_TYPE.ENV, ''],
+    [132, G_OBJECT_TYPE.ENV, ''],
+    [133, G_OBJECT_TYPE.ENV, ''],
+    [134, G_OBJECT_TYPE.MATERIAL, '', G_MATERIAL_TYPE.SOUL],
+    [135, G_OBJECT_TYPE.HEALTH, ''],
+    [136, G_OBJECT_TYPE.SPELL, ''], // Pentagram
+    [137, G_OBJECT_TYPE.SPELL, ''], // ankh
+    [138, G_OBJECT_TYPE.SPELL, ''], // all seeing
+    [139, G_OBJECT_TYPE.SPELL, ''], // creation
+    [140, G_OBJECT_TYPE.SPELL, ''], // chaos
+    [141, G_OBJECT_TYPE.SPELL, ''], // evolve
+    [142, G_OBJECT_TYPE.ENV, ''],
+    [143, G_OBJECT_TYPE.ENV, ''],
+    // id, type, name, hp, will, dex, luck, [atk, ratk, matk], [def, mdef], [veg, insect, beast, undead, demon]
+    [144, G_OBJECT_TYPE.HERO, 2, 0, 1, 1,       0.1, 0.2, 0,    0.1, 0,    1,1,1,1,1],     //rogue
+    [145, G_OBJECT_TYPE.HERO, 3, 0, 0.1, 0,     0.2, 0.1, 0.1,  0.2, 0.1,  1,1,1,1.2,1.2], //monk
+    [146, G_OBJECT_TYPE.HERO, 4, 0, 0.2, 0.1,   0.3, 0.1, 0,    0.3, 0,    1,1,1,1,1],     //Barbarian
+    [147, G_OBJECT_TYPE.HERO, 3, 0, 0.2, 0.1,   0.2, 0.1, 0.1,  0.2, 0.1,  1,1,1,1,1],     //Druid
+    [148, G_OBJECT_TYPE.HERO, 2, 0, 0.2, 0.1,   0.2, 0.4, 0.1,  0.2, 0.1,  1,1,1.5,1,1],   //Hunter
+    [149, G_OBJECT_TYPE.HERO, 3, 0, 0, 0,       0.2, 0.1, 0.1,  0.4, 0.1,  1,1,1,1.5,1],   //Paladin
+    [150, G_OBJECT_TYPE.HERO, 1, 0, 0, 0.1,     0.1, 0.1, 0.3,  0.1, 0.4,  1,1,1,1,1],     //Wizard
+    [151, G_OBJECT_TYPE.HERO, 1, 0, 0, 0,       0.1, 0.1, 0.4,  0.1, 0.3,  1,1,1,1,1],     //Warlock
     [152, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  0.1, 0, 0,     0.1, 0], //Rat
     [153, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.INSECT,   1,  0.1, 0, 0,     0.1, 0], //'Spiders',
     [154, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  0.1, 0, 0,     0.1, 0], //'Komodo Monitor',
@@ -564,7 +672,13 @@ Object.freeze(G_CREEP_STAT = [
     [181, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    3,  0.7, 0, 0,     0.1, 0], //'Werewolf',
     [182, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    6,  0.5, 0, 0,     0.1, 0], //'Werebear',
     [183, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    7,  2, 1, 2,       1, 1],   //'Devil'
-]);
+});
+
+Object.freeze(G_CREEP_TEAM = {
+    'vampire': [G_ICON.BAT, 5, G_ICON.BAT_CHAMPION, 2, G_ICON.VAMPIRE, 1],
+    'veggie': [G_ICON.SLIME, 1, G_ICON.SLIME_CHAMPION, 1, G_ICON.FUNGI, 1],
+    'undead': [G_ICON.SKELETON, 2, G_ICON.MUMMY, 2, G_ICON.ZOMBIE, 2, G_ICON.WRAITH, 1],
+});
 
 Object.freeze(G_TOWN_MAP = {
     heroPos: 27,

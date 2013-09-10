@@ -105,8 +105,9 @@ pico.def('ai', function(){
         gradeType = grade[0],
         itemTypeInfo = pick(G_ITEM_RATE, luck, gradeType),
         itemType = itemTypeInfo[0],
-        items = G_ITEM_TYPE[itemType],
-        item = pick(items, luck, gradeType),
+        itemRates = G_ITEM_SUB_RATE[itemType],
+        itemRate = pick(itemRates, luck, gradeType),
+        item = G_OBJECT[itemRate[0]],
         itemName = G_OBJECT_NAME[item[0]],
         modifier, affix;
 
@@ -124,23 +125,20 @@ pico.def('ai', function(){
                         itemName = affix[0] + ' ' + itemName + ' of ' + affix[1];
                         break;
                     case G_GRADE.ENCHANTED:
-                        modifier = pick(G_ENCHANT, luck, gradeType);
-                        affix = G_ENCHANT_PREFIX[modifier[0]];
+                        modifier = pick(G_ENCHANTED, luck, gradeType);
+                        affix = G_ENCHANTED_PREFIX[modifier[0]];
                         itemName = affix + ' ' + itemName;
-                        modifier = pick(G_CHARM, luck, gradeType);
-                        affix = G_CHARM_POSTFIX[modifier[0]];
-                        itemName = itemName + ' of ' + affix;
-                        break;
+                        // fall through
                     case G_GRADE.CHARMED:
-                        modifier = pick(G_CHARM, luck, gradeType);
-                        affix = G_CHARM_POSTFIX[modifier[0]];
+                        modifier = pick(G_CHARMED, luck, gradeType);
+                        affix = G_CHARMED_POSTFIX[modifier[0]];
                         itemName = itemName + ' of ' + affix;
                         break;
                 }
                 break;
         }
 
-        return [itemName, item];
+        return item;
     };
 
     me.getStatByTileId = function(id){ return me.getStatByObject(objects[id]); };
