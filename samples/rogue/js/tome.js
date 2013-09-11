@@ -31,8 +31,8 @@ pico.def('tome', 'picUIWindow', function(){
             ts.draw(ctx, G_UI.SLOT, x, y, tw, th);
             item = items[j];
             if (!item) continue;
-            ts.draw(ctx, item[0], x, y, tw, th);
-            if (item[3]) ts.draw(ctx, G_NUMERIC.LARGE_LIGHT + item[3], x+fx, y+fy, fw, fh);
+            ts.draw(ctx, item[OBJECT_ICON], x, y, tw, th);
+            if (item[SPELL_COOLDOWN]) ts.draw(ctx, G_NUMERIC.LARGE_LIGHT + item[SPELL_COOLDOWN], x+fx, y+fy, fw, fh);
             else if (item === selectedSpell) ts.draw(ctx, G_SHADE[0], x, y, tw, th);
         }
 

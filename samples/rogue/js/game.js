@@ -107,14 +107,19 @@ pico.def('game', 'pigSqrMap', function(){
         objects = me.objects,
         hints = me.hints,
         flags = me.flags,
-        OBJ = G_TOWN_MAP.objects;
+        OBJ = G_TOWN_MAP.objects,
+        item;
 
         objects.length = 0;
         hints.length = 0;
         flags.length = 0;
         
         for(var i=0,l=OBJ.length; i<l; i++){
-            objects[i] = OBJ[i];
+            if (OBJ[i]){
+                item = G_OBJECT[OBJ[i]].slice();
+                item[OBJECT_NAME] = G_OBJECT_NAME[OBJ[i]];
+                objects[i] = item;
+            }
         }
 
         me.map = G_TOWN_MAP.map.slice();

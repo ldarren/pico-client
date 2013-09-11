@@ -33,28 +33,28 @@ pico.def('info', 'picUIWindow', function(){
             ctx.font = com.font;
             ctx.fillStyle = com.fontColor;
 
-            switch(target[1]){
+            switch(target[OBJECT_TYPE]){
                 case G_OBJECT_TYPE.CREEP:
 
                     var stat = ai.getStatByObject(target);
 
-                    ctx.fillText(G_OBJECT_NAME[target[0]]+' ('+G_CREEP_TYPE_NAME[target[2]]+')', x, y + uiSize/2, rect.width);
+                    ctx.fillText(target[OBJECT_NAME]+' ('+G_CREEP_TYPE_NAME[target[OBJECT_SUB_TYPE]]+')', x, y + uiSize/2, rect.width);
 
                     x = rect.x + gs + margin;
                     y += uiSize;
                     uiSize = sd ? 16 : 32;
  
-                    x = me.drawData(ctx, ts, G_UI.PATK, target[4], x, y, uiSize, margin, textWidth3);
-                    x = me.drawData(ctx, ts, G_UI.RATK, target[5], x, y, uiSize, margin, textWidth3);
-                    x = me.drawData(ctx, ts, G_UI.MATK, target[6], x, y, uiSize, margin, textWidth3);
+                    x = me.drawData(ctx, ts, G_UI.PATK, target[CREEP_ATK], x, y, uiSize, margin, textWidth3);
+                    x = me.drawData(ctx, ts, G_UI.RATK, target[CREEP_RATK], x, y, uiSize, margin, textWidth3);
+                    x = me.drawData(ctx, ts, G_UI.MATK, target[CREEP_MATK], x, y, uiSize, margin, textWidth3);
 
                     x = rect.x + gs + margin + pw;
                     uiSize = sd ? 8 : 16;
                     y = rect.y + uiSize;
                     
                     // draw hp
-                    for(i=0, l=stat[3]; i<l; i++){
-                        ts.draw(ctx, i<target[3] ? G_UI.HP : G_UI.HP_EMPTY, x, y, uiSize, uiSize);
+                    for(i=0, l=stat[CREEP_HP]; i<l; i++){
+                        ts.draw(ctx, i<target[CREEP_HP] ? G_UI.HP : G_UI.HP_EMPTY, x, y, uiSize, uiSize);
                         x += uiSize;
                     }
 
@@ -62,12 +62,12 @@ pico.def('info', 'picUIWindow', function(){
                     y += uiSize + margin;
                     uiSize = sd ? 16 : 32;
 
-                    x = me.drawData(ctx, ts, G_UI.PDEF, target[7], x, y, uiSize, margin, textWidth3);
-                    x = me.drawData(ctx, ts, G_UI.MDEF, target[8], x, y, uiSize, margin, textWidth3);
+                    x = me.drawData(ctx, ts, G_UI.PDEF, target[CREEP_DEF], x, y, uiSize, margin, textWidth3);
+                    x = me.drawData(ctx, ts, G_UI.MDEF, target[CREEP_MDEF], x, y, uiSize, margin, textWidth3);
                     break;
                 default:
-                    ts.draw(ctx, target[0], x, y, tw, th);
-                    ctx.fillText(G_OBJECT_NAME[target[0]], x + tw + margin, y + th/2);
+                    ts.draw(ctx, target[OBJECT_ICON], x, y, tw, th);
+                    ctx.fillText(target[OBJECT_NAME], x + tw + margin, y + th/2);
                     break;
             }
 
@@ -93,12 +93,12 @@ pico.def('info', 'picUIWindow', function(){
 
         ctx.save();
         if(target){
-            ts.draw(ctx, target[0], x, y, tw, th);
+            ts.draw(ctx, target[OBJECT_ICON], x, y, tw, th);
             ctx.textAlign = 'center';
             ctx.textBaseline = 'top';
             ctx.font = com.font;
             ctx.fillStyle = com.fontColor;
-            ctx.fillText(G_OBJECT_NAME[target[0]], x + tw/2, y + th, rect.width);
+            ctx.fillText(target[OBJECT_NAME], x + tw/2, y + th, rect.width);
 
             me.drawButtons(ctx, layouts, labels, com.fontColor, G_COLOR_TONE[2], G_COLOR_TONE[1]);
         }else{

@@ -21,8 +21,8 @@ pico.def('god', function(){
         stats[OBJECT_NAME] = name;
 
         return {
-            // job, helm, armor, main hand, off hand, ring1, ring2, amulet, gold, skull, enemy
-            appearance: [job, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            // helm, armor, main hand, off hand, ring1, ring2, amulet, gold, skull, enemy
+            appearance: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             stats: stats,
             effects: [],
             bag: [],

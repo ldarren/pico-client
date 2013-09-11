@@ -3,8 +3,9 @@ OBJECT_ICON = 0, OBJECT_NAME = 1, OBJECT_LEVEL = 2, OBJECT_GRADE = 3, OBJECT_TYP
 OBJECT_HP = 6, OBJECT_WILL = 7, OBJECT_DEX = 8, OBJECT_LUCK = 9,
 OBJECT_ATK = 10, OBJECT_RATK = 11, OBJECT_MATK = 12, OBJECT_DEF = 13, OBJECT_MDEF = 14,
 OBJECT_VEG = 15, OBJECT_INSECT = 16, OBJECT_BEAST = 17, OBJECT_UNDEAD = 18, OBJECT_DEMON = 19,
-CREEP_HP = 6, CREEP_ATK = 7, CREEP_RATK = 8, CREEP_DEF = 9, CREEP_MDEF = 10,
-WEAPON_HANDED = 20, ENCHANTED_CLASS = 4;
+CREEP_HP = 6, CREEP_ATK = 7, CREEP_RATK = 8, CREEP_MATK = 9, CREEP_DEF = 10, CREEP_MDEF = 11,
+WEAPON_HANDED = 20, ENCHANTED_CLASS = 4, SPELL_DIFFICULTY = 6, SPELL_RELOAD = 7, SPELL_COOLDOWN = 8, SPELL_STRENGTH = 9,
+HERO_HELM=0,HERO_ARMOR=1,HERO_MAIN=2,HERO_OFF=3,HERO_RINGL=4,HERO_RINGR=5,HERO_AMULET=6,HERO_GOLD=7,HERO_SKULL=8,HERO_ENEMY=9;
 
 Object.freeze(G_OBJECT_TYPE = {
     EMPTY: 0,
@@ -266,6 +267,9 @@ Object.freeze(G_ICON = {
     WEREWOLF: 181,
     WEREBEAR: 182,
     DEVIL: 183,
+    BLACKSMITH: 145,
+    HEADMASTER: 150,
+    TOWN_GUARD: 149,
 });
 // id, rate, luck factor, grade
 Object.freeze(G_GRADE_RATE = [
@@ -395,7 +399,7 @@ Object.freeze(G_SPELL_TYPE = {
 });
 // from manuscript to spell rate
 Object.freeze(G_SPELL_RATE = [
-    [184,               5,  G_QUALITY.LOW, G_GRADE.G22],
+    [187,               5,  G_QUALITY.LOW, G_GRADE.G22],
     [G_ICON.PENTAGRAM,  5,  G_QUALITY.LOW, G_GRADE.G22],
     [G_ICON.ANKH,       5,  G_QUALITY.LOW, G_GRADE.G22],
     [G_ICON.ALL_SEEING, 5,  G_QUALITY.HIGH,G_GRADE.G12],
@@ -645,14 +649,14 @@ Object.freeze(G_OBJECT = [
     [142, '', 0, 0, G_OBJECT_TYPE.ENV],
     [143, '', 0, 0, G_OBJECT_TYPE.ENV],
     // id, type, name, hp, will, dex, luck, [atk, ratk, matk], [def, mdef], [veg, insect, beast, undead, demon]
-    [144, '', 0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.ROGUE,     2, 0, 1, 1,       0.1, 0.2, 0,    0.1, 0,    1,1,1,1,1],     //rogue
-    [145, '', 0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.MONK,      3, 0, 0.1, 0,     0.2, 0.1, 0.1,  0.2, 0.1,  1,1,1,1.2,1.2], //monk
-    [146, '', 0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.BARBARIAN, 4, 0, 0.2, 0.1,   0.3, 0.1, 0,    0.3, 0,    1,1,1,1,1],     //Barbarian
-    [147, '', 0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.DRUID,     3, 0, 0.2, 0.1,   0.2, 0.1, 0.1,  0.2, 0.1,  1,1,1,1,1],     //Druid
-    [148, '', 0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.HUNTER,    2, 0, 0.2, 0.1,   0.2, 0.4, 0.1,  0.2, 0.1,  1,1,1.5,1,1],   //Hunter
-    [149, '', 0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.PALADIN,   3, 0, 0, 0,       0.2, 0.1, 0.1,  0.4, 0.1,  1,1,1,1.5,1],   //Paladin
-    [150, '', 0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.WIZARD,    1, 0, 0, 0.1,     0.1, 0.1, 0.3,  0.1, 0.4,  1,1,1,1,1],     //Wizard
-    [151, '', 0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.WARLOCK,   1, 0, 0, 0,       0.1, 0.1, 0.4,  0.1, 0.3,  1,1,1,1,1],     //Warlock
+    [144, '',-1, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.ROGUE,     2, 0, 1, 1,       0.1, 0.2, 0,    0.1, 0,    1,1,1,1,1],     //rogue
+    [145, '',-1, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.MONK,      3, 0, 0.1, 0,     0.2, 0.1, 0.1,  0.2, 0.1,  1,1,1,1.2,1.2], //monk
+    [146, '',-1, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.BARBARIAN, 4, 0, 0.2, 0.1,   0.3, 0.1, 0,    0.3, 0,    1,1,1,1,1],     //Barbarian
+    [147, '',-1, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.DRUID,     3, 0, 0.2, 0.1,   0.2, 0.1, 0.1,  0.2, 0.1,  1,1,1,1,1],     //Druid
+    [148, '',-1, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.HUNTER,    2, 0, 0.2, 0.1,   0.2, 0.4, 0.1,  0.2, 0.1,  1,1,1.5,1,1],   //Hunter
+    [149, '',-1, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.PALADIN,   3, 0, 0, 0,       0.2, 0.1, 0.1,  0.4, 0.1,  1,1,1,1.5,1],   //Paladin
+    [150, '',-1, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.WIZARD,    1, 0, 0, 0.1,     0.1, 0.1, 0.3,  0.1, 0.4,  1,1,1,1,1],     //Wizard
+    [151, '',-1, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.WARLOCK,   1, 0, 0, 0,       0.1, 0.1, 0.4,  0.1, 0.3,  1,1,1,1,1],     //Warlock
     // id, type, name, creepType, hp, atk matk, def, mdef
     [152, '', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  0.1, 0, 0,     0.1, 0], //Rat
     [153, '', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.INSECT,   1,  0.1, 0, 0,     0.1, 0], //'Spiders',
@@ -686,8 +690,12 @@ Object.freeze(G_OBJECT = [
     [181, '', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    3,  0.7, 0, 0,     0.1, 0], //'Werewolf',
     [182, '', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    6,  0.5, 0, 0,     0.1, 0], //'Werebear',
     [183, '', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    7,  2, 1, 2,       1, 1],   //'Devil'
+    // NPC
+    [184, '', 0, 0, G_OBJECT_TYPE.NPC],
+    [185, '', 0, 0, G_OBJECT_TYPE.NPC],
+    [186, '', 0, 0, G_OBJECT_TYPE.NPC],
     // spellType, difficulty, cooldown, currCooldown, stat1, stat2, statn
-    [128, '', 0, 0, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.POISON, 5, 3, 0], // 184
+    [128, '', 0, 0, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.POISON, 5, 3, 0], // 187
 ]);
 
 Object.freeze(G_CREEP_TEAM = {
@@ -720,10 +728,10 @@ Object.freeze(G_TOWN_MAP = {
     ],
     objects:[
         0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, [G_ICON.PALADIN, G_OBJECT_TYPE.NPC], 0, 0, 0,
+        0, 0, 0, 0, G_ICON.TOWN_GUARD, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
-        [G_ICON.SHRINE, G_OBJECT_TYPE.ENV], 0, 0, 0, 0, 0, 0, [G_ICON.ALTAR, G_OBJECT_TYPE.ENV],
-        [G_ICON.MONK, G_OBJECT_TYPE.NPC], 0, 0, 0, 0, 0, 0, [G_ICON.WIZARD, G_OBJECT_TYPE.NPC],
+        G_ICON.SHRINE, 0, 0, 0, 0, 0, 0, G_ICON.ALTAR,
+        G_ICON.BLACKSMITH, 0, 0, 0, 0, 0, 0, G_ICON.HEADMASTER,
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,

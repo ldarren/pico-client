@@ -1,4 +1,12 @@
 POSTFIX_SEPARATOR = ' of ';
+MSG_ATTACK_WIN = "You rolled a TOTAL(ROLL+ATK) beat NAME's defense DEF, you've dealt DMG damage",
+MSG_ATTACK_LOST = "You missed by rolling a TOTAL(ROLL+ATK) lowered than NAME's defense DEF",
+MSG_COUNTER_WIN = "NAME has rolled a TOTAL(ROLL+ATK) which is over your defense DEF, you lost HP hp",
+MSG_COUNTER_LOST = "NAME missed by rolling a TOTAL(ROLL+ATK) less than your defense DEF",
+MSG_CREEP_KILL = ", and you have defeated NAME",
+MSG_HERO_KILL = ", and you have been killed by NAME",
+MSG_FLEE_WIN = "You rolled a TOTAL(ROLL+DEX) beat NAME's attack ATK, you fleed the scene",
+MSG_FLEE_LOST = "You failed to flee by rolling a TOTAL(ROLL+DEX) lower than NAME's attack ATK, you lost HP hp",
 
 Object.freeze(G_CREEP_TYPE_NAME = [
     'NA',

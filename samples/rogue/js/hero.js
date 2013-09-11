@@ -3,16 +3,8 @@ pico.def('hero', 'picUIWindow', function(){
     me = this,
     name = me.moduleName,
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
-    ATTACK_WIN = "You rolled a TOTAL(ROLL+ATK) beat NAME's defense DEF, you've dealt DMG damage",
-    ATTACK_LOST = "You missed by rolling a TOTAL(ROLL+ATK) lowered than NAME's defense DEF",
-    COUNTER_WIN = "NAME has rolled a TOTAL(ROLL+ATK) which is over your defense DEF, you lost HP hp",
-    COUNTER_LOST = "NAME missed by rolling a TOTAL(ROLL+ATK) less than your defense DEF",
-    CREEP_KILL = ", and you have defeated NAME",
-    HERO_KILL = ", and you have been killed by NAME",
-    FLEE_WIN = "You rolled a TOTAL(ROLL+DEX) beat NAME's attack ATK, you fleed the scene",
-    FLEE_LOST = "You failed to flee by rolling a TOTAL(ROLL+DEX) lower than NAME's attack ATK, you lost HP hp",
     objects, flags,
-    position, level, selectedSpell, targetId,
+    position, selectedSpell, targetId,
     heroObj,
     appearance, stats, effects, bag, tome,
     currStats,
@@ -47,17 +39,17 @@ pico.def('hero', 'picUIWindow', function(){
         y += uiSize;
         uiSize = sd ? 16 : 32;
 
-        x = me.drawData(ctx, ts, G_UI.LEVEL, level, x, y, uiSize, margin, textWidth3);
-        x = me.drawData(ctx, ts, G_UI.DEX, currStats[HERO_DEX], x, y, uiSize, margin, textWidth3);
-        x = me.drawData(ctx, ts, G_UI.LUCK, currStats[HERO_LUCK], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.LEVEL, currStats[OBJECT_LEVEL], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.DEX, currStats[OBJECT_DEX], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.LUCK, currStats[OBJECT_LUCK], x, y, uiSize, margin, textWidth3);
 
         x = rect.x + gs + margin + pw;
         y = rect.y + gs + margin;
         uiSize = sd ? 8 : 16;
         
         // draw hp
-        for(i=0, l=stats[2]; i<l; i++){
-            ts.draw(ctx, (i < currStats[2]) ? G_UI.HP : G_UI.HP_EMPTY, x, y+margin, uiSize, uiSize);
+        for(i=0, l=stats[OBJECT_HP]; i<l; i++){
+            ts.draw(ctx, (i < currStats[OBJECT_HP]) ? G_UI.HP : G_UI.HP_EMPTY, x, y+margin, uiSize, uiSize);
             x += uiSize;
         }
 
@@ -65,22 +57,22 @@ pico.def('hero', 'picUIWindow', function(){
         uiSize = sd ? 16 : 32;
         y += uiSize;
 
-        x = me.drawData(ctx, ts, G_UI.GOLD, appearance[8], x, y, uiSize, margin, textWidth2);
-        x = me.drawData(ctx, ts, G_UI.SKULL, appearance[9], x, y, uiSize, margin, textWidth2);
+        x = me.drawData(ctx, ts, G_UI.GOLD, appearance[HERO_GOLD], x, y, uiSize, margin, textWidth2);
+        x = me.drawData(ctx, ts, G_UI.SKULL, appearance[HERO_SKULL], x, y, uiSize, margin, textWidth2);
 
         x = rect.x + gs + margin + pw*2;
         y = rect.y + gs + margin;
         
-        x = me.drawData(ctx, ts, G_UI.PATK, currStats[6], x, y, uiSize, margin, textWidth3);
-        x = me.drawData(ctx, ts, G_UI.RATK, currStats[7], x, y, uiSize, margin, textWidth3);
-        x = me.drawData(ctx, ts, G_UI.MATK, currStats[8], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.PATK, currStats[OBJECT_ATK], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.RATK, currStats[OBJECT_RATK], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.MATK, currStats[OBJECT_MATK], x, y, uiSize, margin, textWidth3);
 
         x = rect.x + gs + margin + pw*2;
         y += uiSize;
 
-        x = me.drawData(ctx, ts, G_UI.PDEF, currStats[9], x, y, uiSize, margin, textWidth3);
-        x = me.drawData(ctx, ts, G_UI.MDEF, currStats[10], x, y, uiSize, margin, textWidth3);
-        x = me.drawData(ctx, ts, G_UI.WILL, currStats[3], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.PDEF, currStats[OBJECT_DEF], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.MDEF, currStats[OBJECT_MDEF], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.WILL, currStats[OBJECT_WILL], x, y, uiSize, margin, textWidth3);
 
         ctx.restore();
     },
@@ -89,18 +81,17 @@ pico.def('hero', 'picUIWindow', function(){
         ts = this.tileSet,
         tw = this.tileWidth,
         th = this.tileHeight,
-        job = this.hero.getJob(),
         gs = win.gridSize,
         x = rect.x + gs + 8,
         y = rect.y + gs + 8;
 
         ctx.save();
-        ts.draw(ctx, job, x, y, tw, th);
+        ts.draw(ctx, currStats[OBJECT_ICON], x, y, tw, th);
         ctx.textAlign = 'center';
         ctx.textBaseline = 'top';
         ctx.font = com.font;
         ctx.fillStyle = com.fontColor;
-        ctx.fillText(G_OBJECT_NAME[job], x + tw/2, y + th, rect.width);
+        ctx.fillText(currStats[OBJECT_NAME], x + tw/2, y + th, rect.width);
         ctx.restore();
     };
 
@@ -112,7 +103,7 @@ pico.def('hero', 'picUIWindow', function(){
     me.init = function(){
         heroObj = this.mortal;
         if (!heroObj){
-            heroObj = this.god.createHero();
+            heroObj = this.god.createHero('Sir John Fenwick of Wallington');
         }
         objects = this.objects;
         flags = this.flags;
@@ -121,12 +112,12 @@ pico.def('hero', 'picUIWindow', function(){
         effects = heroObj.effects;
         bag = heroObj.bag;
         tome = heroObj.tome;
-        target = appearance[10];
+        target = appearance[HERO_ENEMY];
 
         if (target){
             this.go('showInfo', target);
         }
-        level = 0;
+        currStats = []; // level up will update currStats
         me.levelUp(this.deepestLevel);
         me.move(this.mortalLoc);
 
@@ -137,32 +128,34 @@ pico.def('hero', 'picUIWindow', function(){
     };
 
     me.step = function(steps){
-        var spell;
+        var spell, cooldown;
         for(var i=0, l=tome.length; i<l; i++){
             spell = tome[i];
-            if (spell[3]) {
-                spell[3] -= steps;
-                if (spell[3] < 0) spell[3] = 0;
+            cooldown = spell[SPELL_COOLDOWN];
+            if (cooldown) {
+                cooldown -= steps;
+                if (cooldown < 0) cooldown = 0;
             }
+            spell[SPELL_COOLDOWN] = cooldown;
         }
     };
 
     me.battle = function(id, accident){
         me.setTargetId(id);
-console.log('battle',arguments.callee.caller.name, id, objects[id]);
+
         var
         target = objects[id],
         flag = flags[id],
-        creepName = G_OBJECT_NAME[target[0]],
-        attack = accident ? undefined : [d20Roll(), currStats[6], target[7]],
-        counter = flag || G_CREEP_TYPE.PLANT === target[2] ? undefined : [d20Roll(), target[4], currStats[9]],
+        creepName = target[OBJECT_NAME],
+        attack = accident ? undefined : [d20Roll(), currStats[OBJECT_ATK], target[CREEP_DEF]],
+        counter = flag || G_CREEP_TYPE.PLANT === target[2] ? undefined : [d20Roll(), target[CREEP_ATK], currStats[OBJECT_DEF]],
         total, hit, attackMsg, counterMsg;
 
         if (attack){
             total = attack[0]+attack[1];
             hit = total > attack[2];
 
-            attackMsg = (hit ? ATTACK_WIN : ATTACK_LOST)
+            attackMsg = (hit ? MSG_ATTACK_WIN : MSG_ATTACK_LOST)
             .replace('NAME', creepName)
             .replace('TOTAL', total)
             .replace('ROLL', attack[0])
@@ -170,17 +163,17 @@ console.log('battle',arguments.callee.caller.name, id, objects[id]);
             .replace('DEF', attack[2])
             .replace('DMG', 1);
 
-            if (hit) target[3]--;
+            if (hit) target[CREEP_HP]--;
 
-            if (target[3] < 1){
-                attackMsg += CREEP_KILL.replace('NAME', creepName);
+            if (target[CREEP_HP] < 1){
+                attackMsg += MSG_CREEP_KILL.replace('NAME', creepName);
             }
         }
         if (counter){
             total = counter[0]+counter[1];
             hit = total > counter[2];
 
-            counterMsg = (hit ? COUNTER_WIN : COUNTER_LOST)
+            counterMsg = (hit ? MSG_COUNTER_WIN : MSG_COUNTER_LOST)
             .replace('NAME', creepName)
             .replace('TOTAL', total)
             .replace('ROLL', counter[0])
@@ -188,10 +181,10 @@ console.log('battle',arguments.callee.caller.name, id, objects[id]);
             .replace('DEF', counter[2])
             .replace('HP', 1);
 
-            if (hit) currStats[2]--;
+            if (hit) currStats[OBJECT_HP]--;
 
-            if (currStats[2] < 1){
-                counterMsg += HERO_KILL.replace('NAME', creepName);
+            if (currStats[OBJECT_HP] < 1){
+                counterMsg += MSG_HERO_KILL.replace('NAME', creepName);
             }
         }
 
@@ -206,23 +199,23 @@ console.log('battle',arguments.callee.caller.name, id, objects[id]);
         var
         target = objects[targetId],
         roll = d20Roll(),
-        total = roll + currStats[4];
+        total = roll + currStats[OBJECT_DEX];
 
-        if (total > target[4]) {
+        if (total > target[CREEP_ATK]) {
             me.setTargetId(undefined);
-            return [true, FLEE_WIN
+            return [true, MSG_FLEE_WIN
                 .replace('TOTAL', total)
                 .replace('ROLL', roll)
-                .replace('DEX', currStats[4])
-                .replace('NAME', G_OBJECT_NAME[target[0]])
-                .replace('ATK', target[4])];
+                .replace('DEX', currStats[OBJECT_DEX])
+                .replace('NAME', target[OBJECT_NAME])
+                .replace('ATK', target[CREEP_ATK])];
         }
-        return [false, FLEE_LOST
+        return [false, MSG_FLEE_LOST
                 .replace('TOTAL', total)
                 .replace('ROLL', roll)
-                .replace('DEX', currStats[4])
-                .replace('NAME', G_OBJECT_NAME[target[0]])
-                .replace('ATK', target[4])
+                .replace('DEX', currStats[OBJECT_DEX])
+                .replace('NAME', target[OBJECT_NAME])
+                .replace('ATK', target[CREEP_ATK])
                 .replace('HP', 1)];
     }
 
@@ -236,42 +229,48 @@ console.log('battle',arguments.callee.caller.name, id, objects[id]);
     };
 
     me.levelUp = function(lvl){
-        if (lvl < level) return currStats;
-        level = lvl;
+        if (currStats[OBJECT_LEVEL] > lvl) return currStats;
         currStats = stats.slice();
-        for(var i=3; i<11; i++){
-            currStats[i] = Ceil(currStats[i]*level);
+        for(var i=OBJECT_WILL; i<OBJECT_VEG; i++){
+            currStats[i] = Ceil(currStats[i]*lvl);
         }
+        currStats[OBJECT_LEVEL] = lvl;
         return currStats;
     };
 
     me.castSpell = function(){
         var s = selectedSpell;
-        if (!s || s[3]) return;
+        if (!s || s[SPELL_COOLDOWN]) return;
 
         selectedSpell = undefined;
-        s[3] = s[2]; // set cooldown;
+        s[SPELL_COOLDOWN] = s[SPELL_RELOAD]; // set cooldown;
 
         return s; // TODO return spell effects instead
     };
 
     me.selectSpell = function(spell){
-        if (spell && spell[3]) return;
+        if (spell && spell[SPELL_COOLDOWN]) return;
         selectedSpell = spell;
+    };
+
+    me.incrHp = function(inc) {
+        var hp = currStats[OBJECT_HP];
+        hp += inc;
+        if (hp > stats[OBJECT_HP]) hp = stats[OBJECT_HP];
+        currStats[OBJECT_HP] = hp;
     };
 
     me.getSelectedSpell = function(){ return selectedSpell; };
     me.getPosition = function(){ return position; };
-    me.getJob = function(){ return appearance[0]; };
-    me.getLuck = function(){ return currStats[5]; };
+    me.getJob = function(){ return currStats[OBJECT_TYPE]; };
+    me.getLuck = function(){ return currStats[OBJECT_LUCK]; };
     me.getBag = function(){ return bag; };
     me.getTome = function(){ return tome; };
-    me.incrHp = function(inc) { currStats[2] += inc; };
-    me.equal = function(obj){ return obj[0] === currStats[0] && obj[1] === currStats[1]; };
+    me.equal = function(obj){ return obj[OBJECT_ICON] === currStats[OBJECT_ICON] && obj[OBJECT_TYPE] === currStats[OBJECT_TYPE]; };
     me.isTarget = function(id){ return targetId === id; };
     me.getTargetId = function(){ return targetId; };
-    me.setTargetId = function(id){ return appearance[10] = targetId = id; };
-    me.isDead = function(){ return currStats[2] < 1; };
+    me.setTargetId = function(id){ return appearance[HERO_ENEMY] = targetId = id; };
+    me.isDead = function(){ return currStats[OBJECT_HP] < 1; };
 
     me.draw = function(ctx, ent, clip){
         var

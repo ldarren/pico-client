@@ -213,7 +213,7 @@ pico.def('camera', 'picBase', function(){
                     if (flag){
                         tileSet.draw(ctx, flag[0], x, y, tileW, tileH);
                     }else if (object){
-                        tileSet.draw(ctx, object[0], x, y, tileW, tileH);
+                        tileSet.draw(ctx, object[OBJECT_ICON], x, y, tileW, tileH);
                     }
                     hint = hints[w];
                     if (hint > 9){
@@ -241,7 +241,7 @@ pico.def('camera', 'picBase', function(){
         }
 
         // draw player active skill
-        if (selectedSpell && selectedSpell[0] === G_SPELL.ALL_SEEING[0]){
+        if (selectedSpell && selectedSpell[DROP_ID] === G_SPELL.ALL_SEEING[DROP_ID]){
             x = viewX + tileW * (hp%mapW), y = viewY + tileH * Floor(hp/mapW);
             tileSet.draw(ctx, G_UI.FLAG, x, y, hw, hh);
         }
@@ -254,7 +254,7 @@ pico.def('camera', 'picBase', function(){
                 object = objects[w];
                 if (!flags[w] || !object) continue;
                 x = viewX + tileW * (w%mapW), y = viewY + tileH * Floor(w/mapW);
-                tileSet.draw(ctx, object[0], x, y, tileW, tileH);
+                tileSet.draw(ctx, object[OBJECT_ICON], x, y, tileW, tileH);
             }
             w += viewWrap;
         }
