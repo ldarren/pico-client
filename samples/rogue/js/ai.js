@@ -13,6 +13,7 @@ pico.def('ai', function(){
             s[i] = Ceil(s[i]*level);
         }
         s[OBJECT_NAME] = OBJECT_NAME[s[OBJECT_ICON]];
+        s[OBJECT_LEVEL] = level;
         return s;
     },
     pick = function(list, luck, grade){
@@ -127,13 +128,13 @@ pico.def('ai', function(){
                         for(i=DROP_GRADE+1, l=DROP_GRADE+3; i<l; i++){
                             stat = G_ENCHANTED[modifier[i]];
                             if (!(job & stat[ENCHANTED_CLASS])) continue;
-                            for(j=ENCHANTED_HP,k=ENCHANTED_DEMON; j<k; j++){
+                            for(j=OBJECT_HP,k=OBJECT_DEMON; j<=k; j++){
                                 item[j] += stat[j];
                             }
                         }
                         for(i=DROP_GRADE+3, l=DROP_GRADE+5; i<l; i++){
                             stat = G_CHARMED[modifier[i]];
-                            for(j=CHARMED_HP,k=CHARMED_DEMON; j<k; j++){
+                            for(j=OBJECT_HP,k=OBJECT_DEMON; j<=k; j++){
                                 item[j] += stat[j];
                             }
                         }
@@ -143,7 +144,7 @@ pico.def('ai', function(){
                         affix = G_ENCHANTED_PREFIX[modifier[DROP_ID]];
                         itemName = affix + ' ' + itemName;
                         if (job & modifier[ENCHANTED_CLASS]){
-                            for(j=ENCHANTED_HP,k=ENCHANTED_DEMON; j<k; j++){
+                            for(j=OBJECT_HP,k=OBJECT_DEMON; j<=k; j++){
                                 item[j] += modifier[j];
                             }
                         }
@@ -152,7 +153,7 @@ pico.def('ai', function(){
                         modifier = pick(G_CHARMED, luck, gradeType);
                         affix = G_CHARMED_POSTFIX[modifier[DROP_ID]];
                         itemName = itemName + POSTFIX_SEPARATOR + affix;
-                        for(j=CHARMED_HP,k=CHARMED_DEMON; j<k; j++){
+                        for(j=OBJECT_HP,k=OBJECT_DEMON; j<=k; j++){
                             item[j] += modifier[j];
                         }
                         break;
@@ -163,11 +164,12 @@ pico.def('ai', function(){
         item[OBJECT_NAME] = itemName;
         item[OBJECT_LEVEL] = lvl;
         item[OBJECT_GRADE] = gradeType;
+
         switch(itemType){
             case G_OBJECT_TYPE.WEAPON:
             case G_OBJECT_TYPE.ARMOR:
             case G_OBJECT_TYPE.JEWEL:
-                for(i=WEAPON_HP+1,l=WEAPON_DEMON; i<l; i++){
+                for(i=OBJECT_HP+1,l=OBJECT_VEG; i<l; i++){
                     item[i] = Round(item[i]*lvl);
                 }
                 break;
@@ -182,29 +184,47 @@ pico.def('ai', function(){
     me.incrHp = function(id, inc){
         var creep = objects[id];
 
-        if (!creep || creep[3] > 0) return;
-        var stat = me.getStatByObject(creep);
-        creep[3] += inc;
-        if (creep[3] > stat[3]) creep[3] = stat[3];
+        if (!creep || G_OBJECT_TYPE.CREEP !== creep[OBJECT_ICON]) return;
+        var
+        stat = me.getStatByObject(creep),
+        creepHp = creep[CREEP_HP],
+        statHp = stat[CREEP_HP];
+
+        if (creepHp < 1) return;
+
+        creepHp += inc;
+        if (creepHp > statHp) creepHp = statHp;
+
+        creep[CREEP_HP] = creepHp;
     };
 
     me.incrHpAll = function(inc){
-        var creep, stat;
+        var creep, stati, creepHp, statHp;
         for(var i=0, l=objects.length; i<l; i++){
             creep = objects[i];
-            if (!creep || creep[1] !== G_OBJECT_TYPE.CREEP) continue;
+            if (!creep || G_OBJECT_TYPE.CREEP !== creep[OBJECT_ICON]) continue;
+
             stat = me.getStatByObject(creep);
-            creep[3] += inc;
-            if (creep[3] > stat[3]) creep[3] = stat[3];
+            creepHp = creep[CREEP_HP];
+            statHp = stat[CREEP_HP];
+
+            if (creepHp < 1) continue;
+
+            creepHp += inc;
+            if (creepHp > statHp) creepHp = statHp;
+            creep[CREEP_HP] = creepHp;
         }
     };
 
     me.bury = function(id){
         var creep = objects[id];
-        if (!creep || creep[3] > 0) return false;
+        if (!creep || creep[CREEP_HP] > 0) return false;
 
         terrain[id] = G_FLOOR.BROKEN;
-        objects[id] = [G_ICON.HEALTH_GLOBE, G_OBJECT_TYPE.HEALTH];
+        creep = G_OBJECT[G_ICON.HEALTH_GLOBE].slice();
+        creep[OBJECT_NAME] = G_OBJECT_NAME[G_ICON.HEALTH_GLOBE];
+        objects[id] = creep;
+
         return true;
     };
 

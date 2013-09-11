@@ -41,15 +41,15 @@ pico.def('hero', 'picUIWindow', function(){
         ctx.font = com.font;
         ctx.fillStyle = com.fontColor;
 
-        ctx.fillText(G_OBJECT_NAME[currStats[0]], x, y + uiSize/2, rect.width);
+        ctx.fillText(currStats[OBJECT_NAME], x, y + uiSize/2, rect.width);
 
         x = rect.x + gs + margin;
         y += uiSize;
         uiSize = sd ? 16 : 32;
 
         x = me.drawData(ctx, ts, G_UI.LEVEL, level, x, y, uiSize, margin, textWidth3);
-        x = me.drawData(ctx, ts, G_UI.DEX, currStats[4], x, y, uiSize, margin, textWidth3);
-        x = me.drawData(ctx, ts, G_UI.LUCK, currStats[5], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.DEX, currStats[HERO_DEX], x, y, uiSize, margin, textWidth3);
+        x = me.drawData(ctx, ts, G_UI.LUCK, currStats[HERO_LUCK], x, y, uiSize, margin, textWidth3);
 
         x = rect.x + gs + margin + pw;
         y = rect.y + gs + margin;

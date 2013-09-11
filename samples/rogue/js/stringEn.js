@@ -85,7 +85,7 @@ Object.freeze(G_OBJECT_NAME = {
     75: 'Recurve Bow',
     76: 'Long Bow',
     77: 'Reflex Bow',
-    78: 'Cross Bow',
+    78: 'Arbalest',
     79: 'ChuKoNu',
     80: 'Grenades',
     81: 'Fire Bomb',
