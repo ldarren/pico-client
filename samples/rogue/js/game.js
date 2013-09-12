@@ -247,13 +247,37 @@ pico.def('game', 'pigSqrMap', function(){
     };
 
     me.openChest = function(elapsed, evt, entities){
-        var loot = this.ai.openChest(this.hero.getJob(), this.hero.getLuck(), this.currentLevel);
+        var
+        object = this.objects[evt],
+        loot = object[CHEST_ITEM];
+
+        if (!loot) {
+            loot = object[CHEST_ITEM] = this.ai.openChest(this.hero.getJob(), this.hero.getLuck(), this.currentLevel);
+        }
+
         me.go('showDialog', {
         info: [
             'You have obtained an '+G_OBJECT_TYPE_NAME[loot[OBJECT_TYPE]],
             'Item name '+loot[OBJECT_NAME]+', item level '+loot[OBJECT_LEVEL]+', item grade '+G_GRADE_NAME[loot[OBJECT_GRADE]]],
-        callbacks: [],
-        labels: ['Loot', 'Discard']});
+        callbacks: ['loot', undefined],
+        labels: ['Loot', 'Discard'],
+        evt: evt});
+
+        delete this.flags[evt];
+
+        return entities;
+    };
+
+    me.lootItem = function(elapsed, evt, entities){
+        var
+        object = this.objects[evt],
+        loot = object[CHEST_ITEM];
+
+        if (!loot) return;
+
+        this.hero.putIntoBag(loot);
+        this.objects[evt] = G_OBJECT[G_ICON.CHEST_EMPTY].slice();
+
         return entities;
     };
 

@@ -269,8 +269,14 @@ pico.def('hero', 'picUIWindow', function(){
     me.equal = function(obj){ return obj[OBJECT_ICON] === currStats[OBJECT_ICON] && obj[OBJECT_TYPE] === currStats[OBJECT_TYPE]; };
     me.isTarget = function(id){ return targetId === id; };
     me.getTargetId = function(){ return targetId; };
-    me.setTargetId = function(id){ return appearance[HERO_ENEMY] = targetId = id; };
+    me.setTargetId = function(id){
+        return appearance[HERO_ENEMY] = targetId = id;
+    };
     me.isDead = function(){ return currStats[OBJECT_HP] < 1; };
+
+    me.putIntoBag = function(item){
+        bag.push(item);
+    };
 
     me.draw = function(ctx, ent, clip){
         var
