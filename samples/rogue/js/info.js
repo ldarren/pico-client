@@ -7,6 +7,7 @@ pico.def('info', 'picUIWindow', function(){
     name = me.moduleName,
     layouts = [],
     labels = [],
+    callbacks = [],
     targetId, target,
     drawSmall = function(ctx, win, com, rect){
         var
@@ -27,7 +28,7 @@ pico.def('info', 'picUIWindow', function(){
 
         ctx.save();
 
-        if (target){
+        if (targetId > -1){
             ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
             ctx.font = com.font;
@@ -78,7 +79,7 @@ pico.def('info', 'picUIWindow', function(){
             ctx.font = com.font;
             ctx.fillStyle = com.fontColor;
 
-            me.fillWrapText(ctx, targetId, x, y, pw*2, 20);
+            me.fillWrapText(ctx, target, x, y, pw*2, 20);
         }
         ctx.restore();
     },
@@ -92,7 +93,7 @@ pico.def('info', 'picUIWindow', function(){
         y = rect.y + gs + 8;
 
         ctx.save();
-        if(target){
+        if(targetId > -1){
             ts.draw(ctx, target[OBJECT_ICON], x, y, tw, th);
             ctx.textAlign = 'center';
             ctx.textBaseline = 'top';
@@ -107,7 +108,7 @@ pico.def('info', 'picUIWindow', function(){
             ctx.font = com.font;
             ctx.fillStyle = com.fontColor;
 
-            me.fillWrapText(ctx, targetId, x, y, rect.width - gs*2 - 16, 20);
+            me.fillWrapText(ctx, target, x, y, rect.width - gs*2 - 16, 20);
         }
         ctx.restore();
     };
@@ -118,13 +119,20 @@ pico.def('info', 'picUIWindow', function(){
     };
 
     me.open = function(elapsed, evt, entities){
-        var ent = this.showEntity(G_WIN_ID.INFO);
+        if (!evt) return;
 
-        if (typeof evt === 'string'){
-            targetId = evt;
-            target = undefined;
+        var ent = this.showEntity(G_WIN_ID.INFO);
+        
+        labels.length = 0;
+        callbacks.length = 0;
+        if (evt.labels) labels = evt.labels;
+        if (evt.callbacks) callbacks = evt.callbacks;
+
+        if (evt.info){
+            targetId = -1;
+            target = evt.info;
         }else{
-            targetId = evt;
+            targetId = evt.targetId;
             target = this.objects[targetId];
         }
 
@@ -133,6 +141,8 @@ pico.def('info', 'picUIWindow', function(){
 
     me.close = function(elapsed, evt, entities){
         this.hideEntity(G_WIN_ID.INFO);
+        labels.length = 0;
+        callbacks.length = 0;
         targetId = target = undefined;
         return entities;
     };
@@ -156,12 +166,12 @@ pico.def('info', 'picUIWindow', function(){
 
         var
         x = evt[0], y = evt[1],
-        btn, label;
+        btn, callback;
 
         for(var i=0, l=layouts.length; i<l; i++){
             btn = layouts[i];
             if (x > btn[0] && x < btn[0]+btn[2] && y > btn[1] && y < btn[1]+btn[3]){
-                label = labels[i];
+                callback = callbacks[i];
                 break;
             }
         }
@@ -170,40 +180,28 @@ pico.def('info', 'picUIWindow', function(){
         hero = this.hero,
         ai = this.ai;
 
-        switch(label){
-            case 'Fight':
+        switch(callback){
+            case 'fight':
                 this.go('attack', hero.battle(targetId, false));
                 break;
-            case 'Flee':
+            case 'flee':
                 this.go('flee');
                 break;
-            case 'Open':
+            case 'open':
                 this.go('openChest', targetId);
                 break;
-            case 'Speak':
+            case 'speak':
                 break;
-            case 'Use':
+            case 'use':
                 delete this.objects[targetId];
                 hero.incrHp(1);
                 ai.incrHpAll(1);
-                var 
-                hp = hero.getPosition(),
-                h = this.findPath(hp, targetId);
-                if (h.length){
-                    this.stopLoop('heroMove');
-                    this.startLoop('heroMove', h);
-                }
+                this.go('heroMoveTo', [targetId]);
                 break;
-            case 'Inspect':
+            case 'inspect':
                 break;
-            case 'Move':
-                var
-                hp = hero.getPosition(),
-                h = this.findPath(hp, this.nextTile(targetId, hp));
-                if (h.length){
-                    this.stopLoop('heroMove');
-                    this.startLoop('heroMove', h);
-                }
+            case 'move':
+                this.go('heroMoveTo', [this.nextTile(targetId, hero.getPosition())]);
                 break;
             default:
                 return entities;
@@ -217,7 +215,6 @@ pico.def('info', 'picUIWindow', function(){
     me.resize = function(elapsed, evt, entities){
 
         layouts.length = 0;
-        labels.length = 0;
 
         if (!target) return entities;
         var ent = me.findMyFirstEntity(entities, name);
@@ -233,27 +230,38 @@ pico.def('info', 'picUIWindow', function(){
         tileW = this.tileWidth,
         tileH = this.tileHeight;
 
-        if (this.nearToHero(targetId)){
-            switch(target[1]){
-                case G_OBJECT_TYPE.CREEP:
-                    labels.push('Fight');
-                    if (this.hero.isTarget(targetId)) labels.push('Flee');
-                    break;
-                case G_OBJECT_TYPE.CHEST:
-                    labels.push('Open');
-                    break;
-                case G_OBJECT_TYPE.NPC:
-                    labels.push('Speak');
-                    break;
-                case G_OBJECT_TYPE.HEALTH:
-                    labels.push('Use');
-                    break;
-                case G_OBJECT_TYPE.ENV:
-                    labels.push('Inspect');
-                    break;
+        if (0 === labels.length){
+            if (this.nearToHero(targetId)){
+                switch(target[OBJECT_TYPE]){
+                    case G_OBJECT_TYPE.CREEP:
+                        labels.push('Fight');
+                        callbacks.push('fight');
+                        if (this.hero.isTarget(targetId)){
+                            labels.push('Flee');
+                            callbacks.push('flee');
+                        }
+                        break;
+                    case G_OBJECT_TYPE.CHEST:
+                        labels.push('Open');
+                        callbacks.push('open');
+                        break;
+                    case G_OBJECT_TYPE.NPC:
+                        labels.push('Speak');
+                        callbacks.push('speak');
+                        break;
+                    case G_OBJECT_TYPE.HEALTH:
+                        labels.push('Use');
+                        callbacks.push('use');
+                        break;
+                    case G_OBJECT_TYPE.ENV:
+                        labels.push('Inspect');
+                        callbacks.push('inspect');
+                        break;
+                }
+            }else{
+                labels.push('Move');
+                callbacks.push('move');
             }
-        }else{
-            labels.push('Move');
         }
 
         var btnCount = labels.length;

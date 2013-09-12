@@ -110,7 +110,7 @@ pico.def('camera', 'picBase', function(){
                         this.go('attack', hero.battle(id, true));
                     }else{
                         flags[id] = effect;
-                        this.go('showInfo', id);
+                        this.go('showInfo', { targetId: id });
                     }
                     map[id] &= G_TILE_TYPE.SHOW;
                     this.go('forceRefresh'); // TODO: find a better way to show cooldown counter
@@ -122,11 +122,7 @@ pico.def('camera', 'picBase', function(){
                     }
                 }
             }else{
-                var h = this.findPath(hp, this.nextTile(id, hp));
-                if (h.length){
-                    this.stopLoop('heroMove');
-                    this.startLoop('heroMove', h);
-                }
+                this.go('heroMoveTo', [this.nextTile(id, hp)]);
             }
         }else if(object){
 
@@ -135,19 +131,15 @@ pico.def('camera', 'picBase', function(){
                 if (!steps) return entities;
                 this.go('gameStep', steps);
             }else{
-                this.go('showInfo', id);
+                this.go('showInfo', { targetId: id });
             }
         }
 
         tileType = map[id]; // last action might hv updated tileType
         object = objects[id];
         if (!(tileType & G_TILE_TYPE.HIDE) && !object){
-            var h = this.findPath(hp, id);
-            if (h.length){
-                this.stopLoop('heroMove');
-                this.startLoop('heroMove', h);
-            }
             this.go('hideInfo');
+            this.go('heroMoveTo', [id]);
         }
 
         return entities;
@@ -241,7 +233,7 @@ pico.def('camera', 'picBase', function(){
         }
 
         // draw player active skill
-        if (selectedSpell && selectedSpell[DROP_ID] === G_SPELL.ALL_SEEING[DROP_ID]){
+        if (selectedSpell && selectedSpell[OBJECT_ICON] === G_ICON.ALL_SEEING){
             x = viewX + tileW * (hp%mapW), y = viewY + tileH * Floor(hp/mapW);
             tileSet.draw(ctx, G_UI.FLAG, x, y, hw, hh);
         }

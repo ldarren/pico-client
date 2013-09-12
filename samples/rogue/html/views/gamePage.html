@@ -140,6 +140,7 @@ onLoad = function(){
         game.route('gameStep', [game.step, renderer.draw]);
         game.route('forceRefresh', [renderer.draw]);
         game.route('resize', [camera.resize, uiWindow.resize, tome.resize, bag.resize, info.openIfValid, dialogMsg.openIfValid, renderer.draw]);
+        game.route('heroMoveTo', [game.heroMoveTo]);
         game.route('heroMove', [game.heroMove, renderer.draw]);
         game.route('heroStop', [game.heroStop, renderer.draw]);
         game.route('gotoLevel', [game.gotoLevel, renderer.draw]);

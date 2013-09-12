@@ -247,7 +247,13 @@ pico.def('game', 'pigSqrMap', function(){
     };
 
     me.openChest = function(elapsed, evt, entities){
-        this.ai.openChest(this.hero.getLuck(), this.currentLevel);
+        var loot = this.ai.openChest(this.hero.getJob(), this.hero.getLuck(), this.currentLevel);
+        me.go('showDialog', {
+        info: [
+            'You have obtained an '+G_OBJECT_TYPE_NAME[loot[OBJECT_TYPE]],
+            'Item name '+loot[OBJECT_NAME]+', item level '+loot[OBJECT_LEVEL]+', item grade '+G_GRADE_NAME[loot[OBJECT_GRADE]]],
+        callbacks: [],
+        labels: ['Loot', 'Discard']});
         return entities;
     };
 
@@ -257,7 +263,7 @@ pico.def('game', 'pigSqrMap', function(){
             this.go('counter', evt);
             return;
         }
-        this.go('showInfo', msg);
+        this.go('showInfo', { info: msg} );
 
         var
         hero = this.hero,
@@ -288,7 +294,7 @@ pico.def('game', 'pigSqrMap', function(){
         var msg = evt[1];
         if (!msg) return;
 
-        this.go('showInfo', msg);
+        this.go('showInfo', {info: msg});
 
         var
         hero = this.hero,
@@ -305,7 +311,7 @@ pico.def('game', 'pigSqrMap', function(){
                 me.go('showDialog', {
                 info: [
                     'RIP',
-                    'you were killed by '+G_OBJECT_NAME[creep[0]]+' at level '+me.currentLevel,
+                    'you were killed by '+creep[OBJECT_NAME]+' at level '+me.currentLevel,
                     'but your lineage will continue...'],
                 callbacks: ['reborn']});
             }else{
@@ -328,7 +334,7 @@ pico.def('game', 'pigSqrMap', function(){
             this.go('counter', [undefined, ret[1]]);
             return;
         }
-        this.go('showInfo', ret[1]);
+        this.go('showInfo', {info: ret[1]});
         return entities;
     };
 
@@ -435,9 +441,10 @@ pico.def('game', 'pigSqrMap', function(){
         return count;
     };
 
-    me.heroMove = function(elapsed, evt, entities){
-        if (me.hero.getTargetId()){
-            this.stopLoop('heroMove');
+    me.heroMoveTo = function(elapsed, evt, entities){
+        var hero = me.hero;
+
+        if (hero.getTargetId()){
             me.go('showDialog', {
             info: [
                 'Flee?',
@@ -446,6 +453,20 @@ pico.def('game', 'pigSqrMap', function(){
             callbacks: ['flee', null]});
             return;
         }
+
+        var
+        targetId = evt[0],
+        hp = hero.getPosition(),
+        h = this.findPath(hp, targetId);
+        if (h.length){
+            this.stopLoop('heroMove');
+            this.startLoop('heroMove', h);
+        }
+
+        return;
+    };
+
+    me.heroMove = function(elapsed, evt, entities){
         pathElapsed += elapsed;
         if (pathElapsed < 100) return;
         pathElapsed = 0;

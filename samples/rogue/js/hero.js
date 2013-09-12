@@ -115,7 +115,7 @@ pico.def('hero', 'picUIWindow', function(){
         target = appearance[HERO_ENEMY];
 
         if (target){
-            this.go('showInfo', target);
+            this.go('showInfo', {targetId: target});
         }
         currStats = []; // level up will update currStats
         me.levelUp(this.deepestLevel);
@@ -148,7 +148,7 @@ pico.def('hero', 'picUIWindow', function(){
         flag = flags[id],
         creepName = target[OBJECT_NAME],
         attack = accident ? undefined : [d20Roll(), currStats[OBJECT_ATK], target[CREEP_DEF]],
-        counter = flag || G_CREEP_TYPE.PLANT === target[2] ? undefined : [d20Roll(), target[CREEP_ATK], currStats[OBJECT_DEF]],
+        counter = flag || G_CREEP_TYPE.PLANT === target[OBJECT_SUB_TYPE] ? undefined : [d20Roll(), target[CREEP_ATK], currStats[OBJECT_DEF]],
         total, hit, attackMsg, counterMsg;
 
         if (attack){

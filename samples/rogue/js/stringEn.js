@@ -33,6 +33,38 @@ Object.freeze(G_HERO_CLASS_NAME = {
     220: 'Barbarian, Druid, Hunter, Wizard, Warlock',
     255: 'All'
 });
+Object.freeze(G_OBJECT_TYPE_NAME = [
+    'Empty',
+    'Hero',
+    'NPC',
+    'Creep',
+    'Chest',
+    'Env',
+    'Health Globe',
+    'Key',
+    'Potion',
+    'Scroll',
+    'Weapon',
+    'Ammunition',
+    'Armor',
+    'Material',
+    'Craft Ingredient',
+    'Money',
+    'Spell',
+    'Effect',
+]);
+Object.freeze(G_GRADE_NAME = {
+    0: 'None',
+    1: 'Common',
+    2: 'Charmed',
+    4: 'Enchanted',
+    8: 'Legendary',
+    3: 'Usual',
+    12: 'elite',
+    6: 'Special',
+    8: 'Exceptional',
+    15: 'All',
+});
 Object.freeze(G_LEGENDARY_AFFIX = [
     ["Glimmerborg's", "of Brave"]
     ["Negablade's", "of Ordeal"]
@@ -200,6 +232,6 @@ Object.freeze(G_OBJECT_NAME = {
     182: 'Werebear',
     183: 'Devil',
 
-    613: 'Farmer',
+    413: 'Farmer',
 });
 

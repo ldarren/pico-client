@@ -12,7 +12,7 @@ pico.def('ai', function(){
         for(var i=CREEP_ATK; i<=CREEP_MDEF; i++){
             s[i] = Ceil(s[i]*level);
         }
-        s[OBJECT_NAME] = OBJECT_NAME[s[OBJECT_ICON]];
+        s[OBJECT_NAME] = G_OBJECT_NAME[s[OBJECT_ICON]];
         s[OBJECT_LEVEL] = level;
         return s;
     },
@@ -114,7 +114,8 @@ pico.def('ai', function(){
         itemRate = pick(itemRates, luck, gradeType),
         item = G_OBJECT[itemRate[DROP_ID]].slice(),
         itemName = G_OBJECT_NAME[item[OBJECT_ICON]],
-        modifier, affix, stat, i, l, j, k;
+        itemType = item[OBJECT_TYPE],
+        modifier, affix, stat, i, l, j, k, m;
 
         switch(itemType){
             case G_OBJECT_TYPE.WEAPON:
@@ -128,14 +129,12 @@ pico.def('ai', function(){
                         for(i=DROP_GRADE+1, l=DROP_GRADE+3; i<l; i++){
                             stat = G_ENCHANTED[modifier[i]];
                             if (!(job & stat[ENCHANTED_CLASS])) continue;
-                            for(j=OBJECT_HP,k=OBJECT_DEMON; j<=k; j++){
-                                item[j] += stat[j];
-                            }
+                            item[OBJECT_SPELLS].push(stat[ENCHANTED_SPELL]);
                         }
                         for(i=DROP_GRADE+3, l=DROP_GRADE+5; i<l; i++){
                             stat = G_CHARMED[modifier[i]];
-                            for(j=OBJECT_HP,k=OBJECT_DEMON; j<=k; j++){
-                                item[j] += stat[j];
+                            for(j=CHARMED_HP,k=CHARMED_DEMON,m=OBJECT_HP; j<=k; j++,m++){
+                                item[m] += stat[j];
                             }
                         }
                         break;
@@ -144,17 +143,15 @@ pico.def('ai', function(){
                         affix = G_ENCHANTED_PREFIX[modifier[DROP_ID]];
                         itemName = affix + ' ' + itemName;
                         if (job & modifier[ENCHANTED_CLASS]){
-                            for(j=OBJECT_HP,k=OBJECT_DEMON; j<=k; j++){
-                                item[j] += modifier[j];
-                            }
+                            item[OBJECT_SPELLS].push(modifier[ENCHANTED_SPELL]);
                         }
                         // fall through
                     case G_GRADE.CHARMED:
                         modifier = pick(G_CHARMED, luck, gradeType);
                         affix = G_CHARMED_POSTFIX[modifier[DROP_ID]];
                         itemName = itemName + POSTFIX_SEPARATOR + affix;
-                        for(j=OBJECT_HP,k=OBJECT_DEMON; j<=k; j++){
-                            item[j] += modifier[j];
+                        for(j=CHARMED_HP,k=CHARMED_DEMON,m=OBJECT_HP; j<=k; j++,m++){
+                            item[m] += modifier[j];
                         }
                         break;
                 }
