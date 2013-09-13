@@ -695,9 +695,9 @@ Object.freeze(G_OBJECT = [
     [182, '', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    6,  0.5, 0, 0,     0.1, 0], //'Werebear',
     [183, '', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    7,  2, 1, 2,       1, 1],   //'Devil'
     // NPC
-    [184, '', 0, 0, G_OBJECT_TYPE.NPC],
-    [185, '', 0, 0, G_OBJECT_TYPE.NPC],
-    [186, '', 0, 0, G_OBJECT_TYPE.NPC],
+    [145, '', 0, 0, G_OBJECT_TYPE.NPC], // 184
+    [150, '', 0, 0, G_OBJECT_TYPE.NPC], // 185
+    [149, '', 0, 0, G_OBJECT_TYPE.NPC], // 186
     // spellType, difficulty, cooldown, currCooldown, stat1, stat2, statn
     [128, '', 0, 0, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.POISON, 5, 3, 0], // 187
 ]);
@@ -732,10 +732,10 @@ Object.freeze(G_TOWN_MAP = {
     ],
     objects:[
         0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, G_ICON.TOWN_GUARD, 0, 0, 0,
+        0, 0, 0, 0, 186, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
         G_ICON.SHRINE, 0, 0, 0, 0, 0, 0, G_ICON.ALTAR,
-        G_ICON.BLACKSMITH, 0, 0, 0, 0, 0, 0, G_ICON.HEADMASTER,
+        184, 0, 0, 0, 0, 0, 0, 185,
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,

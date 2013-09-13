@@ -231,7 +231,9 @@ Object.freeze(G_OBJECT_NAME = {
     181: 'Werewolf',
     182: 'Werebear',
     183: 'Devil',
-
-    413: 'Farmer',
+    184: 'Blacksmith',
+    185: 'Arch-Mage',
+    186: 'Town Guard',
+    187: 'Poison',
 });
 
