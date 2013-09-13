@@ -40,11 +40,6 @@ pico.def('uiWindow', 'picUIWindow', function(){
                 data.minWidth = this.tileWidth+gs;
                 data.minHeight = this.smallDevice ? 180 : 360;
                 break;
-            case infoId:
-                data.docks = [8+4+1, 8+4+2+1];
-                data.minWidth = this.smallDevice ? 320 : 640;
-                data.minHeight = (this.tileHeight+gs)*2;
-                break;
             case dialogId:
                 data.docks = [8+4+2+1, 8+4+2+1];
                 data.minWidth = this.smallDevice ? 80 : 160;
@@ -93,12 +88,8 @@ pico.def('uiWindow', 'picUIWindow', function(){
                         [evt[0], evt[1] + Floor((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight],
                         gs, gs, false));
                     break;
-                case infoId:
-                    layouts.push(me.fitIntoGrid(
-                        [evt[0] + Floor((evt[2] - com.minWidth)/2), evt[1] + evt[3] - com.minHeight, com.minWidth, com.minHeight],
-                        gs, gs, false));
-                    break;
             }
+            // maximized layout
             layouts.push(me.fitIntoGrid([evt[0]+1, evt[1]+1, evt[2]-2, evt[3]-2], gs, gs, true));
 
             layout = layouts[com.maximized];

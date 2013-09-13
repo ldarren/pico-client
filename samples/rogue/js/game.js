@@ -519,7 +519,7 @@ pico.def('game', 'pigSqrMap', function(){
                 callbacks: ['gotoLevel', null],
                 evt:this.prevLevel});
         }else if(tileType & G_TILE_TYPE.EXIT){
-            if (G_ICON.LOCKED !== this.terrain[hp]) {
+            if (G_FLOOR.LOCKED !== this.terrain[hp]) {
                 if (this.currentLevel){
                 this.go('showDialog', {
                     info: ['Congratulations!', 'you have solved level '+this.currentLevel, 'Click on message box to proceed to level '+(this.nextLevel)],
