@@ -1,6 +1,8 @@
 pico.def('tome', 'picUIWindow', function(){
     var
     me = this,
+    Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.random,
+    TOME_ROW = 4,
     name = me.moduleName,
     skillsId = G_WIN_ID.SKILLS,
     draw = function(ctx, items, layout, com){
@@ -59,15 +61,16 @@ pico.def('tome', 'picUIWindow', function(){
             win = e.getComponent(com.win),
             gs = win.gridSize,
             wLay = win.layouts[0],
+            cap = this.hero.getTomeCap(),
             layout;
 
             layouts.length = 0;
 
-            layout = me.generateGridLayout([wLay[0]+gs, wLay[1]+16+gs, wLay[2]-gs, wLay[3]-16-gs*2], tw, th, 4, 1);
+            layout = me.generateGridLayout([wLay[0]+gs, wLay[1]+16+gs, wLay[2]-gs, wLay[3]-16-gs*2], tw, th, TOME_ROW, 1);
             layout.unshift([wLay[0]+gs, wLay[1]+gs, wLay[2]-gs, 16]);
             layouts.push(layout);
             wLay = win.layouts[1];
-            layout = me.generateGridLayout([wLay[0]+gs*2, wLay[1]+32+gs*2, wLay[2]-gs*4, wLay[3]-32-gs*4], tw, th, 4, 4);
+            layout = me.generateGridLayout([wLay[0]+gs*2, wLay[1]+32+gs*2, wLay[2]-gs*4, wLay[3]-32-gs*4], tw, th, TOME_ROW, Floor(cap/TOME_ROW));
             layout.unshift([wLay[0]+gs*2, wLay[1]+gs*2, wLay[2]-gs*4, 32]);
             layouts.push(layout);
 

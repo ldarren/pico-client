@@ -245,8 +245,10 @@ pico.def('info', 'picUIWindow', function(){
                         }
                         break;
                     case G_OBJECT_TYPE.CHEST:
-                        labels.push('Open');
-                        callbacks.push('open');
+                        if (target[OBJECT_SUB_TYPE]){
+                            labels.push('Open');
+                            callbacks.push('open');
+                        }
                         break;
                     case G_OBJECT_TYPE.NPC:
                         labels.push('Speak');

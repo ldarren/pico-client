@@ -265,6 +265,8 @@ pico.def('hero', 'picUIWindow', function(){
     me.getJob = function(){ return currStats[OBJECT_TYPE]; };
     me.getLuck = function(){ return currStats[OBJECT_LUCK]; };
     me.getBag = function(){ return bag; };
+    me.getBagCap = function(){ return appearance[HERO_BAG_CAP]; };
+    me.getTomeCap = function(){ return appearance[HERO_TOME_CAP]; };
     me.getTome = function(){ return tome; };
     me.equal = function(obj){ return obj[OBJECT_ICON] === currStats[OBJECT_ICON] && obj[OBJECT_TYPE] === currStats[OBJECT_TYPE]; };
     me.isTarget = function(id){ return targetId === id; };
@@ -275,7 +277,32 @@ pico.def('hero', 'picUIWindow', function(){
     me.isDead = function(){ return currStats[OBJECT_HP] < 1; };
 
     me.putIntoBag = function(item){
-        bag.push(item);
+        var cap = me.getBagCap();
+        switch(item[OBJECT_TYPE]){
+            case G_OBJECT_TYPE.ARMOR:
+            case G_OBJECT_TYPE.WEAPON:
+            case G_OBJECT_TYPE.JEWEL:
+                break;
+            case G_OBJECT_TYPE.SCROLL:
+                if (G_SCROLL_TYPE.MENUSCRIPT === item[OBJECT_SUB_TYPE]){
+                    break;
+                }
+            default:
+                var slot, stack;
+                for(var i=0,l=bag.length; i<l; i++){
+                    slot = bag[i];
+                    if (!slot) continue;
+                    stack = slot[0]; 
+                    if (stack[OBJECT_ICON] === item[OBJECT_ICON]){
+                        slot[1]++;
+                        return true;
+                    }
+                }
+                break;
+        }
+        if (cap <= bag.length) return false;
+        bag.push([item, 1]);
+        return true;
     };
 
     me.draw = function(ctx, ent, clip){
