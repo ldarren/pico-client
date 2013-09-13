@@ -147,6 +147,19 @@ pico.def('bag', 'picUIWindow', function(){
         }
     };
 
+    me.lootItem = function(elapsed, evt, entities){
+        var
+        object = this.objects[evt],
+        loot = object[CHEST_ITEM];
+
+        if (!loot) return;
+
+        this.hero.putIntoBag(loot);
+        this.objects[evt] = G_OBJECT[G_ICON.CHEST_EMPTY].slice();
+
+        return entities;
+    };
+
     me.draw = function(ctx, ent, clip){
         var
         com = ent.getComponent(name),

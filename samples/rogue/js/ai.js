@@ -10,7 +10,7 @@ pico.def('ai', function(){
     createCreepStat = function(creepId, level){
         var s = me.getStatByCreepId(creepId).slice();
         for(var i=CREEP_ATK; i<=CREEP_MDEF; i++){
-            s[i] = Ceil(s[i]*level);
+            s[i] = Ceil(s[i]*level); // negative is allowed
         }
         s[OBJECT_NAME] = G_OBJECT_NAME[s[OBJECT_ICON]];
         s[OBJECT_LEVEL] = level;
@@ -218,8 +218,13 @@ pico.def('ai', function(){
         if (!creep || creep[CREEP_HP] > 0) return false;
 
         terrain[id] = G_FLOOR.BROKEN;
-        creep = G_OBJECT[G_ICON.HEALTH_GLOBE].slice();
-        creep[OBJECT_NAME] = G_OBJECT_NAME[G_ICON.HEALTH_GLOBE];
+
+        if (creep[CREEP_ITEM]){
+            creep = creep[CREEP_ITEM];
+        }else{
+            creep = G_OBJECT[G_ICON.HEALTH_GLOBE].slice();
+            creep[OBJECT_NAME] = G_OBJECT_NAME[G_ICON.HEALTH_GLOBE];
+        }
         objects[id] = creep;
 
         return true;

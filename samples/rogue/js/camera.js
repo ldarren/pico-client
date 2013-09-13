@@ -98,6 +98,17 @@ pico.def('camera', 'picBase', function(){
         tileType = map[id];
         object = objects[id];
 
+        if (hero.getTargetId() && !hero.isTarget(id)){
+            this.go('showDialog', {
+                info: [
+                    'Flee?',
+                    'Flee from battle? you might get damage if you failed'],
+                labels: ['Flee', 'Stay'],
+                callbacks: ['flee', null]
+            });
+            return;
+        }
+
         if (tileType & G_TILE_TYPE.HIDE){
             if (this.nearToHero(id)) {
                 var effect = hero.castSpell();

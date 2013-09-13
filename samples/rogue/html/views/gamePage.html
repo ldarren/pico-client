@@ -133,8 +133,9 @@ onLoad = function(){
         game.route('fingerOut', [game.releaseSelected, renderer.releaseScreenshot, renderer.draw]);
         game.route('useItem', [bag.useItem, renderer.draw, game.releaseSelected]);
         game.route('selectSpell', [tome.selectSpell, renderer.draw, game.releaseSelected]);
+        game.route('openGate', [game.openGate, renderer.draw]);
         game.route('openChest', [game.openChest, renderer.draw]);
-        game.route('loot', [game.lootItem, renderer.draw]);
+        game.route('loot', [bag.lootItem, renderer.draw]);
         game.route('attack', [game.attackAnim, renderer.draw]);
         game.route('counter', [game.counterAnim, renderer.draw]);
         game.route('flee', [game.flee, renderer.draw]);

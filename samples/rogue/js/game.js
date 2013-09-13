@@ -158,6 +158,7 @@ pico.def('game', 'pigSqrMap', function(){
             map[c] |= G_TILE_TYPE.CREEP;
             objects[c] = ai.spawnCreep(me.currentLevel);
         }
+        objects[c][CREEP_ITEM] = G_OBJECT[G_ICON.KEY_GATE].slice();
 
         // add chests
         for(i=0,l=chestCount; i<l; i++){
@@ -248,11 +249,12 @@ pico.def('game', 'pigSqrMap', function(){
 
     me.openChest = function(elapsed, evt, entities){
         var
+        hero = this.hero,
         object = this.objects[evt],
         loot = object[CHEST_ITEM];
 
         if (!loot) {
-            loot = object[CHEST_ITEM] = this.ai.openChest(this.hero.getJob(), this.hero.getLuck(), this.currentLevel);
+            loot = object[CHEST_ITEM] = this.ai.openChest(hero.getJob(), hero.getLuck(), this.currentLevel);
         }
 
         me.go('showDialog', {
@@ -268,17 +270,22 @@ pico.def('game', 'pigSqrMap', function(){
         return entities;
     };
 
-    me.lootItem = function(elapsed, evt, entities){
+    me.openGate = function(elapsed, evt, entities){
         var
-        object = this.objects[evt],
-        loot = object[CHEST_ITEM];
+        map = this.map,
+        terrain = this.terrain;
 
-        if (!loot) return;
-
-        this.hero.putIntoBag(loot);
-        this.objects[evt] = G_OBJECT[G_ICON.CHEST_EMPTY].slice();
-
-        return entities;
+        for(var i=0, l=terrain.length; i<l; i++){
+            tileType = map[i];
+            if (!(tileType & G_TILE_TYPE.HIDE) && tileType & G_TILE_TYPE.EXIT){
+                terrain[i] = me.prevLevel < me.currentLevel ? G_FLOOR.STAIR_DOWN : G_FLOOR.STAIR_UP;
+                delete this.objects[evt];
+                return entities;
+            }
+        }
+        this.go('showInfo', {
+            info: 'Dungeon gate is unallocated yet, find it first',
+        });
     };
 
     me.attackAnim = function(elapsed, evt, entities){
@@ -466,22 +473,7 @@ pico.def('game', 'pigSqrMap', function(){
     };
 
     me.heroMoveTo = function(elapsed, evt, entities){
-        var hero = me.hero;
-
-        if (hero.getTargetId()){
-            me.go('showDialog', {
-            info: [
-                'Flee?',
-                'Flee from battle? you might get damage if you failed'],
-            labels: ['Flee', 'Stay'],
-            callbacks: ['flee', null]});
-            return;
-        }
-
-        var
-        targetId = evt[0],
-        hp = hero.getPosition(),
-        h = this.findPath(hp, targetId);
+        var h = this.findPath(this.hero.getPosition(), evt[0]);
         if (h.length){
             this.stopLoop('heroMove');
             this.startLoop('heroMove', h);
@@ -517,7 +509,9 @@ pico.def('game', 'pigSqrMap', function(){
     };
 
     me.heroStop = function(elapsed, evt, entities){
-        var tileType = this.map[me.hero.getPosition()];
+        var
+        hp = me.hero.getPosition(),
+        tileType = this.map[hp];
         if(tileType & G_TILE_TYPE.ENTRANCE){
             this.go('showDialog', {
                 info: ['Warning!', 'you are leaving level '+this.currentLevel, 'Click on Yes to proceed to level '+(this.prevLevel)],
@@ -525,16 +519,15 @@ pico.def('game', 'pigSqrMap', function(){
                 callbacks: ['gotoLevel', null],
                 evt:this.prevLevel});
         }else if(tileType & G_TILE_TYPE.EXIT){
-            var
-            mapW = this.mapWidth,
-            mapH = this.mapHeight,
-            objects = this.objects,
-            flags = this.flags;
-            if (me.deepestLevel >= me.currentLevel) {
+            if (G_ICON.LOCKED !== this.terrain[hp]) {
+                if (this.currentLevel){
                 this.go('showDialog', {
-                    info: ['Congratulations!', 'you have cleared level '+this.currentLevel, 'Click on message box to proceed to level '+(this.nextLevel)],
+                    info: ['Congratulations!', 'you have solved level '+this.currentLevel, 'Click on message box to proceed to level '+(this.nextLevel)],
                     callbacks: ['gotoLevel'],
                     evt: this.nextLevel});
+                }else{
+                    this.go('gotoLevel', this.nextLevel);
+                }
             }
             return entities;
         }

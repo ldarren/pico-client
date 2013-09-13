@@ -203,6 +203,9 @@ pico.def('info', 'picUIWindow', function(){
             case 'move':
                 this.go('heroMoveTo', [this.nextTile(targetId, hero.getPosition())]);
                 break;
+            case 'openGate':
+                this.go('openGate', [targetId]);
+                break;
             default:
                 return entities;
         }
@@ -256,6 +259,11 @@ pico.def('info', 'picUIWindow', function(){
                     case G_OBJECT_TYPE.ENV:
                         labels.push('Inspect');
                         callbacks.push('inspect');
+                        break;
+                    case G_OBJECT_TYPE.KEY:
+                        labels.push('Open Gate');
+                        callbacks.push('openGate');
+                        labels.push('Later');
                         break;
                 }
             }else{
