@@ -22,8 +22,8 @@ pico.def('hero', 'picUIWindow', function(){
         pw = (rect.width - gs*2 - margin*2)/3,
         textWidth3 = sd ? 15 : 30,
         textWidth2 = sd ? 20 : 50,
-        x = rect.x + gs + margin,
-        y = rect.y + gs + margin,
+        x = X = rect.x + gs + margin,
+        y = Y = rect.y + margin,
         uiSize = sd ? 16 : 32,
         i, l;
 
@@ -35,7 +35,7 @@ pico.def('hero', 'picUIWindow', function(){
 
         ctx.fillText(currStats[OBJECT_NAME], x, y + uiSize/2, rect.width);
 
-        x = rect.x + gs + margin;
+        x = X;
         y += uiSize;
         uiSize = sd ? 16 : 32;
 
@@ -43,8 +43,8 @@ pico.def('hero', 'picUIWindow', function(){
         x = me.drawData(ctx, ts, G_UI.DEX, currStats[OBJECT_DEX], x, y, uiSize, margin, textWidth3);
         x = me.drawData(ctx, ts, G_UI.LUCK, currStats[OBJECT_LUCK], x, y, uiSize, margin, textWidth3);
 
-        x = rect.x + gs + margin + pw;
-        y = rect.y + gs + margin;
+        x = X + pw;
+        y = Y;
         uiSize = sd ? 8 : 16;
         
         // draw hp
@@ -53,21 +53,21 @@ pico.def('hero', 'picUIWindow', function(){
             x += uiSize;
         }
 
-        x = rect.x + gs + margin + pw;
+        x = X + pw;
         uiSize = sd ? 16 : 32;
         y += uiSize;
 
         x = me.drawData(ctx, ts, G_UI.GOLD, appearance[HERO_GOLD], x, y, uiSize, margin, textWidth2);
         x = me.drawData(ctx, ts, G_UI.SKULL, appearance[HERO_SKULL], x, y, uiSize, margin, textWidth2);
 
-        x = rect.x + gs + margin + pw*2;
-        y = rect.y + gs + margin;
+        x = X + pw*2;
+        y = Y;
         
         x = me.drawData(ctx, ts, G_UI.PATK, currStats[OBJECT_ATK], x, y, uiSize, margin, textWidth3);
         x = me.drawData(ctx, ts, G_UI.RATK, currStats[OBJECT_RATK], x, y, uiSize, margin, textWidth3);
         x = me.drawData(ctx, ts, G_UI.MATK, currStats[OBJECT_MATK], x, y, uiSize, margin, textWidth3);
 
-        x = rect.x + gs + margin + pw*2;
+        x = X + pw*2;
         y += uiSize;
 
         x = me.drawData(ctx, ts, G_UI.PDEF, currStats[OBJECT_DEF], x, y, uiSize, margin, textWidth3);

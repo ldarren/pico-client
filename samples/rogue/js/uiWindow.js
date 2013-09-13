@@ -5,6 +5,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
     var
     me = this,
+    Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
     playerId = G_WIN_ID.PLAYER,
     skillsId = G_WIN_ID.SKILLS,
     inventoryId = G_WIN_ID.BAG,
@@ -25,7 +26,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
         switch(ent.name){
             case playerId:
-                data.docks = [8+4+1, 8+4+2+1];
+                data.docks = [4+2+1, 8+4+2+1];
                 data.minWidth = this.smallDevice ? 320 : 640;
                 data.minHeight = this.tileHeight+gs;
                 break;
@@ -40,7 +41,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
                 data.minHeight = this.smallDevice ? 180 : 360;
                 break;
             case infoId:
-                data.docks = [4+2+1, 8+4+2+1];
+                data.docks = [8+4+1, 8+4+2+1];
                 data.minWidth = this.smallDevice ? 320 : 640;
                 data.minHeight = (this.tileHeight+gs)*2;
                 break;
@@ -79,22 +80,22 @@ pico.def('uiWindow', 'picUIWindow', function(){
             switch(e.name){
                 case playerId:
                     layouts.push(me.fitIntoGrid(
-                        [evt[0] + Math.floor((evt[2] - com.minWidth)/2), evt[1] + evt[3] - com.minHeight, com.minWidth, com.minHeight],
+                        [evt[0] + Floor((evt[2] - com.minWidth)/2), evt[1], com.minWidth, com.minHeight],
                         gs, gs, false));
                     break;
                 case skillsId:
                     layouts.push(me.fitIntoGrid(
-                        [evt[0] + evt[2] - com.minWidth, evt[1] + Math.floor((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight],
+                        [evt[0] + evt[2] - com.minWidth, evt[1] + Floor((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight],
                         gs, gs, false));
                     break;
                 case inventoryId:
                     layouts.push(me.fitIntoGrid(
-                        [evt[0], evt[1] + Math.floor((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight],
+                        [evt[0], evt[1] + Floor((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight],
                         gs, gs, false));
                     break;
                 case infoId:
                     layouts.push(me.fitIntoGrid(
-                        [evt[0] + Math.floor((evt[2] - com.minWidth)/2), evt[1], com.minWidth, com.minHeight],
+                        [evt[0] + Floor((evt[2] - com.minWidth)/2), evt[1] + evt[3] - com.minHeight, com.minWidth, com.minHeight],
                         gs, gs, false));
                     break;
             }
