@@ -344,6 +344,7 @@ pico.def('game', 'pigSqrMap', function(){
         setTimeout(function(){
             if (hero.isDead()){
                 hero.setTargetId(undefined);
+                this.god.sacrifice(hero.getAppearance(), hero.getStats());
                 me.go('showDialog', {
                 info: [
                     'RIP',
