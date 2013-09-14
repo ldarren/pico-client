@@ -225,6 +225,9 @@ pico.def('hero', 'picUIWindow', function(){
         objects[pos] = currStats;
     };
 
+    me.recoverBody = function(oldAppearance){
+    };
+
     me.reborn = function(){
     };
 

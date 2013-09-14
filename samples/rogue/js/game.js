@@ -168,6 +168,12 @@ pico.def('game', 'pigSqrMap', function(){
         }
 
         me.recalHints();
+        
+        var tomb = me.god.getTomb(me.currentLevel);
+        if (tomb){
+            c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
+            objects[c] = tomb;
+        }
 
         c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
         me.exitIndex = c;
@@ -275,13 +281,12 @@ pico.def('game', 'pigSqrMap', function(){
         map = this.map,
         terrain = this.terrain;
 
-        for(var i=0, l=terrain.length; i<l; i++){
-            tileType = map[i];
-            if (!(tileType & G_TILE_TYPE.HIDE) && tileType & G_TILE_TYPE.EXIT){
-                terrain[i] = me.prevLevel < me.currentLevel ? G_FLOOR.STAIR_DOWN : G_FLOOR.STAIR_UP;
-                delete this.objects[evt];
-                return entities;
-            }
+        var i = me.exitIndex;
+        tileType = map[i];
+        if (!(tileType & G_TILE_TYPE.HIDE) && tileType & G_TILE_TYPE.EXIT){
+            terrain[i] = me.prevLevel < me.currentLevel ? G_FLOOR.STAIR_DOWN : G_FLOOR.STAIR_UP;
+            delete this.objects[evt];
+            return entities;
         }
         this.go('showInfo', {
             info: 'Dungeon gate is unallocated yet, find it first',
