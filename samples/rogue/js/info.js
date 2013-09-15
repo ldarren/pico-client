@@ -51,6 +51,21 @@ pico.def('info', 'picUIWindow', function(){
             labels.push('Move');
             callbacks.push('move');
         }
+    },
+    createLayouts = function(rect, tileW, tileH){
+        var
+        rectW = rect.width,
+        rectH = rect.height,
+        btnW = tileW*2, btnH = tileH,
+        y = rect.y + rectH - btnH,
+        btnCount = labels.length,
+        gap = Floor((rectW - btnW * btnCount)/(btnCount+1));
+
+        layouts.length = 0;
+
+        for(var i=0; i<btnCount; i++){
+            layouts.push([rect.x + gap + i * (btnW+gap), y, btnW, btnH]);
+        }
     };
 
     me.create = function(ent, data){
@@ -62,6 +77,7 @@ pico.def('info', 'picUIWindow', function(){
         if (!evt) return;
 
         var ent = this.showEntity(G_WIN_ID.INFO);
+        if (!ent) return;
         
         labels.length = 0;
         callbacks.length = 0;
@@ -77,6 +93,12 @@ pico.def('info', 'picUIWindow', function(){
         if (evt.callbacks) callbacks = evt.callbacks;
         if (evt.labels) labels = evt.labels;
         else addButtons.call(this);
+
+        var
+        com = ent.getComponent(name),
+        rect = ent.getComponent(com.box);
+
+        createLayouts(rect, this.tileWidth, this.tileHeight);
         
         return entities;
     };
@@ -163,24 +185,14 @@ pico.def('info', 'picUIWindow', function(){
 
         var
         com = ent.getComponent(name),
-        rect = ent.getComponent(com.box),
-        rectW = rect.width,
-        rectH = rect.height,
-        tileW = this.tileWidth,
-        tileH = this.tileHeight,
-        btnW = tileW*2, btnH = tileH,
-        gap = Floor((rectW - btnW * btnCount)/(btnCount+1)),
-        y = rect.y + rectH - btnH,
-        btnCount = labels.length;
+        rect = ent.getComponent(com.box);
 
         rect.x = evt[0];
         rect.y = evt[3]-160;
         rect.width = evt[2];
         rect.height = 160;
 
-        for(var i=0; i<btnCount; i++){
-            layouts.push([rect.x + gap + i * (btnW+gap), y, btnW, btnH]);
-        }
+        createLayouts(rect, this.tileWidth, this.tileHeight);
 
         return entities;
     };
