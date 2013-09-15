@@ -265,7 +265,7 @@ pico.def('game', 'pigSqrMap', function(){
 
         me.go('showDialog', {
         info: [
-            'You have obtained an '+G_OBJECT_TYPE_NAME[loot[OBJECT_TYPE]],
+            'You have discovered a '+G_OBJECT_TYPE_NAME[loot[OBJECT_TYPE]],
             'Item name '+loot[OBJECT_NAME]+', item level '+loot[OBJECT_LEVEL]+', item grade '+G_GRADE_NAME[loot[OBJECT_GRADE]]],
         callbacks: ['loot', undefined],
         labels: ['Loot', 'Discard'],

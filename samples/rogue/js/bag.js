@@ -134,7 +134,10 @@ pico.def('bag', 'picUIWindow', function(){
         if (!loot) return;
 
         this.hero.putIntoBag(loot);
-        this.objects[evt] = G_OBJECT[G_ICON.CHEST_EMPTY].slice();
+
+        var empty = G_OBJECT[G_ICON.CHEST_EMPTY].slice();
+        empty[OBJECT_NAME] = G_OBJECT_NAME[empty[OBJECT_ICON]];
+        this.objects[evt] = empty;
 
         return entities;
     };

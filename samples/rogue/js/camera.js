@@ -216,7 +216,10 @@ pico.def('camera', 'picBase', function(){
                     if (flag){
                         tileSet.draw(ctx, flag[0], x, y, tileW, tileH);
                     }else if (object){
-                        tileSet.draw(ctx, object[OBJECT_ICON], x, y, tileW, tileH);
+                        if (G_OBJECT_TYPE.CHEST === object[OBJECT_TYPE] && object[CHEST_ITEM])
+                            tileSet.draw(ctx, object[CHEST_ITEM][OBJECT_ICON], x, y, tileW, tileH);
+                        else
+                            tileSet.draw(ctx, object[OBJECT_ICON], x, y, tileW, tileH);
                     }
                     hint = hints[w];
                     if (hint > 9){

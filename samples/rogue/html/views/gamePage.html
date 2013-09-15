@@ -116,7 +116,7 @@ onLoad = function(){
 
         game.init({tileSet:tileSet, smallDevice: smallDevice});
 
-        game.route('fingerDown', [uiWindow.checkBound, camera.checkBound, game.captureSelected, renderer.captureScreenshot]);
+        game.route('fingerDown', [uiWindow.checkBound, info.checkBound, camera.checkBound, game.captureSelected, renderer.captureScreenshot]);
         game.route('fingerUp', [
             game.useSelected, 
             game.releaseSelected, 

@@ -127,19 +127,19 @@ pico.def('ai', function(){
                         affix = G_LEGENDARY_AFFIX[modifier[DROP_ID]];
                         itemName = affix[0] + ' ' + itemName + POSTFIX_SEPARATOR + affix[1];
                         for(i=DROP_GRADE+1, l=DROP_GRADE+3; i<l; i++){
-                            stat = G_ENCHANTED[modifier[i]];
+                            stat = G_ENCHANTED_RATE[modifier[i]];
                             if (!(job & stat[ENCHANTED_CLASS])) continue;
                             item[OBJECT_SPELLS].push(stat[ENCHANTED_SPELL]);
                         }
                         for(i=DROP_GRADE+3, l=DROP_GRADE+5; i<l; i++){
-                            stat = G_CHARMED[modifier[i]];
+                            stat = G_CHARMED_RATE[modifier[i]];
                             for(j=CHARMED_HP,k=CHARMED_DEMON,m=OBJECT_HP; j<=k; j++,m++){
                                 item[m] += stat[j];
                             }
                         }
                         break;
                     case G_GRADE.ENCHANTED:
-                        modifier = pick(G_ENCHANTED, luck, gradeType);
+                        modifier = pick(G_ENCHANTED_RATE, luck, gradeType);
                         affix = G_ENCHANTED_PREFIX[modifier[DROP_ID]];
                         itemName = affix + ' ' + itemName;
                         if (job & modifier[ENCHANTED_CLASS]){
@@ -147,7 +147,7 @@ pico.def('ai', function(){
                         }
                         // fall through
                     case G_GRADE.CHARMED:
-                        modifier = pick(G_CHARMED, luck, gradeType);
+                        modifier = pick(G_CHARMED_RATE, luck, gradeType);
                         affix = G_CHARMED_POSTFIX[modifier[DROP_ID]];
                         itemName = itemName + POSTFIX_SEPARATOR + affix;
                         for(j=CHARMED_HP,k=CHARMED_DEMON,m=OBJECT_HP; j<=k; j++,m++){

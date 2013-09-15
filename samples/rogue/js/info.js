@@ -25,6 +25,9 @@ pico.def('info', 'picUIWindow', function(){
                     break;
                 case G_OBJECT_TYPE.CHEST:
                     if (target[OBJECT_SUB_TYPE]){
+                        if (target[CHEST_ITEM]){
+                            this.go('openChest', targetId);
+                        }
                         labels.push('Open');
                         callbacks.push('open');
                     }
@@ -52,19 +55,19 @@ pico.def('info', 'picUIWindow', function(){
             callbacks.push('move');
         }
     },
-    createLayouts = function(rect, tileW, tileH){
-        var
-        rectW = rect.width,
-        rectH = rect.height,
-        btnW = tileW*2, btnH = tileH,
-        y = rect.y + rectH - btnH,
-        btnCount = labels.length,
-        gap = Floor((rectW - btnW * btnCount)/(btnCount+1));
-
+    createLayouts = function(left, bottom, width, smallDevice){
         layouts.length = 0;
 
+        var btnCount = labels.length;
+        if (btnCount < 1) return;
+
+        var
+        btnH = smallDevice ? 16 : 20, 
+        btnW = Round(width/btnCount),
+        y = bottom - btnH;
+
         for(var i=0; i<btnCount; i++){
-            layouts.push([rect.x + gap + i * (btnW+gap), y, btnW, btnH]);
+            layouts.push([left + i * (btnW), y, btnW, btnH]);
         }
     };
 
@@ -98,7 +101,7 @@ pico.def('info', 'picUIWindow', function(){
         com = ent.getComponent(name),
         rect = ent.getComponent(com.box);
 
-        createLayouts(rect, this.tileWidth, this.tileHeight);
+        createLayouts(rect.x, rect.y+rect.height, rect.width, this.smallDevice);
         
         return entities;
     };
@@ -192,9 +195,31 @@ pico.def('info', 'picUIWindow', function(){
         rect.width = evt[2];
         rect.height = 160;
 
-        createLayouts(rect, this.tileWidth, this.tileHeight);
+        createLayouts(rect.x, rect.y+rect.height, rect.width, this.smallDevice);
 
         return entities;
+    };
+
+    me.checkBound = function(elapsed, evt, entities){
+        var
+        x = evt[0], y = evt[1],
+        unknowns = [],
+        e, uiOpt, rectOpt;
+
+        for (var i=0, l=entities.length; i<l; i++){
+            e = entities[i];
+            uiOpt = e.getComponent(name);
+            if (!uiOpt) {
+                unknowns.push(e);
+                continue;
+            }
+            rectOpt = e.getComponent(uiOpt.box);
+            if(rectOpt.x < x && (rectOpt.x + rectOpt.width) > x && rectOpt.y < y && (rectOpt.y + rectOpt.height) > y){
+                return [e];
+            }
+        }
+
+        return unknowns;
     };
 
     me.draw = function(ctx, ent, clip){
@@ -268,7 +293,7 @@ pico.def('info', 'picUIWindow', function(){
                     break;
             }
 
-            me.drawButtons(ctx, layouts, labels, com.fontColor, G_COLOR_TONE[2], G_COLOR_TONE[1]);
+            me.drawButtons(ctx, layouts, labels, com.fontColor, G_COLOR_TONE[3], G_COLOR_TONE[3]);
         }else{
             ctx.textAlign = 'left';
             ctx.textBaseline = 'top';
