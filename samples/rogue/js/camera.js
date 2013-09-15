@@ -121,7 +121,7 @@ pico.def('camera', 'picBase', function(){
                         this.go('attack', hero.battle(id, true));
                     }else{
                         flags[id] = effect;
-                        this.go('showInfo', { targetId: id });
+                        this.go('showInfo', { targetId: id, context: G_CONTEXT.WORLD });
                     }
                     map[id] &= G_TILE_TYPE.SHOW;
                     this.go('forceRefresh'); // TODO: find a better way to show cooldown counter
@@ -142,7 +142,7 @@ pico.def('camera', 'picBase', function(){
                 if (!steps) return entities;
                 this.go('gameStep', steps);
             }else{
-                this.go('showInfo', { targetId: id });
+                this.go('showInfo', { targetId: id, context: G_CONTEXT.WORLD });
             }
         }
 

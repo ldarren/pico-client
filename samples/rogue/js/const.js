@@ -55,6 +55,14 @@ Object.freeze(G_GRADE = {
     ALL: 15,
 });
 
+Object.freeze(G_CONTEXT = {
+    WORLD: 1,
+    BAG: 2,
+    TOME: 3,
+    PLAYER_EFFECT: 4,
+    CREEP_EFFECT: 5
+});
+
 Object.freeze(G_TILE_TYPE = {
     EMPTY: 0,
     SHOW: 2+4+8+16,
@@ -63,6 +71,7 @@ Object.freeze(G_TILE_TYPE = {
     CHEST: 4,
     EXIT: 8,
     ENTRANCE: 16,
+    WAY_POINT: 32,
     OBSTACLES: 2+4,
 });
 

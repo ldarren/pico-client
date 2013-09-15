@@ -33,7 +33,10 @@ pico.def('bag', 'picUIWindow', function(){
             count = slot[1];
             ts.draw(ctx, item[0], block[0], block[1], tw, th);
             if(count > 1)  ctx.fillText(count, block[0]+tw, block[1]+th, tw);
-            if (activated[i]) ts.draw(ctx, G_SHADE[0], block[0], block[1], tw, th);
+        }
+        if (activated) {
+            block = layout[activated];
+            ts.draw(ctx, G_SHADE[0], block[0], block[1], tw, th);
         }
 
         ctx.restore();
@@ -41,7 +44,7 @@ pico.def('bag', 'picUIWindow', function(){
 
     me.create = function(ent, data){
         data.layouts = [];
-        data.activated = [];
+        data.activated;
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
         return data;
     };
@@ -87,8 +90,7 @@ pico.def('bag', 'picUIWindow', function(){
         tw = this.tileWidth,
         th = this.tileHeight,
         win = e.getComponent(com.win),
-        rect = e.getComponent(win.box),
-        layout = (rect.width > (tw * 3)) ? com.layouts[1] : com.layouts[0],
+        layout = (win.maximized) ? com.layouts[1] : com.layouts[0],
         x = evt[0],
         y = evt[1],
         tile, tx, ty;
@@ -98,7 +100,8 @@ pico.def('bag', 'picUIWindow', function(){
             tx = tile[0];
             ty = tile[1];
             if (tx < x && (tx + tw) > x && ty < y && (ty + th) > y){
-                this.go('useItem', {bag:e.name, index:j-1});
+                com.activated = j;
+                this.go('showInfo', {targetId: j-1, context: G_CONTEXT.BAG});
                 return;
             }
         }
@@ -117,9 +120,6 @@ pico.def('bag', 'picUIWindow', function(){
 
                 var items = this.hero.getBag();
                 if (items[evt.index]){
-                    if(com.activated[evt.index+1] ^= true){
-                    }else{
-                    }
                     return [e];
                 }
             }

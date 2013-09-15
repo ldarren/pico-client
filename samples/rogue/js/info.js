@@ -8,6 +8,7 @@ pico.def('info', 'picUIWindow', function(){
     layouts = [],
     labels = [],
     callbacks = [],
+    context = G_CONTEXT.WORLD,
     targetId, target,
     addButtons = function(){
         if (!target || targetId < 0) return;
@@ -27,6 +28,7 @@ pico.def('info', 'picUIWindow', function(){
                     if (target[OBJECT_SUB_TYPE]){
                         if (target[CHEST_ITEM]){
                             this.go('openChest', targetId);
+                            return;
                         }
                         labels.push('Open');
                         callbacks.push('open');
@@ -85,12 +87,24 @@ pico.def('info', 'picUIWindow', function(){
         labels.length = 0;
         callbacks.length = 0;
 
+        context = evt.context || G_CONTEXT.WORLD;
+
         if (evt.info){
             targetId = -1;
             target = evt.info;
         }else{
             targetId = evt.targetId;
-            target = this.objects[targetId];
+            switch(context){
+                case G_CONTEXT.BAG:
+                    target = this.hero.getBag()[targetId];
+                    break;
+                case G_CONTEXT.TOME:
+                    target = this.hero.getTome()[targetId];
+                    break;
+                default:
+                    target = this.objects[targetId];
+                    break;
+            }
         }
 
         if (evt.callbacks) callbacks = evt.callbacks;
@@ -255,41 +269,56 @@ pico.def('info', 'picUIWindow', function(){
             ctx.font = com.font;
             ctx.fillStyle = com.fontColor;
 
-            switch(target[OBJECT_TYPE]){
-                case G_OBJECT_TYPE.CREEP:
+            switch(context){
+                case G_CONTEXT.BAG:
+                    var
+                    stat = target[0],
+                    count = target[1];
 
-                    var stat = ai.getStatByObject(target);
-
-                    ctx.fillText(target[OBJECT_NAME]+' ('+G_CREEP_TYPE_NAME[target[OBJECT_SUB_TYPE]]+')', x, y + uiSize/2, rect.width);
-
-                    x = X;
+                    ts.draw(ctx, stat[OBJECT_ICON], x, y, tw, th);
+                    ctx.fillText(stat[OBJECT_NAME], x + tw + margin, y + th/2);
                     y += uiSize;
-                    uiSize = sd ? 16 : 32;
- 
-                    x = me.drawData(ctx, ts, G_UI.PATK, target[CREEP_ATK], x, y, uiSize, margin, textWidth3);
-                    x = me.drawData(ctx, ts, G_UI.RATK, target[CREEP_RATK], x, y, uiSize, margin, textWidth3);
-                    x = me.drawData(ctx, ts, G_UI.MATK, target[CREEP_MATK], x, y, uiSize, margin, textWidth3);
+                    ctx.fillText('count('+count+')', x, y + th/2);
 
-                    x = X + pw;
-                    uiSize = sd ? 8 : 16;
-                    y = rect.y + uiSize;
-                    
-                    // draw hp
-                    for(i=0, l=stat[CREEP_HP]; i<l; i++){
-                        ts.draw(ctx, i<target[CREEP_HP] ? G_UI.HP : G_UI.HP_EMPTY, x, y, uiSize, uiSize);
-                        x += uiSize;
-                    }
-
-                    x = X + pw;
-                    y += uiSize + margin;
-                    uiSize = sd ? 16 : 32;
-
-                    x = me.drawData(ctx, ts, G_UI.PDEF, target[CREEP_DEF], x, y, uiSize, margin, textWidth3);
-                    x = me.drawData(ctx, ts, G_UI.MDEF, target[CREEP_MDEF], x, y, uiSize, margin, textWidth3);
                     break;
-                default:
-                    ts.draw(ctx, target[OBJECT_ICON], x, y, tw, th);
-                    ctx.fillText(target[OBJECT_NAME], x + tw + margin, y + th/2);
+                case G_CONTEXT.WORLD:
+                    switch(target[OBJECT_TYPE]){
+                        case G_OBJECT_TYPE.CREEP:
+
+                            var stat = ai.getStatByObject(target);
+
+                            ctx.fillText(target[OBJECT_NAME]+' ('+G_CREEP_TYPE_NAME[target[OBJECT_SUB_TYPE]]+')', x, y + uiSize/2, rect.width);
+
+                            x = X;
+                            y += uiSize;
+                            uiSize = sd ? 16 : 32;
+         
+                            x = me.drawData(ctx, ts, G_UI.PATK, target[CREEP_ATK], x, y, uiSize, margin, textWidth3);
+                            x = me.drawData(ctx, ts, G_UI.RATK, target[CREEP_RATK], x, y, uiSize, margin, textWidth3);
+                            x = me.drawData(ctx, ts, G_UI.MATK, target[CREEP_MATK], x, y, uiSize, margin, textWidth3);
+
+                            x = X + pw;
+                            uiSize = sd ? 8 : 16;
+                            y = rect.y + uiSize;
+                            
+                            // draw hp
+                            for(i=0, l=stat[CREEP_HP]; i<l; i++){
+                                ts.draw(ctx, i<target[CREEP_HP] ? G_UI.HP : G_UI.HP_EMPTY, x, y, uiSize, uiSize);
+                                x += uiSize;
+                            }
+
+                            x = X + pw;
+                            y += uiSize + margin;
+                            uiSize = sd ? 16 : 32;
+
+                            x = me.drawData(ctx, ts, G_UI.PDEF, target[CREEP_DEF], x, y, uiSize, margin, textWidth3);
+                            x = me.drawData(ctx, ts, G_UI.MDEF, target[CREEP_MDEF], x, y, uiSize, margin, textWidth3);
+                            break;
+                        default:
+                            ts.draw(ctx, target[OBJECT_ICON], x, y, tw, th);
+                            ctx.fillText(target[OBJECT_NAME], x + tw + margin, y + th/2);
+                            break;
+                    }
                     break;
             }
 

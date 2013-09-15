@@ -115,7 +115,7 @@ pico.def('hero', 'picUIWindow', function(){
         target = appearance[HERO_ENEMY];
 
         if (target){
-            this.go('showInfo', {targetId: target});
+            this.go('showInfo', {targetId: target, context:G_CONTEXT.WORLD});
         }
         currStats = []; // level up will update currStats
         me.levelUp(this.deepestLevel);

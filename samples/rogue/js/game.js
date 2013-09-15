@@ -299,7 +299,7 @@ pico.def('game', 'pigSqrMap', function(){
             this.go('counter', evt);
             return;
         }
-        this.go('showInfo', { info: msg} );
+        this.go('showInfo', { info: msg } );
 
         var
         hero = this.hero,
