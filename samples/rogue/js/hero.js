@@ -125,6 +125,7 @@ pico.def('hero', 'picUIWindow', function(){
     };
 
     me.exit = function(){
+        return heroObj;
     };
 
     me.step = function(steps){
@@ -225,7 +226,35 @@ pico.def('hero', 'picUIWindow', function(){
         objects[pos] = currStats;
     };
 
-    me.recoverBody = function(oldAppearance){
+    me.recoverBody = function(body){
+        var recovered = true;
+        for (var i=0,l=HERO_QUIVER; i<l; i++){
+            if (body[i]){
+                if (!appearance[i]) appearance[i] = body[i];
+                else recovered = me.putIntoBag(body[i][0]);
+            }
+            if (!recovered) return recovered;
+        }
+        appearance[HERO_GOLD] += body[HERO_GOLD];
+        appearance[HERO_SKULL] += body[HERO_SKULL];
+        var quiver = body[HERO_QUIVER];
+        if (quiver){
+            var
+            item = quiver[0],
+            count = quiver[1];
+
+            if (appearance[HERO_QUIVER]){
+                if(appearance[HERO_QUIVER][0][OBJECT_ICON] === item[OBJECT_ICON]){
+                    appearance[HERO_QUIVER][1] += count;
+                }
+                me.putIntoBag(item);
+            }else{
+                appearance[HERO_QUIVER] = body[HERO_QUIVER];
+            }
+        }
+        if (body[HERO_BAG_CAP] > appearance[HERO_BAG_CAP]) appearance[HERO_BAG_CAP] = body[HERO_BAG_CAP];
+        if (body[HERO_TOME_CAP] > appearance[HERO_TOME_CAP]) appearance[HERO_TOME_CAP] = body[HERO_TOME_CAP];
+        return recovered;
     };
 
     me.reborn = function(){
@@ -278,6 +307,12 @@ pico.def('hero', 'picUIWindow', function(){
         return appearance[HERO_ENEMY] = targetId = id;
     };
     me.isDead = function(){ return currStats[OBJECT_HP] < 1; };
+
+    me.incrMoney = function(money){
+    };
+
+    me.equipItem = function(item){
+    };
 
     me.putIntoBag = function(item){
         var cap = me.getBagCap();
