@@ -344,7 +344,8 @@ pico.def('game', 'pigSqrMap', function(){
         setTimeout(function(){
             if (hero.isDead()){
                 hero.setTargetId(undefined);
-                this.god.sacrifice(hero.getAppearance(), hero.getStats());
+                objects[pos] = G_OBJECT[G_ICON.SKELETON].slice();
+                me.hero.bury(me.god);
                 me.go('showDialog', {
                 info: [
                     'RIP',

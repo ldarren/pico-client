@@ -227,37 +227,145 @@ pico.def('hero', 'picUIWindow', function(){
     };
 
     me.recoverBody = function(body){
-        var recovered = true;
-        for (var i=0,l=HERO_QUIVER; i<l; i++){
-            if (body[i]){
-                if (!appearance[i]) appearance[i] = body[i];
-                else recovered = me.putIntoBag(body[i][0]);
+        var
+        recovered = true,
+        slot;
+
+        for (var i=0,l=HERO_QUIVER; i<=l; i++){
+            slot = body[i];
+            if (slot){
+                recoverd = me.equipItem(slot);
+                if (!recoverd) recovered = me.putIntoBag(slot[0]);
             }
             if (!recovered) return recovered;
         }
-        appearance[HERO_GOLD] += body[HERO_GOLD];
-        appearance[HERO_SKULL] += body[HERO_SKULL];
-        var quiver = body[HERO_QUIVER];
-        if (quiver){
-            var
-            item = quiver[0],
-            count = quiver[1];
-
-            if (appearance[HERO_QUIVER]){
-                if(appearance[HERO_QUIVER][0][OBJECT_ICON] === item[OBJECT_ICON]){
-                    appearance[HERO_QUIVER][1] += count;
-                }
-                me.putIntoBag(item);
-            }else{
-                appearance[HERO_QUIVER] = body[HERO_QUIVER];
-            }
-        }
+        slot = body[HERO_GOLD];
+        me.incrMoney(slot[0], slot[1]);
+        slot = body[HERO_SKULL];
+        me.incrMoney(slot[0], slot[1]);
         if (body[HERO_BAG_CAP] > appearance[HERO_BAG_CAP]) appearance[HERO_BAG_CAP] = body[HERO_BAG_CAP];
         if (body[HERO_TOME_CAP] > appearance[HERO_TOME_CAP]) appearance[HERO_TOME_CAP] = body[HERO_TOME_CAP];
         return recovered;
     };
 
-    me.reborn = function(){
+    me.incrMoney = function(money, count){
+        var id = HERO_GOLD;
+        switch(money[OBJECT_SUB_TYPE]){
+            case G_MONEY_TYPE.GOLD: id = HERO_GOLD; break;
+            case G_MONEY_TYPE.SKULL: id = HERO_SKULL; break;
+            default: return false;
+        }
+
+        if (appearance[id]){
+            appearance[id][1] += count;
+        }else{
+            appearance[id] = [money, count];
+        }
+        return true;
+    };
+
+    me.equipItem = function(item, slot){
+        if (!item || appearance[slot]) return false;
+
+        var
+        stat = item[0],
+        count = item[1];
+
+        switch(stat[OBJECT_TYPE]){
+            case G_OBJECT_TYPE.WEAPON:
+                if (HERO_OFF !== slot || HERO_MAIN !== slot) return false;
+                if (G_HERO_CLASS.BARBARIAN === currStats[OBJECT_SUB_TYPE] && 
+                    G_WEAPON_TYPE.BOW !== stat[OBJECT_SUB_TYPE] && G_WEAPON_TYPE.CROSSBOW !== stat[OBJECT_SUB_TYPE]){
+                    appearance[slot] = item;
+                    return true;
+                }
+                if (2 === item[WEAPON_HANDED]){
+                    if (appearance[HERO_MAIN] || appearance[HERO_OFF]) return false;
+                    appearance[HERO_MAIN] = appearance[HERO_OFF] = item;
+                    return true;
+                }else{
+                    if (appearance[HERO_MAIN]) return false;
+                    appearance[HERO_MAIN] = item;
+                    return true;
+                }
+                break;
+            case G_OBJECT_TYPE.ARMOR:
+                switch(item[OBJECT_SUB_TYPE]){
+                    case G_ARMOR_TYPE.HELM:
+                        if (appearance[HERO_HELM]) return false;
+                        appearance[HERO_HELM] = item;
+                        return true;
+                    case G_ARMOR_TYPE.ARMOR:
+                        if (appearance[HERO_ARMOR]) return false;
+                        appearance[HERO_ARMOR] = item;
+                        return true;
+                    case G_ARMOR_TYPE.SHEILD:
+                        if (appearance[HERO_OFF]) return false;
+                        appearance[HERO_OFF] = item;
+                        return true;
+                }
+                return false;
+            case G_OBJECT_TYPE.JEWEL:
+                switch(item[OBJECT_SUB_TYPE]){
+                    case G_JEWEL_TYPE.RING:
+                        if (HERO_RINGL !== slot || HERO_RINGR !== slot) return false;
+                        appearance[slot] = item;
+                        return true;;
+                    case G_JEWEL_TYPE.AMULET:
+                        if (appearance[HERO_AMULET]) return false;
+                        appearance[HERO_AMULET] = item;
+                        return true;
+                }
+                return false;
+            case G_OBJECT_TYPE.AMMO:
+                var ammo = appearance[HERO_QUIVER];
+                if (!ammo) appearance[HERO_QUIVER] = item;
+                else if (ammo[0][OBJECT_ICON] === stat[OBJECT_ICON]) ammo[1] += count;
+                else return false;
+                return true;
+            default:
+                return false;
+        }
+        return true;
+    };
+
+    me.unequipItem = function(type){
+        var item = appearance[type];
+        delete appearance[type];
+        return item;
+    };
+
+    me.putIntoBag = function(item){
+        var cap = me.getBagCap();
+        switch(item[OBJECT_TYPE]){
+            case G_OBJECT_TYPE.ARMOR:
+            case G_OBJECT_TYPE.WEAPON:
+            case G_OBJECT_TYPE.JEWEL:
+                break;
+            case G_OBJECT_TYPE.SCROLL:
+                if (G_SCROLL_TYPE.MENUSCRIPT === item[OBJECT_SUB_TYPE]){
+                    break;
+                }
+            default:
+                var stack, stat;
+                for(var i=0,l=bag.length; i<l; i++){
+                    stack = bag[i];
+                    if (!stack) continue;
+                    stat = stack[0]; 
+                    if (stat[OBJECT_ICON] === item[OBJECT_ICON]){
+                        stack[1]++;
+                        return true;
+                    }
+                }
+                break;
+        }
+        if (cap <= bag.length) return false;
+        bag.push([item, 1]);
+        return true;
+    };
+
+    me.bury = function(god){
+        god.toHeaven(appearance, currStats);
     };
 
     me.levelUp = function(lvl){
@@ -307,41 +415,6 @@ pico.def('hero', 'picUIWindow', function(){
         return appearance[HERO_ENEMY] = targetId = id;
     };
     me.isDead = function(){ return currStats[OBJECT_HP] < 1; };
-
-    me.incrMoney = function(money){
-    };
-
-    me.equipItem = function(item){
-    };
-
-    me.putIntoBag = function(item){
-        var cap = me.getBagCap();
-        switch(item[OBJECT_TYPE]){
-            case G_OBJECT_TYPE.ARMOR:
-            case G_OBJECT_TYPE.WEAPON:
-            case G_OBJECT_TYPE.JEWEL:
-                break;
-            case G_OBJECT_TYPE.SCROLL:
-                if (G_SCROLL_TYPE.MENUSCRIPT === item[OBJECT_SUB_TYPE]){
-                    break;
-                }
-            default:
-                var slot, stack;
-                for(var i=0,l=bag.length; i<l; i++){
-                    slot = bag[i];
-                    if (!slot) continue;
-                    stack = slot[0]; 
-                    if (stack[OBJECT_ICON] === item[OBJECT_ICON]){
-                        slot[1]++;
-                        return true;
-                    }
-                }
-                break;
-        }
-        if (cap <= bag.length) return false;
-        bag.push([item, 1]);
-        return true;
-    };
 
     me.draw = function(ctx, ent, clip){
         var
