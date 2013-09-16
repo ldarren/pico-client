@@ -1,6 +1,7 @@
 pico.def('dialogMsg', 'picUIWindow', function(){
     var
     me = this,
+    Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
     name = me.moduleName,
     screenSize = [],
     layouts = [],
@@ -39,17 +40,14 @@ pico.def('dialogMsg', 'picUIWindow', function(){
         rect.x = screenSize[0] + (screenSize[2] - rect.width)/2;
         rect.y = screenSize[1] + (screenSize[3] - rect.height)/2;
 
-        if (btnCount > 1){
+        if (btnCount > 0){
             var
-            rectW = rect.width,
-            rectH = rect.height,
-            btnW = this.tileWidth*3, btnH = this.tileHeight,
-            gap, x, y;
-
-            gap = Math.floor((rectW - btnW * btnCount)/(btnCount-1));
+            btnH = this.smallDevice ? 16 : 32, 
+            btnW = Round(rect.width/btnCount),
             y = rect.y + rect.height - btnH;
+
             for(var i=0; i<btnCount; i++){
-                layouts.push([rect.x + i * (btnW+gap), y, btnW, btnH]);
+                layouts.push([rect.x + i * (btnW), y, btnW, btnH]);
             }
         }
 
@@ -141,6 +139,8 @@ pico.def('dialogMsg', 'picUIWindow', function(){
 
         ctx.save();
 
+        ctx.fillStyle = 'rgba(32,70,49,0.7)';
+        ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
         ts.fillPattern(ctx, com.background, rect.x, rect.y, rect.width, rect.height);
 
         ctx.textAlign = 'left';
@@ -152,7 +152,7 @@ pico.def('dialogMsg', 'picUIWindow', function(){
             //ctx.fillText(info[i], x, y+th*i, rectW);
         }
         // draw buttons
-        me.drawButtons(ctx, layouts, labels, fontColor, G_COLOR_TONE[2], G_COLOR_TONE[1]);
+        me.drawButtons(ctx, layouts, labels, fontColor, G_COLOR_TONE[3], G_COLOR_TONE[3]);
 
         ctx.restore();
     };

@@ -140,8 +140,8 @@ pico.def('uiWindow', 'picUIWindow', function(){
         if (playerId !== ename) this.hideEntity(playerId);
         if (skillsId !== ename) this.hideEntity(skillsId);
         if (inventoryId !== ename) this.hideEntity(inventoryId);
-        this.hideEntity(infoId);
-        this.hideEntity(dialogId);
+        if (infoId !== ename) this.hideEntity(infoId);
+        if (dialogId !== ename) this.hideEntity(dialogId);
         this.hideEntity('camera');
 
         return entities;

@@ -347,11 +347,11 @@ pico.def('game', 'pigSqrMap', function(){
                 objects[pos] = G_OBJECT[G_ICON.SKELETON].slice();
                 me.hero.bury(me.god);
                 me.go('showDialog', {
-                info: [
-                    'RIP',
-                    'you were killed by '+creep[OBJECT_NAME]+' at level '+me.currentLevel,
-                    'but your lineage will continue...'],
-                callbacks: ['reborn']});
+                    info: [
+                        'RIP',
+                        'you were killed by '+creep[OBJECT_NAME]+' at level '+me.currentLevel,
+                        'but your lineage will continue...'],
+                    callbacks: ['reborn']});
             }else{
                 hero.move(pos);
 

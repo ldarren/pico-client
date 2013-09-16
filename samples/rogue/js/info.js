@@ -296,6 +296,8 @@ pico.def('info', 'picUIWindow', function(){
 
         ctx.save();
 
+        ctx.fillStyle = 'rgba(32,70,49,0.5)';
+        ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
         ts.fillPattern(ctx, com.background, rect.x, rect.y, rect.width, rect.height);
 
         if (targetId > -1){
@@ -362,7 +364,7 @@ pico.def('info', 'picUIWindow', function(){
             ctx.textAlign = 'left';
             ctx.textBaseline = 'top';
             ctx.font = com.font;
-            ctx.fillStyle = com.fontColor;
+            ctx.fillStyle = fontColor;
 
             me.fillWrapText(ctx, target, x, y, pw*2, 20);
         }
