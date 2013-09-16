@@ -2,16 +2,26 @@ pico.def('dialogMsg', 'picUIWindow', function(){
     var
     me = this,
     name = me.moduleName,
+    screenSize = [],
     layouts = [],
     msg;
 
     me.create = function(ent, data){
+        var ts = this.tileSet;
+        ts.assignPatternImg(data.background, ts.cut(data.background, this.tileWidth, this.tileHeight));
+
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
+
+        data.minWidth = this.smallDevice ? 320 : 640;
+        data.minHeight = this.smallDevice ? 180 : 360;
         return data;
     };
 
     me.open = function(elapsed, evt, entities){
         var ent = this.showEntity(G_WIN_ID.DIALOG);
+        if (!ent) {
+            ent = me.findHost(entities, name);
+        }
         if (!ent) return;
 
         msg = evt;
@@ -19,23 +29,27 @@ pico.def('dialogMsg', 'picUIWindow', function(){
 
         if (!msg.callbacks) return [ent];
 
-        var btnCount = msg.callbacks.length;
+        var 
+        btnCount = msg.callbacks.length,
+        com = ent.getComponent(name),
+        rect = ent.getComponent(com.box);
+
+        rect.width = com.minWidth;
+        rect.height = com.minHeight;
+        rect.x = screenSize[0] + (screenSize[2] - rect.width)/2;
+        rect.y = screenSize[1] + (screenSize[3] - rect.height)/2;
 
         if (btnCount > 1){
             var
-            com = ent.getComponent(name),
-            win = ent.getComponent(com.win),
-            gs2 = win.gridSize * 2,
-            rect = ent.getComponent(win.box),
             rectW = rect.width,
             rectH = rect.height,
             btnW = this.tileWidth*3, btnH = this.tileHeight,
             gap, x, y;
 
-            gap = Math.floor((rectW - btnW * btnCount - gs2*2)/(btnCount-1));
-            y = rect.y + rect.height - gs2 - btnH;
+            gap = Math.floor((rectW - btnW * btnCount)/(btnCount-1));
+            y = rect.y + rect.height - btnH;
             for(var i=0; i<btnCount; i++){
-                layouts.push([rect.x + gs2 + i * (btnW+gap), y, btnW, btnH]);
+                layouts.push([rect.x + i * (btnW+gap), y, btnW, btnH]);
             }
         }
 
@@ -113,29 +127,32 @@ pico.def('dialogMsg', 'picUIWindow', function(){
 
         var
         com = ent.getComponent(name),
-        win = ent.getComponent(com.win),
-        gs2 = win.gridSize * 2,
-        rect = ent.getComponent(win.box),
+        rect = ent.getComponent(com.box),
         rectW = rect.width,
+        ts = this.tileSet,
         tw = this.tileWidth,
         th = this.tileHeight,
-        x = rect.x + gs2,
-        y = rect.y + gs2,
+        x = rect.x,
+        y = rect.y,
+        fontColor = G_COLOR_TONE[1],
         info = msg.info,
         labels = msg.labels,
         i, l;
 
         ctx.save();
+
+        ts.fillPattern(ctx, com.background, rect.x, rect.y, rect.width, rect.height);
+
         ctx.textAlign = 'left';
         ctx.textBaseline = 'top';
         ctx.font = com.font;
-        ctx.fillStyle = com.fontColor;
+        ctx.fillStyle = fontColor;
         for(i=0, l=info.length; i<l; i++){
             y = me.fillWrapText(ctx, info[i], x, y, rectW, th);
             //ctx.fillText(info[i], x, y+th*i, rectW);
         }
         // draw buttons
-        me.drawButtons(ctx, layouts, labels, com.fontColor, G_COLOR_TONE[2], G_COLOR_TONE[1]);
+        me.drawButtons(ctx, layouts, labels, fontColor, G_COLOR_TONE[2], G_COLOR_TONE[1]);
 
         ctx.restore();
     };

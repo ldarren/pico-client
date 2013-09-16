@@ -194,12 +194,12 @@ onLoad = function(){
         uiWinEnt.attach(bag, {name:'Bag', win:uiWindow.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
         uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, bag.moduleName]});
 
-        uiWinEnt = game.createEntity(G_WIN_ID.INFO);
+        uiWinEnt = game.addEntity(G_WIN_ID.INFO);
         uiWinEnt.attach(rect, {x:0, y:0, width:0, height:0});
         uiWinEnt.attach(info, {box:rect.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', background:G_SHADE[4]});
         uiWinEnt.attach(renderer, {uiPane:[info.moduleName]});
 
-        uiWinEnt = game.createEntity(G_WIN_ID.DIALOG);
+        uiWinEnt = game.addEntity(G_WIN_ID.DIALOG);
         uiWinEnt.attach(rect, {x:0, y:0, width:0, height:0});
         uiWinEnt.attach(dialogMsg, {box:rect.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt alagard', background:G_SHADE[4]});
         uiWinEnt.attach(renderer, {uiPane:[dialogMsg.moduleName]});
