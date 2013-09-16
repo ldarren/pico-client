@@ -338,6 +338,9 @@ pico.def('hero', 'picUIWindow', function(){
     me.putIntoBag = function(item){
         var cap = me.getBagCap();
         switch(item[OBJECT_TYPE]){
+            case G_OBJECT_TYPE.MONEY:
+                me.incrMoney(item, 1);
+                break;
             case G_OBJECT_TYPE.ARMOR:
             case G_OBJECT_TYPE.WEAPON:
             case G_OBJECT_TYPE.JEWEL:

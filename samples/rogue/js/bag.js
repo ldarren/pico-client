@@ -68,8 +68,8 @@ pico.def('bag', 'picUIWindow', function(){
             layouts.length = 0;
 
             wLay = win.layouts[0];
-            layout = me.generateGridLayout([wLay[0], wLay[1]+16+gs, wLay[2]-gs, wLay[3]-16-gs*2], tw, th, BAG_ROW, 1);
-            layout.unshift([wLay[0], wLay[1]+gs, wLay[2]-gs, 16]);
+            layout = me.generateGridLayout([wLay[0], wLay[1]+20+gs, wLay[2]-gs, wLay[3]-20-gs*2], tw, th, BAG_ROW, 1);
+            layout.unshift([wLay[0], wLay[1]+gs, wLay[2]-gs, 20]);
             layouts.push(layout);
             wLay = win.layouts[1];
             layout = me.generateGridLayout([wLay[0]+gs*2, wLay[1]+32+gs*2, wLay[2]-gs*4, wLay[3]-32-gs*4], tw, th, BAG_ROW, Floor(cap/BAG_ROW));
@@ -89,6 +89,7 @@ pico.def('bag', 'picUIWindow', function(){
         var
         tw = this.tileWidth,
         th = this.tileHeight,
+        bag = this.hero.getBag(),
         win = e.getComponent(com.win),
         layout = (win.maximized) ? com.layouts[1] : com.layouts[0],
         x = evt[0],
@@ -100,8 +101,10 @@ pico.def('bag', 'picUIWindow', function(){
             tx = tile[0];
             ty = tile[1];
             if (tx < x && (tx + tw) > x && ty < y && (ty + th) > y){
-                com.activated = j;
-                this.go('showInfo', {targetId: j-1, context: G_CONTEXT.BAG});
+                if (bag[i]){
+                    com.activated = j;
+                    this.go('showInfo', {targetId: j-1, context: G_CONTEXT.BAG});
+                }
                 return;
             }
         }

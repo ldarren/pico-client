@@ -656,7 +656,7 @@ Object.freeze(G_OBJECT = [
     // spellType, difficulty, cooldown, currCooldown, stat1, stat2, statn
     [136, '', 0, 0, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.PROTECTION, 5, 3, 0], // Pentagram
     [137, '', 0, 0, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.LIFE,       5, 3, 0], // ankh
-    [138, '', 0, 0, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.UNHIDE,     0, 3, 0], // all seeing
+    [138, '', 0, 0, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.UNHIDE,     0, 0, 0], // all seeing
     [139, '', 0, 0, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.BLEEDING,   5, 3, 0], // creation
     [140, '', 0, 0, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.BERSERK,    5, 3, 0], // chaos
     [141, '', 0, 0, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.SACRIFICE,  5, 3, 0], // evolve

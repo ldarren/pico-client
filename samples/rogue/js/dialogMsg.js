@@ -43,7 +43,7 @@ pico.def('dialogMsg', 'picUIWindow', function(){
     };
 
     me.close = function(elapsed, evt, entities){
-        var e = me.findMyFirstEntity(entities, name);
+        var e = me.findHost(entities, name);
         if (e){
             this.hideEntity(G_WIN_ID.DIALOG);
             msg = undefined;
@@ -58,6 +58,18 @@ pico.def('dialogMsg', 'picUIWindow', function(){
         }else{
             me.close.call(this, elapsed, msg, entities);
         }
+        return entities;
+    };
+
+    me.resize = function(elapsed, evt, entities){
+
+        screenSize = evt.slice();
+        me.openIfValid.call(this, elapsed, evt, entities);
+
+        return entities;
+    };
+
+    me.checkBound = function(elapsed, evt, entities){
         return entities;
     };
 

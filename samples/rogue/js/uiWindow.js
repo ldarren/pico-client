@@ -40,11 +40,6 @@ pico.def('uiWindow', 'picUIWindow', function(){
                 data.minWidth = this.tileWidth+gs;
                 data.minHeight = this.smallDevice ? 180 : 360;
                 break;
-            case dialogId:
-                data.docks = [8+4+2+1, 8+4+2+1];
-                data.minWidth = this.smallDevice ? 80 : 160;
-                data.minHeight = this.smallDevice ? 20 : 40;
-                break;
         }
 
         if (!ts.getPatternImg(b.TOP)){
@@ -145,8 +140,8 @@ pico.def('uiWindow', 'picUIWindow', function(){
         if (playerId !== ename) this.hideEntity(playerId);
         if (skillsId !== ename) this.hideEntity(skillsId);
         if (inventoryId !== ename) this.hideEntity(inventoryId);
-        if (infoId !== ename) this.hideEntity(infoId);
-        if (dialogId !== ename && !evt && !evt.info) this.hideEntity(dialogId);
+        this.hideEntity(infoId);
+        this.hideEntity(dialogId);
         this.hideEntity('camera');
 
         return entities;

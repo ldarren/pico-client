@@ -5,56 +5,89 @@ pico.def('info', 'picUIWindow', function(){
     me = this,
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
     name = me.moduleName,
+    screenSize = [],
     layouts = [],
     labels = [],
     callbacks = [],
     context = G_CONTEXT.WORLD,
     targetId, target,
+    addOption = function(label, callback){
+        labels.push(label);
+        callbacks.push(callback);
+    },
     addButtons = function(){
         if (!target || targetId < 0) return;
 
         labels.length = 0;
-        if (this.nearToHero(targetId)){
-            switch(target[OBJECT_TYPE]){
-                case G_OBJECT_TYPE.CREEP:
-                    labels.push('Fight');
-                    callbacks.push('fight');
-                    if (this.hero.isTarget(targetId)){
-                        labels.push('Flee');
-                        callbacks.push('flee');
+
+        switch(context){
+            case G_CONTEXT.WORLD:
+                if (this.nearToHero(targetId)){
+                    switch(target[OBJECT_TYPE]){
+                        case G_OBJECT_TYPE.CREEP:
+                            addOption('Fight', 'fight');
+                            if (this.hero.isTarget(targetId)){
+                                addOption('Flee', 'flee');
+                            }
+                            break;
+                        case G_OBJECT_TYPE.CHEST:
+                            if (target[OBJECT_SUB_TYPE]){
+                                if (target[CHEST_ITEM]){
+                                    this.go('openChest', targetId);
+                                    return;
+                                }
+                                addOption('Open', 'open');
+                            }
+                            break;
+                        case G_OBJECT_TYPE.NPC:
+                            addOption('Speak', 'speak');
+                            break;
+                        case G_OBJECT_TYPE.HEALTH:
+                            addOption('Use', 'use');
+                            break;
+                        case G_OBJECT_TYPE.ENV:
+                            addOption('Inspect', 'inspect');
+                            break;
+                        case G_OBJECT_TYPE.KEY:
+                            addOption('Open Gate', 'openGate');
+                            addOption('Later');
+                            break;
                     }
-                    break;
-                case G_OBJECT_TYPE.CHEST:
-                    if (target[OBJECT_SUB_TYPE]){
-                        if (target[CHEST_ITEM]){
-                            this.go('openChest', targetId);
-                            return;
-                        }
-                        labels.push('Open');
-                        callbacks.push('open');
-                    }
-                    break;
-                case G_OBJECT_TYPE.NPC:
-                    labels.push('Speak');
-                    callbacks.push('speak');
-                    break;
-                case G_OBJECT_TYPE.HEALTH:
-                    labels.push('Use');
-                    callbacks.push('use');
-                    break;
-                case G_OBJECT_TYPE.ENV:
-                    labels.push('Inspect');
-                    callbacks.push('inspect');
-                    break;
-                case G_OBJECT_TYPE.KEY:
-                    labels.push('Open Gate');
-                    callbacks.push('openGate');
-                    labels.push('Later');
-                    break;
-            }
-        }else{
-            labels.push('Move');
-            callbacks.push('move');
+                }else{
+                    addOption('Move', 'move');
+                }
+                break;
+            case G_CONTEXT.BAG:
+                var stat = target[0];
+                switch(stat[OBJECT_TYPE]){
+                    case G_OBJECT_TYPE.WEAPON:
+                    case G_OBJECT_TYPE.AMMO:
+                    case G_OBJECT_TYPE.ARMOR:
+                    case G_OBJECT_TYPE.JEWEL:
+                        addOption('Equip', 'equip');
+                        addOption('Discard', 'discard');
+                        break;
+                    case G_OBJECT_TYPE.POTION:
+                        addOption('Drink', 'drink');
+                        addOption('Discard', 'discard');
+                        break;
+                    case G_OBJECT_TYPE.SCROLL:
+                        addOption('Read', 'read');
+                        addOption('Discard', 'discard');
+                        break;
+                    case G_OBJECT_TYPE.MATERIAL:
+                        addOption('Discard', 'discard');
+                        break;
+                }
+                break;
+            case G_CONTEXT.TOME:
+                addOption('Cast', 'cast');
+                addOption('Forget', 'forget');
+                break;
+            case G_CONTEXT.PLAYER_EFFECT:
+            case G_CONTEXT.CREEP_EFFECT:
+                addOption('Details', 'details');
+                break;
         }
     },
     createLayouts = function(left, bottom, width, smallDevice){
@@ -64,7 +97,7 @@ pico.def('info', 'picUIWindow', function(){
         if (btnCount < 1) return;
 
         var
-        btnH = smallDevice ? 16 : 20, 
+        btnH = smallDevice ? 16 : 32, 
         btnW = Round(width/btnCount),
         y = bottom - btnH;
 
@@ -74,6 +107,10 @@ pico.def('info', 'picUIWindow', function(){
     };
 
     me.create = function(ent, data){
+        var ts = this.tileSet;
+
+        ts.assignPatternImg(data.background, ts.cut(data.background, this.tileWidth, this.tileHeight));
+
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
         return data;
     };
@@ -82,6 +119,9 @@ pico.def('info', 'picUIWindow', function(){
         if (!evt) return;
 
         var ent = this.showEntity(G_WIN_ID.INFO);
+        if (!ent){
+            ent = me.findHost(entities, name);
+        }
         if (!ent) return;
         
         labels.length = 0;
@@ -114,6 +154,11 @@ pico.def('info', 'picUIWindow', function(){
         var
         com = ent.getComponent(name),
         rect = ent.getComponent(com.box);
+
+        rect.x = screenSize[0];
+        rect.y = screenSize[3]-160;
+        rect.width = screenSize[2];
+        rect.height = 160;
 
         createLayouts(rect.x, rect.y+rect.height, rect.width, this.smallDevice);
         
@@ -197,19 +242,9 @@ pico.def('info', 'picUIWindow', function(){
     };
 
     me.resize = function(elapsed, evt, entities){
-        var ent = me.findMyFirstEntity(entities, name);
-        if (!ent) return entities;
 
-        var
-        com = ent.getComponent(name),
-        rect = ent.getComponent(com.box);
-
-        rect.x = evt[0];
-        rect.y = evt[3]-160;
-        rect.width = evt[2];
-        rect.height = 160;
-
-        createLayouts(rect.x, rect.y+rect.height, rect.width, this.smallDevice);
+        screenSize = evt.slice();
+        me.openIfValid.call(this, elapsed, evt, entities);
 
         return entities;
     };
@@ -256,18 +291,18 @@ pico.def('info', 'picUIWindow', function(){
         x = X = rect.x + margin,
         y = Y = rect.y + margin,
         uiSize = sd ? 16 : 32,
+        fontColor = G_COLOR_TONE[1],
         i, l;
 
         ctx.save();
 
-        ctx.fillStyle = 'rgba(32, 70, 49, 0.8)';
-        ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
+        ts.fillPattern(ctx, com.background, rect.x, rect.y, rect.width, rect.height);
 
         if (targetId > -1){
             ctx.textAlign = 'left';
             ctx.textBaseline = 'middle';
             ctx.font = com.font;
-            ctx.fillStyle = com.fontColor;
+            ctx.fillStyle = fontColor;
 
             switch(context){
                 case G_CONTEXT.BAG:
@@ -322,7 +357,7 @@ pico.def('info', 'picUIWindow', function(){
                     break;
             }
 
-            me.drawButtons(ctx, layouts, labels, com.fontColor, G_COLOR_TONE[3], G_COLOR_TONE[3]);
+            me.drawButtons(ctx, layouts, labels, fontColor, G_COLOR_TONE[3], G_COLOR_TONE[3]);
         }else{
             ctx.textAlign = 'left';
             ctx.textBaseline = 'top';

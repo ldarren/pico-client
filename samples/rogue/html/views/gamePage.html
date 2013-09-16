@@ -110,13 +110,20 @@ onLoad = function(){
 
         renderer.registerContext('viewPane', gameLayer.getContext());
         renderer.registerContext('uiPane', uiLayer.getContext());
-        renderer.setBG('viewPane', G_COLOR_TONE[3]);
+        renderer.setBG('viewPane', G_COLOR_TONE[2]);
 
         reactor.addGroup(game);
 
         game.init({tileSet:tileSet, smallDevice: smallDevice});
 
-        game.route('fingerDown', [uiWindow.checkBound, info.checkBound, camera.checkBound, game.captureSelected, renderer.captureScreenshot]);
+        game.route('fingerDown', [
+            uiWindow.checkBound,
+            info.checkBound,
+            dialogMsg.checkBound,
+            camera.checkBound,
+            game.captureSelected,
+            renderer.captureScreenshot
+        ]);
         game.route('fingerUp', [
             game.useSelected, 
             game.releaseSelected, 
@@ -125,7 +132,6 @@ onLoad = function(){
             bag.click, 
             dialogMsg.click, 
             uiWindow.click, 
-            info.resize,
             camera.click, 
             renderer.draw
         ]);
@@ -141,7 +147,15 @@ onLoad = function(){
         game.route('flee', [game.flee, renderer.draw]);
         game.route('gameStep', [game.step, renderer.draw]);
         game.route('forceRefresh', [renderer.draw]);
-        game.route('resize', [camera.resize, uiWindow.resize, tome.resize, bag.resize, info.resize, dialogMsg.openIfValid, renderer.draw]);
+        game.route('resize', [
+            camera.resize, 
+            uiWindow.resize, 
+            tome.resize, 
+            bag.resize,
+            info.resize,
+            dialogMsg.resize,
+            renderer.draw
+        ]);
         game.route('heroMoveTo', [game.heroMoveTo]);
         game.route('heroMove', [game.heroMove, renderer.draw]);
         game.route('heroStop', [game.heroStop, renderer.draw]);
@@ -164,7 +178,6 @@ onLoad = function(){
         uiWinEnts[0] = game.addEntity(G_WIN_ID.PLAYER);
         uiWinEnts[1] = game.addEntity(G_WIN_ID.SKILLS);
         uiWinEnts[2] = game.addEntity(G_WIN_ID.BAG);
-        uiWinEnts[3] = game.addEntity(G_WIN_ID.DIALOG);
 
         for(var i=0, l=uiWinEnts.length; i<l; i++){
             uiWinEnt = uiWinEnts[i];
@@ -180,14 +193,16 @@ onLoad = function(){
         uiWinEnt = uiWinEnts[2];
         uiWinEnt.attach(bag, {name:'Bag', win:uiWindow.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
         uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, bag.moduleName]});
-        uiWinEnt = uiWinEnts[3];
-        uiWinEnt.attach(dialogMsg, {win:uiWindow.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt alagard', fontColor:G_COLOR_TONE[1]});
-        uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, dialogMsg.moduleName]});
 
-        uiWinEnt = game.addEntity(G_WIN_ID.INFO);
+        uiWinEnt = game.createEntity(G_WIN_ID.INFO);
         uiWinEnt.attach(rect, {x:0, y:0, width:0, height:0});
-        uiWinEnt.attach(info, {box:rect.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
-        uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, info.moduleName]});
+        uiWinEnt.attach(info, {box:rect.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', background:G_SHADE[4]});
+        uiWinEnt.attach(renderer, {uiPane:[info.moduleName]});
+
+        uiWinEnt = game.createEntity(G_WIN_ID.DIALOG);
+        uiWinEnt.attach(rect, {x:0, y:0, width:0, height:0});
+        uiWinEnt.attach(dialogMsg, {box:rect.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt alagard', background:G_SHADE[4]});
+        uiWinEnt.attach(renderer, {uiPane:[dialogMsg.moduleName]});
 
         resize(window.innerWidth, window.innerHeight);
         canvas.slot(canvas.FINGER_DOWN, onFingerDown);
