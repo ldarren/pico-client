@@ -44,6 +44,7 @@ pico.def('bag', 'picUIWindow', function(){
 
     me.create = function(ent, data){
         data.layouts = [];
+        data.forSale = false;
         data.activated;
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
         return data;
@@ -103,12 +104,21 @@ pico.def('bag', 'picUIWindow', function(){
             if (tx < x && (tx + tw) > x && ty < y && (ty + th) > y){
                 if (bag[i]){
                     com.activated = j;
-                    this.go('showInfo', {targetId: j-1, context: G_CONTEXT.BAG});
+                    this.go('showInfo', {targetId: j-1, context: com.forSale ? G_CONTEXT.MERCHANT_SALE : G_CONTEXT.BAG});
                 }
                 return;
             }
         }
+        com.forSale = false; // click on bag but on the window
         return entities;
+    };
+
+    me.openForSale = function(elapsed, evt, entities){
+        var ent = me.findHost(entities, G_WIN_ID.BAG);
+        if (!ent) return entities;
+        var com = ent.getComponent(name);
+        com.forSale = true;
+        return [ent];
     };
 
     me.useItem = function(elapsed, evt, entities){
@@ -151,10 +161,6 @@ pico.def('bag', 'picUIWindow', function(){
         win = ent.getComponent(com.win),
         rect = ent.getComponent(win.box);
 
-        if (win.maximized){
-            return draw.call(this, ctx, this.hero.getBag(), com.layouts[1], com);
-        }else{
-            return draw.call(this, ctx, this.hero.getBag(), com.layouts[0], com);
-        }
+        return draw.call(this, ctx, this.hero.getBag(), com.layouts[win.maximized], com);
     };
 });

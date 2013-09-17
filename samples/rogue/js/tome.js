@@ -131,10 +131,6 @@ pico.def('tome', 'picUIWindow', function(){
         win = ent.getComponent(com.win),
         rect = ent.getComponent(win.box);
 
-        if (win.maximized){
-            return draw.call(this, ctx, this.hero.getTome(), com.layouts[1], com);
-        }else{
-            return draw.call(this, ctx, this.hero.getTome(), com.layouts[0], com);
-        }
+        return draw.call(this, ctx, this.hero.getTome(), com.layouts[win.maximized], com);
     };
 });

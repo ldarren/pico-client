@@ -40,16 +40,29 @@ pico.def('info', 'picUIWindow', function(){
                             }
                             break;
                         case G_OBJECT_TYPE.NPC:
-                            addOption('Speak', 'speak');
+                            switch(target[OBJECT_SUB_TYPE]){
+                                case G_NPC_TYPE.BLACKSMITH:
+                                    addOption('Buy Items', 'buyItems');
+                                    addOption('Craft', 'craft');
+                                    break;
+                                case G_NPC_TYPE.ARCHMAGE:
+                                    addOption('Buy', 'buy');
+                                    addOption('Identify', 'identify');
+                                    break;
+                                case G_NPC_TYPE.TOWN_GUARD:
+                                    addOption('Sale Items', 'saleItems');
+                                    addOption('Gamble', 'gamble');
+                                    break;
+                            }
                             break;
                         case G_OBJECT_TYPE.HEALTH:
-                            addOption('Use', 'use');
+                            addOption('Consume', 'consume');
                             break;
                         case G_OBJECT_TYPE.ENV:
                             addOption('Inspect', 'inspect');
                             break;
                         case G_OBJECT_TYPE.KEY:
-                            addOption('Open Gate', 'openGate');
+                            addOption('Unlock Gate', 'unlock');
                             addOption('Later');
                             break;
                     }
@@ -84,7 +97,12 @@ pico.def('info', 'picUIWindow', function(){
                 addOption('Cast', 'cast');
                 addOption('Forget', 'forget');
                 break;
-            case G_CONTEXT.PLAYER_EFFECT:
+            case G_CONTEXT.MERCHANT_BUY:
+                addOption('Buy', 'buy');
+                break;
+            case G_CONTEXT.MERCHANT_SALE:
+                addOption('Sale', 'sale');
+                break;
             case G_CONTEXT.CREEP_EFFECT:
                 addOption('Details', 'details');
                 break;
@@ -120,7 +138,7 @@ pico.def('info', 'picUIWindow', function(){
 
         var ent = this.showEntity(G_WIN_ID.INFO);
         if (!ent){
-            ent = me.findHost(entities, name);
+            ent = me.findHostByCom(entities, name);
         }
         if (!ent) return;
         
@@ -218,7 +236,7 @@ pico.def('info', 'picUIWindow', function(){
                 break;
             case 'speak':
                 break;
-            case 'use':
+            case 'consume':
                 delete this.objects[targetId];
                 hero.incrHp(1);
                 ai.incrHpAll(1);
@@ -229,13 +247,15 @@ pico.def('info', 'picUIWindow', function(){
             case 'move':
                 this.go('heroMoveTo', [this.nextTile(targetId, hero.getPosition())]);
                 break;
-            case 'openGate':
+            case 'unlock':
                 this.go('openGate', [targetId]);
                 break;
-            default:
-                return entities;
+            case 'buyItems':
+                break;
+            case 'saleItems':
+                this.go('openForSale', [targetId]);
+                break;
         }
-        me.uiWindow.showAll.call(this, elapsed, evt, entities);
         this.go('hideInfo');
 
         return;

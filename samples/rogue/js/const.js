@@ -59,8 +59,10 @@ Object.freeze(G_CONTEXT = {
     WORLD: 1,
     BAG: 2,
     TOME: 3,
-    PLAYER_EFFECT: 4,
-    CREEP_EFFECT: 5
+    MERCAHNT_BUY: 4,
+    MERCHANT_SALE: 5,
+    PLAYER_EFFECT: 6,
+    CREEP_EFFECT: 7
 });
 
 Object.freeze(G_TILE_TYPE = {
@@ -91,6 +93,12 @@ Object.freeze(G_HERO_CLASS = {
     SPELLCASTER: 192,
     DPS: 220,
     ALL: 255
+});
+
+Object.freeze(G_NPC_TYPE = {
+    BLACKSMITH: 145,
+    ARCHMAGE: 150,
+    TOWN_GUARD: 149,
 });
 
 Object.freeze(G_CREEP_TYPE = {
@@ -282,7 +290,7 @@ Object.freeze(G_ICON = {
     WEREBEAR: 182,
     DEVIL: 183,
     BLACKSMITH: 145,
-    HEADMASTER: 150,
+    ARCHMAGE: 150,
     TOWN_GUARD: 149,
 });
 // id, rate, luck factor, grade
@@ -705,9 +713,9 @@ Object.freeze(G_OBJECT = [
     [182, '', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    6,  0.5, 0, 0,     0.1, 0,  []], //'Werebear',
     [183, '', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    7,  2, 1, 2,       1, 1,  []],   //'Devil'
     // NPC
-    [145, '', 0, 0, G_OBJECT_TYPE.NPC], // 184
-    [150, '', 0, 0, G_OBJECT_TYPE.NPC], // 185
-    [149, '', 0, 0, G_OBJECT_TYPE.NPC], // 186
+    [145, '', 0, 0, G_OBJECT_TYPE.NPC, G_NPC_TYPE.BLACKSMITH], // 184
+    [150, '', 0, 0, G_OBJECT_TYPE.NPC, G_NPC_TYPE.ARCHMAGE], // 185
+    [149, '', 0, 0, G_OBJECT_TYPE.NPC, G_NPC_TYPE.TOWN_GUARD], // 186
     // spellType, difficulty, cooldown, currCooldown, stat1, stat2, statn
     [128, '', 0, 0, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.POISON, 5, 3, 0], // 187
 ]);
@@ -787,8 +795,8 @@ Object.freeze(G_WIN_ID = {
     SKILLS: 'uiSkills',
     BAG: 'uiBag',
     INFO: 'uiInfo',
-    POPUP: 'uiPopup',
     DIALOG: 'uiDialog',
+    TRADE: 'uiTrade',
 });
 
 Object.freeze(G_SHADE = [0, 1, 2, 3, 4, 5, 6, 7 ]);

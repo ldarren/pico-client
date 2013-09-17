@@ -173,6 +173,28 @@ pico.def('uiWindow', 'picUIWindow', function(){
         return entities;
     };
 
+    me.openForSale = function(elapsed, evt, entities){
+        var ent = me.findHost(entities, G_WIN_ID.BAG);
+        if (!ent) return entities;
+        var
+        ret = [ent],
+        com = ent.getComponent(name),
+        rect = ent.getComponent(com.box);
+
+        com.maximized = 1;
+
+        var layout = com.layouts[com.maximized];
+
+        me.hideAll.call(this, elapsed, evt, ret);
+
+        rect.x = layout[0];
+        rect.y = layout[1];
+        rect.width = layout[2];
+        rect.height = layout[3];
+
+        return ret;
+    };
+
     me.swipe = function(elapsed, evt, entities){
         return entities;
     };
@@ -188,13 +210,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         ts = this.tileSet,
         dock = uiOpt.docks[uiOpt.maximized],
         borders = uiOpt.theme.BORDERS,
-        theme;
-
-        if (uiOpt.active){
-            theme = uiOpt.theme.ACTIVE;
-        }else{
-            theme = uiOpt.theme.INACTIVE;
-        }
+        theme = uiOpt.active ? uiOpt.theme.ACTIVE : uiOpt.theme.INACTIVE;
 
         ctx.save();
         ctx.beginPath();

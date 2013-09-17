@@ -1,4 +1,4 @@
-pico.def('dialogMsg', 'picUIWindow', function(){
+pico.def('trade', 'picUIWindow', function(){
     var
     me = this,
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
