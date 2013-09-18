@@ -102,7 +102,7 @@ pico.def('info', 'picUIWindow', function(){
                         addOption('Discard', 'discard');
                         break;
                     case G_OBJECT_TYPE.SCROLL:
-                        addOption('Read', 'read');
+                        addOption('Chant', 'chant');
                         addOption('Discard', 'discard');
                         break;
                     case G_OBJECT_TYPE.MATERIAL:
@@ -291,6 +291,8 @@ pico.def('info', 'picUIWindow', function(){
                 case 'showMyGoods':
                     this.go('openForSale', [targetId]);
                     break;
+                case 'chant':
+                    this.go('chant', [targetId]);
             }
         }
         this.go('hideInfo');

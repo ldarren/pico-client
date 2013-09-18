@@ -413,8 +413,11 @@ pico.def('hero', 'picUIWindow', function(){
     me.getLuck = function(){ return currStats[OBJECT_LUCK]; };
     me.getBag = function(){ return bag; };
     me.getBagCap = function(){ return appearance[HERO_BAG_CAP]; };
-    me.getTomeCap = function(){ return appearance[HERO_TOME_CAP]; };
+    me.getItem = function(id){ return bag[id]; }
+    me.removeFromBag = function(id){ var item = bag[id]; delete bag[id]; return item; }
     me.getTome = function(){ return tome; };
+    me.getTomeCap = function(){ return appearance[HERO_TOME_CAP]; };
+    me.putIntoTome = function(spell){ return tome.push(spell); };
     me.equal = function(obj){ return obj[OBJECT_ICON] === currStats[OBJECT_ICON] && obj[OBJECT_TYPE] === currStats[OBJECT_TYPE]; };
     me.isTarget = function(id){ return targetId === id; };
     me.getTargetId = function(){ return targetId; };

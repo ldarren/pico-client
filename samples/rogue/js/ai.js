@@ -192,6 +192,12 @@ pico.def('ai', function(){
         return item;
     };
 
+    me.studyScroll = function(){
+        var spell = G_OBJECT[187].slice();
+        spell[OBJECT_NAME] = G_OBJECT_NAME[spell[OBJECT_ICON]];
+        return spell;
+    };
+
     me.getStatByTileId = function(id){ return me.getStatByObject(objects[id]); };
     me.getStatByObject = function(creep){ return me.getStatByCreepId(creep[0]); };
     me.getStatByCreepId = function(id){ return G_OBJECT[id]; };
