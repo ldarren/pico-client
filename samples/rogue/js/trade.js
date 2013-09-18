@@ -5,7 +5,8 @@ pico.def('trade', 'picUIWindow', function(){
     name = me.moduleName,
     screenSize = [],
     layouts = [],
-    msg;
+    labels = ['Close'],
+    goods = undefined;
 
     me.create = function(ent, data){
         var ts = this.tileSet;
@@ -19,56 +20,52 @@ pico.def('trade', 'picUIWindow', function(){
     };
 
     me.open = function(elapsed, evt, entities){
-        var ent = this.showEntity(G_WIN_ID.DIALOG);
+        var ent = this.showEntity(G_WIN_ID.TRADE);
         if (!ent) {
             ent = me.findHostByCom(entities, name);
         }
         if (!ent) return;
 
-        msg = evt;
+        goods = evt;
         layouts.length = 0;
 
-        if (!msg.callbacks) return [ent];
-
         var 
-        btnCount = msg.callbacks.length,
         com = ent.getComponent(name),
-        rect = ent.getComponent(com.box);
+        rect = ent.getComponent(com.box),
+        btnCount = labels.length;
 
         rect.width = com.minWidth;
         rect.height = com.minHeight;
         rect.x = screenSize[0] + (screenSize[2] - rect.width)/2;
         rect.y = screenSize[1] + (screenSize[3] - rect.height)/2;
 
-        if (btnCount > 0){
-            var
-            btnH = this.smallDevice ? 16 : 32, 
-            btnW = Round(rect.width/btnCount),
-            y = rect.y + rect.height - btnH;
+        var
+        btnH = this.smallDevice ? 16 : 32, 
+        btnW = Round(rect.width/btnCount),
+        y = rect.y + rect.height - btnH;
 
-            for(var i=0; i<btnCount; i++){
-                layouts.push([rect.x + i * (btnW), y, btnW, btnH]);
-            }
+        for(var i=0; i<1; i++){
+            layouts.push([rect.x + i * (btnW), y, btnW, btnH]);
         }
 
         return [ent];
     };
 
     me.close = function(elapsed, evt, entities){
-        var e = me.findHostByCom(entities, name);
+        var e = me.findHost(entities, G_WIN_ID.TRADE);
         if (e){
-            this.hideEntity(G_WIN_ID.DIALOG);
-            msg = undefined;
+            this.hideEntity(G_WIN_ID.TRADE);
+            goods = undefined;
             return [e];
         }
         return entities;
     };
 
     me.openIfValid = function(elapsed, evt, entities){
-        if (msg){
-            me.open.call(this, elapsed, msg, entities);
+        if (goods){
+            me.open.call(this, elapsed, goods, entities);
         }else{
-            me.close.call(this, elapsed, msg, entities);
+            me.close.call(this, elapsed, goods, entities);
         }
         return entities;
     };
@@ -92,33 +89,25 @@ pico.def('trade', 'picUIWindow', function(){
 
         if (!com) return entities;
 
-        if (msg.callbacks){
-            if (layouts.length){
-                var
-                x = evt[0],
-                y = evt[1],
-                btn;
-                for(var i=0, l=layouts.length; i<l; i++){
-                    btn = layouts[i];
-                    if (x > btn[0] && x < btn[0]+btn[2] && y > btn[1] && y < btn[1]+btn[3]){
-                        this.go('hideDialog');
-                        if (msg.callbacks[i]) this.go(msg.callbacks[i], msg.evt);
-                        break;
-                    }
+        if (layouts.length){
+            var
+            x = evt[0],
+            y = evt[1],
+            btn;
+            for(var i=0, l=layouts.length; i<l; i++){
+                btn = layouts[i];
+                if (x > btn[0] && x < btn[0]+btn[2] && y > btn[1] && y < btn[1]+btn[3]){
+                    this.go('hideTrade');
+                    break;
                 }
-            }else{
-                this.go('hideDialog');
-                if (msg.callbacks[0]) this.go(msg.callbacks[0], msg.evt);
             }
-        }else{
-            this.go('hideDialog');
         }
         return;
     };
 
     me.draw = function(ctx, ent, clip){
 
-        if (!msg){
+        if (!goods){
             me.close.call(this);
             return;
         }
@@ -133,8 +122,6 @@ pico.def('trade', 'picUIWindow', function(){
         x = rect.x,
         y = rect.y,
         fontColor = G_COLOR_TONE[1],
-        info = msg.info,
-        labels = msg.labels,
         i, l;
 
         ctx.save();
@@ -147,10 +134,7 @@ pico.def('trade', 'picUIWindow', function(){
         ctx.textBaseline = 'top';
         ctx.font = com.font;
         ctx.fillStyle = fontColor;
-        for(i=0, l=info.length; i<l; i++){
-            y = me.fillWrapText(ctx, info[i], x, y, rectW, th);
-            //ctx.fillText(info[i], x, y+th*i, rectW);
-        }
+
         // draw buttons
         me.drawButtons(ctx, layouts, labels, fontColor, G_COLOR_TONE[3], G_COLOR_TONE[3]);
 

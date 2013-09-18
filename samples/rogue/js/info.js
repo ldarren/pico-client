@@ -9,6 +9,7 @@ pico.def('info', 'picUIWindow', function(){
     layouts = [],
     labels = [],
     callbacks = [],
+    events = [],
     context = G_CONTEXT.WORLD,
     targetId, target,
     addOption = function(label, callback){
@@ -42,15 +43,15 @@ pico.def('info', 'picUIWindow', function(){
                         case G_OBJECT_TYPE.NPC:
                             switch(target[OBJECT_SUB_TYPE]){
                                 case G_NPC_TYPE.BLACKSMITH:
-                                    addOption('Buy Items', 'buyItems');
+                                    addOption('Buy Items', 'showMerchantGoods');
                                     addOption('Craft', 'craft');
                                     break;
                                 case G_NPC_TYPE.ARCHMAGE:
-                                    addOption('Buy', 'buy');
+                                    addOption('Buy Items', 'showMerchantGoods');
                                     addOption('Identify', 'identify');
                                     break;
                                 case G_NPC_TYPE.TOWN_GUARD:
-                                    addOption('Sale Items', 'saleItems');
+                                    addOption('Sale Items', 'showMyGoods');
                                     addOption('Gamble', 'gamble');
                                     break;
                             }
@@ -59,7 +60,23 @@ pico.def('info', 'picUIWindow', function(){
                             addOption('Consume', 'consume');
                             break;
                         case G_OBJECT_TYPE.ENV:
-                            addOption('Inspect', 'inspect');
+                            switch(target[OBJECT_SUB_TYPE]){
+                                case G_ENV_TYPE.SHRINE:
+                                    addOption('Rejuvenate', 'rejuvenate');
+                                    break;
+                                case G_ENV_TYPE.ALTAR:
+                                    addOption('Make Offering', 'offering');
+                                    break;
+                                case G_ENV_TYPE.TOMB:
+                                    addOption('Recover', 'recover');
+                                    break;
+                                case G_ENV_TYPE.BANNER:
+                                    addOption('Be Blessed', 'blessed');
+                                    break;
+                                case G_ENV_TYPE.MESSAGE_BOARD:
+                                    addOption('Read', 'read');
+                                    break;
+                            }
                             break;
                         case G_OBJECT_TYPE.KEY:
                             addOption('Unlock Gate', 'unlock');
@@ -144,6 +161,7 @@ pico.def('info', 'picUIWindow', function(){
         
         labels.length = 0;
         callbacks.length = 0;
+        events.length = 0;
 
         context = evt.context || G_CONTEXT.WORLD;
 
@@ -166,6 +184,7 @@ pico.def('info', 'picUIWindow', function(){
         }
 
         if (evt.callbacks) callbacks = evt.callbacks;
+        if (evt.events) events = evt.events;
         if (evt.labels) labels = evt.labels;
         else addButtons.call(this);
 
@@ -193,9 +212,16 @@ pico.def('info', 'picUIWindow', function(){
 
     me.openIfValid = function(elapsed, evt, entities){
         if (targetId){
-            return me.open.call(this, elapsed, targetId, entities);
+            var obj = {
+                targetId:targetId,
+                info: 'string' === typeof target ? target : undefined,
+                labels: labels,
+                callbacks: callbacks,
+                context: context,
+            };
+            return me.open.call(this, elapsed, obj, entities);
         }else{
-            return me.close.call(this, elapsed, targetId, entities);
+            return me.close.call(this, elapsed, evt, entities);
         }
     };
 
@@ -210,51 +236,62 @@ pico.def('info', 'picUIWindow', function(){
 
         var
         x = evt[0], y = evt[1],
-        btn, callback;
+        btn, callback, eventObj;
 
         for(var i=0, l=layouts.length; i<l; i++){
             btn = layouts[i];
             if (x > btn[0] && x < btn[0]+btn[2] && y > btn[1] && y < btn[1]+btn[3]){
                 callback = callbacks[i];
+                eventObj = events[i];
                 break;
             }
         }
 
-        var
-        hero = this.hero,
-        ai = this.ai;
+        if (undefined !== eventObj){
+            this.go(callback, eventObj);
+        }else{
+            var
+            hero = this.hero,
+            ai = this.ai;
 
-        switch(callback){
-            case 'fight':
-                this.go('attack', hero.battle(targetId, false));
-                break;
-            case 'flee':
-                this.go('flee');
-                break;
-            case 'open':
-                this.go('openChest', targetId);
-                break;
-            case 'speak':
-                break;
-            case 'consume':
-                delete this.objects[targetId];
-                hero.incrHp(1);
-                ai.incrHpAll(1);
-                this.go('heroMoveTo', [targetId]);
-                break;
-            case 'inspect':
-                break;
-            case 'move':
-                this.go('heroMoveTo', [this.nextTile(targetId, hero.getPosition())]);
-                break;
-            case 'unlock':
-                this.go('openGate', [targetId]);
-                break;
-            case 'buyItems':
-                break;
-            case 'saleItems':
-                this.go('openForSale', [targetId]);
-                break;
+            switch(callback){
+                case 'fight':
+                    this.go('attack', hero.battle(targetId, false));
+                    break;
+                case 'flee':
+                    this.go('flee');
+                    break;
+                case 'open':
+                    this.go('openChest', targetId);
+                    break;
+                case 'speak':
+                    break;
+                case 'consume':
+                    delete this.objects[targetId];
+                    hero.incrHp(1);
+                    ai.incrHpAll(1);
+                    this.go('heroMoveTo', [targetId]);
+                    break;
+                case 'rejuvenate':
+                    hero.rejuvenate();
+                    this.go('forceRefresh');
+                    break;
+                case 'recover':
+                    this.go('recover', [targetId]);
+                    break;
+                case 'move':
+                    this.go('heroMoveTo', [this.nextTile(targetId, hero.getPosition())]);
+                    break;
+                case 'unlock':
+                    this.go('openGate', [targetId]);
+                    break;
+                case 'showMerchantGoods':
+                    this.go('showTrade', [targetId]);
+                    break;
+                case 'showMyGoods':
+                    this.go('openForSale', [targetId]);
+                    break;
+            }
         }
         this.go('hideInfo');
 
@@ -387,6 +424,7 @@ pico.def('info', 'picUIWindow', function(){
             ctx.fillStyle = fontColor;
 
             me.fillWrapText(ctx, target, x, y, pw*2, 20);
+            me.drawButtons(ctx, layouts, labels, fontColor, G_COLOR_TONE[3], G_COLOR_TONE[3]);
         }
         ctx.restore();
     };

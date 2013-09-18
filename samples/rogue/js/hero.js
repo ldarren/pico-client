@@ -403,6 +403,10 @@ pico.def('hero', 'picUIWindow', function(){
         currStats[OBJECT_HP] = hp;
     };
 
+    me.rejuvenate = function() {
+        currStats[OBJECT_HP] = stats[OBJECT_HP];
+    };
+
     me.getSelectedSpell = function(){ return selectedSpell; };
     me.getPosition = function(){ return position; };
     me.getJob = function(){ return currStats[OBJECT_TYPE]; };

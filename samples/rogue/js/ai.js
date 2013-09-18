@@ -100,6 +100,26 @@ pico.def('ai', function(){
         return c;
     };
 
+    me.createGoods = function(npcType){
+        var
+        goods = [],
+        item;
+
+        switch(npcType){
+            case G_NPC_TYPE.ARCHMAGE:
+                item = G_OBJECT[G_ICON.SMALL_HP].slice();
+                item[OBJECT_NAME] = G_OBJECT_NAME[item[OBJECT_ICON]];
+                goods.push(item);
+                break;
+            case G_NPC_TYPE.BLACKSMITH:
+                item = G_OBJECT[G_ICON.SCIMITAR].slice();
+                item[OBJECT_NAME] = G_OBJECT_NAME[item[OBJECT_ICON]];
+                goods.push(item);
+                break;
+        }
+        return goods;
+    };
+
     me.openChest = function(job, luck, level){
         var
         capLvl = (G_MAP_PARAMS.length - 1)*5,

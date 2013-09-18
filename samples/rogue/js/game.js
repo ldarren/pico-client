@@ -229,9 +229,9 @@ pico.def('game', 'pigSqrMap', function(){
     };
 
     me.exit = function(evt){
-        me.ai.exit();
-        me.hero.exit();
-        me.god.exit();
+        me.objects = me.ai.exit.call(me);
+        me.mortal = me.hero.exit.call(me);
+        me.heaven = me.god.exit.call(me);
 
         //saveGame();
     };
@@ -399,6 +399,26 @@ pico.def('game', 'pigSqrMap', function(){
         return entities;
     };
 
+    me.recover = function(elapsed, evt, entities){
+        var
+        targetId = evt[0],
+        tomb = objects[targetId];
+
+        delete objects[targetId];
+
+        me.hero.recoverBody(tomb[TOMB_BODY]);
+    };
+
+    me.createGoods = function(elapsed, evt, entities){
+        var
+        targetId = evt[0],
+        target = me.objects[targetId];
+
+        evt.length = 0;
+        evt.concat(me.ai.createGoods(target[OBJECT_SUB_TYPE]));
+        return entities;
+    };
+
     me.recalHints = function(){
         var
         map = me.map,
@@ -520,16 +540,17 @@ pico.def('game', 'pigSqrMap', function(){
         hp = me.hero.getPosition(),
         tileType = this.map[hp];
         if(tileType & G_TILE_TYPE.ENTRANCE){
-            this.go('showDialog', {
-                info: ['Warning!', 'you are leaving level '+this.currentLevel, 'Click on Yes to proceed to level '+(this.prevLevel)],
-                labels: ['Yes', 'No'],
+            this.go('showInfo', {
+                info: 'Warning! you are leaving level '+this.currentLevel,
+                labels: ['Goto Level '+this.prevLevel, 'Stay'],
                 callbacks: ['gotoLevel', null],
-                evt:this.prevLevel});
+                events:[this.prevLevel, null]});
         }else if(tileType & G_TILE_TYPE.EXIT){
             if (G_FLOOR.LOCKED !== this.terrain[hp]) {
                 if (this.currentLevel){
                 this.go('showDialog', {
-                    info: ['Congratulations!', 'you have solved level '+this.currentLevel, 'Click on message box to proceed to level '+(this.nextLevel)],
+                    info: ['Congratulations!', 'you have unlocked level '+this.nextLevel],
+                    labels: ['Goto Level '+this.nextLevel],
                     callbacks: ['gotoLevel'],
                     evt: this.nextLevel});
                 }else{

@@ -122,6 +122,7 @@ onLoad = function(){
             uiWindow.checkBound,
             info.checkBound,
             dialogMsg.checkBound,
+            trade.checkBound,
             camera.checkBound,
             game.captureSelected,
             renderer.captureScreenshot
@@ -133,6 +134,7 @@ onLoad = function(){
             tome.click, 
             bag.click, 
             dialogMsg.click, 
+            trade.click, 
             uiWindow.click, 
             camera.click, 
             renderer.draw
@@ -156,6 +158,7 @@ onLoad = function(){
             bag.resize,
             info.resize,
             dialogMsg.resize,
+            trade.resize,
             renderer.draw
         ]);
         game.route('heroMoveTo', [game.heroMoveTo]);
@@ -163,11 +166,14 @@ onLoad = function(){
         game.route('heroStop', [game.heroStop, renderer.draw]);
         game.route('gotoLevel', [game.gotoLevel, renderer.draw]);
         game.route('reborn', [game.reborn, renderer.draw]);
+        game.route('recover', [game.recover, renderer.draw]);
         game.route('openForSale', [uiWindow.openForSale, bag.openForSale, renderer.draw]);
         game.route('showInfo', [info.open, renderer.draw]);
         game.route('hideInfo', [info.close, renderer.draw]);
         game.route('showDialog', [dialogMsg.open, uiWindow.hideAll, renderer.draw, game.releaseSelected]);
         game.route('hideDialog', [dialogMsg.close, uiWindow.showAll, renderer.draw, game.releaseSelected]);
+        game.route('showTrade', [game.createGoods, trade.open, uiWindow.hideAll, renderer.draw, game.releaseSelected]);
+        game.route('hideTrade', [trade.close, uiWindow.showAll, renderer.draw, game.releaseSelected]);
 
         var
         cameraEnt = game.addEntity('camera'),

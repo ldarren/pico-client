@@ -55,7 +55,7 @@ pico.def('god', function(){
             delete appearance[i];
         }
 
-        tomb[TOMB_ITEM] = appearance;
+        tomb[TOMB_BODY] = appearance;
         tomb[OBJECT_NAME] = stats[OBJECT_NAME]+' '+G_OBJECT_NAME[tomb[OBJECT_ICON]];
         heroBody = undefined;
         return tomb; 
