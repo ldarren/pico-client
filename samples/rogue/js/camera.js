@@ -6,7 +6,7 @@ pico.def('camera', 'picBase', function(){
     Floor = Math.floor,
     Ceil = Math.ceil,
     name = me.moduleName,
-    screenshotX=screenshotY=0,
+    screenshotX=0, screenshotY=0,
     camX, camY, camWidth, camHeight,
     viewX,viewY,viewWidth,viewHeight,viewStart,viewWrap,
     calculateView = function(mapWidth, mapHeight, tileWidth, tileHeight){

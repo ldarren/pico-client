@@ -415,7 +415,7 @@ pico.def('game', 'pigSqrMap', function(){
         target = me.objects[targetId];
 
         evt.length = 0;
-        evt.concat(me.ai.createGoods(target[OBJECT_SUB_TYPE]));
+        me.ai.createGoods(target[OBJECT_SUB_TYPE], evt);
         return entities;
     };
 

@@ -64,7 +64,7 @@ pico.def('bag', 'picUIWindow', function(){
             win = e.getComponent(com.win),
             gs = win.gridSize,
             cap = this.hero.getBagCap(),
-            wLay;
+            wLay, layout;
 
             layouts.length = 0;
 

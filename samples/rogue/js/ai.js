@@ -100,10 +100,8 @@ pico.def('ai', function(){
         return c;
     };
 
-    me.createGoods = function(npcType){
-        var
-        goods = [],
-        item;
+    me.createGoods = function(npcType, goods){
+        var item;
 
         switch(npcType){
             case G_NPC_TYPE.ARCHMAGE:

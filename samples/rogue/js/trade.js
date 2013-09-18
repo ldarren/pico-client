@@ -44,17 +44,20 @@ pico.def('trade', 'picUIWindow', function(){
         th = this.tileHeight,
         tw = this.tileWidth,
         btnH = this.smallDevice ? 16 : 32, 
-        margin = btnW/2,
         btnW = Round(rect.width/btnCount),
+        marginX = Floor((rect.width - tw * TRADE_COL)/(TRADE_COL+1)),
+        marginY = Floor(th/2),
         y = rect.y;
 
         y += btnH;
 
-        layouts = me.generateGridLayout([rect.x+margin, y+margin, rect.width-margin*2, margin*2 + th*TRADE_COL], tw, th, TRADE_ROW, TRADE_COL);
+        layouts = me.generateGridLayout([rect.x+marginX, y+marginY, rect.width-marginX*2, (marginY+th)*TRADE_ROW-marginY], tw, th, TRADE_ROW, TRADE_COL);
         layouts.unshift([rect.x, rect.y, rect.width, btnH]);
 
-        y += margin*2 + th*TRADE_COL;
+        y += marginY+(marginY+th)*TRADE_ROW;
         layouts.push([rect.x, y, btnW, btnH]);
+
+        rect.height = y + btnH - rect.y;
 
         return [ent];
     };
@@ -146,17 +149,16 @@ pico.def('trade', 'picUIWindow', function(){
         block = layouts[0];
         ctx.fillText('Trade', block[0]+(block[2])/2, block[1]+(block[3])/2, block[3]);
 
-        for(var i=1,j=0, l=layout.length-1; i<l; i++,j++){
-            block = layout[i];
+        for(i=1,j=0, l=layouts.length-1; i<l; i++,j++){
+            block = layouts[i];
             ts.draw(ctx, G_UI.SLOT, block[0], block[1], tw, th);
             slot = goods[j];
             if (!slot) continue;
-            ts.draw(ctx, slot, block[0], block[1], tw, th);
-            if(count > 1)  ctx.fillText(count, block[0]+tw, block[1]+th, tw);
+            ts.draw(ctx, slot[OBJECT_ICON], block[0], block[1], tw, th);
         }
 
         // draw buttons
-        me.drawButtons(ctx, layouts[layouts.length-1], labels, fontColor, G_COLOR_TONE[3], G_COLOR_TONE[3]);
+        me.drawButtons(ctx, [layouts[layouts.length-1]], labels, fontColor, G_COLOR_TONE[3], G_COLOR_TONE[3]);
 
         ctx.restore();
     };
