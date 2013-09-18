@@ -28,10 +28,7 @@ pico.def('dialogMsg', 'picUIWindow', function(){
         msg = evt;
         layouts.length = 0;
 
-        if (!msg.callbacks) return [ent];
-
         var 
-        btnCount = msg.callbacks.length,
         com = ent.getComponent(name),
         rect = ent.getComponent(com.box);
 
@@ -39,6 +36,10 @@ pico.def('dialogMsg', 'picUIWindow', function(){
         rect.height = com.minHeight;
         rect.x = screenSize[0] + (screenSize[2] - rect.width)/2;
         rect.y = screenSize[1] + (screenSize[3] - rect.height)/2;
+
+        if (!msg.labels) return [ent];
+
+        var btnCount = msg.labels.length;
 
         if (btnCount > 0){
             var
