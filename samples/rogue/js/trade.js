@@ -3,6 +3,7 @@ pico.def('trade', 'picUIWindow', function(){
     me = this,
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
     name = me.moduleName,
+    TRADE_ROW = 4, TRADE_COL = 4,
     screenSize = [],
     layouts = [],
     labels = ['Close'],
@@ -40,13 +41,20 @@ pico.def('trade', 'picUIWindow', function(){
         rect.y = screenSize[1] + (screenSize[3] - rect.height)/2;
 
         var
+        th = this.tileHeight,
+        tw = this.tileWidth,
         btnH = this.smallDevice ? 16 : 32, 
+        margin = btnW/2,
         btnW = Round(rect.width/btnCount),
-        y = rect.y + rect.height - btnH;
+        y = rect.y;
 
-        for(var i=0; i<1; i++){
-            layouts.push([rect.x + i * (btnW), y, btnW, btnH]);
-        }
+        y += btnH;
+
+        layouts = me.generateGridLayout([rect.x+margin, y+margin, rect.width-margin*2, margin*2 + th*TRADE_COL], tw, th, TRADE_ROW, TRADE_COL);
+        layouts.unshift([rect.x, rect.y, rect.width, btnH]);
+
+        y += margin*2 + th*TRADE_COL;
+        layouts.push([rect.x, y, btnW, btnH]);
 
         return [ent];
     };
@@ -122,7 +130,7 @@ pico.def('trade', 'picUIWindow', function(){
         x = rect.x,
         y = rect.y,
         fontColor = G_COLOR_TONE[1],
-        i, l;
+        i, l, block;
 
         ctx.save();
 
@@ -130,13 +138,25 @@ pico.def('trade', 'picUIWindow', function(){
         ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
         ts.fillPattern(ctx, com.background, rect.x, rect.y, rect.width, rect.height);
 
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'top';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
         ctx.font = com.font;
         ctx.fillStyle = fontColor;
 
+        block = layouts[0];
+        ctx.fillText('Trade', block[0]+(block[2])/2, block[1]+(block[3])/2, block[3]);
+
+        for(var i=1,j=0, l=layout.length-1; i<l; i++,j++){
+            block = layout[i];
+            ts.draw(ctx, G_UI.SLOT, block[0], block[1], tw, th);
+            slot = goods[j];
+            if (!slot) continue;
+            ts.draw(ctx, slot, block[0], block[1], tw, th);
+            if(count > 1)  ctx.fillText(count, block[0]+tw, block[1]+th, tw);
+        }
+
         // draw buttons
-        me.drawButtons(ctx, layouts, labels, fontColor, G_COLOR_TONE[3], G_COLOR_TONE[3]);
+        me.drawButtons(ctx, layouts[layouts.length-1], labels, fontColor, G_COLOR_TONE[3], G_COLOR_TONE[3]);
 
         ctx.restore();
     };
