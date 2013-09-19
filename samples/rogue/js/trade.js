@@ -133,7 +133,7 @@ pico.def('trade', 'picUIWindow', function(){
         x = rect.x,
         y = rect.y,
         fontColor = G_COLOR_TONE[1],
-        i, l, block;
+        i, j, l, block;
 
         ctx.save();
 

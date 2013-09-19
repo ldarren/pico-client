@@ -347,8 +347,9 @@ pico.def('info', 'picUIWindow', function(){
         pw = (rect.width - margin*2)/2,
         textWidth3 = sd ? 15 : 30,
         textWidth2 = sd ? 15 : 30,
-        x = X = rect.x + margin,
-        y = Y = rect.y + margin,
+        X = rect.x + margin,
+        Y = rect.y + margin,
+        x = X, y = Y,
         uiSize = sd ? 16 : 32,
         fontColor = G_COLOR_TONE[1],
         i, l;

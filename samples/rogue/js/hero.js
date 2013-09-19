@@ -22,8 +22,9 @@ pico.def('hero', 'picUIWindow', function(){
         pw = (rect.width - gs*2 - margin*2)/3,
         textWidth3 = sd ? 15 : 30,
         textWidth2 = sd ? 20 : 50,
-        x = X = rect.x + gs + margin,
-        y = Y = rect.y + margin,
+        X = rect.x + gs + margin,
+        Y = rect.y + margin,
+        x = X, y = Y,
         uiSize = sd ? 16 : 32,
         i, l;
 

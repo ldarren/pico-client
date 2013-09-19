@@ -244,7 +244,7 @@ pico.onStateChange = function(evt){
     search = location.search.substring(1), // remove leading ?
     pairs = search.split("&"),
     pair, obj={};
-    for (i=0, l=pairs.length; i<l; i++){
+    for (var i=0, l=pairs.length; i<l; i++){
         pair = pairs[i].split("=");
         if (!pair[0]) continue;
         obj[pair[0]] = pair[1];
