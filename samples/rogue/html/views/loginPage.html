@@ -1,0 +1,25 @@
+<style>
+</style>
+
+<div id=loginPanel>
+<a href=#>Login</a>
+</div>
+
+<script name=loginPage>
+this.use('rogueMain');
+
+var
+me = this,
+loginPanel,
+onLogin = function(){
+    pico.changeFrame(document.body, 'div#page', 'views/gamePage.html', {opacity:[0,1,'1s']});
+},
+onLoad = function(){
+    loginPanel = document.querySelector('div#loginPanel');
+
+    var loginLink = loginPanel.querySelector('a');
+    loginLink.addEventListener('click', onLogin);
+    me.rogueMain.hideLoading();
+};
+me.slot(pico.LOAD, onLoad);
+</script>
