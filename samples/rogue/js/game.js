@@ -422,9 +422,9 @@ pico.def('game', 'pigSqrMap', function(){
     me.chantScroll = function(elapsed, evt, entities){
         var
         targetId = evt[0],
-        target = me.hero.getBag()[targetId];
+        stat = me.hero.removeFromBag(targetId);
 
-        switch(target[OBJECT_SUB_TYPE]){
+        switch(stat[OBJECT_SUB_TYPE]){
             case G_SCROLL_TYPE.MANUSCRIPT:
                 me.hero.putIntoTome(me.ai.studyScroll());
                 break;
@@ -435,7 +435,6 @@ pico.def('game', 'pigSqrMap', function(){
             case G_SCROLL_TYPE.MAP:
                 break;
         }
-        me.hero.removeFromBag(targetId);
         return entities;
     };
 

@@ -367,6 +367,19 @@ pico.def('hero', 'picUIWindow', function(){
         return true;
     };
 
+    me.removeFromBag = function(id){
+        var
+        item = bag[id],
+        stat = item[0],
+        count = item[1];
+
+        count--;
+        if (count < 1) delete bag[id];
+        else item[1] = count;
+
+        return stat;
+    };
+
     me.bury = function(god){
         god.toHeaven(appearance, currStats);
     };
@@ -414,7 +427,6 @@ pico.def('hero', 'picUIWindow', function(){
     me.getBag = function(){ return bag; };
     me.getBagCap = function(){ return appearance[HERO_BAG_CAP]; };
     me.getItem = function(id){ return bag[id]; }
-    me.removeFromBag = function(id){ var item = bag[id]; delete bag[id]; return item; }
     me.getTome = function(){ return tome; };
     me.getTomeCap = function(){ return appearance[HERO_TOME_CAP]; };
     me.putIntoTome = function(spell){ return tome.push(spell); };

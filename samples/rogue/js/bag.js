@@ -97,14 +97,14 @@ pico.def('bag', 'picUIWindow', function(){
         y = evt[1],
         tile, tx, ty;
 
-        for(var j=1,jl=layout.length; j<jl; j++){
+        for(var i=0,j=1,jl=layout.length; j<jl; i++,j++){
             tile = layout[j];
             tx = tile[0];
             ty = tile[1];
             if (tx < x && (tx + tw) > x && ty < y && (ty + th) > y){
                 if (bag[i]){
                     com.activated = j;
-                    this.go('showInfo', {targetId: j-1, context: com.forSale ? G_CONTEXT.MERCHANT_SALE : G_CONTEXT.BAG});
+                    this.go('showInfo', {targetId: i, context: com.forSale ? G_CONTEXT.MERCHANT_SALE : G_CONTEXT.BAG});
                 }
                 return;
             }
