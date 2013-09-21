@@ -401,6 +401,7 @@ pico.def('game', 'pigSqrMap', function(){
 
     me.recover = function(elapsed, evt, entities){
         var
+        objects = this.objects,
         targetId = evt[0],
         tomb = objects[targetId];
 

@@ -83,7 +83,7 @@ onResize = function(){
     resize(this.innerWidth, this.innerHeight);
 },
 onLoad = function(){
-    me.piAtlas.create('../res/img/fantasy-tileset-combined.png', '../res/fantasy-tileset.json', function(err, tileSet){
+    me.piAtlas.create('dat/img/fantasy-tileset-combined.png', 'dat/fantasy-tileset.json', function(err, tileSet){
         if (err) return alert(err);
 
         gameStage = document.querySelector('div#gameStage');

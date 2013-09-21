@@ -241,9 +241,9 @@ pico.def('hero', 'picUIWindow', function(){
             if (!recovered) return recovered;
         }
         slot = body[HERO_GOLD];
-        me.incrMoney(slot[0], slot[1]);
+        if (slot) me.incrMoney(slot[0], slot[1]);
         slot = body[HERO_SKULL];
-        me.incrMoney(slot[0], slot[1]);
+        if (slot) me.incrMoney(slot[0], slot[1]);
         if (body[HERO_BAG_CAP] > appearance[HERO_BAG_CAP]) appearance[HERO_BAG_CAP] = body[HERO_BAG_CAP];
         if (body[HERO_TOME_CAP] > appearance[HERO_TOME_CAP]) appearance[HERO_TOME_CAP] = body[HERO_TOME_CAP];
         return recovered;
