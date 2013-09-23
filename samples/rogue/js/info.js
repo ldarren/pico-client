@@ -300,6 +300,10 @@ pico.def('info', 'picUIWindow', function(){
         return;
     };
 
+    me.doubleClick = function(elapsed, evt, entities){
+        console.log('DOUBLE CLICKED!');
+    };
+
     me.resize = function(elapsed, evt, entities){
 
         screenSize = evt.slice();
