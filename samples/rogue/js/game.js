@@ -520,8 +520,10 @@ pico.def('game', 'pigSqrMap', function(){
     };
 
     me.heroMoveTo = function(elapsed, evt, entities){
-        var h = this.findPath(this.hero.getPosition(), evt[0]);
-        if (h.length){
+        var target = evt[0];
+        if (undefined === target) return;
+        var h = this.findPath(this.hero.getPosition(), target);
+        if (h.length && h[0] === target){
             this.stopLoop('heroMove');
             this.startLoop('heroMove', h);
         }
