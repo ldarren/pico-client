@@ -1,17 +1,82 @@
 <style>
+.cssBtn {
+    position:relative;
+    -moz-box-shadow:inset 0px 1px 0px 0px #caefab;
+    -webkit-box-shadow:inset 0px 1px 0px 0px #caefab;
+    box-shadow:inset 0px 1px 0px 0px #caefab;
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #77d42a), color-stop(1, #5cb811) );
+    background:-moz-linear-gradient( center top, #77d42a 5%, #5cb811 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#77d42a', endColorstr='#5cb811');
+    background-color:#77d42a;
+    -webkit-border-top-left-radius:0px;
+    -moz-border-radius-topleft:0px;
+    border-top-left-radius:0px;
+    -webkit-border-top-right-radius:0px;
+    -moz-border-radius-topright:0px;
+    border-top-right-radius:0px;
+    -webkit-border-bottom-right-radius:0px;
+    -moz-border-radius-bottomright:0px;
+    border-bottom-right-radius:0px;
+    -webkit-border-bottom-left-radius:0px;
+    -moz-border-radius-bottomleft:0px;
+    border-bottom-left-radius:0px;
+    text-indent:0;
+    border:1px solid #268a16;
+    display:inline-block;
+    color:#306108;
+    font-family:alagard, Arial;
+    font-size:15px;
+    font-weight:normal;
+    font-style:normal;
+    height:40px;
+    line-height:40px;
+    width:200px;
+    margin: 0 auto;
+    text-decoration:none;
+    text-align:center;
+    text-shadow:1px 1px 0px #aade7c;
+}
+.cssBtn:hover {
+    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #5cb811), color-stop(1, #77d42a) );
+    background:-moz-linear-gradient( center top, #5cb811 5%, #77d42a 100% );
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#5cb811', endColorstr='#77d42a');
+    background-color:#5cb811;
+}
+.cssBtn:active {
+    top:1px;
+}
 </style>
 
-
 <div id="fb-root"></div>
-<fb:login-button show-faces="true" width="200" max-rows="1"></fb:login-button>
-
-<span style="font-family:'alagard'; color:transparent;">preload fontd</span>
+<!--<fb:login-button show-faces="true" width="200" max-rows="1"></fb:login-button>-->
+<a href="#" onclick="fb_login();" class="cssBtn">Facebook Connect</a>
 
 <script name=loginPage>
 this.use('rogueMain');
 
 var
 me = this,
+
+function fb_login(){
+    FB.login(function(response) {
+
+        if (response.authResponse) {
+            console.log('Welcome!  Fetching your information.... ');
+            //console.log(response); // dump complete info
+            access_token = response.authResponse.accessToken; //get access token
+            user_id = response.authResponse.userID; //get FB UID
+
+            FB.api('/me', function(response) {
+            user_email = response.email; //get user email
+            // you can store this data into your database             
+            });
+
+        } else {
+            //user hit cancel button
+            console.log('User cancelled login or did not fully authorize.');
+        }
+    }, { scope: 'publish_stream,email' });
+},
 onLogin = function(){
     me.rogueMain.showLoading();
     pico.changeFrame(document.body, 'div#page', 'html/pageGame.html', {opacity:[0,1,'1s']});
@@ -39,7 +104,7 @@ window.fbAsyncInit = function() {
     });
 
     // Additional initialization code such as adding Event Listeners goes here
-
+/*
     // Here we subscribe to the auth.authResponseChange JavaScript event. This event is fired
     // for any authentication related change, such as login, logout or session refresh. This means that
     // whenever someone who was previously logged out tries to log in again, the correct case below 
@@ -68,7 +133,7 @@ window.fbAsyncInit = function() {
             // The same caveats as above apply to the FB.login() call here.
             FB.login();
         }
-    });
+    });*/
 };
 
 me.slot(pico.LOAD, onLoad);
