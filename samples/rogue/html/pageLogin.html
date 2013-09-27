@@ -44,54 +44,57 @@
 .cssBtn:active {
     top:1px;
 }
-header{
-    width:400px;
-    margin: 0 auto;
+h3{
+    margin: 10px auto;
     text-align:center;
-    text-height:50px;
+    line-height:50px;
+}
+h4{
+    margin: 0 auto 10px auto;
+    text-align:center;
+    line-height:20px;
 }
 ul.mainMenu{
     width:200px;
-    margin: 0 auto;
+    margin: 10px auto;
 }
 ul.mainMenu li{
     display: block;
     list-style: none;
+    margin: 10px auto;
 }
 .frame{
+    max-width: 512px;
     color:#aec440;
     border: 3px solid #d7e894;
     border-radius: 15px;
-    margin:5px;
+    margin:5px auto;
     padding:5px;
 }
 </style>
 
 <div id=fb-root></div>
 
-<header>
-<h2>Dungeon Chronicles</h2>
-</header>
+<h3>Dungeon Chronicles</h3>
 
 <ul class=mainMenu>
 <li><a href=# class=cssBtn>Facebook Connect</a></li>
 <li><a href=# class=cssBtn>Play as Guest</a></li>
 <li><input type=checkbox>Silence</input></li>
-
-<li>NPC Picker</li>
 </ul>
 
 <div id=npcPicker class=frame>
+<h4>NPC Picker</h4>
 <span>Require facebook connect</span>
 </div>
 
-<span>Leaderboard</span>
 <div id=leaderboard class=frame>
+<h4>Leaderboard</h4>
 <span>Require facebook connect</span>
 </div>
 
-<span>Achievements</span>
 <div id=achievements class=frame>
+<h4>Achievements</h4>
 <span>Require facebook connect</span>
 </div>
 
@@ -112,7 +115,7 @@ onLoad = function(){
     fbBtn = document.querySelector('ul.mainMenu li:nth-child(1) a');
     playBtn = document.querySelector('ul.mainMenu li:nth-child(2) a');
 
-    playBtn.removeEventListener('click', onPlay);
+    fbBtn.addEventListener('click', fbLogin, false);
     playBtn.addEventListener('click', onPlay, false);
 
     // Load the SDK asynchronously
@@ -145,7 +148,6 @@ window.fbAsyncInit = function() {
     // will be handled. 
     FB.Event.subscribe('auth.authResponseChange', function(response) {
         if (response.authResponse) {
-
             FB.api('/me', function(response) {
                 // you can store this data into your database
                 player = response;
@@ -155,11 +157,13 @@ window.fbAsyncInit = function() {
                 fbBtn.addEventListener('click', fbLogout, false);
                 playBtn.textContent = 'Play as '+response.name;
             });
-
         } else {
+            //user hit cancel button
+            fbBtn.textContent = 'Facebook Connect';
             fbBtn.removeEventListener('click', fbLogout);
             fbBtn.addEventListener('click', fbLogin, false);
-            //user hit cancel button
+            playBtn.textContent = 'Play as Guest';
+
             console.log('Facebook login failed:', response.status);
         }
     });
