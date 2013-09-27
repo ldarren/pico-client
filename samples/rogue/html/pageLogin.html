@@ -71,6 +71,10 @@ ul.mainMenu li{
     margin:5px auto;
     padding:5px;
 }
+div#fbProfile{
+    display:inline-block;
+    padding
+}
 </style>
 
 <div id=fb-root></div>
@@ -90,13 +94,20 @@ ul.mainMenu li{
 
 <div id=leaderboard class=frame>
 <h4>Leaderboard</h4>
-<span>Require facebook connect</span>
+<div class=fbProfileList>Require facebook connect</div>
 </div>
 
 <div id=achievements class=frame>
 <h4>Achievements</h4>
 <span>Require facebook connect</span>
 </div>
+
+<script id=fbProfile type=type/templ>
+<div class=fbProfile>
+<img src="https://graph.facebook.com/USER_ID/picture">
+<span>NAME</span>
+</div>
+</script>
 
 <script name=loginPage>
 this.use('rogueMain');
@@ -148,14 +159,34 @@ window.fbAsyncInit = function() {
     // will be handled. 
     FB.Event.subscribe('auth.authResponseChange', function(response) {
         if (response.authResponse) {
-            FB.api('/me', function(response) {
+            FB.api('/me', function(user) {
+                debugger;
                 // you can store this data into your database
-                player = response;
+                player = user;
 
                 fbBtn.textContent = 'Facebook Disconnect';
                 fbBtn.removeEventListener('click', fbLogin);
                 fbBtn.addEventListener('click', fbLogout, false);
                 playBtn.textContent = 'Play as '+response.name;
+            });
+
+            FB.api('/me/friends?limit=20', function(friends){
+                debugger;
+                console.dir(friends);
+                var
+                data = friends.data;
+                list = document.querySelector('div.fbProfileList'),
+                templ = document.querySelector('script#fbProfile').textContent,
+                profile;
+
+                list.innerHTML = '';
+
+                for(var i=0,l=data.length; i<l; i++){
+                    profile = document.createElement('div');
+                    profile.className = 'fbProfile';
+                    profile.innerHTML = templ.replace('USER_ID', data[i].id).replace('NAME', data[i].name);
+                    list.appendChild(profile);
+                }
             });
         } else {
             //user hit cancel button
