@@ -137,8 +137,6 @@ onLoad = function(){
         js.src = "//connect.facebook.net/en_US/all.js";
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
-
-    me.rogueMain.hideLoading();
 };
 
 window.fbAsyncInit = function() {
@@ -167,7 +165,7 @@ window.fbAsyncInit = function() {
                 fbBtn.textContent = 'Facebook Disconnect';
                 fbBtn.removeEventListener('click', fbLogin);
                 fbBtn.addEventListener('click', fbLogout, false);
-                playBtn.textContent = 'Play as '+response.name;
+                playBtn.textContent = 'Play as '+user.name;
             });
 
             FB.api('/me/friends?limit=20', function(friends){
@@ -197,6 +195,8 @@ window.fbAsyncInit = function() {
 
             console.log('Facebook login failed:', response.status);
         }
+
+        me.rogueMain.hideLoading();
     });
 };
 
