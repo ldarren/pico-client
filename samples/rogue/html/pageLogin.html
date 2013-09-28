@@ -71,9 +71,22 @@ ul.mainMenu li{
     margin:5px auto;
     padding:5px;
 }
-div#fbProfile{
+div.fbProfile{
     display:inline-block;
-    padding
+    width: 100px;
+    height: 100px;
+    padding:5px;
+}
+div.fbProfile img{
+    display:block;
+    margin: 0 auto;
+    padding:5px;
+}
+div.fbProfile span{
+    display:block;
+    width: 100%;
+    text-align: center;
+    padding:5px;
 }
 </style>
 
@@ -103,10 +116,8 @@ div#fbProfile{
 </div>
 
 <script id=fbProfile type=type/templ>
-<div class=fbProfile>
 <img src="https://graph.facebook.com/USER_ID/picture">
 <span>NAME</span>
-</div>
 </script>
 
 <script name=loginPage>
@@ -150,6 +161,7 @@ window.fbAsyncInit = function() {
     });
 
     // Additional initialization code such as adding Event Listeners goes here
+    FB.getLoginStatus();
 
     // Here we subscribe to the auth.authResponseChange JavaScript event. This event is fired
     // for any authentication related change, such as login, logout or session refresh. This means that
@@ -168,11 +180,10 @@ window.fbAsyncInit = function() {
                 playBtn.textContent = 'Play as '+user.name;
             });
 
-            FB.api('/me/friends?limit=20', function(friends){
+            FB.api('/me/friends?limit=10', function(friends){
                 debugger;
-                console.dir(friends);
                 var
-                data = friends.data;
+                data = friends.data,
                 list = document.querySelector('div.fbProfileList'),
                 templ = document.querySelector('script#fbProfile').textContent,
                 profile;
