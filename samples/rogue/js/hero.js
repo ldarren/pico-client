@@ -335,7 +335,7 @@ pico.def('hero', 'picUIWindow', function(){
         switch(item[OBJECT_TYPE]){
             case G_OBJECT_TYPE.MONEY:
                 me.incrMoney(item, 1);
-                break;
+                return true;
             case G_OBJECT_TYPE.ARMOR:
             case G_OBJECT_TYPE.WEAPON:
             case G_OBJECT_TYPE.JEWEL:
