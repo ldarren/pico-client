@@ -367,14 +367,14 @@ Object.freeze(G_CHARMED_RATE = [
     [28,    10, G_QUALITY.LOW, G_GRADE.ALL, 0, 0, 0, 0,       0, 0, 0.2,    0, 0.1,    1,1,1,1,1],
 ]);
 Object.freeze(G_ITEM_RATE = [
-    [G_OBJECT_TYPE.MONEY,   0, G_QUALITY.HIGH,     G_GRADE.ALL], // money
-    [G_OBJECT_TYPE.POTION,  0, G_QUALITY.LOW,      G_GRADE.ALL], // potion
+    [G_OBJECT_TYPE.MONEY,   10, G_QUALITY.HIGH,     G_GRADE.ALL], // money
+    [G_OBJECT_TYPE.POTION,  100, G_QUALITY.LOW,      G_GRADE.ALL], // potion
     [G_OBJECT_TYPE.SCROLL,  25, G_QUALITY.MEDIUM,   G_GRADE.ALL], // scroll
-    [G_OBJECT_TYPE.WEAPON,  0, G_QUALITY.MEDIUM,   G_GRADE.ALL], // weapon
-    [G_OBJECT_TYPE.AMMO,    0, G_QUALITY.LOW,      G_GRADE.ALL], // ammo 
-    [G_OBJECT_TYPE.ARMOR,   0, G_QUALITY.MEDIUM,   G_GRADE.ALL], // armor
-    [G_OBJECT_TYPE.JEWEL,   0,  G_QUALITY.HIGH,     G_GRADE.ALL], // jewel 
-    [G_OBJECT_TYPE.MATERIAL,0,  G_QUALITY.MEDIUM,   G_GRADE.ALL], // material
+    [G_OBJECT_TYPE.WEAPON,  30, G_QUALITY.MEDIUM,   G_GRADE.ALL], // weapon
+    [G_OBJECT_TYPE.AMMO,    100, G_QUALITY.LOW,      G_GRADE.ALL], // ammo 
+    [G_OBJECT_TYPE.ARMOR,   25, G_QUALITY.MEDIUM,   G_GRADE.ALL], // armor
+    [G_OBJECT_TYPE.JEWEL,   5,  G_QUALITY.HIGH,     G_GRADE.ALL], // jewel 
+    [G_OBJECT_TYPE.MATERIAL,2,  G_QUALITY.MEDIUM,   G_GRADE.ALL], // material
 ]);
 Object.freeze(G_MONEY_TYPE = {
     GOLD: 1,
@@ -414,10 +414,10 @@ Object.freeze(G_SCROLL_TYPE = {
 });
 // icon, drop rate, quality
 Object.freeze(G_SCROLL_RATE = [
-    [G_ICON.MANUSCRIPT,         0,  G_QUALITY.HIGH, G_GRADE.G22],
-    [G_ICON.IDENTITY_SCROLL,    0,G_QUALITY.LOW,  G_GRADE.G12],
-    [G_ICON.TELEPORT_SCROLL,    50, G_QUALITY.LOW,  G_GRADE.G12],
-    [G_ICON.MAP,                0, G_QUALITY.LOW,  G_GRADE.G12],
+    [G_ICON.MANUSCRIPT,         10,  G_QUALITY.HIGH, G_GRADE.G22],
+    [G_ICON.IDENTITY_SCROLL,    50,G_QUALITY.LOW,  G_GRADE.G12],
+    [G_ICON.TELEPORT_SCROLL,    50, G_QUALITY.HIGH,  G_GRADE.G22],
+    [G_ICON.MAP,                10, G_QUALITY.LOW,  G_GRADE.G12],
 ]);
 Object.freeze(G_SPELL_TYPE = {
     POISON: 1,
