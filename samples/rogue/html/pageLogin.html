@@ -137,6 +137,8 @@ onLoad = function(){
         js.src = "//connect.facebook.net/en_US/all.js";
         fjs.parentNode.insertBefore(js, fjs);
     }(document, 'script', 'facebook-jssdk'));
+
+    /* if no network */ me.rogueMain.hideLoading();
 };
 
 window.fbAsyncInit = function() {
@@ -165,7 +167,7 @@ window.fbAsyncInit = function() {
                 fbBtn.textContent = 'Facebook Disconnect';
                 fbBtn.removeEventListener('click', fbLogin);
                 fbBtn.addEventListener('click', fbLogout, false);
-                playBtn.textContent = 'Play as '+user.name;
+                playBtn.textContent = 'Play with friends';
             });
 
             FB.api('/me/friends?limit=20', function(friends){
@@ -191,7 +193,7 @@ window.fbAsyncInit = function() {
             fbBtn.textContent = 'Facebook Connect';
             fbBtn.removeEventListener('click', fbLogout);
             fbBtn.addEventListener('click', fbLogin, false);
-            playBtn.textContent = 'Play as Guest';
+            playBtn.textContent = 'Play without friends';
 
             console.log('Facebook login failed:', response.status);
         }

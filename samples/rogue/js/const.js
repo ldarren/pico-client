@@ -10,7 +10,7 @@ CREEP_HP = 6, CREEP_ATK = 7, CREEP_RATK = 8, CREEP_MATK = 9, CREEP_DEF = 10, CRE
 WEAPON_HANDED = 21, CHEST_ITEM = 7, TOMB_BODY = 7, AMMO_SIZE = 20,
 ENCHANTED_CLASS = 4, ENCHANTED_SPELL = 5, SPELL_DIFFICULTY = 6, SPELL_RELOAD = 7, SPELL_COOLDOWN = 8, SPELL_STRENGTH = 9,
 HERO_HELM=0,HERO_ARMOR=1,HERO_MAIN=2,HERO_OFF=3,HERO_RINGL=4,HERO_RINGR=5,HERO_AMULET=6,HERO_QUIVER=7,HERO_GOLD=8,HERO_SKULL=9,
-HERO_ENEMY=10,HERO_BAG_CAP=11,HERO_TOME_CAP=12;
+HERO_ENEMY=10,HERO_PORTAL=11,HERO_WAYPOINT=12,HERO_BAG_CAP=13,HERO_TOME_CAP=14;
 
 Object.freeze(G_OBJECT_TYPE = {
     EMPTY: 0,
@@ -67,13 +67,14 @@ Object.freeze(G_CONTEXT = {
 
 Object.freeze(G_TILE_TYPE = {
     EMPTY: 0,
-    SHOW: 2+4+8+16,
+    SHOW: 2+4+8+16+32+64,
     HIDE: 1,
     CREEP: 2,
     CHEST: 4,
     EXIT: 8,
     ENTRANCE: 16,
-    WAY_POINT: 32,
+    PORTAL: 32,
+    WAYPOINT: 64,
     OBSTACLES: 2+4,
 });
 
@@ -119,15 +120,15 @@ Object.freeze(G_CREEP_TYPE = {
 
 Object.freeze(G_FLOOR = {
     UNCLEAR: 8,
-    PYRAMID: 9,
+    WAYPOINT_NEW: 9,
     CLEAR: 10,
     BROKEN: 11,
     LOCKED: 12,
     STAIR_DOWN: 13,
     STAIR_UP: 14,
     PITFALL: 15,
-    TELEPORT: 16,
-    CHECKPOINT: 17,
+    PORTAL: 16,
+    WAYPOINT: 17,
     STONE: 18,
     WALL: 19,
     BROKEN_WALL: 20,
@@ -366,14 +367,14 @@ Object.freeze(G_CHARMED_RATE = [
     [28,    10, G_QUALITY.LOW, G_GRADE.ALL, 0, 0, 0, 0,       0, 0, 0.2,    0, 0.1,    1,1,1,1,1],
 ]);
 Object.freeze(G_ITEM_RATE = [
-    [G_OBJECT_TYPE.MONEY,   10, G_QUALITY.HIGH,     G_GRADE.ALL], // money
-    [G_OBJECT_TYPE.POTION,  80, G_QUALITY.LOW,      G_GRADE.ALL], // potion
+    [G_OBJECT_TYPE.MONEY,   0, G_QUALITY.HIGH,     G_GRADE.ALL], // money
+    [G_OBJECT_TYPE.POTION,  0, G_QUALITY.LOW,      G_GRADE.ALL], // potion
     [G_OBJECT_TYPE.SCROLL,  25, G_QUALITY.MEDIUM,   G_GRADE.ALL], // scroll
-    [G_OBJECT_TYPE.WEAPON,  40, G_QUALITY.MEDIUM,   G_GRADE.ALL], // weapon
-    [G_OBJECT_TYPE.AMMO,    60, G_QUALITY.LOW,      G_GRADE.ALL], // ammo 
-    [G_OBJECT_TYPE.ARMOR,   40, G_QUALITY.MEDIUM,   G_GRADE.ALL], // armor
-    [G_OBJECT_TYPE.JEWEL,   1,  G_QUALITY.HIGH,     G_GRADE.ALL], // jewel 
-    [G_OBJECT_TYPE.MATERIAL,1,  G_QUALITY.MEDIUM,   G_GRADE.ALL], // material
+    [G_OBJECT_TYPE.WEAPON,  0, G_QUALITY.MEDIUM,   G_GRADE.ALL], // weapon
+    [G_OBJECT_TYPE.AMMO,    0, G_QUALITY.LOW,      G_GRADE.ALL], // ammo 
+    [G_OBJECT_TYPE.ARMOR,   0, G_QUALITY.MEDIUM,   G_GRADE.ALL], // armor
+    [G_OBJECT_TYPE.JEWEL,   0,  G_QUALITY.HIGH,     G_GRADE.ALL], // jewel 
+    [G_OBJECT_TYPE.MATERIAL,0,  G_QUALITY.MEDIUM,   G_GRADE.ALL], // material
 ]);
 Object.freeze(G_MONEY_TYPE = {
     GOLD: 1,
@@ -413,10 +414,10 @@ Object.freeze(G_SCROLL_TYPE = {
 });
 // icon, drop rate, quality
 Object.freeze(G_SCROLL_RATE = [
-    [G_ICON.MANUSCRIPT,         5,  G_QUALITY.HIGH, G_GRADE.G22],
-    [G_ICON.IDENTITY_SCROLL,    100,G_QUALITY.LOW,  G_GRADE.G12],
+    [G_ICON.MANUSCRIPT,         0,  G_QUALITY.HIGH, G_GRADE.G22],
+    [G_ICON.IDENTITY_SCROLL,    0,G_QUALITY.LOW,  G_GRADE.G12],
     [G_ICON.TELEPORT_SCROLL,    50, G_QUALITY.LOW,  G_GRADE.G12],
-    [G_ICON.MAP,                10, G_QUALITY.LOW,  G_GRADE.G12],
+    [G_ICON.MAP,                0, G_QUALITY.LOW,  G_GRADE.G12],
 ]);
 Object.freeze(G_SPELL_TYPE = {
     POISON: 1,
@@ -740,17 +741,17 @@ Object.freeze(G_TOWN_MAP = {
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, G_TILE_TYPE.PORTAL, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, G_TILE_TYPE.EXIT, 0,
+        0, G_TILE_TYPE.EXIT, 0, 0, 0, 0, G_TILE_TYPE.EXIT, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
     ],
     terrain:[
         24, 24, 24, 25, 24, 24, 24, 24,
         10, 10, 10, 10, 10, 10, 10, 10,
         10, 10, 10, 10, 10, 10, 10, 10,
-        10, 10, 10, G_FLOOR.TELEPORT, 10, 10, 10, 10,
+        10, 10, 10, G_FLOOR.PORTAL, 10, 10, 10, 10,
         10, 10, 10, 10, 10, 10, 10, 10,
         10, 10, 10, 10, 10, 10, 10, 10,
         10, 10, 10, 10, 10, 10, G_FLOOR.STAIR_DOWN, 10,

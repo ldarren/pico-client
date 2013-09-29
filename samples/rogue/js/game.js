@@ -180,6 +180,12 @@ pico.def('game', 'pigSqrMap', function(){
         map[c] |= G_TILE_TYPE.EXIT;
         terrain[c] = me.deepestLevel < me.currentLevel ? G_FLOOR.LOCKED : me.prevLevel < me.currentLevel ? G_FLOOR.STAIR_DOWN : G_FLOOR.STAIR_UP;
 
+        if (!(me.currentLevel % 1)){
+            c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
+            map[c] |= G_TILE_TYPE.WAYPOINT;
+            terrain[c] = me.hero.getLastWayPoint() >= me.currentLevel ? G_FLOOR.WAYPOINT : G_FLOOR.WAYPOINT_NEW;
+        }
+
         c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
         terrain[c] = me.prevLevel < me.currentLevel ? G_FLOOR.STAIR_UP : G_FLOOR.STAIR_DOWN;
         hero.move(c);
@@ -388,6 +394,13 @@ pico.def('game', 'pigSqrMap', function(){
         return entities;
     };
 
+    me.teleport = function(elapsed, level, entities){
+        if (!this.currentLevel) me.hero.setLastPortal(0); // reset teleport level regardless of beam down or teleport down
+        var ret = me.gotoLevel(elapsed, level, entities);
+        this.prevLevel = this.prevLevel < level ? level - 1 : level + 1;
+        return ret;
+    };
+
     me.reborn = function(elapsed, evt, entities){
         me.deepestLevel = 0;
         me.mortal = undefined;
@@ -432,6 +445,8 @@ pico.def('game', 'pigSqrMap', function(){
             case G_SCROLL_TYPE.IDENTITY:
                 break;
             case G_SCROLL_TYPE.TELEPORT:
+                me.hero.setLastWayPoint(this.currentLevel);
+                this.go('teleport', 0);
                 break;
             case G_SCROLL_TYPE.MAP:
                 break;
@@ -559,8 +574,10 @@ pico.def('game', 'pigSqrMap', function(){
 
     me.heroStop = function(elapsed, evt, entities){
         var
-        hp = me.hero.getPosition(),
+        hero = me.hero,
+        hp = hero.getPosition(),
         tileType = this.map[hp];
+
         if(tileType & G_TILE_TYPE.ENTRANCE){
             this.go('showInfo', {
                 info: 'Warning! you are leaving level '+this.currentLevel,
@@ -580,6 +597,42 @@ pico.def('game', 'pigSqrMap', function(){
                 }
             }
             return entities;
+        }else if(tileType & G_TILE_TYPE.WAYPOINT){
+            hero.setLastWayPoint(me.currentLevel);
+            this.terrain[hp] = G_FLOOR.WAYPOINT;
+            this.go('showInfo', {
+                info: 'A waypoint to travel back to town '+this.currentLevel,
+                labels: ['Travel to town', 'Stay'],
+                callbacks: ['teleport', null],
+                events:[0, null]});
+        }else if(tileType & G_TILE_TYPE.PORTAL){
+            var
+            info = 'Town Portal, linked to waypoint at underground and portal open by teleport scroll',
+            labels = [],
+            callbacks = [],
+            events = [],
+            lastWayPoint = hero.getLastWayPoint(),
+            lastPortal = hero.getLastPortal();
+
+            if (lastWayPoint){
+                labels.push('Waypoint (level '+lastWayPoint+')');
+                callbacks.push('teleport');
+                events.push(lastWayPoint);
+            }
+
+            if (lastPortal){
+                labels.push('Portal (level '+lastPortal+')');
+                callbacks.push('teleport');
+                events.push(lastPortal);
+            }
+
+            if (!labels.length) return;
+
+            this.go('showInfo', {
+                info: info,
+                labels: labels,
+                callbacks: callbacks,
+                events: events});
         }
     };
 });

@@ -423,6 +423,10 @@ pico.def('hero', 'picUIWindow', function(){
 
     me.getSelectedSpell = function(){ return selectedSpell; };
     me.getPosition = function(){ return position; };
+    me.getLastPortal = function(){ return appearance[HERO_PORTAL]; };
+    me.getLastWayPoint = function(){ return appearance[HERO_WAYPOINT]; };
+    me.setLastPortal = function(level){ appearance[HERO_PORTAL] = level; };
+    me.setLastWayPoint = function(level){ if (appearance[HERO_WAYPOINT] < level) appearance[HERO_WAYPOINT] = level; };
     me.getJob = function(){ return currStats[OBJECT_TYPE]; };
     me.getLuck = function(){ return currStats[OBJECT_LUCK]; };
     me.getBag = function(){ return bag; };
