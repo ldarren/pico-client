@@ -63,6 +63,10 @@ ul.mainMenu li{
     list-style: none;
     margin: 10px auto;
 }
+ul.mainMenu li input[type=text]{
+    line-height:30px;
+    width:100%;
+}
 .frame{
     max-width: 512px;
     color:#aec440;
@@ -71,9 +75,14 @@ ul.mainMenu li{
     margin:5px auto;
     padding:5px;
 }
+.frame div{
+    width:200px;
+    margin: 10px auto;
+}
 div.fbProfile{
     display:inline-block;
-    width: 100px;
+    vertical-align:top;
+    width: 90px;
     height: 100px;
     padding:5px;
 }
@@ -97,6 +106,7 @@ div.fbProfile span{
 <ul class=mainMenu>
 <li><a href=# class=cssBtn>Facebook Connect</a></li>
 <li><a href=# class=cssBtn>Play as Guest</a></li>
+<li><input type=text placeholder="Hero Name: Nehemiah"></input></li>
 <li><input type=checkbox>Silence</input></li>
 </ul>
 
@@ -107,12 +117,17 @@ div.fbProfile span{
 
 <div id=leaderboard class=frame>
 <h4>Leaderboard</h4>
-<div class=fbProfileList>Require facebook connect</div>
+<content class=fbProfileList>Require facebook connect</content>
 </div>
 
 <div id=achievements class=frame>
 <h4>Achievements</h4>
 <span>Require facebook connect</span>
+</div>
+
+<div id=deviceSync class=frame>
+<h4>Data Backup</h4>
+<div><a href=# class=cssBtn>Google+ Connect</a></div>
 </div>
 
 <script id=fbProfile type=type/templ>
@@ -186,7 +201,7 @@ window.fbAsyncInit = function() {
                 debugger;
                 var
                 data = friends.data,
-                list = document.querySelector('div.fbProfileList'),
+                list = document.querySelector('content.fbProfileList'),
                 templ = document.querySelector('script#fbProfile').textContent,
                 profile;
 
