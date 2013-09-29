@@ -250,18 +250,12 @@ pico.def('hero', 'picUIWindow', function(){
     };
 
     me.incrMoney = function(money, count){
-        var id = HERO_GOLD;
         switch(money[OBJECT_SUB_TYPE]){
-            case G_MONEY_TYPE.GOLD: id = HERO_GOLD; break;
-            case G_MONEY_TYPE.SKULL: id = HERO_SKULL; break;
+            case G_MONEY_TYPE.GOLD: appearance[HERO_GOLD] += count; break;
+            case G_MONEY_TYPE.SKULL: appearance[HERO_SKULL] += count; break;
             default: return false;
         }
 
-        if (appearance[id]){
-            appearance[id][1] += count;
-        }else{
-            appearance[id] = [money, count];
-        }
         return true;
     };
 
