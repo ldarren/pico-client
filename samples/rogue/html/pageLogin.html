@@ -115,13 +115,13 @@ div.fbProfile span{
 <span>Require facebook connect</span>
 </div>
 
-<div id=leaderboard class=frame>
-<h4>Leaderboard</h4>
+<div id=ranking class=frame>
+<h4>Friend Ranking</h4>
 <content class=fbProfileList>Require facebook connect</content>
 </div>
 
-<div id=achievements class=frame>
-<h4>Achievements</h4>
+<div id=badges class=frame>
+<h4>Badges</h4>
 <span>Require facebook connect</span>
 </div>
 
@@ -130,7 +130,17 @@ div.fbProfile span{
 <div><a href=# class=cssBtn>Google+ Connect</a></div>
 </div>
 
-<script id=fbProfile type=type/templ>
+<script id=fbScore type=text/templ>
+<img src="https://graph.facebook.com/USER_ID/picture">
+<span>NAME</span>
+</script>
+
+<script id=fbBadge type=text/templ>
+<img src="https://graph.facebook.com/USER_ID/picture">
+<span>NAME</span>
+</script>
+
+<script id=fbProfile type=text/templ>
 <img src="https://graph.facebook.com/USER_ID/picture">
 <span>NAME</span>
 </script>
