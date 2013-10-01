@@ -454,91 +454,57 @@ Object.freeze(pico);
 
 window.addEventListener('load', function(){
     var
-    browser = 'msie',
-    vendor = navigator.vendor,
-    userAgent = navigator.userAgent,
-    // http://www.quirksmode.org/js/detect.html
-    vendorKeys = [{
-            string: navigator.userAgent,
-            subString: "Chrome",
-            identity: "Chrome"
-        },{
-            string: navigator.userAgent,
-            subString: "OmniWeb",
-            versionSearch: "OmniWeb",
-            identity: "OmniWeb"
-        },{
-            string: navigator.vendor,
-            subString: "Apple",
-            identity: "Safari",
-            versionSearch: "Version"
-        },{
-            string: navigator.userAgent,
-            subString: "Opera",
-            identity: "Opera",
-            versionSearch: "Version"
-        },{
-            string: navigator.vendor,
-            subString: "iCab",
-            identity: "iCab"
-        },{
-            string: navigator.vendor,
-            subString: "KDE",
-            identity: "Konqueror"
-        },{
-            string: navigator.userAgent,
-            subString: "Firefox",
-            identity: "Firefox"
-        },{
-            string: navigator.vendor,
-            subString: "Camino",
-            identity: "Camino"
-        },{
-            // for newer Netscapes (6+)
-            string: navigator.userAgent,
-            subString: "Netscape",
-            identity: "Netscape"
-        },{
-            string: navigator.userAgent,
-            subString: "MSIE",
-            identity: "Explorer",
-            versionSearch: "MSIE"
-        },{
-            string: navigator.userAgent,
-            subString: "Gecko",
-            identity: "Mozilla",
-            versionSearch: "rv"
-        },{
-            // for older Netscapes (4-)
-            string: navigator.userAgent,
-            subString: "Mozilla",
-            identity: "Netscape",
-            versionSearch: "Mozilla"
-        }],
-    states = pico.states,
-    key;
-
-    for (var i=0, l=vendorKeys.length; i<l; i++){
-        key = vendorKeys[i];
-        if (-1 !== key.string.indexOf(key.subString)){
-            states.browser = key.identity;
-        }
-    }
-    if ('Chrome' === states.browser || 'Safari' === states.browser) states.isWebKit = true;
-
-    var
     te = 'transitionend',
-    wkte = 'webkittransitionend';
+    wkte = 'webkittransitionend',
+    appVerTag = document.querySelector('meta[name=app-version]'),
+    newModules = pico.states.newModules = Object.keys(pico.modules), // signal load event, if newModules being called in loadDeps
+    states = pico.states,
+    onDeviceReady = function(){
+        pico.setup(newModules, function(){
+            pico.signal(pico.LOAD);
+        });
+    };
 
     states.transitionEnd = pico.detectEvent(te) ? te : pico.detectEvent(wkte) ? 'webkitTransitionEnd' : undefined;
 
-    var appVerTag = document.querySelector('meta[name=app-version]');
     states.appVer = appVerTag ? appVerTag.getAttribute('content') : '0';
 
-    var newModules = pico.states.newModules = Object.keys(pico.modules); // signal load event, if newModules being called in loadDeps
-    pico.setup(newModules, function(){
-        pico.signal(pico.LOAD);
-    });
+
+    if (document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1){
+        states.browser = 'Phonegap';
+        states.isWebKit = true;
+        document.addEventListener('deviceready', onDeviceReady, false);
+    }else{
+        var
+        // http://www.quirksmode.org/js/detect.html
+        vendorKeys = [
+        { string: navigator.userAgent,  subString: "Chrome",    identity: "Chrome"},
+        { string: navigator.userAgent,  subString: "OmniWeb",   identity: "OmniWeb"},
+        { string: navigator.vendor,     subString: "Apple",     identity: "Safari"},
+        { string: navigator.userAgent,  subString: "Opera",     identity: "Opera"},
+        { string: navigator.vendor,     subString: "iCab",      identity: "iCab"},
+        { string: navigator.vendor,     subString: "KDE",       identity: "Konqueror"},
+        { string: navigator.userAgent,  subString: "Firefox",   identity: "Firefox"},
+        { string: navigator.vendor,     subString: "Camino",    identity: "Camino"},
+        { string: navigator.userAgent,  subString: "Netscape",  identity: "Netscape"},
+        { string: navigator.userAgent,  subString: "MSIE",      identity: "Explorer"},
+        { string: navigator.userAgent,  subString: "Gecko",     identity: "Mozilla"},
+        { string: navigator.userAgent,  subString: "Mozilla",   identity: "Netscape"}],
+        key;
+
+        states.browser = 'Unknown';
+        states.isWebKit = false;
+
+        for (var i=0, l=vendorKeys.length; i<l; i++){
+            key = vendorKeys[i];
+            if (-1 !== key.string.indexOf(key.subString)){
+                states.browser = key.identity;
+                states.isWebKit = -1 !== key.string.indexOf('WebKit');
+                break;
+            }
+        }
+        onDeviceReady();
+    }
 });
 
 window.addEventListener('popstate', function(evt){
