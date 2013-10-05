@@ -4,7 +4,7 @@ pico.def('tome', 'picUIWindow', function(){
     Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.random,
     TOME_ROW = 4,
     name = me.moduleName,
-    skillsId = G_WIN_ID.SKILLS,
+    tomeId = G_WIN_ID.TOME,
     draw = function(ctx, items, layout, com){
         var
         ts = this.tileSet,

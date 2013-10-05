@@ -801,7 +801,7 @@ Object.freeze(G_MAP_PARAMS = [
 
 Object.freeze(G_WIN_ID = {
     PLAYER: 'uiPlayer',
-    SKILLS: 'uiSkills',
+    TOME: 'uiTome',
     BAG: 'uiBag',
     INFO: 'uiInfo',
     DIALOG: 'uiDialog',

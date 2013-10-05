@@ -470,7 +470,11 @@ window.addEventListener('load', function(){
     states.appVer = appVerTag ? appVerTag.getAttribute('content') : '0';
 
 
-    if (document.URL.indexOf( 'http://' ) === -1 && document.URL.indexOf( 'https://' ) === -1){
+    if (document.URL.indexOf( 'http://' ) === -1 &&
+        document.URL.indexOf( 'https://' ) === -1 &&
+        navigator &&
+        navigator.userAgent &&
+        navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/)){
         states.browser = 'Phonegap';
         states.isWebKit = true;
         document.addEventListener('deviceready', onDeviceReady, false);

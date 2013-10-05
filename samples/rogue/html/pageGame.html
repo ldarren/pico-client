@@ -122,7 +122,7 @@ onLoad = function(){
 
         game.init({tileSet:tileSet, smallDevice: smallDevice});
 
-        game.route('fingerDown', [
+        game.route('fingerDown', game.route('fingerDownFull', [
             uiWindow.checkBound,
             info.checkBound,
             dialogMsg.checkBound,
@@ -130,8 +130,8 @@ onLoad = function(){
             camera.checkBound,
             game.captureSelected,
             renderer.captureScreenshot
-        ]);
-        game.route('fingerUp', [
+        ]));
+        game.route('fingerUp', game.route('fingerUpFull', [
             game.useSelected, 
             game.releaseSelected, 
             info.click,
@@ -196,7 +196,7 @@ onLoad = function(){
         cameraEnt.attach(renderer, {viewPane:[camera.moduleName]});
 
         uiWinEnts[0] = game.addEntity(G_WIN_ID.PLAYER);
-        uiWinEnts[1] = game.addEntity(G_WIN_ID.SKILLS);
+        uiWinEnts[1] = game.addEntity(G_WIN_ID.TOME);
         uiWinEnts[2] = game.addEntity(G_WIN_ID.BAG);
 
         for(var i=0, l=uiWinEnts.length; i<l; i++){

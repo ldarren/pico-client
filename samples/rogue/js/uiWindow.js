@@ -7,8 +7,8 @@ pico.def('uiWindow', 'picUIWindow', function(){
     me = this,
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
     playerId = G_WIN_ID.PLAYER,
-    skillsId = G_WIN_ID.SKILLS,
-    inventoryId = G_WIN_ID.BAG,
+    tomeId = G_WIN_ID.TOME,
+    bagId = G_WIN_ID.BAG,
     infoId = G_WIN_ID.INFO,
     dialogId = G_WIN_ID.DIALOG,
     name = me.moduleName;
@@ -30,12 +30,12 @@ pico.def('uiWindow', 'picUIWindow', function(){
                 data.minWidth = this.smallDevice ? 320 : 640;
                 data.minHeight = this.tileHeight+gs;
                 break;
-            case skillsId:
+            case tomeId:
                 data.docks = [8+2+1, 8+4+2+1];
                 data.minWidth = this.tileWidth+gs;
                 data.minHeight = this.smallDevice ? 180 : 360;
                 break;
-            case inventoryId:
+            case bagId:
                 data.docks = [8+4+2, 8+4+2+1];
                 data.minWidth = this.tileWidth+gs;
                 data.minHeight = this.smallDevice ? 180 : 360;
@@ -73,12 +73,12 @@ pico.def('uiWindow', 'picUIWindow', function(){
                         [evt[0] + Floor((evt[2] - com.minWidth)/2), evt[1], com.minWidth, com.minHeight],
                         gs, gs, false));
                     break;
-                case skillsId:
+                case tomeId:
                     layouts.push(me.fitIntoGrid(
                         [evt[0] + evt[2] - com.minWidth, evt[1] + Floor((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight],
                         gs, gs, false));
                     break;
-                case inventoryId:
+                case bagId:
                     layouts.push(me.fitIntoGrid(
                         [evt[0], evt[1] + Floor((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight],
                         gs, gs, false));
@@ -123,8 +123,8 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
     me.showAll = function(elapsed, evt, entities){
         this.showEntity(playerId);
-        this.showEntity(skillsId);
-        this.showEntity(inventoryId);
+        this.showEntity(tomeId);
+        this.showEntity(bagId);
         me.info.openIfValid.call(this, elapsed, evt, entities);
         me.dialogMsg.openIfValid.call(this, elapsed, evt, entities);
         this.showEntity('camera');
@@ -138,8 +138,8 @@ pico.def('uiWindow', 'picUIWindow', function(){
         ename = e ? e.name : "";
 
         if (playerId !== ename) this.hideEntity(playerId);
-        if (skillsId !== ename) this.hideEntity(skillsId);
-        if (inventoryId !== ename) this.hideEntity(inventoryId);
+        if (tomeId !== ename) this.hideEntity(tomeId);
+        if (bagId !== ename) this.hideEntity(bagId);
         if (infoId !== ename) this.hideEntity(infoId);
         if (dialogId !== ename) this.hideEntity(dialogId);
         this.hideEntity('camera');
