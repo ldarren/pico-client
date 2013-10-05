@@ -2,6 +2,7 @@ pico.def('hero', 'picUIWindow', function(){
     var
     me = this,
     name = me.moduleName,
+    layouts = [],
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
     objects, flags,
     position, selectedSpell, targetId,
@@ -12,69 +13,8 @@ pico.def('hero', 'picUIWindow', function(){
         return Round(Random()*21);
     },
     drawSmall = function(ctx, win, com, rect){
-        var
-        ts = this.tileSet,
-        tw = this.tileWidth,
-        th = this.tileHeight,
-        sd = this.smallDevice,
-        gs = win.gridSize,
-        margin = sd ? 2 : 4,
-        pw = (rect.width - gs*2 - margin*2)/3,
-        textWidth3 = sd ? 15 : 30,
-        textWidth2 = sd ? 20 : 50,
-        X = rect.x + gs + margin,
-        Y = rect.y + margin,
-        x = X, y = Y,
-        uiSize = sd ? 16 : 32,
-        i, l;
-
         ctx.save();
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'middle';
-        ctx.font = com.font;
-        ctx.fillStyle = com.fontColor;
-
-        ctx.fillText(currStats[OBJECT_NAME], x, y + uiSize/2, rect.width);
-
-        x = X;
-        y += uiSize;
-        uiSize = sd ? 16 : 32;
-
-        x = me.drawData(ctx, ts, G_UI.LEVEL, currStats[OBJECT_LEVEL], x, y, uiSize, margin, textWidth3);
-        x = me.drawData(ctx, ts, G_UI.DEX, currStats[OBJECT_DEX], x, y, uiSize, margin, textWidth3);
-        x = me.drawData(ctx, ts, G_UI.LUCK, currStats[OBJECT_LUCK], x, y, uiSize, margin, textWidth3);
-
-        x = X + pw;
-        y = Y;
-        uiSize = sd ? 8 : 16;
-        
-        // draw hp
-        for(i=0, l=stats[OBJECT_HP]; i<l; i++){
-            ts.draw(ctx, (i < currStats[OBJECT_HP]) ? G_UI.HP : G_UI.HP_EMPTY, x, y+margin, uiSize, uiSize);
-            x += uiSize;
-        }
-
-        x = X + pw;
-        uiSize = sd ? 16 : 32;
-        y += uiSize;
-
-        x = me.drawData(ctx, ts, G_UI.GOLD, appearance[HERO_GOLD], x, y, uiSize, margin, textWidth2);
-        x = me.drawData(ctx, ts, G_UI.SKULL, appearance[HERO_SKULL], x, y, uiSize, margin, textWidth2);
-
-        x = X + pw*2;
-        y = Y;
-        
-        x = me.drawData(ctx, ts, G_UI.PATK, currStats[OBJECT_ATK], x, y, uiSize, margin, textWidth3);
-        x = me.drawData(ctx, ts, G_UI.RATK, currStats[OBJECT_RATK], x, y, uiSize, margin, textWidth3);
-        x = me.drawData(ctx, ts, G_UI.MATK, currStats[OBJECT_MATK], x, y, uiSize, margin, textWidth3);
-
-        x = X + pw*2;
-        y += uiSize;
-
-        x = me.drawData(ctx, ts, G_UI.PDEF, currStats[OBJECT_DEF], x, y, uiSize, margin, textWidth3);
-        x = me.drawData(ctx, ts, G_UI.MDEF, currStats[OBJECT_MDEF], x, y, uiSize, margin, textWidth3);
-        x = me.drawData(ctx, ts, G_UI.WILL, currStats[OBJECT_WILL], x, y, uiSize, margin, textWidth3);
-
+        me.drawLayout(ctx, layouts[0]);
         ctx.restore();
     },
     drawBig = function(ctx, win, com, rect){
@@ -145,6 +85,17 @@ pico.def('hero', 'picUIWindow', function(){
     };
 
     me.create = function(ent, data){
+        var
+        small = [
+            [{}, {}],
+            [{},{},{}]
+        ],
+        portraitBig = [
+        ],
+        landscapeBig = [
+        ];
+
+        data.layouts = [small, bigPortrait, bigLandscape];
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
         return data;
     };
