@@ -1,7 +1,10 @@
 pico.def('uiWindow', 'picUIWindow', function(){
 
+    this.use('picRenderer');
+    this.use('camera');
     this.use('info');
     this.use('dialogMsg');
+    this.use('trade');
 
     var
     me = this,
@@ -11,6 +14,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
     bagId = G_WIN_ID.BAG,
     infoId = G_WIN_ID.INFO,
     dialogId = G_WIN_ID.DIALOG,
+    tradeId = G_WIN_ID.TRADE,
     name = me.moduleName;
 
     me.create = function(ent, data){
@@ -122,27 +126,76 @@ pico.def('uiWindow', 'picUIWindow', function(){
     };
 
     me.showAll = function(elapsed, evt, entities){
+        this.route('fingerDown', this.getRoute('fingerDownFull'));
+        this.route('fingerUp', this.getRoute('fingerUpFull'));
+        /*
         this.showEntity(playerId);
         this.showEntity(tomeId);
         this.showEntity(bagId);
         me.info.openIfValid.call(this, elapsed, evt, entities);
         me.dialogMsg.openIfValid.call(this, elapsed, evt, entities);
+        me.trade.openIfValid.call(this, elapsed, evt, entities);
         this.showEntity('camera');
-
+        */
         return entities;
     };
 
     me.hideAll = function(elapsed, evt, entities){
         var
         e = entities[0],
-        ename = e ? e.name : "";
+        ename = e ? e.name : "",
+        downPath = [],
+        upPath = [this.useSelected, this.releaseSelected];
 
+        switch(ename){
+            case playerId:
+                downPath.push(me.checkBound);
+                upPath.push(me.click);
+                break;
+            case tomeId:
+                downPath.push(me.checkBound);
+                upPath.push(me.tome.click);
+                upPath.push(me.click);
+                break;
+            case bagId:
+                downPath.push(me.checkBound);
+                upPath.push(me.bag.click);
+                upPath.push(me.click);
+                break;
+            case infoId:
+                downPath.push(me.info.checkBound);
+                upPath.push(me.info.click);
+                break;
+            case dialogId:
+                downPath.push(me.dialogMsg.checkBound);
+                upPath.push(me.dialogMsg.click);
+                break;
+            case tradeId:
+                downPath.push(me.trade.checkBound);
+                upPath.push(me.trade.click);
+                break;
+            case 'camera':
+                downPath.push(me.camera.checkBound);
+                upPath.push(me.camera.click);
+                break;
+        }
+
+        downPath.push(this.captureSelected);
+        downPath.push(me.picRenderer.captureScreenshot);
+        upPath.push(me.picRenderer.draw);
+
+        this.route('fingerUp', upPath);
+        this.route('fingerDown', downPath);
+
+        /*
         if (playerId !== ename) this.hideEntity(playerId);
         if (tomeId !== ename) this.hideEntity(tomeId);
         if (bagId !== ename) this.hideEntity(bagId);
         if (infoId !== ename) this.hideEntity(infoId);
         if (dialogId !== ename) this.hideEntity(dialogId);
+        if (tradeId !== ename) this.hideEntity(tradeId);
         this.hideEntity('camera');
+        */
 
         return entities;
     };

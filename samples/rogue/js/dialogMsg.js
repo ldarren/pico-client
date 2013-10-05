@@ -83,7 +83,25 @@ pico.def('dialogMsg', 'picUIWindow', function(){
     };
 
     me.checkBound = function(elapsed, evt, entities){
-        return entities;
+        var
+        x = evt[0], y = evt[1],
+        unknowns = [],
+        e, uiOpt, rectOpt;
+
+        for (var i=0, l=entities.length; i<l; i++){
+            e = entities[i];
+            uiOpt = e.getComponent(name);
+            if (!uiOpt) {
+                unknowns.push(e);
+                continue;
+            }
+            rectOpt = e.getComponent(uiOpt.box);
+            if (rectOpt.x < x && (rectOpt.x + rectOpt.width) > x && rectOpt.y < y && (rectOpt.y + rectOpt.height) > y){
+                return [e];
+            }
+        }
+
+        return unknowns;
     };
 
     me.click = function(elapsed, evt, entities){
