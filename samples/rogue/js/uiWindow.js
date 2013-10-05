@@ -128,15 +128,15 @@ pico.def('uiWindow', 'picUIWindow', function(){
     me.showAll = function(elapsed, evt, entities){
         this.route('fingerDown', this.getRoute('fingerDownFull'));
         this.route('fingerUp', this.getRoute('fingerUpFull'));
-        /*
+
         this.showEntity(playerId);
         this.showEntity(tomeId);
         this.showEntity(bagId);
         me.info.openIfValid.call(this, elapsed, evt, entities);
         me.dialogMsg.openIfValid.call(this, elapsed, evt, entities);
         me.trade.openIfValid.call(this, elapsed, evt, entities);
-        this.showEntity('camera');
-        */
+        //this.showEntity('camera');
+
         return entities;
     };
 
@@ -187,15 +187,13 @@ pico.def('uiWindow', 'picUIWindow', function(){
         this.route('fingerUp', upPath);
         this.route('fingerDown', downPath);
 
-        /*
         if (playerId !== ename) this.hideEntity(playerId);
         if (tomeId !== ename) this.hideEntity(tomeId);
         if (bagId !== ename) this.hideEntity(bagId);
         if (infoId !== ename) this.hideEntity(infoId);
         if (dialogId !== ename) this.hideEntity(dialogId);
         if (tradeId !== ename) this.hideEntity(tradeId);
-        this.hideEntity('camera');
-        */
+        //this.hideEntity('camera');
 
         return entities;
     };
