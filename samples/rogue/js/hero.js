@@ -11,6 +11,9 @@ pico.def('hero', 'picUIWindow', function(){
     d20Roll = function(){
         return Round(Random()*21);
     },
+    testCB = function(msg){
+        alert(msg);
+    },
     drawName = function(ctx, rect){
     },
     drawLives = function(ctx, rect){
@@ -85,24 +88,26 @@ pico.def('hero', 'picUIWindow', function(){
     };
 
     me.create = function(ent, data){
+        data.font = this.smallDevice ? data.fontSmall : data.fontBig;
+
         var
-        smallLayout = me.createBorderLayout(null, me.CENTER, me.CENTER, 0, 600, 80),
+        smallLayout = me.createBorderLayout(null, me.TOP, me.TOP, 0, 600, 60, {font: data.font, fillStyle: G_COLOR_TONE[1]} ),
         topRow = me.createBorderRow(smallLayout.layout),
         nameCell = me.createBorderCell(topRow),
         hpCell = me.createBorderCell(topRow),
         bottomRow = me.createBorderRow(smallLayout.layout),
         levelCell = me.createBorderCell(bottomRow),
         customCell1 = me.createBorderCell(bottomRow),
-        customCell2 = me.createBorderCell(bottomRow);
+        customCell2 = me.createBorderCell(bottomRow, {fillStyle: G_COLOR_TONE[3], strokeStyle: G_COLOR_TONE[1]});
 
         me.createBorderText(nameCell, me.CENTER, me.CENTER, 0, 300, 16, 'Darren');
-        me.createBorderText(hpCell, me.CENTER, me.CENTER, 0, 300, 16, 'Lives');
+        me.createBorderTile(hpCell, me.CENTER, me.CENTER, 0, 32, 32, this.tileSet, G_ICON.ROGUE);
         me.createBorderText(levelCell, me.CENTER, me.CENTER, 0, 200, 16, 'Super Level');
-        me.createBorderText(customCell1, me.CENTER, me.CENTER, 0, 200, 16, 'Custom text 1');
-        me.createBorderText(customCell2, me.CENTER, me.CENTER, 0, 200, 16, 'Custom text 2');
+        var ly = me.createBorderLayout(customCell1, me.CENTER, me.CENTER, 0, 200, 30, {font: data.font, fillStyle: G_COLOR_TONE[1]});
+        me.createBorderButton(customCell2, me.CENTER, me.CENTER, 0, 200, 16, G_COLOR_TONE[1], 'Custom text 2', testCB, 'Hello BorderLayout');
+        ly.layout.push(topRow);
 
         data.layouts = [smallLayout];
-        data.font = this.smallDevice ? data.fontSmall : data.fontBig;
         return data;
     };
 
@@ -441,6 +446,22 @@ pico.def('hero', 'picUIWindow', function(){
         return appearance[HERO_ENEMY] = targetId = id;
     };
     me.isDead = function(){ return currStats[OBJECT_HP] < 1; };
+
+    me.click = function(elapsed, evt, entities){
+        var ent = me.findHost(entities, G_WIN_ID.PLAYER);
+        if (!ent) return entities;
+        var
+        com = ent.getComponent(name),
+        win = ent.getComponent(com.win),
+        rect = ent.getComponent(win.box);
+
+        if (win.maximized){
+        }else{
+            me.clickBorderLayout(evt[0], evt[1], rect, com.layouts[0]);
+            return;
+        }
+        return entities;
+    };
 
     me.draw = function(ctx, ent, clip){
         var
