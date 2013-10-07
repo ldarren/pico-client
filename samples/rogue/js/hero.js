@@ -17,9 +17,13 @@ pico.def('hero', 'picUIWindow', function(){
     drawName = function(ctx, rect, ui){
         me.fillWrapText(ctx, currStats[OBJECT_NAME], rect[0], rect[1]+rect[3]/2, ui.w, ui.h);
     },
-    drawLives = function(ctx, rect){
+    drawLives = function(ctx, rect, ui){
     },
-    drawLevel = function(ctx, rect){
+    drawLevel = function(ctx, rect, ui){
+    },
+    drawCustom1 = function(ctx, rect, ui){
+    },
+    drawCustom2 = function(ctx, rect, ui){
     },
     drawBig = function(ctx, win, com, rect){
         var
@@ -102,11 +106,10 @@ pico.def('hero', 'picUIWindow', function(){
         customCell2 = me.createBorderCell(bottomRow, {fillStyle: G_COLOR_TONE[3], strokeStyle: G_COLOR_TONE[1]});
 
         me.createBorderCustom(nameCell, me.CENTER, me.CENTER, 0, 300, 16, drawName);
-        me.createBorderTile(hpCell, me.CENTER, me.CENTER, 0, 32, 32, this.tileSet, G_ICON.ROGUE);
-        me.createBorderText(levelCell, me.CENTER, me.CENTER, 0, 200, 16, 'Super Level');
-        var ly = me.createBorderLayout(customCell1, me.CENTER, me.CENTER, 0, 200, 30, {font: data.font, fillStyle: G_COLOR_TONE[1]});
-        me.createBorderButton(customCell2, me.CENTER, me.CENTER, 0, 200, 16, G_COLOR_TONE[1], 'Custom text 2', testCB, 'Hello BorderLayout');
-        ly.layout.push(topRow);
+        me.createBorderCustom(hpCell, me.CENTER, me.CENTER, 0, 32, 32, drawLives);
+        me.createBorderCustom(levelCell, me.CENTER, me.CENTER, 0, 200, 16, drawLevel);
+        me.createBorderCustom(customCell1, me.CENTER, me.CENTER, 0, 200, 30, drawCustom1);
+        me.createBorderCustom(customCell2, me.CENTER, me.CENTER, 0, 200, 16, drawCustom2);
 
         data.layouts = [smallLayout];
         return data;
