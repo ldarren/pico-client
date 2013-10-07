@@ -2,7 +2,6 @@ pico.def('hero', 'picUIWindow', function(){
     var
     me = this,
     name = me.moduleName,
-    layouts = [],
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
     objects, flags,
     position, selectedSpell, targetId,
@@ -12,10 +11,11 @@ pico.def('hero', 'picUIWindow', function(){
     d20Roll = function(){
         return Round(Random()*21);
     },
-    drawSmall = function(ctx, win, com, rect){
-        ctx.save();
-        me.drawLayout(ctx, layouts[0]);
-        ctx.restore();
+    drawName = function(ctx, rect){
+    },
+    drawLives = function(ctx, rect){
+    },
+    drawLevel = function(ctx, rect){
     },
     drawBig = function(ctx, win, com, rect){
         var
@@ -86,16 +86,22 @@ pico.def('hero', 'picUIWindow', function(){
 
     me.create = function(ent, data){
         var
-        small = [
-            [{}, {}],
-            [{},{},{}]
-        ],
-        portraitBig = [
-        ],
-        landscapeBig = [
-        ];
+        smallLayout = me.createBorderLayout(null, me.CENTER, me.CENTER, 0, 600, 80),
+        topRow = me.createBorderRow(smallLayout.layout),
+        nameCell = me.createBorderCell(topRow),
+        hpCell = me.createBorderCell(topRow),
+        bottomRow = me.createBorderRow(smallLayout.layout),
+        levelCell = me.createBorderCell(bottomRow),
+        customCell1 = me.createBorderCell(bottomRow),
+        customCell2 = me.createBorderCell(bottomRow);
 
-        data.layouts = [small, bigPortrait, bigLandscape];
+        me.createBorderText(nameCell, me.CENTER, me.CENTER, 0, 300, 16, 'Darren');
+        me.createBorderText(hpCell, me.CENTER, me.CENTER, 0, 300, 16, 'Lives');
+        me.createBorderText(levelCell, me.CENTER, me.CENTER, 0, 200, 16, 'Super Level');
+        me.createBorderText(customCell1, me.CENTER, me.CENTER, 0, 200, 16, 'Custom text 1');
+        me.createBorderText(customCell2, me.CENTER, me.CENTER, 0, 200, 16, 'Custom text 2');
+
+        data.layouts = [smallLayout];
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
         return data;
     };
@@ -445,7 +451,7 @@ pico.def('hero', 'picUIWindow', function(){
         if (win.maximized){
             return drawBig.call(this, ctx, win, com, rect);
         }else{
-            return drawSmall.call(this, ctx, win, com, rect);
+            return me.drawBorderLayout(ctx, rect, com.layouts[0]);
         }
     };
 });
