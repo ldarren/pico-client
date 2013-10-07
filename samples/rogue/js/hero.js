@@ -14,7 +14,8 @@ pico.def('hero', 'picUIWindow', function(){
     testCB = function(msg){
         alert(msg);
     },
-    drawName = function(ctx, rect){
+    drawName = function(ctx, rect, ui){
+        me.fillWrapText(ctx, currStats[OBJECT_NAME], rect[0], rect[1]+rect[3]/2, ui.w, ui.h);
     },
     drawLives = function(ctx, rect){
     },
@@ -100,7 +101,7 @@ pico.def('hero', 'picUIWindow', function(){
         customCell1 = me.createBorderCell(bottomRow),
         customCell2 = me.createBorderCell(bottomRow, {fillStyle: G_COLOR_TONE[3], strokeStyle: G_COLOR_TONE[1]});
 
-        me.createBorderText(nameCell, me.CENTER, me.CENTER, 0, 300, 16, 'Darren');
+        me.createBorderCustom(nameCell, me.CENTER, me.CENTER, 0, 300, 16, drawName);
         me.createBorderTile(hpCell, me.CENTER, me.CENTER, 0, 32, 32, this.tileSet, G_ICON.ROGUE);
         me.createBorderText(levelCell, me.CENTER, me.CENTER, 0, 200, 16, 'Super Level');
         var ly = me.createBorderLayout(customCell1, me.CENTER, me.CENTER, 0, 200, 30, {font: data.font, fillStyle: G_COLOR_TONE[1]});
