@@ -154,12 +154,12 @@ pico.def('uiWindow', 'picUIWindow', function(){
                 break;
             case tomeId:
                 downPath.push(me.checkBound);
-                upPath.push(me.tome.click);
+                //upPath.push(me.tome.click);
                 upPath.push(me.click);
                 break;
             case bagId:
                 downPath.push(me.checkBound);
-                upPath.push(me.bag.click);
+                //upPath.push(me.bag.click);
                 upPath.push(me.click);
                 break;
             case infoId:

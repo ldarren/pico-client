@@ -96,7 +96,8 @@ pico.def('hero', 'picUIWindow', function(){
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
 
         var
-        smallLayout = me.createBorderLayout(null, me.TOP, me.TOP, 0, 600, 60, {font: data.font, fillStyle: G_COLOR_TONE[1]} ),
+        scale = this.smallDevice ? 2 : 1;
+        smallLayout = me.createBorderLayout(null, me.TOP, me.TOP, 0, 600/scale, 60/scale, {font: data.font, fillStyle: G_COLOR_TONE[1]} ),
         topRow = me.createBorderRow(smallLayout.layout),
         nameCell = me.createBorderCell(topRow),
         hpCell = me.createBorderCell(topRow),
@@ -105,11 +106,11 @@ pico.def('hero', 'picUIWindow', function(){
         customCell1 = me.createBorderCell(bottomRow),
         customCell2 = me.createBorderCell(bottomRow, {fillStyle: G_COLOR_TONE[3], strokeStyle: G_COLOR_TONE[1]});
 
-        me.createBorderCustom(nameCell, me.CENTER, me.CENTER, 0, 300, 16, drawName);
-        me.createBorderCustom(hpCell, me.CENTER, me.CENTER, 0, 32, 32, drawLives);
-        me.createBorderCustom(levelCell, me.CENTER, me.CENTER, 0, 200, 16, drawLevel);
-        me.createBorderCustom(customCell1, me.CENTER, me.CENTER, 0, 200, 30, drawCustom1);
-        me.createBorderCustom(customCell2, me.CENTER, me.CENTER, 0, 200, 16, drawCustom2);
+        me.createBorderCustom(nameCell, me.CENTER, me.CENTER, 0, 300/scale, 16/scale, drawName);
+        me.createBorderCustom(hpCell, me.CENTER, me.CENTER, 0, 32/scale, 32/scale, drawLives);
+        me.createBorderCustom(levelCell, me.CENTER, me.CENTER, 0, 200/scale, 16/scale, drawLevel);
+        me.createBorderCustom(customCell1, me.CENTER, me.CENTER, 0, 200/scale, 30/scale, drawCustom1);
+        me.createBorderCustom(customCell2, me.CENTER, me.CENTER, 0, 200/scale, 16/scale, drawCustom2);
 
         data.layouts = [smallLayout];
         return data;
@@ -461,8 +462,8 @@ pico.def('hero', 'picUIWindow', function(){
 
         if (win.maximized){
         }else{
-            me.clickBorderLayout(evt[0], evt[1], rect, com.layouts[0]);
-            return;
+            if (me.clickBorderLayout(evt[0], evt[1], rect, com.layouts[0])) return;
+            return entities;
         }
         return entities;
     };
