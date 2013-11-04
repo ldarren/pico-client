@@ -196,6 +196,7 @@ pico.def('game', 'pigSqrMap', function(){
     };
 
     me.tileSet = null;
+    me.audioSprite = null;
     me.smallDevice = false;
     me.tileWidth = 16;
     me.tileHeight = 16;
@@ -214,6 +215,7 @@ pico.def('game', 'pigSqrMap', function(){
     // data = {tileSet:tileSet, smallDevice: 0:1}
     me.init = function(data){
         me.tileSet = data.tileSet;
+        me.audioSprite = data.audioSprite;
 
         var sd = me.smallDevice = data.smallDevice;
         me.tileWidth = sd ? 32 : 64;
