@@ -147,6 +147,7 @@ div.fbProfile span{
 
 <script name=loginPage>
 this.use('rogueMain');
+this.use('piHTMLAudio');
 this.use('piSocials');
 
 var
@@ -156,19 +157,22 @@ player,
 onPlay = function(){
     me.rogueMain.showLoading();
     pico.changeFrame(document.body, 'div#page', 'html/pageGame.html', {opacity:[0,1,'1s']});
+    me.piHTMLAudio.preload();
 },
 fbLogin = function(){ FB.login(); },
 fbLogout = function(){ FB.logout(); },
 onLoad = function(){
-    fbBtn = document.querySelector('ul.mainMenu li:nth-child(1) a');
-    playBtn = document.querySelector('ul.mainMenu li:nth-child(2) a');
+    me.piHTMLAudio.create('dat/fantasy-sfx.json', function(err, audioSprite){
+        fbBtn = document.querySelector('ul.mainMenu li:nth-child(1) a');
+        playBtn = document.querySelector('ul.mainMenu li:nth-child(2) a');
 
-    fbBtn.addEventListener('click', fbLogin, false);
-    playBtn.addEventListener('click', onPlay, false);
+        fbBtn.addEventListener('click', fbLogin, false);
+        playBtn.addEventListener('click', onPlay, false);
 
-    me.piSocials.loadFacebook();
+        me.piSocials.loadFacebook();
 
-    /* if no network */ me.rogueMain.hideLoading();
+        /* if no network */ me.rogueMain.hideLoading();
+    });
 };
 
 window.fbAsyncInit = function() {
