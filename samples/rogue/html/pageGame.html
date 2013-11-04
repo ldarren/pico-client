@@ -43,6 +43,7 @@ onFingerDown = function(evt, x, y){
 onFingerUp = function(evt, x, y){
     if (fingerTracker) return cancelTracking() // is a move not a click
     me.game.go('fingerUp', [x, y]);
+    me.game.audioSprite.play(2);
 },
 onFingerTwice = function(evt, x, y){
     if (fingerTracker) return cancelTracking() // is a move not a click
@@ -90,7 +91,7 @@ onResize = function(){
 onLoad = function(){
     me.piAtlas.create('dat/img/fantasy-tileset-combined.png', 'dat/fantasy-tileset.json', function(err, tileSet){
         if (err) return alert(err);
-        me.piHTMLAudio.create('dat/snd/audioSprite', 'dat/fantasy-sfx.json', function(err, audioSprite){
+        me.piHTMLAudio.create('dat/fantasy-sfx.json', function(err, audioSprite){
 
             gameStage = document.querySelector('div#gameStage');
 
@@ -122,7 +123,7 @@ onLoad = function(){
 
             reactor.addGroup(game);
 
-            game.init({tileSet:tileSet, smallDevice: smallDevice});
+            game.init({tileSet:tileSet, audioSprite: audioSprite, smallDevice: smallDevice});
 
             game.route('fingerDown', game.route('fingerDownFull', [
                 uiWindow.checkBound,
