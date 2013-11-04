@@ -92,7 +92,7 @@ onLoad = function(){
     me.piAtlas.create('dat/img/fantasy-tileset-combined.png', 'dat/fantasy-tileset.json', function(err, tileSet){
         if (err) return alert(err);
         me.piHTMLAudio.create('dat/fantasy-sfx.json', function(err, audioSprite){
-
+            audioSprite.playList([0], 1000, 60000, true);
             gameStage = document.querySelector('div#gameStage');
 
             var
