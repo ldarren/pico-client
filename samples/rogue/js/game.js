@@ -307,7 +307,8 @@ pico.def('game', 'pigSqrMap', function(){
             this.go('counter', evt);
             return;
         }
-        this.go('showInfo', { info: msg } );
+        me.audioSprite.play(2);
+        me.go('showInfo', { info: msg } );
 
         var
         hero = this.hero,
@@ -338,7 +339,8 @@ pico.def('game', 'pigSqrMap', function(){
         var msg = evt[1];
         if (!msg) return;
 
-        this.go('showInfo', {info: msg});
+        me.audioSprite.play(2);
+        me.go('showInfo', {info: msg});
 
         var
         hero = this.hero,
@@ -569,6 +571,7 @@ pico.def('game', 'pigSqrMap', function(){
 
         var p = evt.pop();
 
+        me.audioSprite.play(1);
         me.hero.move(p);
 
         return [e];

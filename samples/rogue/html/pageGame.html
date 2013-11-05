@@ -43,7 +43,6 @@ onFingerDown = function(evt, x, y){
 onFingerUp = function(evt, x, y){
     if (fingerTracker) return cancelTracking() // is a move not a click
     me.game.go('fingerUp', [x, y]);
-    me.game.audioSprite.play(2);
 },
 onFingerTwice = function(evt, x, y){
     if (fingerTracker) return cancelTracking() // is a move not a click
@@ -92,12 +91,13 @@ onLoad = function(){
     me.piAtlas.create('dat/img/fantasy-tileset-combined.png', 'dat/fantasy-tileset.json', function(err, tileSet){
         if (err) return alert(err);
         me.piHTMLAudio.create('dat/fantasy-sfx.json', function(err, audioSprite){
-            audioSprite.playList([0], 1000, 60000, true);
+            audioSprite.playList([0], 1000, 60000, true); // TODO: move to load scene method, diff sound for town and dungeons
             gameStage = document.querySelector('div#gameStage');
 
             var
             reactor = me.piReactor,
             rect = me.picRect,
+            tween = me.picTween,
             renderer = me.picRenderer,
             game = me.game,
             camera = me.camera,
@@ -123,7 +123,7 @@ onLoad = function(){
 
             reactor.addGroup(game);
 
-            game.init({tileSet:tileSet, audioSprite: audioSprite, smallDevice: smallDevice});
+            game.init({tileSet:tileSet, audioSprite:audioSprite, smallDevice:smallDevice});
 
             game.route('fingerDown', game.route('fingerDownFull', [
                 uiWindow.checkBound,
@@ -207,6 +207,7 @@ onLoad = function(){
                 uiWinEnt = uiWinEnts[i];
                 uiWinEnt.attach(rect, {x:0, y:0, width:0, height:0});
                 uiWinEnt.attach(uiWindow, {theme: G_THEME.THEME8, background: G_COLOR_TONE[3], box:rect.moduleName});
+                uiWinEnt.attach(tween, {theme: G_THEME.THEME8, background: G_COLOR_TONE[3], box:rect.moduleName});
             }
             uiWinEnt = uiWinEnts[0];
             uiWinEnt.attach(hero, {win:uiWindow.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
