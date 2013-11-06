@@ -133,6 +133,7 @@ pico.def('camera', 'picBase', function(){
                     }
                 }
             }else{
+                this.audioSprite.play(1);
                 this.go('heroMoveTo', [this.nextTile(id, hp)]);
             }
         }else if(object){
@@ -150,6 +151,7 @@ pico.def('camera', 'picBase', function(){
         object = objects[id];
         if (!(tileType & G_TILE_TYPE.HIDE) && !object){
             this.go('hideInfo');
+            this.audioSprite.play(1);
             this.go('heroMoveTo', [id]);
         }
 

@@ -88,6 +88,7 @@ onResize = function(){
     resize(this.innerWidth, this.innerHeight);
 },
 onLoad = function(){
+    debugger;
     me.piAtlas.create('dat/img/fantasy-tileset-combined.png', 'dat/fantasy-tileset.json', function(err, tileSet){
         if (err) return alert(err);
         me.piHTMLAudio.create('dat/fantasy-sfx.json', function(err, audioSprite){
