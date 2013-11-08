@@ -1,12 +1,12 @@
 pico.def('m3Main', function(){
-    this.use('picAudio');
+    this.use('piHTMLAudio');
 
     var
     me = this,
     onLoad = function(){
-        var audio = me.picAudio;
-        audio.addSrc('bang', '../res/audio/182274__martian__gun-for-roy');
-        pico.addFrame(document.body, 'div#page', 'views/login.html');
+        me.piHTMLAudio.create('dat/ui-sfx.json', function(err, audioSprite){
+            pico.addFrame(document.body, 'div#page', 'html/login.html');
+        });
     };
 
     me.slot(pico.LOAD, onLoad);

@@ -81,8 +81,8 @@
         var
         rect = me.picRect,
         circle = me.picCircleGeom,
+        audio = me.piHTMLAudio,
         tween = me.picTween,
-        audio = me.picAudio,
         renderer = me.picRenderer,
         e, x, y, head, color;
 
@@ -115,11 +115,11 @@
 
     me.use('piCanvas');
     me.use('piReactor');
+    me.use('piHTMLAudio');
     me.use('picGroup');
     me.use('picRect');
     me.use('picCircleGeom');
     me.use('picTween');
-    me.use('picAudio');
     me.use('picRenderer');
 
     me.slot(pico.LOAD, onLoad);
