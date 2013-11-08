@@ -3,7 +3,7 @@
 <head>
 <meta charset=utf-8>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
-<meta name="app-version" content="0.2.11" />
+<meta name="app-version" content="0.2.14" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 <!-- iPhone ICON -->
@@ -27,7 +27,7 @@
 <link href="res/screen/ios/da-768x1004.png" media="(device-width: 1536px) and (orientation: portrait) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
 <!-- iPad (Retina, landscape) 2048x1496 SPLASHSCREEN-->
 <link href="res/screen/ios/da-1024x748.png" media="(device-width: 1536px) and (orientation: landscape) and (-webkit-device-pixel-ratio: 2)" rel="apple-touch-startup-image">
-<script src="http://jsconsole.com/remote.js?DARREN-DA"></script>
+<!--<script src="http://jsconsole.com/remote.js?DARREN-DA"></script>-->
 <link rel="shortcut icon" type="image/x-icon" href="res/favicon.ico">
 <link rel="stylesheet" href="css/fantasy.css">
 <title>Dungeon Chronicles</title>
@@ -36,7 +36,6 @@
 
 <div id=loading></div>
 
-<script src=cordova.js></script>
 <script src=lib/pico/pico.js></script>
 <script src=lib/pico/lib/piCanvas.js></script>
 <script src=lib/pico/lib/piReactor.js></script>
@@ -67,6 +66,9 @@ pico.def('rogueMain', function(){
     me = this,
     loadPageStyle,
     onLoad = function(){
+        if ('phonegap' === pico.states.browser){
+            document.createElement('script').setAttribute('src', 'cordova.js');
+        }
         loadPageStyle = document.querySelector('div#loading').style;
         pico.addFrame(document.body, 'div#page', 'html/pageLogin.html');
     };
