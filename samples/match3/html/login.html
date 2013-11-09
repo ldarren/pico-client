@@ -4,7 +4,7 @@ div.ccenter{
   display:block;
   top: 50%;
   left: 50%;
-  width: 300px;
+  width: 600px;
   height: 600px;
   margin-top: -50px;
   margin-left: -150px;
@@ -17,6 +17,7 @@ button.sound{
 <div class=ccenter>
 <button id=goBtn>Go</button>
 <button id=loadBtn>Load Sounds</button>
+<p id=format></p>
 <button id=sound1Btn class=sound>Play Sound 1</button>
 <button id=sound2Btn class=sound>Play Sound 2</button>
 <button id=sound3Btn class=sound>Play Sound 3</button>
@@ -49,7 +50,6 @@ button.sound{
         me.piHTMLAudio.create('dat/ui-sfx.json', function(err, as){
             if (err) return console.error(err);
             audioSprite = as;
-
             var
             loadBtn = document.querySelector('button#loadBtn'),
             soundBtns = document.querySelectorAll('button.sound'),
@@ -67,6 +67,13 @@ button.sound{
             loadBtn.addEventListener('click', function(evt){
                 evt.preventDefault();
                 me.piHTMLAudio.preload();
+
+                var formatPara = document.querySelector('p#format');
+                formatPara.innerHTML = as.audio.src+'<br/>';
+                formatPara.innerHTML += 'audio/ogg:'+as.audio.canPlayType('audio/ogg')+'<br/>';
+                formatPara.innerHTML += 'audio/mp4:'+as.audio.canPlayType('audio/mp4')+'<br/>';
+                formatPara.innerHTML += 'audio/m4a:'+as.audio.canPlayType('audio/m4a')+'<br/>';
+                formatPara.innerHTML += 'audio/mp3:'+as.audio.canPlayType('audio/mp3')+'<br/>';
 
                 loadBtn.style.display = 'none';
 
