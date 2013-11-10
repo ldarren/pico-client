@@ -57,6 +57,7 @@ button.sound{
 
             btn.addEventListener('click', function(evt){
                 evt.preventDefault();
+                me.piHTMLAudio.preload();
                 pico.changeFrame(document.body, 'div#page', 'html/game.html', {opacity:[0,1,'1s']});
             });
 

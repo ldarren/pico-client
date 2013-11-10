@@ -19,8 +19,8 @@
 
         for(var i=0, l=entities.length; i<l; i++){
             e = entities[i];
-            rect = tween.getValues(e, rectName);
-            rx = rect.x[0], ry = rect.y[0], rw = rect.width[0], rh = rect.height[0], rad = Math.sqrt(rw*rw + rh*rh);
+            rect = tween.getByEntity(e, rectName);
+            rx = rect.x, ry = rect.y, rw = rect.width, rh = rect.height, rad = Math.sqrt(rw*rw + rh*rh);
             if (rx - rad < x && ry - rad < y && rx + rad > x && ry + rad > y){
                 selectedEntities.push(e);
             }
@@ -81,10 +81,12 @@
         var
         rect = me.picRect,
         circle = me.picCircleGeom,
-        audio = me.piHTMLAudio,
+        audio = me.picAudio,
         tween = me.picTween,
         renderer = me.picRenderer,
         e, x, y, head, color;
+
+        audio.init();
 
         renderer.registerContext('fl', layer.getContext(), 100, [0, 0, holder.clientWidth, holder.clientHeight]);
 
@@ -115,10 +117,10 @@
 
     me.use('piCanvas');
     me.use('piReactor');
-    me.use('piHTMLAudio');
     me.use('picGroup');
     me.use('picRect');
     me.use('picCircleGeom');
+    me.use('picAudio');
     me.use('picTween');
     me.use('picRenderer');
 
