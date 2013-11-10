@@ -17,6 +17,7 @@ this.use('picRenderer');
 this.use('rogueMain');
 this.use('game');
 this.use('camera');
+this.use('effect');
 this.use('uiWindow');
 this.use('hero');
 this.use('bag');
@@ -101,6 +102,7 @@ onLoad = function(){
             renderer = me.picRenderer,
             game = me.game,
             camera = me.camera,
+            effect = me.effect,
             uiWindow = me.uiWindow,
             bag = me.bag,
             tome = me.tome,
@@ -115,9 +117,11 @@ onLoad = function(){
 
             var
             gameLayer = canvas.addLayer('game'),
+            efxLayer = canvas.addLayer('efx'),
             uiLayer = canvas.addLayer('ui');
 
             renderer.registerContext('viewPane', gameLayer.getContext());
+            renderer.registerContext('efxPane', efxLayer.getContext());
             renderer.registerContext('uiPane', uiLayer.getContext());
             renderer.setBG('viewPane', G_COLOR_TONE[2]);
 
@@ -192,12 +196,17 @@ onLoad = function(){
 
             var
             cameraEnt = game.addEntity('camera'),
+            effectEnt = game.addEntity('effects'),
             uiWinEnts = [],
             uiWinEnt;
 
             cameraEnt.attach(rect, {x:0, y:0, width:100, height:100});
             cameraEnt.attach(camera, {});
             cameraEnt.attach(renderer, {viewPane:[camera.moduleName]});
+
+            effectEnt.attach(rect, {x:0, y:0, width:100, height:100});
+            effectEnt.attach(effect, {});
+            effectEnt.attach(renderer, {efxPane:[effect.moduleName]});
 
             uiWinEnts[0] = game.addEntity(G_WIN_ID.PLAYER);
             uiWinEnts[1] = game.addEntity(G_WIN_ID.TOME);
