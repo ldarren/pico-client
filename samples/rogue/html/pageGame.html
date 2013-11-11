@@ -167,6 +167,9 @@ onLoad = function(){
             game.route('attack', [game.attackAnim, renderer.draw]);
             game.route('counter', [game.counterAnim, renderer.draw]);
             game.route('flee', [game.flee, renderer.draw]);
+            game.route('startEffect', [effect.prepare, renderer.captureScreenshot, effect.start]);
+            game.route('doEffect', [tween.update, renderer.drawScreenshot, renderer.draw]);
+            game.route('stopEffect', [effect.stop, renderer.draw]);
             game.route('gameStep', [game.step, renderer.draw]);
             game.route('forceRefresh', [renderer.draw]);
             game.route('resize', [
@@ -207,6 +210,7 @@ onLoad = function(){
             effectEnt.attach(rect, {x:0, y:0, width:100, height:100});
             effectEnt.attach(effect, {});
             effectEnt.attach(renderer, {efxPane:[effect.moduleName]});
+            game.hideEntity('effects');
 
             uiWinEnts[0] = game.addEntity(G_WIN_ID.PLAYER);
             uiWinEnts[1] = game.addEntity(G_WIN_ID.TOME);
