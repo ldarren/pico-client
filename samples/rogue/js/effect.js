@@ -1,21 +1,29 @@
 pico.def('effect', 'picBase', function(){
     var
     me = this,
+    TWEENER = 'picTween',
     name = me.moduleName,
-    fingerUp, fingerDown, fingerMove, fingerOut, fingerTwice;
+    fingerUp, fingerDown, fingerMove, fingerOut, fingerTwice,
+    effectEnd = function(game, ent, name, targetName){
+        console.log(this, arguments);
+    };
+
+    me.use(TWEENER);
 
     me.draw = function(ctx, ent, clip){
     };
 
     me.drawScreenshot = function(ctx, ent, clip, bitmap){
         var
-        tweenOpt = ent.getComponent('picTween')[name],
+        tweenOpt = ent.getComponent(TWEENER)[name],
         x = tweenOpt.p1, y = tweenOpt.p2;
 
         ctx.save();
-        ctx.globalAlpha = 0.2;
+        ctx.globalAlpha = 0.8;
         ctx.globalCompositionOperation = 'source-over';
-        ctx.drawImage(bitmap, clip[0], clip[1], clip[2], clip[3]);
+        //ctx.drawImage(bitmap, clip[0], clip[1], clip[2], clip[3]);
+        ctx,fillStyle = 'rgba(0,0,0,0.3)';
+        ctx.fillRect(0,0,500,500);
 
         ctx.globalCompositionOperation = 'lighter';
         ctx.beginPath();
@@ -25,7 +33,7 @@ pico.def('effect', 'picBase', function(){
         gradient.addColorStop(0, "white");
         gradient.addColorStop(0.4, "white");
         gradient.addColorStop(0.4, "yellow");
-        gradient.addColorStop(1, "black");
+        gradient.addColorStop(1, "transparent");
 
         ctx.fillStyle = gradient;
         ctx.arc(x, y, 10, Math.PI*2, false);
@@ -42,8 +50,8 @@ console.log('effect draw');
 
         var
         ent = me.findHostByCom(entities, name),
-        tweenOpt = ent.getComponent('picTween')[name],
-        tweenRateOpt = ent.getComponent('picTween')['@'+name],
+        tweenOpt = ent.getComponent(TWEENER)[name],
+        tweenRateOpt = ent.getComponent(TWEENER)['@'+name],
         opt = ent.getComponent(name);
 
         switch(evt){
@@ -52,7 +60,7 @@ console.log('effect draw');
             default:
                 tweenOpt.p1 = 100, tweenOpt.p2 = 100;
                 opt.p1 = 0, opt.p2 = 0;
-                tweenRateOpt.p1 = 9, tweenRateOpt.p2 = 9;
+                tweenRateOpt.p1 = 15, tweenRateOpt.p2 = 15;
                 break;
         }
 
@@ -67,6 +75,7 @@ console.log('effect draw');
         fingerTwice = this.getRoute('fingerTwice');
         this.route('fingerTwice', []);
 
+        me[TWEENER].slot('stop', effectEnd);
         this.startLoop('doEffect', evt);
 console.log('effect start');
         return entities;
@@ -75,12 +84,11 @@ console.log('effect start');
     me.update = function(elapsed, evt, entities){
         var
         ent = me.findHostByCom(entities, name),
-        tweenOpt = ent.getComponent('picTween')[name],
+        tweenOpt = ent.getComponent(TWEENER)[name],
         opt = ent.getComponent(name),
         dx = tweenOpt.p1 - opt.p1,
         dy = tweenOpt.p2 - opt.p2;
 
-console.log('effect update', dx, dy);
         if ((dx*dx + dy * dy) < 5){
             tweenOpt.p1 = tweenOpt.p2 = opt.p1 = opt.p2 = 0;
             this.stopLoop('doEffect');
