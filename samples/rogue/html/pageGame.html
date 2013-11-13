@@ -82,6 +82,7 @@ resize = function(iw, ih){
 
     me.piCanvas.resize();
     me.picRenderer.resizeContext('viewPane', 0, 0, w, h);
+    me.picRenderer.resizeContext('efxPane', 0, 0, w, h);
     me.picRenderer.resizeContext('uiPane', 0, 0, w, h);
     me.game.go('resize', [0,0,w,h]);
 },
@@ -169,7 +170,8 @@ onLoad = function(){
             game.route('flee', [game.flee, renderer.draw]);
             game.route('startEffect', [uiWindow.hideAll, renderer.captureScreenshot, effect.start]);
             game.route('doEffect', [tween.update, effect.update, renderer.drawScreenshot]);
-            game.route('stopEffect', [effect.stop, renderer.releaseScreenshot, uiWindow.showAll, renderer.draw]);
+            game.route('clearEffect', [effect.clear, renderer.clear, effect.stop]);
+            game.route('stopEffect', [renderer.releaseScreenshot, uiWindow.showAll, renderer.draw]);
             game.route('gameStep', [game.step, renderer.draw]);
             game.route('forceRefresh', [renderer.draw]);
             game.route('resize', [
@@ -207,7 +209,6 @@ onLoad = function(){
             cameraEnt.attach(camera, {});
             cameraEnt.attach(renderer, {viewPane:[camera.moduleName]});
 
-            effectEnt.attach(rect, {x:0, y:0, width:100, height:100});
             effectEnt.attach(effect, {p0:0,p1:0,p2:0,p3:0,p4:0,p5:0,p6:0,p7:0,p8:0,p9:0});
             effectEnt.attach(tween, {effect:{p0:0,p1:0,p2:0,p3:0,p4:0,p5:0,p6:0,p7:0,p8:0,p9:0}});
             effectEnt.attach(renderer, {efxPane:[effect.moduleName]});

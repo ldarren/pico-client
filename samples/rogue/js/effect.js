@@ -9,6 +9,7 @@ pico.def('effect', 'picBase', function(){
     };
 
     me.use(TWEENER);
+    me.use('picRenderer');
 
     me.draw = function(ctx, ent, clip){
     };
@@ -19,20 +20,19 @@ pico.def('effect', 'picBase', function(){
         x = tweenOpt.p1, y = tweenOpt.p2;
 
         ctx.save();
-        ctx.globalAlpha = 0.8;
+        ctx.globalAlpha = 0.1;
         ctx.globalCompositionOperation = 'source-over';
-        //ctx.drawImage(bitmap, clip[0], clip[1], clip[2], clip[3]);
-        ctx,fillStyle = 'rgba(0,0,0,0.3)';
-        ctx.fillRect(0,0,500,500);
+        ctx.drawImage(bitmap, clip[0], clip[1], clip[2], clip[3]);
 
+        ctx.globalAlpha = 1;
         ctx.globalCompositionOperation = 'lighter';
         ctx.beginPath();
                 
         //Time for some colors
         var gradient = ctx.createRadialGradient(x, y, 0, x, y, 10);
         gradient.addColorStop(0, "white");
-        gradient.addColorStop(0.4, "white");
-        gradient.addColorStop(0.4, "yellow");
+        gradient.addColorStop(0.7, "white");
+        gradient.addColorStop(0.7, "transparent");
         gradient.addColorStop(1, "transparent");
 
         ctx.fillStyle = gradient;
@@ -60,7 +60,7 @@ console.log('effect draw');
             default:
                 tweenOpt.p1 = 100, tweenOpt.p2 = 100;
                 opt.p1 = 0, opt.p2 = 0;
-                tweenRateOpt.p1 = 15, tweenRateOpt.p2 = 15;
+                tweenRateOpt.p1 = 100, tweenRateOpt.p2 = 100;
                 break;
         }
 
@@ -74,6 +74,8 @@ console.log('effect draw');
         this.route('fingerOut', []);
         fingerTwice = this.getRoute('fingerTwice');
         this.route('fingerTwice', []);
+            
+        me.picRenderer.setBG('efxPane', 'transparent', function(){});
 
         me[TWEENER].slot('stop', effectEnd);
         this.startLoop('doEffect', evt);
@@ -89,12 +91,17 @@ console.log('effect start');
         dx = tweenOpt.p1 - opt.p1,
         dy = tweenOpt.p2 - opt.p2;
 
-        if ((dx*dx + dy * dy) < 5){
+        if ((dx*dx + dy * dy) < 50){
             tweenOpt.p1 = tweenOpt.p2 = opt.p1 = opt.p2 = 0;
             this.stopLoop('doEffect');
-            this.go('stopEffect', evt);
+            this.go('clearEffect', evt);
             return;
         }
+        return entities;
+    };
+
+    me.clear = function(elapsed, evt, entities){
+        me.picRenderer.setBG('efxPane');
         return entities;
     };
 
@@ -109,6 +116,7 @@ console.log('effect start');
         this.route('fingerOut', fingerOut);
         this.route('fingerTwice', fingerTwice);
 console.log('effect stop');
-        return entities;
+        this.go('stopEffect', evt);
+        return;
     };
 });
