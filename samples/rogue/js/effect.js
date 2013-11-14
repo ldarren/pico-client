@@ -4,8 +4,15 @@ pico.def('effect', 'picBase', function(){
     TWEENER = 'picTween',
     name = me.moduleName,
     fingerUp, fingerDown, fingerMove, fingerOut, fingerTwice,
-    effectEnd = function(game, ent, name, targetName){
-        console.log(this, arguments);
+    effectEnd = function(game, ent, evt, targetName){
+        console.log('effectEnd');
+        var
+        tweenOpt = ent.getComponent(TWEENER)[targetName],
+        opt = ent.getComponent(targetName);
+
+        tweenOpt.p1 = tweenOpt.p2 = opt.p1 = opt.p2 = 0;
+        game.stopLoop('doEffect');
+        game.go('clearEffect', evt);
     };
 
     me.use(TWEENER);
@@ -41,8 +48,8 @@ pico.def('effect', 'picBase', function(){
         ctx.arc(x, y, 10, Math.PI*2, false);
         ctx.fill();
 
-console.log('effect draw');
         ctx.restore();
+console.log('effect draw');
     };
 
     // add effectEnt, start do Effect loop
@@ -60,7 +67,7 @@ console.log('effect draw');
             case 'bullet':
                 break;
             default:
-                tweenOpt.p1 = 100, tweenOpt.p2 = 100;
+                tweenOpt.p1 = 300, tweenOpt.p2 = 300;
                 opt.p1 = 0, opt.p2 = 0;
                 tweenRateOpt.p1 = 100, tweenRateOpt.p2 = 100;
                 break;
@@ -86,19 +93,6 @@ console.log('effect start');
     };
 
     me.update = function(elapsed, evt, entities){
-        var
-        ent = me.findHostByCom(entities, name),
-        tweenOpt = ent.getComponent(TWEENER)[name],
-        opt = ent.getComponent(name),
-        dx = tweenOpt.p1 - opt.p1,
-        dy = tweenOpt.p2 - opt.p2;
-
-        if ((dx*dx + dy * dy) < 50){
-            tweenOpt.p1 = tweenOpt.p2 = opt.p1 = opt.p2 = 0;
-            this.stopLoop('doEffect');
-            this.go('clearEffect', evt);
-            return;
-        }
         return entities;
     };
 
