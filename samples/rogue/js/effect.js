@@ -22,7 +22,9 @@ pico.def('effect', 'picBase', function(){
         ctx.save();
         ctx.globalAlpha = 0.1;
         ctx.globalCompositionOperation = 'source-over';
-        ctx.drawImage(bitmap, clip[0], clip[1], clip[2], clip[3]);
+        //ctx.drawImage(bitmap, clip[0], clip[1], clip[2], clip[3]);
+        ctx.fillStyle = "rgba(0,0,0,0.3)";
+        ctx.fillRect(clip[0], clip[1], clip[2], clip[3]);
 
         ctx.globalAlpha = 1;
         ctx.globalCompositionOperation = 'lighter';
