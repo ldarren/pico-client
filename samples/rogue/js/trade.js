@@ -90,10 +90,12 @@ pico.def('trade', 'picUIWindow', function(){
     };
 
     me.checkBound = function(elapsed, evt, entities){
+        if (!goods) return entities;
         return entities;
     };
 
     me.click = function(elapsed, evt, entities){
+        if (!goods) return entities;
         var 
         e = entities[0],
         com = e.getComponent(name);

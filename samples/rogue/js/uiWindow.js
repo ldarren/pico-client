@@ -141,58 +141,15 @@ pico.def('uiWindow', 'picUIWindow', function(){
     };
 
     me.hideAll = function(elapsed, evt, entities){
-        var
-        e = entities[0],
-        ename = e ? e.name : "",
-        downPath = [],
-        upPath = [this.useSelected, this.releaseSelected];
+        this.route('fingerUp', this.getRoute('fingerUpLite'));
+        this.route('fingerDown', this.getRoute('fingerDownLite'));
 
-        switch(ename){
-            case playerId:
-                downPath.push(me.checkBound);
-                upPath.push(me.click);
-                break;
-            case tomeId:
-                downPath.push(me.checkBound);
-                //upPath.push(me.tome.click);
-                upPath.push(me.click);
-                break;
-            case bagId:
-                downPath.push(me.checkBound);
-                //upPath.push(me.bag.click);
-                upPath.push(me.click);
-                break;
-            case infoId:
-                downPath.push(me.info.checkBound);
-                upPath.push(me.info.click);
-                break;
-            case dialogId:
-                downPath.push(me.dialogMsg.checkBound);
-                upPath.push(me.dialogMsg.click);
-                break;
-            case tradeId:
-                downPath.push(me.trade.checkBound);
-                upPath.push(me.trade.click);
-                break;
-            case 'camera':
-                downPath.push(me.camera.checkBound);
-                upPath.push(me.camera.click);
-                break;
-        }
-
-        downPath.push(this.captureSelected);
-        downPath.push(me.picRenderer.captureScreenshot);
-        upPath.push(me.picRenderer.draw);
-
-        this.route('fingerUp', upPath);
-        this.route('fingerDown', downPath);
-
-        if (playerId !== ename) this.hideEntity(playerId);
-        if (tomeId !== ename) this.hideEntity(tomeId);
-        if (bagId !== ename) this.hideEntity(bagId);
-        if (infoId !== ename) this.hideEntity(infoId);
-        if (dialogId !== ename) this.hideEntity(dialogId);
-        if (tradeId !== ename) this.hideEntity(tradeId);
+        this.hideEntity(playerId);
+        this.hideEntity(tomeId);
+        this.hideEntity(bagId);
+        this.hideEntity(infoId);
+        this.hideEntity(dialogId);
+        this.hideEntity(tradeId);
         //this.hideEntity('camera');
 
         return entities;

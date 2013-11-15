@@ -83,6 +83,8 @@ pico.def('dialogMsg', 'picUIWindow', function(){
     };
 
     me.checkBound = function(elapsed, evt, entities){
+        if (!msg) return entities;
+
         var
         x = evt[0], y = evt[1],
         unknowns = [],
@@ -105,6 +107,8 @@ pico.def('dialogMsg', 'picUIWindow', function(){
     };
 
     me.click = function(elapsed, evt, entities){
+        if (!msg) return entities;
+
         var 
         e = entities[0],
         com = e.getComponent(name);

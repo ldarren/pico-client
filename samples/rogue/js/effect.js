@@ -32,7 +32,7 @@ console.log('effectEnd');
         ctx.globalCompositionOperation = 'source-over';
         // some older android browser require this to draw gradient
         ctx.fillStyle = "rgba(0,0,0,0.5)"; 
-        ctx.drawImage(bitmap, clip[0], clip[1], clip[2], 500);
+        ctx.drawImage(bitmap, clip[0], clip[1], clip[2], clip[3]);
         //ctx.fillRect(clip[0], clip[1], clip[2], clip[3]);
 
         ctx.globalAlpha = 1;
@@ -40,10 +40,10 @@ console.log('effectEnd');
         ctx.beginPath();
                 
         //Time for some colors
-        var gradient = ctx.createRadialGradient(x, y, 0, x, y, 10);
+        var gradient = ctx.createRadialGradient(x, y, 0, x, y, 16);
         gradient.addColorStop(0, "white");
-        gradient.addColorStop(0.7, "white");
-        gradient.addColorStop(0.7, "transparent");
+        gradient.addColorStop(0.5, "white");
+        gradient.addColorStop(0.5, "transparent");
         gradient.addColorStop(1, "transparent");
 
         ctx.fillStyle = gradient;

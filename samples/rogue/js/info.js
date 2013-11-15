@@ -226,7 +226,7 @@ pico.def('info', 'picUIWindow', function(){
     };
 
     me.click = function(elapsed, evt, entities){
-        if (!layouts.length) return entities;
+        if (!targetId || !layouts.length) return entities;
 
         var 
         e = entities[0],
@@ -315,6 +315,8 @@ pico.def('info', 'picUIWindow', function(){
     };
 
     me.checkBound = function(elapsed, evt, entities){
+        if (!targetId) return entities;
+
         var
         x = evt[0], y = evt[1],
         unknowns = [],
