@@ -5,7 +5,7 @@ pico.def('effect', 'picBase', function(){
     name = me.moduleName,
     fingerUp, fingerDown, fingerMove, fingerOut, fingerTwice,
     effectEnd = function(game, ent, evt, targetName){
-        console.log('effectEnd');
+console.log('effectEnd');
         var
         tweenOpt = ent.getComponent(TWEENER)[targetName],
         opt = ent.getComponent(targetName);
@@ -30,7 +30,10 @@ pico.def('effect', 'picBase', function(){
         ctx.save();
         ctx.globalAlpha = 0.1;
         ctx.globalCompositionOperation = 'source-over';
-        ctx.drawImage(bitmap, clip[0], clip[1], clip[2], clip[3]);
+        // some older android browser require this to draw gradient
+        ctx.fillStyle = "rgba(0,0,0,0.5)"; 
+        ctx.drawImage(bitmap, clip[0], clip[1], clip[2], 500);
+        //ctx.fillRect(clip[0], clip[1], clip[2], clip[3]);
 
         ctx.globalAlpha = 1;
         ctx.globalCompositionOperation = 'lighter';
@@ -43,14 +46,11 @@ pico.def('effect', 'picBase', function(){
         gradient.addColorStop(0.7, "transparent");
         gradient.addColorStop(1, "transparent");
 
-        // some older android browser require this to draw gradient
-        ctx.fillStyle = "rgba(0,0,0,0.5)"; 
         ctx.fillStyle = gradient;
         ctx.arc(x, y, 10, Math.PI*2, false);
         ctx.fill();
 
         ctx.restore();
-console.log('effect draw');
     };
 
     // add effectEnt, start do Effect loop
