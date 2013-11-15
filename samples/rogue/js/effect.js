@@ -19,6 +19,7 @@ pico.def('effect', 'picBase', function(){
     me.use('picRenderer');
 
     me.draw = function(ctx, ent, clip){
+        console.error('effect.draw');
     };
 
     me.drawScreenshot = function(ctx, ent, clip, bitmap){
@@ -29,9 +30,7 @@ pico.def('effect', 'picBase', function(){
         ctx.save();
         ctx.globalAlpha = 0.1;
         ctx.globalCompositionOperation = 'source-over';
-        //ctx.drawImage(bitmap, clip[0], clip[1], clip[2], clip[3]);
-        ctx.fillStyle = "rgba(0,0,0,0.3)";
-        ctx.fillRect(clip[0], clip[1], clip[2], clip[3]);
+        ctx.drawImage(bitmap, clip[0], clip[1], clip[2], clip[3]);
 
         ctx.globalAlpha = 1;
         ctx.globalCompositionOperation = 'lighter';
@@ -44,6 +43,8 @@ pico.def('effect', 'picBase', function(){
         gradient.addColorStop(0.7, "transparent");
         gradient.addColorStop(1, "transparent");
 
+        // some older android browser require this to draw gradient
+        ctx.fillStyle = "rgba(0,0,0,0.5)"; 
         ctx.fillStyle = gradient;
         ctx.arc(x, y, 10, Math.PI*2, false);
         ctx.fill();
