@@ -68,11 +68,9 @@ resize = function(iw, ih){
 
     if (ih > iw){
         w = h = ih;
-        //w = Math.ceil(0.8 * h);
         if (w > iw) w = iw;
     }else{
         h = w = iw;
-        //h = Math.ceil(0.8 * w);
         if (h > ih) h = ih;
     }
 
@@ -130,43 +128,17 @@ onLoad = function(){
 
             game.init({tileSet:tileSet, audioSprite:audioSprite, smallDevice:smallDevice});
 
-            game.route('fingerDown', game.route('fingerDownFull', [
+            game.route('fingerDown', [
                 uiWindow.checkBound,
-                info.checkBound,
-                dialogMsg.checkBound,
-                trade.checkBound,
-                camera.checkBound,
-                game.captureSelected,
-                renderer.captureScreenshot
-            ]));
-            game.route('fingerDownLite', [
-                info.checkBound,
-                dialogMsg.checkBound,
-                trade.checkBound,
                 camera.checkBound,
                 game.captureSelected,
                 renderer.captureScreenshot
             ]);
-            game.route('fingerUp', game.route('fingerUpFull', [
+            game.route('fingerUp', [
                 game.useSelected, 
                 game.releaseSelected, 
-                info.click,
-                tome.click, 
-                bag.click, 
-                dialogMsg.click, 
-                trade.click, 
-                hero.click,
                 uiWindow.click, 
                 camera.click, 
-                renderer.draw
-            ]));
-            game.route('fingerUpLite', [
-                game.useSelected, 
-                game.releaseSelected, 
-                info.click,
-                dialogMsg.click,
-                trade.click,
-                camera.click,
                 renderer.draw
             ]);
             game.route('fingerTwice', [
@@ -191,16 +163,7 @@ onLoad = function(){
             game.route('stopEffect', [renderer.releaseScreenshot, uiWindow.showAll, renderer.draw]);
             game.route('gameStep', [game.step, renderer.draw]);
             game.route('forceRefresh', [renderer.draw]);
-            game.route('resize', [
-                camera.resize, 
-                uiWindow.resize, 
-                tome.resize, 
-                bag.resize,
-                info.resize,
-                dialogMsg.resize,
-                trade.resize,
-                renderer.draw
-            ]);
+            game.route('resize', [camera.resize, uiWindow.resize, renderer.draw]);
             game.route('heroMoveTo', [game.heroMoveTo]);
             game.route('heroMove', [game.heroMove, renderer.draw]);
             game.route('heroStop', [game.heroStop, renderer.draw]);
@@ -208,7 +171,7 @@ onLoad = function(){
             game.route('teleport', [game.teleport, renderer.draw]);
             game.route('reborn', [game.reborn, renderer.draw]);
             game.route('recover', [game.recover, renderer.draw]);
-            game.route('openForSale', [uiWindow.openForSale, bag.openForSale, renderer.draw]);
+            game.route('openForSale', [uiWindow.maximise, bag.openForSale, renderer.draw]);
             game.route('showInfo', [info.open, renderer.draw]);
             game.route('hideInfo', [info.close, renderer.draw]);
             game.route('showDialog', [uiWindow.hideAll, dialogMsg.open, renderer.draw, game.releaseSelected]);
@@ -234,36 +197,39 @@ onLoad = function(){
             uiWinEnts[0] = game.addEntity(G_WIN_ID.PLAYER);
             uiWinEnts[1] = game.addEntity(G_WIN_ID.TOME);
             uiWinEnts[2] = game.addEntity(G_WIN_ID.BAG);
+            uiWinEnts[3] = game.addEntity(G_WIN_ID.INFO);
+            uiWinEnts[4] = game.addEntity(G_WIN_ID.DIALOG);
+            uiWinEnts[5] = game.addEntity(G_WIN_ID.TRADE);
 
             for(var i=0, l=uiWinEnts.length; i<l; i++){
                 uiWinEnt = uiWinEnts[i];
                 uiWinEnt.attach(rect, {x:0, y:0, width:0, height:0});
-                uiWinEnt.attach(uiWindow, {theme: G_THEME.THEME8, background: G_COLOR_TONE[3], box:rect.moduleName});
+                uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName]});
             }
+            
             uiWinEnt = uiWinEnts[0];
+            uiWinEnt.attach(uiWindow, {content:hero.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3], theme: G_THEME.THEME8});
             uiWinEnt.attach(hero, {win:uiWindow.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
-            uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, hero.moduleName]});
+            
             uiWinEnt = uiWinEnts[1];
+            uiWinEnt.attach(uiWindow, {content:tome.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3], theme: G_THEME.THEME8});
             uiWinEnt.attach(tome, {name:'Tome', win:uiWindow.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
-            uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, tome.moduleName]});
+            
             uiWinEnt = uiWinEnts[2];
+            uiWinEnt.attach(uiWindow, {content:box.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3], theme: G_THEME.THEME8});
             uiWinEnt.attach(bag, {name:'Bag', win:uiWindow.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
-            uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName, bag.moduleName]});
 
-            uiWinEnt = game.addEntity(G_WIN_ID.INFO);
-            uiWinEnt.attach(rect, {x:0, y:0, width:0, height:0});
-            uiWinEnt.attach(info, {box:rect.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', background:G_SHADE[3]});
-            uiWinEnt.attach(renderer, {uiPane:[info.moduleName]});
+            uiWinEnt = uiWinEnts[3];
+            uiWinEnt.attach(uiWindow, {content:info.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3]});
+            uiWinEnt.attach(info, {box:rect.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard'});
 
-            uiWinEnt = game.addEntity(G_WIN_ID.DIALOG);
-            uiWinEnt.attach(rect, {x:0, y:0, width:0, height:0});
-            uiWinEnt.attach(dialogMsg, {box:rect.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt alagard', background:G_SHADE[3]});
-            uiWinEnt.attach(renderer, {uiPane:[dialogMsg.moduleName]});
+            uiWinEnt = uiWinEnts[4];
+            uiWinEnt.attach(uiWindow, {content:dialogMsg.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3]});
+            uiWinEnt.attach(dialogMsg, {box:rect.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt alagard'});
 
-            uiWinEnt = game.addEntity(G_WIN_ID.TRADE);
-            uiWinEnt.attach(rect, {x:0, y:0, width:0, height:0});
-            uiWinEnt.attach(trade, {box:rect.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt alagard', background:G_SHADE[3]});
-            uiWinEnt.attach(renderer, {uiPane:[trade.moduleName]});
+            uiWinEnt = uiWinEnts[5];
+            uiWinEnt.attach(uiWindow, {content:trade.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3]});
+            uiWinEnt.attach(trade, {box:rect.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt alagard'});
 
             resize(window.innerWidth, window.innerHeight);
             canvas.slot(canvas.FINGER_DOWN, onFingerDown);

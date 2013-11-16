@@ -1,4 +1,4 @@
-pico.def('bag', 'picUIWindow', function(){
+pico.def('bag', 'picUIContent', function(){
     var
     me = this,
     Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round,

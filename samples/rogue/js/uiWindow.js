@@ -7,7 +7,6 @@ pico.def('uiWindow', 'picUIWindow', function(){
     this.use('trade');
 
     var
-    me = this,
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
     playerId = G_WIN_ID.PLAYER,
     tomeId = G_WIN_ID.TOME,
@@ -15,18 +14,29 @@ pico.def('uiWindow', 'picUIWindow', function(){
     infoId = G_WIN_ID.INFO,
     dialogId = G_WIN_ID.DIALOG,
     tradeId = G_WIN_ID.TRADE,
-    name = me.moduleName;
+    me = this,
+    name = me.moduleName,
+    refreshContent = function(com, comBox, layout){
+        comBox.x = layout[0];
+        comBox.y = layout[1];
+        comBox.width = layout[2];
+        comBox.height = layout[3];
+
+        var
+        canvas = com.canvas,
+        mod = pico.getModule(com.content),
+        bound = mod.resize.call(this, layout);
+
+        canvas.setAttribute('width', bound[2]);
+        canvas.setAttribute('height', bound[3]);
+
+        mod.draw.call(this, canvas.getContext('2d'), e, bound);
+    };
 
     me.create = function(ent, data){
-        var
-        ts = this.tileSet,
-        theme = data.theme,
-        b = theme.BORDERS;
+        data = me.base.create.call(this, ent, data);
 
-        data.active = false;
-        data.maximized = 0;
         var gs = data.gridSize = this.smallDevice ? 8 : 16;
-        data.layouts = [];
 
         switch(ent.name){
             case playerId:
@@ -44,20 +54,38 @@ pico.def('uiWindow', 'picUIWindow', function(){
                 data.minWidth = this.tileWidth+gs;
                 data.minHeight = this.smallDevice ? 180 : 360;
                 break;
+            case infoId:
+                data.minHeight = this.smallDevice ? 80 : 160;
+                break;
+            case dialogId:
+                data.minWidth = this.smallDevice ? 320 : 640;
+                data.minHeight = this.smallDevice ? 180 : 360;
+                break;
+            case tradeId:
+                data.minWidth = this.smallDevice ? 320 : 640;
+                data.minHeight = this.smallDevice ? 180 : 360;
+                break;
         }
 
-        if (!ts.getPatternImg(b.TOP)){
-            ts.assignPatternImg(b.TOP, ts.cut(b.TOP, gs, gs));
-            ts.assignPatternImg(b.LEFT, ts.cut(b.LEFT, gs, gs));
-            ts.assignPatternImg(b.BOTTOM, ts.cut(b.BOTTOM, gs, gs));
-            ts.assignPatternImg(b.RIGHT, ts.cut(b.RIGHT, gs, gs));
+        if (data.theme){
+            var
+            ts = this.tileSet,
+            theme = data.theme,
+            b = theme.BORDERS;
+
+            if (!ts.getPatternImg(b.TOP)){
+                ts.assignPatternImg(b.TOP, ts.cut(b.TOP, gs, gs));
+                ts.assignPatternImg(b.LEFT, ts.cut(b.LEFT, gs, gs));
+                ts.assignPatternImg(b.BOTTOM, ts.cut(b.BOTTOM, gs, gs));
+                ts.assignPatternImg(b.RIGHT, ts.cut(b.RIGHT, gs, gs));
+            }
         }
 
         return data;
     };
 
     me.resize = function(elapsed, evt, entities){
-        var com, e, gs, boxName, boxCom, layouts, layout;
+        var com, e, gs, layouts;
 
         for(var i=0, l=entities.length; i<l; i++){
             e = entities[i];
@@ -66,8 +94,6 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
             gs = com.gridSize;
             layouts = com.layouts;
-            boxName = com.box;
-            boxCom = e.getComponent(boxName);
 
             layouts.length = 0;
 
@@ -87,118 +113,102 @@ pico.def('uiWindow', 'picUIWindow', function(){
                         [evt[0], evt[1] + Floor((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight],
                         gs, gs, false));
                     break;
+                case infoId:
+                    layouts.push([evt[0], evt[1]+evt[3]-com.minHeight, evt[2], com.minHeight]);
+                    break;
             }
             // maximized layout
-            layouts.push(me.fitIntoGrid([evt[0]+1, evt[1]+1, evt[2]-2, evt[3]-2], gs, gs, true));
+            if (com.resizable)
+                layouts.push(me.fitIntoGrid([evt[0]+1, evt[1]+1, evt[2]-2, evt[3]-2], gs, gs, true));
 
-            layout = layouts[com.maximized];
-
-            boxCom.x = layout[0];
-            boxCom.y = layout[1];
-            boxCom.width = layout[2];
-            boxCom.height = layout[3];
+            refreshContent(com, e.getComponent(com.box), layouts[com.maximized]);
         }
         return entities;
     };
 
-    me.checkBound = function(elapsed, evt, entities){
-        var
-        x = evt[0], y = evt[1],
-        unknowns = [],
-        e, active, uiOpt, rectOpt;
-
-        for (var i=0, l=entities.length; i<l; i++){
-            e = entities[i];
-            uiOpt = e.getComponent(name);
-            if (!uiOpt) {
-                unknowns.push(e);
-                continue;
-            }
-            rectOpt = e.getComponent(uiOpt.box);
-            active = (rectOpt.x < x && (rectOpt.x + rectOpt.width) > x && rectOpt.y < y && (rectOpt.y + rectOpt.height) > y);
-            if (active !== uiOpt.active){
-                uiOpt.active = active;
-            }
-            if (active) {return [e]};
-        }
-
-        return unknowns;
-    };
-
     me.showAll = function(elapsed, evt, entities){
-        this.route('fingerDown', this.getRoute('fingerDownFull'));
-        this.route('fingerUp', this.getRoute('fingerUpFull'));
-
         this.showEntity(playerId);
         this.showEntity(tomeId);
         this.showEntity(bagId);
         me.info.openIfValid.call(this, elapsed, evt, entities);
         me.dialogMsg.openIfValid.call(this, elapsed, evt, entities);
         me.trade.openIfValid.call(this, elapsed, evt, entities);
-        //this.showEntity('camera');
 
         return entities;
     };
 
     me.hideAll = function(elapsed, evt, entities){
-        this.route('fingerUp', this.getRoute('fingerUpLite'));
-        this.route('fingerDown', this.getRoute('fingerDownLite'));
-
         this.hideEntity(playerId);
         this.hideEntity(tomeId);
         this.hideEntity(bagId);
         this.hideEntity(infoId);
         this.hideEntity(dialogId);
         this.hideEntity(tradeId);
-        //this.hideEntity('camera');
 
         return entities;
+    };
+
+    me.checkBound = function(elapsed, evt, entities){
+        var
+        x = evt[0], y = evt[1],
+        unknowns = [], selected = [],
+        e, active, com, comBox;
+
+        for (var i=0, l=entities.length; i<l; i++){
+            e = entities[i];
+            com = e.getComponent(name);
+            if (!com) {
+                unknowns.push(e);
+                continue;
+            }
+            comBox = e.getComponent(com.box);
+            active = (comBox.x < x && (comBox.x + comBox.width) > x && comBox.y < y && (comBox.y + comBox.height) > y);
+            if (active !== com.active){
+                com.active = active;
+            }
+            if (active) selected.push(e);
+        }
+
+        if (selected.length) return selected;
+
+        return unknowns;
     };
 
     me.click = function(elapsed, evt, entities){
         var
-        e = entities[0],
-        uiOpt = e.getComponent(name);
+        e = entities[0], // should had 1 entity only
+        com = e.getComponent(name);
 
-        if (!uiOpt) return entities;
+        if (!com) return entities;
 
-        var
-        x = evt[0], y = evt[1],
-        rectOpt = e.getComponent(uiOpt.box);
-
-        uiOpt.maximized = uiOpt.maximized ? 0 : 1;
-        if (uiOpt.maximized){
-            me.hideAll.call(this, elapsed, evt, entities);
-        }else{
-            me.showAll.call(this, elapsed, evt, entities);
+        var mod = pico.getModule(com.content);
+        if (!mod.click.call(this, ent, evt) && com.resizable){
+            com.maximized = com.maximized ? 0 : 1;
+            if (com.maximized){
+                me.hideAll.call(this, elapsed, evt, entities);
+                this.showEntity(e.name);
+            }else{
+                me.showAll.call(this, elapsed, evt, entities);
+            }
         }
-        var layout = uiOpt.layouts[uiOpt.maximized];
-        rectOpt.x = layout[0];
-        rectOpt.y = layout[1];
-        rectOpt.width = layout[2];
-        rectOpt.height = layout[3];
-
+        refreshContent(com, e.getComponent(com.box), com.layouts[com.maximized]);
         return entities;
     };
 
-    me.openForSale = function(elapsed, evt, entities){
-        var ent = me.findHost(entities, G_WIN_ID.BAG);
+    me.maximise = function(elapsed, evt, entities){
+        var ent = me.findHost(entities, evt[0]);
         if (!ent) return entities;
-        var
-        ret = [ent],
-        com = ent.getComponent(name),
-        rect = ent.getComponent(com.box);
-
-        com.maximized = 1;
-
-        var layout = com.layouts[com.maximized];
 
         me.hideAll.call(this, elapsed, evt, ret);
+        me.showEntity(ent.name);
 
-        rect.x = layout[0];
-        rect.y = layout[1];
-        rect.width = layout[2];
-        rect.height = layout[3];
+        var
+        ret = [ent],
+        com = ent.getComponent(name);
+
+        com.maximized = com.resizable ? 1 : 0;
+
+        refreshContent(com, e.getComponent(com.box), com.layouts[com.maximized]);
 
         return ret;
     };
@@ -208,35 +218,42 @@ pico.def('uiWindow', 'picUIWindow', function(){
     };
 
     me.draw = function(ctx, ent, clip){
-        var uiOpt = ent.getComponent(name);
+        var com = ent.getComponent(name);
 
-        if (!uiOpt) return;
+        if (!com) return;
 
         var
-        gs = uiOpt.gridSize,
-        rectOpt = ent.getComponent(uiOpt.box),
-        ts = this.tileSet,
-        dock = uiOpt.docks[uiOpt.maximized],
-        borders = uiOpt.theme.BORDERS,
-        theme = uiOpt.active ? uiOpt.theme.ACTIVE : uiOpt.theme.INACTIVE;
+        gs = com.gridSize,
+        gs2 = gs * 2,
+        bound = [comBox.x + gs, comBox.y + gs, comBox.width - gs, comBox.height = gs],
+        comBox = ent.getComponent(com.box);
 
         ctx.save();
         ctx.beginPath();
-        ctx.fillStyle = uiOpt.background;
-        if (uiOpt.maximized) ctx.fillRect(clip[0], clip[1], clip[2], clip[3]);
-        else ctx.fillRect(rectOpt.x, rectOpt.y, rectOpt.width, rectOpt.height);
+        ctx.fillStyle = com.background;
+        if (com.maximized) ctx.fillRect(clip[0], clip[1], clip[2], clip[3]);
+        else ctx.fillRect(comBox.x, comBox.y, comBox.width, comBox.height);
 
-        if (dock & 8) ts.fillPattern(ctx, borders.TOP, rectOpt.x, rectOpt.y, rectOpt.width, gs);
-        if (dock & 4) ts.fillPattern(ctx, borders.RIGHT, rectOpt.x + rectOpt.width - gs, rectOpt.y, gs, rectOpt.height);
-        if (dock & 2) ts.fillPattern(ctx, borders.BOTTOM, rectOpt.x, rectOpt.y+rectOpt.height-gs, rectOpt.width, gs);
-        if (dock & 1) ts.fillPattern(ctx, borders.LEFT, rectOpt.x, rectOpt.y, gs, rectOpt.height);
+        ctx.drawImage(com.canvas, com.scrollX, com.scrollY, bound[2], bound[3], bound[0], bound[1], bound[2], bound[3]);
 
-        if (9 === (dock & 9)) ts.draw(ctx, theme.TOP_LEFT, rectOpt.x, rectOpt.y, gs, gs);
-        if (12 === (dock & 12)) ts.draw(ctx, theme.TOP_RIGHT, rectOpt.x + rectOpt.width - gs, rectOpt.y, gs, gs);
-        if (3 === (dock & 3)) ts.draw(ctx, theme.BOTTOM_LEFT, rectOpt.x, rectOpt.y + rectOpt.height - gs, gs, gs);
-        if (6 === (dock & 6)) ts.draw(ctx, theme.BOTTOM_RIGHT, rectOpt.x + rectOpt.width - gs, rectOpt.y + rectOpt.height - gs, gs, gs);
+        if (com.theme){
+            var
+            ts = this.tileSet,
+            dock = com.docks[com.maximized],
+            borders = com.theme.BORDERS,
+            theme = com.active ? com.theme.ACTIVE : com.theme.INACTIVE;
+
+            if (dock & 8) ts.fillPattern(ctx, borders.TOP, comBox.x, comBox.y, comBox.width, gs);
+            if (dock & 4) ts.fillPattern(ctx, borders.RIGHT, comBox.x + comBox.width - gs, comBox.y, gs, comBox.height);
+            if (dock & 2) ts.fillPattern(ctx, borders.BOTTOM, comBox.x, comBox.y+comBox.height-gs, comBox.width, gs);
+            if (dock & 1) ts.fillPattern(ctx, borders.LEFT, comBox.x, comBox.y, gs, comBox.height);
+
+            if (9 === (dock & 9)) ts.draw(ctx, theme.TOP_LEFT, comBox.x, comBox.y, gs, gs);
+            if (12 === (dock & 12)) ts.draw(ctx, theme.TOP_RIGHT, comBox.x + comBox.width - gs, comBox.y, gs, gs);
+            if (3 === (dock & 3)) ts.draw(ctx, theme.BOTTOM_LEFT, comBox.x, comBox.y + comBox.height - gs, gs, gs);
+            if (6 === (dock & 6)) ts.draw(ctx, theme.BOTTOM_RIGHT, comBox.x + comBox.width - gs, comBox.y + comBox.height - gs, gs, gs);
+        }
 
         ctx.restore();
-
     };
 });

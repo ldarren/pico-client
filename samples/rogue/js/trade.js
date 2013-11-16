@@ -1,4 +1,4 @@
-pico.def('trade', 'picUIWindow', function(){
+pico.def('trade', 'picUIContent', function(){
     var
     me = this,
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
@@ -10,13 +10,8 @@ pico.def('trade', 'picUIWindow', function(){
     goods = undefined;
 
     me.create = function(ent, data){
-        var ts = this.tileSet;
-        ts.assignPatternImg(data.background, ts.cut(data.background, this.tileWidth, this.tileHeight));
-
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
 
-        data.minWidth = this.smallDevice ? 320 : 640;
-        data.minHeight = this.smallDevice ? 180 : 360;
         return data;
     };
 
@@ -89,11 +84,6 @@ pico.def('trade', 'picUIWindow', function(){
         return entities;
     };
 
-    me.checkBound = function(elapsed, evt, entities){
-        if (!goods) return entities;
-        return entities;
-    };
-
     me.click = function(elapsed, evt, entities){
         if (!goods) return entities;
         var 
@@ -119,7 +109,6 @@ pico.def('trade', 'picUIWindow', function(){
     };
 
     me.draw = function(ctx, ent, clip){
-
         if (!goods){
             me.close.call(this);
             return;
@@ -138,10 +127,6 @@ pico.def('trade', 'picUIWindow', function(){
         i, j, l, block;
 
         ctx.save();
-
-        ctx.fillStyle = 'rgba(32,70,49,0.7)';
-        ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
-        ts.fillPattern(ctx, com.background, rect.x, rect.y, rect.width, rect.height);
 
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';

@@ -1,4 +1,4 @@
-pico.def('dialogMsg', 'picUIWindow', function(){
+pico.def('dialogMsg', 'picUIContent', function(){
     var
     me = this,
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
@@ -8,13 +8,8 @@ pico.def('dialogMsg', 'picUIWindow', function(){
     msg;
 
     me.create = function(ent, data){
-        var ts = this.tileSet;
-        ts.assignPatternImg(data.background, ts.cut(data.background, this.tileWidth, this.tileHeight));
-
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
 
-        data.minWidth = this.smallDevice ? 320 : 640;
-        data.minHeight = this.smallDevice ? 180 : 360;
         return data;
     };
 
@@ -82,30 +77,6 @@ pico.def('dialogMsg', 'picUIWindow', function(){
         return entities;
     };
 
-    me.checkBound = function(elapsed, evt, entities){
-        if (!msg) return entities;
-
-        var
-        x = evt[0], y = evt[1],
-        unknowns = [],
-        e, uiOpt, rectOpt;
-
-        for (var i=0, l=entities.length; i<l; i++){
-            e = entities[i];
-            uiOpt = e.getComponent(name);
-            if (!uiOpt) {
-                unknowns.push(e);
-                continue;
-            }
-            rectOpt = e.getComponent(uiOpt.box);
-            if (rectOpt.x < x && (rectOpt.x + rectOpt.width) > x && rectOpt.y < y && (rectOpt.y + rectOpt.height) > y){
-                return [e];
-            }
-        }
-
-        return unknowns;
-    };
-
     me.click = function(elapsed, evt, entities){
         if (!msg) return entities;
 
@@ -140,7 +111,6 @@ pico.def('dialogMsg', 'picUIWindow', function(){
     };
 
     me.draw = function(ctx, ent, clip){
-
         if (!msg){
             me.close.call(this);
             return;
@@ -161,10 +131,6 @@ pico.def('dialogMsg', 'picUIWindow', function(){
         i, l;
 
         ctx.save();
-
-        ctx.fillStyle = 'rgba(32,70,49,0.7)';
-        ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
-        ts.fillPattern(ctx, com.background, rect.x, rect.y, rect.width, rect.height);
 
         ctx.textAlign = 'left';
         ctx.textBaseline = 'top';

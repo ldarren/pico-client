@@ -1,11 +1,9 @@
-pico.def('info', 'picUIWindow', function(){
-    this.use('uiWindow');
+pico.def('info', 'picUIContent', function(){
 
     var
     me = this,
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
     name = me.moduleName,
-    screenSize = [],
     layouts = [],
     labels = [],
     callbacks = [],
@@ -142,10 +140,6 @@ pico.def('info', 'picUIWindow', function(){
     };
 
     me.create = function(ent, data){
-        var ts = this.tileSet;
-
-        ts.assignPatternImg(data.background, ts.cut(data.background, this.tileWidth, this.tileHeight));
-
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
         return data;
     };
@@ -191,11 +185,6 @@ pico.def('info', 'picUIWindow', function(){
         var
         com = ent.getComponent(name),
         rect = ent.getComponent(com.box);
-
-        rect.x = screenSize[0];
-        rect.y = screenSize[3]-160;
-        rect.width = screenSize[2];
-        rect.height = 160;
 
         createLayouts(rect.x, rect.y+rect.height, rect.width, this.smallDevice);
         
@@ -291,7 +280,7 @@ pico.def('info', 'picUIWindow', function(){
                     this.go('showTrade', [targetId]);
                     break;
                 case 'showMyGoods':
-                    this.go('openForSale', [targetId]);
+                    this.go('openForSale', [G_WIN_ID.BAG, 'sale']);
                     break;
                 case 'chant':
                     this.go('chant', [targetId]);
@@ -308,34 +297,9 @@ pico.def('info', 'picUIWindow', function(){
 
     me.resize = function(elapsed, evt, entities){
 
-        screenSize = evt.slice();
         me.openIfValid.call(this, elapsed, evt, entities);
 
         return entities;
-    };
-
-    me.checkBound = function(elapsed, evt, entities){
-        if (!targetId) return entities;
-
-        var
-        x = evt[0], y = evt[1],
-        unknowns = [],
-        e, uiOpt, rectOpt;
-
-        for (var i=0, l=entities.length; i<l; i++){
-            e = entities[i];
-            uiOpt = e.getComponent(name);
-            if (!uiOpt) {
-                unknowns.push(e);
-                continue;
-            }
-            rectOpt = e.getComponent(uiOpt.box);
-            if(rectOpt.x < x && (rectOpt.x + rectOpt.width) > x && rectOpt.y < y && (rectOpt.y + rectOpt.height) > y){
-                return [e];
-            }
-        }
-
-        return unknowns;
     };
 
     me.draw = function(ctx, ent, clip){
@@ -363,10 +327,6 @@ pico.def('info', 'picUIWindow', function(){
         i, l;
 
         ctx.save();
-
-        ctx.fillStyle = 'rgba(32,70,49,0.5)';
-        ctx.fillRect(rect.x, rect.y, rect.width, rect.height);
-        ts.fillPattern(ctx, com.background, rect.x, rect.y, rect.width, rect.height);
 
         if (targetId > -1){
             ctx.textAlign = 'left';

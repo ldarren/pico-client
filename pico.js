@@ -64,6 +64,7 @@ pico.def = function(name){
     }
     var properties = {
         moduleName: {value:name, writable:false, configurable:false, enumerable:true},
+        base: {value:ancestor, writable:false, configurable:false, enumerable:true},
         slots: {value:{}, writable:false, configurable:false, enumerable:false},
         deps: {value:[], writable:false, configurable:false, enumerable:false}
     };
