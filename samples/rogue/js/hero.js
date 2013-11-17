@@ -11,9 +11,6 @@ pico.def('hero', 'picUIContent', function(){
     d20Roll = function(){
         return Round(Random()*21);
     },
-    testCB = function(msg){
-        alert(msg);
-    },
     drawName = function(ctx, rect, ui){
         me.fillWrapText(ctx, currStats[OBJECT_NAME], rect[0], rect[1]+rect[3]/2, ui.w, ui.h);
     },
@@ -94,25 +91,7 @@ pico.def('hero', 'picUIContent', function(){
 
     me.create = function(ent, data){
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
-
-        var
-        scale = this.smallDevice ? 2 : 1;
-        smallLayout = me.createBorderLayout(null, me.TOP, me.TOP, 0, 600/scale, 60/scale, {font: data.font, fillStyle: G_COLOR_TONE[1]} ),
-        topRow = me.createBorderRow(smallLayout.layout),
-        nameCell = me.createBorderCell(topRow),
-        hpCell = me.createBorderCell(topRow),
-        bottomRow = me.createBorderRow(smallLayout.layout),
-        levelCell = me.createBorderCell(bottomRow),
-        customCell1 = me.createBorderCell(bottomRow),
-        customCell2 = me.createBorderCell(bottomRow, {fillStyle: G_COLOR_TONE[3], strokeStyle: G_COLOR_TONE[1]});
-
-        me.createBorderCustom(nameCell, me.CENTER, me.CENTER, 0, 300/scale, 16/scale, drawName);
-        me.createBorderCustom(hpCell, me.CENTER, me.CENTER, 0, 32/scale, 32/scale, drawLives);
-        me.createBorderCustom(levelCell, me.CENTER, me.CENTER, 0, 200/scale, 16/scale, drawLevel);
-        me.createBorderCustom(customCell1, me.CENTER, me.CENTER, 0, 200/scale, 30/scale, drawCustom1);
-        me.createBorderCustom(customCell2, me.CENTER, me.CENTER, 0, 200/scale, 16/scale, drawCustom2);
-
-        data.layouts = [smallLayout];
+        data.layout = [];
         return data;
     };
 
@@ -452,20 +431,35 @@ pico.def('hero', 'picUIContent', function(){
     };
     me.isDead = function(){ return currStats[OBJECT_HP] < 1; };
 
-    me.click = function(elapsed, evt, entities){
-        var ent = me.findHost(entities, G_WIN_ID.PLAYER);
-        if (!ent) return entities;
+    me.resize = function(ent, bound){
         var
         com = ent.getComponent(name),
-        win = ent.getComponent(com.win),
-        rect = ent.getComponent(win.box);
+        comWin = ent.getComponent(com.win),
+        comBox = ent.getComponent(com.box),
+        scale = this.smallDevice ? 2 : 1;
+        panel = me.createBorderLayout(null, me.TOP, me.TOP, 0, 600/scale, 60/scale, {font: data.font, fillStyle: G_COLOR_TONE[1]} ),
+        topRow = me.createBorderRow(panel.layout),
+        nameCell = me.createBorderCell(topRow),
+        hpCell = me.createBorderCell(topRow),
+        bottomRow = me.createBorderRow(panel.layout),
+        levelCell = me.createBorderCell(bottomRow),
+        customCell1 = me.createBorderCell(bottomRow),
+        customCell2 = me.createBorderCell(bottomRow, {fillStyle: G_COLOR_TONE[3], strokeStyle: G_COLOR_TONE[1]});
 
-        if (win.maximized){
-        }else{
-            if (me.clickBorderLayout(evt[0], evt[1], rect, com.layouts[0])) return;
-            return entities;
-        }
-        return entities;
+        me.createBorderCustom(nameCell, me.CENTER, me.CENTER, 0, 300/scale, 16/scale, drawName);
+        me.createBorderCustom(hpCell, me.CENTER, me.CENTER, 0, 32/scale, 32/scale, drawLives);
+        me.createBorderCustom(levelCell, me.CENTER, me.CENTER, 0, 200/scale, 16/scale, drawLevel);
+        me.createBorderCustom(customCell1, me.CENTER, me.CENTER, 0, 200/scale, 30/scale, drawCustom1);
+        me.createBorderCustom(customCell2, me.CENTER, me.CENTER, 0, 200/scale, 16/scale, drawCustom2);
+    };
+
+    me.click = function(ent, x, y){
+        var
+        com = ent.getComponent(name),
+        comBox = ent.getComponent(com.box);
+
+        if (me.clickBorderLayout(x, y, comBox, com.layout)) return true;
+        return false;
     };
 
     me.draw = function(ctx, ent, clip){

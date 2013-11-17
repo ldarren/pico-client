@@ -42,41 +42,12 @@ pico.def('tome', 'picUIContent', function(){
     };
 
     me.create = function(ent, data){
-        data.layouts = [];
+        data.layout = [];
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
         return data;
     };
 
-    me.resize = function(elapsed, evt, entities){
-        var e, com;
-
-        for(var i=0, l=entities.length; i<l; i++){
-            e = entities[i];
-            com = e.getComponent(name);
-            if (!com) continue;
-
-            var
-            tw = this.tileWidth, th = this.tileHeight,
-            layouts = com.layouts,
-            win = e.getComponent(com.win),
-            gs = win.gridSize,
-            wLay = win.layouts[0],
-            cap = this.hero.getTomeCap(),
-            layout;
-
-            layouts.length = 0;
-
-            layout = me.generateGridLayout([wLay[0]+gs, wLay[1]+16+gs, wLay[2]-gs, wLay[3]-16-gs*2], tw, th, TOME_ROW, 1);
-            layout.unshift([wLay[0]+gs, wLay[1]+gs, wLay[2]-gs, 16]);
-            layouts.push(layout);
-            wLay = win.layouts[1];
-            layout = me.generateGridLayout([wLay[0]+gs*2, wLay[1]+32+gs*2, wLay[2]-gs*4, wLay[3]-32-gs*4], tw, th, TOME_ROW, Floor(cap/TOME_ROW));
-            layout.unshift([wLay[0]+gs*2, wLay[1]+gs*2, wLay[2]-gs*4, 32]);
-            layouts.push(layout);
-
-            break;
-        }
-        return entities;
+    me.resize = function(ent, bound){
     };
 
     me.click = function(elapsed, evt, entities){

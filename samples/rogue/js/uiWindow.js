@@ -1,7 +1,6 @@
 pico.def('uiWindow', 'picUIWindow', function(){
 
     this.use('picRenderer');
-    this.use('camera');
     this.use('info');
     this.use('dialogMsg');
     this.use('trade');
@@ -16,21 +15,77 @@ pico.def('uiWindow', 'picUIWindow', function(){
     tradeId = G_WIN_ID.TRADE,
     me = this,
     name = me.moduleName,
-    refreshContent = function(com, comBox, layout){
-        comBox.x = layout[0];
-        comBox.y = layout[1];
-        comBox.width = layout[2];
-        comBox.height = layout[3];
-
+    refreshContent = function(ent, com){
         var
+        comBox  = ent.getComponent(com.box),
+        layout = com.layouts[com.maximized],
         canvas = com.canvas,
-        mod = pico.getModule(com.content),
-        bound = mod.resize.call(this, layout);
+        mod = pico.getModule(com.content);
 
-        canvas.setAttribute('width', bound[2]);
-        canvas.setAttribute('height', bound[3]);
+        canvas.setAttribute('width', comBox.width);
+        canvas.setAttribute('height', comBox.height);
 
-        mod.draw.call(this, canvas.getContext('2d'), e, bound);
+        mod.resize.call(this, ent, comBox.width, comBox.height);
+        mod.draw.call(this, canvas.getContext('2d'), ent, layout);
+    },
+    resizeContent = function(ent, com){
+        var
+        comBox = ent.getComponent(com.box),
+        layout;
+
+        if (com.maximized){
+            layout = layouts[1];
+            switch(ent.name){
+                case playerId:
+                case tomeId:
+                case bagId:
+                    comBox.x = layout[0]-gs;
+                    comBox.y = layout[1]-gs;
+                    comBox.width = layout[2]-(gs*2);
+                    comBox.height = layout[3]-(gs*2);
+                    break;
+                case infoId:
+                case dialogMsgId:
+                case tradeId:
+                    comBox.x = layout[0];
+                    comBox.y = layout[1];
+                    comBox.width = layout[2];
+                    comBox.height = layout[3];
+                    break;
+            }
+        }else{
+            layout = layouts[0];
+            switch(ent.name){
+                case playerId:
+                    comBox.x = layout[0]-gs;
+                    comBox.y = layout[1];
+                    comBox.width = layout[2]-(gs*2);
+                    comBox.height = layout[3]-(gs);
+                    break;
+                case tomeId:
+                    comBox.x = layout[0]-gs;
+                    comBox.y = layout[1]-gs;
+                    comBox.width = layout[2]-(gs);
+                    comBox.height = layout[3]-(gs*2);
+                    break;
+                case bagId:
+                    comBox.x = layout[0];
+                    comBox.y = layout[1]-gs;
+                    comBox.width = layout[2]-(gs);
+                    comBox.height = layout[3]-(gs*2);
+                    break;
+                case infoId:
+                case dialogMsgId:
+                case tradeId:
+                    comBox.x = layout[0];
+                    comBox.y = layout[1];
+                    comBox.width = layout[2];
+                    comBox.height = layout[3];
+                    break;
+            }
+        }
+
+        refreshContent(ent, com);
     };
 
     me.create = function(ent, data){
@@ -85,11 +140,11 @@ pico.def('uiWindow', 'picUIWindow', function(){
     };
 
     me.resize = function(elapsed, evt, entities){
-        var com, e, gs, layouts;
+        var com, comBox, ent, gs, layouts, layout;
 
         for(var i=0, l=entities.length; i<l; i++){
-            e = entities[i];
-            com = e.getComponent(name);
+            ent = entities[i];
+            com = ent.getComponent(name);
             if (!com) continue;
 
             gs = com.gridSize;
@@ -97,7 +152,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
             layouts.length = 0;
 
-            switch(e.name){
+            switch(ent.name){
                 case playerId:
                     layouts.push(me.fitIntoGrid(
                         [evt[0] + Floor((evt[2] - com.minWidth)/2), evt[1], com.minWidth, com.minHeight],
@@ -116,12 +171,18 @@ pico.def('uiWindow', 'picUIWindow', function(){
                 case infoId:
                     layouts.push([evt[0], evt[1]+evt[3]-com.minHeight, evt[2], com.minHeight]);
                     break;
+                case dialogMsgId:
+                case tradeId:
+                    layouts.push(me.fitIntoGrid(
+                        [evt[0] + Ceil((evt[2] - com.minWidth)/2), evt[1] + Ceil((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight],
+                        gs, gs, false));
+                    break;
             }
             // maximized layout
             if (com.resizable)
                 layouts.push(me.fitIntoGrid([evt[0]+1, evt[1]+1, evt[2]-2, evt[3]-2], gs, gs, true));
 
-            refreshContent(com, e.getComponent(com.box), layouts[com.maximized]);
+            resizeContent(ent, com);
         }
         return entities;
     };
@@ -152,21 +213,21 @@ pico.def('uiWindow', 'picUIWindow', function(){
         var
         x = evt[0], y = evt[1],
         unknowns = [], selected = [],
-        e, active, com, comBox;
+        ent, active, com, layout;
 
         for (var i=0, l=entities.length; i<l; i++){
-            e = entities[i];
-            com = e.getComponent(name);
+            ent = entities[i];
+            com = ent.getComponent(name);
             if (!com) {
-                unknowns.push(e);
+                unknowns.push(ent);
                 continue;
             }
-            comBox = e.getComponent(com.box);
-            active = (comBox.x < x && (comBox.x + comBox.width) > x && comBox.y < y && (comBox.y + comBox.height) > y);
+            layout = com.layouts[com.maximized];
+            active = (layout[0] < x && (layout[0]+layout[2]) > x && layout[1] < y && (layout[1]+layout[3]) > y);
             if (active !== com.active){
                 com.active = active;
             }
-            if (active) selected.push(e);
+            if (active) selected.push(ent);
         }
 
         if (selected.length) return selected;
@@ -176,26 +237,26 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
     me.click = function(elapsed, evt, entities){
         var
-        e = entities[0], // should had 1 entity only
-        com = e.getComponent(name);
+        ent = entities[0], // should had 1 entity only
+        com = ent.getComponent(name);
 
         if (!com) return entities;
 
         var mod = pico.getModule(com.content);
-        if (!mod.click.call(this, ent, evt) && com.resizable){
+        if (!mod.click.call(this, ent, com.scrollX + evt[0], com.scrollY + evt[1]) && com.resizable){
             com.maximized = com.maximized ? 0 : 1;
             if (com.maximized){
                 me.hideAll.call(this, elapsed, evt, entities);
-                this.showEntity(e.name);
+                this.showEntity(ent.name);
             }else{
                 me.showAll.call(this, elapsed, evt, entities);
             }
         }
-        refreshContent(com, e.getComponent(com.box), com.layouts[com.maximized]);
+        refreshContent(ent, com);
         return entities;
     };
 
-    me.maximise = function(elapsed, evt, entities){
+    me.maximized = function(elapsed, evt, entities){
         var ent = me.findHost(entities, evt[0]);
         if (!ent) return entities;
 
@@ -208,7 +269,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
         com.maximized = com.resizable ? 1 : 0;
 
-        refreshContent(com, e.getComponent(com.box), com.layouts[com.maximized]);
+        resizeContent(com, ent);
 
         return ret;
     };
@@ -219,22 +280,21 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
     me.draw = function(ctx, ent, clip){
         var com = ent.getComponent(name);
-
         if (!com) return;
 
         var
+        layout = com.layouts[com.maximized],
         gs = com.gridSize,
         gs2 = gs * 2,
-        bound = [comBox.x + gs, comBox.y + gs, comBox.width - gs, comBox.height = gs],
         comBox = ent.getComponent(com.box);
 
         ctx.save();
         ctx.beginPath();
         ctx.fillStyle = com.background;
         if (com.maximized) ctx.fillRect(clip[0], clip[1], clip[2], clip[3]);
-        else ctx.fillRect(comBox.x, comBox.y, comBox.width, comBox.height);
+        else ctx.fillRect(layout[0], layout[1], layout[2], layout[3]);
 
-        ctx.drawImage(com.canvas, com.scrollX, com.scrollY, bound[2], bound[3], bound[0], bound[1], bound[2], bound[3]);
+        ctx.drawImage(com.canvas, com.scrollX, com.scrollY, comBox.width, comBox.height, comBox.x, comBox.y, comBox.width, comBox.height);
 
         if (com.theme){
             var
@@ -243,15 +303,15 @@ pico.def('uiWindow', 'picUIWindow', function(){
             borders = com.theme.BORDERS,
             theme = com.active ? com.theme.ACTIVE : com.theme.INACTIVE;
 
-            if (dock & 8) ts.fillPattern(ctx, borders.TOP, comBox.x, comBox.y, comBox.width, gs);
-            if (dock & 4) ts.fillPattern(ctx, borders.RIGHT, comBox.x + comBox.width - gs, comBox.y, gs, comBox.height);
-            if (dock & 2) ts.fillPattern(ctx, borders.BOTTOM, comBox.x, comBox.y+comBox.height-gs, comBox.width, gs);
-            if (dock & 1) ts.fillPattern(ctx, borders.LEFT, comBox.x, comBox.y, gs, comBox.height);
+            if (dock & 8) ts.fillPattern(ctx, borders.TOP, layout[0], layout[1], layout[2], gs);
+            if (dock & 4) ts.fillPattern(ctx, borders.RIGHT, layout[0] + layout[2] - gs, layout[1], gs, layout[3]);
+            if (dock & 2) ts.fillPattern(ctx, borders.BOTTOM, layout[0], layout[1]+layout[3]-gs, layout[2], gs);
+            if (dock & 1) ts.fillPattern(ctx, borders.LEFT, layout[0], layout[1], gs, layout[3]);
 
-            if (9 === (dock & 9)) ts.draw(ctx, theme.TOP_LEFT, comBox.x, comBox.y, gs, gs);
-            if (12 === (dock & 12)) ts.draw(ctx, theme.TOP_RIGHT, comBox.x + comBox.width - gs, comBox.y, gs, gs);
-            if (3 === (dock & 3)) ts.draw(ctx, theme.BOTTOM_LEFT, comBox.x, comBox.y + comBox.height - gs, gs, gs);
-            if (6 === (dock & 6)) ts.draw(ctx, theme.BOTTOM_RIGHT, comBox.x + comBox.width - gs, comBox.y + comBox.height - gs, gs, gs);
+            if (9 === (dock & 9)) ts.draw(ctx, theme.TOP_LEFT, layout[0], layout[1], gs, gs);
+            if (12 === (dock & 12)) ts.draw(ctx, theme.TOP_RIGHT, layout[0] + layout[2] - gs, layout[1], gs, gs);
+            if (3 === (dock & 3)) ts.draw(ctx, theme.BOTTOM_LEFT, layout[0], layout[1] + layout[3] - gs, gs, gs);
+            if (6 === (dock & 6)) ts.draw(ctx, theme.BOTTOM_RIGHT, layout[0] + layout[2] - gs, layout[1] + layout[3] - gs, gs, gs);
         }
 
         ctx.restore();

@@ -195,12 +195,12 @@ onLoad = function(){
             game.hideEntity('effects');
 
             uiWinEnts[0] = game.addEntity(G_WIN_ID.PLAYER);
-            uiWinEnts[1] = game.addEntity(G_WIN_ID.TOME);
+/*            uiWinEnts[1] = game.addEntity(G_WIN_ID.TOME);
             uiWinEnts[2] = game.addEntity(G_WIN_ID.BAG);
             uiWinEnts[3] = game.addEntity(G_WIN_ID.INFO);
             uiWinEnts[4] = game.addEntity(G_WIN_ID.DIALOG);
             uiWinEnts[5] = game.addEntity(G_WIN_ID.TRADE);
-
+*/
             for(var i=0, l=uiWinEnts.length; i<l; i++){
                 uiWinEnt = uiWinEnts[i];
                 uiWinEnt.attach(rect, {x:0, y:0, width:0, height:0});
@@ -209,14 +209,14 @@ onLoad = function(){
             
             uiWinEnt = uiWinEnts[0];
             uiWinEnt.attach(uiWindow, {content:hero.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3], theme: G_THEME.THEME8});
-            uiWinEnt.attach(hero, {win:uiWindow.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
-            
+            uiWinEnt.attach(hero, {win:uiWindow.moduleName, box:rect.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
+/*            
             uiWinEnt = uiWinEnts[1];
             uiWinEnt.attach(uiWindow, {content:tome.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3], theme: G_THEME.THEME8});
             uiWinEnt.attach(tome, {name:'Tome', win:uiWindow.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
             
             uiWinEnt = uiWinEnts[2];
-            uiWinEnt.attach(uiWindow, {content:box.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3], theme: G_THEME.THEME8});
+            uiWinEnt.attach(uiWindow, {content:bag.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3], theme: G_THEME.THEME8});
             uiWinEnt.attach(bag, {name:'Bag', win:uiWindow.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
 
             uiWinEnt = uiWinEnts[3];
@@ -230,7 +230,7 @@ onLoad = function(){
             uiWinEnt = uiWinEnts[5];
             uiWinEnt.attach(uiWindow, {content:trade.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3]});
             uiWinEnt.attach(trade, {box:rect.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt alagard'});
-
+*/
             resize(window.innerWidth, window.innerHeight);
             canvas.slot(canvas.FINGER_DOWN, onFingerDown);
             canvas.slot(canvas.FINGER_MOVE, onFingerMove);

@@ -43,41 +43,33 @@ pico.def('bag', 'picUIContent', function(){
     };
 
     me.create = function(ent, data){
-        data.layouts = [];
+        data.layout = [];
         data.forSale = false;
         data.activated;
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
         return data;
     };
 
-    me.resize = function(elapsed, evt, entities){
-        var e, com;
+    me.resize = function(ent, bound){
+        var com = ent.getComponent(name);
+        if (!com) return;
 
-        for(var i=0, l=entities.length; i<l; i++){
-            e = entities[i];
-            com = e.getComponent(name);
-            if (!com) continue;
+        var
+        comWin = ent.getComponent(com.win),
+        comBox = ent.getComponent(com.box),
+        gs = comWin.gridSize,gs2=gs*2,gs4=gs*4,
+        max = comWin.maximise,
+        tw = this.tileWidth, th = this.tileHeight,
+        cap = this.hero.getBagCap(),
+        col = max ? Floor(cap/BAG_ROW) : 1,
+        titleHeight = max ? 32 : 20,
+        w = (col * tw) + (col - 1 * gs),
+        h = (BAG_ROW * th) + (BAG_ROW - 1 * gs),
+        x = bound[0] + Ceil((bound[2] - w)/2),
+        y = titleHeight + bound[1] + Ceil((bound[3] - h)/2);
 
-            var
-            tw = this.tileWidth, th = this.tileHeight,
-            layouts = com.layouts,
-            win = e.getComponent(com.win),
-            gs = win.gridSize,
-            cap = this.hero.getBagCap(),
-            wLay, layout;
-
-            layouts.length = 0;
-
-            wLay = win.layouts[0];
-            layout = me.generateGridLayout([wLay[0], wLay[1]+20+gs, wLay[2]-gs, wLay[3]-20-gs*2], tw, th, BAG_ROW, 1);
-            layout.unshift([wLay[0], wLay[1]+gs, wLay[2]-gs, 20]);
-            layouts.push(layout);
-            wLay = win.layouts[1];
-            layout = me.generateGridLayout([wLay[0]+gs*2, wLay[1]+32+gs*2, wLay[2]-gs*4, wLay[3]-32-gs*4], tw, th, BAG_ROW, Floor(cap/BAG_ROW));
-            layout.unshift([wLay[0]+gs*2, wLay[1]+gs*2, wLay[2]-gs*4, 32]);
-            layouts.push(layout);
-        }
-        return entities;
+        com.layout = me.generateGridLayout([x, y, w, h], tw, th, BAG_ROW, col);
+        com.layout.unshift([x, y-titleHeight, w, titleHeight]);
     };
 
     me.click = function(elapsed, evt, entities){
@@ -91,8 +83,7 @@ pico.def('bag', 'picUIContent', function(){
         tw = this.tileWidth,
         th = this.tileHeight,
         bag = this.hero.getBag(),
-        win = e.getComponent(com.win),
-        layout = (win.maximized) ? com.layouts[1] : com.layouts[0],
+        layout = com.layout,
         x = evt[0],
         y = evt[1],
         tile, tx, ty;
@@ -161,6 +152,6 @@ pico.def('bag', 'picUIContent', function(){
         win = ent.getComponent(com.win),
         rect = ent.getComponent(win.box);
 
-        return draw.call(this, ctx, this.hero.getBag(), com.layouts[win.maximized], com);
+        return draw.call(this, ctx, this.hero.getBag(), com.layout, com);
     };
 });
