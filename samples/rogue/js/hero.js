@@ -431,12 +431,12 @@ pico.def('hero', 'picUIContent', function(){
     };
     me.isDead = function(){ return currStats[OBJECT_HP] < 1; };
 
-    me.resize = function(ent, bound){
+    me.resize = function(ent, width, height){
         var
         com = ent.getComponent(name),
         comWin = ent.getComponent(com.win),
         comBox = ent.getComponent(com.box),
-        panel = me.createBorderLayout(null, me.TOP, me.TOP, 0, bound[2], bound[3], {font: com.font, fillStyle: G_COLOR_TONE[1]} );
+        panel = me.createBorderLayout(null, me.TOP, me.TOP, 0, width, height, {font: com.font, fillStyle: G_COLOR_TONE[1]} );
 
         if (comWin.maximized){
         }else{
@@ -448,11 +448,11 @@ pico.def('hero', 'picUIContent', function(){
             customCell1 = me.createBorderCell(bottomRow),
             customCell2 = me.createBorderCell(bottomRow, {fillStyle: G_COLOR_TONE[3], strokeStyle: G_COLOR_TONE[1]});
 
-            me.createBorderCustom(nameCell, me.CENTER, me.CENTER, 0, bound[2]/2, bound[3]/2, drawName);
-            me.createBorderCustom(hpCell, me.CENTER, me.CENTER, 0, bound[2]/2, bound[3]/2, drawLives);
-            me.createBorderCustom(levelCell, me.CENTER, me.CENTER, 0, bound[2]/3, bound[3]/2, drawLevel);
-            me.createBorderCustom(customCell1, me.CENTER, me.CENTER, 0, bound[2]/3, bound[3]/2, drawCustom1);
-            me.createBorderCustom(customCell2, me.CENTER, me.CENTER, 0, bound[2]/3, bound[3]/2, drawCustom2);
+            me.createBorderCustom(nameCell, me.CENTER, me.CENTER, 0, width/2, height/2, drawName);
+            me.createBorderCustom(hpCell, me.CENTER, me.CENTER, 0, width/2, height/2, drawLives);
+            me.createBorderCustom(levelCell, me.CENTER, me.CENTER, 0, width/3, height/2, drawLevel);
+            me.createBorderCustom(customCell1, me.CENTER, me.CENTER, 0, width/3, height/2, drawCustom1);
+            me.createBorderCustom(customCell2, me.CENTER, me.CENTER, 0, width/3, height/2, drawCustom2);
         }
         com.layout = panel;
     };
