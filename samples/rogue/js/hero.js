@@ -436,21 +436,25 @@ pico.def('hero', 'picUIContent', function(){
         com = ent.getComponent(name),
         comWin = ent.getComponent(com.win),
         comBox = ent.getComponent(com.box),
-        scale = this.smallDevice ? 2 : 1;
-        panel = me.createBorderLayout(null, me.TOP, me.TOP, 0, 600/scale, 60/scale, {font: data.font, fillStyle: G_COLOR_TONE[1]} ),
-        topRow = me.createBorderRow(panel.layout),
-        nameCell = me.createBorderCell(topRow),
-        hpCell = me.createBorderCell(topRow),
-        bottomRow = me.createBorderRow(panel.layout),
-        levelCell = me.createBorderCell(bottomRow),
-        customCell1 = me.createBorderCell(bottomRow),
-        customCell2 = me.createBorderCell(bottomRow, {fillStyle: G_COLOR_TONE[3], strokeStyle: G_COLOR_TONE[1]});
+        panel = me.createBorderLayout(null, me.TOP, me.TOP, 0, bound[2], bound[3], {font: com.font, fillStyle: G_COLOR_TONE[1]} );
 
-        me.createBorderCustom(nameCell, me.CENTER, me.CENTER, 0, 300/scale, 16/scale, drawName);
-        me.createBorderCustom(hpCell, me.CENTER, me.CENTER, 0, 32/scale, 32/scale, drawLives);
-        me.createBorderCustom(levelCell, me.CENTER, me.CENTER, 0, 200/scale, 16/scale, drawLevel);
-        me.createBorderCustom(customCell1, me.CENTER, me.CENTER, 0, 200/scale, 30/scale, drawCustom1);
-        me.createBorderCustom(customCell2, me.CENTER, me.CENTER, 0, 200/scale, 16/scale, drawCustom2);
+        if (comWin.maximized){
+        }else{
+            topRow = me.createBorderRow(panel.layout),
+            nameCell = me.createBorderCell(topRow),
+            hpCell = me.createBorderCell(topRow),
+            bottomRow = me.createBorderRow(panel.layout),
+            levelCell = me.createBorderCell(bottomRow),
+            customCell1 = me.createBorderCell(bottomRow),
+            customCell2 = me.createBorderCell(bottomRow, {fillStyle: G_COLOR_TONE[3], strokeStyle: G_COLOR_TONE[1]});
+
+            me.createBorderCustom(nameCell, me.CENTER, me.CENTER, 0, bound[2]/2, bound[3]/2, drawName);
+            me.createBorderCustom(hpCell, me.CENTER, me.CENTER, 0, bound[2]/2, bound[3]/2, drawLives);
+            me.createBorderCustom(levelCell, me.CENTER, me.CENTER, 0, bound[2]/3, bound[3]/2, drawLevel);
+            me.createBorderCustom(customCell1, me.CENTER, me.CENTER, 0, bound[2]/3, bound[3]/2, drawCustom1);
+            me.createBorderCustom(customCell2, me.CENTER, me.CENTER, 0, bound[2]/3, bound[3]/2, drawCustom2);
+        }
+        com.layout = panel;
     };
 
     me.click = function(ent, x, y){
@@ -466,12 +470,12 @@ pico.def('hero', 'picUIContent', function(){
         var
         com = ent.getComponent(name),
         win = ent.getComponent(com.win),
-        rect = ent.getComponent(win.box);
+        rect = ent.getComponent(com.box);
 
         if (win.maximized){
             return drawBig.call(this, ctx, win, com, rect);
         }else{
-            return me.drawBorderLayout(ctx, rect, com.layouts[0]);
+            return me.drawBorderLayout(ctx, rect, com.layout);
         }
     };
 });

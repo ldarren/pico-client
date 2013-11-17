@@ -31,6 +31,8 @@ pico.def('uiWindow', 'picUIWindow', function(){
     resizeContent = function(ent, com){
         var
         comBox = ent.getComponent(com.box),
+        layouts = com.layouts,
+        gs = com.gridSize, gs2 = gs*2,
         layout;
 
         if (com.maximized){
@@ -41,8 +43,8 @@ pico.def('uiWindow', 'picUIWindow', function(){
                 case bagId:
                     comBox.x = layout[0]-gs;
                     comBox.y = layout[1]-gs;
-                    comBox.width = layout[2]-(gs*2);
-                    comBox.height = layout[3]-(gs*2);
+                    comBox.width = layout[2]-(gs2);
+                    comBox.height = layout[3]-(gs2);
                     break;
                 case infoId:
                 case dialogMsgId:
@@ -59,20 +61,20 @@ pico.def('uiWindow', 'picUIWindow', function(){
                 case playerId:
                     comBox.x = layout[0]-gs;
                     comBox.y = layout[1];
-                    comBox.width = layout[2]-(gs*2);
+                    comBox.width = layout[2]-(gs2);
                     comBox.height = layout[3]-(gs);
                     break;
                 case tomeId:
                     comBox.x = layout[0]-gs;
                     comBox.y = layout[1]-gs;
                     comBox.width = layout[2]-(gs);
-                    comBox.height = layout[3]-(gs*2);
+                    comBox.height = layout[3]-(gs2);
                     break;
                 case bagId:
                     comBox.x = layout[0];
                     comBox.y = layout[1]-gs;
                     comBox.width = layout[2]-(gs);
-                    comBox.height = layout[3]-(gs*2);
+                    comBox.height = layout[3]-(gs2);
                     break;
                 case infoId:
                 case dialogMsgId:
@@ -85,7 +87,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
             }
         }
 
-        refreshContent(ent, com);
+        refreshContent.call(this, ent, com);
     };
 
     me.create = function(ent, data){
@@ -140,7 +142,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
     };
 
     me.resize = function(elapsed, evt, entities){
-        var com, comBox, ent, gs, layouts, layout;
+        var com, comBox, ent, gs, layouts;
 
         for(var i=0, l=entities.length; i<l; i++){
             ent = entities[i];
@@ -182,7 +184,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
             if (com.resizable)
                 layouts.push(me.fitIntoGrid([evt[0]+1, evt[1]+1, evt[2]-2, evt[3]-2], gs, gs, true));
 
-            resizeContent(ent, com);
+            resizeContent.call(this, ent, com);
         }
         return entities;
     };
@@ -252,7 +254,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
                 me.showAll.call(this, elapsed, evt, entities);
             }
         }
-        refreshContent(ent, com);
+        refreshContent.call(this, ent, com);
         return entities;
     };
 
@@ -269,7 +271,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
         com.maximized = com.resizable ? 1 : 0;
 
-        resizeContent(com, ent);
+        resizeContent.call(this, com, ent);
 
         return ret;
     };
