@@ -434,34 +434,38 @@ pico.def('hero', 'picUIContent', function(){
     me.resize = function(ent, width, height){
         var
         com = ent.getComponent(name),
-        comWin = ent.getComponent(com.win),
-        panel = me.createBorderLayout(null, me.TOP, me.TOP, 0, width, height, {font: com.font, fillStyle: G_COLOR_TONE[1]} );
+        comWin = ent.getComponent(com.win);
 
         if (comWin.maximized){
+            com.layout = com.maxMeshUI;
         }else{
-            topRow = me.createBorderRow(panel.layout),
-            nameCell = me.createBorderCell(topRow),
-            hpCell = me.createBorderCell(topRow),
-            bottomRow = me.createBorderRow(panel.layout),
-            levelCell = me.createBorderCell(bottomRow),
-            customCell1 = me.createBorderCell(bottomRow),
-            customCell2 = me.createBorderCell(bottomRow, {fillStyle: G_COLOR_TONE[3], strokeStyle: G_COLOR_TONE[1]});
+            var
+            panel = me.createMeshUI(null, me.TOP, me.TOP, 0, width, height, {font: com.font, fillStyle: G_COLOR_TONE[1]} ),
+            topRow = me.createMeshRow(panel.rows),
+            nameCell = me.createMeshCell(topRow),
+            hpCell = me.createMeshCell(topRow),
+            bottomRow = me.createMeshRow(panel.layout),
+            levelCell = me.createMeshCell(bottomRow),
+            customCell1 = me.createMeshCell(bottomRow),
+            customCell2 = me.createMeshCell(bottomRow, {fillStyle: G_COLOR_TONE[3], strokeStyle: G_COLOR_TONE[1]});
 
-            me.createBorderCustom(nameCell, me.CENTER, me.CENTER, 0, width/2, height/2, drawName);
-            me.createBorderCustom(hpCell, me.CENTER, me.CENTER, 0, width/2, height/2, drawLives);
-            me.createBorderCustom(levelCell, me.CENTER, me.CENTER, 0, width/3, height/2, drawLevel);
-            me.createBorderCustom(customCell1, me.CENTER, me.CENTER, 0, width/3, height/2, drawCustom1);
-            me.createBorderCustom(customCell2, me.CENTER, me.CENTER, 0, width/3, height/2, drawCustom2);
+            me.createMeshCustom(nameCell, me.CENTER, me.CENTER, 0, width/2, height/2, drawName);
+            me.createMeshCustom(hpCell, me.CENTER, me.CENTER, 0, width/2, height/2, drawLives);
+            me.createMeshCustom(levelCell, me.CENTER, me.CENTER, 0, width/3, height/2, drawLevel);
+            me.createMeshCustom(customCell1, me.CENTER, me.CENTER, 0, width/3, height/2, drawCustom1);
+            me.createMeshCustom(customCell2, me.CENTER, me.CENTER, 0, width/3, height/2, drawCustom2);
+            com.layout = panel;
         }
-        com.layout = panel;
+
+        return [com.layout.w, com.layout.h];
     };
 
-    me.click = function(ent, x, y){
+    me.click = function(ent, x, y, state){
         var
         com = ent.getComponent(name),
         comBox = ent.getComponent(com.box);
 
-        if (me.clickBorderLayout(x, y, comBox, com.layout)) return true;
+        if (me.clickMeshUI(x, y, state, comBox, com.layout)) return true;
         return false;
     };
 
@@ -474,7 +478,7 @@ pico.def('hero', 'picUIContent', function(){
         if (win.maximized){
             return drawBig.call(this, ctx, win, com, rect);
         }else{
-            return me.drawBorderLayout(ctx, rect, com.layout);
+            return me.drawMeshUI(ctx, rect, com.layout);
         }
     };
 });

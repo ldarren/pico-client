@@ -89,159 +89,163 @@ onResize = function(){
 },
 onLoad = function(){
     me.piAtlas.create('dat/img/fantasy-tileset-combined.png', 'dat/fantasy-tileset.json', function(err, tileSet){
-        if (err) return alert(err);
-        me.piHTMLAudio.create('dat/fantasy-sfx.json', function(err, audioSprite){
-            audioSprite.playList([0], 1000, 60000, true); // TODO: move to load scene method, diff sound for town and dungeons
-            gameStage = document.querySelector('div#gameStage');
+    if (err) return alert(err);
+    me.piHTMLAudio.create('dat/fantasy-sfx.json', function(err, audioSprite){
+    if (err) return alert(err);
+    me.uiWindow.loadMeshTemplates('dat/fantasy-ui.json', function(err, uiTemplates){
+    if (err) return alert(err);
+        audioSprite.playList([0], 1000, 60000, true); // TODO: move to load scene method, diff sound for town and dungeons
+        gameStage = document.querySelector('div#gameStage');
 
-            var
-            reactor = me.piReactor,
-            rect = me.picRect,
-            tween = me.picTween,
-            renderer = me.picRenderer,
-            game = me.game,
-            camera = me.camera,
-            effect = me.effect,
-            uiWindow = me.uiWindow,
-            bag = me.bag,
-            tome = me.tome,
-            info = me.info,
-            hero = me.hero,
-            dialogMsg = me.dialogMsg,
-            trade = me.trade,
-            canvas = me.piCanvas,
-            smallDevice = window.innerWidth > 800 || window.innerHeight > 800 ? false : true;
+        var
+        reactor = me.piReactor,
+        rect = me.picRect,
+        tween = me.picTween,
+        renderer = me.picRenderer,
+        game = me.game,
+        camera = me.camera,
+        effect = me.effect,
+        uiWindow = me.uiWindow,
+        bag = me.bag,
+        tome = me.tome,
+        info = me.info,
+        hero = me.hero,
+        dialogMsg = me.dialogMsg,
+        trade = me.trade,
+        canvas = me.piCanvas,
+        smallDevice = window.innerWidth > 800 || window.innerHeight > 800 ? false : true;
 
-            canvas.init(gameStage);
+        canvas.init(gameStage);
 
-            var
-            gameLayer = canvas.addLayer('game'),
-            efxLayer = canvas.addLayer('efx'),
-            uiLayer = canvas.addLayer('ui');
+        var
+        gameLayer = canvas.addLayer('game'),
+        efxLayer = canvas.addLayer('efx'),
+        uiLayer = canvas.addLayer('ui');
 
-            renderer.registerContext('viewPane', gameLayer.getContext());
-            renderer.registerContext('efxPane', efxLayer.getContext());
-            renderer.registerContext('uiPane', uiLayer.getContext());
-            renderer.setBG('viewPane', G_COLOR_TONE[2]);
+        renderer.registerContext('viewPane', gameLayer.getContext());
+        renderer.registerContext('efxPane', efxLayer.getContext());
+        renderer.registerContext('uiPane', uiLayer.getContext());
+        renderer.setBG('viewPane', G_COLOR_TONE[2]);
 
-            reactor.addGroup(game);
+        reactor.addGroup(game);
 
-            game.init({tileSet:tileSet, audioSprite:audioSprite, smallDevice:smallDevice});
+        game.init({tileSet:tileSet, audioSprite:audioSprite, smallDevice:smallDevice});
 
-            game.route('fingerDown', [
-                uiWindow.checkBound,
-                camera.checkBound,
-                game.captureSelected,
-                renderer.captureScreenshot
-            ]);
-            game.route('fingerUp', [
-                game.useSelected, 
-                game.releaseSelected, 
-                uiWindow.click, 
-                camera.click, 
-                renderer.draw
-            ]);
-            game.route('fingerTwice', [
-                game.useSelected, 
-                game.releaseSelected, 
-                info.doubleClick,
-            ]);
-            game.route('fingerMove', [game.useSelected, uiWindow.swipe, camera.swipe, renderer.drawScreenshot]);
-            game.route('fingerOut', [game.releaseSelected, renderer.releaseScreenshot, renderer.draw]);
-            game.route('useItem', [bag.useItem, renderer.draw, game.releaseSelected]);
-            game.route('selectSpell', [tome.selectSpell, renderer.draw, game.releaseSelected]);
-            game.route('openGate', [game.openGate, renderer.draw]);
-            game.route('openChest', [game.openChest, renderer.draw]);
-            game.route('loot', [bag.lootItem, renderer.draw]);
-            game.route('chant', [game.chantScroll, renderer.draw]);
-            game.route('attack', [game.attackAnim, renderer.draw]);
-            game.route('counter', [game.counterAnim, renderer.draw]);
-            game.route('flee', [game.flee, renderer.draw]);
-            game.route('startEffect', [uiWindow.hideAll, renderer.captureScreenshot, effect.start]);
-            game.route('doEffect', [tween.update, renderer.drawScreenshot]);
-            game.route('clearEffect', [effect.clear, renderer.clear, effect.stop]);
-            game.route('stopEffect', [renderer.releaseScreenshot, uiWindow.showAll, renderer.draw]);
-            game.route('gameStep', [game.step, renderer.draw]);
-            game.route('forceRefresh', [renderer.draw]);
-            game.route('resize', [camera.resize, uiWindow.resize, renderer.draw]);
-            game.route('heroMoveTo', [game.heroMoveTo]);
-            game.route('heroMove', [game.heroMove, renderer.draw]);
-            game.route('heroStop', [game.heroStop, renderer.draw]);
-            game.route('gotoLevel', [game.gotoLevel, renderer.draw]);
-            game.route('teleport', [game.teleport, renderer.draw]);
-            game.route('reborn', [game.reborn, renderer.draw]);
-            game.route('recover', [game.recover, renderer.draw]);
-            game.route('openForSale', [uiWindow.maximise, bag.openForSale, renderer.draw]);
-            game.route('showInfo', [info.open, renderer.draw]);
-            game.route('hideInfo', [info.close, renderer.draw]);
-            game.route('showDialog', [uiWindow.hideAll, dialogMsg.open, renderer.draw, game.releaseSelected]);
-            game.route('hideDialog', [uiWindow.showAll, dialogMsg.close, renderer.draw, game.releaseSelected]);
-            game.route('showTrade', [game.createGoods, uiWindow.hideAll, trade.open, renderer.draw, game.releaseSelected]);
-            game.route('hideTrade', [uiWindow.showAll, trade.close, renderer.draw, game.releaseSelected]);
+        game.route('fingerDown', [
+            uiWindow.checkBound,
+            camera.checkBound,
+            game.captureSelected,
+            renderer.captureScreenshot
+        ]);
+        game.route('fingerUp', [
+            game.useSelected, 
+            game.releaseSelected, 
+            uiWindow.click, 
+            camera.click, 
+            renderer.draw
+        ]);
+        game.route('fingerTwice', [
+            game.useSelected, 
+            game.releaseSelected, 
+            info.doubleClick,
+        ]);
+        game.route('fingerMove', [game.useSelected, uiWindow.swipe, camera.swipe, renderer.drawScreenshot]);
+        game.route('fingerOut', [game.releaseSelected, renderer.releaseScreenshot, renderer.draw]);
+        game.route('useItem', [bag.useItem, renderer.draw, game.releaseSelected]);
+        game.route('selectSpell', [tome.selectSpell, renderer.draw, game.releaseSelected]);
+        game.route('openGate', [game.openGate, renderer.draw]);
+        game.route('openChest', [game.openChest, renderer.draw]);
+        game.route('loot', [bag.lootItem, renderer.draw]);
+        game.route('chant', [game.chantScroll, renderer.draw]);
+        game.route('attack', [game.attackAnim, renderer.draw]);
+        game.route('counter', [game.counterAnim, renderer.draw]);
+        game.route('flee', [game.flee, renderer.draw]);
+        game.route('startEffect', [uiWindow.hideAll, renderer.captureScreenshot, effect.start]);
+        game.route('doEffect', [tween.update, renderer.drawScreenshot]);
+        game.route('clearEffect', [effect.clear, renderer.clear, effect.stop]);
+        game.route('stopEffect', [renderer.releaseScreenshot, uiWindow.showAll, renderer.draw]);
+        game.route('gameStep', [game.step, renderer.draw]);
+        game.route('forceRefresh', [renderer.draw]);
+        game.route('resize', [camera.resize, uiWindow.resize, renderer.draw]);
+        game.route('heroMoveTo', [game.heroMoveTo]);
+        game.route('heroMove', [game.heroMove, renderer.draw]);
+        game.route('heroStop', [game.heroStop, renderer.draw]);
+        game.route('gotoLevel', [game.gotoLevel, renderer.draw]);
+        game.route('teleport', [game.teleport, renderer.draw]);
+        game.route('reborn', [game.reborn, renderer.draw]);
+        game.route('recover', [game.recover, renderer.draw]);
+        game.route('openForSale', [uiWindow.maximise, bag.openForSale, renderer.draw]);
+        game.route('showInfo', [info.open, renderer.draw]);
+        game.route('hideInfo', [info.close, renderer.draw]);
+        game.route('showDialog', [uiWindow.hideAll, dialogMsg.open, renderer.draw, game.releaseSelected]);
+        game.route('hideDialog', [uiWindow.showAll, dialogMsg.close, renderer.draw, game.releaseSelected]);
+        game.route('showTrade', [game.createGoods, uiWindow.hideAll, trade.open, renderer.draw, game.releaseSelected]);
+        game.route('hideTrade', [uiWindow.showAll, trade.close, renderer.draw, game.releaseSelected]);
 
-            var
-            cameraEnt = game.addEntity('camera'),
-            effectEnt = game.addEntity('effects'),
-            uiWinEnts = [],
-            uiWinEnt;
+        var
+        cameraEnt = game.addEntity('camera'),
+        effectEnt = game.addEntity('effects'),
+        uiWinEnts = [],
+        uiWinEnt;
 
-            cameraEnt.attach(rect, {x:0, y:0, width:100, height:100});
-            cameraEnt.attach(camera, {});
-            cameraEnt.attach(renderer, {viewPane:[camera.moduleName]});
+        cameraEnt.attach(rect, {x:0, y:0, width:100, height:100});
+        cameraEnt.attach(camera, {});
+        cameraEnt.attach(renderer, {viewPane:[camera.moduleName]});
 
-            effectEnt.attach(effect, {p0:0,p1:0,p2:0,p3:0,p4:0,p5:0,p6:0,p7:0,p8:0,p9:0});
-            effectEnt.attach(tween, {effect:{p0:0,p1:0,p2:0,p3:0,p4:0,p5:0,p6:0,p7:0,p8:0,p9:0}});
-            effectEnt.attach(renderer, {efxPane:[effect.moduleName]});
-            game.hideEntity('effects');
+        effectEnt.attach(effect, {p0:0,p1:0,p2:0,p3:0,p4:0,p5:0,p6:0,p7:0,p8:0,p9:0});
+        effectEnt.attach(tween, {effect:{p0:0,p1:0,p2:0,p3:0,p4:0,p5:0,p6:0,p7:0,p8:0,p9:0}});
+        effectEnt.attach(renderer, {efxPane:[effect.moduleName]});
+        game.hideEntity('effects');
 
-            uiWinEnts[0] = game.addEntity(G_WIN_ID.PLAYER);
+        uiWinEnts[0] = game.addEntity(G_WIN_ID.PLAYER);
 /*            uiWinEnts[1] = game.addEntity(G_WIN_ID.TOME);
-            uiWinEnts[2] = game.addEntity(G_WIN_ID.BAG);
-            uiWinEnts[3] = game.addEntity(G_WIN_ID.INFO);
-            uiWinEnts[4] = game.addEntity(G_WIN_ID.DIALOG);
-            uiWinEnts[5] = game.addEntity(G_WIN_ID.TRADE);
+        uiWinEnts[2] = game.addEntity(G_WIN_ID.BAG);
+        uiWinEnts[3] = game.addEntity(G_WIN_ID.INFO);
+        uiWinEnts[4] = game.addEntity(G_WIN_ID.DIALOG);
+        uiWinEnts[5] = game.addEntity(G_WIN_ID.TRADE);
 */
-            for(var i=0, l=uiWinEnts.length; i<l; i++){
-                uiWinEnt = uiWinEnts[i];
-                uiWinEnt.attach(rect, {x:0, y:0, width:0, height:0});
-                uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName]});
-            }
-            
-            uiWinEnt = uiWinEnts[0];
-            uiWinEnt.attach(uiWindow, {content:hero.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3], theme: G_THEME.THEME8});
-            uiWinEnt.attach(hero, {win:uiWindow.moduleName, box:rect.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
+        for(var i=0, l=uiWinEnts.length; i<l; i++){
+            uiWinEnt = uiWinEnts[i];
+            uiWinEnt.attach(rect, {x:0, y:0, width:0, height:0});
+            uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName]});
+        }
+        
+        uiWinEnt = uiWinEnts[0];
+        uiWinEnt.attach(uiWindow, {content:hero.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3], theme: G_THEME.THEME8});
+        uiWinEnt.attach(hero, {win:uiWindow.moduleName, box:rect.moduleName, maxMeshUI: templates['maxHero'], fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
 /*            
-            uiWinEnt = uiWinEnts[1];
-            uiWinEnt.attach(uiWindow, {content:tome.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3], theme: G_THEME.THEME8});
-            uiWinEnt.attach(tome, {name:'Tome', win:uiWindow.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
-            
-            uiWinEnt = uiWinEnts[2];
-            uiWinEnt.attach(uiWindow, {content:bag.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3], theme: G_THEME.THEME8});
-            uiWinEnt.attach(bag, {name:'Bag', win:uiWindow.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
+        uiWinEnt = uiWinEnts[1];
+        uiWinEnt.attach(uiWindow, {content:tome.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3], theme: G_THEME.THEME8});
+        uiWinEnt.attach(tome, {name:'Tome', win:uiWindow.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
+        
+        uiWinEnt = uiWinEnts[2];
+        uiWinEnt.attach(uiWindow, {content:bag.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3], theme: G_THEME.THEME8});
+        uiWinEnt.attach(bag, {name:'Bag', win:uiWindow.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
 
-            uiWinEnt = uiWinEnts[3];
-            uiWinEnt.attach(uiWindow, {content:info.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3]});
-            uiWinEnt.attach(info, {box:rect.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard'});
+        uiWinEnt = uiWinEnts[3];
+        uiWinEnt.attach(uiWindow, {content:info.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3]});
+        uiWinEnt.attach(info, {box:rect.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard'});
 
-            uiWinEnt = uiWinEnts[4];
-            uiWinEnt.attach(uiWindow, {content:dialogMsg.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3]});
-            uiWinEnt.attach(dialogMsg, {box:rect.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt alagard'});
+        uiWinEnt = uiWinEnts[4];
+        uiWinEnt.attach(uiWindow, {content:dialogMsg.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3]});
+        uiWinEnt.attach(dialogMsg, {box:rect.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt alagard'});
 
-            uiWinEnt = uiWinEnts[5];
-            uiWinEnt.attach(uiWindow, {content:trade.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3]});
-            uiWinEnt.attach(trade, {box:rect.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt alagard'});
+        uiWinEnt = uiWinEnts[5];
+        uiWinEnt.attach(uiWindow, {content:trade.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3]});
+        uiWinEnt.attach(trade, {box:rect.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt alagard'});
 */
-            resize(window.innerWidth, window.innerHeight);
-            canvas.slot(canvas.FINGER_DOWN, onFingerDown);
-            canvas.slot(canvas.FINGER_MOVE, onFingerMove);
-            canvas.slot(canvas.FINGER_UP, onFingerUp);
-            canvas.slot(canvas.FINGER_TWICE, onFingerTwice);
-            canvas.slot(canvas.FINGER_OUT, onFingerOut);
-            window.addEventListener('resize', onResize, false);
-            window.addEventListener('unload', game.exit, false);
+        resize(window.innerWidth, window.innerHeight);
+        canvas.slot(canvas.FINGER_DOWN, onFingerDown);
+        canvas.slot(canvas.FINGER_MOVE, onFingerMove);
+        canvas.slot(canvas.FINGER_UP, onFingerUp);
+        canvas.slot(canvas.FINGER_TWICE, onFingerTwice);
+        canvas.slot(canvas.FINGER_OUT, onFingerOut);
+        window.addEventListener('resize', onResize, false);
+        window.addEventListener('unload', game.exit, false);
 
-            me.rogueMain.hideLoading();
-        });
+        me.rogueMain.hideLoading();
+    });
+    });
     });
 };
 

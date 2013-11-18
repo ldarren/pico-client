@@ -25,7 +25,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         canvas.setAttribute('width', comBox.width);
         canvas.setAttribute('height', comBox.height);
 
-        mod.resize.call(this, ent, comBox.width, comBox.height);
+        com.contentSize = mod.resize.call(this, ent, comBox.width, comBox.height);
         mod.draw.call(this, canvas.getContext('2d'), ent, layout);
     },
     resizeContent = function(ent, com){
@@ -229,7 +229,11 @@ pico.def('uiWindow', 'picUIWindow', function(){
             if (active !== com.active){
                 com.active = active;
             }
-            if (active) selected.push(ent);
+            if (active){
+                selected.push(ent);
+                var mod = pico.getModule(com.content);
+                mod.click.call(this, ent, com.scrollX + x, com.scrollY + y, 1);
+            }
         }
 
         if (selected.length) return selected;
@@ -245,7 +249,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         if (!com) return entities;
 
         var mod = pico.getModule(com.content);
-        if (!mod.click.call(this, ent, com.scrollX + evt[0], com.scrollY + evt[1]) && com.resizable){
+        if (!mod.click.call(this, ent, com.scrollX + evt[0], com.scrollY + evt[1], 0) && com.resizable){
             com.maximized = com.maximized ? 0 : 1;
             if (com.maximized){
                 me.hideAll.call(this, elapsed, evt, entities);
@@ -277,6 +281,19 @@ pico.def('uiWindow', 'picUIWindow', function(){
     };
 
     me.swipe = function(elapsed, evt, entities){
+        var
+        ent = entites[0],
+        com = ent.getComponent(name),
+        contentSize = com.contentSize,
+        comBox = ent.getComponent(com.box);
+
+        if (contentSize[0] > comBox.width){
+            scrollX += evt[0];
+        }
+        if (contentSize[1] > comBox.height){
+            scrollY += evt[1];
+        }
+
         return entities;
     };
 
