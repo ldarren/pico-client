@@ -41,16 +41,16 @@ pico.def('uiWindow', 'picUIWindow', function(){
                 case playerId:
                 case tomeId:
                 case bagId:
-                    comBox.x = layout[0]-gs;
-                    comBox.y = layout[1]-gs;
+                    comBox.x = gs;
+                    comBox.y = gs;
                     comBox.width = layout[2]-(gs2);
                     comBox.height = layout[3]-(gs2);
                     break;
                 case infoId:
                 case dialogMsgId:
                 case tradeId:
-                    comBox.x = layout[0];
-                    comBox.y = layout[1];
+                    comBox.x = 0;
+                    comBox.y = 0;
                     comBox.width = layout[2];
                     comBox.height = layout[3];
                     break;
@@ -59,28 +59,28 @@ pico.def('uiWindow', 'picUIWindow', function(){
             layout = layouts[0];
             switch(ent.name){
                 case playerId:
-                    comBox.x = layout[0]-gs;
-                    comBox.y = layout[1];
-                    comBox.width = layout[2]-(gs2);
-                    comBox.height = layout[3]-(gs);
+                    comBox.x = gs;
+                    comBox.y = 0;
+                    comBox.width = layout[2]-gs2;
+                    comBox.height = layout[3]-gs;
                     break;
                 case tomeId:
-                    comBox.x = layout[0]-gs;
-                    comBox.y = layout[1]-gs;
-                    comBox.width = layout[2]-(gs);
-                    comBox.height = layout[3]-(gs2);
+                    comBox.x = gs;
+                    comBox.y = gs;
+                    comBox.width = layout[2]-gs;
+                    comBox.height = layout[3]-gs2;
                     break;
                 case bagId:
-                    comBox.x = layout[0];
-                    comBox.y = layout[1]-gs;
-                    comBox.width = layout[2]-(gs);
-                    comBox.height = layout[3]-(gs2);
+                    comBox.x = 0;
+                    comBox.y = gs;
+                    comBox.width = layout[2]-gs;
+                    comBox.height = layout[3]-gs2;
                     break;
                 case infoId:
                 case dialogMsgId:
                 case tradeId:
-                    comBox.x = layout[0];
-                    comBox.y = layout[1];
+                    comBox.x = 0;
+                    comBox.y = 0;
                     comBox.width = layout[2];
                     comBox.height = layout[3];
                     break;
@@ -296,7 +296,9 @@ pico.def('uiWindow', 'picUIWindow', function(){
         if (com.maximized) ctx.fillRect(clip[0], clip[1], clip[2], clip[3]);
         else ctx.fillRect(layout[0], layout[1], layout[2], layout[3]);
 
-        ctx.drawImage(com.canvas, com.scrollX, com.scrollY, comBox.width, comBox.height, comBox.x, comBox.y, comBox.width, comBox.height);
+        ctx.drawImage(com.canvas,
+            com.scrollX, com.scrollY, comBox.width, comBox.height,
+            layout[0]+comBox.x, layout[1]+comBox.y, layout[2], layout[3]);
 
         if (com.theme){
             var

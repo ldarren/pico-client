@@ -435,7 +435,6 @@ pico.def('hero', 'picUIContent', function(){
         var
         com = ent.getComponent(name),
         comWin = ent.getComponent(com.win),
-        comBox = ent.getComponent(com.box),
         panel = me.createBorderLayout(null, me.TOP, me.TOP, 0, width, height, {font: com.font, fillStyle: G_COLOR_TONE[1]} );
 
         if (comWin.maximized){
