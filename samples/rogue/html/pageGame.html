@@ -89,11 +89,12 @@ onResize = function(){
 },
 onLoad = function(){
     me.piAtlas.create('dat/img/fantasy-tileset-combined.png', 'dat/fantasy-tileset.json', function(err, tileSet){
-    if (err) return alert(err);
+        if (err) return alert(err);
     me.piHTMLAudio.create('dat/fantasy-sfx.json', function(err, audioSprite){
-    if (err) return alert(err);
-    me.hero.loadMeshTemplates('dat/fantasy-ui.json', function(err, uiTemplates){
-    if (err) return alert(err);
+        if (err) return alert(err);
+    me.hero.loadMeshUITemplates('dat/fantasy-ui.json', function(err){
+        if (err) return alert(err);
+
         audioSprite.playList([0], 1000, 60000, true); // TODO: move to load scene method, diff sound for town and dungeons
         gameStage = document.querySelector('div#gameStage');
 
