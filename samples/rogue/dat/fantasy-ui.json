@@ -1,7 +1,7 @@
 {
-    "heroMin":{
+    "heroBrief":{
     },
-    "heroMax":{
+    "heroDetails":{
         "type":5,
         "cellPt":1,
         "uiPt":1,

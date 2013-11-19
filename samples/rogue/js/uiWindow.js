@@ -22,10 +22,11 @@ pico.def('uiWindow', 'picUIWindow', function(){
         canvas = com.canvas,
         mod = pico.getModule(com.content);
 
-        canvas.setAttribute('width', comBox.width);
-        canvas.setAttribute('height', comBox.height);
-
         com.contentSize = mod.resize.call(this, ent, comBox.width, comBox.height);
+
+        canvas.setAttribute('width', com.contentSize[0]);
+        canvas.setAttribute('height', com.contentSize[1]);
+
         mod.draw.call(this, canvas.getContext('2d'), ent, layout);
     },
     resizeContent = function(ent, com){

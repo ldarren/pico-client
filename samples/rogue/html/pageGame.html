@@ -92,7 +92,7 @@ onLoad = function(){
     if (err) return alert(err);
     me.piHTMLAudio.create('dat/fantasy-sfx.json', function(err, audioSprite){
     if (err) return alert(err);
-    me.uiWindow.loadMeshTemplates('dat/fantasy-ui.json', function(err, uiTemplates){
+    me.hero.loadMeshTemplates('dat/fantasy-ui.json', function(err, uiTemplates){
     if (err) return alert(err);
         audioSprite.playList([0], 1000, 60000, true); // TODO: move to load scene method, diff sound for town and dungeons
         gameStage = document.querySelector('div#gameStage');
@@ -212,7 +212,7 @@ onLoad = function(){
         
         uiWinEnt = uiWinEnts[0];
         uiWinEnt.attach(uiWindow, {content:hero.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3], theme: G_THEME.THEME8});
-        uiWinEnt.attach(hero, {win:uiWindow.moduleName, box:rect.moduleName, maxMeshUI: templates['maxHero'], fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
+        uiWinEnt.attach(hero, {win:uiWindow.moduleName, box:rect.moduleName, maxMeshUI:'heroDetails', fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
 /*            
         uiWinEnt = uiWinEnts[1];
         uiWinEnt.attach(uiWindow, {content:tome.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3], theme: G_THEME.THEME8});

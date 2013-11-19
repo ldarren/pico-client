@@ -437,14 +437,14 @@ pico.def('hero', 'picUIContent', function(){
         comWin = ent.getComponent(com.win);
 
         if (comWin.maximized){
-            com.layout = com.maxMeshUI;
+            com.layout = me.createMeshUIFromTemplate(com.maxMeshUI, width, height);
         }else{
             var
             panel = me.createMeshUI(null, me.TOP, me.TOP, 0, width, height, {font: com.font, fillStyle: G_COLOR_TONE[1]} ),
             topRow = me.createMeshRow(panel.rows),
             nameCell = me.createMeshCell(topRow),
             hpCell = me.createMeshCell(topRow),
-            bottomRow = me.createMeshRow(panel.layout),
+            bottomRow = me.createMeshRow(panel.rows),
             levelCell = me.createMeshCell(bottomRow),
             customCell1 = me.createMeshCell(bottomRow),
             customCell2 = me.createMeshCell(bottomRow, {fillStyle: G_COLOR_TONE[3], strokeStyle: G_COLOR_TONE[1]});
