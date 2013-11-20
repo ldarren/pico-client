@@ -42,16 +42,16 @@ pico.def('uiWindow', 'picUIWindow', function(){
                 case playerId:
                 case tomeId:
                 case bagId:
-                    comBox.x = gs;
-                    comBox.y = gs;
+                    comBox.x = layout[0]+gs;
+                    comBox.y = layout[1]+gs;
                     comBox.width = layout[2]-(gs2);
                     comBox.height = layout[3]-(gs2);
                     break;
                 case infoId:
                 case dialogMsgId:
                 case tradeId:
-                    comBox.x = 0;
-                    comBox.y = 0;
+                    comBox.x = layout[0];
+                    comBox.y = layout[1];
                     comBox.width = layout[2];
                     comBox.height = layout[3];
                     break;
@@ -60,28 +60,28 @@ pico.def('uiWindow', 'picUIWindow', function(){
             layout = layouts[0];
             switch(ent.name){
                 case playerId:
-                    comBox.x = gs;
-                    comBox.y = 0;
+                    comBox.x = layout[0]+gs;
+                    comBox.y = layout[1];
                     comBox.width = layout[2]-gs2;
                     comBox.height = layout[3]-gs;
                     break;
                 case tomeId:
-                    comBox.x = gs;
-                    comBox.y = gs;
+                    comBox.x = layout[0]+gs;
+                    comBox.y = layout[1]+gs;
                     comBox.width = layout[2]-gs;
                     comBox.height = layout[3]-gs2;
                     break;
                 case bagId:
-                    comBox.x = 0;
-                    comBox.y = gs;
+                    comBox.x = layout[0];
+                    comBox.y = layout[1]+gs;
                     comBox.width = layout[2]-gs;
                     comBox.height = layout[3]-gs2;
                     break;
                 case infoId:
                 case dialogMsgId:
                 case tradeId:
-                    comBox.x = 0;
-                    comBox.y = 0;
+                    comBox.x = layout[0];
+                    comBox.y = layout[1];
                     comBox.width = layout[2];
                     comBox.height = layout[3];
                     break;
@@ -251,6 +251,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
         var mod = pico.getModule(com.content);
         if (!mod.click.call(this, ent, com.scrollX + evt[0], com.scrollY + evt[1], 0) && com.resizable){
+            com.scrollX = com.scrollY = 0;
             com.maximized = com.maximized ? 0 : 1;
             if (com.maximized){
                 me.hideAll.call(this, elapsed, evt, entities);
@@ -259,7 +260,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
                 me.showAll.call(this, elapsed, evt, entities);
             }
         }
-        refreshContent.call(this, ent, com);
+        resizeContent.call(this, ent, com);
         return entities;
     };
 
@@ -281,20 +282,37 @@ pico.def('uiWindow', 'picUIWindow', function(){
         return ret;
     };
 
+    me.startSwipe = function(elapsed, evt, entities){
+        return entities;
+    };
+
     me.swipe = function(elapsed, evt, entities){
         var
         ent = entities[0],
         com = ent.getComponent(name),
         contentSize = com.contentSize,
-        comBox = ent.getComponent(com.box);
+        comBox = ent.getComponent(com.box),
+        cw = contentSize[0], ww = comBox.width,
+        ch = contentSize[1], wh = comBox.height,
+        x = com.scrollX, y = com.scrollY;
 
-        if (contentSize[0] > comBox.width){
-            scrollX += evt[0];
-        }
-        if (contentSize[1] > comBox.height){
-            scrollY += evt[1];
-        }
+        if (cw > ww) x += evt[2]-evt[0];
+        if (ch > wh) y += evt[3]-evt[1];
+        if (x + ww > cw) x = cw - ww;
+        else if (x < 0) x = 0;
+        if (y + wh > ch) y = ch - wh;
+        else if (y < 0) y = 0;
 
+        evt[2] = evt[0];
+        evt[3] = evt[1];
+
+        com.scrollX = x;
+        com.scrollY = y;
+
+        return entities;
+    };
+
+    me.endSwipe = function(elapsed, evt, entities){
         return entities;
     };
 
@@ -316,7 +334,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
         ctx.drawImage(com.canvas,
             com.scrollX, com.scrollY, comBox.width, comBox.height,
-            layout[0]+comBox.x, layout[1]+comBox.y, layout[2], layout[3]);
+            comBox.x, comBox.y, comBox.width, comBox.height);
 
         if (com.theme){
             var

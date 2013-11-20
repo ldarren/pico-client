@@ -136,7 +136,7 @@ onLoad = function(){
             uiWindow.checkBound,
             camera.checkBound,
             game.captureSelected,
-            renderer.captureScreenshot
+            game.branchFingerDown
         ]);
         game.route('fingerUp', [
             game.useSelected, 
@@ -150,8 +150,14 @@ onLoad = function(){
             game.releaseSelected, 
             info.doubleClick,
         ]);
-        game.route('fingerMove', [game.useSelected, uiWindow.swipe, camera.swipe, renderer.drawScreenshot]);
-        game.route('fingerOut', [game.releaseSelected, renderer.releaseScreenshot, renderer.draw]);
+        game.route('fingerMove', [game.useSelected, game.branchFingerMove]);
+        game.route('fingerOut', [game.useSelected, game.branchFingerOut]);
+        game.route('scrollWinStart', [game.useSelected, uiWindow.startSwipe, renderer.draw]);
+        game.route('scrollWin', [game.useSelected, uiWindow.swipe, renderer.draw]);
+        game.route('scrollWinEnd', [game.useSelected, game.releaseSelected, uiWindow.endSwipe, renderer.draw]);
+        game.route('moveCameraStart', [game.useSelected, renderer.captureScreenshot]);
+        game.route('moveCamera', [game.useSelected, camera.swipe, renderer.drawScreenshot]);
+        game.route('moveCameraEnd', [game.releaseSelected, renderer.releaseScreenshot, renderer.draw]);
         game.route('useItem', [bag.useItem, renderer.draw, game.releaseSelected]);
         game.route('selectSpell', [tome.selectSpell, renderer.draw, game.releaseSelected]);
         game.route('openGate', [game.openGate, renderer.draw]);

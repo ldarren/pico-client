@@ -637,4 +637,16 @@ pico.def('game', 'pigSqrMap', function(){
                 events: events});
         }
     };
+
+    me.branchFingerDown = function(elapsed, evt, entities){
+        this.go(('camera' === entities[0].name) ? 'moveCameraStart' : 'scrollWinStart', evt);
+    };
+
+    me.branchFingerMove = function(elapsed, evt, entities){
+        this.go(('camera' === entities[0].name) ? 'moveCamera' : 'scrollWin', evt);
+    };
+
+    me.branchFingerOut = function(elapsed, evt, entities){
+        this.go(('camera' === entities[0].name) ? 'moveCameraEnd' : 'scrollWinEnd', evt);
+    };
 });
