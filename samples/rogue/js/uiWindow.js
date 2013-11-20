@@ -283,7 +283,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
     me.swipe = function(elapsed, evt, entities){
         var
-        ent = entites[0],
+        ent = entities[0],
         com = ent.getComponent(name),
         contentSize = com.contentSize,
         comBox = ent.getComponent(com.box);

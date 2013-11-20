@@ -11,17 +11,7 @@ pico.def('hero', 'picUIContent', function(){
     d20Roll = function(){
         return Round(Random()*21);
     },
-    drawName = function(ctx, rect, ui){
-        me.fillWrapText(ctx, currStats[OBJECT_NAME], rect[0], rect[1]+rect[3]/2, ui.w, ui.h);
-    },
-    drawLives = function(ctx, rect, ui){
-    },
-    drawLevel = function(ctx, rect, ui){
-    },
-    drawCustom1 = function(ctx, rect, ui){
-    },
-    drawCustom2 = function(ctx, rect, ui){
-    },
+    // TODO: move this to mesh UI
     drawBig = function(ctx, win, com, rect){
         var
         ts = this.tileSet,
@@ -87,7 +77,18 @@ pico.def('hero', 'picUIContent', function(){
         x = me.drawData(ctx, ts, G_UI.WILL, currStats[OBJECT_WILL], x, y, uiSize, margin, textWidth3);
 
         ctx.restore();
+    },
+    onDrawMeshUICustom = function(ctx, rect, ui){
+        console.log('draw'+JSON.stringify(ui));
+        if ('name' === ui.userData.id)
+            me.fillWrapText(ctx, currStats[OBJECT_NAME], rect[0], rect[1]+rect[3]/2, ui.w, ui.h);
+    },
+    onClickMeshUI = function(ctx, rect, ui){
+        console.log('click'+JSON.stringify(ui));
     };
+
+    me.slot('draw', onDrawMeshUICustom);
+    me.slot('click', onClickMeshUI);
 
     me.create = function(ent, data){
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
@@ -449,11 +450,11 @@ pico.def('hero', 'picUIContent', function(){
             customCell1 = me.createMeshCell(bottomRow),
             customCell2 = me.createMeshCell(bottomRow, {fillStyle: G_COLOR_TONE[3], strokeStyle: G_COLOR_TONE[1]});
 
-            me.createMeshCustom(nameCell, me.CENTER, me.CENTER, 0, width/2, height/2, drawName);
-            me.createMeshCustom(hpCell, me.CENTER, me.CENTER, 0, width/2, height/2, drawLives);
-            me.createMeshCustom(levelCell, me.CENTER, me.CENTER, 0, width/3, height/2, drawLevel);
-            me.createMeshCustom(customCell1, me.CENTER, me.CENTER, 0, width/3, height/2, drawCustom1);
-            me.createMeshCustom(customCell2, me.CENTER, me.CENTER, 0, width/3, height/2, drawCustom2);
+            me.createMeshCustom(nameCell, me.CENTER, me.CENTER, 0, width/2, height/2, {id:'name'});
+            me.createMeshCustom(hpCell, me.CENTER, me.CENTER, 0, width/2, height/2, {id:'hp'});
+            me.createMeshCustom(levelCell, me.CENTER, me.CENTER, 0, width/3, height/2, {id:'level'});
+            me.createMeshCustom(customCell1, me.CENTER, me.CENTER, 0, width/3, height/2, {id:'custom1'});
+            me.createMeshCustom(customCell2, me.CENTER, me.CENTER, 0, width/3, height/2, {id:'custom2'});
             com.layout = panel;
         }
 
@@ -475,10 +476,6 @@ pico.def('hero', 'picUIContent', function(){
         win = ent.getComponent(com.win),
         rect = ent.getComponent(com.box);
 
-        if (win.maximized){
-            return drawBig.call(this, ctx, win, com, rect);
-        }else{
-            return me.drawMeshUI(ctx, rect, com.layout);
-        }
+        return me.drawMeshUI(ctx, rect, com.layout);
     };
 });
