@@ -32,7 +32,6 @@ gameStage,
 fingerStartPos = [0, 0],
 fingerTracker,
 cancelTracking = function(){
-    me.game.stopLoop('fingerMove');
     me.game.go('fingerOut');
     fingerTracker = undefined;
 },
@@ -50,12 +49,12 @@ onFingerTwice = function(evt, x, y){
     me.game.go('fingerTwice', [x, y]);
 },
 onFingerMove = function(evt, x, y){
-    if (fingerTracker){
+    if (!fingerTracker){
+        fingerTracker = [x, y, fingerStartPos[0], fingerStartPos[1]];
+    }else{
         fingerTracker[0] = x;
         fingerTracker[1] = y;
-    }else{
-        fingerTracker = [x, y, fingerStartPos[0], fingerStartPos[1]];
-        me.game.startLoop('fingerMove', fingerTracker);
+        me.game.go('fingerMove', fingerTracker);
     }
 },
 onFingerOut = function(evt, x, y){
