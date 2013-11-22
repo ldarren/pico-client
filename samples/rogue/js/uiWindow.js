@@ -15,6 +15,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
     tradeId = G_WIN_ID.TRADE,
     me = this,
     name = me.moduleName,
+    scrollBarH, scrollBarV,
     refreshContent = function(ent, com){
         var
         comBox  = ent.getComponent(com.box),
@@ -283,6 +284,24 @@ pico.def('uiWindow', 'picUIWindow', function(){
     };
 
     me.startSwipe = function(elapsed, evt, entities){
+        var
+        ent = entities[0],
+        com = ent.getComponent(name),
+        contentSize = com.contentSize,
+        comBox = ent.getComponent(com.box),
+        cw = contentSize[0], ww = comBox.width,
+        ch = contentSize[1], wh = comBox.height,
+        ratio;
+
+        if (cw > ww){
+            ratio = ww/cw;
+            scrollBarH = [comBox.x+Floor(com.scrollX * ratio), comBox.y+comBox.height-2, Ceil(ww*ratio), ratio];
+        }
+        if (ch > wh){
+            ratio = wh/ch;
+            scrollBarV = [comBox.x+comBox.width-2, comBox.y+Floor(com.scrollY * ratio), Ceil(wh * ratio), ratio];
+        }
+
         return entities;
     };
 
@@ -308,11 +327,14 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
         com.scrollX = x;
         com.scrollY = y;
+        if (scrollBarH) scrollBarH[0] = comBox.x+Floor(x * scrollBarH[3])
+        if (scrollBarV) scrollBarV[1] = comBox.y+Floor(y * scrollBarV[3])
 
         return entities;
     };
 
     me.endSwipe = function(elapsed, evt, entities){
+        scrollBarH = scrollBarV = undefined;
         return entities;
     };
 
@@ -331,7 +353,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         ctx.fillStyle = com.background;
         if (com.maximized) ctx.fillRect(clip[0], clip[1], clip[2], clip[3]);
         else ctx.fillRect(layout[0], layout[1], layout[2], layout[3]);
-console.log('draw: '+com.scrollX+' : '+com.scrollY);
+
         ctx.drawImage(com.canvas,
             com.scrollX, com.scrollY, comBox.width, comBox.height,
             comBox.x, comBox.y, comBox.width, comBox.height);
@@ -352,6 +374,26 @@ console.log('draw: '+com.scrollX+' : '+com.scrollY);
             if (12 === (dock & 12)) ts.draw(ctx, theme.TOP_RIGHT, layout[0] + layout[2] - gs, layout[1], gs, gs);
             if (3 === (dock & 3)) ts.draw(ctx, theme.BOTTOM_LEFT, layout[0], layout[1] + layout[3] - gs, gs, gs);
             if (6 === (dock & 6)) ts.draw(ctx, theme.BOTTOM_RIGHT, layout[0] + layout[2] - gs, layout[1] + layout[3] - gs, gs, gs);
+        }
+
+        // round line cap (middle line)
+        if (scrollBarV || scrollBarH){
+            ctx.globalCompositeOperation = 'lighter';
+
+            ctx.beginPath();
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = '#666';
+            ctx.lineCap = 'round';
+
+            if (scrollBarV){
+                ctx.moveTo(scrollBarV[0], scrollBarV[1]);
+                ctx.lineTo(scrollBarV[0], scrollBarV[1] + scrollBarV[2]);
+            }
+            if (scrollBarH){
+                ctx.moveTo(scrollBarH[0], scrollBarH[1]);
+                ctx.lineTo(scrollBarH[0]+scrollBarH[2], scrollBarH[1]);
+            }
+            ctx.stroke();
         }
 
         ctx.restore();
