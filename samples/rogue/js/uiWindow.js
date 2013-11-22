@@ -331,7 +331,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         ctx.fillStyle = com.background;
         if (com.maximized) ctx.fillRect(clip[0], clip[1], clip[2], clip[3]);
         else ctx.fillRect(layout[0], layout[1], layout[2], layout[3]);
-
+console.log('draw: '+com.scrollX+' : '+com.scrollY);
         ctx.drawImage(com.canvas,
             com.scrollX, com.scrollY, comBox.width, comBox.height,
             comBox.x, comBox.y, comBox.width, comBox.height);
