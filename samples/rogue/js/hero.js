@@ -440,22 +440,7 @@ pico.def('hero', 'picUIContent', function(){
         if (comWin.maximized){
             com.layout = me.createMeshUIFromTemplate(com.maxMeshUI, width, height);
         }else{
-            var
-            panel = me.createMeshUI(null, me.TOP, me.TOP, 0, width, height, {font: com.font, fillStyle: G_COLOR_TONE[1]} ),
-            topRow = me.createMeshRow(panel.rows),
-            nameCell = me.createMeshCell(topRow),
-            hpCell = me.createMeshCell(topRow),
-            bottomRow = me.createMeshRow(panel.rows),
-            levelCell = me.createMeshCell(bottomRow),
-            customCell1 = me.createMeshCell(bottomRow),
-            customCell2 = me.createMeshCell(bottomRow, {fillStyle: G_COLOR_TONE[3], strokeStyle: G_COLOR_TONE[1]});
-
-            me.createMeshCustom(nameCell, me.CENTER, me.CENTER, 0, width/2, height/2, {id:'name'});
-            me.createMeshCustom(hpCell, me.CENTER, me.CENTER, 0, width/2, height/2, {id:'hp'});
-            me.createMeshCustom(levelCell, me.CENTER, me.CENTER, 0, width/3, height/2, {id:'level'});
-            me.createMeshCustom(customCell1, me.CENTER, me.CENTER, 0, width/3, height/2, {id:'custom1'});
-            me.createMeshCustom(customCell2, me.CENTER, me.CENTER, 0, width/3, height/2, {id:'custom2'});
-            com.layout = panel;
+            com.layout = me.createMeshUIFromTemplate(com.minMeshUI, width, height);
         }
 
         return [com.layout.w, com.layout.h];

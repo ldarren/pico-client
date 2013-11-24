@@ -93,10 +93,6 @@ console.log('effect start');
         return entities;
     };
 
-    me.update = function(elapsed, evt, entities){
-        return entities;
-    };
-
     me.clear = function(elapsed, evt, entities){
         me.picRenderer.setBG('efxPane');
         return entities;
