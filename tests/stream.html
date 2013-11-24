@@ -31,14 +31,14 @@ var ajax = function(method, url, params, headers, cb, userData){
         }
     }
     xhr.onerror=function(evt){if (cb) return cb(evt, xhr, userData);}
-    xhr.send(params instanceof String ? params : JSON.stringify(params));
+    xhr.send('string' === typeof params ? params : JSON.stringify(params));
 };
 var stream = function(url, headers, cb){
     if (!url) return cb(new Error('url not defined'));
     var
     xhr = window.XMLHttpRequest ? new window.XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
 
-    xhr.open('post', url, true);
+    xhr.open('POST', url, true);
     
     for (var key in headers){
         xhr.setRequestHeader(key, headers[key]);
@@ -58,16 +58,16 @@ var stream = function(url, headers, cb){
 };
 var
 btn = document.getElementsByTagName('button')[0];
-//conn = stream('http://107.20.154.29:4888', null, function(err, xhr){
-//    if (err) return console.error('error: '+err);
-//    console.log('receive: '+xhr.responseText);
-//});
+conn = stream('http://107.20.154.29:4888', null, function(err, xhr){
+    if (err) return console.error('error: '+err);
+    console.log('receive: '+xhr.responseText);
+});
 btn.onclick = function(evt){
     var packet = JSON.stringify([{api:'chat', reqId:1, data:JSON.stringify({msg:''+Math.floor(Math.random()*1000)})}]);
     console.log('send: '+packet);
-    //conn.send(packet);
-    ajax('post', 'http://107.20.154.29:4888', packet, null, function(err, xhr){
-        console.log(err+' xhr: '+xhr.responseText);
-    });
+    conn.send(packet);
+//    ajax('POST', 'http://107.20.154.29:4888', packet, null, function(err, xhr){
+//        console.log(err+' xhr: '+xhr.responseText);
+//    });
 };
 </script>

@@ -190,7 +190,7 @@ pico.ajax = function(method, url, params, headers, cb, userData){
     if (!url) return cb(new Error('url not defined'));
     var
     xhr = window.XMLHttpRequest ? new window.XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP'),
-    post = 'post' === method.toLowerCase();
+    post = 'POST' === (method = method.toUpperCase());
 
     url += '?appVer='+pico.states.appVer;
 
@@ -216,7 +216,7 @@ pico.ajax = function(method, url, params, headers, cb, userData){
         }
     }
     xhr.onerror=function(evt){if (cb) return cb(evt, xhr, userData);}
-    xhr.send(params instanceof String ? params : JSON.stringify(params));
+    xhr.send('string' === typeof params ? params : JSON.stringify(params));
 };
 
 pico.hash = function(str){
