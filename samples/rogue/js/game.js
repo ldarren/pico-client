@@ -137,7 +137,10 @@ pico.def('game', 'pigSqrMap', function(){
         objects = me.objects,
         flags = me.flags,
         shuffle = [],
-        i, l, c;
+        i, l, c,
+        keys = Object.keys(G_CREEP_TEAM);
+
+        me.theme = keys[Floor(Random()*keys.length)];
 
         map.length = 0;
         terrain.length = 0;
@@ -207,33 +210,25 @@ pico.def('game', 'pigSqrMap', function(){
     me.heaven = undefined;
     me.mortal = undefined;
     me.mortalLoc = undefined;
+    me.map = [];
     me.terrain = [];
     me.hints = []; // 08:creep, 80:chest, 800:stair:
     me.objects = [];
     me.flags = [];
 
-    // data = {tileSet:tileSet, smallDevice: 0:1}
-    me.init = function(data){
-        me.tileSet = data.tileSet;
-        me.audioSprite = data.audioSprite;
+    me.load = function(){
+        loadGame();
+        return me.heaven ? me.heaven[1] : undefined;
+    };
 
-        var sd = me.smallDevice = data.smallDevice;
-        me.tileWidth = sd ? 32 : 64;
-        me.tileHeight = sd ? 32 : 64;
-
-        var loaded = loadGame();
-
-        if (!loaded){
-            var keys = Object.keys(G_CREEP_TEAM);
-            me.theme = keys[Floor(Random()*keys.length)];
-        }
-
-        me.heaven = me.god.init.call(me);
+    me.init = function(name){
+        me.heaven = me.god.init.call(me, name);
         me.mortal = me.hero.init.call(me);
-        me.objects = me.ai.init.call(me);
 
-        if (!loaded)
+        if (!me.map.length)
             createLevel(me.currentLevel);
+
+        me.objects = me.ai.init.call(me);
     };
 
     me.exit = function(evt){
@@ -251,6 +246,16 @@ pico.def('game', 'pigSqrMap', function(){
         me.ai.step.call(me, steps);
 
         return entities;
+    };
+
+    // data = {tileSet:tileSet, smallDevice: 0:1}
+    me.style = function(data){
+        me.tileSet = data.tileSet;
+        me.audioSprite = data.audioSprite;
+
+        var sd = me.smallDevice = data.smallDevice;
+        me.tileWidth = sd ? 32 : 64;
+        me.tileHeight = sd ? 32 : 64;
     };
 
     // call when player obtain the key
@@ -385,9 +390,6 @@ pico.def('game', 'pigSqrMap', function(){
     };
 
     me.gotoLevel = function(elapsed, level, entities){
-        var keys = Object.keys(G_CREEP_TEAM);
-        me.theme = keys[Floor(Random()*keys.length)];
-
         me.objects = me.ai.init.call(me);
 
         createLevel(level);

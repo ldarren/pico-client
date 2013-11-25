@@ -99,7 +99,7 @@ pico.def('hero', 'picUIContent', function(){
     me.init = function(){
         heroObj = this.mortal;
         if (!heroObj){
-            heroObj = this.god.createHero('Sir John Fenwick of Wallington');
+            heroObj = this.god.createHero();
         }
         objects = this.objects;
         flags = this.flags;

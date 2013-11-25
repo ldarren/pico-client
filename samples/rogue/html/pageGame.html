@@ -129,7 +129,7 @@ onLoad = function(){
 
         reactor.addGroup(game);
 
-        game.init({tileSet:tileSet, audioSprite:audioSprite, smallDevice:smallDevice});
+        game.style({tileSet:tileSet, audioSprite:audioSprite, smallDevice:smallDevice});
 
         game.route('fingerDown', [
             uiWindow.checkBound,
