@@ -79,9 +79,55 @@ pico.def('hero', 'picUIContent', function(){
         ctx.restore();
     },
     onDrawMeshUICustom = function(ctx, rect, ui){
-        console.log('draw'+JSON.stringify(ui));
-        if ('name' === ui.userData.id)
-            me.fillWrapText(ctx, currStats[OBJECT_NAME], rect[0], rect[1]+rect[3]/2, ui.w, ui.h);
+        var id = ui.userData.id;
+        switch(id){
+            case 'name':
+                me.fillWrapText(ctx, currStats[OBJECT_NAME], rect[0], rect[1]+rect[3]/2, ui.w, ui.h, {align:1});
+                break;
+            case 'level':
+                break;
+            case 'dex':
+                break;
+            case 'luck':
+                break;
+            case 'hp':
+                break;
+            case 'gold':
+                break;
+            case 'skull':
+                break;
+            case 'patk':
+                break;
+            case 'ratk':
+                break;
+            case 'matk':
+                break;
+            case 'pdef':
+                break;
+            case 'mdef':
+                break;
+            case 'will':
+                break;
+            case 'helm':
+                break;
+            case 'armor':
+                break;
+            case 'main':
+                break;
+            case 'off':
+                break;
+            case 'ringL':
+                break;
+            case 'ringR':
+                break;
+            case 'amulet':
+                break;
+            case 'quiver':
+                break;
+            default:
+                var effect = effects[id.split('effect')[1]];
+                break;
+        }
     },
     onClickMeshUI = function(ctx, rect, ui){
         console.log('click'+JSON.stringify(ui));
