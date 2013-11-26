@@ -1,11 +1,6 @@
 {
     "heroBrief":{
         "type":5,
-        "cellPt":1,
-        "uiPt":1,
-        "pad":0,
-        "w":1,
-        "h":1,
         "rows":[
             {"font":"bold 12pt alagard","fillStyle":"#aec440"},
             [
@@ -14,11 +9,6 @@
                     {},
                     {
                         "type":4,
-                        "cellPt":1,
-                        "uiPt":1,
-                        "pad":0,
-                        "w":0.5,
-                        "h":0.5,
                         "userData":{"id":"name"}
                     }
                 ],
@@ -26,11 +16,6 @@
                     {},
                     {
                         "type":4,
-                        "cellPt":1,
-                        "uiPt":1,
-                        "pad":0,
-                        "w":0.5,
-                        "h":0.5,
                         "userData":{"id":"hp"}
                     }
                 ]
@@ -41,11 +26,6 @@
                     {},
                     {
                         "type":4,
-                        "cellPt":1,
-                        "uiPt":1,
-                        "pad":0,
-                        "w":0.33,
-                        "h":0.5,
                         "userData":{"id":"level"}
                     }
                 ],
@@ -53,11 +33,6 @@
                     {},
                     {
                         "type":4,
-                        "cellPt":1,
-                        "uiPt":1,
-                        "pad":0,
-                        "w":0.33,
-                        "h":0.5,
                         "userData":{"id":"custom1"}
                     }
                 ],
@@ -65,11 +40,6 @@
                     {},
                     {
                         "type":4,
-                        "cellPt":1,
-                        "uiPt":1,
-                        "pad":0,
-                        "w":0.33,
-                        "h":0.5,
                         "userData":{"id":"custom2"}
                     }
                 ]
