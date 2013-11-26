@@ -55,7 +55,7 @@ pico.def('ai', function(){
     me.init = function(){
         objects = this.objects;
         terrain = this.terrain;
-        if (this.theme) me.changeTheme(this.theme);
+        me.changeTheme();
 
         return objects;
     };
@@ -66,8 +66,10 @@ pico.def('ai', function(){
     me.step = function(steps){
     };
 
-    me.changeTheme = function(theme){
+    me.changeTheme = function(){
         var
+        keys = Object.keys(G_CREEP_TEAM),
+        theme = keys[Floor(Random()*keys.length)],
         teamRaw = G_CREEP_TEAM[theme],
         shuffle = [],
         creepType, count, i, l;

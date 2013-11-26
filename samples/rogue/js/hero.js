@@ -79,18 +79,30 @@ pico.def('hero', 'picUIContent', function(){
         ctx.restore();
     },
     onDrawMeshUICustom = function(ctx, rect, ui){
-        var id = ui.userData.id;
+        var
+        ts = this.tileSet,
+        sd = this.smallDevice,
+        margin = sd ? 2 : 4,
+        uiSize = sd ? 16 : 32,
+        id = ui.userData.id;
         switch(id){
             case 'name':
                 me.fillWrapText(ctx, currStats[OBJECT_NAME], rect[0], rect[1]+rect[3]/2, ui.w, ui.h, {align:1});
                 break;
             case 'level':
+                me.drawData(ctx, ts, G_UI.LEVEL, currStats[OBJECT_LEVEL], rect[0], rect[1], uiSize, margin, ui.w);
                 break;
             case 'dex':
                 break;
             case 'luck':
                 break;
             case 'hp':
+                // draw hp
+                var x=rect[0];
+                for(var i=0, l=stats[OBJECT_HP]; i<l; i++){
+                    ts.draw(ctx, (i < currStats[OBJECT_HP]) ? G_UI.HP : G_UI.HP_EMPTY, x, rect[1]+margin, uiSize, uiSize);
+                    x += uiSize;
+                }
                 break;
             case 'gold':
                 break;
@@ -133,9 +145,6 @@ pico.def('hero', 'picUIContent', function(){
         console.log('click'+JSON.stringify(ui));
     };
 
-    me.slot('draw', onDrawMeshUICustom);
-    me.slot('click', onClickMeshUI);
-
     me.create = function(ent, data){
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
         data.layout = [];
@@ -162,6 +171,11 @@ pico.def('hero', 'picUIContent', function(){
         currStats = []; // level up will update currStats
         me.levelUp(this.deepestLevel);
         me.move(this.mortalLoc);
+
+        me.unslot('draw', this, onDrawMeshUICustom);
+        me.unslot('click', this, onClickMeshUI);
+        me.slot('draw', this, onDrawMeshUICustom);
+        me.slot('click', this, onClickMeshUI);
 
         return heroObj;
     };

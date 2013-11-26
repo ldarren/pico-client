@@ -137,10 +137,7 @@ pico.def('game', 'pigSqrMap', function(){
         objects = me.objects,
         flags = me.flags,
         shuffle = [],
-        i, l, c,
-        keys = Object.keys(G_CREEP_TEAM);
-
-        me.theme = keys[Floor(Random()*keys.length)];
+        i, l, c;
 
         map.length = 0;
         terrain.length = 0;
