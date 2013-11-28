@@ -22,7 +22,11 @@ pico.def('hero', 'picUIContent', function(){
         if ('custom2' === id) id = 'skull';
         switch(id){
             case 'name':
-                me.fillWrapText(ctx, currStats[OBJECT_NAME], rect[0], rect[1]+rect[3]/2, ui.w, ui.h, {align:1});
+                ctx.save();
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                me.fillWrapText(ctx, currStats[OBJECT_NAME], rect[0]+rect[2]/2, rect[1]+rect[3]/2, rect[2], rect[3]);
+                ctx.restore();
                 break;
             case 'level':
                 me.drawData(ctx, ts, G_UI.LEVEL, currStats[OBJECT_LEVEL], rect[0], rect[1], uiSize, margin, ui.w);

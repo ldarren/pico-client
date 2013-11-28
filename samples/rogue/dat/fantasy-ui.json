@@ -9,6 +9,8 @@
                     {},
                     {
                         "type":4,
+                        "uiPt":16,
+                        "cellPt":16,
                         "userData":{"id":"name"}
                     }
                 ],
@@ -60,13 +62,8 @@
                 [
                     {},
                     {
-                        "type":1,
-                        "cellPt":1,
-                        "uiPt":1,
-                        "pad":0,
-                        "w":1.0,
-                        "h":320,
-                        "text":"row1 cell1"
+                        "type":4,
+                        "userData":{"id":"name"}
                     }
                 ]
             ],[
@@ -74,13 +71,15 @@
                 [
                     {},
                     {
-                        "type":1,
-                        "cellPt":1,
-                        "uiPt":1,
-                        "pad":0,
-                        "w":1.0,
-                        "h":320,
-                        "text":"row2 cell1"
+                        "type":4,
+                        "userData":{"id":"level"}
+                    }
+                ],
+                [
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"hp"}
                     }
                 ]
             ],[
