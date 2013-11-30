@@ -17,6 +17,7 @@ pico.def('hero', 'picUIContent', function(){
         sd = this.smallDevice,
         margin = sd ? 2 : 4,
         uiSize = sd ? 16 : 32,
+        opt = {align:1},
         id = ui.userData.id;
         if ('custom1' === id) id = 'gold';
         if ('custom2' === id) id = 'skull';
@@ -29,13 +30,13 @@ pico.def('hero', 'picUIContent', function(){
                 ctx.restore();
                 break;
             case 'level':
-                me.drawData(ctx, ts, G_UI.LEVEL, currStats[OBJECT_LEVEL], rect[0], rect[1], uiSize, margin, ui.w);
+                me.fillIconText(ctx, ts, '`'+G_UI.LEVEL+' Level: '+currStats[OBJECT_LEVEL], rect[0], rect[1], rect[2], rect[3], opt);
                 break;
             case 'dex':
-                me.drawData(ctx, ts, G_UI.DEX, currStats[OBJECT_DEX], rect[0], rect[1], uiSize, margin, ui.w);
+                me.fillIconText(ctx, ts, '`'+G_UI.DEX+' Dexterity: '+currStats[OBJECT_DEX], rect[0], rect[1], rect[2], rect[3], opt);
                 break;
             case 'luck':
-                me.drawData(ctx, ts, G_UI.LUCK, currStats[OBJECT_LUCK], rect[0], rect[1], uiSize, margin, ui.w);
+                me.fillIconText(ctx, ts, '`'+G_UI.LUCK+' Luck: '+currStats[OBJECT_LUCK], rect[0], rect[1], rect[2], rect[3], opt);
                 break;
             case 'hp':
                 // draw hp
