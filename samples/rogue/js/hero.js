@@ -15,8 +15,7 @@ pico.def('hero', 'picUIContent', function(){
         var
         ts = this.tileSet,
         sd = this.smallDevice,
-        margin = sd ? 2 : 4,
-        uiSize = sd ? 16 : 32,
+        margin = sd ? 0 : 6,
         opt = {align:1},
         id = ui.userData.id;
         if ('custom1' === id) id = 'gold';
@@ -30,45 +29,45 @@ pico.def('hero', 'picUIContent', function(){
                 ctx.restore();
                 break;
             case 'level':
-                me.fillIconText(ctx, ts, '`'+G_UI.LEVEL+' Level: '+currStats[OBJECT_LEVEL], rect[0], rect[1], rect[2], rect[3], opt);
+                me.fillIconText(ctx, ts, '`'+G_UI.LEVEL+' Level: '+currStats[OBJECT_LEVEL], rect[0], rect[1]+margin, rect[2], rect[3], opt);
+                break;
+            case 'str':
+                me.fillIconText(ctx, ts, '`'+G_UI.MDEF+' Str: '+currStats[OBJECT_MDEF], rect[0], rect[1]+margin, rect[2], rect[3], opt);
                 break;
             case 'dex':
-                me.fillIconText(ctx, ts, '`'+G_UI.DEX+' Dexterity: '+currStats[OBJECT_DEX], rect[0], rect[1], rect[2], rect[3], opt);
+                me.fillIconText(ctx, ts, '`'+G_UI.DEX+' Dex: '+currStats[OBJECT_DEX], rect[0], rect[1]+margin, rect[2], rect[3], opt);
                 break;
             case 'luck':
-                me.fillIconText(ctx, ts, '`'+G_UI.LUCK+' Luck: '+currStats[OBJECT_LUCK], rect[0], rect[1], rect[2], rect[3], opt);
+                me.fillIconText(ctx, ts, '`'+G_UI.LUCK+' Luck: '+currStats[OBJECT_LUCK], rect[0], rect[1]+margin, rect[2], rect[3], opt);
+                break;
+            case 'will':
+                me.fillIconText(ctx, ts, '`'+G_UI.WILL+' Will: '+currStats[OBJECT_WILL], rect[0], rect[1]+margin, rect[2], rect[3], opt);
                 break;
             case 'hp':
                 // draw hp
-                var x=rect[0];
+                var iconText='HP:';
                 for(var i=0, l=stats[OBJECT_HP]; i<l; i++){
-                    ts.draw(ctx, (i < currStats[OBJECT_HP]) ? G_UI.HP : G_UI.HP_EMPTY, x, rect[1]+margin, uiSize, uiSize);
-                    x += uiSize;
+                    iconText += ' `'+((i < currStats[OBJECT_HP]) ? G_UI.HP : G_UI.HP_EMPTY);
                 }
+                me.fillIconText(ctx, ts, iconText, rect[0], rect[1]+margin, rect[2], rect[3], opt);
                 break;
             case 'gold':
-                me.drawData(ctx, ts, G_UI.GOLD, appearance[HERO_GOLD], rect[0], rect[1], uiSize, margin, ui.w);
+                me.fillIconText(ctx, ts, 'Gold `'+G_UI.GOLD+' '+currStats[HERO_GOLD], rect[0], rect[1]+margin, rect[2], rect[3], opt);
                 break;
             case 'skull':
-                me.drawData(ctx, ts, G_UI.SKULL, appearance[HERO_SKULL], rect[0], rect[1], uiSize, margin, ui.w);
+                me.fillIconText(ctx, ts, '`'+G_UI.SKULL+' Skull: '+currStats[HERO_SKULL], rect[0], rect[1]+margin, rect[2], rect[3], opt);
                 break;
             case 'patk':
-                me.drawData(ctx, ts, G_UI.PATK, currStats[OBJECT_ATK], rect[0], rect[1], uiSize, margin, ui.w);
+                me.fillIconText(ctx, ts, '`'+G_UI.PATK+' Melee: '+currStats[OBJECT_ATK], rect[0], rect[1]+margin, rect[2], rect[3], opt);
                 break;
             case 'ratk':
-                me.drawData(ctx, ts, G_UI.RATK, currStats[OBJECT_RATK], rect[0], rect[1], uiSize, margin, ui.w);
+                me.fillIconText(ctx, ts, '`'+G_UI.RATK+' Range: '+currStats[OBJECT_RATK], rect[0], rect[1]+margin, rect[2], rect[3], opt);
                 break;
             case 'matk':
-                me.drawData(ctx, ts, G_UI.MATK, currStats[OBJECT_MATK], rect[0], rect[1], uiSize, margin, ui.w);
+                me.fillIconText(ctx, ts, '`'+G_UI.MATK+' Magic: '+currStats[OBJECT_MATK], rect[0], rect[1]+margin, rect[2], rect[3], opt);
                 break;
             case 'pdef':
-                me.drawData(ctx, ts, G_UI.PDEF, currStats[OBJECT_DEF], rect[0], rect[1], uiSize, margin, ui.w);
-                break;
-            case 'mdef':
-                me.drawData(ctx, ts, G_UI.MDEF, currStats[OBJECT_MDEF], rect[0], rect[1], uiSize, margin, ui.w);
-                break;
-            case 'will':
-                me.drawData(ctx, ts, G_UI.WILL, currStats[OBJECT_WILL], rect[0], rect[1], uiSize, margin, ui.w);
+                me.fillIconText(ctx, ts, '`'+G_UI.PDEF+' Def: '+currStats[OBJECT_DEF], rect[0], rect[1]+margin, rect[2], rect[3], opt);
                 break;
             case 'helm':
                 break;
@@ -469,8 +468,9 @@ pico.def('hero', 'picUIContent', function(){
         var
         com = ent.getComponent(name),
         win = ent.getComponent(com.win),
-        rect = ent.getComponent(com.box);
+        rect = ent.getComponent(com.box),
+        scale = this.smallDevice ? 1 : 2;
 
-        return me.drawMeshUI(ctx, rect, com.layout);
+        return me.drawMeshUI(ctx, rect, com.layout, {main: this.tileSet}, scale, scale);
     };
 });

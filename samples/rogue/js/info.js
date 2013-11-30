@@ -358,9 +358,9 @@ pico.def('info', 'picUIContent', function(){
                             y += uiSize;
                             uiSize = sd ? 16 : 32;
          
-                            x = me.drawData(ctx, ts, G_UI.PATK, target[CREEP_ATK], x, y, uiSize, margin, textWidth3);
-                            x = me.drawData(ctx, ts, G_UI.RATK, target[CREEP_RATK], x, y, uiSize, margin, textWidth3);
-                            x = me.drawData(ctx, ts, G_UI.MATK, target[CREEP_MATK], x, y, uiSize, margin, textWidth3);
+                            //x = me.drawData(ctx, ts, G_UI.PATK, target[CREEP_ATK], x, y, uiSize, margin, textWidth3);
+                            //x = me.drawData(ctx, ts, G_UI.RATK, target[CREEP_RATK], x, y, uiSize, margin, textWidth3);
+                            //x = me.drawData(ctx, ts, G_UI.MATK, target[CREEP_MATK], x, y, uiSize, margin, textWidth3);
 
                             x = X + pw;
                             uiSize = sd ? 8 : 16;
@@ -376,8 +376,8 @@ pico.def('info', 'picUIContent', function(){
                             y += uiSize + margin;
                             uiSize = sd ? 16 : 32;
 
-                            x = me.drawData(ctx, ts, G_UI.PDEF, target[CREEP_DEF], x, y, uiSize, margin, textWidth3);
-                            x = me.drawData(ctx, ts, G_UI.MDEF, target[CREEP_MDEF], x, y, uiSize, margin, textWidth3);
+                            //x = me.drawData(ctx, ts, G_UI.PDEF, target[CREEP_DEF], x, y, uiSize, margin, textWidth3);
+                            //x = me.drawData(ctx, ts, G_UI.MDEF, target[CREEP_MDEF], x, y, uiSize, margin, textWidth3);
                             break;
                         default:
                             ts.draw(ctx, target[OBJECT_ICON], x, y, tw, th);

@@ -13,16 +13,14 @@
                         "cellPt":16,
                         "userData":{"id":"name"}
                     }
-                ],
-                [
+                ],[
                     {},
                     {
                         "type":4,
                         "userData":{"id":"hp"}
                     }
                 ]
-            ],
-            [
+            ],[
                 {},
                 [
                     {},
@@ -30,15 +28,13 @@
                         "type":4,
                         "userData":{"id":"level"}
                     }
-                ],
-                [
+                ],[
                     {},
                     {
                         "type":4,
                         "userData":{"id":"custom1"}
                     }
-                ],
-                [
+                ],[
                     {},
                     {
                         "type":4,
@@ -74,8 +70,19 @@
                         "type":4,
                         "userData":{"id":"level"}
                     }
-                ],
-                [
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"gold"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"skull"}
+                    }
+                ],[
                     {},
                     {
                         "type":4,
@@ -87,13 +94,26 @@
                 [
                     {},
                     {
-                        "type":1,
-                        "cellPt":1,
-                        "uiPt":1,
-                        "pad":0,
-                        "w":1.0,
-                        "h":320,
-                        "text":"row3 cell1"
+                        "type":4,
+                        "userData":{"id":"str"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"dex"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"luck"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"will"}
                     }
                 ]
             ],[
@@ -101,14 +121,46 @@
                 [
                     {},
                     {
-                        "type":1,
+                        "type":4,
+                        "userData":{"id":"patk"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"ratk"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"matk"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"pdef"}
+                    }
+                ]
+            ],[
+                {},
+                [
+                ],[
+                    {},
+                    {
+                        "type":2,
                         "cellPt":1,
                         "uiPt":1,
-                        "pad":0,
-                        "w":1.0,
-                        "h":320,
-                        "text":"row4 cell1"
+                        "pad":5,
+                        "w":32,
+                        "h":32,
+                        "tileSet":"main",
+                        "tileId":15
                     }
+                ],[
+                ],[
+                ],[
                 ]
             ]
         ]
