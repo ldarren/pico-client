@@ -29,6 +29,9 @@ pico.def('uiWindow', 'picUIWindow', function(){
         canvas.setAttribute('height', com.contentSize[1]);
 
         mod.draw.call(this, canvas.getContext('2d'), ent, layout);
+
+        if (com.scrollX + comBox.width > com.contentSize[0]) com.scrollX = 0;
+        if (com.scrollY + comBox.height > com.contentSize[1]) com.scrollY = 0;
     },
     resizeContent = function(ent, com){
         var
@@ -315,12 +318,16 @@ pico.def('uiWindow', 'picUIWindow', function(){
         ch = contentSize[1], wh = comBox.height,
         x = com.scrollX, y = com.scrollY;
 
-        if (cw > ww) x += evt[2]-evt[0];
-        if (ch > wh) y += evt[3]-evt[1];
-        if (x + ww > cw) x = cw - ww;
-        else if (x < 0) x = 0;
-        if (y + wh > ch) y = ch - wh;
-        else if (y < 0) y = 0;
+        if (cw > ww){
+            x += evt[2]-evt[0];
+            if (x + ww > cw) x = cw - ww;
+            else if (x < 0) x = 0;
+        }else x = 0;
+        if (ch > wh){
+            y += evt[3]-evt[1];
+            if (y + wh > ch) y = ch - wh;
+            else if (y < 0) y = 0;
+        }else y = 0;
 
         evt[2] = evt[0];
         evt[3] = evt[1];
@@ -346,7 +353,9 @@ pico.def('uiWindow', 'picUIWindow', function(){
         layout = com.layouts[com.maximized],
         gs = com.gridSize,
         gs2 = gs * 2,
-        comBox = ent.getComponent(com.box);
+        comBox = ent.getComponent(com.box),
+        contentW = comBox.width > com.contentSize[0] ? com.contentSize[0] : comBox.width,
+        contentH = comBox.height > com.contentSize[1] ? com.contentSize[1] : comBox.height;
 
         ctx.save();
         ctx.beginPath();
@@ -355,8 +364,8 @@ pico.def('uiWindow', 'picUIWindow', function(){
         else ctx.fillRect(layout[0], layout[1], layout[2], layout[3]);
 
         ctx.drawImage(com.canvas,
-            com.scrollX, com.scrollY, comBox.width, comBox.height,
-            comBox.x, comBox.y, comBox.width, comBox.height);
+            com.scrollX, com.scrollY, contentW, contentH,
+            comBox.x, comBox.y, contentW, contentH);
 
         if (com.theme){
             var
