@@ -15,79 +15,83 @@ pico.def('hero', 'picUIContent', function(){
         var
         ts = this.tileSet,
         sd = this.smallDevice,
-        margin = sd ? 0 : 6,
-        opt = {align:1},
-        id = ui.userData.id;
-        if ('custom1' === id) id = 'gold';
-        if ('custom2' === id) id = 'skull';
+        id = ui.userData.id,
+        labelOpt = {align:3},
+        valueOpt = {align:1};
+        if ('custom1Label' === id) id = 'goldLabel';
+        else if ('custom2Label' === id) id = 'skullLabel';
+        else if ('custom1' === id) id = 'gold';
+        else if ('custom2' === id) id = 'skull';
         switch(id){
-            case 'name':
-                ctx.save();
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                me.fillWrapText(ctx, currStats[OBJECT_NAME], rect[0]+rect[2]/2, rect[1]+rect[3]/2, rect[2], rect[3]);
-                ctx.restore();
-                break;
-            case 'level':
-                me.fillIconText(ctx, ts, '`'+G_UI.LEVEL+' Level: '+currStats[OBJECT_LEVEL], rect[0], rect[1]+margin, rect[2], rect[3], opt);
-                break;
-            case 'str':
-                me.fillIconText(ctx, ts, '`'+G_UI.MDEF+' Str: '+currStats[OBJECT_MDEF], rect[0], rect[1]+margin, rect[2], rect[3], opt);
-                break;
-            case 'dex':
-                me.fillIconText(ctx, ts, '`'+G_UI.DEX+' Dex: '+currStats[OBJECT_DEX], rect[0], rect[1]+margin, rect[2], rect[3], opt);
-                break;
-            case 'luck':
-                me.fillIconText(ctx, ts, '`'+G_UI.LUCK+' Luck: '+currStats[OBJECT_LUCK], rect[0], rect[1]+margin, rect[2], rect[3], opt);
-                break;
-            case 'will':
-                me.fillIconText(ctx, ts, '`'+G_UI.WILL+' Will: '+currStats[OBJECT_WILL], rect[0], rect[1]+margin, rect[2], rect[3], opt);
-                break;
-            case 'hp':
-                // draw hp
-                var iconText='HP:';
-                for(var i=0, l=stats[OBJECT_HP]; i<l; i++){
-                    iconText += ' `'+((i < currStats[OBJECT_HP]) ? G_UI.HP : G_UI.HP_EMPTY);
-                }
-                me.fillIconText(ctx, ts, iconText, rect[0], rect[1]+margin, rect[2], rect[3], opt);
-                break;
-            case 'gold':
-                me.fillIconText(ctx, ts, 'Gold `'+G_UI.GOLD+' '+currStats[HERO_GOLD], rect[0], rect[1]+margin, rect[2], rect[3], opt);
-                break;
-            case 'skull':
-                me.fillIconText(ctx, ts, '`'+G_UI.SKULL+' Skull: '+currStats[HERO_SKULL], rect[0], rect[1]+margin, rect[2], rect[3], opt);
-                break;
-            case 'patk':
-                me.fillIconText(ctx, ts, '`'+G_UI.PATK+' Melee: '+currStats[OBJECT_ATK], rect[0], rect[1]+margin, rect[2], rect[3], opt);
-                break;
-            case 'ratk':
-                me.fillIconText(ctx, ts, '`'+G_UI.RATK+' Range: '+currStats[OBJECT_RATK], rect[0], rect[1]+margin, rect[2], rect[3], opt);
-                break;
-            case 'matk':
-                me.fillIconText(ctx, ts, '`'+G_UI.MATK+' Magic: '+currStats[OBJECT_MATK], rect[0], rect[1]+margin, rect[2], rect[3], opt);
-                break;
-            case 'pdef':
-                me.fillIconText(ctx, ts, '`'+G_UI.PDEF+' Def: '+currStats[OBJECT_DEF], rect[0], rect[1]+margin, rect[2], rect[3], opt);
-                break;
-            case 'helm':
-                break;
-            case 'armor':
-                break;
-            case 'main':
-                break;
-            case 'off':
-                break;
-            case 'ringL':
-                break;
-            case 'ringR':
-                break;
-            case 'amulet':
-                break;
-            case 'quiver':
-                break;
-            default:
-                var effect = effects[id.split('effect')[1]];
-                break;
+        case 'name':
+            me.fillIconText(ctx, ts, currStats[OBJECT_NAME], rect[0], rect[1], rect[2], rect[3]);
+            break;
+        case 'level':
+            me.fillIconText(ctx, ts, ''+currStats[OBJECT_LEVEL], rect[0], rect[1], rect[2], rect[3], valueOpt);
+            break;
+        case 'str':
+            me.fillIconText(ctx, ts, '`'+G_UI.MDEF+' Str: '+currStats[OBJECT_MDEF], rect[0], rect[1], rect[2], rect[3]);
+            break;
+        case 'dex':
+            me.fillIconText(ctx, ts, '`'+G_UI.DEX+' Dex: '+currStats[OBJECT_DEX], rect[0], rect[1], rect[2], rect[3]);
+            break;
+        case 'luck':
+            me.fillIconText(ctx, ts, '`'+G_UI.LUCK+' Luck: '+currStats[OBJECT_LUCK], rect[0], rect[1], rect[2], rect[3]);
+            break;
+        case 'will':
+            me.fillIconText(ctx, ts, '`'+G_UI.WILL+' Will: '+currStats[OBJECT_WILL], rect[0], rect[1], rect[2], rect[3]);
+            break;
+        case 'hp':
+            // draw hp
+            var iconText='HP:';
+            for(var i=0, l=stats[OBJECT_HP]; i<l; i++){
+                iconText += ' `'+((i < currStats[OBJECT_HP]) ? G_UI.HP : G_UI.HP_EMPTY);
+            }
+            me.fillIconText(ctx, ts, iconText, rect[0], rect[1], rect[2], rect[3]);
+            break;
+        case 'goldLabel':
+            me.fillIconText(ctx, ts, 'Gold `'+G_UI.GOLD, rect[0], rect[1], rect[2], rect[3], labelOpt);
+            break;
+        case 'gold':
+            me.fillIconText(ctx, ts, ''+currStats[HERO_GOLD], rect[0], rect[1], rect[2], rect[3], valueOpt);
+            break;
+        case 'skullLabel':
+            me.fillIconText(ctx, ts, 'Skull `'+G_UI.SKULL, rect[0], rect[1], rect[2], rect[3], labelOpt);
+            break;
+        case 'skull':
+            me.fillIconText(ctx, ts, ''+currStats[HERO_SKULL], rect[0], rect[1], rect[2], rect[3], valueOpt);
+            break;
+        case 'patk':
+            me.fillIconText(ctx, ts, '`'+G_UI.PATK+' Melee: '+currStats[OBJECT_ATK], rect[0], rect[1], rect[2], rect[3]);
+            break;
+        case 'ratk':
+            me.fillIconText(ctx, ts, '`'+G_UI.RATK+' Range: '+currStats[OBJECT_RATK], rect[0], rect[1], rect[2], rect[3]);
+            break;
+        case 'matk':
+            me.fillIconText(ctx, ts, '`'+G_UI.MATK+' Magic: '+currStats[OBJECT_MATK], rect[0], rect[1], rect[2], rect[3]);
+            break;
+        case 'pdef':
+            me.fillIconText(ctx, ts, '`'+G_UI.PDEF+' Def: '+currStats[OBJECT_DEF], rect[0], rect[1], rect[2], rect[3]);
+            break;
+        case 'helm':
+            break;
+        case 'armor':
+            break;
+        case 'main':
+            break;
+        case 'off':
+            break;
+        case 'ringL':
+            break;
+        case 'ringR':
+            break;
+        case 'amulet':
+            break;
+        case 'quiver':
+            break;
+        default:
+            var effect = effects[id.split('effect')[1]];
+            break;
         }
     },
     onClickMeshUI = function(ctx, rect, ui){
