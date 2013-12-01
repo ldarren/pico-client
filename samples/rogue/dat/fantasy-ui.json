@@ -68,19 +68,19 @@
                     {},
                     {
                         "type":4,
+                        "userData":{"id":"levelLabel"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
                         "userData":{"id":"level"}
                     }
                 ],[
                     {},
                     {
                         "type":4,
-                        "userData":{"id":"gold"}
-                    }
-                ],[
-                    {},
-                    {
-                        "type":4,
-                        "userData":{"id":"skull"}
+                        "userData":{"id":"hpLabel"}
                     }
                 ],[
                     {},
@@ -95,13 +95,61 @@
                     {},
                     {
                         "type":4,
+                        "userData":{"id":"goldLabel"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"gold"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"skullLabel"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"skull"}
+                    }
+                ]
+            ],[
+                {},
+                [
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"strLabel"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
                         "userData":{"id":"str"}
                     }
                 ],[
                     {},
                     {
                         "type":4,
+                        "userData":{"id":"dexLabel"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
                         "userData":{"id":"dex"}
+                    }
+                ]
+            ],[
+                {},
+                [
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"luckLabel"}
                     }
                 ],[
                     {},
@@ -113,40 +161,18 @@
                     {},
                     {
                         "type":4,
+                        "userData":{"id":"willLabel"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
                         "userData":{"id":"will"}
                     }
                 ]
             ],[
                 {},
                 [
-                    {},
-                    {
-                        "type":4,
-                        "userData":{"id":"patk"}
-                    }
-                ],[
-                    {},
-                    {
-                        "type":4,
-                        "userData":{"id":"ratk"}
-                    }
-                ],[
-                    {},
-                    {
-                        "type":4,
-                        "userData":{"id":"matk"}
-                    }
-                ],[
-                    {},
-                    {
-                        "type":4,
-                        "userData":{"id":"pdef"}
-                    }
-                ]
-            ],[
-                {},
-                [
-                ],[
                     {},
                     {
                         "type":2,
@@ -192,11 +218,21 @@
                         "userData":{"id":"quiver"}
                     }
                 ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"atkLabel"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"atk"}
+                    }
                 ]
             ],[
                 {},
                 [
-                ],[
                     {},
                     {
                         "type":2,
@@ -233,11 +269,21 @@
                         "userData":{"id":"shield"}
                     }
                 ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"defLable"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"def"}
+                    }
                 ]
             ],[
                 {},
                 [
-                ],[
                     {},
                     {
                         "type":2,
@@ -282,6 +328,7 @@
                         "type":4,
                         "userData":{"id":"ringR"}
                     }
+                ],[
                 ],[
                 ]
             ],[
