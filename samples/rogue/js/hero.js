@@ -475,6 +475,6 @@ pico.def('hero', 'picUIContent', function(){
         rect = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.drawMeshUI(ctx, rect, com.layout, {main: this.tileSet}, scale, scale);
+        return me.drawMeshUI(ctx, rect, com.layout, {main: this.tileSet}, scale, com.font);
     };
 });
