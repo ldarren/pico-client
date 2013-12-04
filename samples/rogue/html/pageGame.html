@@ -204,8 +204,8 @@ onLoad = function(){
         game.hideEntity('effects');
 
         uiWinEnts[0] = game.addEntity(G_WIN_ID.PLAYER);
-/*            uiWinEnts[1] = game.addEntity(G_WIN_ID.TOME);
-        uiWinEnts[2] = game.addEntity(G_WIN_ID.BAG);
+        uiWinEnts[1] = game.addEntity(G_WIN_ID.TOME);
+/*        uiWinEnts[2] = game.addEntity(G_WIN_ID.BAG);
         uiWinEnts[3] = game.addEntity(G_WIN_ID.INFO);
         uiWinEnts[4] = game.addEntity(G_WIN_ID.DIALOG);
         uiWinEnts[5] = game.addEntity(G_WIN_ID.TRADE);
@@ -219,11 +219,11 @@ onLoad = function(){
         uiWinEnt = uiWinEnts[0];
         uiWinEnt.attach(uiWindow, {content:hero.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3], theme: G_THEME.THEME8});
         uiWinEnt.attach(hero, {win:uiWindow.moduleName, box:rect.moduleName, maxMeshUI:'heroDetails', minMeshUI:'heroBrief',fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
-/*            
+            
         uiWinEnt = uiWinEnts[1];
         uiWinEnt.attach(uiWindow, {content:tome.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3], theme: G_THEME.THEME8});
         uiWinEnt.attach(tome, {name:'Tome', win:uiWindow.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
-        
+/*        
         uiWinEnt = uiWinEnts[2];
         uiWinEnt.attach(uiWindow, {content:bag.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3], theme: G_THEME.THEME8});
         uiWinEnt.attach(bag, {name:'Bag', win:uiWindow.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
