@@ -71,7 +71,7 @@ pico.def('hero', 'picUIContent', function(){
             me.fillIconText(ctx, ts, '`'+G_UI.MATK+' Magic: '+currStats[OBJECT_MATK], rect[0], rect[1], rect[2], rect[3]);
             break;
         case 'pdef':
-            me.fillIconText(ctx, ts, '`'+G_UI.PDEF+' Def: '+currStats[OBJECT_DEF], rect[0], rect[1], rect[2], rect[3]);
+            me.fillIconText(ctx, ts, ''+currStats[OBJECT_DEF], rect[0], rect[1], rect[2], rect[3]);
             break;
         case 'helm':
             break;
