@@ -192,19 +192,14 @@ pico.ajax = function(method, url, params, headers, cb, userData){
     xhr = window.XMLHttpRequest ? new window.XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP'),
     post = 'POST' === (method = method.toUpperCase());
 
-    url += '?appVer='+pico.states.appVer;
+    url = encodeURI(url) + '?appVer='+pico.states.appVer;
 
     if (!post && params){
-        url += encodeURI(params);
+        url += encodeURIComponent(params);
         params = null;
     }
 
     xhr.open(method, url, true);
-    
-    for (var key in headers){
-        xhr.setRequestHeader(key, headers[key]);
-    }
-    if (post && !headers) xhr.setRequestHeader('Content-type', 'application/json');
 
     xhr.onreadystatechange=function(){
         if (2 < xhr.readyState && cb){
@@ -216,7 +211,17 @@ pico.ajax = function(method, url, params, headers, cb, userData){
         }
     }
     xhr.onerror=function(evt){if (cb) return cb(evt, xhr, userData);}
-    xhr.send('string' === typeof params ? params : JSON.stringify(params));
+    
+    if (post) xhr.setRequestHeader('Content-type', 'application/json');
+    for (var key in headers){
+        xhr.setRequestHeader(key, headers[key]);
+    }
+
+    if (params){
+        xhr.send('string' === typeof params ? params : JSON.stringify(params));
+    }else{
+        xhr.send();
+    }
 };
 
 pico.hash = function(str){
