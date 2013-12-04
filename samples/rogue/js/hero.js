@@ -30,16 +30,16 @@ pico.def('hero', 'picUIContent', function(){
             me.fillIconText(ctx, ts, ''+currStats[OBJECT_LEVEL], rect[0], rect[1], rect[2], rect[3], valueOpt);
             break;
         case 'str':
-            me.fillIconText(ctx, ts, '`'+G_UI.MDEF+' Str: '+currStats[OBJECT_MDEF], rect[0], rect[1], rect[2], rect[3]);
+            me.fillIconText(ctx, ts, ''+currStats[OBJECT_MDEF], rect[0], rect[1], rect[2], rect[3]);
             break;
         case 'dex':
-            me.fillIconText(ctx, ts, '`'+G_UI.DEX+' Dex: '+currStats[OBJECT_DEX], rect[0], rect[1], rect[2], rect[3]);
+            me.fillIconText(ctx, ts, ''+currStats[OBJECT_DEX], rect[0], rect[1], rect[2], rect[3]);
             break;
         case 'luck':
-            me.fillIconText(ctx, ts, '`'+G_UI.LUCK+' Luck: '+currStats[OBJECT_LUCK], rect[0], rect[1], rect[2], rect[3]);
+            me.fillIconText(ctx, ts, ''+currStats[OBJECT_LUCK], rect[0], rect[1], rect[2], rect[3]);
             break;
         case 'will':
-            me.fillIconText(ctx, ts, '`'+G_UI.WILL+' Will: '+currStats[OBJECT_WILL], rect[0], rect[1], rect[2], rect[3]);
+            me.fillIconText(ctx, ts, ''+currStats[OBJECT_WILL], rect[0], rect[1], rect[2], rect[3]);
             break;
         case 'hp':
             // draw hp
