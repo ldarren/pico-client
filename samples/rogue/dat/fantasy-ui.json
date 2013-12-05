@@ -89,6 +89,36 @@
                 ],[
                     {},
                     {
+                        "type":4,
+                        "cellPt":16,
+                        "uiPt":16,
+                        "w":2,
+                        "h":1,
+                        "tileSet":"main",
+                        "userData":{"id":"hp"}
+                    }
+                ],[
+                ]
+            ],[
+                {},
+                [
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "tileSet":"main",
+                        "text":"Level `216"
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"level"}
+                    }
+                ],[
+                    {},
+                    {
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
@@ -107,35 +137,11 @@
                 [
                     {},
                     {
-                        "type":4,
-                        "userData":{"id":"levelLabel"}
-                    }
-                ],[
-                    {},
-                    {
-                        "type":4,
-                        "userData":{"id":"level"}
-                    }
-                ],[
-                    {},
-                    {
-                        "type":4,
-                        "userData":{"id":"hpLabel"}
-                    }
-                ],[
-                    {},
-                    {
-                        "type":4,
-                        "userData":{"id":"hp"}
-                    }
-                ]
-            ],[
-                {},
-                [
-                    {},
-                    {
-                        "type":4,
-                        "userData":{"id":"goldLabel"}
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "tileSet":"main",
+                        "text":"Gold `195"
                     }
                 ],[
                     {},
@@ -146,8 +152,11 @@
                 ],[
                     {},
                     {
-                        "type":4,
-                        "userData":{"id":"skullLabel"}
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "tileSet":"main",
+                        "text":"Skull `196"
                     }
                 ],[
                     {},
@@ -161,8 +170,11 @@
                 [
                     {},
                     {
-                        "type":4,
-                        "userData":{"id":"strLabel"}
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "tileSet":"main",
+                        "text":"Str `190"
                     }
                 ],[
                     {},
@@ -173,8 +185,11 @@
                 ],[
                     {},
                     {
-                        "type":4,
-                        "userData":{"id":"dexLabel"}
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "tileSet":"main",
+                        "text":"Dex `613"
                     }
                 ],[
                     {},
@@ -188,8 +203,11 @@
                 [
                     {},
                     {
-                        "type":4,
-                        "userData":{"id":"luckLabel"}
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "tileSet":"main",
+                        "text":"Luck `193"
                     }
                 ],[
                     {},
@@ -200,8 +218,11 @@
                 ],[
                     {},
                     {
-                        "type":4,
-                        "userData":{"id":"willLabel"}
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "tileSet":"main",
+                        "text":"Will `670"
                     }
                 ],[
                     {},
@@ -260,8 +281,11 @@
                 ],[
                     {},
                     {
-                        "type":4,
-                        "userData":{"id":"atkLabel"}
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "tileSet":"main",
+                        "text":"Atk `190"
                     }
                 ],[
                     {},
@@ -311,8 +335,11 @@
                 ],[
                     {},
                     {
-                        "type":4,
-                        "userData":{"id":"defLabel"}
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "tileSet":"main",
+                        "text":"Def `192"
                     }
                 ],[
                     {},
