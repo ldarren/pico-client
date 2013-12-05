@@ -51,7 +51,7 @@ pico.prototype.link = function(name, url){
 };
 
 pico.def = function(name){
-    if (this.modules[name]) return console.error('Module name in used:', name);
+    if (this.modules[name]) return console.warn('Module name in used:', name);
     var module, ancestor, factory;
 
     if (3 === arguments.length){
@@ -174,6 +174,7 @@ pico.embedJS = function(scripts, cb){
     }
 
     var module = pico.def(script.getAttribute('name'), script.getAttribute('parent'), func);
+    if (!module) return pico.embedJS(scripts, cb);
 
     pico.loadDeps(module, function(){
       module.signal(pico.LOAD);
