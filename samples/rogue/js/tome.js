@@ -6,12 +6,6 @@ pico.def('tome', 'picUIContent', function(){
     name = me.moduleName,
     tomeId = G_WIN_ID.TOME,
     onDrawMeshUICustom = function(ctx, rect, ui){
-        this.hero.getTome();
-    },
-    onClickMeshUI = function(ctx, rect, ui){
-        console.log('tome click'+JSON.stringify(ui));
-    },
-    draw = function(ctx, items, layout, com){
         var
         ts = this.tileSet,
         tw = this.tileWidth,
@@ -22,29 +16,21 @@ pico.def('tome', 'picUIContent', function(){
         fx = (tw - fw)/2,
         fy = (th - fh)/2,
         selectedSpell = this.hero.getSelectedSpell(),
-        block, item, x, y;
+        items = this.hero.getTome(),
+        j = ui.userData.id,
+        item, x, y;
 
-        ctx.save();
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.font = com.font;
-        ctx.fillStyle = com.fontColor;
-
-        block = layout[0];
-        ctx.fillText(com.name, block[0]+block[2]/2, block[1]+block[3]/2, block[2]);
-        
-        for(var i=1,j=0, l=layout.length; i<l; i++,j++){
-            block = layout[i];
-            x = block[0], y = block[1];
-            ts.draw(ctx, G_UI.SLOT, x, y, tw, th);
-            item = items[j];
-            if (!item) continue;
-            ts.draw(ctx, item[OBJECT_ICON], x, y, tw, th);
-            if (item[SPELL_COOLDOWN]) ts.draw(ctx, G_NUMERIC.LARGE_LIGHT + item[SPELL_COOLDOWN], x+fx, y+fy, fw, fh);
-            else if (item === selectedSpell) ts.draw(ctx, G_SHADE[0], x, y, tw, th);
-        }
-
-        ctx.restore();
+        item = items[j];
+        if (!item) return;
+        ts.draw(ctx, item[OBJECT_ICON], x, y, tw, th);
+        if (item[SPELL_COOLDOWN]) ts.draw(ctx, G_NUMERIC.LARGE_LIGHT + item[SPELL_COOLDOWN], x+fx, y+fy, fw, fh);
+        else if (item === selectedSpell) ts.draw(ctx, G_SHADE[0], x, y, tw, th);
+    },
+    onClickMeshUI = function(ctx, rect, ui){
+        console.log('tome click'+JSON.stringify(ui));
+        spell = this.hero.getTome()[ui.userData.id];
+        this.go('selectSpell', this.hero.getSelectedSpell() === spell ? undefined : spell); // call even if tome[j-1] is undefined
+        return;
     };
 
     me.create = function(ent, data){
@@ -56,46 +42,56 @@ pico.def('tome', 'picUIContent', function(){
     me.resize = function(ent, width, height){
         var
         com = ent.getComponent(name),
-        comWin = ent.getComponent(com.win);
+        comWin = ent.getComponent(com.win),
+        cap = this.hero.getTomeCap(),
+        meshui=me.createMeshUI(null, me.CENTER, me.CENTER, 0, width, height, {font: com.font,fillStyle:"#aec440"}),
+        rows=meshui.rows,
+        row,cell,i,l;
+
+        row=me.createMeshRow(rows);
+        cell=me.createMeshCell(row);
+        me.createMeshText(cell, me.CENTER, me.CENTER, 0, 1, 1, com.name);
 
         if (comWin.maximized){
-            com.layout = me.createMeshUIFromTemplate(com.maxMeshUI, width, height);
+            for(i=0,l=cap/4;i<cap;i++){
+                row=me.createMeshRow(rows);
+                cell=me.createMeshCell(row);
+                cell=me.createMeshCell(row);
+                cell=me.createMeshCell(row);
+                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, 1, 1, 'main', G_UI.SLOT);
+                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, {id:i*4});
+                cell=me.createMeshCell(row);
+                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, 1, 1, 'main', G_UI.SLOT);
+                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, {id:1+(i*4)});
+                cell=me.createMeshCell(row);
+                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, 1, 1, 'main', G_UI.SLOT);
+                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, {id:2+(i*4)});
+                cell=me.createMeshCell(row);
+                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, 1, 1, 'main', G_UI.SLOT);
+                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, {id:3+(i*4)});
+                cell=me.createMeshCell(row);
+                cell=me.createMeshCell(row);
+            }
         }else{
-            com.layout = me.createMeshUIFromTemplate(com.minMeshUI, width, height);
+            for(i=0;i<cap;i++){
+                row=me.createMeshRow(rows);
+                cell=me.createMeshCell(row);
+                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, 1, 1, 'main', G_UI.SLOT);
+                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, {id:i});
+            }
         }
+        com.layout = meshui;
 
         return [com.layout.w, com.layout.h];
     };
 
-    me.click = function(elapsed, evt, entities){
+    me.click = function(ent, x, y, state){
         var
-        e = entities[0],
-        com = e.getComponent(name);
+        com = ent.getComponent(name),
+        comBox = ent.getComponent(com.box);
 
-        if (!com) return entities;
-        
-        var
-        tw = this.tileWidth,
-        th = this.tileHeight,
-        hero = this.hero,
-        win = e.getComponent(com.win),
-        rect = e.getComponent(win.box),
-        layout = (rect.width > (tw * 3)) ? com.layouts[1] : com.layouts[0],
-        x = evt[0],
-        y = evt[1],
-        tile, spell, tx, ty;
-
-        for(var j=1,jl=layout.length; j<jl; j++){
-            tile = layout[j];
-            tx = tile[0];
-            ty = tile[1];
-            if (tx < x && (tx + tw) > x && ty < y && (ty + th) > y){
-                spell = hero.getTome()[j-1];
-                this.go('selectSpell', hero.getSelectedSpell() === spell ? undefined : spell); // call even if tome[j-1] is undefined
-                return;
-            }
-        }
-        return entities;
+        if (me.clickMeshUI(x, y, state, comBox, com.layout)) return true;
+        return false;
     };
 
     // use this so that all entities can be updated
