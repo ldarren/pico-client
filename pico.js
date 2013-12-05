@@ -174,6 +174,7 @@ pico.embedJS = function(scripts, cb){
     }
 
     var module = pico.def(script.getAttribute('name'), script.getAttribute('parent'), func);
+    if (!module) return pico.embedJS(scripts, cb);
 
     pico.loadDeps(module, function(){
       module.signal(pico.LOAD);
