@@ -74,6 +74,10 @@ pico.def('hero', 'picUIContent', function(){
             me.fillIconText(ctx, ts, ''+currStats[OBJECT_DEF], rect[0], rect[1], rect[2], rect[3]);
             break;
         case 'helm':
+            var item = appearance[HERO_HELM];
+            if (item){
+                ts.draw(ctx, item[0][OBJECT_ICON], rect[0], rect[1], rect[2], rect[3]);
+            }
             break;
         case 'armor':
             break;

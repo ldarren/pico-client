@@ -5,6 +5,12 @@ pico.def('tome', 'picUIContent', function(){
     TOME_ROW = 4,
     name = me.moduleName,
     tomeId = G_WIN_ID.TOME,
+    onDrawMeshUICustom = function(ctx, rect, ui){
+        this.hero.getTome();
+    },
+    onClickMeshUI = function(ctx, rect, ui){
+        console.log('tome click'+JSON.stringify(ui));
+    },
     draw = function(ctx, items, layout, com){
         var
         ts = this.tileSet,
@@ -47,7 +53,18 @@ pico.def('tome', 'picUIContent', function(){
         return data;
     };
 
-    me.resize = function(ent, bound){
+    me.resize = function(ent, width, height){
+        var
+        com = ent.getComponent(name),
+        comWin = ent.getComponent(com.win);
+
+        if (comWin.maximized){
+            com.layout = me.createMeshUIFromTemplate(com.maxMeshUI, width, height);
+        }else{
+            com.layout = me.createMeshUIFromTemplate(com.minMeshUI, width, height);
+        }
+
+        return [com.layout.w, com.layout.h];
     };
 
     me.click = function(elapsed, evt, entities){
@@ -100,8 +117,9 @@ pico.def('tome', 'picUIContent', function(){
         var
         com = ent.getComponent(name),
         win = ent.getComponent(com.win),
-        rect = ent.getComponent(win.box);
+        rect = ent.getComponent(com.box),
+        scale = this.smallDevice ? 1 : 2;
 
-        return draw.call(this, ctx, this.hero.getTome(), com.layouts[win.maximized], com);
+        return me.drawMeshUI(ctx, rect, com.layout, {main: this.tileSet}, scale, com.font);
     };
 });
