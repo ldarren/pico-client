@@ -44,31 +44,42 @@ pico.def('tome', 'picUIContent', function(){
         com = ent.getComponent(name),
         comWin = ent.getComponent(com.win),
         cap = this.hero.getTomeCap(),
-        meshui=me.createMeshUI(null, me.CENTER, me.CENTER, 0, width, height, {font: com.font,fillStyle:"#aec440"}),
-        rows=meshui.rows,
-        row,cell,i,l;
+        sd = this.smallDevice,
+        style = {font: com.font,fillStyle:"#aec440"},
+        size = sd ? 32 : 64,
+        newH,meshui,rows,row,cell,i,l;
+
+        if (comWin.maximized){
+            newH = height > size * 4 ? height : size * 4;
+            meshui = me.createMeshUI(null, me.CENTER, me.CENTER, 0, width, newH, style);
+            rows=meshui.rows;
+        }else{
+            newH = height > size * 9 ? height : size * 9;
+            meshui = me.createMeshUI(null, me.CENTER, me.CENTER, 0, width, newH, style);
+            rows=meshui.rows;
+        }
 
         row=me.createMeshRow(rows);
         cell=me.createMeshCell(row);
         me.createMeshText(cell, me.CENTER, me.CENTER, 0, 1, 1, com.name);
 
         if (comWin.maximized){
-            for(i=0,l=cap/4;i<cap;i++){
+            for(i=0,l=cap/4;i<l;i++){
                 row=me.createMeshRow(rows);
                 cell=me.createMeshCell(row);
                 cell=me.createMeshCell(row);
                 cell=me.createMeshCell(row);
-                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, 1, 1, 'main', G_UI.SLOT);
-                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, {id:i*4});
+                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'main', G_UI.SLOT);
+                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, {id:0+(i*4)});
                 cell=me.createMeshCell(row);
-                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, 1, 1, 'main', G_UI.SLOT);
-                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, {id:1+(i*4)});
+                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'main', G_UI.SLOT);
+                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, {id:1+(i*4)});
                 cell=me.createMeshCell(row);
-                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, 1, 1, 'main', G_UI.SLOT);
-                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, {id:2+(i*4)});
+                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'main', G_UI.SLOT);
+                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, {id:2+(i*4)});
                 cell=me.createMeshCell(row);
-                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, 1, 1, 'main', G_UI.SLOT);
-                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, {id:3+(i*4)});
+                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'main', G_UI.SLOT);
+                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, {id:4+(i*4)});
                 cell=me.createMeshCell(row);
                 cell=me.createMeshCell(row);
             }
@@ -76,8 +87,8 @@ pico.def('tome', 'picUIContent', function(){
             for(i=0;i<cap;i++){
                 row=me.createMeshRow(rows);
                 cell=me.createMeshCell(row);
-                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, 1, 1, 'main', G_UI.SLOT);
-                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, {id:i});
+                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'main', G_UI.SLOT);
+                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, {id:i});
             }
         }
         com.layout = meshui;
