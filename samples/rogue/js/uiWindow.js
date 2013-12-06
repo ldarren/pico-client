@@ -21,12 +21,15 @@ pico.def('uiWindow', 'picUIWindow', function(){
         comBox  = ent.getComponent(com.box),
         layout = com.layouts[com.maximized],
         canvas = com.canvas,
-        mod = pico.getModule(com.content);
+        mod = pico.getModule(com.content),
+        wh = mod.resize.call(this, ent, comBox.width, comBox.height);
 
-        com.contentSize = mod.resize.call(this, ent, comBox.width, comBox.height);
+        if (wh[0] < 8) wh[0] = wh[0] * comBox.width;
+        if (wh[1] < 8) wh[1] = wh[1] * comBox.height;
 
-        canvas.setAttribute('width', com.contentSize[0]);
-        canvas.setAttribute('height', com.contentSize[1]);
+        canvas.setAttribute('width', wh[0]);
+        canvas.setAttribute('height', wh[1]);
+        com.contentSize = wh;
 
         mod.draw.call(this, canvas.getContext('2d'), ent, layout);
 
