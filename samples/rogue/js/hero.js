@@ -21,6 +21,9 @@ pico.def('hero', 'picUIContent', function(){
         else if ('custom1' === id) id = 'gold';
         else if ('custom2' === id) id = 'skull';
         switch(id){
+        case 'avatar':
+            ts.draw(ctx, currStats[OBJECT_ICON], rect[0], rect[1], 32*tileScale, 32*tileScale);
+            break;
         case 'name':
             me.fillIconText(ctx, ts, currStats[OBJECT_NAME], rect[0], rect[1], rect[2], rect[3], tileScale);
             break;

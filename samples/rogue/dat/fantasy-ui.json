@@ -71,7 +71,7 @@
         "uiPt":1,
         "pad":0,
         "w":1.0,
-        "h":640,
+        "h":680,
         "rows":[
             {"font":"bold 12pt alagard","fillStyle":"#aec440"},
             [
@@ -229,6 +229,19 @@
                     {
                         "type":4,
                         "userData":{"id":"will"}
+                    }
+                ]
+            ],[
+                {},
+                [
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":16,
+                        "uiPt":16,
+                        "pad":5,
+                        "tileSet":"default",
+                        "text":"Equipments"
                     }
                 ]
             ],[
@@ -397,6 +410,19 @@
                     }
                 ],[
                 ],[
+                ]
+            ],[
+                {},
+                [
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":16,
+                        "uiPt":16,
+                        "pad":5,
+                        "tileSet":"default",
+                        "text":"Status Effects"
+                    }
                 ]
             ],[
                 {},
