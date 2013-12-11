@@ -28,7 +28,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "text":"Level `216"
                     }
                 ],[
@@ -71,7 +71,7 @@
         "uiPt":1,
         "pad":0,
         "w":1.0,
-        "h":640,
+        "h":680,
         "rows":[
             {"font":"bold 12pt alagard","fillStyle":"#aec440"},
             [
@@ -94,7 +94,7 @@
                         "uiPt":16,
                         "w":2,
                         "h":1,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "userData":{"id":"hp"}
                     }
                 ],[
@@ -107,7 +107,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "text":"Level `216"
                     }
                 ],[
@@ -122,7 +122,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "text":"Alignment `216"
                     }
                 ],[
@@ -140,7 +140,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "text":"Gold `195"
                     }
                 ],[
@@ -155,7 +155,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "text":"Skull `196"
                     }
                 ],[
@@ -173,7 +173,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "text":"Str `190"
                     }
                 ],[
@@ -188,7 +188,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "text":"Dex `613"
                     }
                 ],[
@@ -206,7 +206,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "text":"Luck `193"
                     }
                 ],[
@@ -221,7 +221,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "text":"Will `670"
                     }
                 ],[
@@ -236,13 +236,26 @@
                 [
                     {},
                     {
+                        "type":1,
+                        "cellPt":16,
+                        "uiPt":16,
+                        "pad":5,
+                        "tileSet":"default",
+                        "text":"Equipments"
+                    }
+                ]
+            ],[
+                {},
+                [
+                    {},
+                    {
                         "type":2,
                         "cellPt":12,
                         "uiPt":12,
                         "pad":5,
                         "w":32,
                         "h":32,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
@@ -257,7 +270,7 @@
                         "pad":5,
                         "w":32,
                         "h":32,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
@@ -272,7 +285,7 @@
                         "pad":5,
                         "w":32,
                         "h":32,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
@@ -284,7 +297,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "text":"Atk `190"
                     }
                 ],[
@@ -305,7 +318,7 @@
                         "pad":5,
                         "w":32,
                         "h":32,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
@@ -326,7 +339,7 @@
                         "pad":5,
                         "w":32,
                         "h":32,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
@@ -338,7 +351,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "text":"Def `192"
                     }
                 ],[
@@ -359,7 +372,7 @@
                         "pad":5,
                         "w":32,
                         "h":32,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
@@ -374,7 +387,7 @@
                         "pad":5,
                         "w":32,
                         "h":32,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
@@ -389,7 +402,7 @@
                         "pad":5,
                         "w":32,
                         "h":32,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
@@ -403,11 +416,24 @@
                 [
                     {},
                     {
+                        "type":1,
+                        "cellPt":16,
+                        "uiPt":16,
+                        "pad":5,
+                        "tileSet":"default",
+                        "text":"Status Effects"
+                    }
+                ]
+            ],[
+                {},
+                [
+                    {},
+                    {
                         "type":2,
                         "pad":0,
                         "w":32,
                         "h":32,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
@@ -420,7 +446,7 @@
                         "pad":0,
                         "w":32,
                         "h":32,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
@@ -433,7 +459,7 @@
                         "pad":0,
                         "w":32,
                         "h":32,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
@@ -446,7 +472,7 @@
                         "pad":0,
                         "w":32,
                         "h":32,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
@@ -459,7 +485,7 @@
                         "pad":0,
                         "w":32,
                         "h":32,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
@@ -472,7 +498,7 @@
                         "pad":0,
                         "w":32,
                         "h":32,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
@@ -485,7 +511,7 @@
                         "pad":0,
                         "w":32,
                         "h":32,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
@@ -498,7 +524,7 @@
                         "pad":0,
                         "w":32,
                         "h":32,
-                        "tileSet":"main",
+                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
