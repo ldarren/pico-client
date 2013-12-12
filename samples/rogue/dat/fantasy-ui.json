@@ -80,6 +80,8 @@
                     {},
                     {
                         "type":4,
+                        "cellPt":2,
+                        "uiPt":2,
                         "w":4,
                         "userData":{"id":"name"}
                     }
@@ -90,8 +92,8 @@
                     {},
                     {
                         "type":4,
-                        "cellPt":16,
-                        "uiPt":16,
+                        "cellPt":2,
+                        "uiPt":2,
                         "w":2,
                         "h":1,
                         "tileSet":"default",

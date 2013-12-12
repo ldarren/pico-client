@@ -22,7 +22,11 @@ pico.def('hero', 'picUIContent', function(){
         else if ('custom2' === id) id = 'skull';
         switch(id){
         case 'avatar':
-            ts.draw(ctx, currStats[OBJECT_ICON], rect[0], rect[1], 32*tileScale, 32*tileScale);
+            var
+            len = 32 * tileScale,
+            offX = (rect[2] - len)/2,
+            offY = (rect[3] - len)/2;
+            ts.draw(ctx, currStats[OBJECT_ICON], rect[0]+offX, rect[1]+offY, 32*tileScale, 32*tileScale);
             break;
         case 'name':
             me.fillIconText(ctx, ts, currStats[OBJECT_NAME], rect[0], rect[1], rect[2], rect[3], tileScale);
