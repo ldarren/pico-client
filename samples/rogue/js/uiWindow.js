@@ -223,7 +223,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         var
         x = evt[0], y = evt[1],
         unknowns = [], selected = [],
-        ent, active, com, layout;
+        ent, active, com, comBox, layout;
 
         for (var i=0, l=entities.length; i<l; i++){
             ent = entities[i];
@@ -232,6 +232,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
                 unknowns.push(ent);
                 continue;
             }
+            comBox = ent.getComponent(com.box);
             layout = com.layouts[com.maximized];
             active = (layout[0] < x && (layout[0]+layout[2]) > x && layout[1] < y && (layout[1]+layout[3]) > y);
             if (active !== com.active){
@@ -240,7 +241,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
             if (active){
                 selected.push(ent);
                 var mod = pico.getModule(com.content);
-                mod.click.call(this, ent, com.scrollX + x, com.scrollY + y, 1);
+                mod.click.call(this, ent, com.scrollX + x - comBox.x, com.scrollY + y - comBox.y, 1);
             }
         }
 
@@ -256,8 +257,10 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
         if (!com) return entities;
 
-        var mod = pico.getModule(com.content);
-        if (!mod.click.call(this, ent, com.scrollX + evt[0], com.scrollY + evt[1], 0) && com.resizable){
+        var
+        comBox = ent.getComponent(com.box),
+        mod = pico.getModule(com.content);
+        if (!mod.click.call(this, ent, com.scrollX + evt[0] - comBox.x, com.scrollY + evt[1] - comBox.y, 0) && com.resizable){
             com.scrollX = com.scrollY = 0;
             com.maximized = com.maximized ? 0 : 1;
             if (com.maximized){

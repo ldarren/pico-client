@@ -10,11 +10,10 @@ pico.def('hero', 'picUIContent', function(){
     currStats,
     d20Roll = function(){
         return Round(Random()*21);
-    },
-    onDrawMeshUICustom = function(ctx, rect, ui, ts, tileScale){
-        var
-        id = ui.userData.id,
-        tileRect;
+    };
+
+    me.onCalcMeshUICustom = function(rect, ui, tileScale){
+        var id = ui.userData.id;
 
         if ('custom1Label' === id) id = 'goldLabel';
         else if ('custom2Label' === id) id = 'skullLabel';
@@ -23,8 +22,30 @@ pico.def('hero', 'picUIContent', function(){
 
         switch(id){
         case 'avatar':
-            tileRect = me.calcUIRect(rect, ui, tileScale);
-            ts.draw(ctx, currStats[OBJECT_ICON], tileRect[0], tileRect[1], tileRect[2], tileRect[3]);
+        case 'helm':
+        case 'armor':
+        case 'main':
+        case 'off':
+        case 'ringL':
+        case 'ringR':
+        case 'amulet':
+        case 'quiver':
+            return me.calcUIRect(rect, ui, tileScale);
+        default:
+            return me.calcUIRect(rect, ui);
+        }
+    };
+    me.onDrawMeshUICustom = function(ctx, rect, ui, ts, tileScale){
+        var id = ui.userData.id;
+
+        if ('custom1Label' === id) id = 'goldLabel';
+        else if ('custom2Label' === id) id = 'skullLabel';
+        else if ('custom1' === id) id = 'gold';
+        else if ('custom2' === id) id = 'skull';
+
+        switch(id){
+        case 'avatar':
+            ts.draw(ctx, currStats[OBJECT_ICON], rect[0], rect[1], rect[2], rect[3]);
             break;
         case 'name':
             me.fillIconText(ctx, ts, currStats[OBJECT_NAME], rect[0], rect[1], rect[2], rect[3], tileScale);
@@ -65,13 +86,13 @@ pico.def('hero', 'picUIContent', function(){
             me.fillIconText(ctx, ts, ''+currStats[HERO_SKULL], rect[0], rect[1], rect[2], rect[3], tileScale);
             break;
         case 'patk':
-            me.fillIconText(ctx, ts, '`'+G_UI.PATK+' Melee: '+currStats[OBJECT_ATK], rect[0], rect[1], rect[2], rect[3], tileScale);
+            me.fillIconText(ctx, ts, ''+currStats[OBJECT_ATK], rect[0], rect[1], rect[2], rect[3], tileScale);
             break;
         case 'ratk':
-            me.fillIconText(ctx, ts, '`'+G_UI.RATK+' Range: '+currStats[OBJECT_RATK], rect[0], rect[1], rect[2], rect[3], tileScale);
+            me.fillIconText(ctx, ts, ''+currStats[OBJECT_RATK], rect[0], rect[1], rect[2], rect[3], tileScale);
             break;
         case 'matk':
-            me.fillIconText(ctx, ts, '`'+G_UI.MATK+' Magic: '+currStats[OBJECT_MATK], rect[0], rect[1], rect[2], rect[3], tileScale);
+            me.fillIconText(ctx, ts, ''+currStats[OBJECT_MATK], rect[0], rect[1], rect[2], rect[3], tileScale);
             break;
         case 'pdef':
             me.fillIconText(ctx, ts, ''+currStats[OBJECT_DEF], rect[0], rect[1], rect[2], rect[3], tileScale);
@@ -100,8 +121,8 @@ pico.def('hero', 'picUIContent', function(){
             var effect = effects[id.split('effect')[1]];
             break;
         }
-    },
-    onClickMeshUI = function(ctx, rect, ui){
+    };
+    me.onClickMeshUI = function(ctx, rect, ui){
         console.log('click'+JSON.stringify(ui));
     };
 
@@ -131,11 +152,6 @@ pico.def('hero', 'picUIContent', function(){
         currStats = []; // level up will update currStats
         me.levelUp(this.deepestLevel);
         me.move(this.mortalLoc);
-
-        me.unslot('draw', this, onDrawMeshUICustom);
-        me.unslot('click', this, onClickMeshUI);
-        me.slot('draw', this, onDrawMeshUICustom);
-        me.slot('click', this, onClickMeshUI);
 
         return heroObj;
     };
@@ -469,9 +485,10 @@ pico.def('hero', 'picUIContent', function(){
     me.click = function(ent, x, y, state){
         var
         com = ent.getComponent(name),
-        comBox = ent.getComponent(com.box);
+        comBox = ent.getComponent(com.box),
+        scale = this.smallDevice ? 1 : 2;
 
-        if (me.clickMeshUI(x, y, state, comBox, com.layout)) return true;
+        if (me.clickMeshUI(x, y, state, comBox, com.layout, scale)) return true;
         return false;
     };
 

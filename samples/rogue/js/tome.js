@@ -4,17 +4,13 @@ pico.def('tome', 'picUIContent', function(){
     Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.random,
     TOME_ROW = 4,
     name = me.moduleName,
-    tomeId = G_WIN_ID.TOME,
-    onDrawMeshUICustom = function(ctx, rect, ui){
-        var
-        ts = this.tileSet,
-        tw = this.tileWidth,
-        th = this.tileHeight,
-        sd = this.smallDevice,
-        fw = sd ? 8 : 16,
-        fh = sd ? 16 : 32,
-        fx = (tw - fw)/2,
-        fy = (th - fh)/2,
+    tomeId = G_WIN_ID.TOME;
+
+    me.onCalcMeshUICustom = function(rect, ui, tileScale){
+        return me.calcUIRect(rect, ui, tileScale);
+    };
+    me.onDrawMeshUICustom = function(ctx, rect, ui, ts, tileScale){
+    /*    var
         selectedSpell = this.hero.getSelectedSpell(),
         items = this.hero.getTome(),
         j = ui.userData.id,
@@ -22,11 +18,11 @@ pico.def('tome', 'picUIContent', function(){
 
         item = items[j];
         if (!item) return;
-        ts.draw(ctx, item[OBJECT_ICON], x, y, tw, th);
-        if (item[SPELL_COOLDOWN]) ts.draw(ctx, G_NUMERIC.LARGE_LIGHT + item[SPELL_COOLDOWN], x+fx, y+fy, fw, fh);
-        else if (item === selectedSpell) ts.draw(ctx, G_SHADE[0], x, y, tw, th);
-    },
-    onClickMeshUI = function(ctx, rect, ui){
+        ts.draw(ctx, item[OBJECT_ICON], rect[0], rect[1], rect[2], rect[3]);
+        if (item[SPELL_COOLDOWN]) ts.draw(ctx, G_NUMERIC.LARGE_LIGHT + item[SPELL_COOLDOWN], rect[0], rect[1], rect[2], rect[3]);
+        else if (item === selectedSpell) ts.draw(ctx, G_SHADE[0], rect[0], rect[1], rect[2], rect[3]);*/
+    };
+    me.onClickMeshUI = function(ctx, rect, ui){
         console.log('tome click'+JSON.stringify(ui));
         spell = this.hero.getTome()[ui.userData.id];
         this.go('selectSpell', this.hero.getSelectedSpell() === spell ? undefined : spell); // call even if tome[j-1] is undefined
@@ -52,11 +48,11 @@ pico.def('tome', 'picUIContent', function(){
 
         if (comWin.maximized){
             newH = height > actualSize * 4 ? height : actualSize * 4;
-            meshui = me.createMeshUI(null, me.CENTER, me.CENTER, 0, width, newH, style);
+            meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, newH, style);
             rows=meshui.rows;
         }else{
             newH = height > actualSize * 9 ? height : actualSize * 9;
-            meshui = me.createMeshUI(null, me.CENTER, me.CENTER, 0, width, newH, style);
+            meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, newH, style);
             rows=meshui.rows;
         }
 
@@ -102,8 +98,7 @@ pico.def('tome', 'picUIContent', function(){
         com = ent.getComponent(name),
         comBox = ent.getComponent(com.box);
 
-        if (me.clickMeshUI(x, y, state, comBox, com.layout)) return true;
-        return false;
+        return me.clickMeshUI(x, y, state, comBox, com.layout);
     };
 
     // use this so that all entities can be updated
