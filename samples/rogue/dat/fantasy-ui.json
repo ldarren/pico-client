@@ -28,7 +28,6 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "tileSet":"default",
                         "text":"Level `216"
                     }
                 ],[
@@ -41,6 +40,8 @@
                     {},
                     {
                         "type":4,
+                        "cellPt":4,
+                        "uiPt":4,
                         "userData":{"id":"custom1Label"}
                     }
                 ],[
@@ -53,6 +54,8 @@
                     {},
                     {
                         "type":4,
+                        "cellPt":4,
+                        "uiPt":4,
                         "userData":{"id":"custom2Label"}
                     }
                 ],[
@@ -96,7 +99,6 @@
                         "uiPt":2,
                         "w":2,
                         "h":1,
-                        "tileSet":"default",
                         "userData":{"id":"hp"}
                     }
                 ],[
@@ -109,7 +111,6 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "tileSet":"default",
                         "text":"Level `216"
                     }
                 ],[
@@ -124,7 +125,6 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "tileSet":"default",
                         "text":"Alignment `216"
                     }
                 ],[
@@ -142,7 +142,6 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "tileSet":"default",
                         "text":"Gold `195"
                     }
                 ],[
@@ -157,7 +156,6 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "tileSet":"default",
                         "text":"Skull `196"
                     }
                 ],[
@@ -175,7 +173,6 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "tileSet":"default",
                         "text":"Str `190"
                     }
                 ],[
@@ -190,7 +187,6 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "tileSet":"default",
                         "text":"Dex `613"
                     }
                 ],[
@@ -208,7 +204,6 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "tileSet":"default",
                         "text":"Luck `193"
                     }
                 ],[
@@ -223,7 +218,6 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "tileSet":"default",
                         "text":"Will `670"
                     }
                 ],[
@@ -242,7 +236,6 @@
                         "cellPt":16,
                         "uiPt":16,
                         "pad":5,
-                        "tileSet":"default",
                         "text":"Equipments"
                     }
                 ]
@@ -257,10 +250,14 @@
                         "pad":5,
                         "w":32,
                         "h":32,
-                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
+                        "cellPt":12,
+                        "uiPt":12,
+                        "pad":5,
+                        "w":32,
+                        "h":32,
                         "userData":{"id":"amulet"}
                     }
                 ],[
@@ -272,10 +269,14 @@
                         "pad":5,
                         "w":32,
                         "h":32,
-                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
+                        "cellPt":8,
+                        "uiPt":8,
+                        "pad":5,
+                        "w":32,
+                        "h":32,
                         "userData":{"id":"helm"}
                     }
                 ],[
@@ -287,10 +288,14 @@
                         "pad":5,
                         "w":32,
                         "h":32,
-                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
+                        "cellPt":10,
+                        "uiPt":10,
+                        "pad":5,
+                        "w":32,
+                        "h":32,
                         "userData":{"id":"quiver"}
                     }
                 ],[
@@ -299,7 +304,6 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "tileSet":"default",
                         "text":"Atk `190"
                     }
                 ],[
@@ -320,10 +324,14 @@
                         "pad":5,
                         "w":32,
                         "h":32,
-                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "pad":5,
+                        "w":32,
+                        "h":32,
                         "userData":{"id":"weapon"}
                     }
                 ],[
@@ -343,10 +351,14 @@
                         "pad":5,
                         "w":32,
                         "h":32,
-                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
+                        "cellPt":2,
+                        "uiPt":2,
+                        "pad":5,
+                        "w":32,
+                        "h":32,
                         "userData":{"id":"shield"}
                     }
                 ],[
@@ -376,10 +388,14 @@
                         "pad":5,
                         "w":32,
                         "h":32,
-                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
+                        "cellPt":5,
+                        "uiPt":5,
+                        "pad":5,
+                        "w":32,
+                        "h":32,
                         "userData":{"id":"ringL"}
                     }
                 ],[
@@ -391,10 +407,14 @@
                         "pad":5,
                         "w":32,
                         "h":32,
-                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
+                        "cellPt":1,
+                        "uiPt":1,
+                        "pad":5,
+                        "w":32,
+                        "h":32,
                         "userData":{"id":"armor"}
                     }
                 ],[
@@ -406,10 +426,14 @@
                         "pad":5,
                         "w":32,
                         "h":32,
-                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
+                        "cellPt":3,
+                        "uiPt":3,
+                        "pad":5,
+                        "w":32,
+                        "h":32,
                         "userData":{"id":"ringR"}
                     }
                 ],[
@@ -434,104 +458,104 @@
                     {},
                     {
                         "type":2,
-                        "pad":0,
                         "w":32,
                         "h":32,
-                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
+                        "w":32,
+                        "h":32,
                         "userData":{"id":"effect0"}
                     }
                 ],[
                     {},
                     {
                         "type":2,
-                        "pad":0,
                         "w":32,
                         "h":32,
-                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
+                        "w":32,
+                        "h":32,
                         "userData":{"id":"effect1"}
                     }
                 ],[
                     {},
                     {
                         "type":2,
-                        "pad":0,
                         "w":32,
                         "h":32,
-                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
+                        "w":32,
+                        "h":32,
                         "userData":{"id":"effect2"}
                     }
                 ],[
                     {},
                     {
                         "type":2,
-                        "pad":0,
                         "w":32,
                         "h":32,
-                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
+                        "w":32,
+                        "h":32,
                         "userData":{"id":"effect3"}
                     }
                 ],[
                     {},
                     {
                         "type":2,
-                        "pad":0,
                         "w":32,
                         "h":32,
-                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
+                        "w":32,
+                        "h":32,
                         "userData":{"id":"effect4"}
                     }
                 ],[
                     {},
                     {
                         "type":2,
-                        "pad":0,
                         "w":32,
                         "h":32,
-                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
+                        "w":32,
+                        "h":32,
                         "userData":{"id":"effect5"}
                     }
                 ],[
                     {},
                     {
                         "type":2,
-                        "pad":0,
                         "w":32,
                         "h":32,
-                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
+                        "w":32,
+                        "h":32,
                         "userData":{"id":"effect6"}
                     }
                 ],[
                     {},
                     {
                         "type":2,
-                        "pad":0,
                         "w":32,
                         "h":32,
-                        "tileSet":"default",
                         "tileId":15
                     },{
                         "type":4,
+                        "w":32,
+                        "h":32,
                         "userData":{"id":"effect7"}
                     }
                 ]

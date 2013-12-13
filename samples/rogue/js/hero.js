@@ -14,8 +14,6 @@ pico.def('hero', 'picUIContent', function(){
     onDrawMeshUICustom = function(ctx, rect, ui, ts, tileScale){
         var
         id = ui.userData.id,
-        labelOpt = {align:3, scale:tileScale},
-        valueOpt = {align:1, scale:tileScale},
         tileRect;
 
         if ('custom1Label' === id) id = 'goldLabel';
@@ -32,7 +30,7 @@ pico.def('hero', 'picUIContent', function(){
             me.fillIconText(ctx, ts, currStats[OBJECT_NAME], rect[0], rect[1], rect[2], rect[3], tileScale);
             break;
         case 'level':
-            me.fillIconText(ctx, ts, ''+currStats[OBJECT_LEVEL], rect[0], rect[1], rect[2], rect[3], tileScale, valueOpt);
+            me.fillIconText(ctx, ts, ''+currStats[OBJECT_LEVEL], rect[0], rect[1], rect[2], rect[3], tileScale);
             break;
         case 'str':
             me.fillIconText(ctx, ts, ''+currStats[OBJECT_MDEF], rect[0], rect[1], rect[2], rect[3], tileScale);
@@ -55,16 +53,16 @@ pico.def('hero', 'picUIContent', function(){
             me.fillIconText(ctx, ts, iconText, rect[0], rect[1], rect[2], rect[3], tileScale);
             break;
         case 'goldLabel':
-            me.fillIconText(ctx, ts, 'Gold `'+G_UI.GOLD, rect[0], rect[1], rect[2], rect[3], tileScale, labelOpt);
+            me.fillIconText(ctx, ts, 'Gold `'+G_UI.GOLD, rect[0], rect[1], rect[2], rect[3], tileScale);
             break;
         case 'gold':
-            me.fillIconText(ctx, ts, ''+currStats[HERO_GOLD], rect[0], rect[1], rect[2], rect[3], tileScale, valueOpt);
+            me.fillIconText(ctx, ts, ''+currStats[HERO_GOLD], rect[0], rect[1], rect[2], rect[3], tileScale);
             break;
         case 'skullLabel':
-            me.fillIconText(ctx, ts, 'Skull `'+G_UI.SKULL, rect[0], rect[1], rect[2], rect[3], tileScale, labelOpt);
+            me.fillIconText(ctx, ts, 'Skull `'+G_UI.SKULL, rect[0], rect[1], rect[2], rect[3], tileScale);
             break;
         case 'skull':
-            me.fillIconText(ctx, ts, ''+currStats[HERO_SKULL], rect[0], rect[1], rect[2], rect[3], tileScale, valueOpt);
+            me.fillIconText(ctx, ts, ''+currStats[HERO_SKULL], rect[0], rect[1], rect[2], rect[3], tileScale);
             break;
         case 'patk':
             me.fillIconText(ctx, ts, '`'+G_UI.PATK+' Melee: '+currStats[OBJECT_ATK], rect[0], rect[1], rect[2], rect[3], tileScale);
