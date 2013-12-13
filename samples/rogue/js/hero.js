@@ -15,18 +15,18 @@ pico.def('hero', 'picUIContent', function(){
         var
         id = ui.userData.id,
         labelOpt = {align:3, scale:tileScale},
-        valueOpt = {align:1, scale:tileScale};
+        valueOpt = {align:1, scale:tileScale},
+        tileRect;
+
         if ('custom1Label' === id) id = 'goldLabel';
         else if ('custom2Label' === id) id = 'skullLabel';
         else if ('custom1' === id) id = 'gold';
         else if ('custom2' === id) id = 'skull';
+
         switch(id){
         case 'avatar':
-            var
-            len = 32 * tileScale,
-            offX = (rect[2] - len)/2,
-            offY = (rect[3] - len)/2;
-            ts.draw(ctx, currStats[OBJECT_ICON], rect[0]+offX, rect[1]+offY, 32*tileScale, 32*tileScale);
+            tileRect = me.calcUIRect(rect, ui, tileScale);
+            ts.draw(ctx, currStats[OBJECT_ICON], tileRect[0], tileRect[1], tileRect[2], tileRect[3]);
             break;
         case 'name':
             me.fillIconText(ctx, ts, currStats[OBJECT_NAME], rect[0], rect[1], rect[2], rect[3], tileScale);
