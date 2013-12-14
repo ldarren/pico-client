@@ -10,9 +10,8 @@ pico.def('hero', 'picUIContent', function(){
     currStats,
     d20Roll = function(){
         return Round(Random()*21);
-    };
-
-    me.onCalcMeshUICustom = function(rect, ui, tileScale){
+    },
+    onCustomBound = function(rect, ui, tileScale){
         var id = ui.userData.id;
 
         if ('custom1Label' === id) id = 'goldLabel';
@@ -34,8 +33,8 @@ pico.def('hero', 'picUIContent', function(){
         default:
             return me.calcUIRect(rect, ui);
         }
-    };
-    me.onDrawMeshUICustom = function(ctx, rect, ui, ts, tileScale){
+    },
+    onCustomDraw = function(ctx, rect, ui, ts, tileScale){
         var id = ui.userData.id;
 
         if ('custom1Label' === id) id = 'goldLabel';
@@ -121,9 +120,16 @@ pico.def('hero', 'picUIContent', function(){
             var effect = effects[id.split('effect')[1]];
             break;
         }
-    };
-    me.onClickMeshUI = function(ctx, rect, ui){
+    },
+    onCustomClick = function(ui){
         console.log('click'+JSON.stringify(ui));
+    },
+    onCustomUI = function(){
+        switch(Array.prototype.shift.call(arguments)){
+        case me.CUSTOM_BOUND: return onCustomBound.apply(this, arguments); break;
+        case me.CUSTOM_DRAW: return onCustomDraw.apply(this, arguments); break;
+        case me.CUSTOM_CLICK: return onCustomClick.apply(this, arguments); break;
+        }
     };
 
     me.create = function(ent, data){
@@ -488,7 +494,7 @@ pico.def('hero', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        if (me.clickMeshUI(x, y, state, comBox, com.layout, scale)) return true;
+        if (me.clickMeshUI.call(this, x, y, state, comBox, com.layout, scale, onCustomUI)) return true;
         return false;
     };
 
@@ -499,6 +505,6 @@ pico.def('hero', 'picUIContent', function(){
         rect = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.drawMeshUI(ctx, rect, com.layout, {default: this.tileSet}, scale, com.font);
+        return me.drawMeshUI.call(this, ctx, rect, com.layout, {default: this.tileSet}, scale, com.font, onCustomUI);
     };
 });

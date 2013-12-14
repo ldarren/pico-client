@@ -34,13 +34,15 @@ pico.prototype.unslot = pico.unslot = function(channelName, identity){
 pico.prototype.signal = pico.signal = function(channelName, events){
     var
     channel = this.slots[channelName],
+    results = [],
     mod;
-    if (!channel) return;
+    if (!channel) return results;
 
     for(var key in channel){
         mod = pico.modules[key];
-        channel[key].apply(mod, events);
+        results.push(channel[key].apply(mod, events));
     }
+    return results;
 };
 // add dependency
 pico.prototype.use = function(name){ this.deps.push(name);};

@@ -6,11 +6,11 @@ pico.def('tome', 'picUIContent', function(){
     name = me.moduleName,
     tomeId = G_WIN_ID.TOME;
 
-    me.onCalcMeshUICustom = function(rect, ui, tileScale){
+    onCustomBound = function(rect, ui, tileScale){
         return me.calcUIRect(rect, ui, tileScale);
     };
-    me.onDrawMeshUICustom = function(ctx, rect, ui, ts, tileScale){
-    /*    var
+    onCustomDraw = function(ctx, rect, ui, ts, tileScale){
+        var
         selectedSpell = this.hero.getSelectedSpell(),
         items = this.hero.getTome(),
         j = ui.userData.id,
@@ -20,13 +20,20 @@ pico.def('tome', 'picUIContent', function(){
         if (!item) return;
         ts.draw(ctx, item[OBJECT_ICON], rect[0], rect[1], rect[2], rect[3]);
         if (item[SPELL_COOLDOWN]) ts.draw(ctx, G_NUMERIC.LARGE_LIGHT + item[SPELL_COOLDOWN], rect[0], rect[1], rect[2], rect[3]);
-        else if (item === selectedSpell) ts.draw(ctx, G_SHADE[0], rect[0], rect[1], rect[2], rect[3]);*/
-    };
-    me.onClickMeshUI = function(ctx, rect, ui){
+        else if (item === selectedSpell) ts.draw(ctx, G_SHADE[0], rect[0], rect[1], rect[2], rect[3]);
+    },
+    onCustomClick = function(ui){
         console.log('tome click'+JSON.stringify(ui));
         spell = this.hero.getTome()[ui.userData.id];
         this.go('selectSpell', this.hero.getSelectedSpell() === spell ? undefined : spell); // call even if tome[j-1] is undefined
         return;
+    },
+    onCustomUI = function(){
+        switch(Array.prototype.shift.call(arguments)){
+        case me.CUSTOM_BOUND: return onCustomBound.apply(this, arguments); break;
+        case me.CUSTOM_DRAW: return onCustomDraw.apply(this, arguments); break;
+        case me.CUSTOM_CLICK: return onCustomClick.apply(this, arguments); break;
+        }
     };
 
     me.create = function(ent, data){
@@ -67,16 +74,16 @@ pico.def('tome', 'picUIContent', function(){
                 cell=me.createMeshCell(row);
                 cell=me.createMeshCell(row);
                 me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
-                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, {id:0+(i*4)});
+                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 1, {id:0+(i*4)});
                 cell=me.createMeshCell(row);
                 me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
-                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, {id:1+(i*4)});
+                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 1, {id:1+(i*4)});
                 cell=me.createMeshCell(row);
                 me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
-                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, {id:2+(i*4)});
+                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 1, {id:2+(i*4)});
                 cell=me.createMeshCell(row);
                 me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
-                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, {id:4+(i*4)});
+                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 1, {id:4+(i*4)});
                 cell=me.createMeshCell(row);
                 cell=me.createMeshCell(row);
             }
@@ -85,7 +92,7 @@ pico.def('tome', 'picUIContent', function(){
                 row=me.createMeshRow(rows);
                 cell=me.createMeshCell(row);
                 me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
-                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, {id:i});
+                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 1, {id:i});
             }
         }
         com.layout = meshui;
@@ -96,9 +103,10 @@ pico.def('tome', 'picUIContent', function(){
     me.click = function(ent, x, y, state){
         var
         com = ent.getComponent(name),
-        comBox = ent.getComponent(com.box);
+        comBox = ent.getComponent(com.box),
+        scale = this.smallDevice ? 1 : 2;
 
-        return me.clickMeshUI(x, y, state, comBox, com.layout);
+        return me.clickMeshUI.call(this, x, y, state, comBox, com.layout, scale, onCustomUI);
     };
 
     // use this so that all entities can be updated
@@ -123,6 +131,6 @@ pico.def('tome', 'picUIContent', function(){
         rect = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.drawMeshUI(ctx, rect, com.layout, {default: this.tileSet}, scale, com.font);
+        return me.drawMeshUI.call(this, ctx, rect, com.layout, {default: this.tileSet}, scale, com.font, onCustomUI);
     };
 });
