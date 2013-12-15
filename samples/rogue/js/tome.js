@@ -11,22 +11,24 @@ pico.def('tome', 'picUIContent', function(){
     };
     onCustomDraw = function(ctx, rect, ui, ts, tileScale){
         var
-        selectedSpell = this.hero.getSelectedSpell(),
         items = this.hero.getTome(),
-        j = ui.userData.id,
         item, x, y;
 
-        item = items[j];
+        item = items[ui.userData.id];
         if (!item) return;
         ts.draw(ctx, item[OBJECT_ICON], rect[0], rect[1], rect[2], rect[3]);
         if (item[SPELL_COOLDOWN]) ts.draw(ctx, G_NUMERIC.LARGE_LIGHT + item[SPELL_COOLDOWN], rect[0], rect[1], rect[2], rect[3]);
-        else if (item === selectedSpell) ts.draw(ctx, G_SHADE[0], rect[0], rect[1], rect[2], rect[3]);
+        else if (item === this.hero.getSelectedSpell()) ts.draw(ctx, G_SHADE[0], rect[0], rect[1], rect[2], rect[3]);
     },
     onCustomClick = function(ui){
-        console.log('tome click'+JSON.stringify(ui));
-        spell = this.hero.getTome()[ui.userData.id];
-        this.go('selectSpell', this.hero.getSelectedSpell() === spell ? undefined : spell); // call even if tome[j-1] is undefined
-        return;
+        var
+        spell = this.hero.getTome()[ui.userData.id],
+        toggle = this.hero.getSelectedSpell() === spell;
+
+        this.hero.selectSpell(toggle ? undefined : spell);
+        this.go('forceRefresh');
+
+        return null !== spell;
     },
     onCustomUI = function(){
         switch(Array.prototype.shift.call(arguments)){
@@ -92,7 +94,7 @@ pico.def('tome', 'picUIContent', function(){
                 row=me.createMeshRow(rows);
                 cell=me.createMeshCell(row);
                 me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
-                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 1, {id:i});
+                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 0, {id:i});
             }
         }
         com.layout = meshui;
@@ -107,21 +109,6 @@ pico.def('tome', 'picUIContent', function(){
         scale = this.smallDevice ? 1 : 2;
 
         return me.clickMeshUI.call(this, x, y, state, comBox, com.layout, scale, onCustomUI);
-    };
-
-    // use this so that all entities can be updated
-    me.selectSpell = function(elapsed, evt, entities){
-        var e, com;
-
-        for(var i=0,l=entities.length; i<l; i++){
-            e = entities[i];
-            com = e.getComponent(name);
-            if (!com) continue;
-
-            this.hero.selectSpell(evt);
-
-            return entities;
-        }
     };
 
     me.draw = function(ctx, ent, clip){

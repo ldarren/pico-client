@@ -125,13 +125,13 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "text":"Alignment `216"
+                        "text":"Aligned `216"
                     }
                 ],[
                     {},
                     {
                         "type":4,
-                        "userData":{"id":"alignment"}
+                        "userData":{"id":"aligned"}
                     }
                 ]
             ],[
