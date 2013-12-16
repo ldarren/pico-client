@@ -828,6 +828,7 @@ Object.freeze(G_UI = {
     DEX: 613,
     WILL: 670,
     MATK: 671,
+    SELECTED: 713
 });
 
 Object.freeze(G_NUMERIC = {

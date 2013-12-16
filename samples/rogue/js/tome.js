@@ -18,7 +18,7 @@ pico.def('tome', 'picUIContent', function(){
         if (!item) return;
         ts.draw(ctx, item[OBJECT_ICON], rect[0], rect[1], rect[2], rect[3]);
         if (item[SPELL_COOLDOWN]) ts.draw(ctx, G_NUMERIC.LARGE_LIGHT + item[SPELL_COOLDOWN], rect[0], rect[1], rect[2], rect[3]);
-        else if (item === this.hero.getSelectedSpell()) ts.draw(ctx, G_SHADE[0], rect[0], rect[1], rect[2], rect[3]);
+        else if (item === this.hero.getSelectedSpell()) ts.draw(ctx, G_UI.SELECTED, rect[0], rect[1], rect[2], rect[3]);
     },
     onCustomClick = function(ui){
         var
@@ -28,7 +28,7 @@ pico.def('tome', 'picUIContent', function(){
         this.hero.selectSpell(toggle ? undefined : spell);
         this.go('forceRefresh');
 
-        return null !== spell;
+        return undefined !== spell;
     },
     onCustomUI = function(){
         switch(Array.prototype.shift.call(arguments)){
