@@ -459,7 +459,7 @@ Object.defineProperty(pico, 'inner', {value:{
   }, writable:false, configurable:false, enumerable:false});
 
 if (!Object.freeze) Object.freeze = function(){};
-Object.freeze(pico);
+//Object.freeze(pico);//for common tools to add functionality
 
 window.addEventListener('load', function(){
     var
