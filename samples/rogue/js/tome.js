@@ -39,6 +39,8 @@ pico.def('tome', 'picUIContent', function(){
     };
 
     me.create = function(ent, data){
+        data = me.base.create.call(this, ent, data);
+
         data.layout = [];
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
         return data;
@@ -100,6 +102,33 @@ pico.def('tome', 'picUIContent', function(){
         com.layout = meshui;
 
         return [com.layout.w, com.layout.h];
+    };
+
+    me.pick = function(ent, x, y){
+        var
+        com = ent.getComponent(name),
+        comBox = ent.getComponent(com.box),
+        scale = this.smallDevice ? 1 : 2;
+
+        return me.pickMeshUI(x, y, comBox, com.layout, scale, onCustomUI);
+    };
+
+    me.drag = function(ent, x, y){
+        var
+        com = ent.getComponent(name),
+        comBox = ent.getComponent(com.box),
+        scale = this.smallDevice ? 1 : 2;
+
+        return me.dragMeshUI(x, y, comBox, com.layout, scale, onCustomUI);
+    };
+
+    me.drop = function(ent, x, y){
+        var
+        com = ent.getComponent(name),
+        comBox = ent.getComponent(com.box),
+        scale = this.smallDevice ? 1 : 2;
+
+        return me.dropMeshUI(x, y, comBox, com.layout, scale, onCustomUI);
     };
 
     me.click = function(ent, x, y, state){

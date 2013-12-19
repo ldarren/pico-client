@@ -296,8 +296,13 @@ pico.def('uiWindow', 'picUIWindow', function(){
         var
         ent = entities[0],
         com = ent.getComponent(name),
-        contentSize = com.contentSize,
         comBox = ent.getComponent(com.box),
+        mod = pico.getModule(com.content);
+
+        if (mod.pick.call(this, ent, evt[2]-comBox.x, evt[3]-comBox.y)) return entities;
+
+        var
+        contentSize = com.contentSize,
         cw = contentSize[0], ww = comBox.width,
         ch = contentSize[1], wh = comBox.height,
         ratio;
@@ -318,8 +323,13 @@ pico.def('uiWindow', 'picUIWindow', function(){
         var
         ent = entities[0],
         com = ent.getComponent(name),
-        contentSize = com.contentSize,
         comBox = ent.getComponent(com.box),
+        mod = pico.getModule(com.content);
+        
+        if (mod.drag.call(this, ent, evt[2]-comBox.x, evt[3]-comBox.y)) return entities;
+
+        var
+        contentSize = com.contentSize,
         cw = contentSize[0], ww = comBox.width,
         ch = contentSize[1], wh = comBox.height,
         x = com.scrollX, y = com.scrollY;
@@ -347,6 +357,14 @@ pico.def('uiWindow', 'picUIWindow', function(){
     };
 
     me.endSwipe = function(elapsed, evt, entities){
+        var
+        ent = entities[0],
+        com = ent.getComponent(name),
+        comBox = ent.getComponent(com.box),
+        mod = pico.getModule(com.content);
+        
+        mod.drop.call(this, ent, evt[2]-comBox.x, evt[3]-comBox.y);
+
         scrollBarH = scrollBarV = undefined;
         return entities;
     };
