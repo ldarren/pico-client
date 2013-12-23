@@ -110,7 +110,7 @@ pico.def('tome', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.pickMeshUI(com.focus, x, y, comBox, com.layout, scale, onCustomUI);
+        return me.pickMeshUI.call(this, com.focus, x, y, comBox, com.layout, scale, onCustomUI);
     };
 
     me.drag = function(ent, x, y){
@@ -120,10 +120,11 @@ pico.def('tome', 'picUIContent', function(){
         if (!focus) return false;
 
         var
+        com = ent.getComponent(name),
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.dragMeshUI(focus, x, y, comBox, com.layout, scale, onCustomUI);
+        return me.dragMeshUI.call(focus, x, y, comBox, com.layout, scale, onCustomUI);
     };
 
     me.drop = function(ent, x, y){
@@ -137,7 +138,7 @@ pico.def('tome', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.dropMeshUI(focus, x, y, comBox, com.layout, scale, onCustomUI);
+        return me.dropMeshUI.call(focus, x, y, comBox, com.layout, scale, onCustomUI);
     };
 
     me.click = function(ent, x, y, state){
