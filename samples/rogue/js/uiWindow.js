@@ -299,7 +299,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         comBox = ent.getComponent(com.box),
         mod = pico.getModule(com.content);
 
-        if (mod.pick.call(this, ent, evt[2]-comBox.x, evt[3]-comBox.y)) return entities;
+        if (mod.pick.call(this, ent, evt[0]-comBox.x, evt[1]-comBox.y)) return entities;
 
         var
         contentSize = com.contentSize,
@@ -363,7 +363,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         comBox = ent.getComponent(com.box),
         mod = pico.getModule(com.content);
         
-        mod.drop.call(this, ent, evt[2]-comBox.x, evt[3]-comBox.y);
+        mod.drop.call(this, ent, evt[0]-comBox.x, evt[1]-comBox.y);
 
         scrollBarH = scrollBarV = undefined;
         return entities;

@@ -4,11 +4,10 @@ pico.def('tome', 'picUIContent', function(){
     Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.random,
     TOME_ROW = 4,
     name = me.moduleName,
-    tomeId = G_WIN_ID.TOME;
-
+    tomeId = G_WIN_ID.TOME,
     onCustomBound = function(rect, ui, tileScale){
         return me.calcUIRect(rect, ui, tileScale);
-    };
+    },
     onCustomDraw = function(ctx, rect, ui, ts, tileScale){
         var
         items = this.hero.getTome(),
@@ -52,6 +51,7 @@ pico.def('tome', 'picUIContent', function(){
         cap = this.hero.getTomeCap(),
         sd = this.smallDevice,
         style = {font: com.font,fillStyle:"#aec440"},
+        cellOpt = {drop: 1},
         size = 32,
         actualSize = sd ? 32 : 64,
         newH,meshui,rows,row,cell,i,l;
@@ -73,27 +73,27 @@ pico.def('tome', 'picUIContent', function(){
         if (comWin.maximized){
             for(i=0,l=cap/4;i<l;i++){
                 row=me.createMeshRow(rows);
-                cell=me.createMeshCell(row);
-                cell=me.createMeshCell(row);
-                cell=me.createMeshCell(row);
+                cell=me.createMeshCell(row, cellOpt);
+                cell=me.createMeshCell(row, cellOpt);
+                cell=me.createMeshCell(row, cellOpt);
                 me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
                 me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 1, {id:0+(i*4)});
-                cell=me.createMeshCell(row);
+                cell=me.createMeshCell(row, cellOpt);
                 me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
                 me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 1, {id:1+(i*4)});
-                cell=me.createMeshCell(row);
+                cell=me.createMeshCell(row, cellOpt);
                 me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
                 me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 1, {id:2+(i*4)});
-                cell=me.createMeshCell(row);
+                cell=me.createMeshCell(row, cellOpt);
                 me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
                 me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 1, {id:4+(i*4)});
-                cell=me.createMeshCell(row);
-                cell=me.createMeshCell(row);
+                cell=me.createMeshCell(row, cellOpt);
+                cell=me.createMeshCell(row, cellOpt);
             }
         }else{
             for(i=0;i<cap;i++){
                 row=me.createMeshRow(rows);
-                cell=me.createMeshCell(row);
+                cell=me.createMeshCell(row, cellOpt);
                 me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
                 me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 0, {id:i});
             }
