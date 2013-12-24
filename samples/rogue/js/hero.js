@@ -133,8 +133,9 @@ pico.def('hero', 'picUIContent', function(){
     };
 
     me.create = function(ent, data){
+        data = me.base.create.call(this, ent, data);
+
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
-        data.layout = [];
         return data;
     };
 
@@ -494,17 +495,16 @@ pico.def('hero', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        if (me.clickMeshUI.call(this, x, y, state, comBox, com.layout, scale, onCustomUI)) return true;
+        if (me.clickMeshUI.call(this, x, y, state, com, comBox, scale, onCustomUI)) return true;
         return false;
     };
 
     me.draw = function(ctx, ent, clip){
         var
         com = ent.getComponent(name),
-        win = ent.getComponent(com.win),
-        rect = ent.getComponent(com.box),
+        comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.drawMeshUI.call(this, ctx, rect, com.layout, {default: this.tileSet}, scale, com.font, onCustomUI);
+        return me.drawMeshUI.call(this, ctx, {default: this.tileSet}, com, comBox, scale, onCustomUI);
     };
 });

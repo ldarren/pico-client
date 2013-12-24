@@ -41,7 +41,6 @@ pico.def('tome', 'picUIContent', function(){
     me.create = function(ent, data){
         data = me.base.create.call(this, ent, data);
 
-        data.layout = [];
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
         return data;
     };
@@ -110,35 +109,25 @@ pico.def('tome', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.pickMeshUI.call(this, com.focus, x, y, comBox, com.layout, scale, onCustomUI);
+        return me.pickMeshUI.call(this, x, y, com, comBox, scale, onCustomUI);
     };
 
     me.drag = function(ent, x, y){
         var
         com = ent.getComponent(name),
-        focus = com.focus;
-        if (!focus) return false;
-
-        var
-        com = ent.getComponent(name),
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.dragMeshUI.call(focus, x, y, comBox, com.layout, scale, onCustomUI);
+        return me.dragMeshUI.call(this, x, y, com, comBox, scale, onCustomUI);
     };
 
     me.drop = function(ent, x, y){
         var
         com = ent.getComponent(name),
-        focus = com.focus;
-        if (!focus) return false;
-
-        var
-        com = ent.getComponent(name),
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.dropMeshUI.call(focus, x, y, comBox, com.layout, scale, onCustomUI);
+        return me.dropMeshUI.call(this, x, y, com, comBox, scale, onCustomUI);
     };
 
     me.click = function(ent, x, y, state){
@@ -147,16 +136,15 @@ pico.def('tome', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.clickMeshUI.call(this, x, y, state, comBox, com.layout, scale, onCustomUI);
+        return me.clickMeshUI.call(this, x, y, state, com, comBox, scale, onCustomUI);
     };
 
     me.draw = function(ctx, ent, clip){
         var
         com = ent.getComponent(name),
-        win = ent.getComponent(com.win),
-        rect = ent.getComponent(com.box),
+        comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.drawMeshUI.call(this, ctx, rect, com.layout, {default: this.tileSet}, scale, com.font, onCustomUI);
+        return me.drawMeshUI.call(this, ctx, {default: this.tileSet}, com, comBox, scale, onCustomUI);
     };
 });

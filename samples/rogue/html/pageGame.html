@@ -31,8 +31,8 @@ me = this,
 gameStage,
 fingerStartPos = [0, 0],
 fingerTracker,
-cancelTracking = function(){
-    me.game.go('fingerOut');
+cancelTracking = function(x, y){
+    me.game.go('fingerOut', [x, y]);
     fingerTracker = undefined;
 },
 onFingerDown = function(evt, x, y){
@@ -41,11 +41,11 @@ onFingerDown = function(evt, x, y){
     me.game.go('fingerDown', [x, y]);
 },
 onFingerUp = function(evt, x, y){
-    if (fingerTracker) return cancelTracking() // is a move not a click
+    if (fingerTracker) return cancelTracking(x, y) // is a move not a click
     me.game.go('fingerUp', [x, y]);
 },
 onFingerTwice = function(evt, x, y){
-    if (fingerTracker) return cancelTracking() // is a move not a click
+    if (fingerTracker) return cancelTracking(x, y) // is a move not a click
     me.game.go('fingerTwice', [x, y]);
 },
 onFingerMove = function(evt, x, y){
@@ -58,7 +58,7 @@ onFingerMove = function(evt, x, y){
     }
 },
 onFingerOut = function(evt, x, y){
-    cancelTracking();
+    cancelTracking(x, y);
 },
 resize = function(iw, ih){
     var
