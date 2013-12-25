@@ -46,52 +46,52 @@ pico.def('uiWindow', 'picUIWindow', function(){
         if (com.maximized){
             layout = layouts[1];
             switch(ent.name){
-                case playerId:
-                case tomeId:
-                case bagId:
-                    comBox.x = layout[0]+gs;
-                    comBox.y = layout[1]+gs;
-                    comBox.width = layout[2]-(gs2);
-                    comBox.height = layout[3]-(gs2);
-                    break;
-                case infoId:
-                case dialogMsgId:
-                case tradeId:
-                    comBox.x = layout[0];
-                    comBox.y = layout[1];
-                    comBox.width = layout[2];
-                    comBox.height = layout[3];
-                    break;
+            case playerId:
+            case tomeId:
+            case bagId:
+                comBox.x = layout[0]+gs;
+                comBox.y = layout[1]+gs;
+                comBox.width = layout[2]-(gs2);
+                comBox.height = layout[3]-(gs2);
+                break;
+            case infoId:
+            case dialogMsgId:
+            case tradeId:
+                comBox.x = layout[0];
+                comBox.y = layout[1];
+                comBox.width = layout[2];
+                comBox.height = layout[3];
+                break;
             }
         }else{
             layout = layouts[0];
             switch(ent.name){
-                case playerId:
-                    comBox.x = layout[0]+gs;
-                    comBox.y = layout[1];
-                    comBox.width = layout[2]-gs2;
-                    comBox.height = layout[3]-gs;
-                    break;
-                case tomeId:
-                    comBox.x = layout[0]+gs;
-                    comBox.y = layout[1]+gs;
-                    comBox.width = layout[2]-gs;
-                    comBox.height = layout[3]-gs2;
-                    break;
-                case bagId:
-                    comBox.x = layout[0];
-                    comBox.y = layout[1]+gs;
-                    comBox.width = layout[2]-gs;
-                    comBox.height = layout[3]-gs2;
-                    break;
-                case infoId:
-                case dialogMsgId:
-                case tradeId:
-                    comBox.x = layout[0];
-                    comBox.y = layout[1];
-                    comBox.width = layout[2];
-                    comBox.height = layout[3];
-                    break;
+            case playerId:
+                comBox.x = layout[0]+gs;
+                comBox.y = layout[1];
+                comBox.width = layout[2]-gs2;
+                comBox.height = layout[3]-gs;
+                break;
+            case tomeId:
+                comBox.x = layout[0]+gs;
+                comBox.y = layout[1]+gs;
+                comBox.width = layout[2]-gs;
+                comBox.height = layout[3]-gs2;
+                break;
+            case bagId:
+                comBox.x = layout[0];
+                comBox.y = layout[1]+gs;
+                comBox.width = layout[2]-gs;
+                comBox.height = layout[3]-gs2;
+                break;
+            case infoId:
+            case dialogMsgId:
+            case tradeId:
+                comBox.x = layout[0];
+                comBox.y = layout[1];
+                comBox.width = layout[2];
+                comBox.height = layout[3];
+                break;
             }
         }
 
@@ -104,32 +104,32 @@ pico.def('uiWindow', 'picUIWindow', function(){
         var gs = data.gridSize = this.smallDevice ? 8 : 16;
 
         switch(ent.name){
-            case playerId:
-                data.docks = [4+2+1, 8+4+2+1];
-                data.minWidth = this.smallDevice ? 320 : 640;
-                data.minHeight = this.tileHeight+gs;
-                break;
-            case tomeId:
-                data.docks = [8+2+1, 8+4+2+1];
-                data.minWidth = this.tileWidth+gs;
-                data.minHeight = this.smallDevice ? 180 : 360;
-                break;
-            case bagId:
-                data.docks = [8+4+2, 8+4+2+1];
-                data.minWidth = this.tileWidth+gs;
-                data.minHeight = this.smallDevice ? 180 : 360;
-                break;
-            case infoId:
-                data.minHeight = this.smallDevice ? 80 : 160;
-                break;
-            case dialogId:
-                data.minWidth = this.smallDevice ? 320 : 640;
-                data.minHeight = this.smallDevice ? 180 : 360;
-                break;
-            case tradeId:
-                data.minWidth = this.smallDevice ? 320 : 640;
-                data.minHeight = this.smallDevice ? 180 : 360;
-                break;
+        case playerId:
+            data.docks = [4+2+1, 8+4+2+1];
+            data.minWidth = this.smallDevice ? 320 : 640;
+            data.minHeight = this.tileHeight+gs;
+            break;
+        case tomeId:
+            data.docks = [8+2+1, 8+4+2+1];
+            data.minWidth = this.tileWidth+gs;
+            data.minHeight = this.smallDevice ? 180 : 360;
+            break;
+        case bagId:
+            data.docks = [8+4+2, 8+4+2+1];
+            data.minWidth = this.tileWidth+gs;
+            data.minHeight = this.smallDevice ? 180 : 360;
+            break;
+        case infoId:
+            data.minHeight = this.smallDevice ? 80 : 160;
+            break;
+        case dialogId:
+            data.minWidth = this.smallDevice ? 320 : 640;
+            data.minHeight = this.smallDevice ? 180 : 360;
+            break;
+        case tradeId:
+            data.minWidth = this.smallDevice ? 320 : 640;
+            data.minHeight = this.smallDevice ? 180 : 360;
+            break;
         }
 
         if (data.theme){
@@ -163,30 +163,30 @@ pico.def('uiWindow', 'picUIWindow', function(){
             layouts.length = 0;
 
             switch(ent.name){
-                case playerId:
-                    layouts.push(me.fitIntoGrid(
-                        [evt[0] + Floor((evt[2] - com.minWidth)/2), evt[1], com.minWidth, com.minHeight],
-                        gs, gs, false));
-                    break;
-                case tomeId:
-                    layouts.push(me.fitIntoGrid(
-                        [evt[0] + evt[2] - com.minWidth, evt[1] + Floor((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight],
-                        gs, gs, false));
-                    break;
-                case bagId:
-                    layouts.push(me.fitIntoGrid(
-                        [evt[0], evt[1] + Floor((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight],
-                        gs, gs, false));
-                    break;
-                case infoId:
-                    layouts.push([evt[0], evt[1]+evt[3]-com.minHeight, evt[2], com.minHeight]);
-                    break;
-                case dialogMsgId:
-                case tradeId:
-                    layouts.push(me.fitIntoGrid(
-                        [evt[0] + Ceil((evt[2] - com.minWidth)/2), evt[1] + Ceil((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight],
-                        gs, gs, false));
-                    break;
+            case playerId:
+                layouts.push(me.fitIntoGrid(
+                    [evt[0] + Floor((evt[2] - com.minWidth)/2), evt[1], com.minWidth, com.minHeight],
+                    gs, gs, false));
+                break;
+            case tomeId:
+                layouts.push(me.fitIntoGrid(
+                    [evt[0] + evt[2] - com.minWidth, evt[1] + Floor((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight],
+                    gs, gs, false));
+                break;
+            case bagId:
+                layouts.push(me.fitIntoGrid(
+                    [evt[0], evt[1] + Floor((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight],
+                    gs, gs, false));
+                break;
+            case infoId:
+                layouts.push([evt[0], evt[1]+evt[3]-com.minHeight, evt[2], com.minHeight]);
+                break;
+            case dialogMsgId:
+            case tradeId:
+                layouts.push(me.fitIntoGrid(
+                    [evt[0] + Ceil((evt[2] - com.minWidth)/2), evt[1] + Ceil((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight],
+                    gs, gs, false));
+                break;
             }
             // maximized layout
             if (com.resizable)
@@ -299,7 +299,10 @@ pico.def('uiWindow', 'picUIWindow', function(){
         comBox = ent.getComponent(com.box),
         mod = pico.getModule(com.content);
 
-        if (mod.pick.call(this, ent, evt[0]-comBox.x, evt[1]-comBox.y)) return entities;
+        if (mod.pick.call(this, ent, evt[0]-comBox.x, evt[1]-comBox.y)){
+            refreshContent.call(this, ent, com);
+            return entities;
+        }
 
         var
         contentSize = com.contentSize,
@@ -326,7 +329,10 @@ pico.def('uiWindow', 'picUIWindow', function(){
         comBox = ent.getComponent(com.box),
         mod = pico.getModule(com.content);
         
-        if (mod.drag.call(this, ent, evt[2]-comBox.x, evt[3]-comBox.y)) return entities;
+        if (mod.drag.call(this, ent, evt[2]-comBox.x, evt[3]-comBox.y)){
+            refreshContent.call(this, ent, com);
+            return entities;
+        }
 
         var
         contentSize = com.contentSize,
@@ -363,7 +369,10 @@ pico.def('uiWindow', 'picUIWindow', function(){
         comBox = ent.getComponent(com.box),
         mod = pico.getModule(com.content);
         
-        mod.drop.call(this, ent, evt[0]-comBox.x, evt[1]-comBox.y);
+        if(mod.drop.call(this, ent, evt[0]-comBox.x, evt[1]-comBox.y)){
+            refreshContent.call(this, ent, com);
+            return entities;
+        }
 
         scrollBarH = scrollBarV = undefined;
         return entities;
