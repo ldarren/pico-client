@@ -16,6 +16,18 @@ pico.def('uiWindow', 'picUIWindow', function(){
     me = this,
     name = me.moduleName,
     scrollBarH, scrollBarV,
+    updateContent = function(ent, com){
+        var
+        comBox  = ent.getComponent(com.box),
+        layout = com.layouts[com.maximized],
+        canvas = com.canvas,
+        ctx = canvas.getContext('2d'),
+        wh = com.contentSize,
+        mod = pico.getModule(com.content);
+
+        ctx.clearRect(0, 0, wh[0], wh[1]);
+        mod.draw.call(this, canvas.getContext('2d'), ent, layout);
+    },
     refreshContent = function(ent, com){
         var
         comBox  = ent.getComponent(com.box),
@@ -300,7 +312,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         mod = pico.getModule(com.content);
 
         if (mod.pick.call(this, ent, evt[0]-comBox.x, evt[1]-comBox.y)){
-            refreshContent.call(this, ent, com);
+            updateContent.call(this, ent, com);
             return entities;
         }
 
@@ -330,7 +342,9 @@ pico.def('uiWindow', 'picUIWindow', function(){
         mod = pico.getModule(com.content);
         
         if (mod.drag.call(this, ent, evt[2]-comBox.x, evt[3]-comBox.y)){
-            refreshContent.call(this, ent, com);
+            evt[2] = evt[0];
+            evt[3] = evt[1];
+            updateContent.call(this, ent, com);
             return entities;
         }
 
@@ -370,7 +384,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         mod = pico.getModule(com.content);
         
         if(mod.drop.call(this, ent, evt[0]-comBox.x, evt[1]-comBox.y)){
-            refreshContent.call(this, ent, com);
+            updateContent.call(this, ent, com);
             return entities;
         }
 

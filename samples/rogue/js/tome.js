@@ -29,11 +29,27 @@ pico.def('tome', 'picUIContent', function(){
 
         return undefined !== spell;
     },
+    onCustomDrop = function(ui, cell){
+        var
+        sourceId = ui.userData.id,
+        items = this.hero.getTome(),
+        item, targetId;
+
+        item = items[sourceId];
+        if (!item) return false;
+
+        targetId = cell[2].userData.id;
+        items[sourceId] = items[targetId];
+        items[targetId] = item;
+        return true;
+    },
     onCustomUI = function(){
         switch(Array.prototype.shift.call(arguments)){
         case me.CUSTOM_BOUND: return onCustomBound.apply(this, arguments); break;
         case me.CUSTOM_DRAW: return onCustomDraw.apply(this, arguments); break;
         case me.CUSTOM_CLICK: return onCustomClick.apply(this, arguments); break;
+        case me.CUSTOM_BUTTON: return onCustomDraw.apply(this, arguments); break;
+        case me.CUSTOM_DROP: return onCustomDrop.apply(this, arguments); break;
         }
     };
 
