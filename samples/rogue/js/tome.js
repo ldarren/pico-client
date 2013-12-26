@@ -102,7 +102,7 @@ pico.def('tome', 'picUIContent', function(){
                 me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 1, {id:2+(i*4)});
                 cell=me.createMeshCell(row, cellOpt);
                 me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
-                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 1, {id:4+(i*4)});
+                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 1, {id:3+(i*4)});
                 cell=me.createMeshCell(row, cellOpt);
                 cell=me.createMeshCell(row, cellOpt);
             }
