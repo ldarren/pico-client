@@ -1,14 +1,14 @@
 pico.def('tome', 'picUIContent', function(){
     var
     me = this,
-    Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.random,
+    Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round, Max = Math.max,
     TOME_ROW = 4,
     name = me.moduleName,
     tomeId = G_WIN_ID.TOME,
-    onCustomBound = function(rect, ui, tileScale){
-        return me.calcUIRect(rect, ui, tileScale);
+    onCustomBound = function(rect, ui, scale){
+        return me.calcUIRect(rect, ui, scale);
     },
-    onCustomDraw = function(ctx, rect, ui, ts, tileScale){
+    onCustomDraw = function(ctx, rect, ui, ts, scale){
         var
         items = this.hero.getTome(),
         item, x, y;
@@ -20,6 +20,7 @@ pico.def('tome', 'picUIContent', function(){
         else if (item === this.hero.getSelectedSpell()) ts.draw(ctx, G_UI.SELECTED, rect[0], rect[1], rect[2], rect[3]);
     },
     onCustomClick = function(ui){
+        if (!ui) return false;
         var
         spell = this.hero.getTome()[ui.userData.id],
         toggle = this.hero.getSelectedSpell() === spell;
@@ -65,20 +66,17 @@ pico.def('tome', 'picUIContent', function(){
         com = ent.getComponent(name),
         comWin = ent.getComponent(com.win),
         cap = this.hero.getTomeCap(),
-        sd = this.smallDevice,
         style = {font: com.font,fillStyle:"#aec440"},
         cellOpt = {drop: 1},
         size = 32,
-        actualSize = sd ? 32 : 64,
-        newH,meshui,rows,row,cell,i,l;
+        actualSize = this.smallDevice ? size : size*2,
+        meshui,rows,row,cell,i,l;
 
         if (comWin.maximized){
-            newH = height > actualSize * 4 ? height : actualSize * 4;
-            meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, newH, style);
+            meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, actualSize * 4), style);
             rows=meshui.rows;
         }else{
-            newH = height > actualSize * 9 ? height : actualSize * 9;
-            meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, newH, style);
+            meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, actualSize * 9), style);
             rows=meshui.rows;
         }
 
@@ -116,7 +114,7 @@ pico.def('tome', 'picUIContent', function(){
         }
         com.layout = meshui;
 
-        return [com.layout.w, com.layout.h];
+        return [meshui.w, meshui.h];
     };
 
     me.pick = function(ent, x, y){
