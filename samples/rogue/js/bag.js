@@ -4,10 +4,10 @@ pico.def('bag', 'picUIContent', function(){
     Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round, Max = Math.max,
     BAG_ROW = 4,
     name = me.moduleName,
-    onCustomBound = function(rect, ui, scale){
+    onCustomBound = function(ent, rect, ui, scale){
         return me.calcUIRect(rect, ui, scale);
     },
-    onCustomDraw = function(ctx, rect, ui, ts, scale){
+    onCustomDraw = function(ent, ctx, rect, ui, ts, scale){
         var
         items = this.hero.getBag(),
         item, x, y;
@@ -18,7 +18,7 @@ pico.def('bag', 'picUIContent', function(){
         if (item[SPELL_COOLDOWN]) ts.draw(ctx, G_NUMERIC.LARGE_LIGHT + item[SPELL_COOLDOWN], rect[0], rect[1], rect[2], rect[3]);
         else if (item === this.hero.getSelectedSpell()) ts.draw(ctx, G_UI.SELECTED, rect[0], rect[1], rect[2], rect[3]);
     },
-    onCustomClick = function(ui){
+    onCustomClick = function(ent, ui){
         if (!ui){
             com.forSale = false; // click on bag but on the window
             return;
@@ -31,7 +31,7 @@ pico.def('bag', 'picUIContent', function(){
         }
         return;
     },
-    onCustomDrop = function(ui, cell){
+    onCustomDrop = function(ent, ui, cell){
         var
         sourceId = ui.userData.id,
         items = this.hero.getBag(),
@@ -162,7 +162,7 @@ pico.def('bag', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.pickMeshUI.call(this, x, y, com, comBox, scale, onCustomUI);
+        return me.pickMeshUI.call(this, x, y, ent, com, comBox, scale, onCustomUI);
     };
 
     me.drag = function(ent, x, y){
@@ -171,7 +171,7 @@ pico.def('bag', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.dragMeshUI.call(this, x, y, com, comBox, scale, onCustomUI);
+        return me.dragMeshUI.call(this, x, y, ent, com, comBox, scale, onCustomUI);
     };
 
     me.drop = function(ent, x, y){
@@ -180,7 +180,7 @@ pico.def('bag', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.dropMeshUI.call(this, x, y, com, comBox, scale, onCustomUI);
+        return me.dropMeshUI.call(this, x, y, ent, com, comBox, scale, onCustomUI);
     };
 
     me.click = function(ent, x, y, state){
@@ -263,6 +263,6 @@ pico.def('bag', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.drawMeshUI.call(this, ctx, {default: this.tileSet}, com, comBox, scale, onCustomUI);
+        return me.drawMeshUI.call(this, ctx, {default: this.tileSet}, ent, com, comBox, scale, onCustomUI);
     };
 });

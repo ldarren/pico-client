@@ -5,10 +5,10 @@ pico.def('tome', 'picUIContent', function(){
     TOME_ROW = 4,
     name = me.moduleName,
     tomeId = G_WIN_ID.TOME,
-    onCustomBound = function(rect, ui, scale){
+    onCustomBound = function(ent, rect, ui, scale){
         return me.calcUIRect(rect, ui, scale);
     },
-    onCustomDraw = function(ctx, rect, ui, ts, scale){
+    onCustomDraw = function(ent, ctx, rect, ui, ts, scale){
         var
         items = this.hero.getTome(),
         item, x, y;
@@ -19,7 +19,7 @@ pico.def('tome', 'picUIContent', function(){
         if (item[SPELL_COOLDOWN]) ts.draw(ctx, G_NUMERIC.LARGE_LIGHT + item[SPELL_COOLDOWN], rect[0], rect[1], rect[2], rect[3]);
         else if (item === this.hero.getSelectedSpell()) ts.draw(ctx, G_UI.SELECTED, rect[0], rect[1], rect[2], rect[3]);
     },
-    onCustomClick = function(ui){
+    onCustomClick = function(ent, ui){
         if (!ui) return false;
         var
         spell = this.hero.getTome()[ui.userData.id],
@@ -30,7 +30,7 @@ pico.def('tome', 'picUIContent', function(){
 
         return undefined !== spell;
     },
-    onCustomDrop = function(ui, cell){
+    onCustomDrop = function(ent, ui, cell){
         var
         sourceId = ui.userData.id,
         items = this.hero.getTome(),
@@ -123,7 +123,7 @@ pico.def('tome', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.pickMeshUI.call(this, x, y, com, comBox, scale, onCustomUI);
+        return me.pickMeshUI.call(this, x, y, ent, com, comBox, scale, onCustomUI);
     };
 
     me.drag = function(ent, x, y){
@@ -132,7 +132,7 @@ pico.def('tome', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.dragMeshUI.call(this, x, y, com, comBox, scale, onCustomUI);
+        return me.dragMeshUI.call(this, x, y, ent, com, comBox, scale, onCustomUI);
     };
 
     me.drop = function(ent, x, y){
@@ -141,7 +141,7 @@ pico.def('tome', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.dropMeshUI.call(this, x, y, com, comBox, scale, onCustomUI);
+        return me.dropMeshUI.call(this, x, y, ent, com, comBox, scale, onCustomUI);
     };
 
     me.click = function(ent, x, y, state){
@@ -150,7 +150,7 @@ pico.def('tome', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.clickMeshUI.call(this, x, y, state, com, comBox, scale, onCustomUI);
+        return me.clickMeshUI.call(this, x, y, state, ent, com, comBox, scale, onCustomUI);
     };
 
     me.draw = function(ctx, ent, clip){
@@ -159,6 +159,6 @@ pico.def('tome', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.drawMeshUI.call(this, ctx, {default: this.tileSet}, com, comBox, scale, onCustomUI);
+        return me.drawMeshUI.call(this, ctx, {default: this.tileSet}, ent, com, comBox, scale, onCustomUI);
     };
 });

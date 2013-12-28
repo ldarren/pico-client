@@ -11,7 +11,7 @@ pico.def('hero', 'picUIContent', function(){
     d20Roll = function(){
         return Round(Random()*21);
     },
-    onCustomBound = function(rect, ui, tileScale){
+    onCustomBound = function(ent, rect, ui, tileScale){
         var id = ui.userData.id;
 
         if ('custom1Label' === id) id = 'goldLabel';
@@ -34,7 +34,7 @@ pico.def('hero', 'picUIContent', function(){
             return me.calcUIRect(rect, ui);
         }
     },
-    onCustomDraw = function(ctx, rect, ui, ts, tileScale){
+    onCustomDraw = function(ent, ctx, rect, ui, ts, tileScale){
         var id = ui.userData.id;
 
         if ('custom1Label' === id) id = 'goldLabel';
@@ -121,7 +121,7 @@ pico.def('hero', 'picUIContent', function(){
             break;
         }
     },
-    onCustomClick = function(ui){
+    onCustomClick = function(ent, ui){
         console.log('click'+JSON.stringify(ui));
     },
     onCustomUI = function(){
@@ -495,7 +495,7 @@ pico.def('hero', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        if (me.clickMeshUI.call(this, x, y, state, com, comBox, scale, onCustomUI)) return true;
+        if (me.clickMeshUI.call(this, x, y, state, ent, com, comBox, scale, onCustomUI)) return true;
         return false;
     };
 
@@ -505,6 +505,6 @@ pico.def('hero', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.drawMeshUI.call(this, ctx, {default: this.tileSet}, com, comBox, scale, onCustomUI);
+        return me.drawMeshUI.call(this, ctx, {default: this.tileSet}, ent, com, comBox, scale, onCustomUI);
     };
 });
