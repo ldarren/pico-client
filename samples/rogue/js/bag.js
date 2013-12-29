@@ -9,27 +9,40 @@ pico.def('bag', 'picUIContent', function(){
     },
     onCustomDraw = function(ent, ctx, rect, ui, ts, scale){
         var
-        items = this.hero.getBag(),
-        item, x, y;
+        com = ent.getComponent(name),
+        i = ui.userData.id,
+        activated = com.activated,
+        slots = this.hero.getBag(),
+        x=rect[0], y=rect[1], w=rect[2], h=rect[3],
+        slot, item, count;
 
-        item = items[ui.userData.id];
-        if (!item) return;
-        ts.draw(ctx, item[OBJECT_ICON], rect[0], rect[1], rect[2], rect[3]);
-        if (item[SPELL_COOLDOWN]) ts.draw(ctx, G_NUMERIC.LARGE_LIGHT + item[SPELL_COOLDOWN], rect[0], rect[1], rect[2], rect[3]);
-        else if (item === this.hero.getSelectedSpell()) ts.draw(ctx, G_UI.SELECTED, rect[0], rect[1], rect[2], rect[3]);
+        slot = slots[i];
+        if (!slot) return;
+        item = slot[0];
+        count = slot[1];
+        ts.draw(ctx, item[OBJECT_ICON], x, y, w, h);
+        if(count > 1)  ctx.fillText(count, x+w, y+h, w);
+        if (i === com.activated) {
+            ts.draw(ctx, G_UI.SELECTED, x, y, w, h);
+        }
     },
     onCustomClick = function(ent, ui){
+        var com = ent.getComponent(name);
+
         if (!ui){
             com.forSale = false; // click on bag but on the window
-            return;
+            return false;
         }
-        var item = this.hero.getBag()[ui.userData.id];
+        var
+        i = ui.userData.id,
+        slot = this.hero.getBag()[i];
 
-        if (bag[i]){
-            com.activated = j;
+        if (slot){
+            com.activated = i;
             this.go('showInfo', {targetId: i, context: com.forSale ? G_CONTEXT.MERCHANT_SALE : G_CONTEXT.BAG});
+            return true;
         }
-        return;
+        return false;
     },
     onCustomDrop = function(ent, ui, cell){
         var
@@ -54,42 +67,6 @@ pico.def('bag', 'picUIContent', function(){
         case me.CUSTOM_DROP: return onCustomDrop.apply(this, arguments); break;
         }
     };
-    draw = function(ctx, slots, layout, com){
-        var
-        ts = this.tileSet,
-        tw = this.tileWidth,
-        th = this.tileHeight,
-        activated = com.activated,
-        block, slot, item, count;
-
-        ctx.save();
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.font = com.font;
-        ctx.fillStyle = com.fontColor;
-
-        block = layout[0];
-        ctx.fillText(com.name, block[0]+block[2]/2, block[1]+block[3]/2, block[2]);
-        
-        ctx.textAlign = 'right';
-        ctx.textBaseline = 'bottom';
-        for(var i=1,j=0, l=layout.length; i<l; i++,j++){
-            block = layout[i];
-            ts.draw(ctx, G_UI.SLOT, block[0], block[1], tw, th);
-            slot = slots[j];
-            if (!slot) continue;
-            item = slot[0];
-            count = slot[1];
-            ts.draw(ctx, item[0], block[0], block[1], tw, th);
-            if(count > 1)  ctx.fillText(count, block[0]+tw, block[1]+th, tw);
-        }
-        if (activated) {
-            block = layout[activated];
-            ts.draw(ctx, G_SHADE[0], block[0], block[1], tw, th);
-        }
-
-        ctx.restore();
-    };
 
     me.create = function(ent, data){
         data = me.base.create.call(this, ent, data);
@@ -102,7 +79,7 @@ pico.def('bag', 'picUIContent', function(){
 
     me.resize = function(ent, width, height){
         var
-        com = ent.getComponent(name);
+        com = ent.getComponent(name),
         comWin = ent.getComponent(com.win),
         cap = this.hero.getBagCap(),
         style = {font: com.font,fillStyle:"#aec440"},
@@ -115,7 +92,7 @@ pico.def('bag', 'picUIContent', function(){
             meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, actualSize * 4), style);
             rows=meshui.rows;
         }else{
-            meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, actualSize * 9), style);
+            meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, actualSize * 17), style);
             rows=meshui.rows;
         }
 
@@ -185,34 +162,11 @@ pico.def('bag', 'picUIContent', function(){
 
     me.click = function(ent, x, y, state){
         var
-        e = entities[0],
-        com = e.getComponent(name);
+        com = ent.getComponent(name),
+        comBox = ent.getComponent(com.box),
+        scale = this.smallDevice ? 1 : 2;
 
-        if (!com) return entities;
-        
-        var
-        tw = this.tileWidth,
-        th = this.tileHeight,
-        bag = this.hero.getBag(),
-        layout = com.layout,
-        x = evt[0],
-        y = evt[1],
-        tile, tx, ty;
-
-        for(var i=0,j=1,jl=layout.length; j<jl; i++,j++){
-            tile = layout[j];
-            tx = tile[0];
-            ty = tile[1];
-            if (tx < x && (tx + tw) > x && ty < y && (ty + th) > y){
-                if (bag[i]){
-                    com.activated = j;
-                    this.go('showInfo', {targetId: i, context: com.forSale ? G_CONTEXT.MERCHANT_SALE : G_CONTEXT.BAG});
-                }
-                return;
-            }
-        }
-        com.forSale = false; // click on bag but on the window
-        return entities;
+        return me.clickMeshUI.call(this, x, y, state, ent, com, comBox, scale, onCustomUI);
     };
 
     me.openForSale = function(elapsed, evt, entities){
