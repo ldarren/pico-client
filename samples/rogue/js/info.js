@@ -295,7 +295,7 @@ pico.def('info', 'picUIContent', function(){
         console.log('DOUBLE CLICKED!');
     };
 
-    me.resize = function(elapsed, evt, entities){
+    me.resize = function(ent, width, height){
 
         me.openIfValid.call(this, elapsed, evt, entities);
 

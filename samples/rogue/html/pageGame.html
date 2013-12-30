@@ -206,8 +206,8 @@ onLoad = function(){
         uiWinEnts[0] = game.addEntity(G_WIN_ID.PLAYER);
         uiWinEnts[1] = game.addEntity(G_WIN_ID.TOME);
         uiWinEnts[2] = game.addEntity(G_WIN_ID.BAG);
-/*        uiWinEnts[3] = game.addEntity(G_WIN_ID.INFO);
-        uiWinEnts[4] = game.addEntity(G_WIN_ID.DIALOG);
+        uiWinEnts[3] = game.addEntity(G_WIN_ID.INFO);
+/*        uiWinEnts[4] = game.addEntity(G_WIN_ID.DIALOG);
         uiWinEnts[5] = game.addEntity(G_WIN_ID.TRADE);
 */
         for(var i=0, l=uiWinEnts.length; i<l; i++){
@@ -227,11 +227,11 @@ onLoad = function(){
         uiWinEnt = uiWinEnts[2];
         uiWinEnt.attach(uiWindow, {content:bag.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3], theme: G_THEME.THEME8});
         uiWinEnt.attach(bag, {name:'Bag', win:uiWindow.moduleName, box:rect.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
-/*
+
         uiWinEnt = uiWinEnts[3];
         uiWinEnt.attach(uiWindow, {content:info.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3]});
-        uiWinEnt.attach(info, {box:rect.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard'});
-
+        uiWinEnt.attach(info, {win:uiWindow.moduleName, box:rect.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
+/*
         uiWinEnt = uiWinEnts[4];
         uiWinEnt.attach(uiWindow, {content:dialogMsg.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3]});
         uiWinEnt.attach(dialogMsg, {box:rect.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt alagard'});
