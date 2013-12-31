@@ -213,9 +213,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         this.showEntity(playerId);
         this.showEntity(tomeId);
         this.showEntity(bagId);
-        me.info.openIfValid.call(this, elapsed, evt, entities);
-        me.dialogMsg.openIfValid.call(this, elapsed, evt, entities);
-        me.trade.openIfValid.call(this, elapsed, evt, entities);
+        if (me.info.isValid()) this.showEntity(infoId);
 
         return entities;
     };
@@ -228,6 +226,26 @@ pico.def('uiWindow', 'picUIWindow', function(){
         this.hideEntity(dialogId);
         this.hideEntity(tradeId);
 
+        return entities;
+    };
+
+    me.showInfo = function(elapsed, evt, entities){
+        if (!evt) return;
+
+        var ent = this.showEntity(G_WIN_ID.INFO);
+        if (!ent){
+            ent = me.findHostByCom(entities, name);
+        }
+        if (!ent) return;
+
+        me.info.open.call(this, ent, evt);
+        resizeContent.call(this, ent, ent.getComponent(name));
+        return entities;
+    };
+
+    me.hideInfo = function(elapsed, evt, entities){
+        me.info.close.call(this, ent, evt);
+        this.hideEntity(G_WIN_ID.INFO);
         return entities;
     };
 
