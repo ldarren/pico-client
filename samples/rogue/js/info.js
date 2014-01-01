@@ -127,6 +127,7 @@ pico.def('info', 'picUIContent', function(){
         return rect;
     },
     onCustomDraw = function(ent, ctx, rect, ui, ts, scale){
+        if (!me.isValid()) return;
         var
         com = ent.getComponent(name),
         tw = this.tileWidth,
@@ -138,19 +139,19 @@ pico.def('info', 'picUIContent', function(){
             if (targetId > -1){
                 switch(context){
                 case G_CONTEXT.TOME:
-                    ts.draw(ctx, target[OBJECT_ICON], x, y, tw*scale, th*scale);
+                    ts.draw(ctx, target[OBJECT_ICON], x, y, tw, th);
                     break;
                 case G_CONTEXT.BAG:
-                    ts.draw(ctx, target[0][OBJECT_ICON], x, y, tw*scale, th*scale);
+                    ts.draw(ctx, target[0][OBJECT_ICON], x, y, tw, th);
                     break;
                 case G_CONTEXT.WORLD:
                     switch(target[OBJECT_TYPE]){
                     case G_OBJECT_TYPE.CREEP:
                         var stat = this.ai.getStatByObject(target);
-                        ts.draw(ctx, target[0][OBJECT_ICON], x, y, tw*scale, th*scale);
+                        ts.draw(ctx, target[0][OBJECT_ICON], x, y, tw, th);
                         break;
                     default:
-                        ts.draw(ctx, target[OBJECT_ICON], x, y, tw*scale, th*scale);
+                        ts.draw(ctx, target[OBJECT_ICON], x, y, tw, th);
                         break;
                     }
                     break;
@@ -315,6 +316,7 @@ pico.def('info', 'picUIContent', function(){
                 break;
             }
         }
+        hide.call(this, ent);
 
         return true;
     },
