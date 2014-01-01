@@ -124,7 +124,7 @@ pico.def('info', 'picUIContent', function(){
         }
     },
     onCustomBound = function(ent, rect, ui, scale){
-        return rect;
+        return me.calcUIRect(rect, ui);
     },
     onCustomDraw = function(ent, ctx, rect, ui, ts, scale){
         if (!me.isValid()) return;
@@ -136,6 +136,8 @@ pico.def('info', 'picUIContent', function(){
 
         switch(ui.userData.id){
         case 'icon':
+            x = x + (w - tw)/2;
+            y = y + (h - th)/2;
             if (targetId > -1){
                 switch(context){
                 case G_CONTEXT.TOME:
@@ -145,15 +147,8 @@ pico.def('info', 'picUIContent', function(){
                     ts.draw(ctx, target[0][OBJECT_ICON], x, y, tw, th);
                     break;
                 case G_CONTEXT.WORLD:
-                    switch(target[OBJECT_TYPE]){
-                    case G_OBJECT_TYPE.CREEP:
-                        var stat = this.ai.getStatByObject(target);
-                        ts.draw(ctx, target[0][OBJECT_ICON], x, y, tw, th);
-                        break;
-                    default:
-                        ts.draw(ctx, target[OBJECT_ICON], x, y, tw, th);
-                        break;
-                    }
+                    // can use target[OBJECT_TYPE] === G_OBJECT_TYPE.CREEP to get object type
+                    ts.draw(ctx, target[OBJECT_ICON], x, y, tw, th);
                     break;
                 }
             }
@@ -185,14 +180,12 @@ pico.def('info', 'picUIContent', function(){
             break;
         case 'name':
             if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                var stat = this.ai.getStatByObject(target);
                 me.fillIconText(ctx, ts, target[OBJECT_NAME]+' ('+G_CREEP_TYPE_NAME[target[OBJECT_SUB_TYPE]]+')', rect[0], rect[1], rect[2], rect[3], scale);
             }
             break;
         case 'level':
             if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                var stat = this.ai.getStatByObject(target);
-                me.fillIconText(ctx, ts, '`'+G_UI.LEVEL+': '+stat[OBJECT_LEVEL], rect[0], rect[1], rect[2], rect[3], scale);
+                me.fillIconText(ctx, ts, '`'+G_UI.LEVEL+': '+target[OBJECT_LEVEL], rect[0], rect[1], rect[2], rect[3], scale);
             }
             break;
         case 'hp':
@@ -200,34 +193,30 @@ pico.def('info', 'picUIContent', function(){
                 var
                 stat = this.ai.getStatByObject(target),
                 iconText = '';
-                for(var i=0, l=stat[OBJECT_HP]; i<l; i++){
-                    iconText += ' `'+G_UI.HP;
+                for(var i=0, l=stat[CREEP_HP]; i<l; i++){
+                    iconText += ' `'+((i < target[CREEP_HP]) ? G_UI.HP : G_UI.HP_EMPTY);
                 }
                 me.fillIconText(ctx, ts, iconText, rect[0], rect[1], rect[2], rect[3], scale);
             }
             break;
         case 'def':
             if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                var stat = this.ai.getStatByObject(target);
-                me.fillIconText(ctx, ts, '`'+G_UI.PDEF+': '+stat[OBJECT_DEF], rect[0], rect[1], rect[2], rect[3], scale);
+                me.fillIconText(ctx, ts, '`'+G_UI.PDEF+': '+target[CREEP_DEF], rect[0], rect[1], rect[2], rect[3], scale);
             }
             break;
         case 'patk':
             if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                var stat = this.ai.getStatByObject(target);
-                me.fillIconText(ctx, ts, '`'+G_UI.PATK+': '+stat[OBJECT_ATK], rect[0], rect[1], rect[2], rect[3], scale);
+                me.fillIconText(ctx, ts, '`'+G_UI.PATK+': '+target[CREEP_ATK], rect[0], rect[1], rect[2], rect[3], scale);
             }
             break;
         case 'ratk':
             if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                var stat = this.ai.getStatByObject(target);
-                me.fillIconText(ctx, ts, '`'+G_UI.RATK+': '+stat[OBJECT_RATK], rect[0], rect[1], rect[2], rect[3], scale);
+                me.fillIconText(ctx, ts, '`'+G_UI.RATK+': '+target[CREEP_RATK], rect[0], rect[1], rect[2], rect[3], scale);
             }
             break;
         case 'matk':
             if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                var stat = this.ai.getStatByObject(target);
-                me.fillIconText(ctx, ts, '`'+G_UI.MATK+': '+stat[OBJECT_MATK], rect[0], rect[1], rect[2], rect[3], scale);
+                me.fillIconText(ctx, ts, '`'+G_UI.MATK+': '+target[CREEP_MATK], rect[0], rect[1], rect[2], rect[3], scale);
             }
             break;
         default:

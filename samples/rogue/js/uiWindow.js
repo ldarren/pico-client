@@ -409,8 +409,10 @@ pico.def('uiWindow', 'picUIWindow', function(){
         comBox = ent.getComponent(com.box),
         mod = pico.getModule(com.content);
         
-        mod.drop.call(this, ent, evt[0]-comBox.x, evt[1]-comBox.y);
+        if(mod.drop.call(this, ent, evt[0]-comBox.x, evt[1]-comBox.y)){
             updateContent.call(this, ent, com);
+            return entities;
+        }
 
         scrollBarH = scrollBarV = undefined;
         return entities;
@@ -423,7 +425,6 @@ pico.def('uiWindow', 'picUIWindow', function(){
         var
         layout = com.layouts[com.maximized],
         gs = com.gridSize,
-        gs2 = gs * 2,
         comBox = ent.getComponent(com.box),
         contentW = comBox.width > com.contentSize[0] ? com.contentSize[0] : comBox.width,
         contentH = comBox.height > com.contentSize[1] ? com.contentSize[1] : comBox.height;
