@@ -127,125 +127,142 @@ pico.def('info', 'picUIContent', function(){
         return rect;
     },
     onCustomDraw = function(ent, ctx, rect, ui, ts, scale){
-        if (undefined === targetId){
-            me.close.call(this);
-            return;
-        }
         var
         com = ent.getComponent(name),
-        rect = ent.getComponent(com.box),
-        ts = this.tileSet,
         tw = this.tileWidth,
         th = this.tileHeight,
-        sd = this.smallDevice,
-        ai = this.ai,
-        margin = sd ? 2 : 4,
-        pw = (rect.width - margin*2)/2,
-        textWidth3 = sd ? 15 : 30,
-        textWidth2 = sd ? 15 : 30,
-        X = rect.x + margin,
-        Y = rect.y + margin,
-        x = X, y = Y,
-        uiSize = sd ? 16 : 32,
-        fontColor = G_COLOR_TONE[1],
-        i, l;
+        x=rect[0], y=rect[1], w=rect[2], h=rect[3];
 
-        ctx.save();
-
-        if (targetId > -1){
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'middle';
-            ctx.font = com.font;
-            ctx.fillStyle = fontColor;
-
-            switch(context){
-            case G_CONTEXT.BAG:
-                var
-                stat = target[0],
-                count = target[1];
-
-                ts.draw(ctx, stat[OBJECT_ICON], x, y, tw, th);
-                ctx.fillText(stat[OBJECT_NAME], x + tw + margin, y + th/2);
-                y += uiSize;
-                ctx.fillText('count('+count+')', x, y + th/2);
-
-                break;
-            case G_CONTEXT.WORLD:
-                switch(target[OBJECT_TYPE]){
-                case G_OBJECT_TYPE.CREEP:
-
-                    var stat = ai.getStatByObject(target);
-
-                    ctx.fillText(target[OBJECT_NAME]+' ('+G_CREEP_TYPE_NAME[target[OBJECT_SUB_TYPE]]+')', x, y + uiSize/2, rect.width);
-
-                    x = X;
-                    y += uiSize;
-                    uiSize = sd ? 16 : 32;
- 
-                    //x = me.drawData(ctx, ts, G_UI.PATK, target[CREEP_ATK], x, y, uiSize, margin, textWidth3);
-                    //x = me.drawData(ctx, ts, G_UI.RATK, target[CREEP_RATK], x, y, uiSize, margin, textWidth3);
-                    //x = me.drawData(ctx, ts, G_UI.MATK, target[CREEP_MATK], x, y, uiSize, margin, textWidth3);
-
-                    x = X + pw;
-                    uiSize = sd ? 8 : 16;
-                    y = rect.y + uiSize;
-                    
-                    // draw hp
-                    for(i=0, l=stat[CREEP_HP]; i<l; i++){
-                        ts.draw(ctx, i<target[CREEP_HP] ? G_UI.HP : G_UI.HP_EMPTY, x, y, uiSize, uiSize);
-                        x += uiSize;
-                    }
-
-                    x = X + pw;
-                    y += uiSize + margin;
-                    uiSize = sd ? 16 : 32;
-
-                    //x = me.drawData(ctx, ts, G_UI.PDEF, target[CREEP_DEF], x, y, uiSize, margin, textWidth3);
-                    //x = me.drawData(ctx, ts, G_UI.MDEF, target[CREEP_MDEF], x, y, uiSize, margin, textWidth3);
+        switch(ui.userData.id){
+        case 'icon':
+            if (targetId > -1){
+                switch(context){
+                case G_CONTEXT.TOME:
+                    ts.draw(ctx, target[OBJECT_ICON], x, y, tw*scale, th*scale);
                     break;
-                default:
-                    ts.draw(ctx, target[OBJECT_ICON], x, y, tw, th);
-                    ctx.fillText(target[OBJECT_NAME], x + tw + margin, y + th/2);
+                case G_CONTEXT.BAG:
+                    ts.draw(ctx, target[0][OBJECT_ICON], x, y, tw*scale, th*scale);
+                    break;
+                case G_CONTEXT.WORLD:
+                    switch(target[OBJECT_TYPE]){
+                    case G_OBJECT_TYPE.CREEP:
+                        var stat = this.ai.getStatByObject(target);
+                        ts.draw(ctx, target[0][OBJECT_ICON], x, y, tw*scale, th*scale);
+                        break;
+                    default:
+                        ts.draw(ctx, target[OBJECT_ICON], x, y, tw*scale, th*scale);
+                        break;
+                    }
                     break;
                 }
-                break;
             }
-
-            me.drawButtons(ctx, layouts, labels, fontColor, G_COLOR_TONE[3], G_COLOR_TONE[3]);
-        }else{
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'top';
-            ctx.font = com.font;
-            ctx.fillStyle = fontColor;
-
-            me.fillWrapText(ctx, target, x, y, pw*2, 20);
-            me.drawButtons(ctx, layouts, labels, fontColor, G_COLOR_TONE[3], G_COLOR_TONE[3]);
+            break;
+        case 'text':
+            if (targetId > -1){
+                switch(context){
+                case G_CONTEXT.TOME:
+                    me.fillIconText(ctx, ts, target[OBJECT_NAME], rect[0], rect[1], rect[2], rect[3], scale);
+                    break;
+                case G_CONTEXT.BAG:
+                    var
+                    stat = target[0],
+                    count = target[1];
+            
+                    me.fillIconText(ctx, ts, stat[OBJECT_NAME]+'count('+count+')', rect[0], rect[1], rect[2], rect[3], scale);
+                    break;
+                case G_CONTEXT.WORLD:
+                    switch(target[OBJECT_TYPE]){
+                    case G_OBJECT_TYPE.CREEP:
+                        break;
+                    default:
+                        me.fillIconText(ctx, ts, target[OBJECT_NAME], rect[0], rect[1], rect[2], rect[3], scale);
+                        break;
+                    }
+                    break;
+                }
+            }
+            break;
+        case 'name':
+            if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
+                var stat = this.ai.getStatByObject(target);
+                me.fillIconText(ctx, ts, target[OBJECT_NAME]+' ('+G_CREEP_TYPE_NAME[target[OBJECT_SUB_TYPE]]+')', rect[0], rect[1], rect[2], rect[3], scale);
+            }
+            break;
+        case 'level':
+            if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
+                var stat = this.ai.getStatByObject(target);
+                me.fillIconText(ctx, ts, '`'+G_UI.LEVEL+': '+stat[OBJECT_LEVEL], rect[0], rect[1], rect[2], rect[3], scale);
+            }
+            break;
+        case 'hp':
+            if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
+                var
+                stat = this.ai.getStatByObject(target),
+                iconText = '';
+                for(var i=0, l=stat[OBJECT_HP]; i<l; i++){
+                    iconText += ' `'+G_UI.HP;
+                }
+                me.fillIconText(ctx, ts, iconText, rect[0], rect[1], rect[2], rect[3], scale);
+            }
+            break;
+        case 'def':
+            if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
+                var stat = this.ai.getStatByObject(target);
+                me.fillIconText(ctx, ts, '`'+G_UI.PDEF+': '+stat[OBJECT_DEF], rect[0], rect[1], rect[2], rect[3], scale);
+            }
+            break;
+        case 'patk':
+            if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
+                var stat = this.ai.getStatByObject(target);
+                me.fillIconText(ctx, ts, '`'+G_UI.PATK+': '+stat[OBJECT_ATK], rect[0], rect[1], rect[2], rect[3], scale);
+            }
+            break;
+        case 'ratk':
+            if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
+                var stat = this.ai.getStatByObject(target);
+                me.fillIconText(ctx, ts, '`'+G_UI.RATK+': '+stat[OBJECT_RATK], rect[0], rect[1], rect[2], rect[3], scale);
+            }
+            break;
+        case 'matk':
+            if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
+                var stat = this.ai.getStatByObject(target);
+                me.fillIconText(ctx, ts, '`'+G_UI.MATK+': '+stat[OBJECT_MATK], rect[0], rect[1], rect[2], rect[3], scale);
+            }
+            break;
+        default:
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#204631';
+            ctx.strokeStyle = '#204631';
+            ctx.fillRect.apply(ctx, rect);
+            ctx.strokeRect.apply(ctx, rect);
+            ctx.fillStyle = '#d7e894';
+            ctx.fillText(labels[ui.userData.id], rect[0]+rect[2]/2, rect[1]+rect[3]/2, rect[2]);
+            break;
         }
-        ctx.restore();
+
     },
     onCustomButton = function(ent, ctx, rect, ui, ts, scale){
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillStyle = '#d7e894';
+        ctx.strokeStyle = '#aec440';
+        ctx.fillRect.apply(ctx, rect);
+        ctx.strokeRect.apply(ctx, rect);
+        ctx.fillStyle = '#204631';
+        ctx.fillText(labels[ui.userData.id], rect[0]+rect[2]/2, rect[1]+rect[3]/2, rect[2]);
     },
     onCustomClick = function(ent, ui){
-        if (!targetId || !layouts.length) return entities;
-
-        var 
-        e = entities[0],
-        com = e.getComponent(name);
-
-        if (!com) return entities;
+        if (!ui){
+            hide.call(this, ent);
+            return false;
+        }
 
         var
-        x = evt[0], y = evt[1],
-        btn, callback, eventObj;
-
-        for(var i=0, l=layouts.length; i<l; i++){
-            btn = layouts[i];
-            if (x > btn[0] && x < btn[0]+btn[2] && y > btn[1] && y < btn[1]+btn[3]){
-                callback = callbacks[i];
-                eventObj = events[i];
-                break;
-            }
-        }
+        com = ent.getComponent(name),
+        i = ui.userData.id,
+        callback = callbacks[i],
+        eventObj = events[i];
 
         if (undefined !== eventObj){
             this.go(callback, eventObj);
@@ -295,11 +312,11 @@ pico.def('info', 'picUIContent', function(){
                 break;
             case 'chant':
                 this.go('chant', [targetId]);
+                break;
             }
         }
-        this.go('hideInfo');
 
-        return;
+        return true;
     },
     onCustomUI = function(){
         switch(Array.prototype.shift.call(arguments)){
@@ -309,6 +326,10 @@ pico.def('info', 'picUIContent', function(){
         case me.CUSTOM_BUTTON: return onCustomButton.apply(this, arguments); break;
         }
         return false;
+    },
+    hide = function(ent){
+        me.close();
+        this.hideEntity(ent);
     };
 
     me.create = function(ent, data){
@@ -357,7 +378,7 @@ pico.def('info', 'picUIContent', function(){
         else addButtons.call(this);
     };
 
-    me.close = function(ent, evt){
+    me.close = function(){
         labels.length = 0;
         callbacks.length = 0;
         events.length = 0;
@@ -378,7 +399,7 @@ pico.def('info', 'picUIContent', function(){
         com = ent.getComponent(name),
         style = {font: com.font,fillStyle:"#aec440"},
         meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, height, style),
-        rows=meshui.rows,
+        rows = meshui.rows,
         l = labels.length,
         row,cell,i;
 
@@ -388,34 +409,36 @@ pico.def('info', 'picUIContent', function(){
                 cell=me.createMeshCell(row);
                 me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 1, 0, {id:i});
             }
-
-            row=me.createMeshRow(rows);
-            cell=me.createMeshCell(row);
-            me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 3, 1, 0, {id:'icon'});
-            cell=me.createMeshCell(row);
-            me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 4, 3, 1, 0, {id:'text'});
-            cell=me.createMeshCell(row);
-            cell=me.createMeshCell(row);
-            cell=me.createMeshCell(row);
-
-            for(i=0; i<2; i++){
-                row=me.createMeshRow(rows);
-                cell=me.createMeshCell(row);
-                cell=me.createMeshCell(row);
-                cell=me.createMeshCell(row);
-                cell=me.createMeshCell(row);
-                cell=me.createMeshCell(row);
-            }
         }
 
         row=me.createMeshRow(rows);
         cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 1, 0, {id:i});
+        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 3, 0, 0, {id:'icon'});
         cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 4, 1, 1, 0, {id:i});
+        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 2, 1, 0, 0, {id:'name'});
+        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 3, 3, 0, 0, {id:'text'});
         cell=me.createMeshCell(row);
         cell=me.createMeshCell(row);
+        me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 0, 0, {id:'level'});
+
+        row=me.createMeshRow(rows);
         cell=me.createMeshCell(row);
+        cell=me.createMeshCell(row);
+        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 2, 1, 0, 0, {id:'hp'});
+        cell=me.createMeshCell(row);
+        cell=me.createMeshCell(row);
+        me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 0, 0, {id:'def'});
+
+        row=me.createMeshRow(rows);
+        cell=me.createMeshCell(row);
+        cell=me.createMeshCell(row);
+        me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 0, 0, {id:'patk'});
+        cell=me.createMeshCell(row);
+        me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 0, 0, {id:'ratk'});
+        cell=me.createMeshCell(row);
+        me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 0, 0, {id:'matk'});
+
+        com.layout = meshui;
 
         return [width, height];
     };

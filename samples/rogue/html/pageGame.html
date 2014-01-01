@@ -229,15 +229,15 @@ onLoad = function(){
         uiWinEnt.attach(bag, {name:'Bag', win:uiWindow.moduleName, box:rect.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
 
         uiWinEnt = uiWinEnts[3];
-        uiWinEnt.attach(uiWindow, {content:info.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3]});
+        uiWinEnt.attach(uiWindow, {content:info.moduleName, resizable:false, box:rect.moduleName, background: G_COLOR_TONE[3]});
         uiWinEnt.attach(info, {win:uiWindow.moduleName, box:rect.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
 /*
         uiWinEnt = uiWinEnts[4];
-        uiWinEnt.attach(uiWindow, {content:dialogMsg.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3]});
+        uiWinEnt.attach(uiWindow, {content:dialogMsg.moduleName, resizable:false, box:rect.moduleName, background: G_COLOR_TONE[3]});
         uiWinEnt.attach(dialogMsg, {box:rect.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt alagard'});
 
         uiWinEnt = uiWinEnts[5];
-        uiWinEnt.attach(uiWindow, {content:trade.moduleName, resizable:true, box:rect.moduleName, background: G_COLOR_TONE[3]});
+        uiWinEnt.attach(uiWindow, {content:trade.moduleName, resizable:false, box:rect.moduleName, background: G_COLOR_TONE[3]});
         uiWinEnt.attach(trade, {box:rect.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt alagard'});
 */
         resize(window.innerWidth, window.innerHeight);

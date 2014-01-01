@@ -6,12 +6,7 @@ pico.def('game', 'pigSqrMap', function(){
     var
     me = this,
     db = window.localStorage,
-    Max = Math.max,
-    Abs = Math.abs,
-    Floor = Math.floor,
-    Random = Math.random,
-    Pow = Math.pow,
-    Sqrt = Math.sqrt,
+    Max = Math.max,Abs = Math.abs,Floor = Math.floor,Random = Math.random,Pow = Math.pow,Sqrt = Math.sqrt,
     pathElapsed = 0,
     loadGame = function(){
         var text = db.getItem(me.moduleName);

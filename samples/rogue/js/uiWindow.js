@@ -163,6 +163,8 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
     me.resize = function(elapsed, evt, entities){
         var com, comBox, ent, gs, layouts;
+        
+        this.showEntity(infoId);
 
         for(var i=0, l=entities.length; i<l; i++){
             ent = entities[i];
@@ -192,6 +194,10 @@ pico.def('uiWindow', 'picUIWindow', function(){
                 break;
             case infoId:
                 layouts.push([evt[0], evt[1]+evt[3]-com.minHeight, evt[2], com.minHeight]);
+                if (!me.info.isValid()){
+                    this.hideEntity(infoId);
+                    continue;
+                }
                 break;
             case dialogMsgId:
             case tradeId:
@@ -244,7 +250,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
     };
 
     me.hideInfo = function(elapsed, evt, entities){
-        me.info.close.call(this, ent, evt);
+        me.info.close.call(this);
         this.hideEntity(G_WIN_ID.INFO);
         return entities;
     };
@@ -271,7 +277,9 @@ pico.def('uiWindow', 'picUIWindow', function(){
             if (active){
                 selected.push(ent);
                 var mod = pico.getModule(com.content);
-                mod.click.call(this, ent, com.scrollX + x - comBox.x, com.scrollY + y - comBox.y, 1);
+                if(mod.click.call(this, ent, com.scrollX + x - comBox.x, com.scrollY + y - comBox.y, 1)){
+                    updateContent.call(this, ent, com);
+                }
             }
         }
 
@@ -401,10 +409,8 @@ pico.def('uiWindow', 'picUIWindow', function(){
         comBox = ent.getComponent(com.box),
         mod = pico.getModule(com.content);
         
-        if(mod.drop.call(this, ent, evt[0]-comBox.x, evt[1]-comBox.y)){
+        mod.drop.call(this, ent, evt[0]-comBox.x, evt[1]-comBox.y);
             updateContent.call(this, ent, com);
-            return entities;
-        }
 
         scrollBarH = scrollBarV = undefined;
         return entities;
