@@ -495,8 +495,7 @@ pico.def('hero', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        if (me.clickMeshUI.call(this, x, y, state, ent, com, comBox, scale, onCustomUI)) return true;
-        return false;
+        return me.clickMeshUI.call(this, x, y, state, ent, com, comBox, scale, onCustomUI);
     };
 
     me.draw = function(ctx, ent, clip){

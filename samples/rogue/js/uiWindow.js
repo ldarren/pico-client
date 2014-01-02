@@ -288,7 +288,26 @@ pico.def('uiWindow', 'picUIWindow', function(){
         return unknowns;
     };
 
+    me.maximized = function(elapsed, evt, entities){
+        var ent = me.findHost(entities, evt[0]);
+        if (!ent) return entities;
+
+        me.hideAll.call(this, elapsed, evt, ret);
+        me.showEntity(ent.name);
+
+        var
+        ret = [ent],
+        com = ent.getComponent(name);
+
+        com.maximized = com.resizable ? 1 : 0;
+
+        resizeContent.call(this, com, ent);
+
+        return ret;
+    };
+
     me.click = function(elapsed, evt, entities){
+        if (scrollBarH || scrollBarV) return entities; // content scrolled, not a click
         var
         ent = entities[0], // should had 1 entity only
         com = ent.getComponent(name);
@@ -310,24 +329,6 @@ pico.def('uiWindow', 'picUIWindow', function(){
         }
         resizeContent.call(this, ent, com);
         return entities;
-    };
-
-    me.maximized = function(elapsed, evt, entities){
-        var ent = me.findHost(entities, evt[0]);
-        if (!ent) return entities;
-
-        me.hideAll.call(this, elapsed, evt, ret);
-        me.showEntity(ent.name);
-
-        var
-        ret = [ent],
-        com = ent.getComponent(name);
-
-        com.maximized = com.resizable ? 1 : 0;
-
-        resizeContent.call(this, com, ent);
-
-        return ret;
     };
 
     me.startSwipe = function(elapsed, evt, entities){

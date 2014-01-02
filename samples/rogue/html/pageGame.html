@@ -41,7 +41,7 @@ onFingerDown = function(evt, x, y){
     me.game.go('fingerDown', [x, y]);
 },
 onFingerUp = function(evt, x, y){
-    if (fingerTracker) return cancelTracking(x, y) // is a move not a click
+    if (fingerTracker) fingerTracker = undefined;
     me.game.go('fingerUp', [x, y]);
 },
 onFingerTwice = function(evt, x, y){
@@ -139,10 +139,9 @@ onLoad = function(){
         ]);
         game.route('fingerUp', [
             game.useSelected, 
-            game.releaseSelected, 
             uiWindow.click, 
             camera.click, 
-            renderer.draw
+            game.branchFingerOut
         ]);
         game.route('fingerTwice', [
             game.useSelected, 
