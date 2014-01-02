@@ -162,11 +162,13 @@ pico.def('uiWindow', 'picUIWindow', function(){
     };
 
     me.resize = function(elapsed, evt, entities){
-        var com, comBox, ent, gs, layouts;
+        var com, comBox, ent, gs, layouts, i, l;
         
         this.showEntity(infoId);
+        this.showEntity(dialogMsgId);
+        this.showEntity(tradeId);
 
-        for(var i=0, l=entities.length; i<l; i++){
+        for(i=0, l=entities.length; i<l; i++){
             ent = entities[i];
             com = ent.getComponent(name);
             if (!com) continue;
@@ -194,33 +196,33 @@ pico.def('uiWindow', 'picUIWindow', function(){
                 break;
             case infoId:
                 layouts.push([evt[0], evt[1]+evt[3]-com.minHeight, evt[2], com.minHeight]);
-                if (!me.info.isValid()){
-                    this.hideEntity(infoId);
-                    continue;
-                }
                 break;
             case dialogMsgId:
-                layouts.push(me.fitIntoGrid(
-                    [evt[0] + Ceil((evt[2] - com.minWidth)/2), evt[1] + Ceil((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight],
-                    gs, gs, false));
-                if (!me.dialogMsg.isValid()){
-                    this.hideEntity(dialogMsgId);
-                    continue;
-                }
-                break;
             case tradeId:
                 layouts.push(me.fitIntoGrid(
                     [evt[0] + Ceil((evt[2] - com.minWidth)/2), evt[1] + Ceil((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight],
                     gs, gs, false));
-                if (!me.trade.isValid()){
-                    this.hideEntity(tradeId);
-                    continue;
-                }
                 break;
             }
             // maximized layout
             if (com.resizable)
                 layouts.push(me.fitIntoGrid([evt[0]+1, evt[1]+1, evt[2]-2, evt[3]-2], gs, gs, true));
+        }
+
+        if (!me.info.isValid()){
+            this.hideEntity(infoId);
+        }
+        if (!me.dialogMsg.isValid()){
+            this.hideEntity(dialogMsgId);
+        }
+        if (!me.trade.isValid()){
+            this.hideEntity(tradeId);
+        }
+
+        for(i=0, l=entities.length; i<l; i++){
+            ent = entities[i];
+            com = ent.getComponent(name);
+            if (!com) continue;
 
             resizeContent.call(this, ent, com);
         }

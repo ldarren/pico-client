@@ -1,113 +1,67 @@
 pico.def('trade', 'picUIContent', function(){
     var
     me = this,
-    Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
+    Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random, Max = Math.max,
     name = me.moduleName,
     TRADE_ROW = 4, TRADE_COL = 4,
     labels = ['Close'],
     goods = undefined,
     onCustomBound = function(ent, rect, ui, scale){
+        if ('btn1' === ui.userData.id) return me.calcUIRect(rect, ui);
         return me.calcUIRect(rect, ui, scale);
     },
-
-    me.draw = function(ctx, ent, clip){
-        if (!goods){
-            me.close.call(this);
-            return;
-        }
-
-        var
-        com = ent.getComponent(name),
-        rect = ent.getComponent(com.box),
-        rectW = rect.width,
-        ts = this.tileSet,
-        tw = this.tileWidth,
-        th = this.tileHeight,
-        x = rect.x,
-        y = rect.y,
-        fontColor = G_COLOR_TONE[1],
-        i, j, l, block;
-
-        ctx.save();
-
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.font = com.font;
-        ctx.fillStyle = fontColor;
-
-        block = layouts[0];
-        ctx.fillText('Trade', block[0]+(block[2])/2, block[1]+(block[3])/2, block[3]);
-
-        for(i=1,j=0, l=layouts.length-1; i<l; i++,j++){
-            block = layouts[i];
-            ts.draw(ctx, G_UI.SLOT, block[0], block[1], tw, th);
-            slot = goods[j];
-            if (!slot) continue;
-            ts.draw(ctx, slot[OBJECT_ICON], block[0], block[1], tw, th);
-        }
-
-        // draw buttons
-        me.drawButtons(ctx, [layouts[layouts.length-1]], labels, fontColor, G_COLOR_TONE[3], G_COLOR_TONE[3]);
-
-        ctx.restore();
-    };
     onCustomDraw = function(ent, ctx, rect, ui, ts, scale){
         var
         com = ent.getComponent(name),
         i = ui.userData.id,
-        activated = com.activated,
-        slots = this.hero.getBag(),
-        x=rect[0], y=rect[1], w=rect[2], h=rect[3],
-        slot, item, count;
+        x=rect[0], y=rect[1], w=rect[2], h=rect[3];
 
-        slot = slots[i];
-        if (!slot) return;
-        item = slot[0];
-        count = slot[1];
-        ts.draw(ctx, item[OBJECT_ICON], x, y, w, h);
-        if(count > 1)  ctx.fillText(count, x+w, y+h, w);
-        if (i === com.activated) {
-            ts.draw(ctx, G_UI.SELECTED, x, y, w, h);
-        }
-    },
-    me.click = function(elapsed, evt, entities){
-        if (!goods) return entities;
-        var 
-        e = entities[0],
-        com = e.getComponent(name);
+        if ('btn1' === i){
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#204631';
+            ctx.strokeStyle = '#204631';
+            ctx.fillRect.apply(ctx, rect);
+            ctx.strokeRect.apply(ctx, rect);
+            ctx.fillStyle = '#d7e894';
+            ctx.fillText(labels[0], rect[0]+rect[2]/2, rect[1]+rect[3]/2, rect[2]);
+        }else{
+            var good = goods[i];
+            if (!good) return;
 
-        if (!com) return entities;
-
-        if (layouts.length){
-            var
-            x = evt[0],
-            y = evt[1],
-            btn;
-            for(var i=0, l=layouts.length; i<l; i++){
-                btn = layouts[i];
-                if (x > btn[0] && x < btn[0]+btn[2] && y > btn[1] && y < btn[1]+btn[3]){
-                    this.go('hideTrade');
-                    break;
-                }
+            ts.draw(ctx, good[OBJECT_ICON], x, y, w, h);
+            if (i === com.activated) {
+                ts.draw(ctx, G_UI.SELECTED, x, y, w, h);
             }
         }
-        return;
-    };
+    },
+    onCustomButton = function(ent, ctx, rect, ui, ts, scale){
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillStyle = '#d7e894';
+        ctx.strokeStyle = '#aec440';
+        ctx.fillRect.apply(ctx, rect);
+        ctx.strokeRect.apply(ctx, rect);
+        ctx.fillStyle = '#204631';
+        ctx.fillText(labels[0], rect[0]+rect[2]/2, rect[1]+rect[3]/2, rect[2]);
+    },
     onCustomClick = function(ent, ui){
         var com = ent.getComponent(name);
 
         if (!ui){
-            com.forSale = false; // click on bag but on the window
             return false;
         }
-        var
-        i = ui.userData.id,
-        slot = this.hero.getBag()[i];
+        var i = ui.userData.id;
 
-        if (slot){
-            com.activated = i;
-            this.go('showInfo', {targetId: i, context: com.forSale ? G_CONTEXT.MERCHANT_SALE : G_CONTEXT.BAG});
-            return true;
+        if ('btn1' === i){
+            this.go('hideTrade');
+        }else{
+            slot = goods[i];
+
+            if (slot){
+                com.activated = i;
+                return true;
+            }
         }
         return false;
     },
@@ -116,14 +70,19 @@ pico.def('trade', 'picUIContent', function(){
         case me.CUSTOM_BOUND: return onCustomBound.apply(this, arguments); break;
         case me.CUSTOM_DRAW: return onCustomDraw.apply(this, arguments); break;
         case me.CUSTOM_CLICK: return onCustomClick.apply(this, arguments); break;
-        case me.CUSTOM_BUTTON: return onCustomDraw.apply(this, arguments); break;
+        case me.CUSTOM_BUTTON: return onCustomButton.apply(this, arguments); break;
         }
+    },
+    hide = function(ent){
+        me.close();
+        this.hideEntity(ent);
     };
 
     me.create = function(ent, data){
         data = me.base.create.call(this, ent, data);
 
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
+        data.activated = -1;
         return data;
     };
 
@@ -156,27 +115,27 @@ pico.def('trade', 'picUIContent', function(){
 
         for(i=0,l=TRADE_ROW;i<l;i++){
             row=me.createMeshRow(rows);
-            cell=me.createMeshCell(row, cellOpt);
-            cell=me.createMeshCell(row, cellOpt);
-            cell=me.createMeshCell(row, cellOpt);
+            cell=me.createMeshCell(row);
+            cell=me.createMeshCell(row);
+            cell=me.createMeshCell(row);
             me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
             me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 0, {id:3+(i*4)});
-            cell=me.createMeshCell(row, cellOpt);
+            cell=me.createMeshCell(row);
             me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
             me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 0, {id:2+(i*4)});
-            cell=me.createMeshCell(row, cellOpt);
+            cell=me.createMeshCell(row);
             me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
             me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 0, {id:1+(i*4)});
-            cell=me.createMeshCell(row, cellOpt);
+            cell=me.createMeshCell(row);
             me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
             me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 0, {id:0+(i*4)});
-            cell=me.createMeshCell(row, cellOpt);
-            cell=me.createMeshCell(row, cellOpt);
+            cell=me.createMeshCell(row);
+            cell=me.createMeshCell(row);
         }
 
         row=me.createMeshRow(rows);
         cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 1, 0, {id:'trade'});
+        me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 1, 0, {id:'btn1'});
 
         com.layout = meshui;
 

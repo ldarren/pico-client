@@ -50,16 +50,16 @@ pico.def('dialogMsg', 'picUIContent', function(){
     },
     onCustomClick = function(ent, ui){
         if (!ui){
-            if (!msg.labels.length && msg.callbacks.length) this.go(msg.callbacks[0], msg.evt); 
             hide.call(this, ent);
             return false;
         }
 
-        var
-        i = ui.userData.id,
-        callback = msg.callbacks[i];
+        var i = ui.userData.id;
 
-        if (callback) this.go(callback, msg.evt);
+        if ('btn1' === i){
+        }else{
+        }
+
         hide.call(this, ent);
 
         return true;
