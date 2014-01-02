@@ -66,7 +66,7 @@ pico.def('tome', 'picUIContent', function(){
         com = ent.getComponent(name),
         comWin = ent.getComponent(com.win),
         cap = this.hero.getTomeCap(),
-        style = {font: com.font,fillStyle:"#aec440"},
+        style = {font: com.font,fillStyle:com.fontColor},
         cellOpt = {drop: 1},
         size = 32,
         actualSize = this.smallDevice ? size : size*2,

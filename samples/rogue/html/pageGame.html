@@ -182,10 +182,10 @@ onLoad = function(){
         game.route('openForSale', [uiWindow.maximise, bag.openForSale, renderer.draw]);
         game.route('showInfo', [uiWindow.showInfo, renderer.draw]);
         game.route('hideInfo', [uiWindow.hideInfo, renderer.draw]);
-        game.route('showDialog', [uiWindow.hideAll, dialogMsg.open, renderer.draw, game.releaseSelected]);
-        game.route('hideDialog', [uiWindow.showAll, dialogMsg.close, renderer.draw, game.releaseSelected]);
-        game.route('showTrade', [game.createGoods, uiWindow.hideAll, trade.open, renderer.draw, game.releaseSelected]);
-        game.route('hideTrade', [uiWindow.showAll, trade.close, renderer.draw, game.releaseSelected]);
+        game.route('showDialog', [uiWindow.hideAll, uiWindow.showDialog, renderer.draw, game.releaseSelected]);
+        game.route('hideDialog', [uiWindow.showAll, uiWindow.hideDialog, renderer.draw, game.releaseSelected]);
+        game.route('showTrade', [game.createGoods, uiWindow.hideAll, uiWindow.showTrade, renderer.draw, game.releaseSelected]);
+        game.route('hideTrade', [uiWindow.showAll, uiWindow.hideTrade, renderer.draw, game.releaseSelected]);
 
         var
         cameraEnt = game.addEntity('camera'),
@@ -206,9 +206,9 @@ onLoad = function(){
         uiWinEnts[1] = game.addEntity(G_WIN_ID.TOME);
         uiWinEnts[2] = game.addEntity(G_WIN_ID.BAG);
         uiWinEnts[3] = game.addEntity(G_WIN_ID.INFO);
-/*        uiWinEnts[4] = game.addEntity(G_WIN_ID.DIALOG);
+        uiWinEnts[4] = game.addEntity(G_WIN_ID.DIALOG);
         uiWinEnts[5] = game.addEntity(G_WIN_ID.TRADE);
-*/
+
         for(var i=0, l=uiWinEnts.length; i<l; i++){
             uiWinEnt = uiWinEnts[i];
             uiWinEnt.attach(rect, {x:0, y:0, width:0, height:0});
@@ -228,17 +228,17 @@ onLoad = function(){
         uiWinEnt.attach(bag, {name:'Bag', win:uiWindow.moduleName, box:rect.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
 
         uiWinEnt = uiWinEnts[3];
-        uiWinEnt.attach(uiWindow, {content:info.moduleName, resizable:false, box:rect.moduleName, background: 'rgba(32,70,49,0.8)'});
+        uiWinEnt.attach(uiWindow, {content:info.moduleName, resizable:false, box:rect.moduleName, background:'rgba(32,70,49,0.8)'});
         uiWinEnt.attach(info, {win:uiWindow.moduleName, box:rect.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
-/*
+
         uiWinEnt = uiWinEnts[4];
-        uiWinEnt.attach(uiWindow, {content:dialogMsg.moduleName, resizable:false, box:rect.moduleName, background: G_COLOR_TONE[3]});
-        uiWinEnt.attach(dialogMsg, {box:rect.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt alagard'});
+        uiWinEnt.attach(uiWindow, {content:dialogMsg.moduleName, resizable:false, box:rect.moduleName, background:'rgba(32,70,49,0.8)'});
+        uiWinEnt.attach(dialogMsg, {win:uiWindow.moduleName, box:rect.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt alagard', fontColor:G_COLOR_TONE[1]});
 
         uiWinEnt = uiWinEnts[5];
-        uiWinEnt.attach(uiWindow, {content:trade.moduleName, resizable:false, box:rect.moduleName, background: G_COLOR_TONE[3]});
-        uiWinEnt.attach(trade, {box:rect.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt alagard'});
-*/
+        uiWinEnt.attach(uiWindow, {name:'Trade', content:trade.moduleName, resizable:false, box:rect.moduleName, background: G_COLOR_TONE[3]});
+        uiWinEnt.attach(trade, {win:uiWindow.moduleName, box:rect.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt alagard', fontColor:G_COLOR_TONE[1]});
+
         resize(window.innerWidth, window.innerHeight);
         canvas.slot(canvas.FINGER_DOWN, onFingerDown);
         canvas.slot(canvas.FINGER_MOVE, onFingerMove);

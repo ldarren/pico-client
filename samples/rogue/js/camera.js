@@ -82,6 +82,7 @@ pico.def('camera', 'picBase', function(){
         com = e.getComponent(name);
 
         if (!com || !isValidClick) return entities;
+        isValidClick = false;
 
         var
         map = this.map,

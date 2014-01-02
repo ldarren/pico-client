@@ -380,7 +380,6 @@ pico.def('info', 'picUIContent', function(){
         return undefined !== targetId;
     };
 
-
     me.doubleClick = function(elapsed, evt, entities){
         console.log('DOUBLE CLICKED!');
     };
@@ -388,7 +387,7 @@ pico.def('info', 'picUIContent', function(){
     me.resize = function(ent, width, height){
         var
         com = ent.getComponent(name),
-        style = {font: com.font,fillStyle:"#aec440"},
+        style = {font:com.font, fillStyle:com.fontColor},
         meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, height, style),
         rows = meshui.rows,
         l = labels.length,

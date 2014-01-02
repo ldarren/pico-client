@@ -3,146 +3,146 @@ pico.def('dialogMsg', 'picUIContent', function(){
     me = this,
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
     name = me.moduleName,
-    screenSize = [],
-    layouts = [],
-    msg;
-
-    me.create = function(ent, data){
-        data.font = this.smallDevice ? data.fontSmall : data.fontBig;
-
-        return data;
-    };
-
-    me.open = function(elapsed, evt, entities){
-        var ent = this.showEntity(G_WIN_ID.DIALOG);
-        if (!ent) {
-            ent = me.findHost(entities, G_WIN_ID.DIALOG);
-        }
-        if (!ent) return;
-
-        msg = evt;
-        layouts.length = 0;
-
-        var 
+    msg,
+    onCustomBound = function(ent, rect, ui, scale){
+        return me.calcUIRect(rect, ui);
+    },
+    onCustomDraw = function(ent, ctx, rect, ui, ts, scale){
+        if (!me.isValid()) return;
+        var
         com = ent.getComponent(name),
-        rect = ent.getComponent(com.box);
+        tw = this.tileWidth,
+        th = this.tileHeight,
+        x=rect[0], y=rect[1], w=rect[2], h=rect[3];
 
-        rect.width = com.minWidth;
-        rect.height = com.minHeight;
-        rect.x = screenSize[0] + (screenSize[2] - rect.width)/2;
-        rect.y = screenSize[1] + (screenSize[3] - rect.height)/2;
-
-        if (!msg.labels) return [ent];
-
-        var btnCount = msg.labels.length;
-
-        if (btnCount > 0){
+        switch(ui.userData.id){
+        case 'text':
             var
-            btnH = this.smallDevice ? 16 : 32, 
-            btnW = Round(rect.width/btnCount),
-            y = rect.y + rect.height - btnH;
+            info = msg.info,
+            l = info.length,
+            dh = rect[3]/l;
 
-            for(var i=0; i<btnCount; i++){
-                layouts.push([rect.x + i * (btnW), y, btnW, btnH]);
+            for(var i=0,l=info.length; i<l; i++){
+                me.fillIconText(ctx, ts, info[i], rect[0], dh*i, rect[2], dh, scale);
             }
+            break;
+        default:
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#204631';
+            ctx.strokeStyle = '#204631';
+            ctx.fillRect.apply(ctx, rect);
+            ctx.strokeRect.apply(ctx, rect);
+            ctx.fillStyle = '#d7e894';
+            ctx.fillText(msg.labels[ui.userData.id], rect[0]+rect[2]/2, rect[1]+rect[3]/2, rect[2]);
+            break;
         }
-
-        return [ent];
-    };
-
-    me.close = function(elapsed, evt, entities){
-        var e = me.findHostByCom(entities, name);
-        if (e){
-            this.hideEntity(G_WIN_ID.DIALOG);
-            msg = undefined;
-            return [e];
-        }
-        return entities;
-    };
-
-    me.openIfValid = function(elapsed, evt, entities){
-        if (msg){
-            me.open.call(this, elapsed, msg, entities);
-        }else{
-            me.close.call(this, elapsed, msg, entities);
-        }
-        return entities;
-    };
-
-    me.resize = function(elapsed, evt, entities){
-
-        screenSize = evt.slice();
-        me.openIfValid.call(this, elapsed, evt, entities);
-
-        return entities;
-    };
-
-    me.click = function(elapsed, evt, entities){
-        if (!msg) return entities;
-
-        var 
-        e = entities[0],
-        com = e.getComponent(name);
-
-        if (!com) return entities;
-
-        if (msg.callbacks){
-            if (layouts.length){
-                var
-                x = evt[0],
-                y = evt[1],
-                btn;
-                for(var i=0, l=layouts.length; i<l; i++){
-                    btn = layouts[i];
-                    if (x > btn[0] && x < btn[0]+btn[2] && y > btn[1] && y < btn[1]+btn[3]){
-                        this.go('hideDialog');
-                        if (msg.callbacks[i]) this.go(msg.callbacks[i], msg.evt);
-                        break;
-                    }
-                }
-            }else{
-                this.go('hideDialog');
-                if (msg.callbacks[0]) this.go(msg.callbacks[0], msg.evt);
-            }
-        }else{
-            this.go('hideDialog');
-        }
-        return;
-    };
-
-    me.draw = function(ctx, ent, clip){
-        if (!msg){
-            me.close.call(this);
-            return;
+    },
+    onCustomButton = function(ent, ctx, rect, ui, ts, scale){
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillStyle = '#d7e894';
+        ctx.strokeStyle = '#aec440';
+        ctx.fillRect.apply(ctx, rect);
+        ctx.strokeRect.apply(ctx, rect);
+        ctx.fillStyle = '#204631';
+        ctx.fillText(msg.labels[ui.userData.id], rect[0]+rect[2]/2, rect[1]+rect[3]/2, rect[2]);
+    },
+    onCustomClick = function(ent, ui){
+        if (!ui){
+            if (!msg.labels.length && msg.callbacks.length) this.go(msg.callbacks[0], msg.evt); 
+            hide.call(this, ent);
+            return false;
         }
 
         var
-        com = ent.getComponent(name),
-        rect = ent.getComponent(com.box),
-        rectW = rect.width,
-        ts = this.tileSet,
-        tw = this.tileWidth,
-        th = this.tileHeight,
-        x = rect.x,
-        y = rect.y,
-        fontColor = G_COLOR_TONE[1],
-        info = msg.info,
-        labels = msg.labels,
-        i, l;
+        i = ui.userData.id,
+        callback = msg.callbacks[i];
 
-        ctx.save();
+        if (callback) this.go(callback, msg.evt);
+        hide.call(this, ent);
 
-        ctx.textAlign = 'left';
-        ctx.textBaseline = 'top';
-        ctx.font = com.font;
-        ctx.fillStyle = fontColor;
-        for(i=0, l=info.length; i<l; i++){
-            y = me.fillWrapText(ctx, info[i], x, y, rectW, th);
-            //ctx.fillText(info[i], x, y+th*i, rectW);
+        return true;
+    },
+    onCustomUI = function(){
+        switch(Array.prototype.shift.call(arguments)){
+        case me.CUSTOM_BOUND: return onCustomBound.apply(this, arguments); break;
+        case me.CUSTOM_DRAW: return onCustomDraw.apply(this, arguments); break;
+        case me.CUSTOM_CLICK: return onCustomClick.apply(this, arguments); break;
+        case me.CUSTOM_BUTTON: return onCustomButton.apply(this, arguments); break;
         }
-        // draw buttons
-        me.drawButtons(ctx, layouts, labels, fontColor, G_COLOR_TONE[3], G_COLOR_TONE[3]);
+        return false;
+    },
+    hide = function(ent){
+        me.close();
+        this.hideEntity(ent);
+    };
 
-        ctx.restore();
+    me.create = function(ent, data){
+        data = me.base.create.call(this, ent, data);
+
+        data.font = this.smallDevice ? data.fontSmall : data.fontBig;
+        return data;
+    };
+
+    me.open = function(ent, evt){
+        msg = evt;
+    };
+
+    me.close = function(){
+        msg = undefined;
+    };
+
+    me.isValid = function(){
+        return undefined !== msg;
+    };
+
+    me.resize = function(ent, width, height){
+        var
+        com = ent.getComponent(name),
+        style = {font:com.font, fillStyle:com.fontColor},
+        meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, height, style),
+        rows = meshui.rows,
+        labels = msg.labels,
+        l = labels.length,
+        row,cell,i;
+
+        row=me.createMeshRow(rows);
+        for(i=0; i<l; i++){
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 1, 0, {id:i});
+        }
+
+        row=me.createMeshRow(rows);
+        cell=me.createMeshCell(row);
+        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 3, 3, 0, 0, {id:'text'});
+
+        row=me.createMeshRow(rows);
+        cell=me.createMeshCell(row);
+
+        row=me.createMeshRow(rows);
+        cell=me.createMeshCell(row);
+
+        com.layout = meshui;
+
+        return [width, height];
+    };
+
+    me.click = function(elapsed, evt, entities){
+        var
+        com = ent.getComponent(name),
+        comBox = ent.getComponent(com.box),
+        scale = this.smallDevice ? 1 : 2;
+
+        return me.clickMeshUI.call(this, x, y, state, ent, com, comBox, scale, onCustomUI);
+    };
+
+    me.draw = function(ctx, ent, clip){
+        var
+        com = ent.getComponent(name),
+        comBox = ent.getComponent(com.box),
+        scale = this.smallDevice ? 1 : 2;
+
+        return me.drawMeshUI.call(this, ctx, {default: this.tileSet}, ent, com, comBox, scale, onCustomUI);
     };
 });

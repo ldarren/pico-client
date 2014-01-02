@@ -11,7 +11,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
     tomeId = G_WIN_ID.TOME,
     bagId = G_WIN_ID.BAG,
     infoId = G_WIN_ID.INFO,
-    dialogId = G_WIN_ID.DIALOG,
+    dialogMsgId = G_WIN_ID.DIALOG,
     tradeId = G_WIN_ID.TRADE,
     me = this,
     name = me.moduleName,
@@ -134,7 +134,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         case infoId:
             data.minHeight = this.smallDevice ? 80 : 160;
             break;
-        case dialogId:
+        case dialogMsgId:
             data.minWidth = this.smallDevice ? 320 : 640;
             data.minHeight = this.smallDevice ? 180 : 360;
             break;
@@ -200,10 +200,22 @@ pico.def('uiWindow', 'picUIWindow', function(){
                 }
                 break;
             case dialogMsgId:
+                layouts.push(me.fitIntoGrid(
+                    [evt[0] + Ceil((evt[2] - com.minWidth)/2), evt[1] + Ceil((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight],
+                    gs, gs, false));
+                if (!me.dialogMsg.isValid()){
+                    this.hideEntity(dialogMsgId);
+                    continue;
+                }
+                break;
             case tradeId:
                 layouts.push(me.fitIntoGrid(
                     [evt[0] + Ceil((evt[2] - com.minWidth)/2), evt[1] + Ceil((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight],
                     gs, gs, false));
+                if (!me.trade.isValid()){
+                    this.hideEntity(tradeId);
+                    continue;
+                }
                 break;
             }
             // maximized layout
@@ -220,6 +232,8 @@ pico.def('uiWindow', 'picUIWindow', function(){
         this.showEntity(tomeId);
         this.showEntity(bagId);
         if (me.info.isValid()) this.showEntity(infoId);
+        if (me.dialogMsg.isValid()) this.showEntity(dialogMsgId);
+        if (me.trade.isValid()) this.showEntity(tradeId);
 
         return entities;
     };
@@ -229,7 +243,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         this.hideEntity(tomeId);
         this.hideEntity(bagId);
         this.hideEntity(infoId);
-        this.hideEntity(dialogId);
+        this.hideEntity(dialogMsgId);
         this.hideEntity(tradeId);
 
         return entities;
@@ -238,9 +252,9 @@ pico.def('uiWindow', 'picUIWindow', function(){
     me.showInfo = function(elapsed, evt, entities){
         if (!evt) return;
 
-        var ent = this.showEntity(G_WIN_ID.INFO);
+        var ent = this.showEntity(infoId);
         if (!ent){
-            ent = me.findHostByCom(entities, name);
+            ent = me.findHost(entities, infoId);
         }
         if (!ent) return;
 
@@ -251,7 +265,47 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
     me.hideInfo = function(elapsed, evt, entities){
         me.info.close.call(this);
-        this.hideEntity(G_WIN_ID.INFO);
+        this.hideEntity(infoId);
+        return entities;
+    };
+
+    me.showDialog = function(elapsed, evt, entities){
+        if (!evt) return;
+
+        var ent = this.showEntity(dialogMsgId);
+        if (!ent){
+            ent = me.findHost(entities, dialogMsgId);
+        }
+        if (!ent) return;
+
+        me.dialogMsg.open.call(this, ent, evt);
+        resizeContent.call(this, ent, ent.getComponent(name));
+        return entities;
+    };
+
+    me.hideDialog = function(elapsed, evt, entities){
+        me.dialogMsg.close.call(this);
+        this.hideEntity(dialogMsgId);
+        return entities;
+    };
+
+    me.showTrade = function(elapsed, evt, entities){
+        if (!evt) return;
+
+        var ent = this.showEntity(tradeId);
+        if (!ent){
+            ent = me.findHost(entities, tradeId);
+        }
+        if (!ent) return;
+
+        me.trade.open.call(this, ent, evt);
+        resizeContent.call(this, ent, ent.getComponent(name));
+        return entities;
+    };
+
+    me.hideTrade = function(elapsed, evt, entities){
+        me.trade.close.call(this);
+        this.hideEntity(tradeId);
         return entities;
     };
 
