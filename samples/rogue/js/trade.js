@@ -29,15 +29,17 @@ pico.def('trade', 'picUIContent', function(){
         }
     },
     onCustomButton = function(ent, ctx, rect, ui, ts, scale){
-        me.drawButton(ctx, rect, labels[0], '#204631', '#d7e894', '#aec440', 'top');
+        if ('btn1' === ui.userData.id){
+            me.drawButton(ctx, rect, labels[0], '#204631', '#d7e894', '#aec440', 'top');
+        }
     },
     onCustomClick = function(ent, ui){
-        var com = ent.getComponent(name);
-
         if (!ui){
             return false;
         }
-        var i = ui.userData.id;
+        var
+        com = ent.getComponent(name),
+        i = ui.userData.id;
 
         if ('btn1' === i){
             this.go('hideTrade');

@@ -252,8 +252,8 @@ pico.def('info', 'picUIContent', function(){
             switch(callback){
             case 'fight':
                 this.audioSprite.play(2);
-                this.go('startEffect', 'halfMoon');
-                //this.go('attack', hero.battle(targetId, false));
+                //this.go('startEffect', 'halfMoon');
+                this.go('attack', hero.battle(targetId, false));
                 break;
             case 'flee':
                 this.go('flee');

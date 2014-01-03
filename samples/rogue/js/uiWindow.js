@@ -477,6 +477,17 @@ pico.def('uiWindow', 'picUIWindow', function(){
         return entities;
     };
 
+    me.update = function(elapsed, evt, entities){
+        var com, comBox, ent;
+
+        for(var i=0, l=entities.length; i<l; i++){
+            ent = entities[i];
+            com = ent.getComponent(name);
+            if (!com) continue;
+            updateContent.call(this, ent, com);
+        }
+    };
+
     me.draw = function(ctx, ent, clip){
         var com = ent.getComponent(name);
         if (!com) return;

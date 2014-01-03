@@ -6,7 +6,6 @@ pico.def('camera', 'picBase', function(){
     Floor = Math.floor,Ceil = Math.ceil,
     name = me.moduleName,
     screenshotX=0, screenshotY=0,
-    isValidClick = false,
     camX, camY, camWidth, camHeight,
     viewX,viewY,viewWidth,viewHeight,viewStart,viewWrap,
     calculateView = function(mapWidth, mapHeight, tileWidth, tileHeight){
@@ -68,7 +67,7 @@ pico.def('camera', 'picBase', function(){
                 continue;
             }
             if (x > vx && y > vy && x < vx+vw && y < vy+vh){
-                isValidClick = true;
+                com.isValidClick = true;
                 return [e];
             }
         }
@@ -81,8 +80,8 @@ pico.def('camera', 'picBase', function(){
         e = entities[0],
         com = e.getComponent(name);
 
-        if (!com || !isValidClick) return entities;
-        isValidClick = false;
+        if (!com || !com.isValidClick) return entities;
+        com.isValidClick = false;
 
         var
         map = this.map,
@@ -175,7 +174,7 @@ pico.def('camera', 'picBase', function(){
         evt[2] = evt[0];
         evt[3] = evt[1];
 
-        isValidClick = false;
+        com.isValidClick = false;
 
         return entities;
     };
