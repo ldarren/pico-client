@@ -157,35 +157,37 @@ pico.def('info', 'picUIContent', function(){
             if (targetId > -1){
                 switch(context){
                 case G_CONTEXT.TOME:
-                    me.fillIconText(ctx, ts, target[OBJECT_NAME], rect[0], rect[1], rect[2], rect[3], scale);
+                    me.fillIconText(ctx, ts, target[OBJECT_NAME], rect, scale);
                     break;
                 case G_CONTEXT.BAG:
                     var
                     stat = target[0],
                     count = target[1];
             
-                    me.fillIconText(ctx, ts, stat[OBJECT_NAME]+'count('+count+')', rect[0], rect[1], rect[2], rect[3], scale);
+                    me.fillIconText(ctx, ts, stat[OBJECT_NAME]+'count('+count+')', rect, scale);
                     break;
                 case G_CONTEXT.WORLD:
                     switch(target[OBJECT_TYPE]){
                     case G_OBJECT_TYPE.CREEP:
                         break;
                     default:
-                        me.fillIconText(ctx, ts, target[OBJECT_NAME], rect[0], rect[1], rect[2], rect[3], scale);
+                        me.fillIconText(ctx, ts, target[OBJECT_NAME], rect, scale);
                         break;
                     }
                     break;
                 }
+            }else{
+                me.fillIconText(ctx, ts, target, rect, scale);
             }
             break;
         case 'name':
             if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                me.fillIconText(ctx, ts, target[OBJECT_NAME]+' ('+G_CREEP_TYPE_NAME[target[OBJECT_SUB_TYPE]]+')', rect[0], rect[1], rect[2], rect[3], scale);
+                me.fillIconText(ctx, ts, target[OBJECT_NAME]+' ('+G_CREEP_TYPE_NAME[target[OBJECT_SUB_TYPE]]+')', rect, scale);
             }
             break;
         case 'level':
             if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                me.fillIconText(ctx, ts, '`'+G_UI.LEVEL+': '+target[OBJECT_LEVEL], rect[0], rect[1], rect[2], rect[3], scale);
+                me.fillIconText(ctx, ts, '`'+G_UI.LEVEL+': '+target[OBJECT_LEVEL], rect, scale);
             }
             break;
         case 'hp':
@@ -196,55 +198,41 @@ pico.def('info', 'picUIContent', function(){
                 for(var i=0, l=stat[CREEP_HP]; i<l; i++){
                     iconText += ' `'+((i < target[CREEP_HP]) ? G_UI.HP : G_UI.HP_EMPTY);
                 }
-                me.fillIconText(ctx, ts, iconText, rect[0], rect[1], rect[2], rect[3], scale);
+                me.fillIconText(ctx, ts, iconText, rect, scale);
             }
             break;
         case 'def':
             if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                me.fillIconText(ctx, ts, '`'+G_UI.PDEF+': '+target[CREEP_DEF], rect[0], rect[1], rect[2], rect[3], scale);
+                me.fillIconText(ctx, ts, '`'+G_UI.PDEF+': '+target[CREEP_DEF], rect, scale);
             }
             break;
         case 'patk':
             if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                me.fillIconText(ctx, ts, '`'+G_UI.PATK+': '+target[CREEP_ATK], rect[0], rect[1], rect[2], rect[3], scale);
+                me.fillIconText(ctx, ts, '`'+G_UI.PATK+': '+target[CREEP_ATK], rect, scale);
             }
             break;
         case 'ratk':
             if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                me.fillIconText(ctx, ts, '`'+G_UI.RATK+': '+target[CREEP_RATK], rect[0], rect[1], rect[2], rect[3], scale);
+                me.fillIconText(ctx, ts, '`'+G_UI.RATK+': '+target[CREEP_RATK], rect, scale);
             }
             break;
         case 'matk':
             if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                me.fillIconText(ctx, ts, '`'+G_UI.MATK+': '+target[CREEP_MATK], rect[0], rect[1], rect[2], rect[3], scale);
+                me.fillIconText(ctx, ts, '`'+G_UI.MATK+': '+target[CREEP_MATK], rect, scale);
             }
             break;
         default:
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillStyle = '#204631';
-            ctx.strokeStyle = '#204631';
-            ctx.fillRect.apply(ctx, rect);
-            ctx.strokeRect.apply(ctx, rect);
-            ctx.fillStyle = '#d7e894';
-            ctx.fillText(labels[ui.userData.id], rect[0]+rect[2]/2, rect[1]+rect[3]/2, rect[2]);
+            me.drawButton(ctx, rect, labels[ui.userData.id], '#d7e894', '#204631');
             break;
         }
 
     },
     onCustomButton = function(ent, ctx, rect, ui, ts, scale){
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'top';
-        ctx.fillStyle = '#d7e894';
-        ctx.strokeStyle = '#aec440';
-        ctx.fillRect.apply(ctx, rect);
-        ctx.strokeRect.apply(ctx, rect);
-        ctx.fillStyle = '#204631';
-        ctx.fillText(labels[ui.userData.id], rect[0]+rect[2]/2, rect[1]+rect[3]/2, rect[2]);
+        me.drawButton(ctx, rect, labels[ui.userData.id], '#204631', '#d7e894', '#aec440', 'top');
     },
     onCustomClick = function(ent, ui){
         if (!ui){
-            hide.call(this, ent);
+            this.go('hideInfo');
             return false;
         }
 
@@ -255,7 +243,7 @@ pico.def('info', 'picUIContent', function(){
         eventObj = events[i];
 
         if (undefined !== eventObj){
-            this.go(callback, eventObj);
+            if (callback) this.go(callback, eventObj);
         }else{
             var
             hero = this.hero,
@@ -305,7 +293,7 @@ pico.def('info', 'picUIContent', function(){
                 break;
             }
         }
-        hide.call(this, ent);
+        this.go('hideInfo');
 
         return true;
     },
@@ -317,10 +305,6 @@ pico.def('info', 'picUIContent', function(){
         case me.CUSTOM_BUTTON: return onCustomButton.apply(this, arguments); break;
         }
         return false;
-    },
-    hide = function(ent){
-        me.close();
-        this.hideEntity(ent);
     };
 
     me.create = function(ent, data){
@@ -390,12 +374,11 @@ pico.def('info', 'picUIContent', function(){
         style = {font:com.font, fillStyle:com.fontColor},
         meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, height, style),
         rows = meshui.rows,
-        l = labels.length,
-        row,cell,i;
+        row,cell;
 
-        if (l){
+        if (labels.length){
             row=me.createMeshRow(rows);
-            for(i=0; i<l; i++){
+            for(var i=0,l=labels.length; i<l; i++){
                 cell=me.createMeshCell(row);
                 me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 1, 0, {id:i});
             }

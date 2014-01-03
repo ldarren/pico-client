@@ -17,14 +17,7 @@ pico.def('trade', 'picUIContent', function(){
         x=rect[0], y=rect[1], w=rect[2], h=rect[3];
 
         if ('btn1' === i){
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillStyle = '#204631';
-            ctx.strokeStyle = '#204631';
-            ctx.fillRect.apply(ctx, rect);
-            ctx.strokeRect.apply(ctx, rect);
-            ctx.fillStyle = '#d7e894';
-            ctx.fillText(labels[0], rect[0]+rect[2]/2, rect[1]+rect[3]/2, rect[2]);
+            me.drawButton(ctx, rect, labels[0], '#d7e894', '#204631');
         }else{
             var good = goods[i];
             if (!good) return;
@@ -36,14 +29,7 @@ pico.def('trade', 'picUIContent', function(){
         }
     },
     onCustomButton = function(ent, ctx, rect, ui, ts, scale){
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'top';
-        ctx.fillStyle = '#d7e894';
-        ctx.strokeStyle = '#aec440';
-        ctx.fillRect.apply(ctx, rect);
-        ctx.strokeRect.apply(ctx, rect);
-        ctx.fillStyle = '#204631';
-        ctx.fillText(labels[0], rect[0]+rect[2]/2, rect[1]+rect[3]/2, rect[2]);
+        me.drawButton(ctx, rect, labels[0], '#204631', '#d7e894', '#aec440', 'top');
     },
     onCustomClick = function(ent, ui){
         var com = ent.getComponent(name);
@@ -72,10 +58,6 @@ pico.def('trade', 'picUIContent', function(){
         case me.CUSTOM_CLICK: return onCustomClick.apply(this, arguments); break;
         case me.CUSTOM_BUTTON: return onCustomButton.apply(this, arguments); break;
         }
-    },
-    hide = function(ent){
-        me.close();
-        this.hideEntity(ent);
     };
 
     me.create = function(ent, data){

@@ -47,22 +47,22 @@ pico.def('hero', 'picUIContent', function(){
             ts.draw(ctx, currStats[OBJECT_ICON], rect[0], rect[1], rect[2], rect[3]);
             break;
         case 'name':
-            me.fillIconText(ctx, ts, currStats[OBJECT_NAME], rect[0], rect[1], rect[2], rect[3], tileScale);
+            me.fillIconText(ctx, ts, currStats[OBJECT_NAME], rect, tileScale);
             break;
         case 'level':
-            me.fillIconText(ctx, ts, ''+currStats[OBJECT_LEVEL], rect[0], rect[1], rect[2], rect[3], tileScale);
+            me.fillIconText(ctx, ts, ''+currStats[OBJECT_LEVEL], rect, tileScale);
             break;
         case 'str':
-            me.fillIconText(ctx, ts, ''+currStats[OBJECT_MDEF], rect[0], rect[1], rect[2], rect[3], tileScale);
+            me.fillIconText(ctx, ts, ''+currStats[OBJECT_MDEF], rect, tileScale);
             break;
         case 'dex':
-            me.fillIconText(ctx, ts, ''+currStats[OBJECT_DEX], rect[0], rect[1], rect[2], rect[3], tileScale);
+            me.fillIconText(ctx, ts, ''+currStats[OBJECT_DEX], rect, tileScale);
             break;
         case 'luck':
-            me.fillIconText(ctx, ts, ''+currStats[OBJECT_LUCK], rect[0], rect[1], rect[2], rect[3], tileScale);
+            me.fillIconText(ctx, ts, ''+currStats[OBJECT_LUCK], rect, tileScale);
             break;
         case 'will':
-            me.fillIconText(ctx, ts, ''+currStats[OBJECT_WILL], rect[0], rect[1], rect[2], rect[3], tileScale);
+            me.fillIconText(ctx, ts, ''+currStats[OBJECT_WILL], rect, tileScale);
             break;
         case 'hp':
             // draw hp
@@ -70,31 +70,31 @@ pico.def('hero', 'picUIContent', function(){
             for(var i=0, l=stats[OBJECT_HP]; i<l; i++){
                 iconText += ' `'+((i < currStats[OBJECT_HP]) ? G_UI.HP : G_UI.HP_EMPTY);
             }
-            me.fillIconText(ctx, ts, iconText, rect[0], rect[1], rect[2], rect[3], tileScale);
+            me.fillIconText(ctx, ts, iconText, rect, tileScale);
             break;
         case 'goldLabel':
-            me.fillIconText(ctx, ts, 'Gold `'+G_UI.GOLD, rect[0], rect[1], rect[2], rect[3], tileScale);
+            me.fillIconText(ctx, ts, 'Gold `'+G_UI.GOLD, rect, tileScale);
             break;
         case 'gold':
-            me.fillIconText(ctx, ts, ''+currStats[HERO_GOLD], rect[0], rect[1], rect[2], rect[3], tileScale);
+            me.fillIconText(ctx, ts, ''+currStats[HERO_GOLD], rect, tileScale);
             break;
         case 'skullLabel':
-            me.fillIconText(ctx, ts, 'Skull `'+G_UI.SKULL, rect[0], rect[1], rect[2], rect[3], tileScale);
+            me.fillIconText(ctx, ts, 'Skull `'+G_UI.SKULL, rect, tileScale);
             break;
         case 'skull':
-            me.fillIconText(ctx, ts, ''+currStats[HERO_SKULL], rect[0], rect[1], rect[2], rect[3], tileScale);
+            me.fillIconText(ctx, ts, ''+currStats[HERO_SKULL], rect, tileScale);
             break;
         case 'patk':
-            me.fillIconText(ctx, ts, ''+currStats[OBJECT_ATK], rect[0], rect[1], rect[2], rect[3], tileScale);
+            me.fillIconText(ctx, ts, ''+currStats[OBJECT_ATK], rect, tileScale);
             break;
         case 'ratk':
-            me.fillIconText(ctx, ts, ''+currStats[OBJECT_RATK], rect[0], rect[1], rect[2], rect[3], tileScale);
+            me.fillIconText(ctx, ts, ''+currStats[OBJECT_RATK], rect, tileScale);
             break;
         case 'matk':
-            me.fillIconText(ctx, ts, ''+currStats[OBJECT_MATK], rect[0], rect[1], rect[2], rect[3], tileScale);
+            me.fillIconText(ctx, ts, ''+currStats[OBJECT_MATK], rect, tileScale);
             break;
         case 'pdef':
-            me.fillIconText(ctx, ts, ''+currStats[OBJECT_DEF], rect[0], rect[1], rect[2], rect[3], tileScale);
+            me.fillIconText(ctx, ts, ''+currStats[OBJECT_DEF], rect, tileScale);
             break;
         case 'helm':
             var item = appearance[HERO_HELM];

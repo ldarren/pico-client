@@ -311,40 +311,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         return entities;
     };
 
-    me.checkBound = function(elapsed, evt, entities){
-        var
-        x = evt[0], y = evt[1],
-        unknowns = [], selected = [],
-        ent, active, com, comBox, layout;
-
-        for (var i=0, l=entities.length; i<l; i++){
-            ent = entities[i];
-            com = ent.getComponent(name);
-            if (!com) {
-                unknowns.push(ent);
-                continue;
-            }
-            comBox = ent.getComponent(com.box);
-            layout = com.layouts[com.maximized];
-            active = (layout[0] < x && (layout[0]+layout[2]) > x && layout[1] < y && (layout[1]+layout[3]) > y);
-            if (active !== com.active){
-                com.active = active;
-            }
-            if (active){
-                selected.push(ent);
-                var mod = pico.getModule(com.content);
-                if(mod.click.call(this, ent, com.scrollX + x - comBox.x, com.scrollY + y - comBox.y, 1)){
-                    updateContent.call(this, ent, com);
-                }
-            }
-        }
-
-        if (selected.length) return selected;
-
-        return unknowns;
-    };
-
-    me.maximized = function(elapsed, evt, entities){
+    me.maximise = function(elapsed, evt, entities){
         var ent = me.findHost(entities, evt[0]);
         if (!ent) return entities;
 
@@ -362,13 +329,46 @@ pico.def('uiWindow', 'picUIWindow', function(){
         return ret;
     };
 
+    me.checkBound = function(elapsed, evt, entities){
+        var
+        x = evt[0], y = evt[1],
+        unknowns = [], selected = [],
+        ent, com, comBox, active, layout;
+
+        for (var i=0, l=entities.length; i<l; i++){
+            ent = entities[i];
+            com = ent.getComponent(name);
+            if (!com) {
+                unknowns.push(ent);
+                continue;
+            }
+            comBox = ent.getComponent(com.box);
+            layout = com.layouts[com.maximized];
+            com.isValidClick = active = (layout[0] < x && (layout[0]+layout[2]) > x && layout[1] < y && (layout[1]+layout[3]) > y);
+            if (active !== com.active){
+                com.active = active;
+            }
+            if (active){
+                selected.push(ent);
+                var mod = pico.getModule(com.content);
+                if(mod.click.call(this, ent, com.scrollX + x - comBox.x, com.scrollY + y - comBox.y, 1)){
+                    updateContent.call(this, ent, com);
+                }
+            }
+        }
+
+        if (selected.length) return selected;
+
+        return unknowns;
+    };
+
     me.click = function(elapsed, evt, entities){
-        if (scrollBarH || scrollBarV) return entities; // content scrolled, not a click
         var
         ent = entities[0], // should had 1 entity only
         com = ent.getComponent(name);
 
-        if (!com) return entities;
+        if (!com || !com.isValidClick) return entities; // content scrolled, not a click
+        com.isValidClick = false;
 
         var
         comBox = ent.getComponent(com.box),
@@ -425,6 +425,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         mod = pico.getModule(com.content);
         
         if (mod.drag.call(this, ent, evt[2]-comBox.x, evt[3]-comBox.y)){
+            com.isValidClick = false;
             evt[2] = evt[0];
             evt[3] = evt[1];
             updateContent.call(this, ent, com);
@@ -441,11 +442,13 @@ pico.def('uiWindow', 'picUIWindow', function(){
             x += evt[2]-evt[0];
             if (x + ww > cw) x = cw - ww;
             else if (x < 0) x = 0;
+            com.isValidClick = false;
         }else x = 0;
         if (ch > wh){
             y += evt[3]-evt[1];
             if (y + wh > ch) y = ch - wh;
             else if (y < 0) y = 0;
+            com.isValidClick = false;
         }else y = 0;
 
         evt[2] = evt[0];
@@ -453,9 +456,8 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
         com.scrollX = x;
         com.scrollY = y;
-        if (scrollBarH) scrollBarH[0] = comBox.x+Floor(x * scrollBarH[3])
-        if (scrollBarV) scrollBarV[1] = comBox.y+Floor(y * scrollBarV[3])
-
+        if (scrollBarH) scrollBarH[0] = comBox.x+Floor(x * scrollBarH[3]);
+        if (scrollBarV) scrollBarV[1] = comBox.y+Floor(y * scrollBarV[3]);
         return entities;
     };
 

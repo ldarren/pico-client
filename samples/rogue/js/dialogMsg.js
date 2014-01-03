@@ -9,58 +9,42 @@ pico.def('dialogMsg', 'picUIContent', function(){
     },
     onCustomDraw = function(ent, ctx, rect, ui, ts, scale){
         if (!me.isValid()) return;
-        var
-        com = ent.getComponent(name),
-        tw = this.tileWidth,
-        th = this.tileHeight,
-        x=rect[0], y=rect[1], w=rect[2], h=rect[3];
 
-        switch(ui.userData.id){
+        var id=ui.userData.id;
+        switch(id){
         case 'text':
             var
             info = msg.info,
             l = info.length,
-            dh = rect[3]/l;
+            x=rect[0],y=rect[1],w=rect[2],dh = rect[3]/l;
 
             for(var i=0,l=info.length; i<l; i++){
-                me.fillIconText(ctx, ts, info[i], rect[0], dh*i, rect[2], dh, scale);
+                me.fillIconText(ctx, ts, info[i], [x, y+dh*i, w, dh], scale);
             }
             break;
         default:
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillStyle = '#204631';
-            ctx.strokeStyle = '#204631';
-            ctx.fillRect.apply(ctx, rect);
-            ctx.strokeRect.apply(ctx, rect);
-            ctx.fillStyle = '#d7e894';
-            ctx.fillText(msg.labels[ui.userData.id], rect[0]+rect[2]/2, rect[1]+rect[3]/2, rect[2]);
+            me.drawButton(ctx, rect, msg.labels[id], '#d7e894', '#204631');
             break;
         }
     },
     onCustomButton = function(ent, ctx, rect, ui, ts, scale){
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'top';
-        ctx.fillStyle = '#d7e894';
-        ctx.strokeStyle = '#aec440';
-        ctx.fillRect.apply(ctx, rect);
-        ctx.strokeRect.apply(ctx, rect);
-        ctx.fillStyle = '#204631';
-        ctx.fillText(msg.labels[ui.userData.id], rect[0]+rect[2]/2, rect[1]+rect[3]/2, rect[2]);
+        me.drawButton(ctx, rect, msg.labels[ui.userData.id], '#204631', '#d7e894', '#aec440', 'top');
     },
     onCustomClick = function(ent, ui){
         if (!ui){
-            hide.call(this, ent);
+            this.go('hideDialog');
             return false;
         }
 
-        var i = ui.userData.id;
+        var
+        i = ui.userData.id,
+        route = msg.callbacks[i];
 
-        if ('btn1' === i){
-        }else{
+        if (route){
+            this.go(route, msg.evt);
         }
 
-        hide.call(this, ent);
+        this.go('hideDialog');
 
         return true;
     },
@@ -72,10 +56,6 @@ pico.def('dialogMsg', 'picUIContent', function(){
         case me.CUSTOM_BUTTON: return onCustomButton.apply(this, arguments); break;
         }
         return false;
-    },
-    hide = function(ent){
-        me.close();
-        this.hideEntity(ent);
     };
 
     me.create = function(ent, data){
@@ -104,18 +84,19 @@ pico.def('dialogMsg', 'picUIContent', function(){
         meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, height, style),
         rows = meshui.rows,
         labels = msg.labels,
-        l = labels.length,
         row,cell,i;
 
-        row=me.createMeshRow(rows);
-        for(i=0; i<l; i++){
-            cell=me.createMeshCell(row);
-            me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 1, 0, {id:i});
+        if(labels){
+            row=me.createMeshRow(rows);
+            for(var i=0,l=labels.length; i<l; i++){
+                cell=me.createMeshCell(row);
+                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 1, 0, {id:i});
+            }
         }
 
         row=me.createMeshRow(rows);
         cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 3, 3, 0, 0, {id:'text'});
+        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 3, 0, 0, {id:'text'});
 
         row=me.createMeshRow(rows);
         cell=me.createMeshCell(row);
@@ -128,7 +109,7 @@ pico.def('dialogMsg', 'picUIContent', function(){
         return [width, height];
     };
 
-    me.click = function(elapsed, evt, entities){
+    me.click = function(ent, x, y, state){
         var
         com = ent.getComponent(name),
         comBox = ent.getComponent(com.box),
