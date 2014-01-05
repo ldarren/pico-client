@@ -15,7 +15,6 @@ pico.def('uiWindow', 'picUIWindow', function(){
     tradeId = G_WIN_ID.TRADE,
     me = this,
     name = me.moduleName,
-    scrollBarH, scrollBarV,
     updateContent = function(ent, com){
         var
         comBox  = ent.getComponent(com.box),
@@ -407,11 +406,11 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
         if (cw > ww){
             ratio = ww/cw;
-            scrollBarH = [comBox.x+Floor(com.scrollX * ratio), comBox.y+comBox.height-2, Ceil(ww*ratio), ratio];
+            com.scrollBarH = [comBox.x+Floor(com.scrollX * ratio), comBox.y+comBox.height-2, Ceil(ww*ratio), ratio];
         }
         if (ch > wh){
             ratio = wh/ch;
-            scrollBarV = [comBox.x+comBox.width-2, comBox.y+Floor(com.scrollY * ratio), Ceil(wh * ratio), ratio];
+            com.scrollBarV = [comBox.x+comBox.width-2, comBox.y+Floor(com.scrollY * ratio), Ceil(wh * ratio), ratio];
         }
 
         return entities;
@@ -436,7 +435,8 @@ pico.def('uiWindow', 'picUIWindow', function(){
         contentSize = com.contentSize,
         cw = contentSize[0], ww = comBox.width,
         ch = contentSize[1], wh = comBox.height,
-        x = com.scrollX, y = com.scrollY;
+        x = com.scrollX, y = com.scrollY,
+        sh=com.scrollBarH, sv=com.scrollBarV;
 
         if (cw > ww){
             x += evt[2]-evt[0];
@@ -456,8 +456,8 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
         com.scrollX = x;
         com.scrollY = y;
-        if (scrollBarH) scrollBarH[0] = comBox.x+Floor(x * scrollBarH[3]);
-        if (scrollBarV) scrollBarV[1] = comBox.y+Floor(y * scrollBarV[3]);
+        if (sh) sh[0] = comBox.x+Floor(x * sh[3]);
+        if (sv) sv[1] = comBox.y+Floor(y * sv[3]);
         return entities;
     };
 
@@ -473,7 +473,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
             return entities;
         }
 
-        scrollBarH = scrollBarV = undefined;
+        com.scrollBarH = com.scrollBarV = undefined;
         return entities;
     };
 
@@ -497,7 +497,8 @@ pico.def('uiWindow', 'picUIWindow', function(){
         gs = com.gridSize,
         comBox = ent.getComponent(com.box),
         contentW = comBox.width > com.contentSize[0] ? com.contentSize[0] : comBox.width,
-        contentH = comBox.height > com.contentSize[1] ? com.contentSize[1] : comBox.height;
+        contentH = comBox.height > com.contentSize[1] ? com.contentSize[1] : comBox.height,
+        sh = com.scrollBarH, sv = com.scrollBarV;
 
         ctx.save();
         ctx.beginPath();
@@ -528,7 +529,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         }
 
         // round line cap (middle line)
-        if (scrollBarV || scrollBarH){
+        if (sv || sh){
             ctx.globalCompositeOperation = 'lighter';
 
             ctx.beginPath();
@@ -536,13 +537,13 @@ pico.def('uiWindow', 'picUIWindow', function(){
             ctx.strokeStyle = '#666';
             ctx.lineCap = 'round';
 
-            if (scrollBarV){
-                ctx.moveTo(scrollBarV[0], scrollBarV[1]);
-                ctx.lineTo(scrollBarV[0], scrollBarV[1] + scrollBarV[2]);
+            if (sv){
+                ctx.moveTo(sv[0], sv[1]);
+                ctx.lineTo(sv[0], sv[1] + sv[2]);
             }
-            if (scrollBarH){
-                ctx.moveTo(scrollBarH[0], scrollBarH[1]);
-                ctx.lineTo(scrollBarH[0]+scrollBarH[2], scrollBarH[1]);
+            if (sh){
+                ctx.moveTo(sh[0], sh[1]);
+                ctx.lineTo(sh[0]+sh[2], sh[1]);
             }
             ctx.stroke();
         }
