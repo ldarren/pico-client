@@ -31,22 +31,24 @@ pico.def('dialogMsg', 'picUIContent', function(){
         me.drawButton(ctx, rect, msg.labels[ui.userData.id], '#204631', '#d7e894', '#aec440', 'top');
     },
     onCustomClick = function(ent, ui){
-        if (!ui){
-            this.go('hideDialog');
-            return false;
+        var
+        i = 0,
+        ret = false;
+
+        if (ui){
+            i = ui.userData.id;
         }
 
-        var
-        i = ui.userData.id,
-        route = msg.callbacks[i];
+        var route = msg.callbacks[i];
 
         if (route){
+            ret = true;
             this.go(route, msg.evt);
         }
 
         this.go('hideDialog');
 
-        return true;
+        return ret;
     },
     onCustomUI = function(){
         switch(Array.prototype.shift.call(arguments)){
