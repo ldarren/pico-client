@@ -486,6 +486,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
             if (!com) continue;
             updateContent.call(this, ent, com);
         }
+        return entities;
     };
 
     me.draw = function(ctx, ent, clip){

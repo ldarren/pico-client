@@ -76,6 +76,7 @@ pico.def('game', 'pigSqrMap', function(){
     },
     fill = function(map, hints, width, i){
         var count = 0;
+console.log('i: '+i+' isOpen(i): '+isOpen(i));
         if (i < 0 || isOpen(i)) return count;
         map[i] &= G_TILE_TYPE.SHOW;
         count = 1;
@@ -349,7 +350,7 @@ pico.def('game', 'pigSqrMap', function(){
         setTimeout(function(){
             if (hero.isDead()){
                 hero.setTargetId(undefined);
-                objects[pos] = G_OBJECT[G_ICON.SKELETON].slice();
+                objects[pos] = G_OBJECT[G_ICON.BONES].slice();
                 me.hero.bury(me.god);
                 me.go('showDialog', {
                     info: [

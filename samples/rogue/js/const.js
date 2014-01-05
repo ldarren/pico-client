@@ -244,7 +244,7 @@ Object.freeze(G_ICON = {
     AMULET2: 127,
     SKULLS: 128,
     SKULL: 129,
-    SKELETON: 130,
+    BONES: 130,
     TOMB: 131,
     ALTAR: 132,
     SHRINE: 133,

@@ -163,7 +163,7 @@ onLoad = function(){
         game.route('loot', [bag.lootItem, renderer.draw]);
         game.route('chant', [game.chantScroll, renderer.draw]);
         game.route('attack', [game.attackAnim, renderer.draw]);
-        game.route('counter', [game.counterAnim, renderer.draw]);
+        game.route('counter', [game.counterAnim, uiWindow.update, renderer.draw]);
         game.route('flee', [game.flee, renderer.draw]);
         game.route('startEffect', [uiWindow.hideAll, renderer.captureScreenshot, effect.start]);
         game.route('doEffect', [tween.update, renderer.drawScreenshot]);
@@ -183,9 +183,9 @@ onLoad = function(){
         game.route('showInfo', [uiWindow.showInfo, renderer.draw]);
         game.route('hideInfo', [uiWindow.hideInfo, renderer.draw]);
         game.route('showDialog', [uiWindow.hideAll, uiWindow.showDialog, renderer.draw, game.releaseSelected]);
-        game.route('hideDialog', [uiWindow.showAll, uiWindow.hideDialog, renderer.draw, game.releaseSelected]);
-        game.route('showTrade', [game.createGoods, uiWindow.hideAll, uiWindow.showTrade, renderer.draw, game.releaseSelected]);
-        game.route('hideTrade', [uiWindow.showAll, uiWindow.hideTrade, renderer.draw, game.releaseSelected]);
+        game.route('hideDialog', [uiWindow.showAll, uiWindow.hideDialog, uiWindow.update, renderer.draw, game.releaseSelected]);
+        game.route('showTrade', [game.createGoods, uiWindow.hideAll, uiWindow.showTrade, uiWindow.update, renderer.draw, game.releaseSelected]);
+        game.route('hideTrade', [uiWindow.showAll, uiWindow.hideTrade, uiWindow.update, renderer.draw, game.releaseSelected]);
 
         var
         cameraEnt = game.addEntity('camera'),
