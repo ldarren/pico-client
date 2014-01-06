@@ -76,8 +76,8 @@ pico.def('game', 'pigSqrMap', function(){
     },
     fill = function(map, hints, width, i){
         var count = 0;
-console.log('i: '+i+' isOpen(i): '+isOpen(i));
-        if (i < 0 || isOpen(i)) return count;
+        if (i < 0 || !(map[i] & G_TILE_TYPE.HIDE)) return count;
+console.log(i);
         map[i] &= G_TILE_TYPE.SHOW;
         count = 1;
         if (0 === hints[i]){
@@ -186,6 +186,7 @@ console.log('i: '+i+' isOpen(i): '+isOpen(i));
         terrain[c] = me.prevLevel < me.currentLevel ? G_FLOOR.STAIR_UP : G_FLOOR.STAIR_DOWN;
         hero.move(c);
 
+console.log(JSON.stringify(hints));
         fill(map, hints, mapW, c);
 
         map[c] = G_TILE_TYPE.ENTRANCE; // must do after fill, becos fill will ignore revealed tile
