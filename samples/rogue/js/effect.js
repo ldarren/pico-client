@@ -34,14 +34,14 @@ console.log('effectEnd');
         switch(evt.type){
         case 'boltEfx':
             ctx.globalAlpha = 0.1;
-            ctx.globalCompositionOperation = 'source-over';
+            ctx.globalCompositeOperation = 'source-over';
             // some older android browser require this to draw gradient
             ctx.fillStyle = 'rgba(0,0,0,0.5)'; 
             ctx.drawImage(bitmap, clip[0], clip[1], clip[2], clip[3]);
             //ctx.fillRect(clip[0], clip[1], clip[2], clip[3]);
 
             ctx.globalAlpha = 1;
-            ctx.globalCompositionOperation = 'lighter';
+            ctx.globalCompositeOperation = 'lighter';
             ctx.beginPath();
                     
             //Time for some colors
@@ -56,7 +56,6 @@ console.log('effectEnd');
             ctx.fill();
             break;
         case 'damageEfx':
-            //ctx.drawImage(bitmap, clip[0], clip[1], clip[2], clip[3]);
             var
             targets = evt.targets,
             objects = this.objects,
@@ -70,15 +69,12 @@ console.log('effectEnd');
             for(var i=0,l=targets.length; i<l; i++){
                 pos = targets[i];
                 x = view[0] + tileW * (pos%mapW), y = view[1] + tileH * Floor(pos/mapW);
-            ctx.beginPath();
-            ctx.fillStyle='red';
-            ctx.arc(x,y,30,0,2*Math.PI);
-            ctx.fill();
                 tileSet.draw(ctx, objects[pos][OBJECT_ICON], x, y, tileW, tileH);
-            ctx.globalCompositionOperation = 'source-in';
-                ctx.fillStyle = 'white';
-                ctx.fillRect(x, y, tileW, tileH);
             }
+                            
+            ctx.globalCompositeOperation = 'source-in';
+            ctx.fillStyle = G_COLOR_TONE[0];
+            ctx.fillRect(clip[0], clip[1], clip[2], clip[3]);
             break;
         }
 
@@ -100,7 +96,7 @@ console.log('effectEnd');
         case 'castEfx':
             break;
         case 'damageEfx':
-            tweenOpt.p1 = 300, tweenOpt.p2 = 300;
+            tweenOpt.p1 = 100, tweenOpt.p2 = 100;
             opt.p1 = 0, opt.p2 = 0;
             tweenRateOpt.p1 = 100, tweenRateOpt.p2 = 100;
             break;
