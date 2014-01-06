@@ -322,11 +322,11 @@ console.log(JSON.stringify(hints));
             objects[targetId] = creep;
             me.go('forceRefresh');
             if (evt[1]){
-                me.go('startEffect', {type:'damageEfx',callback:'counter',evt:evt});
+                me.go('startEffect', {type:'damageEfx',targets:[targetId],callback:'counter',evt:evt});
                 //me.go('counter', evt);
             }else{
                 // no counter
-                me.go('startEffect', {type:'damageEfx'});
+                me.go('startEffect', {type:'damageEfx',targets:[targetId]});
                 if (me.ai.bury(targetId)){
                     hero.setTargetId(undefined);
                 }
@@ -369,7 +369,7 @@ console.log(JSON.stringify(hints));
                 if (me.ai.bury(targetId)){
                     hero.setTargetId(undefined);
                 }
-                me.go('startEffect', {type:'damageEfx',callback:'forceRefresh'});
+                me.go('startEffect', {type:'damageEfx',targets:[pos],callback:'forceRefresh'});
                 //me.go('forceRefresh');
             }
         }, 500);

@@ -37,6 +37,10 @@ pico.def('camera', 'picBase', function(){
         }while(viewHeight <= 0 || viewWidth <= 0);
     };
 
+    me.viewPos = function(){
+        return [viewX, viewY];
+    };
+
     me.resize = function(elapsed, evt, entities){
         camX = evt[0];
         camY = evt[1];
