@@ -164,7 +164,7 @@ pico.def('info', 'picUIContent', function(){
                     stat = target[0],
                     count = target[1];
             
-                    me.fillIconText(ctx, ts, stat[OBJECT_NAME]+'count('+count+')', rect, scale);
+                    me.fillIconText(ctx, ts, stat[OBJECT_NAME]+' count('+count+')', rect, scale);
                     break;
                 case G_CONTEXT.WORLD:
                     switch(target[OBJECT_TYPE]){
@@ -252,7 +252,7 @@ pico.def('info', 'picUIContent', function(){
             switch(callback){
             case 'fight':
                 this.audioSprite.play(2);
-                //this.go('startEffect', 'halfMoon');
+                //this.go('startEffect', 'castEfx'); // show cast effect
                 this.go('attack', hero.battle(targetId, false));
                 break;
             case 'flee':

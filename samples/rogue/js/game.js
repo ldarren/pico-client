@@ -320,14 +320,17 @@ console.log(JSON.stringify(hints));
         setTimeout(function(){
             hero.move(pos); // hero must move first
             objects[targetId] = creep;
+            me.go('forceRefresh');
             if (evt[1]){
-                me.go('counter', evt);
+                me.go('startEffect', {type:'damageEfx',callback:'counter',evt:evt});
+                //me.go('counter', evt);
             }else{
+                // no counter
+                me.go('startEffect', {type:'damageEfx'});
                 if (me.ai.bury(targetId)){
                     hero.setTargetId(undefined);
                 }
             }
-            me.go('forceRefresh');
         }, 500);
 
         return entities;
@@ -366,7 +369,8 @@ console.log(JSON.stringify(hints));
                 if (me.ai.bury(targetId)){
                     hero.setTargetId(undefined);
                 }
-                me.go('forceRefresh');
+                me.go('startEffect', {type:'damageEfx',callback:'forceRefresh'});
+                //me.go('forceRefresh');
             }
         }, 500);
     };

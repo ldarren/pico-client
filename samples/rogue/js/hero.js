@@ -419,7 +419,7 @@ pico.def('hero', 'picUIContent', function(){
 
     me.levelUp = function(lvl){
         if (currStats[OBJECT_LEVEL] > lvl) return currStats;
-        currStats = stats.slice();
+        if (!currStats.length) currStats = stats.slice();
         for(var i=OBJECT_WILL; i<OBJECT_VEG; i++){
             currStats[i] = Ceil(currStats[i]*lvl); // negative is ok
         }

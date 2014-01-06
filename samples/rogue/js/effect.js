@@ -13,6 +13,7 @@ console.log('effectEnd');
         tweenOpt.p1 = tweenOpt.p2 = opt.p1 = opt.p2 = 0;
         game.stopLoop('doEffect');
         game.go('clearEffect', evt);
+        if (evt && evt.callback) game.go(evt.callback, evt.evt);
     };
 
     me.use(TWEENER);
@@ -55,22 +56,25 @@ console.log('effectEnd');
 
     // add effectEnt, start do Effect loop
     me.start = function(elpased, evt, entities){
-        this.hideAllEntities();
-        this.showEntity('effects');
+        this.hideEntity('camera');
 
         var
-        ent = me.findHostByCom(entities, name),
-        tweenOpt = ent.getComponent(TWEENER)[name],
-        tweenRateOpt = ent.getComponent(TWEENER)['@'+name],
+        ent = this.showEntity('effects'),
+        tweenOpts = ent.getComponent(TWEENER),
+        tweenOpt = tweenOpts[name],
+        tweenRateOpt = tweenOpts['@'+name],
         opt = ent.getComponent(name);
 
-        switch(evt){
-            case 'bullet':
+        switch(evt.type){
+            case 'castEfx':
                 break;
-            default:
+            case 'damageEfx':
                 tweenOpt.p1 = 300, tweenOpt.p2 = 300;
                 opt.p1 = 0, opt.p2 = 0;
                 tweenRateOpt.p1 = 100, tweenRateOpt.p2 = 100;
+                break;
+            default:
+                console.error('invalid effect type: '+evt.effect);
                 break;
         }
 
@@ -100,7 +104,7 @@ console.log('effect start');
 
     // put back ui, hide effect entity
     me.stop = function(elapsed, evt, entities){
-        this.showAllEntities();
+        this.showEntity('camera');
         this.hideEntity('effects');
 
         this.route('fingerUp', fingerUp);
