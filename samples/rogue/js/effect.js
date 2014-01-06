@@ -2,6 +2,7 @@ pico.def('effect', 'picBase', function(){
     var
     me = this,
     TWEENER = 'picTween',
+    Floor = Math.floor,
     name = me.moduleName,
     fingerUp, fingerDown, fingerMove, fingerOut, fingerTwice,
     effectEnd = function(game, ent, evt, targetName){
@@ -30,7 +31,7 @@ console.log('effectEnd');
         x = tweenOpt.p1, y = tweenOpt.p2;
 
         ctx.save();
-        switch(evt.target){
+        switch(evt.type){
         case 'boltEfx':
             ctx.globalAlpha = 0.1;
             ctx.globalCompositionOperation = 'source-over';
@@ -55,7 +56,29 @@ console.log('effectEnd');
             ctx.fill();
             break;
         case 'damageEfx':
-            ctx.drawImage(bitmap, clip[0], clip[1], clip[2], clip[3]);
+            //ctx.drawImage(bitmap, clip[0], clip[1], clip[2], clip[3]);
+            var
+            targets = evt.targets,
+            objects = this.objects,
+            mapW = this.mapWidth,
+            tileW = this.tileWidth,
+            tileH = this.tileHeight,
+            tileSet = this.tileSet,
+            view = me.camera.viewPos(),
+            pos, x, y;
+                            
+            for(var i=0,l=targets.length; i<l; i++){
+                pos = targets[i];
+                x = view[0] + tileW * (pos%mapW), y = view[1] + tileH * Floor(pos/mapW);
+            ctx.beginPath();
+            ctx.fillStyle='red';
+            ctx.arc(x,y,30,0,2*Math.PI);
+            ctx.fill();
+                tileSet.draw(ctx, objects[pos][OBJECT_ICON], x, y, tileW, tileH);
+            ctx.globalCompositionOperation = 'source-in';
+                ctx.fillStyle = 'white';
+                ctx.fillRect(x, y, tileW, tileH);
+            }
             break;
         }
 
