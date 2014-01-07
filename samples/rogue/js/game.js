@@ -323,10 +323,9 @@ console.log(JSON.stringify(hints));
             me.go('forceRefresh');
             if (evt[1]){
                 me.go('startEffect', {type:'damageEfx',targets:[targetId],callback:'counter',evt:evt});
-                //me.go('counter', evt);
             }else{
                 // no counter
-                me.go('startEffect', {type:'damageEfx',targets:[targetId]});
+                me.go('startEffect', {type:'damageEfx',targets:[pos],callback:'showInfo',evt:{ targetId:targetId, context:G_CONTEXT.WORLD }});
                 if (me.ai.bury(targetId)){
                     hero.setTargetId(undefined);
                 }
@@ -356,6 +355,7 @@ console.log(JSON.stringify(hints));
                 hero.setTargetId(undefined);
                 objects[pos] = G_OBJECT[G_ICON.BONES].slice();
                 me.hero.bury(me.god);
+                me.go('hideInfo');
                 me.go('showDialog', {
                     info: [
                         'RIP',
@@ -370,7 +370,7 @@ console.log(JSON.stringify(hints));
                     hero.setTargetId(undefined);
                 }
                 me.go('forceRefresh');
-                me.go('startEffect', {type:'damageEfx',targets:[pos],callback:'forceRefresh'});
+                me.go('startEffect', {type:'damageEfx',targets:[pos],callback:'showInfo',evt:{ targetId:targetId, context:G_CONTEXT.WORLD }});
             }
         }, 500);
     };

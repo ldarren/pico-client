@@ -73,7 +73,7 @@ console.log('effectEnd');
             tileSet = this.tileSet,
             view = me.camera.viewPos(),
             pos, x, y;
-                            
+
             for(var i=0,l=targets.length; i<l; i++){
                 pos = targets[i];
                 x = view[0] + tileW * (pos%mapW), y = view[1] + tileH * Floor(pos/mapW);
