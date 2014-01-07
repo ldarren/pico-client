@@ -7,14 +7,22 @@ pico.def('effect', 'picBase', function(){
     fingerUp, fingerDown, fingerMove, fingerOut, fingerTwice,
     effectEnd = function(game, ent, evt, targetName){
 console.log('effectEnd');
-        var
-        tweenOpt = ent.getComponent(TWEENER)[targetName],
-        opt = ent.getComponent(targetName);
-
-        tweenOpt.p1 = tweenOpt.p2 = opt.p1 = opt.p2 = 0;
         game.stopLoop('doEffect');
         game.go('clearEffect', evt);
         if (evt && evt.callback) game.go(evt.callback, evt.evt);
+
+        var
+        tweenOpts = ent.getComponent(TWEENER),
+        tweenOpt = tweenOpts[targetName],
+        tweenRateOpt = tweenOpts['@'+targetName],
+        opt = ent.getComponent(targetName),
+        pk = Object.keys(tweenOpt),
+        key;
+
+        for(var i=0,l=pk.length; i<l; i++){
+            key = pk[i];
+            tweenOpt[key] = tweenRateOpt[key] = opt[key] = 0;
+        }
     };
 
     me.use(TWEENER);
@@ -96,9 +104,12 @@ console.log('effectEnd');
         case 'castEfx':
             break;
         case 'damageEfx':
-            tweenOpt.p1 = 100, tweenOpt.p2 = 100;
-            opt.p1 = 0, opt.p2 = 0;
-            tweenRateOpt.p1 = 100, tweenRateOpt.p2 = 100;
+            tweenOpt.p1 = 300,
+            opt.p1 = 0,
+            tweenRateOpt.p1 = 1,
+            window.setTimeout(function(game){
+                effectEnd.call(game, game, ent, evt, name);
+            }, 200, this);
             break;
         case 'boltEfx':
             tweenOpt.p1 = 300, tweenOpt.p2 = 300;

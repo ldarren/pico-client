@@ -369,8 +369,8 @@ console.log(JSON.stringify(hints));
                 if (me.ai.bury(targetId)){
                     hero.setTargetId(undefined);
                 }
+                me.go('forceRefresh');
                 me.go('startEffect', {type:'damageEfx',targets:[pos],callback:'forceRefresh'});
-                //me.go('forceRefresh');
             }
         }, 500);
     };
