@@ -177,7 +177,14 @@ pico.def('info', 'picUIContent', function(){
                     break;
                 }
             }else{
-                me.fillIconText(ctx, ts, target, rect, scale);
+                if (labels.length){
+                    me.fillIconText(ctx, ts, target, rect, scale);
+                }else{
+                    var
+                    x=rect[0],y=rect[1],w=rect[2],h2=rect[3]/2;
+                    me.fillIconText(ctx, ts, target, [x,y,w,h2], scale);
+                    me.fillIconText(ctx, ts, 'tab to continue...', [x,y+h2,w,h2], scale);
+                }
             }
             break;
         case 'name':
@@ -232,7 +239,11 @@ pico.def('info', 'picUIContent', function(){
     },
     onCustomClick = function(ent, ui){
         if (!ui){
-            this.go('hideInfo');
+            if (!labels.length && callbacks.length){
+                this.go(callbacks[0], events[0]);
+            }else{
+                this.go('hideInfo');
+            }
             return false;
         }
 
@@ -374,6 +385,7 @@ pico.def('info', 'picUIContent', function(){
         style = {font:com.font, fillStyle:com.fontColor},
         meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, height, style),
         rows = meshui.rows,
+        hasIcon = 0 < targetId,
         row,cell;
 
         if (labels.length){
@@ -385,8 +397,10 @@ pico.def('info', 'picUIContent', function(){
         }
 
         row=me.createMeshRow(rows);
-        cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 3, 0, 0, {id:'icon'});
+        if (hasIcon){
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 3, 0, 0, {id:'icon'});
+        }
         cell=me.createMeshCell(row);
         me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 2, 1, 0, 0, {id:'name'});
         me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 3, 3, 0, 0, {id:'text'});
@@ -395,7 +409,7 @@ pico.def('info', 'picUIContent', function(){
         me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 0, 0, {id:'level'});
 
         row=me.createMeshRow(rows);
-        cell=me.createMeshCell(row);
+        if (hasIcon) cell=me.createMeshCell(row);
         cell=me.createMeshCell(row);
         me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 2, 1, 0, 0, {id:'hp'});
         cell=me.createMeshCell(row);
@@ -403,7 +417,7 @@ pico.def('info', 'picUIContent', function(){
         me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 0, 0, {id:'def'});
 
         row=me.createMeshRow(rows);
-        cell=me.createMeshCell(row);
+        if (hasIcon) cell=me.createMeshCell(row);
         cell=me.createMeshCell(row);
         me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 0, 0, {id:'patk'});
         cell=me.createMeshCell(row);

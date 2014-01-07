@@ -276,7 +276,7 @@ console.log(JSON.stringify(hints));
             'Item name '+loot[OBJECT_NAME]+', item level '+loot[OBJECT_LEVEL]+', item grade '+G_GRADE_NAME[loot[OBJECT_GRADE]]],
         callbacks: ['loot', undefined],
         labels: ['Loot', 'Discard'],
-        evt: evt});
+        events: [evt, undefined]});
 
         delete this.flags[evt];
 
@@ -306,7 +306,11 @@ console.log(JSON.stringify(hints));
             this.go('counter', evt);
             return;
         }
-        me.go('showInfo', { info: msg } );
+        if (evt[1]){
+            me.go('showInfo', { info: msg, callbacks:['counter'],events:[evt] } );
+        }else{
+            me.go('showInfo', { info: msg } );
+        }
 
         var
         hero = this.hero,
@@ -322,10 +326,10 @@ console.log(JSON.stringify(hints));
             objects[targetId] = creep;
             me.go('forceRefresh');
             if (evt[1]){
-                me.go('startEffect', {type:'damageEfx',targets:[targetId],callback:'counter',evt:evt});
+                me.go('startEffect', {type:'damageEfx',targets:[targetId]});
             }else{
                 // no counter
-                me.go('startEffect', {type:'damageEfx',targets:[pos],callback:'showInfo',evt:{ targetId:targetId, context:G_CONTEXT.WORLD }});
+                me.go('startEffect', {type:'damageEfx',targets:[targetId],callback:'showInfo',event:{ targetId:targetId, context:G_CONTEXT.WORLD }});
                 if (me.ai.bury(targetId)){
                     hero.setTargetId(undefined);
                 }
@@ -339,14 +343,14 @@ console.log(JSON.stringify(hints));
         var msg = evt[1];
         if (!msg) return;
 
-        me.go('showInfo', {info: msg});
-
         var
         hero = this.hero,
         targetId = hero.getTargetId(),
         objects = this.objects,
         pos = hero.getPosition(),
         creep = objects[targetId];
+
+        me.go('showInfo', {info: msg,callbacks:['showInfo'],events:[{ targetId:targetId, context:G_CONTEXT.WORLD}]});
 
         objects[targetId] = undefined;
         objects[pos] = creep;
@@ -370,7 +374,7 @@ console.log(JSON.stringify(hints));
                     hero.setTargetId(undefined);
                 }
                 me.go('forceRefresh');
-                me.go('startEffect', {type:'damageEfx',targets:[pos],callback:'showInfo',evt:{ targetId:targetId, context:G_CONTEXT.WORLD }});
+                me.go('startEffect', {type:'damageEfx',targets:[pos] });
             }
         }, 500);
     };
@@ -593,7 +597,7 @@ console.log(JSON.stringify(hints));
                     info: ['Congratulations!', 'you have unlocked level '+this.nextLevel],
                     labels: ['Goto Level '+this.nextLevel],
                     callbacks: ['gotoLevel'],
-                    evt: this.nextLevel});
+                    events: [this.nextLevel]});
                 }else{
                     this.go('gotoLevel', this.nextLevel);
                 }

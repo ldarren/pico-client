@@ -9,7 +9,7 @@ pico.def('effect', 'picBase', function(){
 console.log('effectEnd');
         game.stopLoop('doEffect');
         game.go('clearEffect', evt);
-        if (evt && evt.callback) game.go(evt.callback, evt.evt);
+        if (evt && evt.callback) game.go(evt.callback, evt.event);
 
         var
         tweenOpts = ent.getComponent(TWEENER),

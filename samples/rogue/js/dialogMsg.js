@@ -43,7 +43,7 @@ pico.def('dialogMsg', 'picUIContent', function(){
 
         if (route){
             ret = true;
-            this.go(route, msg.evt);
+            this.go(route, msg.events ? msg.events[i] : undefined);
         }
 
         this.go('hideDialog');
