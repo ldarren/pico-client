@@ -49,6 +49,8 @@ pico.def('game', 'pigSqrMap', function(){
         me.prevLevel = level ? me.currentLevel : 0;
         me.currentLevel = level;
         me.nextLevel = (me.currentLevel < me.prevLevel) ? me.currentLevel-1 : me.currentLevel+1;
+        
+        me.hero.move(undefined); // reinit hero pos to prevent hero.move deletes object at old map hero pos
 
         var mapParams = G_MAP_PARAMS[level];
         Object.getPrototypeOf(me).init(mapParams[0], mapParams[1]);
@@ -383,7 +385,10 @@ console.log(JSON.stringify(hints));
 
     me.counterAnim = function(elapsed, evt, entities){
         var msg = evt[1];
-        if (!msg) return;
+        if (!msg) {
+            me.unlockInputs();
+            return;
+        }
 
         var
         hero = this.hero,

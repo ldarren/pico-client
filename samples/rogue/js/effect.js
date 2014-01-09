@@ -5,7 +5,6 @@ pico.def('effect', 'picBase', function(){
     Floor = Math.floor,
     name = me.moduleName,
     effectEnd = function(game, ent, evt, targetName){
-console.log('effectEnd');
         game.stopLoop('doEffect');
         game.go('clearEffect', evt);
         if (evt && evt.callback) game.go(evt.callback, evt.event);
@@ -33,13 +32,59 @@ console.log('effectEnd');
     };
 
     me.drawScreenshot = function(ctx, ent, clip, bitmap, evt){
-        var
-        tweenOpt = ent.getComponent(TWEENER)[name],
-        x = tweenOpt.p1, y = tweenOpt.p2;
+        var tweenOpt = ent.getComponent(TWEENER)[name];
 
         ctx.save();
         switch(evt.type){
+        case 'damageEfx':
+            var
+            ratio = tweenOpt.p1, alpha = tweenOpt.p2,
+            targets = evt.targets,
+            spells = evt.spells,
+            mapW = this.mapWidth,
+            tileW = this.tileWidth,
+            tileH = this.tileHeight,
+            tileSet = this.tileSet,
+            view = me.camera.viewPos(),
+            pos, spell = G_ICON.PENTAGRAM, x, y;
+
+            ratio *= ratio;
+            var
+            w = tileW*ratio, h = tileH*ratio,
+            dx = (w - tileW)/2, dy = (h - tileH)/2;
+
+            ctx.clearRect.apply(ctx, clip);
+
+            ctx.globalAlpha = alpha;
+            for(var i=0,l=targets.length; i<l; i++){
+                pos = targets[i];
+                x = view[0] + tileW * (pos%mapW) - dx, y = view[1] + tileH * Floor(pos/mapW) - dy;
+                tileSet.draw(ctx, spell, x, y, w, h);
+            }
+            break;
+        case 'castEfx':
+            var
+            targets = evt.targets,
+            objects = this.objects,
+            mapW = this.mapWidth,
+            tileW = this.tileWidth,
+            tileH = this.tileHeight,
+            tileSet = this.tileSet,
+            view = me.camera.viewPos(),
+            pos, x, y;
+
+            for(var i=0,l=targets.length; i<l; i++){
+                pos = targets[i];
+                x = view[0] + tileW * (pos%mapW), y = view[1] + tileH * Floor(pos/mapW);
+                tileSet.draw(ctx, objects[pos][OBJECT_ICON], x, y, tileW, tileH);
+            }
+                            
+            ctx.globalCompositeOperation = 'source-in';
+            ctx.fillStyle = G_COLOR_TONE[0];
+            ctx.fillRect(clip[0], clip[1], clip[2], clip[3]);
+            break;
         case 'boltEfx':
+            var x = tweenOpt.p1, y = tweenOpt.p2;
             ctx.globalAlpha = 0.1;
             ctx.globalCompositeOperation = 'source-over';
             // some older android browser require this to draw gradient
@@ -62,27 +107,6 @@ console.log('effectEnd');
             ctx.arc(x, y, 10, Math.PI*2, false);
             ctx.fill();
             break;
-        case 'damageEfx':
-            var
-            targets = evt.targets,
-            objects = this.objects,
-            mapW = this.mapWidth,
-            tileW = this.tileWidth,
-            tileH = this.tileHeight,
-            tileSet = this.tileSet,
-            view = me.camera.viewPos(),
-            pos, x, y;
-
-            for(var i=0,l=targets.length; i<l; i++){
-                pos = targets[i];
-                x = view[0] + tileW * (pos%mapW), y = view[1] + tileH * Floor(pos/mapW);
-                tileSet.draw(ctx, objects[pos][OBJECT_ICON], x, y, tileW, tileH);
-            }
-                            
-            ctx.globalCompositeOperation = 'source-in';
-            ctx.fillStyle = G_COLOR_TONE[0];
-            ctx.fillRect(clip[0], clip[1], clip[2], clip[3]);
-            break;
         }
 
         ctx.restore();
@@ -101,15 +125,18 @@ console.log('effectEnd');
 
         switch(evt.type){
         case 'castEfx':
-            break;
-        case 'damageEfx':
-            tweenOpt.p1 = 200;
-            opt.p1 = 0;
+            tweenOpt.p1 = 0;
+            opt.p1 = 200;
             tweenRateOpt.p1 = 1000;
             break;
+        case 'damageEfx':
+            tweenOpt.p1 = 1,tweenOpt.p2 = 1;
+            opt.p1 = 2,opt.p2 = 0;
+            tweenRateOpt.p1 = 1,tweenRateOpt.p2 = 1;
+            break;
         case 'boltEfx':
-            tweenOpt.p1 = 300, tweenOpt.p2 = 300;
-            opt.p1 = 0, opt.p2 = 0;
+            tweenOpt.p1 = 0, tweenOpt.p2 = 0;
+            opt.p1 = 300, opt.p2 = 300;
             tweenRateOpt.p1 = 100, tweenRateOpt.p2 = 100;
             break;
         default:
@@ -123,7 +150,7 @@ console.log('effectEnd');
 
         me[TWEENER].slot('stop', effectEnd);
         this.startLoop('doEffect', evt);
-console.log('effect start');
+
         return entities;
     };
 
@@ -139,7 +166,6 @@ console.log('effect start');
 
         this.unlockInputs();
 
-console.log('effect stop');
         this.go('stopEffect', evt);
         return;
     };
