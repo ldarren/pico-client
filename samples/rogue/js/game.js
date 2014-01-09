@@ -338,10 +338,14 @@ console.log(JSON.stringify(hints));
         attackMsg = evt[0],
         counterMsg = evt[1];
 
+        me.lockInputs();
+
         if (!attackMsg) {
             this.go('counter', evt);
             return;
         }
+
+        me.go('showInfo', { info: attackMsg } );
 
         var
         hero = this.hero,
@@ -349,9 +353,6 @@ console.log(JSON.stringify(hints));
         targetId = hero.getTargetId(),
         pos = hero.getPosition(),
         creep = objects[targetId];
-
-        me.lockInputs();
-        me.go('showInfo', { info: attackMsg } );
 
         hero.move(targetId);
 
@@ -396,6 +397,8 @@ console.log(JSON.stringify(hints));
         objects[targetId] = undefined;
         objects[pos] = creep;
         setTimeout(function(){
+            me.go('forceRefresh');
+            objects[targetId] = creep;
             if (hero.isDead()){
                 hero.setTargetId(undefined);
                 objects[pos] = G_OBJECT[G_ICON.BONES].slice();
@@ -413,11 +416,9 @@ console.log(JSON.stringify(hints));
             }else{
                 hero.move(pos);
 
-                objects[targetId] = creep;
                 if (me.ai.bury(targetId)){
                     hero.setTargetId(undefined);
                 }
-                me.go('forceRefresh');
                 me.go('startEffect', {type:'damageEfx',targets:[pos] });
                 me.routeInputs([function(){
                     me.go('showInfo', { targetId:targetId, context:G_CONTEXT.WORLD});
