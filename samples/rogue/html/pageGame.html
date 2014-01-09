@@ -165,10 +165,10 @@ onLoad = function(){
         game.route('attack', [game.attackAnim, renderer.draw]);
         game.route('counter', [game.counterAnim, uiWindow.update, renderer.draw]);
         game.route('flee', [game.flee, renderer.draw]);
-        game.route('startEffect', [uiWindow.hideAll, renderer.captureScreenshot, effect.start]);
+        game.route('startEffect', [renderer.captureScreenshot, effect.start]);
         game.route('doEffect', [tween.update, renderer.drawScreenshot]);
         game.route('clearEffect', [effect.clear, renderer.clear, effect.stop]);
-        game.route('stopEffect', [renderer.releaseScreenshot, uiWindow.showAll, renderer.draw]);
+        game.route('stopEffect', [renderer.releaseScreenshot, renderer.draw]);
         game.route('gameStep', [game.step, renderer.draw]);
         game.route('forceRefresh', [uiWindow.update, renderer.draw]);
         game.route('resize', [camera.resize, uiWindow.resize, renderer.draw]);

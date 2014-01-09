@@ -6,6 +6,7 @@ pico.def('game', 'pigSqrMap', function(){
     var
     me = this,
     db = window.localStorage,
+    fingerStack = [],
     Max = Math.max,Abs = Math.abs,Floor = Math.floor,Random = Math.random,Pow = Math.pow,Sqrt = Math.sqrt,
     pathElapsed = 0,
     loadGame = function(){
@@ -252,6 +253,38 @@ console.log(JSON.stringify(hints));
         me.tileHeight = sd ? 32 : 64;
     };
 
+    me.lockInputs = function(up, down, move, out, twice){
+        fingerStack.push([
+            me.getRoute('fingerUp'),
+            me.getRoute('fingerDown'),
+            me.getRoute('fingerMove'),
+            me.getRoute('fingerOut'),
+            me.getRoute('fingerTwice')]);
+        me.route('fingerUp', up || []);
+        me.route('fingerDown', down || []);
+        me.route('fingerMove', move || []);
+        me.route('fingerOut', out || []);
+        me.route('fingerTwice', twice || []);
+    };
+
+    me.routeInputs = function(up, down, move, out, twice){
+        if (!fingerStack.length) return console.warn('routeInputs without lockInputs');
+        me.route('fingerUp', up || []);
+        me.route('fingerDown', down || []);
+        me.route('fingerMove', move || []);
+        me.route('fingerOut', out || []);
+        me.route('fingerTwice', twice || []);
+    };
+
+    me.unlockInputs = function(){
+        var f = fingerStack.pop();
+        me.route('fingerUp', f[0]);
+        me.route('fingerDown', f[1]);
+        me.route('fingerMove', f[2]);
+        me.route('fingerOut', f[3]);
+        me.route('fingerTwice', f[4]);
+    };
+
     // call when player obtain the key
     me.unlockLevel = function(level){
         if (me.deepestLevel < level){
@@ -301,15 +334,13 @@ console.log(JSON.stringify(hints));
     };
 
     me.attackAnim = function(elapsed, evt, entities){
-        var msg = evt[0];
-        if (!msg) {
+        var
+        attackMsg = evt[0],
+        counterMsg = evt[1];
+
+        if (!attackMsg) {
             this.go('counter', evt);
             return;
-        }
-        if (evt[1]){
-            me.go('showInfo', { info: msg, callbacks:['counter'],events:[evt] } );
-        }else{
-            me.go('showInfo', { info: msg } );
         }
 
         var
@@ -319,17 +350,27 @@ console.log(JSON.stringify(hints));
         pos = hero.getPosition(),
         creep = objects[targetId];
 
+        me.lockInputs();
+        me.go('showInfo', { info: attackMsg } );
+
         hero.move(targetId);
 
         setTimeout(function(){
             hero.move(pos); // hero must move first
             objects[targetId] = creep;
             me.go('forceRefresh');
-            if (evt[1]){
-                me.go('startEffect', {type:'damageEfx',targets:[targetId]});
+            me.go('startEffect', {type:'damageEfx',targets:[targetId]});
+
+            if (counterMsg){
+                me.routeInputs([function(){
+                    me.go('counter', evt);
+                }]);
             }else{
+                me.routeInputs([function(){
+                    me.go('showInfo', { targetId:targetId, context:G_CONTEXT.WORLD });
+                    me.unlockInputs();
+                }]);
                 // no counter
-                me.go('startEffect', {type:'damageEfx',targets:[targetId],callback:'showInfo',event:{ targetId:targetId, context:G_CONTEXT.WORLD }});
                 if (me.ai.bury(targetId)){
                     hero.setTargetId(undefined);
                 }
@@ -350,7 +391,7 @@ console.log(JSON.stringify(hints));
         pos = hero.getPosition(),
         creep = objects[targetId];
 
-        me.go('showInfo', {info: msg,callbacks:['showInfo'],events:[{ targetId:targetId, context:G_CONTEXT.WORLD}]});
+        me.go('showInfo', {info: msg});
 
         objects[targetId] = undefined;
         objects[pos] = creep;
@@ -359,13 +400,16 @@ console.log(JSON.stringify(hints));
                 hero.setTargetId(undefined);
                 objects[pos] = G_OBJECT[G_ICON.BONES].slice();
                 me.hero.bury(me.god);
-                me.go('hideInfo');
-                me.go('showDialog', {
-                    info: [
-                        'RIP',
-                        'you were killed by '+creep[OBJECT_NAME]+' at level '+me.currentLevel,
-                        'but your lineage will continue...'],
-                    callbacks: ['reborn']});
+                me.routeInputs([function(){
+                    me.go('hideInfo');
+                    me.go('showDialog', {
+                        info: [
+                            'RIP',
+                            'you were killed by '+creep[OBJECT_NAME]+' at level '+me.currentLevel,
+                            'but your lineage will continue...'],
+                        callbacks: ['reborn']});
+                    me.unlockInputs();
+                }]);
             }else{
                 hero.move(pos);
 
@@ -375,6 +419,10 @@ console.log(JSON.stringify(hints));
                 }
                 me.go('forceRefresh');
                 me.go('startEffect', {type:'damageEfx',targets:[pos] });
+                me.routeInputs([function(){
+                    me.go('showInfo', { targetId:targetId, context:G_CONTEXT.WORLD});
+                    me.unlockInputs();
+                }]);
             }
         }, 500);
     };

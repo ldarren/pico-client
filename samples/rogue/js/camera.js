@@ -126,7 +126,7 @@ pico.def('camera', 'picBase', function(){
 
                         this.go('attack', hero.battle(id, true));
                     }else{
-                        flags[id] = effect;
+                        flags[id] = G_UI.FLAG;
                         this.go('showInfo', { targetId: id, context: G_CONTEXT.WORLD });
                     }
                     map[id] &= G_TILE_TYPE.SHOW;
@@ -225,7 +225,8 @@ pico.def('camera', 'picBase', function(){
                     object = objects[w];
                     flag = flags[w];
                     if (flag){
-                        tileSet.draw(ctx, flag[0], x, y, tileW, tileH);
+                        tileSet.draw(ctx, object[OBJECT_ICON], x, y, tileW, tileH);
+                        tileSet.draw(ctx, flag, x, y, hw, hh);
                     }else if (object){
                         if (G_OBJECT_TYPE.CHEST === object[OBJECT_TYPE] && object[CHEST_ITEM])
                             tileSet.draw(ctx, object[CHEST_ITEM][OBJECT_ICON], x, y, tileW, tileH);
@@ -258,23 +259,23 @@ pico.def('camera', 'picBase', function(){
         }
 
         // draw player active skill
-        if (selectedSpell && selectedSpell[OBJECT_ICON] === G_ICON.ALL_SEEING){
-            x = viewX + tileW * (hp%mapW), y = viewY + tileH * Floor(hp/mapW);
-            tileSet.draw(ctx, G_UI.FLAG, x, y, hw, hh);
-        }
+        //if (selectedSpell && selectedSpell[OBJECT_ICON] === G_ICON.ALL_SEEING){
+        //    x = viewX + tileW * (hp%mapW), y = viewY + tileH * Floor(hp/mapW);
+        //    tileSet.draw(ctx, G_UI.FLAG, x, y, hw, hh);
+        //}
 
         // draw transparent objects
-        ctx.globalAlpha = 0.6;
-        w = viewStart;
-        for(i=0; i<viewHeight; i++){
-            for(j=0; j<viewWidth; j++, w++){
-                object = objects[w];
-                if (!flags[w] || !object) continue;
-                x = viewX + tileW * (w%mapW), y = viewY + tileH * Floor(w/mapW);
-                tileSet.draw(ctx, object[OBJECT_ICON], x, y, tileW, tileH);
-            }
-            w += viewWrap;
-        }
+        //ctx.globalAlpha = 0.6;
+        //w = viewStart;
+        //for(i=0; i<viewHeight; i++){
+        //    for(j=0; j<viewWidth; j++, w++){
+        //        object = objects[w];
+        //        if (!flags[w] || !object) continue;
+        //        x = viewX + tileW * (w%mapW), y = viewY + tileH * Floor(w/mapW);
+        //        tileSet.draw(ctx, object[OBJECT_ICON], x, y, tileW, tileH);
+        //    }
+        //    w += viewWrap;
+        //}
 
         ctx.restore();
     };

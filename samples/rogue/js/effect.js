@@ -4,7 +4,6 @@ pico.def('effect', 'picBase', function(){
     TWEENER = 'picTween',
     Floor = Math.floor,
     name = me.moduleName,
-    fingerUp, fingerDown, fingerMove, fingerOut, fingerTwice,
     effectEnd = function(game, ent, evt, targetName){
 console.log('effectEnd');
         game.stopLoop('doEffect');
@@ -121,16 +120,7 @@ console.log('effectEnd');
             break;
         }
 
-        fingerUp = this.getRoute('fingerUp');
-        this.route('fingerUp', []);
-        fingerDown = this.getRoute('fingerDown');
-        this.route('fingerDown', []);
-        fingerMove = this.getRoute('fingerMove');
-        this.route('fingerMove', []);
-        fingerOut = this.getRoute('fingerOut');
-        this.route('fingerOut', []);
-        fingerTwice = this.getRoute('fingerTwice');
-        this.route('fingerTwice', []);
+        this.lockInputs();
             
         me.picRenderer.setBG('efxPane', 'transparent', function(){});
 
@@ -150,11 +140,8 @@ console.log('effect start');
         this.showEntity('camera');
         this.hideEntity('effects');
 
-        this.route('fingerUp', fingerUp);
-        this.route('fingerDown', fingerDown);
-        this.route('fingerMove', fingerMove);
-        this.route('fingerOut', fingerOut);
-        this.route('fingerTwice', fingerTwice);
+        this.unlockInputs();
+
 console.log('effect stop');
         this.go('stopEffect', evt);
         return;
