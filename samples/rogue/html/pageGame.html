@@ -167,7 +167,7 @@ onLoad = function(){
         game.route('flee', [game.flee, renderer.draw]);
         game.route('startEffect', [renderer.captureScreenshot, effect.start]);
         game.route('doEffect', [tween.update, renderer.drawScreenshot]);
-        game.route('clearEffect', [effect.clear, renderer.clear, effect.stop]);
+        game.route('clearEffect', [effect.clear, uiWindow.hideAll, renderer.clear, uiWindow.showAll, effect.stop]);
         game.route('stopEffect', [renderer.releaseScreenshot, renderer.draw]);
         game.route('gameStep', [game.step, renderer.draw]);
         game.route('forceRefresh', [uiWindow.update, renderer.draw]);

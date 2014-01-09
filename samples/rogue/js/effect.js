@@ -103,12 +103,9 @@ console.log('effectEnd');
         case 'castEfx':
             break;
         case 'damageEfx':
-            tweenOpt.p1 = 300,
-            opt.p1 = 0,
-            tweenRateOpt.p1 = 1,
-            window.setTimeout(function(game){
-                effectEnd.call(game, game, ent, evt, name);
-            }, 200, this);
+            tweenOpt.p1 = 200;
+            opt.p1 = 0;
+            tweenRateOpt.p1 = 1000;
             break;
         case 'boltEfx':
             tweenOpt.p1 = 300, tweenOpt.p2 = 300;
