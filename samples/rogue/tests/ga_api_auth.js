@@ -13,5 +13,10 @@ function checkAuth(){
         client_id: clientId,
         scope: scopes,
         immediate: true},
-        handleAuthResult);
+        function(result){
+            if (result){
+                loadAnalytics`
+            }else{
+            }
+        });
 }
