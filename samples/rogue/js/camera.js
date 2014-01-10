@@ -37,6 +37,8 @@ pico.def('camera', 'picBase', function(){
         }while(viewHeight <= 0 || viewWidth <= 0);
     };
 
+    me.use('spells');
+
     me.viewPos = function(){
         return [viewX, viewY];
     };
@@ -100,9 +102,8 @@ pico.def('camera', 'picBase', function(){
         id, tileType, object, steps;
 
         if (y > mapH || x > mapW) return entities;
+
         id = mapW * y + x;
-        tileType = map[id];
-        object = objects[id];
 
         if (hero.getTargetId() && !hero.isTarget(id)){
             this.go('showDialog', {
@@ -115,23 +116,14 @@ pico.def('camera', 'picBase', function(){
             return;
         }
 
+        tileType = map[id];
+        object = objects[id];
+
         if (tileType & G_TILE_TYPE.HIDE){
             if (this.nearToHero(id)) {
-                var effect = hero.castSpell();
-                if (effect){
-                    if (!object){
-                        map[id] |= G_TILE_TYPE.CREEP;
-                        objects[id] = this.ai.spawnCreep(this.deepestLevel);
-                        this.recalHints();
-
-                        this.go('attack', hero.battle(id, true));
-                    }else{
-                        flags[id] = G_UI.FLAG;
-                        this.go('showInfo', { targetId: id, context: G_CONTEXT.WORLD });
-                    }
-                    map[id] &= G_TILE_TYPE.SHOW;
-                    this.go('forceRefresh'); // TODO: find a better way to show cooldown counter
-                }else{
+                var spell = hero.castSpell();
+                if (spell) this.go('forceRefresh'); // TODO: find a better way to show cooldown counter
+                if (!me.spells.triggerAtExplore.call(this, spell, id)){
                     this.go('gameStep', this.fillTiles(id));
 
                     if (tileType & G_TILE_TYPE.CREEP){

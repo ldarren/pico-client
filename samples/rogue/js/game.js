@@ -255,38 +255,6 @@ console.log(JSON.stringify(hints));
         me.tileHeight = sd ? 32 : 64;
     };
 
-    me.lockInputs = function(up, down, move, out, twice){
-        fingerStack.push([
-            me.getRoute('fingerUp'),
-            me.getRoute('fingerDown'),
-            me.getRoute('fingerMove'),
-            me.getRoute('fingerOut'),
-            me.getRoute('fingerTwice')]);
-        me.route('fingerUp', up || []);
-        me.route('fingerDown', down || []);
-        me.route('fingerMove', move || []);
-        me.route('fingerOut', out || []);
-        me.route('fingerTwice', twice || []);
-    };
-
-    me.routeInputs = function(up, down, move, out, twice){
-        if (!fingerStack.length) return console.warn('routeInputs without lockInputs');
-        me.route('fingerUp', up || []);
-        me.route('fingerDown', down || []);
-        me.route('fingerMove', move || []);
-        me.route('fingerOut', out || []);
-        me.route('fingerTwice', twice || []);
-    };
-
-    me.unlockInputs = function(){
-        var f = fingerStack.pop();
-        me.route('fingerUp', f[0]);
-        me.route('fingerDown', f[1]);
-        me.route('fingerMove', f[2]);
-        me.route('fingerOut', f[3]);
-        me.route('fingerTwice', f[4]);
-    };
-
     // call when player obtain the key
     me.unlockLevel = function(level){
         if (me.deepestLevel < level){
@@ -694,6 +662,38 @@ console.log(JSON.stringify(hints));
                 callbacks: callbacks,
                 events: events});
         }
+    };
+
+    me.lockInputs = function(up, down, move, out, twice){
+        fingerStack.push([
+            me.getRoute('fingerUp'),
+            me.getRoute('fingerDown'),
+            me.getRoute('fingerMove'),
+            me.getRoute('fingerOut'),
+            me.getRoute('fingerTwice')]);
+        me.route('fingerUp', up || []);
+        me.route('fingerDown', down || []);
+        me.route('fingerMove', move || []);
+        me.route('fingerOut', out || []);
+        me.route('fingerTwice', twice || []);
+    };
+
+    me.routeInputs = function(up, down, move, out, twice){
+        if (!fingerStack.length) return console.warn('routeInputs without lockInputs');
+        me.route('fingerUp', up || []);
+        me.route('fingerDown', down || []);
+        me.route('fingerMove', move || []);
+        me.route('fingerOut', out || []);
+        me.route('fingerTwice', twice || []);
+    };
+
+    me.unlockInputs = function(){
+        var f = fingerStack.pop();
+        me.route('fingerUp', f[0]);
+        me.route('fingerDown', f[1]);
+        me.route('fingerMove', f[2]);
+        me.route('fingerOut', f[3]);
+        me.route('fingerTwice', f[4]);
     };
 
     me.branchFingerDown = function(elapsed, evt, entities){
