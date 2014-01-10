@@ -36,7 +36,7 @@ pico.def('effect', 'picBase', function(){
 
         ctx.save();
         switch(evt.type){
-        case 'damageEfx':
+        case 'castEfx':
             var
             ratio = tweenOpt.p1, alpha = tweenOpt.p2,
             targets = evt.targets,
@@ -46,7 +46,7 @@ pico.def('effect', 'picBase', function(){
             tileH = this.tileHeight,
             tileSet = this.tileSet,
             view = me.camera.viewPos(),
-            pos, spell = G_ICON.PENTAGRAM, x, y;
+            pos, spell, x, y;
 
             ratio *= ratio;
             var
@@ -58,11 +58,12 @@ pico.def('effect', 'picBase', function(){
             ctx.globalAlpha = alpha;
             for(var i=0,l=targets.length; i<l; i++){
                 pos = targets[i];
+                spell = spells[i];
                 x = view[0] + tileW * (pos%mapW) - dx, y = view[1] + tileH * Floor(pos/mapW) - dy;
                 tileSet.draw(ctx, spell, x, y, w, h);
             }
             break;
-        case 'castEfx':
+        case 'damageEfx':
             var
             targets = evt.targets,
             objects = this.objects,
@@ -124,12 +125,12 @@ pico.def('effect', 'picBase', function(){
         opt = ent.getComponent(name);
 
         switch(evt.type){
-        case 'castEfx':
+        case 'damageEfx':
             tweenOpt.p1 = 0;
             opt.p1 = 200;
             tweenRateOpt.p1 = 1000;
             break;
-        case 'damageEfx':
+        case 'castEfx':
             tweenOpt.p1 = 1,tweenOpt.p2 = 1;
             opt.p1 = 2,opt.p2 = 0;
             tweenRateOpt.p1 = 1,tweenRateOpt.p2 = 1;
