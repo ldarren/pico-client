@@ -126,10 +126,12 @@ pico.def('info', 'picUIContent', function(){
     onCustomBound = function(ent, rect, ui, scale){
         return me.calcUIRect(rect, ui);
     },
-    onCustomDraw = function(ent, ctx, rect, ui, ts, scale){
+    onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
         if (!me.isValid()) return;
+
         var
         com = ent.getComponent(name),
+        ts = tss['default'],
         tw = this.tileWidth,
         th = this.tileHeight,
         x=rect[0], y=rect[1], w=rect[2], h=rect[3];
@@ -234,7 +236,7 @@ pico.def('info', 'picUIContent', function(){
         }
 
     },
-    onCustomButton = function(ent, ctx, rect, ui, ts, scale){
+    onCustomButton = function(ent, ctx, rect, ui, tss, scale){
         me.drawButton(ctx, rect, labels[ui.userData.id], '#204631', '#d7e894', '#aec440', 'top');
     },
     onCustomClick = function(ent, ui){

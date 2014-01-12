@@ -7,10 +7,13 @@ pico.def('dialogMsg', 'picUIContent', function(){
     onCustomBound = function(ent, rect, ui, scale){
         return me.calcUIRect(rect, ui);
     },
-    onCustomDraw = function(ent, ctx, rect, ui, ts, scale){
+    onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
         if (!me.isValid()) return;
 
-        var id=ui.userData.id;
+        var
+        ts = tss['default'],
+        id=ui.userData.id;
+
         switch(id){
         case 'text':
             var
@@ -27,7 +30,7 @@ pico.def('dialogMsg', 'picUIContent', function(){
             break;
         }
     },
-    onCustomButton = function(ent, ctx, rect, ui, ts, scale){
+    onCustomButton = function(ent, ctx, rect, ui, tss, scale){
         me.drawButton(ctx, rect, msg.labels[ui.userData.id], '#204631', '#d7e894', '#aec440', 'top');
     },
     onCustomClick = function(ent, ui){

@@ -34,8 +34,10 @@ pico.def('hero', 'picUIContent', function(){
             return me.calcUIRect(rect, ui);
         }
     },
-    onCustomDraw = function(ent, ctx, rect, ui, ts, tileScale){
-        var id = ui.userData.id;
+    onCustomDraw = function(ent, ctx, rect, ui, tss, tileScale){
+        var
+        id = ui.userData.id,
+        ts = tss['default'];
 
         if ('custom1Label' === id) id = 'goldLabel';
         else if ('custom2Label' === id) id = 'skullLabel';

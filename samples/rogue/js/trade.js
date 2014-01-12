@@ -10,9 +10,10 @@ pico.def('trade', 'picUIContent', function(){
         if ('btn1' === ui.userData.id) return me.calcUIRect(rect, ui);
         return me.calcUIRect(rect, ui, scale);
     },
-    onCustomDraw = function(ent, ctx, rect, ui, ts, scale){
+    onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
         var
         com = ent.getComponent(name),
+        ts = tss['default'],
         i = ui.userData.id,
         x=rect[0], y=rect[1], w=rect[2], h=rect[3];
 
@@ -28,7 +29,7 @@ pico.def('trade', 'picUIContent', function(){
             }
         }
     },
-    onCustomButton = function(ent, ctx, rect, ui, ts, scale){
+    onCustomButton = function(ent, ctx, rect, ui, tss, scale){
         if ('btn1' === ui.userData.id){
             me.drawButton(ctx, rect, labels[0], '#204631', '#d7e894', '#aec440', 'top');
         }

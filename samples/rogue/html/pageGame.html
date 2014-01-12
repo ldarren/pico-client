@@ -89,6 +89,8 @@ onResize = function(){
 onLoad = function(){
     me.piAtlas.create('dat/img/fantasy-tileset-combined.png', 'dat/fantasy-tileset.json', function(err, tileSet){
         if (err) return alert(err);
+    me.piAtlas.create('dat/img/fantasy-spells.png', 'dat/fantasy-spells.json', function(err, spellSet){
+        if (err) return alert(err);
     me.piHTMLAudio.create('dat/fantasy-sfx.json', function(err, audioSprite){
         if (err) return alert(err);
     me.hero.loadMeshUITemplates('dat/fantasy-ui.json', function(err){
@@ -129,7 +131,7 @@ onLoad = function(){
 
         reactor.addGroup(game);
 
-        game.style({tileSet:tileSet, audioSprite:audioSprite, smallDevice:smallDevice});
+        game.style({tileSet:tileSet, spellSet:spellSet, audioSprite:audioSprite, smallDevice:smallDevice});
 
         game.route('fingerDown', [
             uiWindow.checkBound,
@@ -249,6 +251,7 @@ onLoad = function(){
         window.addEventListener('unload', game.exit, false);
 
         me.rogueMain.hideLoading();
+    });
     });
     });
     });

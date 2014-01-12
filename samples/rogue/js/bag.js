@@ -7,9 +7,10 @@ pico.def('bag', 'picUIContent', function(){
     onCustomBound = function(ent, rect, ui, scale){
         return me.calcUIRect(rect, ui, scale);
     },
-    onCustomDraw = function(ent, ctx, rect, ui, ts, scale){
+    onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
         var
         com = ent.getComponent(name),
+        ts = tss['default'],
         i = ui.userData.id,
         activated = com.activated,
         slots = this.hero.getBag(),

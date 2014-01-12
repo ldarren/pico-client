@@ -8,14 +8,16 @@ pico.def('tome', 'picUIContent', function(){
     onCustomBound = function(ent, rect, ui, scale){
         return me.calcUIRect(rect, ui, scale);
     },
-    onCustomDraw = function(ent, ctx, rect, ui, ts, scale){
+    onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
         var
+        ts = tss['default'],
+        ss = tss['spells'],
         items = this.hero.getTome(),
         item, x, y;
 
         item = items[ui.userData.id];
         if (!item) return;
-        ts.draw(ctx, item[OBJECT_ICON], rect[0], rect[1], rect[2], rect[3]);
+        ss.draw(ctx, item[OBJECT_ICON], rect[0], rect[1], rect[2], rect[3]);
         if (item[SPELL_COOLDOWN]) ts.draw(ctx, G_NUMERIC.LARGE_LIGHT + item[SPELL_COOLDOWN], rect[0], rect[1], rect[2], rect[3]);
         else if (item === this.hero.getSelectedSpell()) ts.draw(ctx, G_UI.SELECTED, rect[0], rect[1], rect[2], rect[3]);
     },
@@ -159,6 +161,6 @@ pico.def('tome', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.drawMeshUI.call(this, ctx, {default: this.tileSet}, ent, com, comBox, scale, onCustomUI);
+        return me.drawMeshUI.call(this, ctx, {default: this.tileSet, spells: this.spellSet}, ent, com, comBox, scale, onCustomUI);
     };
 });

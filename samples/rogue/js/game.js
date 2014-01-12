@@ -196,6 +196,7 @@ console.log(JSON.stringify(hints));
     };
 
     me.tileSet = null;
+    me.spellSet = null;
     me.audioSprite = null;
     me.smallDevice = false;
     me.tileWidth = 16;
@@ -245,9 +246,10 @@ console.log(JSON.stringify(hints));
         return entities;
     };
 
-    // data = {tileSet:tileSet, smallDevice: 0:1}
+    // data = {tileSet:atlas, spellSet:atlas, audioSprite: sprite, smallDevice: 0:1}
     me.style = function(data){
         me.tileSet = data.tileSet;
+        me.spellSet = data.spellSet;
         me.audioSprite = data.audioSprite;
 
         var sd = me.smallDevice = data.smallDevice;
