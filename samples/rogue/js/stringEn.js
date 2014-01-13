@@ -234,6 +234,15 @@ Object.freeze(G_OBJECT_NAME = {
     184: 'Blacksmith',
     185: 'Arch-Mage',
     186: 'Town Guard',
-    187: 'Poison',
+
+    196: 'Whirl Wind',
+    197: 'Whirl Wind',
+    198: 'Whirl Wind',
+    256: 'Gaze',
+    257: 'Gaze',
+    258: 'Gaze',
+    295: 'Fireball',
+    296: 'Fireball',
+    297: 'Fireball',
 });
 

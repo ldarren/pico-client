@@ -13,13 +13,17 @@ pico.def('tome', 'picUIContent', function(){
         ts = tss['default'],
         ss = tss['spells'],
         items = this.hero.getTome(),
-        item, x, y;
+        x=rect[0],y=rect[1],w=rect[2],h=rect[3],
+        crop = scale * 4,
+        cropLength = scale * 24,
+        item;
 
         item = items[ui.userData.id];
         if (!item) return;
-        ss.draw(ctx, item[OBJECT_ICON], rect[0], rect[1], rect[2], rect[3]);
-        if (item[SPELL_COOLDOWN]) ts.draw(ctx, G_NUMERIC.LARGE_LIGHT + item[SPELL_COOLDOWN], rect[0], rect[1], rect[2], rect[3]);
-        else if (item === this.hero.getSelectedSpell()) ts.draw(ctx, G_UI.SELECTED, rect[0], rect[1], rect[2], rect[3]);
+        // crop spell image to show slot frame
+        ss.draw(ctx, item[OBJECT_ICON], x+crop, y+crop, cropLength, cropLength, 4, 4, 24, 24);
+        if (item[SPELL_COOLDOWN]) ts.draw(ctx, G_NUMERIC.LARGE_LIGHT + item[SPELL_COOLDOWN], x, y, w, h);
+        else if (item === this.hero.getSelectedSpell()) ts.draw(ctx, G_UI.SELECTED, x, y, w, h);
     },
     onCustomClick = function(ent, ui){
         if (!ui) return false;
