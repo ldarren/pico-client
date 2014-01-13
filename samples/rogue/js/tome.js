@@ -22,7 +22,7 @@ pico.def('tome', 'picUIContent', function(){
         if (!item) return;
         // crop spell image to show slot frame
         ss.draw(ctx, item[OBJECT_ICON], x+crop, y+crop, cropLength, cropLength, 4, 4, 24, 24);
-        if (item[SPELL_COOLDOWN]) ts.draw(ctx, G_NUMERIC.LARGE_LIGHT + item[SPELL_COOLDOWN], x, y, w, h);
+        if (item[SPELL_COOLDOWN]) me.fillIconText(ctx, ts, item[SPELL_COOLDOWN], rect, scale);
         else if (item === this.hero.getSelectedSpell()) ts.draw(ctx, G_UI.SELECTED, x, y, w, h);
     },
     onCustomClick = function(ent, ui){

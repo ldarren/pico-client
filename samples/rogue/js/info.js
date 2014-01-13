@@ -280,6 +280,7 @@ pico.def('info', 'picUIContent', function(){
                 delete this.objects[targetId];
                 hero.incrHp(1);
                 ai.incrHpAll(1);
+                this.go('forceRefresh');
                 this.go('heroMoveTo', [targetId]);
                 break;
             case 'rejuvenate':

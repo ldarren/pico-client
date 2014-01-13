@@ -242,6 +242,7 @@ console.log(JSON.stringify(hints));
         me.god.step.call(me, steps);
         me.hero.step.call(me, steps);
         me.ai.step.call(me, steps);
+        me.go('forceRefresh');
 
         return entities;
     };
@@ -466,16 +467,17 @@ console.log(JSON.stringify(hints));
     me.chantScroll = function(elapsed, evt, entities){
         var
         targetId = evt[0],
-        stat = me.hero.removeFromBag(targetId);
+        hero = me.hero,
+        stat = hero.removeFromBag(targetId);
 
         switch(stat[OBJECT_SUB_TYPE]){
             case G_SCROLL_TYPE.MANUSCRIPT:
-                me.hero.putIntoTome(me.ai.studyScroll());
+                hero.putIntoTome(me.ai.studyScroll(hero.getJob(), hero.getWill(), this.currentLevel));
                 break;
             case G_SCROLL_TYPE.IDENTITY:
                 break;
             case G_SCROLL_TYPE.TELEPORT:
-                me.hero.setLastWayPoint(this.currentLevel);
+                hero.setLastWayPoint(this.currentLevel);
                 this.go('teleport', 0);
                 break;
             case G_SCROLL_TYPE.MAP:

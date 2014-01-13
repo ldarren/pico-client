@@ -194,8 +194,10 @@ pico.def('ai', function(){
         return item;
     };
 
-    me.studyScroll = function(){
-        var spell = G_OBJECT[187].slice();
+    me.studyScroll = function(job, will, level){
+        var
+        spellInfo = pick(G_SPELL_RATE, will, level),
+        spell = G_OBJECT[spellInfo[DROP_ID]].slice();
         spell[OBJECT_NAME] = G_OBJECT_NAME[spell[OBJECT_ICON]];
         return spell;
     };

@@ -162,8 +162,8 @@ onLoad = function(){
         //game.route('selectSpell', [tome.selectSpell, renderer.draw, game.releaseSelected]);
         game.route('openGate', [game.openGate, renderer.draw]);
         game.route('openChest', [game.openChest, renderer.draw]);
-        game.route('loot', [bag.lootItem, renderer.draw]);
-        game.route('chant', [game.chantScroll, renderer.draw]);
+        game.route('loot', [bag.lootItem, uiWindow.update, renderer.draw]);
+        game.route('chant', [game.chantScroll, uiWindow.update, renderer.draw]);
         game.route('attack', [game.attackAnim, renderer.draw]);
         game.route('counter', [game.counterAnim, uiWindow.update, renderer.draw]);
         game.route('flee', [game.flee, renderer.draw]);
@@ -180,7 +180,7 @@ onLoad = function(){
         game.route('gotoLevel', [game.gotoLevel, renderer.draw]);
         game.route('teleport', [game.teleport, renderer.draw]);
         game.route('reborn', [game.reborn, renderer.draw]);
-        game.route('recover', [game.recover, renderer.draw]);
+        game.route('recover', [game.recover, uiWindow.update, renderer.draw]);
         game.route('openForSale', [uiWindow.maximise, bag.openForSale, renderer.draw]);
         game.route('showInfo', [uiWindow.showInfo, renderer.draw]);
         game.route('hideInfo', [uiWindow.hideInfo, renderer.draw]);

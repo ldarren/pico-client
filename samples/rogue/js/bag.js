@@ -21,8 +21,10 @@ pico.def('bag', 'picUIContent', function(){
         if (!slot) return;
         item = slot[0];
         count = slot[1];
+        ctx.baseline='bottom';
+        ctx.align='right';
         ts.draw(ctx, item[OBJECT_ICON], x, y, w, h);
-        if(count > 1)  ctx.fillText(count, x+w, y+h, w);
+        if(count > 1)  ctx.fillText(count, x+w-(4*scale), y+h-(4*scale), w);
         if (i === com.activated) {
             ts.draw(ctx, G_UI.SELECTED, x, y, w, h);
         }

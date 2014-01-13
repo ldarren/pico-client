@@ -426,39 +426,39 @@ Object.freeze(G_SCROLL_RATE = [
     [G_ICON.MAP,                10, G_QUALITY.LOW,  G_GRADE.G12],
 ]);
 Object.freeze(G_SPELL_TYPE = {
-    AIR_BURST,
-    BEAM,
-    ENCHANT,
-    GAZE,
-    EXPLOSION,
-    FIREARROWS,
-    FIREBALL,
-    FOG,
-    HASTE,
-    HEAL,
-    HORROR,
-    ICE,
-    LEAF,
-    LIGHTNING,
-    LINK,
-    NEEDLES,
-    PROTECT,
-    RIP,
-    ROCK,
-    RUNES,
-    SHIELDING,
-    SLICE,
-    SUN,
-    TORNADO,
-    VINES,
-    WHIRLWIND,
-    WILD,
-    WINDGRASP,
+    AIR_BURST: 1,
+    BEAM: 2,
+    ENCHANT: 3,
+    GAZE: 4,
+    EXPLOSION: 5,
+    FIREARROWS: 6,
+    FIREBALL: 7,
+    FOG: 8,
+    HASTE: 9,
+    HEAL: 10,
+    HORROR: 11,
+    ICE: 12,
+    LEAF: 13,
+    LIGHTNING: 14,
+    LINK: 15,
+    NEEDLES: 16,
+    PROTECT: 17,
+    RIP: 18,
+    ROCK: 19,
+    RUNES: 20,
+    SHIELDING: 21,
+    SLICE: 22,
+    SUN: 23,
+    TORNADO: 24,
+    VINES: 25,
+    WHIRLWIND: 26,
+    WILD: 27,
+    WINDGRASP: 28,
 });
 // from manuscript to spell rate
 Object.freeze(G_SPELL_RATE = [
-    [9,     5,  G_QUALITY.HIGH, G_GRADE.G22,
-    [108,    5,  G_QUALITY.LOW, G_GRADE.G22],
+    [G_ICON.WHIRLWIND,      5,      G_QUALITY.HIGH,     G_GRADE.ALL],
+    [G_ICON.FIREBALL,       5,      G_QUALITY.LOW,      G_GRADE.ALL],
 ]);
 Object.freeze(G_WEAPON_TYPE = {
     SWORD: 1,
@@ -692,6 +692,13 @@ Object.freeze(G_OBJECT = [
     [133, '', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.SHRINE],
     [134, '', 0, 0, G_OBJECT_TYPE.MATERIAL, G_MATERIAL_TYPE.SOUL],
     [135, '', 0, 0, G_OBJECT_TYPE.HEALTH],
+    // spellType, difficulty, cooldown, currCooldown, stat1, stat2, statn
+    [136, '', 0, 0, 0, 0, 5, 3, 0], // Pentagram
+    [137, '', 0, 0, 0, 0, 5, 3, 0], // ankh
+    [138, '', 0, 0, 0, 0, 0, 0, 0], // all seeing
+    [139, '', 0, 0, 0, 0, 5, 3, 0], // creation
+    [140, '', 0, 0, 0, 0, 5, 3, 0], // chaos
+    [141, '', 0, 0, 0, 0, 5, 3, 0], // evolve
     [142, '', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.BANNER],
     [143, '', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.MESSAGE_BOARD],
     // id, type, name, hp, will, dex, luck, [atk, ratk, matk], [def, mdef], [veg, insect, beast, undead, demon]

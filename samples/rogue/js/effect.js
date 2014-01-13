@@ -28,7 +28,6 @@ pico.def('effect', 'picBase', function(){
     me.use('picRenderer');
 
     me.draw = function(ctx, ent, clip){
-        console.error('effect.draw');
     };
 
     me.drawScreenshot = function(ctx, ent, clip, bitmap, evt){
@@ -44,7 +43,7 @@ pico.def('effect', 'picBase', function(){
             mapW = this.mapWidth,
             tileW = this.tileWidth,
             tileH = this.tileHeight,
-            tileSet = this.tileSet,
+            spellSet = this.spellSet,
             view = me.camera.viewPos(),
             pos, spell, x, y;
 
@@ -60,7 +59,7 @@ pico.def('effect', 'picBase', function(){
                 pos = targets[i];
                 spell = spells[i];
                 x = view[0] + tileW * (pos%mapW) - dx, y = view[1] + tileH * Floor(pos/mapW) - dy;
-                tileSet.draw(ctx, spell, x, y, w, h);
+                spellSet.draw(ctx, spell, x, y, w, h);
             }
             break;
         case 'damageEfx':

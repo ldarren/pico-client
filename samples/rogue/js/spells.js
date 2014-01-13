@@ -14,7 +14,7 @@ pico.def('spells', function(){
         flags = this.flags;
 
         switch(spell[OBJECT_SUB_TYPE]){
-        case G_SPELL_TYPE.UNHIDE:
+        case G_SPELL_TYPE.GAZE:
             if (!object){
                 map[id] |= G_TILE_TYPE.CREEP;
                 objects[id] = this.ai.spawnCreep(this.deepestLevel);
