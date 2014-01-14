@@ -429,21 +429,84 @@ pico.def('hero', 'picUIContent', function(){
         return currStats;
     };
 
-    me.castSpell = function(id){
-        var s = selectedSpell;
-        if (!s || s[SPELL_COOLDOWN]) return;
-
-        selectedSpell = undefined;
-        s[SPELL_COOLDOWN] = s[SPELL_RELOAD]; // set cooldown;
-        
-        if (s) this.go('forceRefresh'); // TODO: find a better way to show cooldown counter
-
-        return tome.triggerSpell(s, id);
-    };
-
     me.selectSpell = function(spell){
         if (spell && spell[SPELL_COOLDOWN]) return;
         selectedSpell = spell;
+    };
+
+    me.castSpell = function(id){
+        var spell = selectedSpell;
+        if (!spell || spell[SPELL_COOLDOWN]) return false;
+        else this.go('forceRefresh'); // TODO: find a better way to show cooldown counter
+
+        selectedSpell = undefined;
+        spell[SPELL_COOLDOWN] = spell[SPELL_RELOAD]; // set cooldown;
+
+        var
+        map = this.map,
+        hero = this.hero,
+        objects = this.objects,
+        object = objects[id],
+        objectType = object ? object[OBJECT_TYPE] : undefined,
+        flags = this.flags,
+        nextAction, nextActionEvent;
+                
+        if (object && (G_OBJECT_TYPE.NPC === objectType || 
+            G_OBJECT_TYPE.KEY === objectType || 
+            G_OBJECT_TYPE.ENV === objectType)) return false;
+
+        switch(spell[OBJECT_SUB_TYPE]){
+        case G_SPELL_TYPE.WHIRLWIND:
+            break;
+        case G_SPELL_TYPE.GAZE:
+            if (!this.currentLevel) return false;
+            if (!object){
+                map[id] |= G_TILE_TYPE.CREEP;
+                objects[id] = this.ai.spawnCreep(this.deepestLevel);
+                this.recalHints();
+                nextAction = 'attack';
+                nextActionEvent = hero.battle(id, true);
+            }else{
+                flags[id] = G_UI.FLAG;
+                nextAction = 'showInfo';
+                nextActionEvent = { targetId: id, context: G_CONTEXT.WORLD };
+            }
+            map[id] &= G_TILE_TYPE.SHOW;
+            break;
+        case G_SPELL_TYPE.FIREBALL:
+            if (object){
+                switch(objectType){
+                case G_OBJECT_TYPE.CREEP:
+                    nextAction = 'showInfo';
+                    object[CREEP_HP]--;
+                    if (this.ai.bury(id)){
+                        nextActionEvent = { info:'You have killed '+object[OBJECT_NAME] };
+                    }else{
+                        nextActionEvent = { info:'You have toasted '+object[OBJECT_NAME]+' but it is still alive' };
+                    }
+                    break;
+                case G_OBJECT_TYPE.HERO:
+                    // ignore
+                    break;
+                default:
+                    this.objects[id] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
+                    nextAction = 'showInfo';
+                    nextActionEvent = { info:'You have toasted a '+object[OBJECT_NAME] };
+                }
+            }
+            map[id] &= G_TILE_TYPE.SHOW;
+            break;
+        }
+        this.go('hideInfo');
+        this.go('startEffect', {
+            type:'castEfx',
+            targets:[id],
+            spells:[spell[OBJECT_ICON]],
+            callback:nextAction,
+            event:nextActionEvent
+        });
+
+        return true;
     };
 
     me.incrHp = function(inc) {

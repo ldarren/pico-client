@@ -303,6 +303,22 @@ console.log(JSON.stringify(hints));
         });
     };
 
+    me.castSpell = function(elapsed, evt, entities){
+        if (this.hero.castSpell.call(this, evt.targetId)) return entities;
+        return; // return nothing
+    };
+
+    me.forgetSpell = function(elapsed, evt, entities){
+        var
+        hero = this.hero,
+        tome = hero.getTome(),
+        spell = hero.getSelectedSpell();
+
+        delete tome[tome.indexOf(spell)];
+
+        hero.selectSpell();
+    };
+
     me.attackAnim = function(elapsed, evt, entities){
         var
         attackMsg = evt[0],

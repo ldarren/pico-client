@@ -167,6 +167,8 @@ onLoad = function(){
         game.route('attack', [game.attackAnim, renderer.draw]);
         game.route('counter', [game.counterAnim, uiWindow.update, renderer.draw]);
         game.route('flee', [game.flee, renderer.draw]);
+        game.route('castSpell', [game.castSpell]);
+        game.route('forgetSpell', [game.forgetSpell, uiWindow.update, renderer.draw]);
         game.route('startEffect', [renderer.captureScreenshot, effect.start]);
         game.route('doEffect', [tween.update, renderer.drawScreenshot]);
         game.route('clearEffect', [effect.clear, uiWindow.hideAll, renderer.clear, uiWindow.showAll, effect.stop]);

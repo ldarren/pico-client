@@ -48,7 +48,7 @@ pico.def('god', function(){
         if (stats[OBJECT_LEVEL] !== level) return;
 
         var
-        tomb = G_CREATE_OBJECT(G_ICON.TOMB, stats[OBJECT_NAME]+' '+G_OBJECT_NAME[tomb[OBJECT_ICON]]),
+        tomb = G_CREATE_OBJECT(G_ICON.TOMB, stats[OBJECT_NAME]+' '+G_OBJECT_NAME[G_ICON.TOMB]),
         remain = Round(Random()*HERO_AMULET);
 
         for(var i=0,l=HERO_QUIVER; i<l; i++){

@@ -241,7 +241,7 @@ pico.def('ai', function(){
         if (creep[CREEP_ITEM]){
             creep = creep[CREEP_ITEM];
         }else{
-            creep = CREATE_OBJECT(G_ICON.HEALTH_GLOBE);
+            creep = G_CREATE_OBJECT(G_ICON.HEALTH_GLOBE);
         }
         objects[id] = creep;
 

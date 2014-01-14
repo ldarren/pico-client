@@ -42,8 +42,10 @@ pico.def('tome', 'picUIContent', function(){
             ', difficulty: '+spell[SPELL_DIFFICULTY]+
             ((spell[SPELL_DIFFICULTY]) ? ', strength: '+spell[SPELL_DIFFICULTY]+', ' : ', '),
             labels=['Cast', 'Forget', 'Later'],
-            callbacks=['castSpell', 'forgetSpell'],
-            events=[{spell:spell, targetId:id}, {spell:spell}];
+            callbacks=['castSpell', 'showDialog'],
+            events=[{targetId:id}, {
+                info:['Forget spell','This will remove the selected spell permanently from tome'],
+                labels:['Forget', 'Keep'], callbacks:['forgetSpell']}];
 
             switch(spell[OBJECT_SUB_TYPE]){
             case G_SPELL_TYPE.WHIRLWIND:
@@ -102,73 +104,6 @@ pico.def('tome', 'picUIContent', function(){
         case me.CUSTOM_BUTTON: return onCustomDraw.apply(this, arguments); break;
         case me.CUSTOM_DROP: return onCustomDrop.apply(this, arguments); break;
         }
-    };
-
-    me.triggerSpell = function(spell, id){
-        if (!spell) return false;
-
-        var
-        map = this.map,
-        hero = this.hero,
-        objects = this.objects,
-        object = objects[id],
-        flags = this.flags,
-        nextAction, nextActionEvent;
-
-        switch(spell[OBJECT_SUB_TYPE]){
-        case G_SPELL_TYPE.WHIRLWIND:
-            break;
-        case G_SPELL_TYPE.GAZE:
-            if (!object){
-                map[id] |= G_TILE_TYPE.CREEP;
-                objects[id] = this.ai.spawnCreep(this.deepestLevel);
-                this.recalHints();
-                nextAction = 'attack';
-                nextActionEvent = hero.battle(id, true);
-            }else{
-                flags[id] = G_UI.FLAG;
-                nextAction = 'showInfo';
-                nextActionEvent = { targetId: id, context: G_CONTEXT.WORLD };
-            }
-            map[id] &= G_TILE_TYPE.SHOW;
-            break;
-        case G_SPELL_TYPE.FIREBALL:
-            if (object){
-                switch(object[OBJECT_TYPE]){
-                case G_OBJECT_TYPE.CREEP:
-                    nextAction = 'showInfo';
-                    object[CREEP_HP]--;
-                    if (this.ai.bury(id)){
-                        nextActionEvent = { info:'You have killed '+object[OBJECT_NAME] };
-                    }else{
-                        nextActionEvent = { info:'You have toasted '+object[OBJECT_NAME]+' but it is still alive' };
-                    }
-                    break;
-                case G_OBJECT_TYPE.HERO:
-                case G_OBJECT_TYPE.NPC:
-                case G_OBJECT_TYPE.KEY:
-                case G_OBJECT_TYPE.ENV:
-                    // ignore
-                    break;
-                default:
-                    this.objects[id] = CREATE_OBJECT(G_ICON.CHEST_EMPTY);
-                    nextAction = 'showInfo';
-                    nextActionEvent = { info:'You have toasted a '+object[OBJECT_NAME] };
-                }
-            }
-            map[id] &= G_TILE_TYPE.SHOW;
-            break;
-        }
-
-        this.go('startEffect', {
-            type:'castEfx',
-            targets:[id],
-            spells:[spell[OBJECT_ICON]],
-            callback:nextAction,
-            event:nextActionEvent
-        });
-
-        return true;
     };
 
     me.create = function(ent, data){
