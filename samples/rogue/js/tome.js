@@ -28,11 +28,50 @@ pico.def('tome', 'picUIContent', function(){
     onCustomClick = function(ent, ui){
         if (!ui) return false;
         var
-        spell = this.hero.getTome()[ui.userData.id],
-        toggle = this.hero.getSelectedSpell() === spell;
+        id = ui.userData.id,
+        hero = this.hero,
+        spell = hero.getTome()[id],
+        toggle = hero.getSelectedSpell() === spell;
 
-        this.hero.selectSpell(toggle ? undefined : spell);
-        this.go('forceRefresh');
+        hero.selectSpell(toggle ? undefined : spell);
+        if (hero.getSelectedSpell()){
+            var
+            level = spell[OBJECT_LEVEL],
+            info = spell[OBJECT_NAME]+' level '+level+
+            ', elements['+G_ELEMENT_NAME[spell[SPELL_ELEMENT]]+']'+
+            ', difficulty: '+spell[SPELL_DIFFICULTY]+
+            ((spell[SPELL_DIFFICULTY]) ? ', strength: '+spell[SPELL_DIFFICULTY]+', ' : ', '),
+            labels,callbacks,events;
+
+            switch(spell[OBJECT_SUB_TYPE]){
+            case G_SPELL_TYPE.WHIRLWIND:
+                'spin attack all nearby objects';
+                labels=['Cast', 'Later'];
+                callback=['castSpell'];
+                events=[{spell:spell, targetId:id}];
+                break;
+            case G_SPELL_TYPE.GAZE:
+                info+='reveal object at hidden space, drawback: if gazing space is empty this spell summon a creep there, ';
+                switch(level){
+                case 1: break
+                case 2: info+='deal 1 damage to revealed creep, '; break;
+                default: info+='deal 2 damages to revealed creep, '; break;
+                }
+                info+='tap a tile to cast'
+                break;
+            case G_SPELL_TYPE.FIREBALL:
+                switch(level){
+                case 1: info+='Hurls a fiery ball that causes 1 damage, '; break
+                case 2: info+='Hurls a fiery ball that causes 1 damage to all surrounding creeps, '; break;
+                default: info+='Hurls a fiery ball that causes 2 damages to all surrounding creeps, '; break;
+                }
+                info+='tap a tile to cast'
+                break;
+            }
+            this.go('showInfo', {info: info, labels: labels, callbacks: callbacks, events: events});
+        }else{
+            this.go('forceRefresh');
+        }
 
         return undefined !== spell;
     },
@@ -58,6 +97,76 @@ pico.def('tome', 'picUIContent', function(){
         case me.CUSTOM_BUTTON: return onCustomDraw.apply(this, arguments); break;
         case me.CUSTOM_DROP: return onCustomDrop.apply(this, arguments); break;
         }
+    };
+
+    me.triggerSpell = function(spell, id){
+        if (!spell) return false;
+
+        var
+        map = this.map,
+        hero = this.hero,
+        objects = this.objects,
+        object = objects[id],
+        flags = this.flags,
+        nextAction, nextActionEvent;
+
+        switch(spell[OBJECT_SUB_TYPE]){
+        case G_SPELL_TYPE.WHIRLWIND:
+            break;
+        case G_SPELL_TYPE.GAZE:
+            if (!object){
+                map[id] |= G_TILE_TYPE.CREEP;
+                objects[id] = this.ai.spawnCreep(this.deepestLevel);
+                this.recalHints();
+                nextAction = 'attack';
+                nextActionEvent = hero.battle(id, true);
+            }else{
+                flags[id] = G_UI.FLAG;
+                nextAction = 'showInfo';
+                nextActionEvent = { targetId: id, context: G_CONTEXT.WORLD };
+            }
+            map[id] &= G_TILE_TYPE.SHOW;
+            break;
+        case G_SPELL_TYPE.FIREBALL:
+            if (object){
+                switch(object[OBJECT_TYPE]){
+                case G_OBJECT_TYPE.CREEP:
+                    nextAction = 'showInfo';
+                    object[CREEP_HP]--;
+                    if (this.ai.bury(id)){
+                        nextActionEvent = { info:'You have killed '+object[OBJECT_NAME] };
+                    }else{
+                        nextActionEvent = { info:'You have toasted '+object[OBJECT_NAME]+' but it is still alive' };
+                    }
+                    break;
+                case G_OBJECT_TYPE.HERO:
+                case G_OBJECT_TYPE.NPC:
+                case G_OBJECT_TYPE.KEY:
+                case G_OBJECT_TYPE.ENV:
+                    // ignore
+                    break;
+                default:
+                    var empty = G_OBJECT[G_ICON.CHEST_EMPTY].slice();
+                    empty[OBJECT_NAME] = G_OBJECT_NAME[empty[OBJECT_ICON]];
+                    this.objects[id] = empty;
+                    nextAction = 'showInfo';
+                    nextActionEvent = { info:'You have toasted a '+object[OBJECT_NAME] };
+                }
+                
+            }
+            map[id] &= G_TILE_TYPE.SHOW;
+            break;
+        }
+
+        this.go('startEffect', {
+            type:'castEfx',
+            targets:[id],
+            spells:[spell[OBJECT_ICON]],
+            callback:nextAction,
+            event:nextActionEvent
+        });
+
+        return true;
     };
 
     me.create = function(ent, data){

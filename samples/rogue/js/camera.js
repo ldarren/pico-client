@@ -37,8 +37,6 @@ pico.def('camera', 'picBase', function(){
         }while(viewHeight <= 0 || viewWidth <= 0);
     };
 
-    me.use('spells');
-
     me.viewPos = function(){
         return [viewX, viewY];
     };
@@ -121,9 +119,7 @@ pico.def('camera', 'picBase', function(){
         isNear = this.nearToHero(id);
 
         if (isNear){
-            var spell = hero.castSpell();
-            if (spell) this.go('forceRefresh'); // TODO: find a better way to show cooldown counter
-            if (me.spells.triggerAtExplore.call(this, spell, id)) return entities;
+            if (hero.castSpell.call(this, id)) return entities;
             if (tileType & G_TILE_TYPE.HIDE){
                 this.go('gameStep', this.fillTiles(id));
 

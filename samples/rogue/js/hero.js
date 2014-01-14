@@ -429,14 +429,16 @@ pico.def('hero', 'picUIContent', function(){
         return currStats;
     };
 
-    me.castSpell = function(){
+    me.castSpell = function(id){
         var s = selectedSpell;
         if (!s || s[SPELL_COOLDOWN]) return;
 
         selectedSpell = undefined;
         s[SPELL_COOLDOWN] = s[SPELL_RELOAD]; // set cooldown;
+        
+        if (s) this.go('forceRefresh'); // TODO: find a better way to show cooldown counter
 
-        return s; // TODO return spell effects instead
+        return tome.triggerSpell(s, id);
     };
 
     me.selectSpell = function(spell){
