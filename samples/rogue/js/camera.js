@@ -93,13 +93,13 @@ pico.def('camera', 'picBase', function(){
         map = this.map,
         mapW = this.mapWidth,
         mapH = this.mapHeight,
-        x = Floor((evt[0] - viewX) / this.tileWidth),
-        y = Floor((evt[1] - viewY) / this.tileHeight),
-        hero = this.hero,
         objects = this.objects,
         flags = this.flags,
+        hero = this.hero,
         hp = hero.getPosition(),
-        id, tileType, object, steps;
+        x = Floor((evt[0] - viewX) / this.tileWidth),
+        y = Floor((evt[1] - viewY) / this.tileHeight),
+        id, tileType, object, steps, isNear;
 
         if (y > mapH || x > mapW) return entities;
 
@@ -118,39 +118,41 @@ pico.def('camera', 'picBase', function(){
 
         tileType = map[id];
         object = objects[id];
+        isNear = this.nearToHero(id);
 
-        if (tileType & G_TILE_TYPE.HIDE){
-            if (this.nearToHero(id)) {
-                var spell = hero.castSpell();
-                if (spell) this.go('forceRefresh'); // TODO: find a better way to show cooldown counter
-                if (!me.spells.triggerAtExplore.call(this, spell, id)){
-                    this.go('gameStep', this.fillTiles(id));
+        if (isNear){
+            var spell = hero.castSpell();
+            if (spell) this.go('forceRefresh'); // TODO: find a better way to show cooldown counter
+            if (me.spells.triggerAtExplore.call(this, spell, id)) return entities;
+            if (tileType & G_TILE_TYPE.HIDE){
+                this.go('gameStep', this.fillTiles(id));
 
-                    if (tileType & G_TILE_TYPE.CREEP){
-                        this.go('attack', hero.battle(id, true));
-                    }
+                if (tileType & G_TILE_TYPE.CREEP){
+                    this.go('attack', hero.battle(id, true));
                 }
-            }else{
-                this.audioSprite.play(1);
-                this.go('heroMoveTo', [this.nextTile(id, hp)]);
-            }
-        }else if(object){
-
-            if (hero.equal(object)){
-                steps = this.solve(hp);
-                if (!steps) return entities;
-                this.go('gameStep', steps);
-            }else{
-                this.go('showInfo', { targetId: id, context: G_CONTEXT.WORLD });
             }
         }
 
         tileType = map[id]; // last action might hv updated tileType
         object = objects[id];
-        if (!(tileType & G_TILE_TYPE.HIDE) && !object){
-            this.go('hideInfo');
+        
+        if ((tileType & G_TILE_TYPE.HIDE)){
             this.audioSprite.play(1);
-            this.go('heroMoveTo', [id]);
+            this.go('heroMoveTo', [this.nextTile(id, hp)]);
+        }else{
+            if(object){
+                if (hero.equal(object)){
+                    steps = this.solve(hp);
+                    if (!steps) return entities;
+                    this.go('gameStep', steps);
+                }else{
+                    this.go('showInfo', { targetId: id, context: G_CONTEXT.WORLD });
+                }
+            }else{
+                this.go('hideInfo');
+                this.audioSprite.play(1);
+                this.go('heroMoveTo', [id]);
+            }
         }
 
         return entities;

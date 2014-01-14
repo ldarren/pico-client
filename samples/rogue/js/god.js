@@ -37,7 +37,7 @@ pico.def('god', function(){
             stats: stats,
             effects: [],
             bag: [],
-            tome: [G_OBJECT[G_ICON.GAZE].slice()]
+            tome: [G_OBJECT[G_ICON.GAZE].slice(), G_OBJECT[G_ICON.FIREBALL].slice()]
         };
     };
 
