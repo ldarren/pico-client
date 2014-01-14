@@ -27,9 +27,7 @@ pico.def('god', function(){
     me.createHero = function(){
         var
         job = Round(G_ICON.ROGUE + Random()*(G_ICON.WARLOCK-G_ICON.ROGUE)),
-        stats = G_OBJECT[job].slice();
-
-        stats[OBJECT_NAME] = heroName;
+        stats = G_CREATE_OBJECT(job, heroName);
 
         return {
             // helm, armor, main hand, off hand, ring1, ring2, amulet, quiver, gold, skull, enemy, portal, way point, bag cap, spell cap
@@ -37,7 +35,7 @@ pico.def('god', function(){
             stats: stats,
             effects: [],
             bag: [],
-            tome: [G_OBJECT[G_ICON.GAZE].slice(), G_OBJECT[G_ICON.FIREBALL].slice(), G_OBJECT[G_ICON.WHIRLWIND].slice()]
+            tome: [G_CREATE_OBJECT(G_ICON.GAZE), G_CREATE_OBJECT(G_ICON.FIREBALL), G_CREATE_OBJECT(G_ICON.WHIRLWIND)]
         };
     };
 
@@ -50,7 +48,7 @@ pico.def('god', function(){
         if (stats[OBJECT_LEVEL] !== level) return;
 
         var
-        tomb = G_OBJECT[G_ICON.TOMB].slice(),
+        tomb = G_CREATE_OBJECT(G_ICON.TOMB, stats[OBJECT_NAME]+' '+G_OBJECT_NAME[tomb[OBJECT_ICON]]),
         remain = Round(Random()*HERO_AMULET);
 
         for(var i=0,l=HERO_QUIVER; i<l; i++){
@@ -59,7 +57,6 @@ pico.def('god', function(){
         }
 
         tomb[TOMB_BODY] = appearance;
-        tomb[OBJECT_NAME] = stats[OBJECT_NAME]+' '+G_OBJECT_NAME[tomb[OBJECT_ICON]];
         heroBody = undefined;
         return tomb; 
     };

@@ -97,25 +97,17 @@ pico.def('ai', function(){
     };
 
     me.spawnChest = function(){
-        var c = G_OBJECT[G_ICON.CHEST].slice();
-        c[OBJECT_NAME] = G_OBJECT_NAME[c[OBJECT_ICON]];
-        return c;
+        return G_CREATE_OBJECT(G_ICON.CHEST);
     };
 
     me.createGoods = function(npcType, goods){
-        var item;
-
         switch(npcType){
-            case G_NPC_TYPE.ARCHMAGE:
-                item = G_OBJECT[G_ICON.SMALL_HP].slice();
-                item[OBJECT_NAME] = G_OBJECT_NAME[item[OBJECT_ICON]];
-                goods.push(item);
-                break;
-            case G_NPC_TYPE.BLACKSMITH:
-                item = G_OBJECT[G_ICON.SCIMITAR].slice();
-                item[OBJECT_NAME] = G_OBJECT_NAME[item[OBJECT_ICON]];
-                goods.push(item);
-                break;
+        case G_NPC_TYPE.ARCHMAGE:
+            goods.push(G_CREATE_OBJECT(G_ICON.SMALL_HP));
+            break;
+        case G_NPC_TYPE.BLACKSMITH:
+            goods.push(G_CREATE_OBJECT(G_ICON.SCIMITAR));
+            break;
         }
         return goods;
     };
@@ -197,9 +189,8 @@ pico.def('ai', function(){
     me.studyScroll = function(job, will, level){
         var
         spellInfo = pick(G_SPELL_RATE, will, level),
-        spell = G_OBJECT[spellInfo[DROP_ID]].slice();
-        spell[OBJECT_NAME] = G_OBJECT_NAME[spell[OBJECT_ICON]];
-        return spell;
+        id = spellInfo[DROP_ID];
+        return G_CREATE_OBJECT(id);
     };
 
     me.getStatByTileId = function(id){ return me.getStatByObject(objects[id]); };
@@ -250,8 +241,7 @@ pico.def('ai', function(){
         if (creep[CREEP_ITEM]){
             creep = creep[CREEP_ITEM];
         }else{
-            creep = G_OBJECT[G_ICON.HEALTH_GLOBE].slice();
-            creep[OBJECT_NAME] = G_OBJECT_NAME[G_ICON.HEALTH_GLOBE];
+            creep = CREATE_OBJECT(G_ICON.HEALTH_GLOBE);
         }
         objects[id] = creep;
 

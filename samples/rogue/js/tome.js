@@ -41,23 +41,25 @@ pico.def('tome', 'picUIContent', function(){
             ', elements['+G_ELEMENT_NAME[spell[SPELL_ELEMENT]]+']'+
             ', difficulty: '+spell[SPELL_DIFFICULTY]+
             ((spell[SPELL_DIFFICULTY]) ? ', strength: '+spell[SPELL_DIFFICULTY]+', ' : ', '),
-            labels,callbacks,events;
+            labels=['Cast', 'Forget', 'Later'],
+            callbacks=['castSpell', 'forgetSpell'],
+            events=[{spell:spell, targetId:id}, {spell:spell}];
 
             switch(spell[OBJECT_SUB_TYPE]){
             case G_SPELL_TYPE.WHIRLWIND:
-                'spin attack all nearby objects';
-                labels=['Cast', 'Later'];
-                callback=['castSpell'];
-                events=[{spell:spell, targetId:id}];
+                info+='spin attack all nearby objects';
                 break;
             case G_SPELL_TYPE.GAZE:
-                info+='reveal object at hidden space, drawback: if gazing space is empty this spell summon a creep there, ';
+                info+='reveal object at hidden space, drawback: if gazing space is an empty space this spell summon a creep there, ';
                 switch(level){
                 case 1: break
                 case 2: info+='deal 1 damage to revealed creep, '; break;
                 default: info+='deal 2 damages to revealed creep, '; break;
                 }
                 info+='tap a tile to cast'
+                labels.shift();
+                callbacks.shift();
+                events.shift();
                 break;
             case G_SPELL_TYPE.FIREBALL:
                 switch(level){
@@ -66,6 +68,9 @@ pico.def('tome', 'picUIContent', function(){
                 default: info+='Hurls a fiery ball that causes 2 damages to all surrounding creeps, '; break;
                 }
                 info+='tap a tile to cast'
+                labels.shift();
+                callbacks.shift();
+                events.shift();
                 break;
             }
             this.go('showInfo', {info: info, labels: labels, callbacks: callbacks, events: events});
@@ -146,13 +151,10 @@ pico.def('tome', 'picUIContent', function(){
                     // ignore
                     break;
                 default:
-                    var empty = G_OBJECT[G_ICON.CHEST_EMPTY].slice();
-                    empty[OBJECT_NAME] = G_OBJECT_NAME[empty[OBJECT_ICON]];
-                    this.objects[id] = empty;
+                    this.objects[id] = CREATE_OBJECT(G_ICON.CHEST_EMPTY);
                     nextAction = 'showInfo';
                     nextActionEvent = { info:'You have toasted a '+object[OBJECT_NAME] };
                 }
-                
             }
             map[id] &= G_TILE_TYPE.SHOW;
             break;

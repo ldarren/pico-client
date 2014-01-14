@@ -198,9 +198,7 @@ pico.def('bag', 'picUIContent', function(){
 
         this.hero.putIntoBag(loot);
 
-        var empty = G_OBJECT[G_ICON.CHEST_EMPTY].slice();
-        empty[OBJECT_NAME] = G_OBJECT_NAME[empty[OBJECT_ICON]];
-        this.objects[evt] = empty;
+        this.objects[evt] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
 
         return entities;
     };

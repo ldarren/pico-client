@@ -106,8 +106,7 @@ console.log(i);
         objects = me.objects,
         hints = me.hints,
         flags = me.flags,
-        OBJ = G_TOWN_MAP.objects,
-        item;
+        OBJ = G_TOWN_MAP.objects;
 
         objects.length = 0;
         hints.length = 0;
@@ -115,9 +114,7 @@ console.log(i);
         
         for(var i=0,l=OBJ.length; i<l; i++){
             if (OBJ[i]){
-                item = G_OBJECT[OBJ[i]].slice();
-                item[OBJECT_NAME] = G_OBJECT_NAME[OBJ[i]];
-                objects[i] = item;
+                objects[i] = G_CREATE_OBJECT(OBJ[i]);
             }
         }
 
@@ -157,7 +154,7 @@ console.log(i);
             map[c] |= G_TILE_TYPE.CREEP;
             objects[c] = ai.spawnCreep(me.currentLevel);
         }
-        objects[c][CREEP_ITEM] = G_OBJECT[G_ICON.KEY_GATE].slice();
+        objects[c][CREEP_ITEM] = G_CREATE_OBJECT(G_ICON.KEY_GATE);
 
         // add chests
         for(i=0,l=chestCount; i<l; i++){
@@ -377,7 +374,7 @@ console.log(JSON.stringify(hints));
             objects[targetId] = creep;
             if (hero.isDead()){
                 hero.setTargetId(undefined);
-                objects[pos] = G_OBJECT[G_ICON.BONES].slice();
+                objects[pos] = G_CREATE_OBJECT(G_ICON.BONES),
                 me.hero.bury(me.god);
                 me.routeInputs([function(){
                     me.go('hideInfo');
