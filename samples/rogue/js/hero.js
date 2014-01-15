@@ -448,15 +448,67 @@ pico.def('hero', 'picUIContent', function(){
         objects = this.objects,
         object = objects[id],
         objectType = object ? object[OBJECT_TYPE] : undefined,
-        flags = this.flags,
-        nextAction, nextActionEvent;
+        flags = this.flags;
                 
         if (object && (G_OBJECT_TYPE.NPC === objectType || 
             G_OBJECT_TYPE.KEY === objectType || 
             G_OBJECT_TYPE.ENV === objectType)) return false;
 
+        var
+        castPt = d20Roll(),
+        totalCastPt = castPt + currStats[OBJECT_MATK],
+        castStr = castPt + spell[SPELL_STRENGTH],
+        nextAction, nextActionEvent, info;
+
+        if (0 === castPt){
+            this.go('forgetSpell');
+            this.go('showInfo', {info:'Spell major failure: You roll a 0, this spell was so powerfull for your feeble mind that it is thraumatized you. You are now scared and the spell is forgotten.'});
+            return true; // spell cast
+        }
+
+        if (totalCastPt < spell[SPELL_DIFFICULTY]){
+            this.go('showInfo', {info:'Spell minor failure: You have failed to cast this spell with a roll of '+totalCastPt+' ('+castPt+'+'+currStats[OBJECT_MATK]+') which is lower than the spell difficulty of '+spell[SPELL_DIFFICULTY]});
+            return true; // spell cast
+        }
+
+
         switch(spell[OBJECT_SUB_TYPE]){
         case G_SPELL_TYPE.WHIRLWIND:
+            var
+            touched = this.getAllTouched(id),
+            contact, contactId, creepCount=0, chestCount=0;
+
+            info = 'You rolled a '+castStr+' ('+castPt+'+'+spell[SPELL_STRENGTH]+')'; 
+            for(var i=0,l=touched.length; i<l; i++){
+                contactId = touched[i];
+                contact = objects[contactId];
+                if (!contact) continue;
+                switch(contact[OBJECT_TYPE]){
+                case G_OBJECT_TYPE.CREEP:
+                    if (castStr > contact[CREEP_MDEF]){
+                        contact[CREEP_HP]--;
+                        this.ai.bury(contactId);
+                        info += ', beats the def('+contact[CREEP_MDEF]+') of the '+contact[OBJECT_NAME]; 
+                    }else{
+                        info += ', failed to beat the def('+contact[CREEP_MDEF]+') of the '+contact[OBJECT_NAME]; 
+                    }
+                    creepCount++;
+                    break;
+                case G_OBJECT_TYPE.CHEST:
+                    if (contact[CHEST_ITEM]){
+                        objects[id] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
+                        chestCount++;
+                    }
+                    break;
+                }
+                map[contactId] &= G_TILE_TYPE.SHOW;
+            }
+            if (chestCount) info += ', and you have destroyed '+chestCount+' chests'; 
+            if (!creepCount && !chestCount) info += ', but noone is near you'; 
+            nextAction = 'showInfo';
+            nextActionEvent = { info:info };
+            break;
+        case G_SPELL_TYPE.POISONS:
             break;
         case G_SPELL_TYPE.GAZE:
             if (!this.currentLevel) return false;
@@ -489,7 +541,7 @@ pico.def('hero', 'picUIContent', function(){
                     // ignore
                     break;
                 default:
-                    this.objects[id] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
+                    objects[id] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
                     nextAction = 'showInfo';
                     nextActionEvent = { info:'You have toasted a '+object[OBJECT_NAME] };
                 }

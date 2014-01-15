@@ -304,7 +304,8 @@ console.log(JSON.stringify(hints));
     };
 
     me.castSpell = function(elapsed, evt, entities){
-        if (this.hero.castSpell.call(this, evt.targetId)) return entities;
+        var hero = this.hero;
+        if (hero.castSpell.call(this, hero.getPosition())) return entities;
         return; // return nothing
     };
 
@@ -537,6 +538,36 @@ console.log(JSON.stringify(hints));
 
     me.nextTile = function(at, toward){
         return this.getNeighbour(at, toward, isOpen, heuristic);
+    };
+
+    me.getAllTouched = function(at){
+        var
+        objects = this.objects,
+        touched = [],
+        w = me.mapWidth,
+        i;
+
+        i = at-w;
+        if (objects[i]) touched.push(i);
+        i = at+w;
+        if (objects[i]) touched.push(i);
+        if (at%w){
+            i = at-1;
+            if (objects[i]) touched.push(i);
+            i = at-w-1;
+            if (objects[i]) touched.push(i);
+            i = at+w-1;
+            if (objects[i]) touched.push(i);
+        }
+        if ((at+1)%w){
+            i = at+1;
+            if (objects[i]) touched.push(i);
+            i = at-w+1;
+            if (objects[i]) touched.push(i);
+            i = at+w+1;
+            if (objects[i]) touched.push(i);
+        }
+        return touched;
     };
 
     me.findPath = function(from, to){

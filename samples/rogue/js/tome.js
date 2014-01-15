@@ -43,13 +43,16 @@ pico.def('tome', 'picUIContent', function(){
             ((spell[SPELL_DIFFICULTY]) ? ', strength: '+spell[SPELL_DIFFICULTY]+', ' : ', '),
             labels=['Cast', 'Forget', 'Later'],
             callbacks=['castSpell', 'showDialog'],
-            events=[{targetId:id}, {
+            events=[null, {
                 info:['Forget spell','This will remove the selected spell permanently from tome'],
                 labels:['Forget', 'Keep'], callbacks:['forgetSpell']}];
 
             switch(spell[OBJECT_SUB_TYPE]){
             case G_SPELL_TYPE.WHIRLWIND:
                 info+='spin attack all nearby objects';
+                break;
+            case G_SPELL_TYPE.POISONS:
+                info+='coats Main Hand, Off Hand, or Ranged weapon with poisons';
                 break;
             case G_SPELL_TYPE.GAZE:
                 info+='reveal object at hidden space, drawback: if gazing space is an empty space this spell summon a creep there, ';
@@ -77,6 +80,7 @@ pico.def('tome', 'picUIContent', function(){
             }
             this.go('showInfo', {info: info, labels: labels, callbacks: callbacks, events: events});
         }else{
+            this.go('hideInfo');
             this.go('forceRefresh');
         }
 
