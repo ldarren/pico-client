@@ -456,9 +456,7 @@ pico.def('hero', 'picUIContent', function(){
 
         var
         castPt = d20Roll(),
-        totalCastPt = castPt + currStats[OBJECT_MATK],
-        castStr = castPt + spell[SPELL_STRENGTH],
-        nextAction, nextActionEvent, info;
+        totalCastPt = castPt + currStats[OBJECT_MATK];
 
         if (0 === castPt){
             this.go('forgetSpell');
@@ -471,6 +469,10 @@ pico.def('hero', 'picUIContent', function(){
             return true; // spell cast
         }
 
+        var
+        targets = [],
+        castStr = castPt + spell[SPELL_STRENGTH],
+        nextAction, nextActionEvent, info;
 
         switch(spell[OBJECT_SUB_TYPE]){
         case G_SPELL_TYPE.WHIRLWIND:
@@ -489,16 +491,21 @@ pico.def('hero', 'picUIContent', function(){
                         contact[CREEP_HP]--;
                         this.ai.bury(contactId);
                         info += ', beats the def('+contact[CREEP_MDEF]+') of the '+contact[OBJECT_NAME]; 
+                        targets.push(contactId);
                     }else{
                         info += ', failed to beat the def('+contact[CREEP_MDEF]+') of the '+contact[OBJECT_NAME]; 
                     }
                     creepCount++;
                     break;
                 case G_OBJECT_TYPE.CHEST:
-                    if (contact[CHEST_ITEM]){
-                        objects[id] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
+                    if (contact[OBJECT_SUB_TYPE] || contact[CHEST_ITEM]){
+                        objects[contactId] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
                         chestCount++;
+                        targets.push(contactId);
                     }
+                    break;
+                default:
+                    delete objects[contatcId];
                     break;
                 }
                 map[contactId] &= G_TILE_TYPE.SHOW;
@@ -536,14 +543,22 @@ pico.def('hero', 'picUIContent', function(){
                     }else{
                         nextActionEvent = { info:'You have toasted '+object[OBJECT_NAME]+' but it is still alive' };
                     }
+                    targets.push(id);
                     break;
                 case G_OBJECT_TYPE.HERO:
                     // ignore
                     break;
+                case G_OBJECT_TYPE.CHEST:
+                    if (object[OBJECT_SUB_TYPE] || object[CHEST_ITEM]){
+                        objects[id] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
+                        targets.push(id);
+                        nextAction = 'showInfo';
+                        nextActionEvent = { info:'You have toasted a '+object[OBJECT_NAME] };
+                    }
+                    break;
                 default:
-                    objects[id] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
-                    nextAction = 'showInfo';
-                    nextActionEvent = { info:'You have toasted a '+object[OBJECT_NAME] };
+                    delete objects[id];
+                    break;
                 }
             }
             map[id] &= G_TILE_TYPE.SHOW;
@@ -554,10 +569,14 @@ pico.def('hero', 'picUIContent', function(){
             type:'castEfx',
             targets:[id],
             spells:[spell[OBJECT_ICON]],
-            callback:nextAction,
-            event:nextActionEvent
+            callback:'startEffect',
+            event:{
+                type:'damageEfx',
+                targets:targets,
+                callback:nextAction,
+                event:nextActionEvent
+                }
         });
-
         return true;
     };
 
