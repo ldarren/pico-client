@@ -233,11 +233,58 @@
                     {},
                     {
                         "type":1,
-                        "cellPt":16,
-                        "uiPt":16,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "text":"Atk `190"
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"atk"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "text":"Def `192"
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"def"}
+                    }
+                ]
+            ],[
+                {},
+                [
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":1,
+                        "uiPt":1,
                         "pad":5,
+                        "w":3,
+                        "h":1,
                         "text":"Equipments"
                     }
+                ],[
+                ],[
+                ],[
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":1,
+                        "uiPt":1,
+                        "pad":5,
+                        "w":2,
+                        "h":1,
+                        "text":"Status Effects"
+                    }
+                ],[
                 ]
             ],[
                 {},
@@ -301,17 +348,15 @@
                 ],[
                     {},
                     {
-                        "type":1,
-                        "cellPt":4,
-                        "uiPt":4,
-                        "text":"Atk `190"
+                        "type":4,
+                        "cellPt":1,
+                        "uiPt":1,
+                        "pad":0,
+                        "w":2,
+                        "h":3,
+                        "userData":{"id":"status"}
                     }
                 ],[
-                    {},
-                    {
-                        "type":4,
-                        "userData":{"id":"atk"}
-                    }
                 ]
             ],[
                 {},
@@ -362,20 +407,7 @@
                         "userData":{"id":"shield"}
                     }
                 ],[
-                    {},
-                    {
-                        "type":1,
-                        "cellPt":4,
-                        "uiPt":4,
-                        "tileSet":"default",
-                        "text":"Def `192"
-                    }
                 ],[
-                    {},
-                    {
-                        "type":4,
-                        "userData":{"id":"def"}
-                    }
                 ]
             ],[
                 {},
@@ -438,126 +470,6 @@
                     }
                 ],[
                 ],[
-                ]
-            ],[
-                {},
-                [
-                    {},
-                    {
-                        "type":1,
-                        "cellPt":16,
-                        "uiPt":16,
-                        "pad":5,
-                        "tileSet":"default",
-                        "text":"Status Effects"
-                    }
-                ]
-            ],[
-                {},
-                [
-                    {},
-                    {
-                        "type":2,
-                        "w":32,
-                        "h":32,
-                        "tileId":15
-                    },{
-                        "type":4,
-                        "w":32,
-                        "h":32,
-                        "userData":{"id":"effect0"}
-                    }
-                ],[
-                    {},
-                    {
-                        "type":2,
-                        "w":32,
-                        "h":32,
-                        "tileId":15
-                    },{
-                        "type":4,
-                        "w":32,
-                        "h":32,
-                        "userData":{"id":"effect1"}
-                    }
-                ],[
-                    {},
-                    {
-                        "type":2,
-                        "w":32,
-                        "h":32,
-                        "tileId":15
-                    },{
-                        "type":4,
-                        "w":32,
-                        "h":32,
-                        "userData":{"id":"effect2"}
-                    }
-                ],[
-                    {},
-                    {
-                        "type":2,
-                        "w":32,
-                        "h":32,
-                        "tileId":15
-                    },{
-                        "type":4,
-                        "w":32,
-                        "h":32,
-                        "userData":{"id":"effect3"}
-                    }
-                ],[
-                    {},
-                    {
-                        "type":2,
-                        "w":32,
-                        "h":32,
-                        "tileId":15
-                    },{
-                        "type":4,
-                        "w":32,
-                        "h":32,
-                        "userData":{"id":"effect4"}
-                    }
-                ],[
-                    {},
-                    {
-                        "type":2,
-                        "w":32,
-                        "h":32,
-                        "tileId":15
-                    },{
-                        "type":4,
-                        "w":32,
-                        "h":32,
-                        "userData":{"id":"effect5"}
-                    }
-                ],[
-                    {},
-                    {
-                        "type":2,
-                        "w":32,
-                        "h":32,
-                        "tileId":15
-                    },{
-                        "type":4,
-                        "w":32,
-                        "h":32,
-                        "userData":{"id":"effect6"}
-                    }
-                ],[
-                    {},
-                    {
-                        "type":2,
-                        "w":32,
-                        "h":32,
-                        "tileId":15
-                    },{
-                        "type":4,
-                        "w":32,
-                        "h":32,
-                        "userData":{"id":"effect7"}
-                    }
                 ]
             ]
         ]

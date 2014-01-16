@@ -29,15 +29,20 @@ pico.def('hero', 'picUIContent', function(){
         case 'ringR':
         case 'amulet':
         case 'quiver':
+        case 'status':
             return me.calcUIRect(rect, ui, tileScale);
         default:
+            if (effects[id.split('effect')[1]]){
+                return me.calcUIRect(rect, ui, tileScale);
+            }
             return me.calcUIRect(rect, ui);
         }
     },
     onCustomDraw = function(ent, ctx, rect, ui, tss, tileScale){
         var
         id = ui.userData.id,
-        ts = tss['default'];
+        ts = tss['default'],
+        ss = tss['spells'];
 
         if ('custom1Label' === id) id = 'goldLabel';
         else if ('custom2Label' === id) id = 'skullLabel';
@@ -92,11 +97,14 @@ pico.def('hero', 'picUIContent', function(){
         case 'ratk':
             me.fillIconText(ctx, ts, ''+currStats[OBJECT_RATK], rect, tileScale);
             break;
-        case 'matk':
+        case 'matk': // TODO: replace by will
             me.fillIconText(ctx, ts, ''+currStats[OBJECT_MATK], rect, tileScale);
             break;
         case 'pdef':
             me.fillIconText(ctx, ts, ''+currStats[OBJECT_DEF], rect, tileScale);
+            break;
+        case 'mdef': // TODO: replace by will
+            me.fillIconText(ctx, ts, ''+currStats[OBJECT_MDEF], rect, tileScale);
             break;
         case 'helm':
             var item = appearance[HERO_HELM];
@@ -120,6 +128,15 @@ pico.def('hero', 'picUIContent', function(){
             break;
         default:
             var effect = effects[id.split('effect')[1]];
+            if (effect){
+                var
+                x=rect[0],y=rect[1],w=rect[2],h=rect[3],
+                crop = tileScale * 4,
+                cropLength = tileScale * 24;
+
+                // crop spell image to show slot frame
+                ss.draw(ctx, effect[OBJECT_ICON], x+crop, y+crop, cropLength, cropLength, 4, 4, 24, 24);
+            }
             break;
         }
     },
@@ -259,7 +276,7 @@ pico.def('hero', 'picUIContent', function(){
                 .replace('NAME', target[OBJECT_NAME])
                 .replace('ATK', target[CREEP_ATK])
                 .replace('HP', 1)];
-    }
+    };
 
     me.move = function(pos){
         delete objects[position];
@@ -528,6 +545,9 @@ pico.def('hero', 'picUIContent', function(){
             nextActionEvent = { info:info };
             break;
         case G_SPELL_TYPE.POISONS:
+            effects.push(spell);
+            nextAction = 'showInfo';
+            nextActionEvent = {info:'Your weapon has coated with poison'};
             break;
         case G_SPELL_TYPE.GAZE:
             if (!this.currentLevel) return false;
@@ -656,6 +676,6 @@ pico.def('hero', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.drawMeshUI.call(this, ctx, {default: this.tileSet}, ent, com, comBox, scale, onCustomUI);
+        return me.drawMeshUI.call(this, ctx, {default: this.tileSet, spells: this.spellSet}, ent, com, comBox, scale, onCustomUI);
     };
 });
