@@ -439,12 +439,10 @@ pico.def('hero', 'picUIContent', function(){
         if (!spell || spell[SPELL_COOLDOWN]) return false;
         else this.go('forceRefresh'); // TODO: find a better way to show cooldown counter
 
-        selectedSpell = undefined;
-        spell[SPELL_COOLDOWN] = spell[SPELL_RELOAD]; // set cooldown;
-
         var
         map = this.map,
         hero = this.hero,
+        hp = hero.getPosition(),
         objects = this.objects,
         object = objects[id],
         objectType = object ? object[OBJECT_TYPE] : undefined,
@@ -453,6 +451,16 @@ pico.def('hero', 'picUIContent', function(){
         if (object && (G_OBJECT_TYPE.NPC === objectType || 
             G_OBJECT_TYPE.KEY === objectType || 
             G_OBJECT_TYPE.ENV === objectType)) return false;
+
+        // some spell can only apply to hero
+        switch(spell[OBJECT_SUB_TYPE]){
+        case G_SPELL_TYPE.WHIRLWIND:
+        case G_SPELL_TYPE.POISONS:
+            if (hp !== id) return false;
+        }
+
+        // return true from here onwards
+        spell[SPELL_COOLDOWN] = spell[SPELL_RELOAD]; // set cooldown;
 
         var
         castPt = d20Roll(),
@@ -468,6 +476,9 @@ pico.def('hero', 'picUIContent', function(){
             this.go('showInfo', {info:'Spell minor failure: You have failed to cast this spell with a roll of '+totalCastPt+' ('+castPt+'+'+currStats[OBJECT_MATK]+') which is lower than the spell difficulty of '+spell[SPELL_DIFFICULTY]});
             return true; // spell cast
         }
+
+        // deselect spell 
+        selectedSpell = undefined;
 
         var
         targets = [],
@@ -509,6 +520,7 @@ pico.def('hero', 'picUIContent', function(){
                     break;
                 }
                 map[contactId] &= G_TILE_TYPE.SHOW;
+                delete flags[contactId];
             }
             if (chestCount) info += ', and you have destroyed '+chestCount+' chests'; 
             if (!creepCount && !chestCount) info += ', but noone is near you'; 
@@ -562,6 +574,7 @@ pico.def('hero', 'picUIContent', function(){
                 }
             }
             map[id] &= G_TILE_TYPE.SHOW;
+            delete flags[id];
             break;
         }
         this.go('hideInfo');

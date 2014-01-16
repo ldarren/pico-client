@@ -92,7 +92,6 @@ pico.def('camera', 'picBase', function(){
         mapW = this.mapWidth,
         mapH = this.mapHeight,
         objects = this.objects,
-        flags = this.flags,
         hero = this.hero,
         hp = hero.getPosition(),
         x = Floor((evt[0] - viewX) / this.tileWidth),

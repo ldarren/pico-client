@@ -318,6 +318,7 @@ console.log(JSON.stringify(hints));
         delete tome[tome.indexOf(spell)];
 
         hero.selectSpell();
+        return entities;
     };
 
     me.attackAnim = function(elapsed, evt, entities){
