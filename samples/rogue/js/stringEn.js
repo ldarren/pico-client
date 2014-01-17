@@ -256,14 +256,21 @@ Object.freeze(G_OBJECT_NAME = {
     196: 'Whirl Wind',
     197: 'Whirl Wind',
     198: 'Whirl Wind',
-    226: 'Poisons',
-    227: 'Poisons',
-    228: 'Poisons',
+    226: 'Poison Blade',
+    227: 'Poison Blade',
+    228: 'Poison Blade',
     256: 'Gaze',
     257: 'Gaze',
     258: 'Gaze',
     295: 'Fireball',
     296: 'Fireball',
     297: 'Fireball',
+
+    589: 'Burned', // reduce hp
+    590: 'Cursed', // reduce roll
+    591: 'Diseased', // reduce max hp
+    592: 'Feared', // reduce atk and def 
+    593: 'Frozen', // immobilize, cooldown stop
+    594: 'Poisoned', // hp dun heal
 });
 

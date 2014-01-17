@@ -38,7 +38,7 @@ pico.def('god', function(){
             tome: [
                 G_CREATE_OBJECT(G_ICON.GAZE),
                 G_CREATE_OBJECT(G_ICON.FIREBALL),
-                G_CREATE_OBJECT(G_ICON.POISONS),
+                G_CREATE_OBJECT(G_ICON.POISON_BLADE),
                 G_CREATE_OBJECT(G_ICON.WHIRLWIND)]
         };
     };

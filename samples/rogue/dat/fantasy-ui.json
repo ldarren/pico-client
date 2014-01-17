@@ -74,7 +74,7 @@
         "uiPt":1,
         "pad":0,
         "w":1.0,
-        "h":680,
+        "h":700,
         "rows":[
             {"font":"bold 12pt alagard","fillStyle":"#aec440"},
             [
@@ -235,13 +235,13 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "text":"Atk `190"
+                        "text":"Str `190"
                     }
                 ],[
                     {},
                     {
                         "type":4,
-                        "userData":{"id":"atk"}
+                        "userData":{"id":"str"}
                     }
                 ],[
                     {},
@@ -264,27 +264,11 @@
                     {},
                     {
                         "type":1,
-                        "cellPt":1,
-                        "uiPt":1,
+                        "cellPt":16,
+                        "uiPt":16,
                         "pad":5,
-                        "w":3,
-                        "h":1,
                         "text":"Equipments"
                     }
-                ],[
-                ],[
-                ],[
-                    {},
-                    {
-                        "type":1,
-                        "cellPt":1,
-                        "uiPt":1,
-                        "pad":5,
-                        "w":2,
-                        "h":1,
-                        "text":"Status Effects"
-                    }
-                ],[
                 ]
             ],[
                 {},
@@ -305,6 +289,7 @@
                         "pad":5,
                         "w":32,
                         "h":32,
+                        "button":1,
                         "userData":{"id":"amulet"}
                     }
                 ],[
@@ -324,6 +309,7 @@
                         "pad":5,
                         "w":32,
                         "h":32,
+                        "button":1,
                         "userData":{"id":"helm"}
                     }
                 ],[
@@ -343,6 +329,7 @@
                         "pad":5,
                         "w":32,
                         "h":32,
+                        "button":1,
                         "userData":{"id":"quiver"}
                     }
                 ],[
@@ -354,7 +341,7 @@
                         "pad":0,
                         "w":2,
                         "h":3,
-                        "userData":{"id":"status"}
+                        "userData":{"id":"desc"}
                     }
                 ],[
                 ]
@@ -377,6 +364,7 @@
                         "pad":5,
                         "w":32,
                         "h":32,
+                        "button":1,
                         "userData":{"id":"weapon"}
                     }
                 ],[
@@ -404,6 +392,7 @@
                         "pad":5,
                         "w":32,
                         "h":32,
+                        "button":1,
                         "userData":{"id":"shield"}
                     }
                 ],[
@@ -428,6 +417,7 @@
                         "pad":5,
                         "w":32,
                         "h":32,
+                        "button":1,
                         "userData":{"id":"ringL"}
                     }
                 ],[
@@ -447,6 +437,7 @@
                         "pad":5,
                         "w":32,
                         "h":32,
+                        "button":1,
                         "userData":{"id":"armor"}
                     }
                 ],[
@@ -466,10 +457,139 @@
                         "pad":5,
                         "w":32,
                         "h":32,
+                        "button":1,
                         "userData":{"id":"ringR"}
                     }
                 ],[
                 ],[
+                ]
+            ],[
+                {},
+                [
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":16,
+                        "uiPt":16,
+                        "pad":5,
+                        "tileSet":"default",
+                        "text":"Status Effects"
+                    }
+                ]
+            ],[
+                {},
+                [
+                    {},
+                    {
+                        "type":2,
+                        "w":32,
+                        "h":32,
+                        "tileId":15
+                    },{
+                        "type":4,
+                        "w":32,
+                        "h":32,
+                        "button":1,
+                        "userData":{"id":"effect0"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":2,
+                        "w":32,
+                        "h":32,
+                        "tileId":15
+                    },{
+                        "type":4,
+                        "w":32,
+                        "h":32,
+                        "button":1,
+                        "userData":{"id":"effect1"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":2,
+                        "w":32,
+                        "h":32,
+                        "tileId":15
+                    },{
+                        "type":4,
+                        "w":32,
+                        "h":32,
+                        "button":1,
+                        "userData":{"id":"effect2"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":2,
+                        "w":32,
+                        "h":32,
+                        "tileId":15
+                    },{
+                        "type":4,
+                        "w":32,
+                        "h":32,
+                        "button":1,
+                        "userData":{"id":"effect3"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":2,
+                        "w":32,
+                        "h":32,
+                        "tileId":15
+                    },{
+                        "type":4,
+                        "w":32,
+                        "h":32,
+                        "button":1,
+                        "userData":{"id":"effect4"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":2,
+                        "w":32,
+                        "h":32,
+                        "tileId":15
+                    },{
+                        "type":4,
+                        "w":32,
+                        "h":32,
+                        "button":1,
+                        "userData":{"id":"effect5"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":2,
+                        "w":32,
+                        "h":32,
+                        "tileId":15
+                    },{
+                        "type":4,
+                        "w":32,
+                        "h":32,
+                        "button":1,
+                        "userData":{"id":"effect6"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":2,
+                        "w":32,
+                        "h":32,
+                        "tileId":15
+                    },{
+                        "type":4,
+                        "w":32,
+                        "h":32,
+                        "button":1,
+                        "userData":{"id":"effect7"}
+                    }
                 ]
             ]
         ]

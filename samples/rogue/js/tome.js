@@ -51,7 +51,7 @@ pico.def('tome', 'picUIContent', function(){
             case G_SPELL_TYPE.WHIRLWIND:
                 info+='spin attack all nearby objects';
                 break;
-            case G_SPELL_TYPE.POISONS:
+            case G_SPELL_TYPE.POISON_BLADE:
                 info+='coats Main Hand, Off Hand, or Ranged weapon with poisons';
                 break;
             case G_SPELL_TYPE.GAZE:

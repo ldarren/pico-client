@@ -56,6 +56,9 @@ pico.def('hero', 'picUIContent', function(){
         case 'name':
             me.fillIconText(ctx, ts, currStats[OBJECT_NAME], rect, tileScale);
             break;
+        case 'desc':
+            me.fillIconText(ctx, ts,'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', rect, tileScale);
+            break;
         case 'level':
             me.fillIconText(ctx, ts, ''+currStats[OBJECT_LEVEL], rect, tileScale);
             break;
@@ -472,7 +475,7 @@ pico.def('hero', 'picUIContent', function(){
         // some spell can only apply to hero
         switch(spell[OBJECT_SUB_TYPE]){
         case G_SPELL_TYPE.WHIRLWIND:
-        case G_SPELL_TYPE.POISONS:
+        case G_SPELL_TYPE.POISON_BLADE:
             if (hp !== id) return false;
         }
 
@@ -481,7 +484,7 @@ pico.def('hero', 'picUIContent', function(){
 
         var
         castPt = d20Roll(),
-        totalCastPt = castPt + currStats[OBJECT_MATK];
+        totalCastPt = castPt + currStats[OBJECT_WILL];
 
         if (0 === castPt){
             this.go('forgetSpell');
@@ -490,7 +493,7 @@ pico.def('hero', 'picUIContent', function(){
         }
 
         if (totalCastPt < spell[SPELL_DIFFICULTY]){
-            this.go('showInfo', {info:'Spell minor failure: You have failed to cast this spell with a roll of '+totalCastPt+' ('+castPt+'+'+currStats[OBJECT_MATK]+') which is lower than the spell difficulty of '+spell[SPELL_DIFFICULTY]});
+            this.go('showInfo', {info:'Spell minor failure: You have failed to cast this spell with a roll of '+totalCastPt+' ('+castPt+'+'+currStats[OBJECT_WILL]+') which is lower than the spell difficulty of '+spell[SPELL_DIFFICULTY]});
             return true; // spell cast
         }
 
@@ -500,7 +503,8 @@ pico.def('hero', 'picUIContent', function(){
         var
         targets = [],
         castStr = castPt + spell[SPELL_STRENGTH],
-        nextAction, nextActionEvent, info;
+        info = 'You rolled a '+castStr+' ('+castPt+'+'+spell[SPELL_STRENGTH]+')',
+        nextAction, nextActionEvent;
 
         switch(spell[OBJECT_SUB_TYPE]){
         case G_SPELL_TYPE.WHIRLWIND:
@@ -508,7 +512,6 @@ pico.def('hero', 'picUIContent', function(){
             touched = this.getAllTouched(id),
             contact, contactId, creepCount=0, chestCount=0;
 
-            info = 'You rolled a '+castStr+' ('+castPt+'+'+spell[SPELL_STRENGTH]+')'; 
             for(var i=0,l=touched.length; i<l; i++){
                 contactId = touched[i];
                 contact = objects[contactId];
@@ -544,10 +547,13 @@ pico.def('hero', 'picUIContent', function(){
             nextAction = 'showInfo';
             nextActionEvent = { info:info };
             break;
-        case G_SPELL_TYPE.POISONS:
-            effects.push(spell);
+        case G_SPELL_TYPE.POISON_BLADE:
+            var efx = G_CREATE_OBJECT(G_ICON.EFX_POISON_BLADE);
+            efx[OBJECT_ICON] = spell[OBJECT_ICON];
+            efx[OBJECT_LEVEL] = spell[OBJECT_LEVEL];
+            effects.push(efx);
             nextAction = 'showInfo';
-            nextActionEvent = {info:'Your weapon has coated with poison'};
+            nextActionEvent = {info:info+', your weapon has coated with poison'};
             break;
         case G_SPELL_TYPE.GAZE:
             if (!this.currentLevel) return false;
