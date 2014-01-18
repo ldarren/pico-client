@@ -490,7 +490,7 @@
                         "w":32,
                         "h":32,
                         "button":1,
-                        "userData":{"id":"effect0"}
+                        "userData":{"id":"0"}
                     }
                 ],[
                     {},
@@ -504,7 +504,7 @@
                         "w":32,
                         "h":32,
                         "button":1,
-                        "userData":{"id":"effect1"}
+                        "userData":{"id":"1"}
                     }
                 ],[
                     {},
@@ -518,7 +518,7 @@
                         "w":32,
                         "h":32,
                         "button":1,
-                        "userData":{"id":"effect2"}
+                        "userData":{"id":"2"}
                     }
                 ],[
                     {},
@@ -532,7 +532,7 @@
                         "w":32,
                         "h":32,
                         "button":1,
-                        "userData":{"id":"effect3"}
+                        "userData":{"id":"3"}
                     }
                 ],[
                     {},
@@ -546,7 +546,7 @@
                         "w":32,
                         "h":32,
                         "button":1,
-                        "userData":{"id":"effect4"}
+                        "userData":{"id":"4"}
                     }
                 ],[
                     {},
@@ -560,7 +560,7 @@
                         "w":32,
                         "h":32,
                         "button":1,
-                        "userData":{"id":"effect5"}
+                        "userData":{"id":"5"}
                     }
                 ],[
                     {},
@@ -574,7 +574,7 @@
                         "w":32,
                         "h":32,
                         "button":1,
-                        "userData":{"id":"effect6"}
+                        "userData":{"id":"6"}
                     }
                 ],[
                     {},
@@ -588,7 +588,7 @@
                         "w":32,
                         "h":32,
                         "button":1,
-                        "userData":{"id":"effect7"}
+                        "userData":{"id":"7"}
                     }
                 ]
             ]

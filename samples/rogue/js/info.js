@@ -212,22 +212,17 @@ pico.def('info', 'picUIContent', function(){
             break;
         case 'def':
             if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                me.fillIconText(ctx, ts, '`'+G_UI.PDEF+': '+target[CREEP_DEF], rect, scale);
+                me.fillIconText(ctx, ts, '`'+G_UI.PDEF+': '+target[CREEP_PDEF], rect, scale);
+            }
+            break;
+        case 'mdef':
+            if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
+                me.fillIconText(ctx, ts, '`'+G_UI.PDEF+': '+target[CREEP_MDEF], rect, scale);
             }
             break;
         case 'patk':
             if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
                 me.fillIconText(ctx, ts, '`'+G_UI.PATK+': '+target[CREEP_ATK], rect, scale);
-            }
-            break;
-        case 'ratk':
-            if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                me.fillIconText(ctx, ts, '`'+G_UI.RATK+': '+target[CREEP_RATK], rect, scale);
-            }
-            break;
-        case 'matk':
-            if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                me.fillIconText(ctx, ts, '`'+G_UI.MATK+': '+target[CREEP_MATK], rect, scale);
             }
             break;
         default:

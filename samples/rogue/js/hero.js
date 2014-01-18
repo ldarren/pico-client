@@ -32,7 +32,7 @@ pico.def('hero', 'picUIContent', function(){
         case 'status':
             return me.calcUIRect(rect, ui, tileScale);
         default:
-            if (effects[id.split('effect')[1]]){
+            if (effects[id]){
                 return me.calcUIRect(rect, ui, tileScale);
             }
             return me.calcUIRect(rect, ui);
@@ -58,13 +58,17 @@ pico.def('hero', 'picUIContent', function(){
             me.fillIconText(ctx, ts, currStats[OBJECT_NAME], rect, tileScale);
             break;
         case 'desc':
-            me.fillIconText(ctx, ts,'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.', rect, tileScale);
+            if (com.activated){
+                var selectedObj = effects[com.activated];
+                if (!selectedObj) selectedObj = appearance[com.activated];
+                if (selectedObj) me.fillIconText(ctx, ts, selectedObj[OBJECT_DESC], rect, tileScale);
+            }
             break;
         case 'level':
             me.fillIconText(ctx, ts, ''+currStats[OBJECT_LEVEL], rect, tileScale);
             break;
         case 'str':
-            me.fillIconText(ctx, ts, ''+currStats[OBJECT_MDEF], rect, tileScale);
+            me.fillIconText(ctx, ts, ''+currStats[OBJECT_STR], rect, tileScale);
             break;
         case 'dex':
             me.fillIconText(ctx, ts, ''+currStats[OBJECT_DEX], rect, tileScale);
@@ -96,19 +100,13 @@ pico.def('hero', 'picUIContent', function(){
             me.fillIconText(ctx, ts, ''+currStats[HERO_SKULL], rect, tileScale);
             break;
         case 'patk':
-            me.fillIconText(ctx, ts, ''+currStats[OBJECT_ATK], rect, tileScale);
+            me.fillIconText(ctx, ts, ''+currStats[OBJECT_PATK], rect, tileScale);
             break;
         case 'ratk':
             me.fillIconText(ctx, ts, ''+currStats[OBJECT_RATK], rect, tileScale);
             break;
-        case 'matk': // TODO: replace by will
-            me.fillIconText(ctx, ts, ''+currStats[OBJECT_MATK], rect, tileScale);
-            break;
         case 'pdef':
             me.fillIconText(ctx, ts, ''+currStats[OBJECT_DEF], rect, tileScale);
-            break;
-        case 'mdef': // TODO: replace by will
-            me.fillIconText(ctx, ts, ''+currStats[OBJECT_MDEF], rect, tileScale);
             break;
         case 'helm':
             var item = appearance[HERO_HELM];
@@ -131,7 +129,7 @@ pico.def('hero', 'picUIContent', function(){
         case 'quiver':
             break;
         default:
-            var effect = effects[id.split('effect')[1]];
+            var effect = effects[id];
             if (effect){
                 var
                 x=rect[0],y=rect[1],w=rect[2],h=rect[3],
@@ -160,7 +158,7 @@ pico.def('hero', 'picUIContent', function(){
         selectedObj = appearance[id];
 
         if (!selectedObj){
-            selectedObj = effects[id.split('effect')[1]];
+            selectedObj = effects[id];
         }
 
         if (selectedObj){
@@ -234,7 +232,7 @@ pico.def('hero', 'picUIContent', function(){
         target = objects[id],
         flag = flags[id],
         creepName = target[OBJECT_NAME],
-        attack = accident ? undefined : [d20Roll(), currStats[OBJECT_ATK], target[CREEP_DEF]],
+        attack = accident ? undefined : [d20Roll(), currStats[OBJECT_PATK], target[CREEP_PDEF]],
         counter = flag || G_CREEP_TYPE.PLANT === target[OBJECT_SUB_TYPE] ? undefined : [d20Roll(), target[CREEP_ATK], currStats[OBJECT_DEF]],
         total, hit, attackMsg, counterMsg;
 
