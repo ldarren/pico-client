@@ -40,6 +40,7 @@ pico.def('hero', 'picUIContent', function(){
     },
     onCustomDraw = function(ent, ctx, rect, ui, tss, tileScale){
         var
+        com = ent.getComponent(name),
         id = ui.userData.id,
         ts = tss['default'],
         ss = tss['spells'];
@@ -142,15 +143,38 @@ pico.def('hero', 'picUIContent', function(){
             }
             break;
         }
+        if (id === com.activated) {
+            ts.draw(ctx, G_UI.SELECTED, rect[0], rect[1], rect[2], rect[3]);
+        }
     },
     onCustomClick = function(ent, ui){
-        console.log('click'+JSON.stringify(ui));
+        var com = ent.getComponent(name);
+
+        com.activated = '';
+
+        if (!ui){
+            return false;
+        }
+        var
+        id = ui.userData.id,
+        selectedObj = appearance[id];
+
+        if (!selectedObj){
+            selectedObj = effects[id.split('effect')[1]];
+        }
+
+        if (selectedObj){
+            com.activated = id;
+            return true;
+        }
+        return false;
     },
     onCustomUI = function(){
         switch(Array.prototype.shift.call(arguments)){
         case me.CUSTOM_BOUND: return onCustomBound.apply(this, arguments); break;
         case me.CUSTOM_DRAW: return onCustomDraw.apply(this, arguments); break;
         case me.CUSTOM_CLICK: return onCustomClick.apply(this, arguments); break;
+        case me.CUSTOM_BUTTON: return onCustomDraw.apply(this, arguments); break;
         }
     };
 
@@ -158,6 +182,7 @@ pico.def('hero', 'picUIContent', function(){
         data = me.base.create.call(this, ent, data);
 
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
+        data.activated = '';
         return data;
     };
 

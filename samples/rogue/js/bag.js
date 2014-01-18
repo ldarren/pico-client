@@ -32,6 +32,8 @@ pico.def('bag', 'picUIContent', function(){
     onCustomClick = function(ent, ui){
         var com = ent.getComponent(name);
 
+        com.activated = '';
+
         if (!ui){
             com.forSale = false; // click on bag but on the window
             return false;
@@ -75,7 +77,7 @@ pico.def('bag', 'picUIContent', function(){
         data = me.base.create.call(this, ent, data);
 
         data.forSale = false;
-        data.activated;
+        data.activated = '';
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
         return data;
     };

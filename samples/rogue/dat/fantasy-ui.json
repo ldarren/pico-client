@@ -336,8 +336,8 @@
                     {},
                     {
                         "type":4,
-                        "cellPt":1,
-                        "uiPt":1,
+                        "cellPt":3,
+                        "uiPt":3,
                         "pad":0,
                         "w":2,
                         "h":3,
