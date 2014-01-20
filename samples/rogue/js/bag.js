@@ -52,15 +52,18 @@ pico.def('bag', 'picUIContent', function(){
     onCustomDrop = function(ent, ui, cell){
         var
         sourceId = ui.userData.id,
-        items = this.hero.getBag(),
-        item, targetId;
+        slots = this.hero.getBag(),
+        slot1, slot2, targetId;
 
-        item = items[sourceId];
-        if (!item) return false;
+        slot1 = slots[sourceId];
+        if (!slot1) return false;
 
         targetId = cell[2].userData.id;
-        items[sourceId] = items[targetId];
-        items[targetId] = item;
+        slot2 = slots[targetId];
+        slots[sourceId] = slot2;
+        slot2[2] = sourceId;
+        slots[targetId] = slot1;
+        slot2[2] = targetId;
         return true;
     },
     onCustomUI = function(){
@@ -176,18 +179,13 @@ pico.def('bag', 'picUIContent', function(){
     me.useItem = function(elapsed, evt, entities){
         var
         targetName = evt.bag,
-        e, com;
-        for(var i=0,l=entities.length; i<l; i++){
-            e = entities[i];
-            if (targetName === e.name){
-                com = e.getComponent(name);
-                if (!com) continue;
+        e = me.findHost(entities, targetName);
 
-                var items = this.hero.getBag();
-                if (items[evt.index]){
-                    return [e];
-                }
-            }
+        if (!e) return;
+
+        var slots = this.hero.getBag();
+        if (slots[evt.index]){
+            return [e];
         }
     };
 

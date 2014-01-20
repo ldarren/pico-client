@@ -337,8 +337,8 @@ pico.def('hero', 'picUIContent', function(){
 
     me.incrMoney = function(money, count){
         switch(money[OBJECT_SUB_TYPE]){
-            case G_MONEY_TYPE.GOLD: appearance[HERO_GOLD] += count; break;
-            case G_MONEY_TYPE.SKULL: appearance[HERO_SKULL] += count; break;
+            case G_MONEY_TYPE.GOLD: appearance[HERO_GOLD][1] += count; break;
+            case G_MONEY_TYPE.SKULL: appearance[HERO_SKULL][1] += count; break;
             default: return false;
         }
 
@@ -417,7 +417,10 @@ pico.def('hero', 'picUIContent', function(){
     };
 
     me.putIntoBag = function(item){
-        var cap = me.getBagCap();
+        var
+        cap = me.getBagCap(),
+        stack, stat, i, l;
+
         switch(item[OBJECT_TYPE]){
             case G_OBJECT_TYPE.MONEY:
                 me.incrMoney(item, 1);
@@ -430,9 +433,9 @@ pico.def('hero', 'picUIContent', function(){
                 if (G_SCROLL_TYPE.MENUSCRIPT === item[OBJECT_SUB_TYPE]){
                     break;
                 }
+                // through
             default:
-                var stack, stat;
-                for(var i=0,l=bag.length; i<l; i++){
+                for(i=0,l=bag.length; i<l; i++){
                     stack = bag[i];
                     if (!stack) continue;
                     stat = stack[0]; 
@@ -443,8 +446,15 @@ pico.def('hero', 'picUIContent', function(){
                 }
                 break;
         }
+        for(i=0,l=bag.length; i<l; i++){
+            stack = bag[i];
+            if (!stack){
+                bag[i] = [item, 1, i];
+                return true;
+            }
+        }
         if (cap <= bag.length) return false;
-        bag.push([item, 1]);
+        bag.push([item, 1, bag.length]);
         return true;
     };
 
