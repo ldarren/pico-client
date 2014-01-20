@@ -11,6 +11,18 @@ pico.def('hero', 'picUIContent', function(){
     d20Roll = function(){
         return Round(Random()*21);
     },
+    slotText2Id = function(text){
+        switch(text){
+        case 'helm': return HERO_HELM;
+        case 'armor': return HERO_ARMOR;
+        case 'main': return HERO_MAIN;
+        case 'off': return HERO_OFF;
+        case 'ringL': return HERO_RINGL;
+        case 'ringR': return HERO_RINGR;
+        case 'amulet': return HERO_AMULET;
+        case 'quiver': return HERO_QUIVER;
+        }
+    },
     onCustomBound = function(ent, rect, ui, tileScale){
         var id = ui.userData.id;
 
@@ -60,7 +72,7 @@ pico.def('hero', 'picUIContent', function(){
         case 'desc':
             if (com.activated){
                 var selectedObj = effects[com.activated];
-                if (!selectedObj) selectedObj = appearance[com.activated];
+                if (!selectedObj) selectedObj = appearance[slotText2Id(com.activated)];
                 if (selectedObj) me.fillIconText(ctx, ts, selectedObj[OBJECT_DESC], rect, tileScale);
             }
             break;
@@ -109,24 +121,15 @@ pico.def('hero', 'picUIContent', function(){
             me.fillIconText(ctx, ts, ''+currStats[OBJECT_DEF], rect, tileScale);
             break;
         case 'helm':
-            var item = appearance[HERO_HELM];
-            if (item){
-                ts.draw(ctx, item[0][OBJECT_ICON], rect[0], rect[1], rect[2], rect[3]);
-            }
-            break;
         case 'armor':
-            break;
         case 'main':
-            break;
         case 'off':
-            break;
         case 'ringL':
-            break;
         case 'ringR':
-            break;
         case 'amulet':
-            break;
         case 'quiver':
+            var item = appearance[slotText2Id(id)];
+            if (item) ts.draw(ctx, item[0][OBJECT_ICON], rect[0], rect[1], rect[2], rect[3]);
             break;
         default:
             var effect = effects[id];
@@ -155,10 +158,10 @@ pico.def('hero', 'picUIContent', function(){
         }
         var
         id = ui.userData.id,
-        selectedObj = appearance[id];
+        selectedObj = effects[id];
 
         if (!selectedObj){
-            selectedObj = effects[id];
+            selectedObj = appearance[slotText2Id(id)];
         }
 
         if (selectedObj){
@@ -315,11 +318,11 @@ pico.def('hero', 'picUIContent', function(){
         recovered = true,
         slot;
 
-        for (var i=0,l=HERO_QUIVER; i<=l; i++){
+        for (var i=HERO_HELM,l=HERO_QUIVER; i<=l; i++){
             slot = body[i];
             if (slot){
-                recoverd = me.equipItem(slot);
-                if (!recoverd) recovered = me.putIntoBag(slot[0]);
+                recovered = me.equipItem(slot);
+                if (!recovered) recovered = me.putIntoBag(slot[0]);
             }
             if (!recovered) return recovered;
         }
@@ -357,7 +360,7 @@ pico.def('hero', 'picUIContent', function(){
                     appearance[slot] = item;
                     return true;
                 }
-                if (2 === item[WEAPON_HANDED]){
+                if (2 === stat[WEAPON_HANDED]){
                     if (appearance[HERO_MAIN] || appearance[HERO_OFF]) return false;
                     appearance[HERO_MAIN] = appearance[HERO_OFF] = item;
                     return true;
@@ -368,7 +371,7 @@ pico.def('hero', 'picUIContent', function(){
                 }
                 break;
             case G_OBJECT_TYPE.ARMOR:
-                switch(item[OBJECT_SUB_TYPE]){
+                switch(stat[OBJECT_SUB_TYPE]){
                     case G_ARMOR_TYPE.HELM:
                         if (appearance[HERO_HELM]) return false;
                         appearance[HERO_HELM] = item;
@@ -384,7 +387,7 @@ pico.def('hero', 'picUIContent', function(){
                 }
                 return false;
             case G_OBJECT_TYPE.JEWEL:
-                switch(item[OBJECT_SUB_TYPE]){
+                switch(stat[OBJECT_SUB_TYPE]){
                     case G_JEWEL_TYPE.RING:
                         if (HERO_RINGL !== slot || HERO_RINGR !== slot) return false;
                         appearance[slot] = item;

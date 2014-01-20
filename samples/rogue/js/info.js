@@ -258,9 +258,11 @@ pico.def('info', 'picUIContent', function(){
             ai = this.ai;
 
             switch(callback){
+            case 'equip':
+                hero.equipItem(target);
+                break;
             case 'fight':
                 this.audioSprite.play(2);
-                //this.go('startEffect', 'castEfx'); // show cast effect
                 this.go('attack', hero.battle(targetId, false));
                 break;
             case 'flee':

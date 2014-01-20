@@ -409,9 +409,9 @@ Object.freeze(G_CHARMED_RATE = [
 // icon, rate, quality, grade
 Object.freeze(G_ITEM_RATE = [
     [G_OBJECT_TYPE.MONEY,   10, G_QUALITY.HIGH,     G_GRADE.ALL], // money
-    [G_OBJECT_TYPE.POTION,  100, G_QUALITY.LOW,      G_GRADE.ALL], // potion
+    [G_OBJECT_TYPE.POTION,  20, G_QUALITY.LOW,      G_GRADE.ALL], // potion
     [G_OBJECT_TYPE.SCROLL,  10, G_QUALITY.MEDIUM,   G_GRADE.ALL], // scroll
-    [G_OBJECT_TYPE.WEAPON,  30, G_QUALITY.MEDIUM,   G_GRADE.ALL], // weapon
+    [G_OBJECT_TYPE.WEAPON,  20, G_QUALITY.MEDIUM,   G_GRADE.ALL], // weapon
     [G_OBJECT_TYPE.AMMO,    40, G_QUALITY.LOW,      G_GRADE.ALL], // ammo 
     [G_OBJECT_TYPE.ARMOR,   30, G_QUALITY.MEDIUM,   G_GRADE.ALL], // armor
     [G_OBJECT_TYPE.JEWEL,   5,  G_QUALITY.HIGH,     G_GRADE.ALL], // jewel 

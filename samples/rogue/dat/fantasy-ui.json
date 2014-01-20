@@ -365,7 +365,7 @@
                         "w":32,
                         "h":32,
                         "button":1,
-                        "userData":{"id":"weapon"}
+                        "userData":{"id":"main"}
                     }
                 ],[
                     {},
@@ -393,7 +393,7 @@
                         "w":32,
                         "h":32,
                         "button":1,
-                        "userData":{"id":"shield"}
+                        "userData":{"id":"off"}
                     }
                 ],[
                 ],[
