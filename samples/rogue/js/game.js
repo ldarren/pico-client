@@ -323,8 +323,12 @@ console.log(JSON.stringify(hints));
 
     me.attackAnim = function(elapsed, evt, entities){
         var
-        attackMsg = evt[0],
-        counterMsg = evt[1];
+        hero = this.hero,
+        targetId = evt[0],
+        attackMsg = evt[1],
+        counterMsg = evt[2];
+
+        if (!hero.isEngaged(targetId)) return;
 
         me.lockInputs();
 
@@ -336,9 +340,7 @@ console.log(JSON.stringify(hints));
         me.go('showInfo', { info: attackMsg } );
 
         var
-        hero = this.hero,
         objects = this.objects,
-        targetId = hero.getTargetId(),
         pos = hero.getPosition(),
         creep = objects[targetId];
 
@@ -360,9 +362,7 @@ console.log(JSON.stringify(hints));
                     me.unlockInputs();
                 }]);
                 // no counter
-                if (me.ai.bury(targetId)){
-                    hero.setTargetId(undefined);
-                }
+                me.ai.bury(targetId);
             }
         }, 500);
 
@@ -370,15 +370,19 @@ console.log(JSON.stringify(hints));
     };
 
     me.counterAnim = function(elapsed, evt, entities){
-        var msg = evt[1];
+        var
+        hero = this.hero,
+        targetId = evt[0],
+        msg = evt[2];
+
+        if (!hero.isEngaged(targetId)) return;
+
         if (!msg) {
             me.unlockInputs();
             return;
         }
 
         var
-        hero = this.hero,
-        targetId = hero.getTargetId(),
         objects = this.objects,
         pos = hero.getPosition(),
         creep = objects[targetId];
@@ -391,7 +395,6 @@ console.log(JSON.stringify(hints));
             me.go('forceRefresh');
             objects[targetId] = creep;
             if (hero.isDead()){
-                hero.setTargetId(undefined);
                 objects[pos] = G_CREATE_OBJECT(G_ICON.BONES),
                 me.hero.bury(me.god);
                 me.routeInputs([function(){
@@ -407,9 +410,7 @@ console.log(JSON.stringify(hints));
             }else{
                 hero.move(pos);
 
-                if (me.ai.bury(targetId)){
-                    hero.setTargetId(undefined);
-                }
+                me.ai.bury(targetId);
                 me.go('startEffect', {type:'damageEfx',targets:[pos] });
                 me.routeInputs([function(){
                     me.go('showInfo', { targetId:targetId, context:G_CONTEXT.WORLD});

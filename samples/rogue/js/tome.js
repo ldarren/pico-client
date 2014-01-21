@@ -41,7 +41,7 @@ pico.def('tome', 'picUIContent', function(){
             ', elements['+G_ELEMENT_NAME[spell[SPELL_ELEMENT]]+']'+
             ', difficulty: '+spell[SPELL_DIFFICULTY]+
             ((spell[SPELL_DIFFICULTY]) ? ', strength: '+spell[SPELL_DIFFICULTY]+', ' : ', '),
-            labels=['Cast', 'Forget', 'Later'],
+            labels=['Cast', 'Forget', 'Close'],
             callbacks=['castSpell', 'showDialog'],
             events=[null, {
                 info:['Forget spell','This will remove the selected spell permanently from tome'],

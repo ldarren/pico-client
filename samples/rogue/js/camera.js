@@ -93,6 +93,7 @@ pico.def('camera', 'picBase', function(){
         mapH = this.mapHeight,
         objects = this.objects,
         hero = this.hero,
+        engaged = hero.getEngaged(),
         hp = hero.getPosition(),
         x = Floor((evt[0] - viewX) / this.tileWidth),
         y = Floor((evt[1] - viewY) / this.tileHeight),
@@ -102,7 +103,7 @@ pico.def('camera', 'picBase', function(){
 
         id = mapW * y + x;
 
-        if (hero.getTargetId() && !hero.isTarget(id)){
+        if (engaged && engaged.length && !hero.isEngaged(id)){
             this.go('showDialog', {
                 info: [
                     'Flee?',

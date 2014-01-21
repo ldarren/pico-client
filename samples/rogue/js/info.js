@@ -25,7 +25,7 @@ pico.def('info', 'picUIContent', function(){
                 switch(target[OBJECT_TYPE]){
                 case G_OBJECT_TYPE.CREEP:
                     addOption('Fight', 'fight');
-                    if (this.hero.isTarget(targetId)){
+                    if (this.hero.isEngaged(targetId)){
                         addOption('Flee', 'flee');
                     }
                     break;
@@ -78,7 +78,6 @@ pico.def('info', 'picUIContent', function(){
                     break;
                 case G_OBJECT_TYPE.KEY:
                     addOption('Unlock Gate', 'unlock');
-                    addOption('Later');
                     break;
                 }
             }else{

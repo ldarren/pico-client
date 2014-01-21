@@ -233,7 +233,7 @@ pico.def('hero', 'picUIContent', function(){
     };
 
     me.battle = function(id, accident){
-        me.setTargetId(id);
+        me.setEngaged(id);
 
         var
         target = objects[id],
@@ -282,7 +282,7 @@ pico.def('hero', 'picUIContent', function(){
 
         delete flags[id];
 
-        return [attackMsg, counterMsg];
+        return [id, attackMsg, counterMsg];
     };
 
     me.flee = function(){
@@ -307,11 +307,14 @@ pico.def('hero', 'picUIContent', function(){
             }
         }
 
+        for (i=0,l=targets.length; i<l; i++){
+            flags[id] = G_UI.FLAG;
+        }
         me.clearEngaged();
         return [true, MSG_FLEE_WIN
             .replace('TOTAL', total)
             .replace('ROLL', roll)
-            .replace('DEX', currStats[OBJECT_DEX]);
+            .replace('DEX', currStats[OBJECT_DEX])];
     };
 
     me.move = function(pos){
@@ -509,6 +512,7 @@ pico.def('hero', 'picUIContent', function(){
     };
 
     me.bury = function(god){
+        me.clearEngaged();
         god.toHeaven(appearance, currStats);
     };
 
@@ -727,17 +731,34 @@ pico.def('hero', 'picUIContent', function(){
     me.clearEngaged = function(){
         var targets = appearance[HERO_ENEMIES];
         if (!targets) return;
-        for (var i=0,l=targets.length; i<l; i++){
-            flags[id] = G_UI.FLAG;
-        }
         targets.length = 0;
     };
-    me.getEngaged = function(){ return appearance[HERO_ENEMIES]; };
-    me.setEngaged = function(id){
+    me.removeEngaged = function(id){
         var targets = appearance[HERO_ENEMIES];
+        if (!targets) return;
+        var index = targets.indexOf(id);
+        if (-1 === index) return;
+        targets.splice(index, 1);
+    };
+    me.getEngaged = function(){ return appearance[HERO_ENEMIES]; };
+    me.setEngaged = function(engaged){
+        var
+        targets = appearance[HERO_ENEMIES],
+        validList = [];
+
         if (!targets) targets = [];
-        targets.push(id);
-        appearance[HERO_ENEMIES] = targets;
+        if (engaged.length) {
+            var id;
+            for(var i=0,l=engaged.length; i<l; i++){
+                id = engaged[i];
+                if (-1 === targets.indexOf(id)) validList.push(id);
+            }
+            targets = targets.concat(engaged);
+        }else{
+            if (-1 === targets.indexOf(engaged)) validList.push(engaged);
+        }
+
+        if (validList.length) appearance[HERO_ENEMIES] = targets.concat(validList);
     };
     me.isDead = function(){ return currStats[OBJECT_HP] < 1; };
 
