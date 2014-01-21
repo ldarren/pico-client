@@ -4,7 +4,7 @@ pico.def('hero', 'picUIContent', function(){
     name = me.moduleName,
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
     objects, flags,
-    position, selectedSpell, targetId,
+    position, selectedSpell,
     heroObj,
     appearance, stats, effects, bag, tome,
     currStats,
@@ -202,10 +202,11 @@ pico.def('hero', 'picUIContent', function(){
         effects = heroObj.effects;
         bag = heroObj.bag;
         tome = heroObj.tome;
-        target = appearance[HERO_ENEMY];
+        
+        var targets = appearance[HERO_ENEMIES];
 
-        if (target){
-            this.go('showInfo', {targetId: target, context:G_CONTEXT.WORLD});
+        if (targets && targets.length){
+            this.go('showInfo', {targetId: targets[0], context:G_CONTEXT.WORLD});
         }
         currStats = []; // level up will update currStats
         me.levelUp(this.deepestLevel);
@@ -285,29 +286,32 @@ pico.def('hero', 'picUIContent', function(){
     };
 
     me.flee = function(){
-        if (!targetId) return false; // return error?
+        var targets = appearance[HERO_ENEMIES]
+        if (!targets || !targets.length) return false; // return error?
 
         var
-        target = objects[targetId],
         roll = d20Roll(),
-        total = roll + currStats[OBJECT_DEX];
+        total = roll + currStats[OBJECT_DEX],
+        target, i, l;
 
-        if (total > target[CREEP_ATK]) {
-            me.setTargetId(undefined);
-            return [true, MSG_FLEE_WIN
-                .replace('TOTAL', total)
-                .replace('ROLL', roll)
-                .replace('DEX', currStats[OBJECT_DEX])
-                .replace('NAME', target[OBJECT_NAME])
-                .replace('ATK', target[CREEP_ATK])];
+        for (i=0,l=targets.length; i<l; i++){
+            target = objects[targetId];
+            if (total <= target[CREEP_ATK]) {
+                return [false, MSG_FLEE_LOST
+                        .replace('TOTAL', total)
+                        .replace('ROLL', roll)
+                        .replace('DEX', currStats[OBJECT_DEX])
+                        .replace('NAME', target[OBJECT_NAME])
+                        .replace('ATK', target[CREEP_ATK])
+                        .replace('HP', 1)];
+            }
         }
-        return [false, MSG_FLEE_LOST
-                .replace('TOTAL', total)
-                .replace('ROLL', roll)
-                .replace('DEX', currStats[OBJECT_DEX])
-                .replace('NAME', target[OBJECT_NAME])
-                .replace('ATK', target[CREEP_ATK])
-                .replace('HP', 1)];
+
+        me.clearEngaged();
+        return [true, MSG_FLEE_WIN
+            .replace('TOTAL', total)
+            .replace('ROLL', roll)
+            .replace('DEX', currStats[OBJECT_DEX]);
     };
 
     me.move = function(pos){
@@ -715,10 +719,25 @@ pico.def('hero', 'picUIContent', function(){
     me.getTomeCap = function(){ return appearance[HERO_TOME_CAP]; };
     me.putIntoTome = function(spell){ return tome.push(spell); };
     me.equal = function(obj){ return obj[OBJECT_ICON] === currStats[OBJECT_ICON] && obj[OBJECT_TYPE] === currStats[OBJECT_TYPE]; };
-    me.isTarget = function(id){ return targetId === id; };
-    me.getTargetId = function(){ return targetId; };
-    me.setTargetId = function(id){
-        return appearance[HERO_ENEMY] = targetId = id;
+    me.isEngaged = function(id){
+        var targets = appearance[HERO_ENEMIES];
+        if (!targets) return false;
+        return -1 !== targets.indexOf(id);
+    };
+    me.clearEngaged = function(){
+        var targets = appearance[HERO_ENEMIES];
+        if (!targets) return;
+        for (var i=0,l=targets.length; i<l; i++){
+            flags[id] = G_UI.FLAG;
+        }
+        targets.length = 0;
+    };
+    me.getEngaged = function(){ return appearance[HERO_ENEMIES]; };
+    me.setEngaged = function(id){
+        var targets = appearance[HERO_ENEMIES];
+        if (!targets) targets = [];
+        targets.push(id);
+        appearance[HERO_ENEMIES] = targets;
     };
     me.isDead = function(){ return currStats[OBJECT_HP] < 1; };
 

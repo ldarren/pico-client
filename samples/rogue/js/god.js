@@ -69,7 +69,7 @@ pico.def('god', function(){
     };
 
     me.toHeaven = function(appearance, stats){
-        appearance[HERO_ENEMY] = undefined;
+        appearance[HERO_ENEMIES] = [];
         heroBody = [appearance, stats];
     };
 
