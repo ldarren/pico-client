@@ -72,7 +72,10 @@ pico.def('hero', 'picUIContent', function(){
         case 'desc':
             if (com.activated){
                 var selectedObj = effects[com.activated];
-                if (!selectedObj) selectedObj = appearance[slotText2Id(com.activated)];
+                if (!selectedObj) {
+                    selectedObj = appearance[slotText2Id(com.activated)];
+                    if (selectedObj) selectedObj = selectedObj[0];
+                }
                 if (selectedObj) me.fillIconText(ctx, ts, selectedObj[OBJECT_DESC], rect, tileScale);
             }
             break;
@@ -410,10 +413,40 @@ pico.def('hero', 'picUIContent', function(){
         return true;
     };
 
-    me.unequipItem = function(type){
-        var item = appearance[type];
-        delete appearance[type];
-        return item;
+    me.unequipItem = function(slot){
+        if (!slot) return false;
+
+        var
+        ret = false,
+        index = slot[2],
+        equipped;
+
+        for (var i=HERO_HELM,l=HERO_QUIVER; i<=l; i++){
+            equipped = appearance[i];
+            if (equipped && equipped[2] === index){
+                delete appearance[i];
+                ret = true;
+            }
+        }
+
+        return ret;
+    };
+
+    me.isItemEquipped = function(slot){
+        if (!slot) return false;
+
+        var
+        index = slot[2],
+        equipped;
+
+        for (var i=HERO_HELM,l=HERO_QUIVER; i<=l; i++){
+            equipped = appearance[i];
+            if (equipped && equipped[2] === index){
+                return true;
+            }
+        }
+
+        return false;
     };
 
     me.putIntoBag = function(item){

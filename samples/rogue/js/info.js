@@ -92,8 +92,12 @@ pico.def('info', 'picUIContent', function(){
             case G_OBJECT_TYPE.AMMO:
             case G_OBJECT_TYPE.ARMOR:
             case G_OBJECT_TYPE.JEWEL:
-                addOption('Equip', 'equip');
-                addOption('Discard', 'discard');
+                if (this.hero.isItemEquipped(target)){
+                    addOption('Unequip', 'unequip');
+                }else{
+                    addOption('Equip', 'equip');
+                    addOption('Discard', 'discard');
+                }
                 break;
             case G_OBJECT_TYPE.POTION:
                 addOption('Drink', 'drink');
@@ -122,6 +126,7 @@ pico.def('info', 'picUIContent', function(){
             addOption('Details', 'details');
             break;
         }
+        addOption('Close');
     },
     onCustomBound = function(ent, rect, ui, scale){
         return me.calcUIRect(rect, ui);
@@ -134,9 +139,10 @@ pico.def('info', 'picUIContent', function(){
         ts = tss['default'],
         tw = this.tileWidth,
         th = this.tileHeight,
-        x=rect[0], y=rect[1], w=rect[2], h=rect[3];
+        x=rect[0], y=rect[1], w=rect[2], h=rect[3],
+        id = ui.userData.id;
 
-        switch(ui.userData.id){
+        switch(id){
         case 'icon':
             x = x + (w - tw)/2;
             y = y + (h - th)/2;
@@ -226,7 +232,7 @@ pico.def('info', 'picUIContent', function(){
             }
             break;
         default:
-            me.drawButton(ctx, rect, labels[ui.userData.id], '#d7e894', '#204631');
+            if (labels[id]) me.drawButton(ctx, rect, labels[id], '#d7e894', '#204631');
             break;
         }
 
@@ -260,6 +266,9 @@ pico.def('info', 'picUIContent', function(){
             switch(callback){
             case 'equip':
                 hero.equipItem(target);
+                break;
+            case 'unequip':
+                hero.unequipItem(target);
                 break;
             case 'fight':
                 this.audioSprite.play(2);
