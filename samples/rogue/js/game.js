@@ -325,17 +325,11 @@ console.log(JSON.stringify(hints));
         var
         hero = this.hero,
         targetId = evt[0],
-        attackMsg = evt[1],
-        counterMsg = evt[2];
+        attackMsg = evt[1];
 
-        if (!hero.isEngaged(targetId)) return;
+        if (!attackMsg || !hero.isEngaged(targetId)) return;
 
         me.lockInputs();
-
-        if (!attackMsg) {
-            this.go('counter', evt);
-            return;
-        }
 
         me.go('showInfo', { info: attackMsg } );
 
@@ -349,21 +343,12 @@ console.log(JSON.stringify(hints));
         setTimeout(function(){
             hero.move(pos); // hero must move first
             objects[targetId] = creep;
-            me.go('forceRefresh');
             me.go('startEffect', {type:'damageEfx',targets:[targetId]});
 
-            if (counterMsg){
-                me.routeInputs([function(){
-                    me.go('counter', evt);
-                }]);
-            }else{
-                me.routeInputs([function(){
-                    me.go('showInfo', { targetId:targetId, context:G_CONTEXT.WORLD });
-                    me.unlockInputs();
-                }]);
-                // no counter
-                me.ai.bury(targetId);
-            }
+            me.routeInputs([function(){
+                me.go('counter', me.ai.battle());
+                me.unlockInputs();
+            }]);
         }, 500);
 
         return entities;

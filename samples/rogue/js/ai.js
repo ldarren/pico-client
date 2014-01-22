@@ -234,6 +234,45 @@ pico.def('ai', function(){
         }
     };
 
+    me.battle = function(){
+        var
+        hero = me.hero,
+        targetIds = hero.getEngaged(),
+        counterMsgs = [],
+        def = me.getDef(),
+        hp = hero.getHp(),
+        total, roll, atk, hit, target, creepName;
+
+        for(var i=0,l=targetIds.length; i<l; i++){
+            target = objects[targetIds[i]];
+            atk = target[OBJECT_ATK];
+
+            if (!atk || hp < 1) counterMsgs.push(null);
+
+            creepName = target[OBJECT_NAME];
+            roll = d20Roll();
+
+            total = roll+atk;
+            hit = total > def ? 1 : (0===roll ? 2:1);
+
+            counterMsgs.push((hit ? MSG_COUNTER_WIN : MSG_COUNTER_LOST)
+                .replace('NAME', creepName)
+                .replace('TOTAL', total)
+                .replace('ROLL', roll)
+                .replace('ATK', atk)
+                .replace('DEF', def)
+                .replace('HP', hit));
+
+            hp = hero.incrHp(-1*hit);
+
+            if (hp < 1){
+                counterMsg += MSG_HERO_KILL.replace('NAME', creepName);
+            }
+        }
+
+        return [targetIds, counterMsgs];
+    };
+
     me.bury = function(id){
         var creep = objects[id];
         if (!creep || creep[CREEP_HP] > 0) return false;

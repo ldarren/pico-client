@@ -232,57 +232,35 @@ pico.def('hero', 'picUIContent', function(){
         }
     };
 
-    me.battle = function(id, accident){
+    me.battle = function(id){
         me.setEngaged(id);
 
         var
         target = objects[id],
         flag = flags[id],
         creepName = target[OBJECT_NAME],
-        attack = accident ? undefined : [d20Roll(), currStats[OBJECT_PATK], target[CREEP_PDEF]],
-        counter = flag || G_CREEP_TYPE.PLANT === target[OBJECT_SUB_TYPE] ? undefined : [d20Roll(), target[CREEP_ATK], currStats[OBJECT_DEF]],
-        total, hit, attackMsg, counterMsg;
-
-        if (attack){
-            total = attack[0]+attack[1];
-            hit = total > attack[2];
-
-            attackMsg = (hit ? MSG_ATTACK_WIN : MSG_ATTACK_LOST)
+        roll = d20Roll(),
+        atk = me.getAtk(),
+        def = target[CREEP_PDEF],
+        total = roll + atk,
+        hit = total > def ? 1 : (0===roll ? 2 : 0),
+        attackMsg = (hit ? MSG_ATTACK_WIN : MSG_ATTACK_LOST)
             .replace('NAME', creepName)
             .replace('TOTAL', total)
-            .replace('ROLL', attack[0])
-            .replace('ATK', attack[1])
-            .replace('DEF', attack[2])
-            .replace('DMG', 1);
+            .replace('ROLL', roll)
+            .replace('ATK', atk)
+            .replace('DEF', def)
+            .replace('DMG', hit);
 
-            if (hit) target[CREEP_HP]--;
+        target[CREEP_HP] -= hit;
 
-            if (target[CREEP_HP] < 1){
-                attackMsg += MSG_CREEP_KILL.replace('NAME', creepName);
-            }
-        }
-        if (counter){
-            total = counter[0]+counter[1];
-            hit = total > counter[2];
-
-            counterMsg = (hit ? MSG_COUNTER_WIN : MSG_COUNTER_LOST)
-            .replace('NAME', creepName)
-            .replace('TOTAL', total)
-            .replace('ROLL', counter[0])
-            .replace('ATK', counter[1])
-            .replace('DEF', counter[2])
-            .replace('HP', 1);
-
-            if (hit) currStats[OBJECT_HP]--;
-
-            if (currStats[OBJECT_HP] < 1){
-                counterMsg += MSG_HERO_KILL.replace('NAME', creepName);
-            }
+        if (target[CREEP_HP] < 1){
+            attackMsg += MSG_CREEP_KILL.replace('NAME', creepName);
         }
 
         delete flags[id];
 
-        return [id, attackMsg, counterMsg];
+        return [id, attackMsg];
     };
 
     me.flee = function(){
@@ -701,6 +679,7 @@ pico.def('hero', 'picUIContent', function(){
         hp += inc;
         if (hp > stats[OBJECT_HP]) hp = stats[OBJECT_HP];
         currStats[OBJECT_HP] = hp;
+        return hp;
     };
 
     me.rejuvenate = function() {
@@ -714,8 +693,6 @@ pico.def('hero', 'picUIContent', function(){
     me.setLastPortal = function(level){ appearance[HERO_PORTAL] = level; };
     me.setLastWayPoint = function(level){ if (appearance[HERO_WAYPOINT] < level) appearance[HERO_WAYPOINT] = level; };
     me.getJob = function(){ return currStats[OBJECT_TYPE]; };
-    me.getLuck = function(){ return currStats[OBJECT_LUCK]; };
-    me.getWill = function(){ return currStats[OBJECT_WILL]; };
     me.getBag = function(){ return bag; };
     me.getBagCap = function(){ return appearance[HERO_BAG_CAP]; };
     me.getItem = function(id){ return bag[id]; }
@@ -723,6 +700,29 @@ pico.def('hero', 'picUIContent', function(){
     me.getTomeCap = function(){ return appearance[HERO_TOME_CAP]; };
     me.putIntoTome = function(spell){ return tome.push(spell); };
     me.equal = function(obj){ return obj[OBJECT_ICON] === currStats[OBJECT_ICON] && obj[OBJECT_TYPE] === currStats[OBJECT_TYPE]; };
+    me.getHp = function(){ return currStats[OBJECT_HP]; };
+    me.getLuck = function(){ return currStats[OBJECT_LUCK]; };
+    me.getWill = function(){ return currStats[OBJECT_WILL]; };
+    me.getDef = function(){ return currStats[OBJECT_DEF]; };
+    me.getAtk = function(){
+        var
+        mainSlot = appearance[HERO_MAIN],
+        main = mainSlot ? mainSlot[0] : null;
+
+        if (!main) return currStats[OBJECT_PATK];
+
+        switch(main[OBJECT_SUB_TYPE]){
+        case G_WEAPON_TYPE.SWORD:
+        case G_WEAPON_TYPE.AXE:
+        case G_WEAPON_TYPE.SCEPTER:
+            return currStats[OBJECT_PATK];
+        case G_WEAPON_TYPE.THROW:
+        case G_WEAPON_TYPE.BOW:
+        case G_WEAPON_TYPE.CROSSBOW:
+            return currStats[OBJECT_RATK];
+        }
+
+    };
     me.isEngaged = function(id){
         var targets = appearance[HERO_ENEMIES];
         if (!targets) return false;
