@@ -20,6 +20,10 @@ function G_CREATE_OBJECT(id, name, desc){
     return obj;
 }
 
+function G_D20_ROLL(d){
+    return Math.round(Math.random()*(d || 21));
+}
+
 Object.freeze(G_OBJECT_TYPE = {
     EMPTY: 0,
     HERO: 1,
@@ -748,7 +752,7 @@ Object.freeze(G_OBJECT = [
     [141, '','', 0, 0, 0, 0, 5, 3, 0], // evolve
     [142, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.BANNER],
     [143, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.MESSAGE_BOARD],
-    // id, type, name, desc, hp, will, dex, luck, str, [patk, ratk], [def], [veg, insect, beast, undead, demon]
+    // id, name, desc, level, grade, type, heroType, hp, will, dex, luck, str, [patk, ratk], [def], [veg, insect, beast, undead, demon]
     [144, '','',-1, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.ROGUE,     2, 0, 1, 1, 1,       0.1, 0.2,  0.1,  1,1,1,1,1],
     [145, '','',-1, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.MONK,      3, 0, 0.1, 0, 2,     0.2, 0.1,  0.2,  1,1,1,1.2,1.2],
     [146, '','',-1, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.BARBARIAN, 4, 0, 0.2, 0.1, 3,   0.3, 0.1,  0.3,  1,1,1,1,1],
@@ -757,38 +761,38 @@ Object.freeze(G_OBJECT = [
     [149, '','',-1, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.PALADIN,   3, 0, 0, 0, 2,       0.2, 0.1,  0.4,  1,1,1,1.5,1],
     [150, '','',-1, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.WIZARD,    1, 0, 0, 0.1, 0.5,   0.1, 0.1,  0.1,  1,1,1,1,1],
     [151, '','',-1, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.WARLOCK,   1, 0, 0, 0, 0.3,     0.1, 0.1,  0.1,  1,1,1,1,1],
-    // id, type, name, creepType, hp, atk, pdef, mdef, effect, item
-    [152, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  0.1,     0.1,0,  [], null], //Rat
-    [153, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.INSECT,   1,  0.1,     0.1,0,  [], null], //'Spiders',
-    [154, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  0.1,     0.1,0,  [], null], //'Komodo Monitor',
-    [155, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.INSECT,   2,  0.1,     0.1,0,  [], null], //'Spider Champion',
-    [156, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  0.1,     0.1,0,  [], null], //'Toad',
-    [157, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.INSECT,   1,  0.1,     0.1,0,  [], null], //'Scarab',
-    [158, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.INSECT,   1,  0.1,     0.1,0,  [], null], //'Centipede',
-    [159, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    2,  0.1,     0.1,0,  [], null], //'Serpent',
+    // id, name, desc, level, grade, type, creepType, hp, atk, pdef, mdef, effect, item
+    [152, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  1.1,     1.1,0,  [], null], //Rat
+    [153, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.INSECT,   1,  1.1,     1.1,0,  [], null], //'Spiders',
+    [154, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  1.1,     1.1,0,  [], null], //'Komodo Monitor',
+    [155, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.INSECT,   2,  1.1,     1.1,0,  [], null], //'Spider Champion',
+    [156, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  1.1,     1.1,0,  [], null], //'Toad',
+    [157, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.INSECT,   1,  1.1,     1.1,0,  [], null], //'Scarab',
+    [158, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.INSECT,   1,  1.1,     1.1,0,  [], null], //'Centipede',
+    [159, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    2,  1.1,     1.1,0,  [], null], //'Serpent',
     [160, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.PLANT,    2,  0,       0,0,  [], null],   //'Fungi',
-    [161, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  0.1,     0.1,0,  [], null], //'Hare',
-    [162, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  0.1,     0.1,0,  [], null], //'Bat',
-    [163, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    2,  0.2,     0.1,0,  [], null], //'Bat Champion',
-    [164, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  0.2,     0.1,0,  [], null], //'Snake',
-    [165, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    2,  0.2,     0.1,0,  [], null], //'Wolf',
-    [166, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    2,  0.2,     0.1,0,  [], null], //'Wild Boar',
-    [167, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    3,  0.2,     0.1,0,  [], null], //'Bear',
-    [168, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    1,  0.1,     0.1,0,  [], null], //'Slime',
-    [169, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    2,  0.2,     0.1,0,  [], null], //'Slime Champion',
-    [170, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.INSECT,   1,  0.1,     0.1,0,  [], null], //'Scorpion',
-    [171, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    4,  0.6,     0.1,0,  [], null], //'Kraken',
-    [172, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.UNDEAD,   3,  0.3,     0.1,0,  [], null], //'Vampire',
-    [173, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.UNDEAD,   2,  0.1,     0.1,0,  [], null], //'Mummy',
-    [174, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.UNDEAD,   2,  0.3,     0.1,0,  [], null], //'Wraith',
-    [175, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    4,  0.5,     0.1,0,  [], null], //'Beholder',
-    [176, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    1,  0.1,     0.1,0,  [], null], //'Goblin',
-    [177, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.UNDEAD,   2,  0.1,     0.1,0,  [], null], //'Zombie',
-    [178, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.UNDEAD,   2,  0.1,     0.1,0,  [], null], //'Undead',
-    [179, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    3,  0.3,     0.1,0,  [], null], //'Orc',
-    [180, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    3,  1,       0.1,0,  [], null], //'Cyclops',
-    [181, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    3,  0.7,     0.1,0,  [], null], //'Werewolf',
-    [182, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    6,  0.5,     0.1,0,  [], null], //'Werebear',
+    [161, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  1.1,     1.1,0,  [], null], //'Hare',
+    [162, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  1.1,     1.1,0,  [], null], //'Bat',
+    [163, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    2,  1.2,     1.1,0,  [], null], //'Bat Champion',
+    [164, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  1.2,     1.1,0,  [], null], //'Snake',
+    [165, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    2,  1.2,     1.1,0,  [], null], //'Wolf',
+    [166, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    2,  1.2,     1.1,0,  [], null], //'Wild Boar',
+    [167, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    3,  1.2,     1.1,0,  [], null], //'Bear',
+    [168, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    1,  1.1,     1.1,0,  [], null], //'Slime',
+    [169, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    2,  1.2,     1.1,0,  [], null], //'Slime Champion',
+    [170, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.INSECT,   1,  1.1,     1.1,0,  [], null], //'Scorpion',
+    [171, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    4,  1.6,     1.1,0,  [], null], //'Kraken',
+    [172, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.UNDEAD,   3,  1.3,     1.1,0,  [], null], //'Vampire',
+    [173, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.UNDEAD,   2,  1.1,     1.1,0,  [], null], //'Mummy',
+    [174, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.UNDEAD,   2,  1.3,     1.1,0,  [], null], //'Wraith',
+    [175, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    4,  1.5,     1.1,0,  [], null], //'Beholder',
+    [176, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    1,  1.1,     1.1,0,  [], null], //'Goblin',
+    [177, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.UNDEAD,   2,  1.1,     1.1,0,  [], null], //'Zombie',
+    [178, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.UNDEAD,   2,  1.1,     1.1,0,  [], null], //'Undead',
+    [179, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    3,  1.3,     1.1,0,  [], null], //'Orc',
+    [180, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    3,  1,       1.1,0,  [], null], //'Cyclops',
+    [181, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    3,  1.7,     1.1,0,  [], null], //'Werewolf',
+    [182, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    6,  1.5,     1.1,0,  [], null], //'Werebear',
     [183, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    7,  2,       1,0,  [], null],   //'Devil'
     // NPC
     [145, '','', 0, 0, G_OBJECT_TYPE.NPC, G_NPC_TYPE.BLACKSMITH], // 184

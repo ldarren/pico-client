@@ -8,9 +8,6 @@ pico.def('hero', 'picUIContent', function(){
     heroObj,
     appearance, stats, effects, bag, tome,
     currStats,
-    d20Roll = function(){
-        return Round(Random()*21);
-    },
     slotText2Id = function(text){
         switch(text){
         case 'helm': return HERO_HELM;
@@ -223,6 +220,7 @@ pico.def('hero', 'picUIContent', function(){
         var spell, cooldown;
         for(var i=0, l=tome.length; i<l; i++){
             spell = tome[i];
+            if (!spell) continue;
             cooldown = spell[SPELL_COOLDOWN];
             if (cooldown) {
                 cooldown -= steps;
@@ -237,9 +235,8 @@ pico.def('hero', 'picUIContent', function(){
 
         var
         target = objects[id],
-        flag = flags[id],
         creepName = target[OBJECT_NAME],
-        roll = d20Roll(),
+        roll = G_D20_ROLL(),
         atk = me.getAtk(),
         def = target[CREEP_PDEF],
         total = roll + atk,
@@ -258,8 +255,6 @@ pico.def('hero', 'picUIContent', function(){
             attackMsg += MSG_CREEP_KILL.replace('NAME', creepName);
         }
 
-        delete flags[id];
-
         return [id, attackMsg];
     };
 
@@ -268,12 +263,12 @@ pico.def('hero', 'picUIContent', function(){
         if (!targets || !targets.length) return false; // return error?
 
         var
-        roll = d20Roll(),
+        roll = G_D20_ROLL(),
         total = roll + currStats[OBJECT_DEX],
         target, i, l;
 
         for (i=0,l=targets.length; i<l; i++){
-            target = objects[targetId];
+            target = objects[targets[i]];
             if (total <= target[CREEP_ATK]) {
                 return [false, MSG_FLEE_LOST
                         .replace('TOTAL', total)
@@ -516,12 +511,9 @@ pico.def('hero', 'picUIContent', function(){
 
         var
         map = this.map,
-        hero = this.hero,
-        hp = hero.getPosition(),
-        objects = this.objects,
+        hp = me.getPosition(),
         object = objects[id],
-        objectType = object ? object[OBJECT_TYPE] : undefined,
-        flags = this.flags;
+        objectType = object ? object[OBJECT_TYPE] : undefined;
                 
         if (object && (G_OBJECT_TYPE.NPC === objectType || 
             G_OBJECT_TYPE.KEY === objectType || 
@@ -538,7 +530,7 @@ pico.def('hero', 'picUIContent', function(){
         spell[SPELL_COOLDOWN] = spell[SPELL_RELOAD]; // set cooldown;
 
         var
-        castPt = d20Roll(),
+        castPt = G_D20_ROLL(),
         totalCastPt = castPt + currStats[OBJECT_WILL];
 
         if (0 === castPt){
@@ -616,8 +608,9 @@ pico.def('hero', 'picUIContent', function(){
                 map[id] |= G_TILE_TYPE.CREEP;
                 objects[id] = this.ai.spawnCreep(this.deepestLevel);
                 this.recalHints();
-                nextAction = 'attack';
-                nextActionEvent = hero.battle(id, true);
+                hero.setEngaged(id);
+                nextAction = 'counter';
+                nextActionEvent = this.ai.battle();
             }else{
                 flags[id] = G_UI.FLAG;
                 nextAction = 'showInfo';
@@ -740,7 +733,11 @@ pico.def('hero', 'picUIContent', function(){
         if (-1 === index) return;
         targets.splice(index, 1);
     };
-    me.getEngaged = function(){ return appearance[HERO_ENEMIES]; };
+    me.getEngaged = function(){
+        var targets = appearance[HERO_ENEMIES];
+        if (!targets) return [];
+        return targets.slice();
+    };
     me.setEngaged = function(engaged){
         var
         targets = appearance[HERO_ENEMIES],
@@ -776,7 +773,7 @@ pico.def('hero', 'picUIContent', function(){
         return [com.layout.w, com.layout.h];
     };
 
-    me.click = function(ent, x, y, state){
+    me.click = function(ent, x, y, state) entities;
         var
         com = ent.getComponent(name),
         comBox = ent.getComponent(com.box),

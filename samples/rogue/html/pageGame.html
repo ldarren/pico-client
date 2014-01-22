@@ -158,8 +158,8 @@ onLoad = function(){
         game.route('moveCameraStart', [game.useSelected, renderer.captureScreenshot]);
         game.route('moveCamera', [game.useSelected, camera.swipe, renderer.drawScreenshot]);
         game.route('moveCameraEnd', [game.releaseSelected, renderer.releaseScreenshot, renderer.draw]);
-        game.route('useItem', [bag.useItem, renderer.draw, game.releaseSelected]);
-        //game.route('selectSpell', [tome.selectSpell, renderer.draw, game.releaseSelected]);
+        game.route('useItem', [bag.useItem, renderer.draw]);
+        //game.route('selectSpell', [tome.selectSpell, renderer.draw]);
         game.route('openGate', [game.openGate, renderer.draw]);
         game.route('openChest', [game.openChest, renderer.draw]);
         game.route('loot', [bag.lootItem, uiWindow.update, renderer.draw]);
@@ -186,10 +186,10 @@ onLoad = function(){
         game.route('openForSale', [uiWindow.maximise, bag.openForSale, renderer.draw]);
         game.route('showInfo', [uiWindow.showInfo, renderer.draw]);
         game.route('hideInfo', [uiWindow.hideInfo, renderer.draw]);
-        game.route('showDialog', [uiWindow.hideAll, uiWindow.showDialog, renderer.draw, game.releaseSelected]);
-        game.route('hideDialog', [uiWindow.showAll, uiWindow.hideDialog, uiWindow.update, renderer.draw, game.releaseSelected]);
-        game.route('showTrade', [game.createGoods, uiWindow.hideAll, uiWindow.showTrade, uiWindow.update, renderer.draw, game.releaseSelected]);
-        game.route('hideTrade', [uiWindow.showAll, uiWindow.hideTrade, uiWindow.update, renderer.draw, game.releaseSelected]);
+        game.route('showDialog', [uiWindow.hideAll, uiWindow.showDialog, renderer.draw]);
+        game.route('hideDialog', [uiWindow.showAll, uiWindow.hideDialog, uiWindow.update, renderer.draw]);
+        game.route('showTrade', [game.createGoods, uiWindow.hideAll, uiWindow.showTrade, uiWindow.update, renderer.draw]);
+        game.route('hideTrade', [uiWindow.showAll, uiWindow.hideTrade, uiWindow.update, renderer.draw]);
 
         var
         cameraEnt = game.addEntity('camera'),

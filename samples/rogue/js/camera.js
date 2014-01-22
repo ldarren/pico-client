@@ -124,7 +124,9 @@ pico.def('camera', 'picBase', function(){
                 this.go('gameStep', this.fillTiles(id));
 
                 if (tileType & G_TILE_TYPE.CREEP){
-                    this.go('attack', hero.battle(id, true));
+                    hero.setEngaged(id);
+                    this.go('counter', this.ai.battle());
+                    return entities;
                 }
             }
         }

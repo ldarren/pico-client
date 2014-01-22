@@ -5,15 +5,14 @@ pico.def('ai', function(){
     team = [],
     currIndex = 0,
     level = 0,
-    hero,
-    objects,
-    terrain,
+    hero,objects,flags,terrain,
     createCreepStat = function(creepId, level){
         var s = me.getStatByCreepId(creepId).slice();
         for(var i=CREEP_ATK; i<=CREEP_MDEF; i++){
             s[i] = Ceil(s[i]*level); // negative is allowed
         }
-        s[OBJECT_NAME] = G_OBJECT_NAME[s[OBJECT_ICON]];
+        s[OBJECT_NAME] = G_OBJECT_NAME[creepId];
+        s[OBJECT_DESC] = G_OBJECT_DESC[creepId];
         s[OBJECT_LEVEL] = level;
         return s;
     },
@@ -56,6 +55,7 @@ pico.def('ai', function(){
     me.init = function(){
         hero = this.hero;
         objects = this.objects;
+        flags = this.flags;
         terrain = this.terrain;
         me.changeTheme();
 
@@ -236,38 +236,42 @@ pico.def('ai', function(){
 
     me.battle = function(){
         var
-        hero = me.hero,
         targetIds = hero.getEngaged(),
         counterMsgs = [],
-        def = me.getDef(),
+        def = hero.getDef(),
         hp = hero.getHp(),
-        total, roll, atk, hit, target, creepName;
+        total, roll, atk, hit, targetId, target, creepName, counterMsg;
 
         for(var i=0,l=targetIds.length; i<l; i++){
-            target = objects[targetIds[i]];
-            atk = target[OBJECT_ATK];
+            targetId = targetIds[i];
+            target = objects[targetId];
+            atk = target[CREEP_ATK];
 
-            if (!atk || hp < 1) counterMsgs.push(null);
+            if (flags[targetId] || !atk || hp < 1){
+                counterMsgs.push(null);
+                continue;
+            }
 
             creepName = target[OBJECT_NAME];
-            roll = d20Roll();
+            roll = G_D20_ROLL();
 
             total = roll+atk;
             hit = total > def ? 1 : (0===roll ? 2:1);
 
-            counterMsgs.push((hit ? MSG_COUNTER_WIN : MSG_COUNTER_LOST)
+            counterMsg = (hit ? MSG_COUNTER_WIN : MSG_COUNTER_LOST)
                 .replace('NAME', creepName)
                 .replace('TOTAL', total)
                 .replace('ROLL', roll)
                 .replace('ATK', atk)
                 .replace('DEF', def)
-                .replace('HP', hit));
+                .replace('HP', hit);
 
             hp = hero.incrHp(-1*hit);
 
             if (hp < 1){
                 counterMsg += MSG_HERO_KILL.replace('NAME', creepName);
             }
+            counterMsgs.push(counterMsg);
         }
 
         return [targetIds, counterMsgs];

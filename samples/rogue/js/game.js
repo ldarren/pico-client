@@ -346,8 +346,9 @@ console.log(JSON.stringify(hints));
             me.go('startEffect', {type:'damageEfx',targets:[targetId]});
 
             me.routeInputs([function(){
-                me.go('counter', me.ai.battle());
                 me.unlockInputs();
+                me.go('counter', me.ai.battle());
+                delete me.flags[targetId]; // must do it after ai.battle to avoid flag creep attacks
             }]);
         }, 500);
 
@@ -356,14 +357,33 @@ console.log(JSON.stringify(hints));
 
     me.counterAnim = function(elapsed, evt, entities){
         var
-        hero = this.hero,
-        targetId = evt[0],
-        msg = evt[2];
+        hero = me.hero,
+        ai = me.ai,
+        targetIds = evt[0],
+        msgs = evt[1];
 
-        if (!hero.isEngaged(targetId)) return;
+        if (!targetIds.length){
+            var engagedIds = hero.getEngaged();
+            
+            for(var i=0,l=engagedIds.length; i<l; i++){
+                ai.bury(engagedIds[i]);
+            }
 
-        if (!msg) {
-            me.unlockInputs();
+            engagedIds = hero.getEngaged();
+
+            if (engagedIds.length)
+                me.go('showInfo', { targetId:engagedIds[0], context:G_CONTEXT.WORLD});
+            else
+                me.go('hideInfo');
+            return;
+        }
+
+        var
+        targetId = targetIds.pop(),
+        msg = msgs.pop();
+
+        if (!hero.isEngaged(targetId) || !msg){
+            this.go('counter', evt);
             return;
         }
 
@@ -372,6 +392,8 @@ console.log(JSON.stringify(hints));
         pos = hero.getPosition(),
         creep = objects[targetId];
 
+        me.lockInputs();
+
         me.go('showInfo', {info: msg});
 
         objects[targetId] = undefined;
@@ -379,6 +401,10 @@ console.log(JSON.stringify(hints));
         setTimeout(function(){
             me.go('forceRefresh');
             objects[targetId] = creep;
+            hero.move(pos);
+            me.ai.bury(targetId);
+            me.go('startEffect', {type:'damageEfx',targets:[pos] });
+
             if (hero.isDead()){
                 objects[pos] = G_CREATE_OBJECT(G_ICON.BONES),
                 me.hero.bury(me.god);
@@ -393,12 +419,8 @@ console.log(JSON.stringify(hints));
                     me.unlockInputs();
                 }]);
             }else{
-                hero.move(pos);
-
-                me.ai.bury(targetId);
-                me.go('startEffect', {type:'damageEfx',targets:[pos] });
                 me.routeInputs([function(){
-                    me.go('showInfo', { targetId:targetId, context:G_CONTEXT.WORLD});
+                    me.go('counter', evt);
                     me.unlockInputs();
                 }]);
             }
