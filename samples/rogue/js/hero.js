@@ -109,10 +109,10 @@ pico.def('hero', 'picUIContent', function(){
             me.fillIconText(ctx, ts, ''+currStats[HERO_GOLD], rect, tileScale);
             break;
         case 'skullLabel':
-            me.fillIconText(ctx, ts, 'Skull `'+G_UI.SKULL, rect, tileScale);
+            me.fillIconText(ctx, ts, 'Piety `'+G_UI.SKULL, rect, tileScale);
             break;
         case 'skull':
-            me.fillIconText(ctx, ts, ''+currStats[HERO_SKULL], rect, tileScale);
+            me.fillIconText(ctx, ts, ''+currStats[HERO_PIETY], rect, tileScale);
             break;
         case 'patk':
             me.fillIconText(ctx, ts, ''+currStats[OBJECT_PATK], rect, tileScale);
@@ -338,7 +338,7 @@ pico.def('hero', 'picUIContent', function(){
         }
         slot = body[HERO_GOLD];
         if (slot) me.incrMoney(slot[0], slot[1]);
-        slot = body[HERO_SKULL];
+        slot = body[HERO_PIETY];
         if (slot) me.incrMoney(slot[0], slot[1]);
         if (body[HERO_BAG_CAP] > appearance[HERO_BAG_CAP]) appearance[HERO_BAG_CAP] = body[HERO_BAG_CAP];
         if (body[HERO_TOME_CAP] > appearance[HERO_TOME_CAP]) appearance[HERO_TOME_CAP] = body[HERO_TOME_CAP];
@@ -348,7 +348,7 @@ pico.def('hero', 'picUIContent', function(){
     me.incrMoney = function(money, count){
         switch(money[OBJECT_SUB_TYPE]){
             case G_MONEY_TYPE.GOLD: appearance[HERO_GOLD][1] += count; break;
-            case G_MONEY_TYPE.SKULL: appearance[HERO_SKULL][1] += count; break;
+            case G_MONEY_TYPE.PIETY: appearance[HERO_PIETY][1] += count; break;
             default: return false;
         }
 
