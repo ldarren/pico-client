@@ -111,7 +111,7 @@ pico.def('camera', 'picBase', function(){
                 labels: ['Flee', 'Stay'],
                 callbacks: ['flee', null]
             });
-            return;
+            return entities;
         }
 
         tileType = map[id];
@@ -125,8 +125,6 @@ pico.def('camera', 'picBase', function(){
 
                 if (tileType & G_TILE_TYPE.CREEP){
                     hero.setEngaged(id);
-                    this.go('counter', this.ai.battle());
-                    return entities;
                 }
             }
         }
@@ -143,7 +141,7 @@ pico.def('camera', 'picBase', function(){
                     steps = this.solve(hp);
                     if (!steps) return entities;
                     this.go('gameStep', steps);
-                }else{
+                }else if (!hero.isEngaged(id)){
                     this.go('showInfo', { targetId: id, context: G_CONTEXT.WORLD });
                 }
             }else{
@@ -153,6 +151,7 @@ pico.def('camera', 'picBase', function(){
             }
         }
 
+        this.go('counter', this.ai.battle());
         return entities;
     };
 

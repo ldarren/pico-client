@@ -330,22 +330,25 @@ console.log(JSON.stringify(hints));
 
         if (!attackMsg) return;
 
+        me.go('showInfo', { info: attackMsg } );
+
         if (!targetIds || !targetIds.length){
             me.go('counter', me.ai.battle());
 
-            var
-            flags = me.flags,
-            engagedIds = hero.getEngaged();
-            
-            for(var i=0,l=engagedIds.length; i<l; i++){
-                delete flags[engagedIds[i]]; // must do it after ai.battle to avoid flag creep attacks
+            // for spell, reveal level is set at hero.castSpell
+            if (!isSpell){
+                var
+                flags = me.flags,
+                engagedIds = hero.getEngaged();
+                
+                for(var i=0,l=engagedIds.length; i<l; i++){
+                    delete flags[engagedIds[i]]; // must do it after ai.battle to avoid flag creep attacks
+                }
             }
             return;
         }
 
         me.lockInputs();
-
-        me.go('showInfo', { info: attackMsg } );
 
         if (!isSpell){
             var
@@ -394,8 +397,6 @@ console.log(JSON.stringify(hints));
 
             if (engagedIds.length)
                 me.go('showInfo', { targetId:engagedIds[0], context:G_CONTEXT.WORLD});
-            else
-                me.go('hideInfo');
             return;
         }
 
@@ -453,7 +454,7 @@ console.log(JSON.stringify(hints));
         if (!ret) return;
 
         if (!ret[0]){
-            this.go('counter', [undefined, ret[1]]);
+            this.go('counter', [[], ret[1]]);
             return;
         }
         this.go('showInfo', {info: ret[1]});

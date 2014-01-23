@@ -54,6 +54,7 @@ pico.def('ai', function(){
 
     me.init = function(){
         hero = this.hero;
+        map = this.map;
         objects = this.objects;
         flags = this.flags;
         terrain = this.terrain;
@@ -202,7 +203,7 @@ pico.def('ai', function(){
     me.incrHp = function(id, inc){
         var creep = objects[id];
 
-        if (!creep || G_OBJECT_TYPE.CREEP !== creep[OBJECT_ICON]) return;
+        if (!creep || G_OBJECT_TYPE.CREEP !== creep[OBJECT_TYPE]) return;
         var
         stat = me.getStatByObject(creep),
         creepHp = creep[CREEP_HP],
@@ -231,6 +232,23 @@ pico.def('ai', function(){
             creepHp += inc;
             if (creepHp > statHp) creepHp = statHp;
             creep[CREEP_HP] = creepHp;
+        }
+    };
+
+    me.reveal = function(id){
+        var object = objects[id];
+
+        if (!object) return;
+
+        if (map[id] & G_TILE_TYPE.HIDE){
+            map[id] &= G_TILE_TYPE.SHOW;
+            flags[id] = G_UI.FLAG;
+            return;
+        }
+
+        if (flags[id]){
+            delete flags[id];
+            return;
         }
     };
 

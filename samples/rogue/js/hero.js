@@ -3,7 +3,7 @@ pico.def('hero', 'picUIContent', function(){
     me = this,
     name = me.moduleName,
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
-    objects, flags,
+    objects, flags, ai,
     position, selectedSpell,
     heroObj,
     appearance, stats, effects, bag, tome,
@@ -192,13 +192,14 @@ pico.def('hero', 'picUIContent', function(){
         if (!heroObj){
             heroObj = this.god.createHero();
         }
-        objects = this.objects;
-        flags = this.flags;
         appearance = heroObj.appearance;
         stats = heroObj.stats;
         effects = heroObj.effects;
         bag = heroObj.bag;
         tome = heroObj.tome;
+        objects = this.objects;
+        flags = this.flags;
+        ai = this.ai;
         
         var targets = appearance[HERO_ENEMIES];
 
@@ -249,9 +250,7 @@ pico.def('hero', 'picUIContent', function(){
             .replace('DEF', def)
             .replace('DMG', hit);
 
-        target[CREEP_HP] -= hit;
-
-        if (target[CREEP_HP] < 1){
+        if (ai.incrHp(id, -hit) < 1){
             attackMsg += MSG_CREEP_KILL;
         }
 
@@ -281,7 +280,7 @@ pico.def('hero', 'picUIContent', function(){
         }
 
         for (i=0,l=targets.length; i<l; i++){
-            flags[i] = G_UI.FLAG;
+            flags[targets[i]] = G_UI.FLAG;
         }
         me.clearEngaged();
         return [true, MSG_FLEE_WIN
@@ -552,7 +551,6 @@ pico.def('hero', 'picUIContent', function(){
         selectedSpell = undefined;
 
         var
-        ai = this.ai,
         targets = [],
         isSpell = true,
         castStr = castPt + spell[SPELL_STRENGTH],
@@ -589,11 +587,10 @@ pico.def('hero', 'picUIContent', function(){
                     }
                     break;
                 default:
-                    delete objects[contatcId];
+                    delete objects[contactId];
                     break;
                 }
-                map[contactId] &= G_TILE_TYPE.SHOW;
-                delete flags[contactId];
+                ai.reveal(contactId);
             }
             if (chestCount) info += MSG_CAST_DESTROY_CHEST.replace('COUNT', chestCount);
             if (!creepCount && !chestCount) info += MSG_CAST_VOID; 
@@ -611,7 +608,7 @@ pico.def('hero', 'picUIContent', function(){
                 map[id] |= G_TILE_TYPE.CREEP;
                 objects[id] = ai.spawnCreep(this.deepestLevel);
                 this.recalHints();
-                hero.setEngaged(id);
+                me.setEngaged(id);
                 targets.push(id);
                 isSpell = false;
                 info += MSG_CAST_GAZE_FAILURE;
@@ -619,7 +616,7 @@ pico.def('hero', 'picUIContent', function(){
                 flags[id] = G_UI.FLAG;
                 info += MSG_CAST_GAZE_SUCCEED;
             }
-            map[id] &= G_TILE_TYPE.SHOW;
+            ai.reveal(id);
             break;
         case G_SPELL_TYPE.FIREBALL:
             if (object){
@@ -649,8 +646,7 @@ pico.def('hero', 'picUIContent', function(){
                     break;
                 }
             }
-            map[id] &= G_TILE_TYPE.SHOW;
-            delete flags[id];
+            ai.reveal(id);
             break;
         }
         this.go('hideInfo');
