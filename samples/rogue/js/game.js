@@ -347,9 +347,7 @@ console.log(JSON.stringify(hints));
 
         me.go('showInfo', { info: attackMsg } );
 
-        if (isSpell){
-            targetIds.length = 0;
-        }else{
+        if (!isSpell){
             var
             targetId = targetIds.pop(),
             objects = this.objects,
@@ -361,7 +359,8 @@ console.log(JSON.stringify(hints));
 
         setTimeout(function(){
             if(isSpell){
-                me.go('startEffect', {type:'damageEfx',targets:targetIds});
+                me.go('startEffect', {type:'damageEfx',targets:targetIds.slice()});
+                targetIds.length = 0;
             }else{
                 hero.move(pos); // hero must move first
                 objects[targetId] = creep;

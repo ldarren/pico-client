@@ -255,7 +255,7 @@ pico.def('hero', 'picUIContent', function(){
             attackMsg += MSG_CREEP_KILL;
         }
 
-        return [id, attackMsg];
+        return [false, [id], attackMsg];
     };
 
     me.flee = function(){
@@ -281,7 +281,7 @@ pico.def('hero', 'picUIContent', function(){
         }
 
         for (i=0,l=targets.length; i<l; i++){
-            flags[id] = G_UI.FLAG;
+            flags[i] = G_UI.FLAG;
         }
         me.clearEngaged();
         return [true, MSG_FLEE_WIN
@@ -626,7 +626,7 @@ pico.def('hero', 'picUIContent', function(){
                 switch(objectType){
                 case G_OBJECT_TYPE.CREEP:
                     ai.incrHp(id, -1);
-                    info += MSG_CAST_FIREBALL_SUCCEED.replace('NAME', object[CHEST_NAME]);
+                    info += MSG_CAST_FIREBALL_SUCCEED.replace('NAME', object[OBJECT_NAME]);
                     if (ai.bury(id)){
                         info += MSG_CREEP_KILL;
                     }else{
