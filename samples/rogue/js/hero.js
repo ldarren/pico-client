@@ -252,7 +252,7 @@ pico.def('hero', 'picUIContent', function(){
         target[CREEP_HP] -= hit;
 
         if (target[CREEP_HP] < 1){
-            attackMsg += MSG_CREEP_KILL.replace('NAME', creepName);
+            attackMsg += MSG_CREEP_KILL;
         }
 
         return [id, attackMsg];
@@ -535,12 +535,16 @@ pico.def('hero', 'picUIContent', function(){
 
         if (0 === castPt){
             this.go('forgetSpell');
-            this.go('showInfo', {info:'Spell major failure: You roll a 0, this spell was so powerfull for your feeble mind that it is thraumatized you. You are now scared and the spell is forgotten.'});
+            this.go('attack', [true, [], MSG_CAST_FAILURE_MAJOR]);
             return true; // spell cast
         }
 
         if (totalCastPt < spell[SPELL_DIFFICULTY]){
-            this.go('showInfo', {info:'Spell minor failure: You have failed to cast this spell with a roll of '+totalCastPt+' ('+castPt+'+'+currStats[OBJECT_WILL]+') which is lower than the spell difficulty of '+spell[SPELL_DIFFICULTY]});
+            this.go('attack', [true, [], MSG_CAST_FAILURE_MINOR
+                .replace('TOTAL', totalCastPt)
+                .replace('ROLL', castPt)
+                .replace('STAT', currStats[OBJECT_WILL])
+                .replace('DIFF', spell[SPELL_DIFFICULTY])]);
             return true; // spell cast
         }
 
@@ -548,10 +552,11 @@ pico.def('hero', 'picUIContent', function(){
         selectedSpell = undefined;
 
         var
+        ai = this.ai,
         targets = [],
+        isSpell = true,
         castStr = castPt + spell[SPELL_STRENGTH],
-        info = 'You rolled a '+castStr+' ('+castPt+'+'+spell[SPELL_STRENGTH]+')',
-        nextAction, nextActionEvent;
+        info = MSG_CAST_SUCCEED.replace('TOTAL',castStr).replace('ROLL',castPt).replace('STR',spell[SPELL_STRENGTH]);
 
         switch(spell[OBJECT_SUB_TYPE]){
         case G_SPELL_TYPE.WHIRLWIND:
@@ -566,12 +571,13 @@ pico.def('hero', 'picUIContent', function(){
                 switch(contact[OBJECT_TYPE]){
                 case G_OBJECT_TYPE.CREEP:
                     if (castStr > contact[CREEP_MDEF]){
-                        contact[CREEP_HP]--;
-                        this.ai.bury(contactId);
-                        info += ', beats the def('+contact[CREEP_MDEF]+') of the '+contact[OBJECT_NAME]; 
+                        me.setEngaged(contactId);
                         targets.push(contactId);
+                        ai.incrHp(contactId, -1);
+                        ai.bury(contactId);
+                        info += MSG_CAST_WHIRLWIND_SUCCEED.replace('DEF', contact[CREEP_MDEF]).replace('NAME', contact[OBJECT_NAME]); 
                     }else{
-                        info += ', failed to beat the def('+contact[CREEP_MDEF]+') of the '+contact[OBJECT_NAME]; 
+                        info += MSG_CAST_WHIRLWIND_FAILURE.replace('DEF', contact[CREEP_MDEF]).replace('NAME', contact[OBJECT_NAME]); 
                     }
                     creepCount++;
                     break;
@@ -589,32 +595,29 @@ pico.def('hero', 'picUIContent', function(){
                 map[contactId] &= G_TILE_TYPE.SHOW;
                 delete flags[contactId];
             }
-            if (chestCount) info += ', and you have destroyed '+chestCount+' chests'; 
-            if (!creepCount && !chestCount) info += ', but noone is near you'; 
-            nextAction = 'showInfo';
-            nextActionEvent = { info:info };
+            if (chestCount) info += MSG_CAST_DESTROY_CHEST.replace('COUNT', chestCount);
+            if (!creepCount && !chestCount) info += MSG_CAST_VOID; 
             break;
         case G_SPELL_TYPE.POISON_BLADE:
             var efx = G_CREATE_OBJECT(G_ICON.EFX_POISON_BLADE);
             efx[OBJECT_ICON] = spell[OBJECT_ICON];
             efx[OBJECT_LEVEL] = spell[OBJECT_LEVEL];
             effects.push(efx);
-            nextAction = 'showInfo';
-            nextActionEvent = {info:info+', your weapon has coated with poison'};
+            info += MSG_CAST_POISONBLADE;
             break;
         case G_SPELL_TYPE.GAZE:
             if (!this.currentLevel) return false;
             if (!object){
                 map[id] |= G_TILE_TYPE.CREEP;
-                objects[id] = this.ai.spawnCreep(this.deepestLevel);
+                objects[id] = ai.spawnCreep(this.deepestLevel);
                 this.recalHints();
                 hero.setEngaged(id);
-                nextAction = 'counter';
-                nextActionEvent = this.ai.battle();
+                targets.push(id);
+                isSpell = false;
+                info += MSG_CAST_GAZE_FAILURE;
             }else{
                 flags[id] = G_UI.FLAG;
-                nextAction = 'showInfo';
-                nextActionEvent = { targetId: id, context: G_CONTEXT.WORLD };
+                info += MSG_CAST_GAZE_SUCCEED;
             }
             map[id] &= G_TILE_TYPE.SHOW;
             break;
@@ -622,12 +625,12 @@ pico.def('hero', 'picUIContent', function(){
             if (object){
                 switch(objectType){
                 case G_OBJECT_TYPE.CREEP:
-                    nextAction = 'showInfo';
-                    object[CREEP_HP]--;
-                    if (this.ai.bury(id)){
-                        nextActionEvent = { info:'You have killed '+object[OBJECT_NAME] };
+                    ai.incrHp(id, -1);
+                    info += MSG_CAST_FIREBALL_SUCCEED.replace('NAME', object[CHEST_NAME]);
+                    if (ai.bury(id)){
+                        info += MSG_CREEP_KILL;
                     }else{
-                        nextActionEvent = { info:'You have toasted '+object[OBJECT_NAME]+' but it is still alive' };
+                        info += MSG_CREEP_ALIVE;
                     }
                     targets.push(id);
                     break;
@@ -638,8 +641,7 @@ pico.def('hero', 'picUIContent', function(){
                     if (object[OBJECT_SUB_TYPE] || object[CHEST_ITEM]){
                         objects[id] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
                         targets.push(id);
-                        nextAction = 'showInfo';
-                        nextActionEvent = { info:'You have toasted a '+object[OBJECT_NAME] };
+                        info += MSG_CAST_DESTROY_CHEST.replace('COUNT', 1);
                     }
                     break;
                 default:
@@ -656,13 +658,8 @@ pico.def('hero', 'picUIContent', function(){
             type:'castEfx',
             targets:[id],
             spells:[spell[OBJECT_ICON]],
-            callback:'startEffect',
-            event:{
-                type:'damageEfx',
-                targets:targets,
-                callback:nextAction,
-                event:nextActionEvent
-                }
+            callback:'attack',
+            event:[isSpell, targets, info]
         });
         return true;
     };
@@ -773,7 +770,7 @@ pico.def('hero', 'picUIContent', function(){
         return [com.layout.w, com.layout.h];
     };
 
-    me.click = function(ent, x, y, state) entities;
+    me.click = function(ent, x, y, state){
         var
         com = ent.getComponent(name),
         comBox = ent.getComponent(com.box),

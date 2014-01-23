@@ -324,31 +324,53 @@ console.log(JSON.stringify(hints));
     me.attackAnim = function(elapsed, evt, entities){
         var
         hero = this.hero,
-        targetId = evt[0],
-        attackMsg = evt[1];
+        isSpell = evt[0],
+        targetIds = evt[1],
+        attackMsg = evt[2];
 
-        if (!attackMsg || !hero.isEngaged(targetId)) return;
+        if (!attackMsg) return;
+
+        if (!targetIds || !targetIds.length){
+            me.go('counter', me.ai.battle());
+
+            var
+            flags = me.flags,
+            engagedIds = hero.getEngaged();
+            
+            for(var i=0,l=engagedIds.length; i<l; i++){
+                delete flags[engagedIds[i]]; // must do it after ai.battle to avoid flag creep attacks
+            }
+            return;
+        }
 
         me.lockInputs();
 
         me.go('showInfo', { info: attackMsg } );
 
-        var
-        objects = this.objects,
-        pos = hero.getPosition(),
-        creep = objects[targetId];
+        if (isSpell){
+            targetIds.length = 0;
+        }else{
+            var
+            targetId = targetIds.pop(),
+            objects = this.objects,
+            pos = hero.getPosition(),
+            creep = objects[targetId];
 
-        hero.move(targetId);
+            hero.move(targetId);
+        }
 
         setTimeout(function(){
-            hero.move(pos); // hero must move first
-            objects[targetId] = creep;
-            me.go('startEffect', {type:'damageEfx',targets:[targetId]});
+            if(isSpell){
+                me.go('startEffect', {type:'damageEfx',targets:targetIds});
+            }else{
+                hero.move(pos); // hero must move first
+                objects[targetId] = creep;
+                me.go('startEffect', {type:'damageEfx',targets:[targetId]});
+            }
 
             me.routeInputs([function(){
                 me.unlockInputs();
-                me.go('counter', me.ai.battle());
-                delete me.flags[targetId]; // must do it after ai.battle to avoid flag creep attacks
+                me.go('attack', evt);
             }]);
         }, 500);
 

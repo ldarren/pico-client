@@ -271,7 +271,7 @@ pico.def('info', 'picUIContent', function(){
                 break;
             case 'fight':
                 this.audioSprite.play(2);
-                this.go('attack', hero.battle(targetId, false));
+                this.go('attack', hero.battle(false, [targetId], false));
                 break;
             case 'flee':
                 this.go('flee');
