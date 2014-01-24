@@ -254,7 +254,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
     me.showInfo = function(elapsed, evt, entities){
         if (!evt) return;
 
-        var ent = this.showEntity(infoId);
+        var ent = this.showEntity(infoId, evt);
         if (!ent) return;
 
         resizeContent.call(this, ent, ent.getComponent(name));
@@ -269,7 +269,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
     me.showDialog = function(elapsed, evt, entities){
         if (!evt) return;
 
-        var ent = this.showEntity(dialogMsgId);
+        var ent = this.showEntity(dialogMsgId, evt);
         if (!ent) return;
 
         resizeContent.call(this, ent, ent.getComponent(name));
@@ -284,7 +284,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
     me.showTrade = function(elapsed, evt, entities){
         if (!evt) return;
 
-        var ent = this.showEntity(tradeId);
+        var ent = this.showEntity(tradeId, evt);
         if (!ent) return;
 
         resizeContent.call(this, ent, ent.getComponent(name));
@@ -299,7 +299,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
     me.showGod = function(elapsed, evt, entities){
         if (!evt) return;
 
-        var ent = this.showEntity(godId);
+        var ent = this.showEntity(godId, evt);
         if (!ent) return;
 
         resizeContent.call(this, ent, ent.getComponent(name));
