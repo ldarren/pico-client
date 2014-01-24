@@ -71,11 +71,11 @@ pico.def('trade', 'picUIContent', function(){
         return data;
     };
 
-    me.open = function(ent, evt){
+    me.show = function(ent, com, evt){
         goods = evt;
     };
 
-    me.close = function(){
+    me.hide = function(ent, com, evt){
         goods = undefined;
     };
 

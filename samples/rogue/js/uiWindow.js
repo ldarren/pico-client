@@ -4,6 +4,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
     this.use('info');
     this.use('dialogMsg');
     this.use('trade');
+    this.use('god');
 
     var
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
@@ -13,6 +14,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
     infoId = G_WIN_ID.INFO,
     dialogMsgId = G_WIN_ID.DIALOG,
     tradeId = G_WIN_ID.TRADE,
+    godId = G_WIN_ID.GOD,
     me = this,
     name = me.moduleName,
     updateContent = function(ent, com){
@@ -68,6 +70,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
             case infoId:
             case dialogMsgId:
             case tradeId:
+            case godId:
                 comBox.x = layout[0];
                 comBox.y = layout[1];
                 comBox.width = layout[2];
@@ -98,6 +101,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
             case infoId:
             case dialogMsgId:
             case tradeId:
+            case godId:
                 comBox.x = layout[0];
                 comBox.y = layout[1];
                 comBox.width = layout[2];
@@ -134,10 +138,8 @@ pico.def('uiWindow', 'picUIWindow', function(){
             data.minHeight = this.smallDevice ? 80 : 160;
             break;
         case dialogMsgId:
-            data.minWidth = this.smallDevice ? 320 : 640;
-            data.minHeight = this.smallDevice ? 180 : 360;
-            break;
         case tradeId:
+        case godId:
             data.minWidth = this.smallDevice ? 320 : 640;
             data.minHeight = this.smallDevice ? 180 : 360;
             break;
@@ -166,6 +168,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         this.showEntity(infoId);
         this.showEntity(dialogMsgId);
         this.showEntity(tradeId);
+        this.showEntity(godId);
 
         for(i=0, l=entities.length; i<l; i++){
             ent = entities[i];
@@ -198,6 +201,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
                 break;
             case dialogMsgId:
             case tradeId:
+            case godId:
                 layouts.push(me.fitIntoGrid(
                     [evt[0] + Ceil((evt[2] - com.minWidth)/2), evt[1] + Ceil((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight],
                     gs, gs, false));
@@ -208,15 +212,10 @@ pico.def('uiWindow', 'picUIWindow', function(){
                 layouts.push(me.fitIntoGrid([evt[0]+1, evt[1]+1, evt[2]-2, evt[3]-2], gs, gs, true));
         }
 
-        if (!me.info.isValid()){
-            this.hideEntity(infoId);
-        }
-        if (!me.dialogMsg.isValid()){
-            this.hideEntity(dialogMsgId);
-        }
-        if (!me.trade.isValid()){
-            this.hideEntity(tradeId);
-        }
+        if (!me.info.isValid()) this.hideEntity(infoId);
+        if (!me.dialogMsg.isValid()) this.hideEntity(dialogMsgId);
+        if (!me.trade.isValid()) this.hideEntity(tradeId);
+        if (!me.god.isValid()) this.hideEntity(godId);
 
         for(i=0, l=entities.length; i<l; i++){
             ent = entities[i];
@@ -235,6 +234,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         if (me.info.isValid()) this.showEntity(infoId);
         if (me.dialogMsg.isValid()) this.showEntity(dialogMsgId);
         if (me.trade.isValid()) this.showEntity(tradeId);
+        if (me.god.isValid()) this.showEntity(godId);
 
         return entities;
     };
@@ -246,6 +246,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         this.hideEntity(infoId);
         this.hideEntity(dialogMsgId);
         this.hideEntity(tradeId);
+        this.hideEntity(godId);
 
         return entities;
     };
@@ -254,18 +255,13 @@ pico.def('uiWindow', 'picUIWindow', function(){
         if (!evt) return;
 
         var ent = this.showEntity(infoId);
-        if (!ent){
-            ent = me.findHost(entities, infoId);
-        }
         if (!ent) return;
 
-        me.info.open.call(this, ent, evt);
         resizeContent.call(this, ent, ent.getComponent(name));
         return entities;
     };
 
     me.hideInfo = function(elapsed, evt, entities){
-        me.info.close.call(this);
         this.hideEntity(infoId);
         return entities;
     };
@@ -274,18 +270,13 @@ pico.def('uiWindow', 'picUIWindow', function(){
         if (!evt) return;
 
         var ent = this.showEntity(dialogMsgId);
-        if (!ent){
-            ent = me.findHost(entities, dialogMsgId);
-        }
         if (!ent) return;
 
-        me.dialogMsg.open.call(this, ent, evt);
         resizeContent.call(this, ent, ent.getComponent(name));
         return entities;
     };
 
     me.hideDialog = function(elapsed, evt, entities){
-        me.dialogMsg.close.call(this);
         this.hideEntity(dialogMsgId);
         return entities;
     };
@@ -294,19 +285,29 @@ pico.def('uiWindow', 'picUIWindow', function(){
         if (!evt) return;
 
         var ent = this.showEntity(tradeId);
-        if (!ent){
-            ent = me.findHost(entities, tradeId);
-        }
         if (!ent) return;
 
-        me.trade.open.call(this, ent, evt);
         resizeContent.call(this, ent, ent.getComponent(name));
         return entities;
     };
 
     me.hideTrade = function(elapsed, evt, entities){
-        me.trade.close.call(this);
         this.hideEntity(tradeId);
+        return entities;
+    };
+
+    me.showGod = function(elapsed, evt, entities){
+        if (!evt) return;
+
+        var ent = this.showEntity(godId);
+        if (!ent) return;
+
+        resizeContent.call(this, ent, ent.getComponent(name));
+        return entities;
+    };
+
+    me.hideGod = function(elapsed, evt, entities){
+        this.hideEntity(godId);
         return entities;
     };
 

@@ -341,7 +341,9 @@ pico.def('info', 'picUIContent', function(){
      * evt.callbacks: callbacks when button clicked e.g. me.go(evt.callbacks[0], evt.events[0])
      * evt.events: parameters of callback, if not defined, auto parameter will be created
      */
-    me.open = function(ent, evt){
+    me.show = function(ent, com, evt){
+        if (!evt) return;
+
         labels.length = 0;
         callbacks.length = 0;
         events.length = 0;
@@ -372,7 +374,7 @@ pico.def('info', 'picUIContent', function(){
         else addButtons.call(this);
     };
 
-    me.close = function(){
+    me.hide = function(ent, com, evt){
         labels.length = 0;
         callbacks.length = 0;
         events.length = 0;

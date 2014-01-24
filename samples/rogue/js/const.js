@@ -1287,6 +1287,7 @@ Object.freeze(G_WIN_ID = {
     INFO: 'uiInfo',
     DIALOG: 'uiDialog',
     TRADE: 'uiTrade',
+    GOD: 'uiGod',
 });
 
 Object.freeze(G_SHADE = [0, 1, 2, 3, 4, 5, 6, 7 ]);

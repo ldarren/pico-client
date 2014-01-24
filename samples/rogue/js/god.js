@@ -1,4 +1,4 @@
-pico.def('god', function(){
+pico.def('god', 'picUIContent', function(){
     var
     me = this,
     heroBody,
@@ -22,6 +22,16 @@ pico.def('god', function(){
     };
 
     me.step = function(steps){
+    };
+
+    me.show = function(ent, com, evt){
+    };
+
+    me.hide = function(ent, com, evt){
+    };
+
+    me.isValid = function(){
+        return false;
     };
     
     me.createHero = function(){
@@ -72,5 +82,4 @@ pico.def('god', function(){
         appearance[HERO_ENEMIES] = [];
         heroBody = [appearance, stats];
     };
-
 });
