@@ -1,7 +1,7 @@
 DROP_ID=0, DROP_RATE=1, DROP_QUALITY=2, DROP_GRADE=3,
 OBJECT_ICON=0, OBJECT_NAME=1, OBJECT_DESC=2, OBJECT_LEVEL=3, OBJECT_GRADE=4, OBJECT_TYPE=5, OBJECT_SUB_TYPE=6,
 OBJECT_HP=7, OBJECT_WILL=8, OBJECT_DEX=9, OBJECT_LUCK=10, OBJECT_STR=11,
-OBJECT_PATK=11, OBJECT_RATK=12, OBJECT_DEF=13,
+OBJECT_PATK=12, OBJECT_RATK=13, OBJECT_DEF=14,
 OBJECT_VEG=15, OBJECT_INSECT=16, OBJECT_BEAST=17, OBJECT_UNDEAD=18, OBJECT_DEMON=19, OBJECT_SPELLS=20,
 CHARMED_HP=4, CHARMED_WILL=5, CHARMED_DEX=6, CHARMED_LUCK=7, CHARMED_STR=8,
 CHARMED_PATK=9, CHARMED_RATK=10, CHARMED_DEF=11,
@@ -134,7 +134,7 @@ Object.freeze(G_NPC_TYPE = {
 });
 
 Object.freeze(G_ENV_TYPE = {
-    SHRINE: 1,
+    FOUNTAIN: 1,
     ALTAR: 2,
     MESSAGE_BOARD: 3,
     BANNER: 4,
@@ -278,7 +278,7 @@ Object.freeze(G_ICON = {
     BONES: 130,
     TOMB: 131,
     ALTAR: 132,
-    SHRINE: 133,
+    FOUNTAIN: 133,
     SOUL_STONE: 134,
     HEALTH_GLOBE: 135,
     PENTAGRAM: 136,
@@ -423,7 +423,7 @@ Object.freeze(G_ITEM_RATE = [
 ]);
 Object.freeze(G_MONEY_TYPE = {
     GOLD: 1,
-    SKULL: 2,
+    PIETY: 2,
 });
 // icons, drop rate
 Object.freeze(G_MONEY_RATE = [
@@ -735,12 +735,12 @@ Object.freeze(G_OBJECT = [
     [125, '','', 0, 0, G_OBJECT_TYPE.JEWEL, G_JEWEL_TYPE.RING, 0, 0, 0, 0,     0.1, 0, 4,    0.1, 2,    1,1,1,1,1, []],
     [126, '','', 0, 0, G_OBJECT_TYPE.JEWEL, G_JEWEL_TYPE.AMULET, 0, 0, 0, 0,     0.1, 0, 4,    0.1, 2,    1,1,1,1,1, []],
     [127, '','', 0, 0, G_OBJECT_TYPE.JEWEL, G_JEWEL_TYPE.AMULET, 0, 0, 0, 0,     0.2, 0, 6,    0.1, 4,    1,1,1,1,1, []],
-    [128, '','', 0, 0, G_OBJECT_TYPE.MONEY, G_MONEY_TYPE.SKULL, 2, 4],
-    [129, '','', 0, 0, G_OBJECT_TYPE.MONEY, G_MONEY_TYPE.SKULL, 1, 1],
+    [128, '','', 0, 0, G_OBJECT_TYPE.MONEY, G_MONEY_TYPE.PIETY, 2, 4],
+    [129, '','', 0, 0, G_OBJECT_TYPE.MONEY, G_MONEY_TYPE.PIETY, 1, 1],
     [130, '','', 0, 0, G_OBJECT_TYPE.MATERIAL, G_MATERIAL_TYPE.BONE],
     [131, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.TOMB, null, null],
     [132, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.ALTAR],
-    [133, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.SHRINE],
+    [133, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.FOUNTAIN],
     [134, '','', 0, 0, G_OBJECT_TYPE.MATERIAL, G_MATERIAL_TYPE.SOUL],
     [135, '','', 0, 0, G_OBJECT_TYPE.HEALTH],
     // spellType, difficulty, cooldown, currCooldown, stat1, stat2, statn
@@ -1235,14 +1235,14 @@ Object.freeze(G_TOWN_MAP = {
         10, 10, 10, G_FLOOR.PORTAL, 10, 10, 10, 10,
         10, 10, 10, 10, 10, 10, 10, 10,
         10, 10, 10, 10, 10, 10, 10, 10,
-        10, 10, 10, 10, 10, 10, G_FLOOR.STAIR_DOWN, 10,
+        10, G_FLOOR.STAIR_DOWN, 10, 10, 10, 10, G_FLOOR.STAIR_DOWN, 10,
         10, 10, 10, 10, 10, 10, 10, 10,
     ],
     objects:[
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 186, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
-        G_ICON.SHRINE, 0, 0, 0, 0, 0, 0, G_ICON.ALTAR,
+        G_ICON.FOUNTAIN, 0, 0, 0, 0, 0, 0, G_ICON.ALTAR,
         184, 0, 0, 0, 0, 0, 0, 185,
         0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0,
@@ -1300,7 +1300,7 @@ Object.freeze(G_UI = {
     PDEF: 192,
     LUCK: 193,
     GOLD: 195,
-    SKULL: 196,
+    PIETY: 196,
     FLAG: 202,
     LEVEL: 216,
     HP: 663,

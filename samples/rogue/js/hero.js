@@ -103,13 +103,13 @@ pico.def('hero', 'picUIContent', function(){
             me.fillIconText(ctx, ts, 'Gold `'+G_UI.GOLD, rect, tileScale);
             break;
         case 'gold':
-            me.fillIconText(ctx, ts, ''+currStats[HERO_GOLD], rect, tileScale);
+            me.fillIconText(ctx, ts, ''+appearance[HERO_GOLD], rect, tileScale);
             break;
         case 'skullLabel':
-            me.fillIconText(ctx, ts, 'Piety `'+G_UI.SKULL, rect, tileScale);
+            me.fillIconText(ctx, ts, 'Piety `'+G_UI.PIETY, rect, tileScale);
             break;
         case 'skull':
-            me.fillIconText(ctx, ts, ''+currStats[HERO_PIETY], rect, tileScale);
+            me.fillIconText(ctx, ts, ''+appearance[HERO_PIETY], rect, tileScale);
             break;
         case 'patk':
             me.fillIconText(ctx, ts, ''+currStats[OBJECT_PATK], rect, tileScale);
@@ -308,19 +308,17 @@ pico.def('hero', 'picUIContent', function(){
             }
             if (!recovered) return recovered;
         }
-        slot = body[HERO_GOLD];
-        if (slot) me.incrMoney(slot[0], slot[1]);
-        slot = body[HERO_PIETY];
-        if (slot) me.incrMoney(slot[0], slot[1]);
+        me.incrMoney(G_MONEY_TYPE.GOLD, body[HERO_GOLD]);
+        me.incrMoney(G_MONEY_TYPE.PIETY, body[HERO_PIETY]);
         if (body[HERO_BAG_CAP] > appearance[HERO_BAG_CAP]) appearance[HERO_BAG_CAP] = body[HERO_BAG_CAP];
         if (body[HERO_TOME_CAP] > appearance[HERO_TOME_CAP]) appearance[HERO_TOME_CAP] = body[HERO_TOME_CAP];
         return recovered;
     };
 
-    me.incrMoney = function(money, count){
-        switch(money[OBJECT_SUB_TYPE]){
-            case G_MONEY_TYPE.GOLD: appearance[HERO_GOLD][1] += count; break;
-            case G_MONEY_TYPE.PIETY: appearance[HERO_PIETY][1] += count; break;
+    me.incrMoney = function(type, count){
+        switch(type){
+            case G_MONEY_TYPE.GOLD: appearance[HERO_GOLD] += count; break;
+            case G_MONEY_TYPE.PIETY: appearance[HERO_PIETY] += count; break;
             default: return false;
         }
 
@@ -435,7 +433,7 @@ pico.def('hero', 'picUIContent', function(){
 
         switch(item[OBJECT_TYPE]){
             case G_OBJECT_TYPE.MONEY:
-                me.incrMoney(item, 1);
+                me.incrMoney(item[OBJECT_SUB_TYPE], 1);
                 return true;
             case G_OBJECT_TYPE.ARMOR:
             case G_OBJECT_TYPE.WEAPON:

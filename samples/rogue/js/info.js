@@ -59,7 +59,7 @@ pico.def('info', 'picUIContent', function(){
                     break;
                 case G_OBJECT_TYPE.ENV:
                     switch(target[OBJECT_SUB_TYPE]){
-                    case G_ENV_TYPE.SHRINE:
+                    case G_ENV_TYPE.FOUNTAIN:
                         addOption('Rejuvenate', 'rejuvenate');
                         break;
                     case G_ENV_TYPE.ALTAR:
@@ -178,7 +178,7 @@ pico.def('info', 'picUIContent', function(){
                     case G_OBJECT_TYPE.CREEP:
                         break;
                     default:
-                        me.fillIconText(ctx, ts, target[OBJECT_NAME], rect, scale);
+                        me.fillIconText(ctx, ts, target[OBJECT_DESC], rect, scale);
                         break;
                     }
                     break;

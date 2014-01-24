@@ -209,8 +209,8 @@ Object.freeze(G_OBJECT_NAME = {
     129: 'Skull',
     130: 'Skeleton',
     131: 'Tomb',
-    132: 'Altar',
-    133: 'Shrine',
+    132: 'Altar of Vili',
+    133: 'Fountain of Eir',
     134: 'Soulstones',
     135: 'Health Globe',
     136: 'Symbol of Protection', // Pentagram
@@ -387,8 +387,8 @@ Object.freeze(G_OBJECT_DESC = {
     129: 'Skull',
     130: 'Skeleton',
     131: 'Tomb',
-    132: 'Altar',
-    133: 'Shrine',
+    132: 'Altar of Vili, the god of creation. Make offering to god to gain piety. you exhange piety for exhancement.',
+    133: 'Fountain of Eir, drink it to restore full health',
     134: 'Soulstones',
     135: 'Health Globe',
     136: 'Symbol of Protection', // Pentagram

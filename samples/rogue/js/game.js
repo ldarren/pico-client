@@ -394,7 +394,7 @@ console.log(JSON.stringify(hints));
             }
 
             engagedIds = hero.getEngaged();
-
+            me.go('forceRefresh');
             if (engagedIds.length)
                 me.go('showInfo', { targetId:engagedIds[0], context:G_CONTEXT.WORLD});
             return;
