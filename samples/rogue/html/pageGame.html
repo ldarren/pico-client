@@ -192,8 +192,8 @@ onLoad = function(){
         game.route('hideDialog', [uiWindow.showAll, uiWindow.hideDialog, uiWindow.update, renderer.draw]);
         game.route('showTrade', [game.createGoods, uiWindow.hideAll, uiWindow.showTrade, uiWindow.update, renderer.draw]);
         game.route('hideTrade', [uiWindow.showAll, uiWindow.hideTrade, uiWindow.update, renderer.draw]);
-        game.route('showGod', [uiWindow.hideAll, uiWindow.showGod, uiWindow.update, renderer.draw]);
-        game.route('hideGod', [uiWindow.showAll, uiWindow.hideGod, uiWindow.update, renderer.draw]);
+        game.route('showAltar', [uiWindow.hideAll, uiWindow.showAltar, uiWindow.update, renderer.draw]);
+        game.route('hideAltar', [uiWindow.showAll, uiWindow.hideAltar, uiWindow.update, renderer.draw]);
 
         var
         cameraEnt = game.addEntity('camera'),
@@ -216,7 +216,7 @@ onLoad = function(){
         uiWinEnts[3] = game.addEntity(G_WIN_ID.INFO);
         uiWinEnts[4] = game.addEntity(G_WIN_ID.DIALOG);
         uiWinEnts[5] = game.addEntity(G_WIN_ID.TRADE);
-        uiWinEnts[6] = game.addEntity(G_WIN_ID.GOD);
+        uiWinEnts[6] = game.addEntity(G_WIN_ID.ALTAR);
 
         for(var i=0, l=uiWinEnts.length; i<l; i++){
             uiWinEnt = uiWinEnts[i];
@@ -250,7 +250,7 @@ onLoad = function(){
         
         uiWinEnt = uiWinEnts[6];
         uiWinEnt.attach(uiWindow, {content:god.moduleName, resizable:true, box:rect.moduleName, background:'rgba(32,70,49,0.9)', theme: G_THEME.THEME8});
-        uiWinEnt.attach(god, {win:uiWindow.moduleName, box:rect.moduleName, meshUI:'god',fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
+        uiWinEnt.attach(god, {win:uiWindow.moduleName, box:rect.moduleName, meshUI:'altar',fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
 
         resize(window.innerWidth, window.innerHeight);
         canvas.slot(canvas.FINGER_DOWN, onFingerDown);

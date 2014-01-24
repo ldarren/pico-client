@@ -1,9 +1,61 @@
 pico.def('god', 'picUIContent', function(){
     var
+    Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round,
     me = this,
+    name = me.moduleName,
     heroBody,
     heroName,
-    Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round;
+    onCustomBound = function(ent, rect, ui, scale){
+        switch(ui.userData.id){
+        case 'offer':
+        case 'donate':
+        case 'done':
+            return me.calcUIRect(rect, ui);
+        }
+        return me.calcUIRect(rect, ui, scale);
+    },
+    onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
+        var
+        com = ent.getComponent(name),
+        ts = tss['default'],
+        i = ui.userData.id,
+        x=rect[0], y=rect[1], w=rect[2], h=rect[3];
+    },
+    onCustomButton = function(ent, ctx, rect, ui, tss, scale){
+        switch(ui.userData.id){
+        case 'offer':
+        case 'donate':
+        case 'done':
+            me.drawButton(ctx, rect, labels[0], '#204631', '#d7e894', '#aec440', 'top');
+            break;
+        }
+    },
+    onCustomClick = function(ent, ui){
+        if (!ui){
+            return false;
+        }
+        var
+        com = ent.getComponent(name),
+        i = ui.userData.id;
+
+        switch(ui.userData.id){
+        case 'offer':
+        case 'donate':
+        case 'done':
+            me.drawButton(ctx, rect, labels[0], '#204631', '#d7e894', '#aec440', 'top');
+            return true;
+        }
+
+        return false;
+    },
+    onCustomUI = function(){
+        switch(Array.prototype.shift.call(arguments)){
+        case me.CUSTOM_BOUND: return onCustomBound.apply(this, arguments); break;
+        case me.CUSTOM_DRAW: return onCustomDraw.apply(this, arguments); break;
+        case me.CUSTOM_CLICK: return onCustomClick.apply(this, arguments); break;
+        case me.CUSTOM_BUTTON: return onCustomButton.apply(this, arguments); break;
+        }
+    };
 
     me.init = function(name){
         var h = this.heaven;
@@ -32,6 +84,34 @@ pico.def('god', 'picUIContent', function(){
 
     me.isValid = function(){
         return false;
+    };
+
+    me.resize = function(ent, width, height){
+        var
+        com = ent.getComponent(name),
+        comWin = ent.getComponent(com.win);
+
+        com.layout = me.createMeshUIFromTemplate(com.meshUI, width, height);
+
+        return [com.layout.w, com.layout.h];
+    };
+
+    me.click = function(ent, x, y, state){
+        var
+        com = ent.getComponent(name),
+        comBox = ent.getComponent(com.box),
+        scale = this.smallDevice ? 1 : 2;
+
+        return me.clickMeshUI.call(this, x, y, state, ent, com, comBox, scale, onCustomUI);
+    };
+
+    me.draw = function(ctx, ent, clip){
+        var
+        com = ent.getComponent(name),
+        comBox = ent.getComponent(com.box),
+        scale = this.smallDevice ? 1 : 2;
+
+        return me.drawMeshUI.call(this, ctx, {default: this.tileSet}, ent, com, comBox, scale, onCustomUI);
     };
     
     me.createHero = function(){

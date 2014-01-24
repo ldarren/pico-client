@@ -14,7 +14,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
     infoId = G_WIN_ID.INFO,
     dialogMsgId = G_WIN_ID.DIALOG,
     tradeId = G_WIN_ID.TRADE,
-    godId = G_WIN_ID.GOD,
+    altarId = G_WIN_ID.ALTAR,
     me = this,
     name = me.moduleName,
     updateContent = function(ent, com){
@@ -70,7 +70,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
             case infoId:
             case dialogMsgId:
             case tradeId:
-            case godId:
+            case altarId:
                 comBox.x = layout[0];
                 comBox.y = layout[1];
                 comBox.width = layout[2];
@@ -101,7 +101,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
             case infoId:
             case dialogMsgId:
             case tradeId:
-            case godId:
+            case altarId:
                 comBox.x = layout[0];
                 comBox.y = layout[1];
                 comBox.width = layout[2];
@@ -139,7 +139,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
             break;
         case dialogMsgId:
         case tradeId:
-        case godId:
+        case altarId:
             data.minWidth = this.smallDevice ? 320 : 640;
             data.minHeight = this.smallDevice ? 180 : 360;
             break;
@@ -168,7 +168,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         this.showEntity(infoId);
         this.showEntity(dialogMsgId);
         this.showEntity(tradeId);
-        this.showEntity(godId);
+        this.showEntity(altarId);
 
         for(i=0, l=entities.length; i<l; i++){
             ent = entities[i];
@@ -201,7 +201,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
                 break;
             case dialogMsgId:
             case tradeId:
-            case godId:
+            case altarId:
                 layouts.push(me.fitIntoGrid(
                     [evt[0] + Ceil((evt[2] - com.minWidth)/2), evt[1] + Ceil((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight],
                     gs, gs, false));
@@ -215,7 +215,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         if (!me.info.isValid()) this.hideEntity(infoId);
         if (!me.dialogMsg.isValid()) this.hideEntity(dialogMsgId);
         if (!me.trade.isValid()) this.hideEntity(tradeId);
-        if (!me.god.isValid()) this.hideEntity(godId);
+        if (!me.god.isValid()) this.hideEntity(altarId);
 
         for(i=0, l=entities.length; i<l; i++){
             ent = entities[i];
@@ -234,7 +234,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         if (me.info.isValid()) this.showEntity(infoId);
         if (me.dialogMsg.isValid()) this.showEntity(dialogMsgId);
         if (me.trade.isValid()) this.showEntity(tradeId);
-        if (me.god.isValid()) this.showEntity(godId);
+        if (me.god.isValid()) this.showEntity(altarId);
 
         return entities;
     };
@@ -246,7 +246,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
         this.hideEntity(infoId);
         this.hideEntity(dialogMsgId);
         this.hideEntity(tradeId);
-        this.hideEntity(godId);
+        this.hideEntity(altarId);
 
         return entities;
     };
@@ -296,18 +296,18 @@ pico.def('uiWindow', 'picUIWindow', function(){
         return entities;
     };
 
-    me.showGod = function(elapsed, evt, entities){
+    me.showAltar = function(elapsed, evt, entities){
         if (!evt) return;
 
-        var ent = this.showEntity(godId, evt);
+        var ent = this.showEntity(altarId, evt);
         if (!ent) return;
 
         resizeContent.call(this, ent, ent.getComponent(name));
         return entities;
     };
 
-    me.hideGod = function(elapsed, evt, entities){
-        this.hideEntity(godId);
+    me.hideAltar = function(elapsed, evt, entities){
+        this.hideEntity(altarId);
         return entities;
     };
 

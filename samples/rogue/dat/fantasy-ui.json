@@ -594,7 +594,7 @@
             ]
         ]
     },
-    "god":{
+    "altar":{
         "type":5,
         "rows":[
             {"font":"bold 12pt alagard","fillStyle":"#aec440"},
