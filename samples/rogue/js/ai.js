@@ -248,6 +248,7 @@ pico.def('ai', function(){
 
         if (flags[id]){
             delete flags[id];
+            hero.setEngaged(id);
             return;
         }
     };

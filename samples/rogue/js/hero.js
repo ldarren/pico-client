@@ -569,7 +569,6 @@ pico.def('hero', 'picUIContent', function(){
                 switch(contact[OBJECT_TYPE]){
                 case G_OBJECT_TYPE.CREEP:
                     if (castStr > contact[CREEP_MDEF]){
-                        me.setEngaged(contactId);
                         targets.push(contactId);
                         ai.incrHp(contactId, -1);
                         ai.bury(contactId);
@@ -608,7 +607,6 @@ pico.def('hero', 'picUIContent', function(){
                 map[id] |= G_TILE_TYPE.CREEP;
                 objects[id] = ai.spawnCreep(this.deepestLevel);
                 this.recalHints();
-                me.setEngaged(id);
                 targets.push(id);
                 isSpell = false;
                 info += MSG_CAST_GAZE_FAILURE;
@@ -737,15 +735,12 @@ pico.def('hero', 'picUIContent', function(){
         validList = [];
 
         if (!targets) targets = [];
-        if (engaged.length) {
-            var id;
-            for(var i=0,l=engaged.length; i<l; i++){
-                id = engaged[i];
-                if (-1 === targets.indexOf(id)) validList.push(id);
-            }
-            targets = targets.concat(engaged);
-        }else{
-            if (-1 === targets.indexOf(engaged)) validList.push(engaged);
+        if (!engaged.length) engaged = [engaged];
+        var id, object;
+        for(var i=0,l=engaged.length; i<l; i++){
+            id = engaged[i];
+            object = objects[id];
+            if (G_OBJECT_TYPE.CREEP === object[OBJECT_TYPE] && -1 === targets.indexOf(id)) validList.push(id);
         }
 
         if (validList.length) appearance[HERO_ENEMIES] = targets.concat(validList);
