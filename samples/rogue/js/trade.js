@@ -76,6 +76,7 @@ pico.def('trade', 'picUIContent', function(){
     };
 
     me.hide = function(ent, com, evt){
+        if (undefined === evt) return;
         goods = undefined;
     };
 

@@ -262,7 +262,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
     };
 
     me.hideInfo = function(elapsed, evt, entities){
-        this.hideEntity(infoId);
+        this.hideEntity(infoId, true);
         return entities;
     };
 
@@ -277,7 +277,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
     };
 
     me.hideDialog = function(elapsed, evt, entities){
-        this.hideEntity(dialogMsgId);
+        this.hideEntity(dialogMsgId, true);
         return entities;
     };
 
@@ -292,7 +292,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
     };
 
     me.hideTrade = function(elapsed, evt, entities){
-        this.hideEntity(tradeId);
+        this.hideEntity(tradeId, true);
         return entities;
     };
 
@@ -307,7 +307,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
     };
 
     me.hideAltar = function(elapsed, evt, entities){
-        this.hideEntity(altarId);
+        this.hideEntity(altarId, true);
         return entities;
     };
 

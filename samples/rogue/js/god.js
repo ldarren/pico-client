@@ -103,6 +103,7 @@ pico.def('god', 'picUIContent', function(){
     };
 
     me.hide = function(ent, com, evt){
+        if (undefined === evt) return;
     };
 
     me.isValid = function(){

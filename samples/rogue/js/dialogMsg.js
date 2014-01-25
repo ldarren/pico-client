@@ -75,6 +75,7 @@ pico.def('dialogMsg', 'picUIContent', function(){
     };
 
     me.hide = function(ent, com, evt){
+        if (undefined === evt) return;
         msg = undefined;
     };
 

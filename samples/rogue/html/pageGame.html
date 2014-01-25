@@ -261,6 +261,8 @@ onLoad = function(){
         window.addEventListener('resize', onResize, false);
         window.addEventListener('unload', game.exit, false);
 
+        game.go('showAltar', true);
+
         me.rogueMain.hideLoading();
     });
     });

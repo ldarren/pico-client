@@ -375,6 +375,7 @@ pico.def('info', 'picUIContent', function(){
     };
 
     me.hide = function(ent, com, evt){
+        if (undefined === evt) return;
         labels.length = 0;
         callbacks.length = 0;
         events.length = 0;
