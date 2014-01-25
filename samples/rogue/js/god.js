@@ -3,6 +3,8 @@ pico.def('god', 'picUIContent', function(){
     Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round,
     me = this,
     name = me.moduleName,
+    labels = [G_LABEL.OFFER, G_LABEL.TITHE, G_LABEL.LEAVE],
+    isAltarOpened = false,
     heroBody,
     heroName,
     onCustomBound = function(ent, rect, ui, scale){
@@ -20,13 +22,29 @@ pico.def('god', 'picUIContent', function(){
         ts = tss['default'],
         i = ui.userData.id,
         x=rect[0], y=rect[1], w=rect[2], h=rect[3];
+
+        switch(i){
+        case 'offer':
+            me.drawButton(ctx, rect, labels[0], '#d7e894', '#204631');
+            break;
+        case 'donate':
+            me.drawButton(ctx, rect, labels[1], '#d7e894', '#204631');
+            break;
+        case 'done':
+            me.drawButton(ctx, rect, labels[2], '#d7e894', '#204631');
+            break;
+        }
     },
     onCustomButton = function(ent, ctx, rect, ui, tss, scale){
         switch(ui.userData.id){
         case 'offer':
-        case 'donate':
-        case 'done':
             me.drawButton(ctx, rect, labels[0], '#204631', '#d7e894', '#aec440', 'top');
+            break;
+        case 'donate':
+            me.drawButton(ctx, rect, labels[1], '#204631', '#d7e894', '#aec440', 'top');
+            break;
+        case 'done':
+            me.drawButton(ctx, rect, labels[2], '#204631', '#d7e894', '#aec440', 'top');
             break;
         }
     },
@@ -38,11 +56,14 @@ pico.def('god', 'picUIContent', function(){
         com = ent.getComponent(name),
         i = ui.userData.id;
 
-        switch(ui.userData.id){
+        switch(i){
         case 'offer':
+            return true;
         case 'donate':
+            return true;
         case 'done':
-            me.drawButton(ctx, rect, labels[0], '#204631', '#d7e894', '#aec440', 'top');
+            isAltarOpened = false;
+            this.go('hideAltar');
             return true;
         }
 
@@ -77,13 +98,15 @@ pico.def('god', 'picUIContent', function(){
     };
 
     me.show = function(ent, com, evt){
+        if (undefined === evt) return;
+        isAltarOpened = false;
     };
 
     me.hide = function(ent, com, evt){
     };
 
     me.isValid = function(){
-        return false;
+        return isAltarOpened;
     };
 
     me.resize = function(ent, width, height){

@@ -242,7 +242,7 @@ pico.def('hero', 'picUIContent', function(){
         def = target[CREEP_PDEF],
         total = roll + atk,
         hit = total > def ? 1 : (0===roll ? 2 : 0),
-        attackMsg = (hit ? MSG_ATTACK_WIN : MSG_ATTACK_LOST)
+        attackMsg = (hit ? G_MSG.ATTACK_WIN : G_MSG.ATTACK_LOST)
             .replace('NAME', creepName)
             .replace('TOTAL', total)
             .replace('ROLL', roll)
@@ -251,7 +251,7 @@ pico.def('hero', 'picUIContent', function(){
             .replace('DMG', hit);
 
         if (ai.incrHp(id, -hit) < 1){
-            attackMsg += MSG_CREEP_KILL;
+            attackMsg += G_MSG.CREEP_KILL;
         }
 
         return [false, [id], attackMsg];
@@ -269,7 +269,7 @@ pico.def('hero', 'picUIContent', function(){
         for (i=0,l=targets.length; i<l; i++){
             target = objects[targets[i]];
             if (total <= target[CREEP_ATK]) {
-                return [false, MSG_FLEE_LOST
+                return [false, G_MSG.FLEE_LOST
                         .replace('TOTAL', total)
                         .replace('ROLL', roll)
                         .replace('DEX', currStats[OBJECT_DEX])
@@ -283,7 +283,7 @@ pico.def('hero', 'picUIContent', function(){
             flags[targets[i]] = G_UI.FLAG;
         }
         me.clearEngaged();
-        return [true, MSG_FLEE_WIN
+        return [true, G_MSG.FLEE_WIN
             .replace('TOTAL', total)
             .replace('ROLL', roll)
             .replace('DEX', currStats[OBJECT_DEX])];
@@ -532,12 +532,12 @@ pico.def('hero', 'picUIContent', function(){
 
         if (0 === castPt){
             this.go('forgetSpell');
-            this.go('attack', [true, [], MSG_CAST_FAILURE_MAJOR]);
+            this.go('attack', [true, [], G_MSG.CAST_FAILURE_MAJOR]);
             return true; // spell cast
         }
 
         if (totalCastPt < spell[SPELL_DIFFICULTY]){
-            this.go('attack', [true, [], MSG_CAST_FAILURE_MINOR
+            this.go('attack', [true, [], G_MSG.CAST_FAILURE_MINOR
                 .replace('TOTAL', totalCastPt)
                 .replace('ROLL', castPt)
                 .replace('STAT', currStats[OBJECT_WILL])
@@ -552,7 +552,7 @@ pico.def('hero', 'picUIContent', function(){
         targets = [],
         isSpell = true,
         castStr = castPt + spell[SPELL_STRENGTH],
-        info = MSG_CAST_SUCCEED.replace('TOTAL',castStr).replace('ROLL',castPt).replace('STR',spell[SPELL_STRENGTH]);
+        info = G_MSG.CAST_SUCCEED.replace('TOTAL',castStr).replace('ROLL',castPt).replace('STR',spell[SPELL_STRENGTH]);
 
         switch(spell[OBJECT_SUB_TYPE]){
         case G_SPELL_TYPE.WHIRLWIND:
@@ -570,9 +570,9 @@ pico.def('hero', 'picUIContent', function(){
                         targets.push(contactId);
                         ai.incrHp(contactId, -1);
                         ai.bury(contactId);
-                        info += MSG_CAST_WHIRLWIND_SUCCEED.replace('DEF', contact[CREEP_MDEF]).replace('NAME', contact[OBJECT_NAME]); 
+                        info += G_MSG.CAST_WHIRLWIND_SUCCEED.replace('DEF', contact[CREEP_MDEF]).replace('NAME', contact[OBJECT_NAME]); 
                     }else{
-                        info += MSG_CAST_WHIRLWIND_FAILURE.replace('DEF', contact[CREEP_MDEF]).replace('NAME', contact[OBJECT_NAME]); 
+                        info += G_MSG.CAST_WHIRLWIND_FAILURE.replace('DEF', contact[CREEP_MDEF]).replace('NAME', contact[OBJECT_NAME]); 
                     }
                     creepCount++;
                     break;
@@ -589,15 +589,15 @@ pico.def('hero', 'picUIContent', function(){
                 }
                 ai.reveal(contactId);
             }
-            if (chestCount) info += MSG_CAST_DESTROY_CHEST.replace('COUNT', chestCount);
-            if (!creepCount && !chestCount) info += MSG_CAST_VOID; 
+            if (chestCount) info += G_MSG.CAST_DESTROY_CHEST.replace('COUNT', chestCount);
+            if (!creepCount && !chestCount) info += G_MSG.CAST_VOID; 
             break;
         case G_SPELL_TYPE.POISON_BLADE:
             var efx = G_CREATE_OBJECT(G_ICON.EFX_POISON_BLADE);
             efx[OBJECT_ICON] = spell[OBJECT_ICON];
             efx[OBJECT_LEVEL] = spell[OBJECT_LEVEL];
             effects.push(efx);
-            info += MSG_CAST_POISONBLADE;
+            info += G_MSG.CAST_POISONBLADE;
             break;
         case G_SPELL_TYPE.GAZE:
             if (!this.currentLevel) return false;
@@ -607,10 +607,10 @@ pico.def('hero', 'picUIContent', function(){
                 this.recalHints();
                 targets.push(id);
                 isSpell = false;
-                info += MSG_CAST_GAZE_FAILURE;
+                info += G_MSG.CAST_GAZE_FAILURE;
             }else{
                 flags[id] = G_UI.FLAG;
-                info += MSG_CAST_GAZE_SUCCEED;
+                info += G_MSG.CAST_GAZE_SUCCEED;
             }
             ai.reveal(id);
             break;
@@ -619,11 +619,11 @@ pico.def('hero', 'picUIContent', function(){
                 switch(objectType){
                 case G_OBJECT_TYPE.CREEP:
                     ai.incrHp(id, -1);
-                    info += MSG_CAST_FIREBALL_SUCCEED.replace('NAME', object[OBJECT_NAME]);
+                    info += G_MSG.CAST_FIREBALL_SUCCEED.replace('NAME', object[OBJECT_NAME]);
                     if (ai.bury(id)){
-                        info += MSG_CREEP_KILL;
+                        info += G_MSG.CREEP_KILL;
                     }else{
-                        info += MSG_CREEP_ALIVE;
+                        info += G_MSG.CREEP_ALIVE;
                     }
                     targets.push(id);
                     break;
@@ -634,7 +634,7 @@ pico.def('hero', 'picUIContent', function(){
                     if (object[OBJECT_SUB_TYPE] || object[CHEST_ITEM]){
                         objects[id] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
                         targets.push(id);
-                        info += MSG_CAST_DESTROY_CHEST.replace('COUNT', 1);
+                        info += G_MSG.CAST_DESTROY_CHEST.replace('COUNT', 1);
                     }
                     break;
                 default:

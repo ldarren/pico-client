@@ -140,7 +140,7 @@ pico.def('ai', function(){
                     case G_GRADE.LEGENDARY:
                         modifier = pick(G_LEGENDARY, luck, gradeType);
                         affix = G_LEGENDARY_AFFIX[modifier[DROP_ID]];
-                        itemName = affix[0] + ' ' + itemName + POSTFIX_SEPARATOR + affix[1];
+                        itemName = affix[0] + ' ' + itemName + G_MSG.POSTFIX_SEPARATOR + affix[1];
                         for(i=DROP_GRADE+1, l=DROP_GRADE+3; i<l; i++){
                             stat = G_ENCHANTED_RATE[modifier[i]];
                             if (!(job & stat[ENCHANTED_CLASS])) continue;
@@ -164,7 +164,7 @@ pico.def('ai', function(){
                     case G_GRADE.CHARMED:
                         modifier = pick(G_CHARMED_RATE, luck, gradeType);
                         affix = G_CHARMED_POSTFIX[modifier[DROP_ID]];
-                        itemName = itemName + POSTFIX_SEPARATOR + affix;
+                        itemName = itemName + G_MSG.POSTFIX_SEPARATOR + affix;
                         for(j=CHARMED_HP,k=CHARMED_DEMON,m=OBJECT_HP; j<=k; j++,m++){
                             item[m] += modifier[j];
                         }
@@ -277,7 +277,7 @@ pico.def('ai', function(){
             total = roll+atk;
             hit = total > def ? 1 : (0===roll ? 2:1);
 
-            counterMsg = (hit ? MSG_COUNTER_WIN : MSG_COUNTER_LOST)
+            counterMsg = (hit ? G_MSG.COUNTER_WIN : G_MSG.COUNTER_LOST)
                 .replace('NAME', creepName)
                 .replace('TOTAL', total)
                 .replace('ROLL', roll)
@@ -288,7 +288,7 @@ pico.def('ai', function(){
             hp = hero.incrHp(-1*hit);
 
             if (hp < 1){
-                counterMsg += MSG_HERO_KILL.replace('NAME', creepName);
+                counterMsg += G_MSG.HERO_KILL.replace('NAME', creepName);
             }
             counterMsgs.push(counterMsg);
         }

@@ -478,6 +478,7 @@ console.log(JSON.stringify(hints));
     };
 
     me.reborn = function(elapsed, evt, entities){
+        me.go('showAltar', true);
         me.deepestLevel = 0;
         me.mortal = undefined;
         me.mortal = me.hero.init.call(me);

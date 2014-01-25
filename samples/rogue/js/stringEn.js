@@ -1,24 +1,34 @@
-POSTFIX_SEPARATOR = " of ";
-MSG_ATTACK_WIN = "You rolled a TOTAL(ROLL+ATK) beat NAME's defense DEF, you've dealt DMG damage",
-MSG_ATTACK_LOST = "You missed by rolling a TOTAL(ROLL+ATK) lowered than NAME's defense DEF",
-MSG_COUNTER_WIN = "NAME has rolled a TOTAL(ROLL+ATK) which is over your defense DEF, you lost HP hp",
-MSG_COUNTER_LOST = "NAME missed by rolling a TOTAL(ROLL+ATK) less than your defense DEF",
-MSG_CREEP_KILL = ", and you have defeated it",
-MSG_CREEP_ALIVE = " but it is still alive",
-MSG_HERO_KILL = ", and you have been killed by NAME",
-MSG_FLEE_WIN = "You rolled a TOTAL(ROLL+DEX) beat all surrounding creeps `190, you fled the scene",
-MSG_FLEE_LOST = "You failed to flee by rolling a TOTAL(ROLL+DEX) lower than NAME's attack ATK, you lost HP hp",
-MSG_CAST_FAILURE_MAJOR = "Spell major failure: You roll a 0, this spell was so powerful for your feeble mind that it is thraumatized you. You are now scared and the spell is forgotten.",
-MSG_CAST_FAILURE_MINOR = "Spell minor failure: You have failed to cast this spell with a roll of TOTAL(ROLL+STAT) which is lower than the spell difficulty of DIFF",
-MSG_CAST_SUCCEED = "You rolled a TOTAL(ROLL+STR)",
-MSG_CAST_WHIRLWIND_FAILURE = ", failed to beat the `193 DEF of the NAME",
-MSG_CAST_WHIRLWIND_SUCCEED = ", beats the `193 DEF of the NAME",
-MSG_CAST_DESTROY_CHEST = ", and you have destroyed COUNT chests",
-MSG_CAST_VOID = ", but nothing is near to you",
-MSG_CAST_POISONBLADE = ", your weapon has coated with poison",
-MSG_CAST_GAZE_FAILURE = ", but nothing is there, this spell has summoned a creep instead...",
-MSG_CAST_GAZE_SUCCEED = ", you have revealed a creeps",
-MSG_CAST_FIREBALL_SUCCEED = ", you have toasted NAME";
+Object.freeze(G_MSG = {
+    POSTFIX_SEPARATOR: " of ",
+    ATTACK_WIN: "You rolled a TOTAL(ROLL+ATK) beat NAME's defense DEF, you've dealt DMG damage",
+    ATTACK_LOST: "You missed by rolling a TOTAL(ROLL+ATK) lowered than NAME's defense DEF",
+    COUNTER_WIN: "NAME has rolled a TOTAL(ROLL+ATK) which is over your defense DEF, you lost HP hp",
+    COUNTER_LOST: "NAME missed by rolling a TOTAL(ROLL+ATK) less than your defense DEF",
+    CREEP_KILL: ", and you have defeated it",
+    CREEP_ALIVE: " but it is still alive",
+    HERO_KILL: ", and you have been killed by NAME",
+    FLEE_WIN: "You rolled a TOTAL(ROLL+DEX) beat all surrounding creeps `190, you fled the scene",
+    FLEE_LOST: "You failed to flee by rolling a TOTAL(ROLL+DEX) lower than NAME's attack ATK, you lost HP hp",
+    CAST_FAILURE_MAJOR: "Spell major failure: You roll a 0, this spell was so powerful for your feeble mind that it is thraumatized you. You are now scared and the spell is forgotten.",
+    CAST_FAILURE_MINOR: "Spell minor failure: You have failed to cast this spell with a roll of TOTAL(ROLL+STAT) which is lower than the spell difficulty of DIFF",
+    CAST_SUCCEED: "You rolled a TOTAL(ROLL+STR)",
+    CAST_WHIRLWIND_FAILURE: ", failed to beat the `193 DEF of the NAME",
+    CAST_WHIRLWIND_SUCCEED: ", beats the `193 DEF of the NAME",
+    CAST_DESTROY_CHEST: ", and you have destroyed COUNT chests",
+    CAST_VOID: ", but nothing is near to you",
+    CAST_POISONBLADE: ", your weapon has coated with poison",
+    CAST_GAZE_FAILURE: ", but nothing is there, this spell has summoned a creep instead...",
+    CAST_GAZE_SUCCEED: ", you have revealed a creeps",
+    CAST_FIREBALL_SUCCEED: ", you have toasted NAME"
+});
+
+Object.freeze(G_LABEL = {
+    CLOSE: 'Close',
+    DONE: 'Done',
+    LEAVE: 'Leave',
+    OFFER: 'Giving an item',
+    TITHE: 'Tithe your golds', 
+});
 
 Object.freeze(G_ELEMENT_NAME = {
     0: 'None',

@@ -249,7 +249,7 @@ onLoad = function(){
         uiWinEnt.attach(trade, {name:'Trade', win:uiWindow.moduleName, box:rect.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt alagard', fontColor:G_COLOR_TONE[1]});
         
         uiWinEnt = uiWinEnts[6];
-        uiWinEnt.attach(uiWindow, {content:god.moduleName, resizable:true, box:rect.moduleName, background:'rgba(32,70,49,0.9)', theme: G_THEME.THEME8});
+        uiWinEnt.attach(uiWindow, {content:god.moduleName, resizable:false, box:rect.moduleName, background:'rgba(32,70,49,0.9)', theme: G_THEME.THEME8});
         uiWinEnt.attach(god, {win:uiWindow.moduleName, box:rect.moduleName, meshUI:'altar',fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
 
         resize(window.innerWidth, window.innerHeight);
