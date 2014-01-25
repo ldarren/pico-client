@@ -99,7 +99,7 @@ pico.def('god', 'picUIContent', function(){
 
     me.show = function(ent, com, evt){
         if (undefined === evt) return;
-        isAltarOpened = false;
+        isAltarOpened = true;
     };
 
     me.hide = function(ent, com, evt){
