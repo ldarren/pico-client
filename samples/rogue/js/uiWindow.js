@@ -224,6 +224,10 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
             resizeContent.call(this, ent, com);
         }
+
+        // HACK: to hack an android stock browser bug that create a canvas 'screenshot' when draw and resize happen within 1~2 frames
+        window.setTimeout(function(game){game.go('forceRefresh');}, 30, this);
+
         return entities;
     };
 
