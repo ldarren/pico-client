@@ -22,9 +22,9 @@ pico.def('god', 'picUIContent', function(){
         ts = tss['default'],
         i = ui.userData.id,
         x=rect[0], y=rect[1], w=rect[2], h=rect[3];
-
         switch(i){
         case 'offer':
+console.log('altar onCustomDraw: '+ent.name);
             me.drawButton(ctx, rect, labels[0], '#d7e894', '#204631');
             break;
         case 'donate':
@@ -95,6 +95,10 @@ pico.def('god', 'picUIContent', function(){
     };
 
     me.step = function(steps){
+    };
+
+    me.setAltarCallback = function(){
+        isAltarOpened = true;
     };
 
     me.show = function(ent, com, evt){
