@@ -162,7 +162,7 @@
                     {},
                     {
                         "type":4,
-                        "userData":{"id":"skull"}
+                        "userData":{"id":"piety"}
                     }
                 ]
             ],[
@@ -627,11 +627,10 @@
                 [
                     {},
                     {
-                        "type":1,
+                        "type":4,
                         "cellPt":16,
                         "uiPt":16,
-                        "pad":5,
-                        "text":"Make a wish..."
+                        "userData":{"id":"piety"}
                     }
                 ]
             ],[

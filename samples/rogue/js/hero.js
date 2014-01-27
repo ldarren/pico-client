@@ -8,25 +8,13 @@ pico.def('hero', 'picUIContent', function(){
     heroObj,
     appearance, stats, effects, bag, tome,
     currStats,
-    slotText2Id = function(text){
-        switch(text){
-        case 'helm': return HERO_HELM;
-        case 'armor': return HERO_ARMOR;
-        case 'main': return HERO_MAIN;
-        case 'off': return HERO_OFF;
-        case 'ringL': return HERO_RINGL;
-        case 'ringR': return HERO_RINGR;
-        case 'amulet': return HERO_AMULET;
-        case 'quiver': return HERO_QUIVER;
-        }
-    },
     onCustomBound = function(ent, rect, ui, tileScale){
         var id = ui.userData.id;
 
         if ('custom1Label' === id) id = 'goldLabel';
-        else if ('custom2Label' === id) id = 'skullLabel';
+        else if ('custom2Label' === id) id = 'pietyLabel';
         else if ('custom1' === id) id = 'gold';
-        else if ('custom2' === id) id = 'skull';
+        else if ('custom2' === id) id = 'piety';
 
         switch(id){
         case 'avatar':
@@ -52,12 +40,14 @@ pico.def('hero', 'picUIContent', function(){
         com = ent.getComponent(name),
         id = ui.userData.id,
         ts = tss['default'],
-        ss = tss['spells'];
+        ss = tss['spells'],
+        enemyCount = appearance[HERO_ENEMIES].length,
+        ranged = me.carryRanged();
 
-        if ('custom1Label' === id) id = 'goldLabel';
-        else if ('custom2Label' === id) id = 'skullLabel';
-        else if ('custom1' === id) id = 'gold';
-        else if ('custom2' === id) id = 'skull';
+        if ('custom1Label' === id) id = enemyCount ? (ranged ? 'rangedLabel' : 'meleeLabel') : 'goldLabel';
+        else if ('custom2Label' === id) id = enemyCount ? 'armorLabel' : 'pietyLabel';
+        else if ('custom1' === id) id = enemyCount ? (ranged ? 'ratk' : 'patk') : 'gold';
+        else if ('custom2' === id) id = enemyCount ? 'def' : 'piety';
 
         switch(id){
         case 'avatar':
@@ -70,7 +60,7 @@ pico.def('hero', 'picUIContent', function(){
             if (com.activated){
                 var selectedObj = effects[com.activated];
                 if (!selectedObj) {
-                    selectedObj = appearance[slotText2Id(com.activated)];
+                    selectedObj = appearance[me.convertEquipId(com.activated)];
                     if (selectedObj) selectedObj = selectedObj[0];
                 }
                 if (selectedObj) me.fillIconText(ctx, ts, selectedObj[OBJECT_DESC], rect, tileScale);
@@ -105,19 +95,28 @@ pico.def('hero', 'picUIContent', function(){
         case 'gold':
             me.fillIconText(ctx, ts, ''+appearance[HERO_GOLD], rect, tileScale);
             break;
-        case 'skullLabel':
+        case 'pietyLabel':
             me.fillIconText(ctx, ts, 'Piety `'+G_UI.PIETY, rect, tileScale);
             break;
-        case 'skull':
+        case 'piety':
             me.fillIconText(ctx, ts, ''+appearance[HERO_PIETY], rect, tileScale);
+            break;
+        case 'meleeLabel':
+            me.fillIconText(ctx, ts, 'Atk `'+G_UI.PATK, rect, tileScale);
             break;
         case 'patk':
             me.fillIconText(ctx, ts, ''+currStats[OBJECT_PATK], rect, tileScale);
             break;
+        case 'rangedLabel':
+            me.fillIconText(ctx, ts, 'Atk `'+G_UI.RATK, rect, tileScale);
+            break;
         case 'ratk':
             me.fillIconText(ctx, ts, ''+currStats[OBJECT_RATK], rect, tileScale);
             break;
-        case 'pdef':
+        case 'armorLabel':
+            me.fillIconText(ctx, ts, 'Def `'+G_UI.PDEF, rect, tileScale);
+            break;
+        case 'def':
             me.fillIconText(ctx, ts, ''+currStats[OBJECT_DEF], rect, tileScale);
             break;
         case 'helm':
@@ -128,7 +127,7 @@ pico.def('hero', 'picUIContent', function(){
         case 'ringR':
         case 'amulet':
         case 'quiver':
-            var item = appearance[slotText2Id(id)];
+            var item = appearance[me.convertEquipId(id)];
             if (item) ts.draw(ctx, item[0][OBJECT_ICON], rect[0], rect[1], rect[2], rect[3]);
             break;
         default:
@@ -161,7 +160,7 @@ pico.def('hero', 'picUIContent', function(){
         selectedObj = effects[id];
 
         if (!selectedObj){
-            selectedObj = appearance[slotText2Id(id)];
+            selectedObj = appearance[me.convertEquipId(id)];
         }
 
         if (selectedObj){
@@ -324,7 +323,21 @@ pico.def('hero', 'picUIContent', function(){
 
         return true;
     };
+    me.getGold = function(){return appearance[HERO_GOLD]; };
+    me.getPiety = function(){return appearance[HERO_PIETY]; };
 
+    me.convertEquipId = function(text){
+        switch(text){
+        case 'helm': return HERO_HELM;
+        case 'armor': return HERO_ARMOR;
+        case 'main': return HERO_MAIN;
+        case 'off': return HERO_OFF;
+        case 'ringL': return HERO_RINGL;
+        case 'ringR': return HERO_RINGR;
+        case 'amulet': return HERO_AMULET;
+        case 'quiver': return HERO_QUIVER;
+        }
+    };
     me.equipItem = function(item, slot){
         if (!item || appearance[slot]) return false;
 
@@ -408,7 +421,6 @@ pico.def('hero', 'picUIContent', function(){
 
         return ret;
     };
-
     me.isItemEquipped = function(slot){
         if (!slot) return false;
 
@@ -424,6 +436,12 @@ pico.def('hero', 'picUIContent', function(){
         }
 
         return false;
+    };
+    me.getEquippedItem = function(id){
+        var slot = appearance[id];
+
+        if (!slot || !slot[0]) return null;
+        return slot[0].slice();
     };
 
     me.putIntoBag = function(item){
@@ -686,24 +704,24 @@ pico.def('hero', 'picUIContent', function(){
     me.getLuck = function(){ return currStats[OBJECT_LUCK]; };
     me.getWill = function(){ return currStats[OBJECT_WILL]; };
     me.getDef = function(){ return currStats[OBJECT_DEF]; };
-    me.getAtk = function(){
+    me.carryRanged = function(){
         var
         mainSlot = appearance[HERO_MAIN],
         main = mainSlot ? mainSlot[0] : null;
 
-        if (!main) return currStats[OBJECT_PATK];
+        if (!main) return false;
 
         switch(main[OBJECT_SUB_TYPE]){
         case G_WEAPON_TYPE.SWORD:
         case G_WEAPON_TYPE.AXE:
         case G_WEAPON_TYPE.SCEPTER:
-            return currStats[OBJECT_PATK];
-        case G_WEAPON_TYPE.THROW:
-        case G_WEAPON_TYPE.BOW:
-        case G_WEAPON_TYPE.CROSSBOW:
-            return currStats[OBJECT_RATK];
+            return false;
         }
-
+        return true;
+    };
+    me.getAtk = function(){
+        if (me.carryRanged()) return currStats[OBJECT_RATK];
+        return currStats[OBJECT_PATK];
     };
     me.isEngaged = function(id){
         var targets = appearance[HERO_ENEMIES];

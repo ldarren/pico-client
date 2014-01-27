@@ -19,12 +19,16 @@ pico.def('god', 'picUIContent', function(){
     onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
         var
         com = ent.getComponent(name),
+        hero = this.hero,
         ts = tss['default'],
-        i = ui.userData.id,
+        id = ui.userData.id,
         x=rect[0], y=rect[1], w=rect[2], h=rect[3];
-        switch(i){
+
+        switch(id){
+        case 'piety':
+            me.fillIconText(ctx, ts, 'You have '+hero.getPiety()+' `'+G_UI.PIETY+' piety points', rect, scale);
+            break;
         case 'offer':
-console.log('altar onCustomDraw: '+ent.name);
             me.drawButton(ctx, rect, labels[0], '#d7e894', '#204631');
             break;
         case 'donate':
@@ -32,6 +36,17 @@ console.log('altar onCustomDraw: '+ent.name);
             break;
         case 'done':
             me.drawButton(ctx, rect, labels[2], '#d7e894', '#204631');
+            break;
+        case 'helm':
+        case 'armor':
+        case 'main':
+        case 'off':
+        case 'ringL':
+        case 'ringR':
+        case 'amulet':
+        case 'quiver':
+            var item = hero.getEquippedItem(hero.convertEquipId(id));
+            if (item) ts.draw(ctx, item[OBJECT_ICON], rect[0], rect[1], rect[2], rect[3]);
             break;
         }
     },
@@ -148,7 +163,7 @@ console.log('altar onCustomDraw: '+ent.name);
         stats = G_CREATE_OBJECT(job, heroName);
 
         return {
-            // helm, armor, main hand, off hand, ring1, ring2, amulet, quiver, gold, skull, enemy, portal, way point, bag cap, spell cap
+            // helm, armor, main hand, off hand, ring1, ring2, amulet, quiver, gold, piety, enemy, portal, way point, bag cap, spell cap
             appearance: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 8],
             stats: stats,
             effects: [],
