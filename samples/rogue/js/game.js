@@ -438,7 +438,7 @@ console.log(JSON.stringify(hints));
                             'you were killed by '+creep[OBJECT_NAME]+' at level '+me.currentLevel,
                             'but your lineage will continue...'],
                         callbacks: ['showAltar'],
-                        events: ['true']});
+                        events: [{callback:'reborn'}]});
                     me.unlockInputs();
                 }]);
             }else{

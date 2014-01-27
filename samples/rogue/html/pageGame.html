@@ -261,7 +261,7 @@ onLoad = function(){
         window.addEventListener('resize', onResize, false);
         window.addEventListener('unload', game.exit, false);
 
-        god.setAltarCallback();
+        game.go('showAltar', {callback: 'forceRefresh'});
 
         me.rogueMain.hideLoading();
     });

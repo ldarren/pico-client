@@ -5,6 +5,7 @@ pico.def('god', 'picUIContent', function(){
     name = me.moduleName,
     labels = [G_LABEL.OFFER, G_LABEL.TITHE, G_LABEL.LEAVE],
     isAltarOpened = false,
+    callback,
     heroBody,
     heroName,
     onCustomBound = function(ent, rect, ui, scale){
@@ -107,6 +108,7 @@ pico.def('god', 'picUIContent', function(){
         case 'done':
             isAltarOpened = false;
             this.go('hideAltar');
+            this.go(callback);
             return true;
         }
 
@@ -146,6 +148,7 @@ pico.def('god', 'picUIContent', function(){
 
     me.show = function(ent, com, evt){
         if (undefined === evt) return;
+        callback = evt.callback;
         isAltarOpened = true;
     };
 
