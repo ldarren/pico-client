@@ -26,12 +26,13 @@ pico.def('dialogMsg', 'picUIContent', function(){
             }
             break;
         default:
-            me.drawButton(ctx, rect, msg.labels[id], '#d7e894', '#204631');
+            me.drawButton(ctx, ts, msg.labels[id], rect, scale, '#d7e894', '#204631');
             break;
         }
     },
     onCustomButton = function(ent, ctx, rect, ui, tss, scale){
-        me.drawButton(ctx, rect, msg.labels[ui.userData.id], '#204631', '#d7e894', '#aec440', 'top');
+        var ts = tss['default'];
+        me.drawButton(ctx, ts, msg.labels[ui.userData.id], rect, scale, '#204631', '#d7e894', '#aec440', 'top');
     },
     onCustomClick = function(ent, ui){
         var

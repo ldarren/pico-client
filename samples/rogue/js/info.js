@@ -231,13 +231,14 @@ pico.def('info', 'picUIContent', function(){
             }
             break;
         default:
-            if (labels[id]) me.drawButton(ctx, rect, labels[id], '#d7e894', '#204631');
+            if (labels[id]) me.drawButton(ctx, ts, labels[id], rect, scale, '#d7e894', '#204631');
             break;
         }
 
     },
     onCustomButton = function(ent, ctx, rect, ui, tss, scale){
-        me.drawButton(ctx, rect, labels[ui.userData.id], '#204631', '#d7e894', '#aec440', 'top');
+        var ts = tss['default'];
+        me.drawButton(ctx, ts, labels[ui.userData.id], rect, scale, '#204631', '#d7e894', '#aec440', 'top');
     },
     onCustomClick = function(ent, ui){
         if (!ui){

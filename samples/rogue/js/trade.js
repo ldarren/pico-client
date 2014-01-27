@@ -18,7 +18,7 @@ pico.def('trade', 'picUIContent', function(){
         x=rect[0], y=rect[1], w=rect[2], h=rect[3];
 
         if ('btn1' === i){
-            me.drawButton(ctx, rect, labels[0], '#d7e894', '#204631');
+            me.drawButton(ctx, ts, labels[0], rect, scale, '#d7e894', '#204631');
         }else{
             var good = goods[i];
             if (!good) return;
@@ -31,7 +31,8 @@ pico.def('trade', 'picUIContent', function(){
     },
     onCustomButton = function(ent, ctx, rect, ui, tss, scale){
         if ('btn1' === ui.userData.id){
-            me.drawButton(ctx, rect, labels[0], '#204631', '#d7e894', '#aec440', 'top');
+            var ts = tss['default'];
+            me.drawButton(ctx, ts, labels[0], rect, scale, '#204631', '#d7e894', '#aec440', 'top');
         }
     },
     onCustomClick = function(ent, ui){

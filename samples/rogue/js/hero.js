@@ -338,8 +338,8 @@ pico.def('hero', 'picUIContent', function(){
         case 'quiver': return HERO_QUIVER;
         }
     };
-    me.equipItem = function(item, slot){
-        if (!item || appearance[slot]) return false;
+    me.equipItem = function(item){
+        if (!item) return false;
 
         var
         stat = item[0],
@@ -347,20 +347,20 @@ pico.def('hero', 'picUIContent', function(){
 
         switch(stat[OBJECT_TYPE]){
             case G_OBJECT_TYPE.WEAPON:
-                if (HERO_OFF !== slot || HERO_MAIN !== slot) return false;
-                if (G_HERO_CLASS.BARBARIAN === currStats[OBJECT_SUB_TYPE] && 
-                    G_WEAPON_TYPE.BOW !== stat[OBJECT_SUB_TYPE] && G_WEAPON_TYPE.CROSSBOW !== stat[OBJECT_SUB_TYPE]){
-                    appearance[slot] = item;
-                    return true;
-                }
                 if (2 === stat[WEAPON_HANDED]){
                     if (appearance[HERO_MAIN] || appearance[HERO_OFF]) return false;
                     appearance[HERO_MAIN] = appearance[HERO_OFF] = item;
                     return true;
                 }else{
-                    if (appearance[HERO_MAIN]) return false;
-                    appearance[HERO_MAIN] = item;
-                    return true;
+                    if (!appearance[HERO_MAIN]){
+                        appearance[HERO_MAIN] = item;
+                        return true;
+                    }
+                    if (G_HERO_CLASS.BARBARIAN === currStats[OBJECT_SUB_TYPE] && !appearance[HERO_OFF]){
+                        appearance[HERO_OFF] = item;
+                        return true;
+                    }
+                    return false;
                 }
                 break;
             case G_OBJECT_TYPE.ARMOR:
@@ -382,9 +382,15 @@ pico.def('hero', 'picUIContent', function(){
             case G_OBJECT_TYPE.JEWEL:
                 switch(stat[OBJECT_SUB_TYPE]){
                     case G_JEWEL_TYPE.RING:
-                        if (HERO_RINGL !== slot || HERO_RINGR !== slot) return false;
-                        appearance[slot] = item;
-                        return true;;
+                        if (!appearance[HERO_RINGL]){
+                            appearance[HERO_RINGL] = item;
+                            return true;
+                        }
+                        if (!appearance[HERO_RINGR]){
+                            appearance[HERO_RINGR] = item;
+                            return true;
+                        }
+                        return false;
                     case G_JEWEL_TYPE.AMULET:
                         if (appearance[HERO_AMULET]) return false;
                         appearance[HERO_AMULET] = item;

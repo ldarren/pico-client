@@ -18,24 +18,22 @@ pico.def('god', 'picUIContent', function(){
     },
     onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
         var
-        com = ent.getComponent(name),
         hero = this.hero,
         ts = tss['default'],
-        id = ui.userData.id,
-        x=rect[0], y=rect[1], w=rect[2], h=rect[3];
+        id = ui.userData.id;
 
         switch(id){
         case 'piety':
             me.fillIconText(ctx, ts, 'You have '+hero.getPiety()+' `'+G_UI.PIETY+' piety points', rect, scale);
             break;
         case 'offer':
-            me.drawButton(ctx, rect, labels[0], '#d7e894', '#204631');
+            me.drawButton(ctx, ts, labels[0], rect, scale, '#d7e894', '#204631');
             break;
         case 'donate':
-            me.drawButton(ctx, rect, labels[1], '#d7e894', '#204631');
+            me.drawButton(ctx, ts, labels[1], rect, scale, '#d7e894', '#204631');
             break;
         case 'done':
-            me.drawButton(ctx, rect, labels[2], '#d7e894', '#204631');
+            me.drawButton(ctx, ts, labels[2], rect, scale, '#d7e894', '#204631');
             break;
         case 'helm':
         case 'armor':
@@ -45,23 +43,47 @@ pico.def('god', 'picUIContent', function(){
         case 'ringR':
         case 'amulet':
         case 'quiver':
-            var item = hero.getEquippedItem(hero.convertEquipId(id));
-            if (item) ts.draw(ctx, item[OBJECT_ICON], rect[0], rect[1], rect[2], rect[3]);
+            var
+            equipId = hero.convertEquipId(id),
+            item = hero.getEquippedItem(equipId);
+            if (item) me.drawButton(ctx, ts, 'Change `'+item[OBJECT_ICON], rect, scale, '#d7e894', '#204631');
+            else me.drawButton(ctx, ts, 'Add '+G_EQUIP_NAME[equipId], rect, scale, '#d7e894', '#204631');
             break;
         }
     },
     onCustomButton = function(ent, ctx, rect, ui, tss, scale){
-        switch(ui.userData.id){
+        var
+        hero = this.hero,
+        ts = tss['default'],
+        id = ui.userData.id,
+        label;
+
+        switch(id){
         case 'offer':
-            me.drawButton(ctx, rect, labels[0], '#204631', '#d7e894', '#aec440', 'top');
+            label = labels[0];
             break;
         case 'donate':
-            me.drawButton(ctx, rect, labels[1], '#204631', '#d7e894', '#aec440', 'top');
+            label = labels[1];
             break;
         case 'done':
-            me.drawButton(ctx, rect, labels[2], '#204631', '#d7e894', '#aec440', 'top');
+            label = labels[2];
+            break;
+        case 'helm':
+        case 'armor':
+        case 'main':
+        case 'off':
+        case 'ringL':
+        case 'ringR':
+        case 'amulet':
+        case 'quiver':
+            var
+            equipId = hero.convertEquipId(id),
+            item = hero.getEquippedItem(equipId);
+            if (item) label = 'Change `'+item[OBJECT_ICON];
+            else label = 'Add '+G_EQUIP_NAME[equipId];
             break;
         }
+        me.drawButton(ctx, ts, label, rect, scale, '#204631', '#d7e894', '#aec440', 'top');
     },
     onCustomClick = function(ent, ui){
         if (!ui){
@@ -167,7 +189,7 @@ pico.def('god', 'picUIContent', function(){
             appearance: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 8],
             stats: stats,
             effects: [],
-            bag: [],
+            bag: [[G_CREATE_OBJECT(G_ICON.CLAYMORE),1,0]],
             tome: [
                 G_CREATE_OBJECT(G_ICON.GAZE),
                 G_CREATE_OBJECT(G_ICON.FIREBALL),
