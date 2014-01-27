@@ -27,13 +27,16 @@ pico.def('god', 'picUIContent', function(){
             me.fillIconText(ctx, ts, 'You have '+hero.getPiety()+' `'+G_UI.PIETY+' piety points', rect, scale);
             break;
         case 'offer':
-            me.drawButton(ctx, ts, labels[0], rect, scale, '#d7e894', '#204631');
+            me.drawButton(ctx, ts, labels[0], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
             break;
         case 'donate':
-            me.drawButton(ctx, ts, labels[1], rect, scale, '#d7e894', '#204631');
+            me.drawButton(ctx, ts, labels[1], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
             break;
         case 'done':
-            me.drawButton(ctx, ts, labels[2], rect, scale, '#d7e894', '#204631');
+            me.drawButton(ctx, ts, labels[2], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
+            break;
+        case 'avatar':
+            me.drawButton(ctx, ts, '`'+(G_ICON.ROGUE+hero.getJob()), rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[2]);
             break;
         case 'helm':
         case 'armor':
@@ -46,8 +49,8 @@ pico.def('god', 'picUIContent', function(){
             var
             equipId = hero.convertEquipId(id),
             item = hero.getEquippedItem(equipId);
-            if (item) me.drawButton(ctx, ts, 'Change `'+item[OBJECT_ICON], rect, scale, '#d7e894', '#204631');
-            else me.drawButton(ctx, ts, 'Add '+G_EQUIP_NAME[equipId], rect, scale, '#d7e894', '#204631');
+            if (item) me.drawButton(ctx, ts, '`'+item[OBJECT_ICON], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[2]);
+            else me.drawButton(ctx, ts, 'Add '+G_EQUIP_NAME[equipId], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[2]);
             break;
         }
     },
@@ -68,6 +71,9 @@ pico.def('god', 'picUIContent', function(){
         case 'done':
             label = labels[2];
             break;
+        case 'avatar':
+            label = '`'+(G_ICON.ROGUE+hero.getJob());
+            break;
         case 'helm':
         case 'armor':
         case 'main':
@@ -79,11 +85,11 @@ pico.def('god', 'picUIContent', function(){
             var
             equipId = hero.convertEquipId(id),
             item = hero.getEquippedItem(equipId);
-            if (item) label = 'Change `'+item[OBJECT_ICON];
+            if (item) label = '`'+item[OBJECT_ICON];
             else label = 'Add '+G_EQUIP_NAME[equipId];
             break;
         }
-        me.drawButton(ctx, ts, label, rect, scale, '#204631', '#d7e894', '#aec440', 'top');
+        me.drawButton(ctx, ts, label, rect, scale, G_COLOR_TONE[3], G_COLOR_TONE[0], G_COLOR_TONE[1], 'top');
     },
     onCustomClick = function(ent, ui){
         if (!ui){

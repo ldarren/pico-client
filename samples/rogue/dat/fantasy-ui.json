@@ -642,8 +642,8 @@
                         "cellPt":12,
                         "uiPt":12,
                         "pad":5,
-                        "w":36,
-                        "h":36,
+                        "w":32,
+                        "h":32,
                         "button":1,
                         "userData":{"id":"amulet"}
                     }
@@ -654,8 +654,8 @@
                         "cellPt":8,
                         "uiPt":8,
                         "pad":5,
-                        "w":36,
-                        "h":36,
+                        "w":32,
+                        "h":32,
                         "button":1,
                         "userData":{"id":"helm"}
                     }
@@ -666,8 +666,8 @@
                         "cellPt":10,
                         "uiPt":10,
                         "pad":5,
-                        "w":36,
-                        "h":36,
+                        "w":32,
+                        "h":32,
                         "button":1,
                         "userData":{"id":"quiver"}
                     }
@@ -681,8 +681,8 @@
                         "cellPt":4,
                         "uiPt":4,
                         "pad":5,
-                        "w":36,
-                        "h":36,
+                        "w":32,
+                        "h":32,
                         "button":1,
                         "userData":{"id":"main"}
                     }
@@ -690,8 +690,8 @@
                     {},
                     {
                         "type":4,
-                        "w":36,
-                        "h":36,
+                        "w":32,
+                        "h":32,
                         "button":1,
                         "userData":{"id":"avatar"}
                     }
@@ -702,8 +702,8 @@
                         "cellPt":2,
                         "uiPt":2,
                         "pad":5,
-                        "w":36,
-                        "h":36,
+                        "w":32,
+                        "h":32,
                         "button":1,
                         "userData":{"id":"off"}
                     }
@@ -717,8 +717,8 @@
                         "cellPt":5,
                         "uiPt":5,
                         "pad":5,
-                        "w":36,
-                        "h":36,
+                        "w":32,
+                        "h":32,
                         "button":1,
                         "userData":{"id":"ringL"}
                     }
@@ -729,8 +729,8 @@
                         "cellPt":1,
                         "uiPt":1,
                         "pad":5,
-                        "w":36,
-                        "h":36,
+                        "w":32,
+                        "h":32,
                         "button":1,
                         "userData":{"id":"armor"}
                     }
@@ -741,8 +741,8 @@
                         "cellPt":3,
                         "uiPt":3,
                         "pad":5,
-                        "w":36,
-                        "h":36,
+                        "w":32,
+                        "h":32,
                         "button":1,
                         "userData":{"id":"ringR"}
                     }
