@@ -497,7 +497,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
     me.draw = function(ctx, ent, clip){
         var com = ent.getComponent(name);
         if (!com) return;
-console.log('uiWindow draw: '+ent.name);
+
         var
         layout = com.layouts[com.maximized],
         gs = com.gridSize,

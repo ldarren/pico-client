@@ -550,6 +550,9 @@ pico.def('hero', 'picUIContent', function(){
         // return true from here onwards
         spell[SPELL_COOLDOWN] = spell[SPELL_RELOAD]; // set cooldown;
 
+        // deselect spell 
+        selectedSpell = undefined;
+
         var
         castPt = G_D20_ROLL(),
         totalCastPt = castPt + currStats[OBJECT_WILL];
@@ -568,9 +571,6 @@ pico.def('hero', 'picUIContent', function(){
                 .replace('DIFF', spell[SPELL_DIFFICULTY])]);
             return true; // spell cast
         }
-
-        // deselect spell 
-        selectedSpell = undefined;
 
         var
         targets = [],
@@ -627,16 +627,17 @@ pico.def('hero', 'picUIContent', function(){
             if (!this.currentLevel) return false;
             if (!object){
                 map[id] |= G_TILE_TYPE.CREEP;
+                map[id] &= G_TILE_TYPE.SHOW;
                 objects[id] = ai.spawnCreep(this.deepestLevel);
+                me.setEngaged(id);
                 this.recalHints();
-                targets.push(id);
                 isSpell = false;
                 info += G_MSG.CAST_GAZE_FAILURE;
             }else{
                 flags[id] = G_UI.FLAG;
                 info += G_MSG.CAST_GAZE_SUCCEED;
+                ai.reveal(id);
             }
-            ai.reveal(id);
             break;
         case G_SPELL_TYPE.FIREBALL:
             if (object){

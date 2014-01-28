@@ -4,7 +4,7 @@ pico.def('god', 'picUIContent', function(){
     me = this,
     name = me.moduleName,
     labels = [G_LABEL.OFFER, G_LABEL.TITHE, G_LABEL.LEAVE],
-    isAltarOpened = false,
+    isAltarOpened = true,
     callback,
     heroBody,
     heroName,
@@ -142,8 +142,11 @@ pico.def('god', 'picUIContent', function(){
     me.step = function(steps){
     };
 
-    me.setAltarCallback = function(){
-        isAltarOpened = true;
+    me.create = function(ent, data){
+        data = me.base.create.call(this, ent, data);
+
+        data.font = this.smallDevice ? data.fontSmall : data.fontBig;
+        return data;
     };
 
     me.show = function(ent, com, evt){
@@ -164,10 +167,15 @@ pico.def('god', 'picUIContent', function(){
         var
         com = ent.getComponent(name),
         comWin = ent.getComponent(com.win);
+        layout = me.createMeshUIFromTemplate(com.meshUI, width, height),
+        rows = layout.rows,
+        opt = rows[0];
 
-        com.layout = me.createMeshUIFromTemplate(com.meshUI, width, height);
+        opt.font = com.font;
 
-        return [com.layout.w, com.layout.h];
+        com.layout = layout;
+
+        return [layout.w, layout.h];
     };
 
     me.click = function(ent, x, y, state){

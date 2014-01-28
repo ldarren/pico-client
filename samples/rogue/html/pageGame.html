@@ -250,7 +250,7 @@ onLoad = function(){
         
         uiWinEnt = uiWinEnts[6];
         uiWinEnt.attach(uiWindow, {content:god.moduleName, resizable:false, box:rect.moduleName, background:'rgba(32,70,49,0.9)', theme: G_THEME.THEME8});
-        uiWinEnt.attach(god, {win:uiWindow.moduleName, box:rect.moduleName, meshUI:'altar',fontBig:'bold 12pt alagard', fontSmall:'8pt alagard', fontColor:G_COLOR_TONE[1]});
+        uiWinEnt.attach(god, {win:uiWindow.moduleName, box:rect.moduleName, meshUI:'altar',fontBig:'bold 12pt alagard', fontSmall:'7pt alagard', fontColor:G_COLOR_TONE[1]});
 
         resize(window.innerWidth, window.innerHeight);
         canvas.slot(canvas.FINGER_DOWN, onFingerDown);
@@ -260,8 +260,6 @@ onLoad = function(){
         canvas.slot(canvas.FINGER_OUT, onFingerOut);
         window.addEventListener('resize', onResize, false);
         window.addEventListener('unload', game.exit, false);
-
-        game.go('showAltar', {callback: 'forceRefresh'});
 
         me.rogueMain.hideLoading();
     });
