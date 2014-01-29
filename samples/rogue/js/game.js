@@ -114,20 +114,22 @@ pico.def('game', 'pigSqrMap', function(){
         me.flags = staticMap.flags.slice();
         me.mortalLoc = staticMap.heroPos;
         me.exitIndex = undefined;
+
+        var
+        sealDoor = (level && me.deepestLevel <= level ? G_FLOOR.STAIR_DOWN : -1),
+        ground = (undefined === me.mortalLoc ? (level < me.prevLevel ? G_FLOOR.STAIR_DOWN : G_FLOOR.STAIR_UP) : -1);
        
-        if (me.deepestLevel <= level){
-            for(i=0,l=terrain.length; i<l; i++){
-                if (sealDoor === terrain[i]){
-                    terrain[i] = G_FLOOR.LOCKED;
-                    me.exitIndex = i;
-                    sealDoor = -1;
-                }
-                if (ground === terrain[i]){
-                    me.mortalLoc = i;
-                    gound = -1;
-                }
-                if (-1 === sealDoor && -1 === ground) break;
+        for(i=0,l=terrain.length; i<l; i++){
+            if (ground === terrain[i]){
+                me.mortalLoc = i;
+                ground = -1;
             }
+            if (sealDoor === terrain[i]){
+                terrain[i] = G_FLOOR.LOCKED;
+                me.exitIndex = i;
+                sealDoor = -1;
+            }
+            if (-1 === sealDoor && -1 === ground) break;
         }
 
         for(i=0,l=OBJ.length; i<l; i++){
@@ -146,10 +148,6 @@ pico.def('game', 'pigSqrMap', function(){
             me.recalHints();
             fill(me.map, hints, me.mapWidth, me.mortalLoc);
         }
-
-        var
-        sealDoor = (me.deepestLevel <= level ? -1 : G_FLOOR.EXIT),
-        ground = (undefined === me.mortalLoc ? (level < me.currentLevel ? G_FLOOR.STAIR_UP : G_FLOOR.STAIR_DOWN) : -1);
 
         return true;
     },
@@ -493,6 +491,7 @@ pico.def('game', 'pigSqrMap', function(){
 
         createLevel(level);
 
+        me.hero.move(me.mortalLoc);
         me.hero.levelUp(level);
 
         me.ai.init.call(me);
@@ -514,8 +513,7 @@ pico.def('game', 'pigSqrMap', function(){
 
         me.ai.changeTheme.call(me);
 
-        if (!me.map.length)
-            createLevel(me.currentLevel);
+        createLevel(me.currentLevel);
 
         me.ai.init.call(me);
 

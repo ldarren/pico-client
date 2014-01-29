@@ -701,10 +701,10 @@ pico.def('hero', 'picUIContent', function(){
     me.setLastWayPoint = function(level){ if (appearance[HERO_WAYPOINT] < level) appearance[HERO_WAYPOINT] = level; };
     me.getJob = function(){ return currStats[OBJECT_SUB_TYPE]; };
     me.getBag = function(){ return bag; };
-    me.getBagCap = function(){ return appearance ? appearance[HERO_BAG_CAP] : 16; };
+    me.getBagCap = function(){ return appearance ? appearance[HERO_BAG_CAP] : 4; };
     me.getItem = function(id){ return bag[id]; }
     me.getTome = function(){ return tome; };
-    me.getTomeCap = function(){ return appearance ? appearance[HERO_TOME_CAP] : 8; };
+    me.getTomeCap = function(){ return appearance ? appearance[HERO_TOME_CAP] : 4; };
     me.putIntoTome = function(spell){ return tome.push(spell); };
     me.equal = function(obj){ return obj[OBJECT_ICON] === currStats[OBJECT_ICON] && obj[OBJECT_TYPE] === currStats[OBJECT_TYPE]; };
     me.getHp = function(){ return currStats[OBJECT_HP]; };
