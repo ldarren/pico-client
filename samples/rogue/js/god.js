@@ -6,8 +6,7 @@ pico.def('god', 'picUIContent', function(){
     labels = [G_LABEL.OFFER, G_LABEL.TITHE, G_LABEL.LEAVE],
     isAltarOpened = false,
     callback,
-    heroBody,
-    heroName,
+    heroBody, heroName, heroPiety,
     onCustomBound = function(ent, rect, ui, scale){
         switch(ui.userData.id){
         case 'offer':
@@ -28,7 +27,7 @@ pico.def('god', 'picUIContent', function(){
 
         switch(id){
         case 'piety':
-            me.fillIconText(ctx, ts, 'You have '+appearance[HERO_PIETY]+' `'+G_UI.PIETY+' piety points', rect, scale);
+            me.fillIconText(ctx, ts, 'You have '+heroPiety+' `'+G_UI.PIETY+' piety points', rect, scale);
             break;
         case 'offer':
             me.drawButton(ctx, ts, labels[0], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
@@ -137,15 +136,17 @@ pico.def('god', 'picUIContent', function(){
         if (h){
             heroBody = h[0];
             heroName = h[1];
+            heroPiety = h[2];
         }else{
-            h = [null, name];
+            h = [null, name, 0];
+            heroPiety = 0;
         }
         if (name) heroName = name; // always get new from loginPage
         return h;
     };
 
     me.exit = function(){
-        this.heaven = [heroBody, heroName];
+        this.heaven = [heroBody, heroName, heroPiety];
     };
 
     me.step = function(steps){
@@ -249,6 +250,9 @@ pico.def('god', 'picUIContent', function(){
 
     me.offering = function(){
     };
+
+    me.getPiety = function(){ return heroPiety; };
+    me.incrPiety = function(piety){ heroPiety += piety; };
 
     me.toHeaven = function(appearance, stats){
         appearance[HERO_ENEMIES] = [];

@@ -5,7 +5,7 @@ pico.def('ai', function(){
     team = [],
     currIndex = 0,
     level = 0,
-    hero,objects,flags,terrain,
+    god,hero,objects,flags,terrain,
     createCreepStat = function(creepId, level){
         var s = me.getStatByCreepId(creepId).slice();
         for(var i=CREEP_ATK; i<=CREEP_MDEF; i++){
@@ -53,6 +53,7 @@ pico.def('ai', function(){
     };
 
     me.init = function(){
+        god = this.god;
         hero = this.hero;
         map = this.map;
         objects = this.objects;
@@ -307,7 +308,7 @@ pico.def('ai', function(){
             creep = G_CREATE_OBJECT(G_ICON.HEALTH_GLOBE);
         }
         hero.removeEngaged(id);
-        hero.incrMoney(G_MONEY_TYPE.PIETY, 1);
+        god.incrPiety(1);
         objects[id] = creep;
 
         return true;

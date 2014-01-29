@@ -99,7 +99,7 @@ pico.def('hero', 'picUIContent', function(){
             me.fillIconText(ctx, ts, 'Piety `'+G_UI.PIETY, rect, tileScale);
             break;
         case 'piety':
-            me.fillIconText(ctx, ts, ''+appearance[HERO_PIETY], rect, tileScale);
+            me.fillIconText(ctx, ts, ''+this.god.getPiety(), rect, tileScale);
             break;
         case 'meleeLabel':
             me.fillIconText(ctx, ts, 'Atk `'+G_UI.PATK, rect, tileScale);
@@ -305,26 +305,14 @@ pico.def('hero', 'picUIContent', function(){
             }
             if (!recovered) return recovered;
         }
-        me.incrMoney(G_MONEY_TYPE.GOLD, body[HERO_GOLD]);
-        me.incrMoney(G_MONEY_TYPE.PIETY, body[HERO_PIETY]);
+        me.incrGold(body[HERO_GOLD]);
         if (body[HERO_BAG_CAP] > appearance[HERO_BAG_CAP]) appearance[HERO_BAG_CAP] = body[HERO_BAG_CAP];
         if (body[HERO_TOME_CAP] > appearance[HERO_TOME_CAP]) appearance[HERO_TOME_CAP] = body[HERO_TOME_CAP];
         return recovered;
     };
 
-    me.incrMoney = function(type, count){
-        switch(type){
-            case G_MONEY_TYPE.GOLD: appearance[HERO_GOLD] += count; break;
-            case G_MONEY_TYPE.PIETY: appearance[HERO_PIETY] += count; break;
-            default: return false;
-        }
-
-        return true;
-    };
+    me.incrGold = function(count){ appearance[HERO_GOLD] += count; };
     me.getGold = function(){return appearance[HERO_GOLD]; };
-    me.getPiety = function(){
-        return appearance[HERO_PIETY];
-    };
 
     me.convertEquipId = function(text){
         switch(text){
@@ -457,7 +445,7 @@ pico.def('hero', 'picUIContent', function(){
 
         switch(item[OBJECT_TYPE]){
             case G_OBJECT_TYPE.MONEY:
-                me.incrMoney(item[OBJECT_SUB_TYPE], 1);
+                me.incrGold(1);
                 return true;
             case G_OBJECT_TYPE.ARMOR:
             case G_OBJECT_TYPE.WEAPON:
