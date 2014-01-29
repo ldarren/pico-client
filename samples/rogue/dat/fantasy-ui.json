@@ -173,7 +173,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "text":"Str `190"
+                        "text":"Str `668"
                     }
                 ],[
                     {},
@@ -235,13 +235,13 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "text":"Str `190"
+                        "text":"Atk `190"
                     }
                 ],[
                     {},
                     {
                         "type":4,
-                        "userData":{"id":"str"}
+                        "userData":{"id":"atk"}
                     }
                 ],[
                     {},

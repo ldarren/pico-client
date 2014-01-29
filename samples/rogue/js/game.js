@@ -485,16 +485,19 @@ pico.def('game', 'pigSqrMap', function(){
     };
 
     me.gotoLevel = function(elapsed, level, entities){
-        me.ai.changeTheme.call(me);
+        var
+        ai = me.ai,
+        hero = me.hero;
 
-        me.hero.move(undefined); // prevent hero.move deletes object at old map hero pos
+        ai.changeTheme.call(me);
+
+        hero.move(undefined); // prevent hero.move deletes object at old map hero pos
+        hero.clearEngaged();
 
         createLevel(level);
 
-        me.hero.move(me.mortalLoc);
-        me.hero.levelUp(level);
-
-        me.ai.init.call(me);
+        hero.init.call(me);
+        ai.init.call(me);
 
         me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);
         return entities;

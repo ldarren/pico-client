@@ -46,7 +46,7 @@ pico.def('hero', 'picUIContent', function(){
 
         if ('custom1Label' === id) id = enemyCount ? (ranged ? 'rangedLabel' : 'meleeLabel') : 'goldLabel';
         else if ('custom2Label' === id) id = enemyCount ? 'armorLabel' : 'pietyLabel';
-        else if ('custom1' === id) id = enemyCount ? (ranged ? 'ratk' : 'patk') : 'gold';
+        else if ('custom1' === id) id = enemyCount ? 'atk' : 'gold';
         else if ('custom2' === id) id = enemyCount ? 'def' : 'piety';
 
         switch(id){
@@ -104,14 +104,11 @@ pico.def('hero', 'picUIContent', function(){
         case 'meleeLabel':
             me.fillIconText(ctx, ts, 'Atk `'+G_UI.PATK, rect, tileScale);
             break;
-        case 'patk':
-            me.fillIconText(ctx, ts, ''+currStats[OBJECT_PATK], rect, tileScale);
+        case 'atk':
+            me.fillIconText(ctx, ts, ''+(ranged ? currStats[OBJECT_RATK] : currStats[OBJECT_PATK]), rect, tileScale);
             break;
         case 'rangedLabel':
             me.fillIconText(ctx, ts, 'Atk `'+G_UI.RATK, rect, tileScale);
-            break;
-        case 'ratk':
-            me.fillIconText(ctx, ts, ''+currStats[OBJECT_RATK], rect, tileScale);
             break;
         case 'armorLabel':
             me.fillIconText(ctx, ts, 'Def `'+G_UI.PDEF, rect, tileScale);
@@ -204,7 +201,7 @@ pico.def('hero', 'picUIContent', function(){
             this.go('showInfo', {targetId: targets[0], context:G_CONTEXT.WORLD});
         }
         currStats = []; // level up will update currStats
-        me.levelUp(this.deepestLevel);
+        me.calcStats(this.deepestLevel);
         me.move(this.mortalLoc);
 
         return heroObj;
@@ -394,6 +391,7 @@ pico.def('hero', 'picUIContent', function(){
             default:
                 return false;
         }
+        me.calcStats(currStats[OBJECT_LEVEL]);
         return true;
     };
 
@@ -413,6 +411,7 @@ pico.def('hero', 'picUIContent', function(){
             }
         }
 
+        me.calcStats(currStats[OBJECT_LEVEL]);
         return ret;
     };
     me.isItemEquipped = function(slot){
@@ -498,11 +497,20 @@ pico.def('hero', 'picUIContent', function(){
         god.toHeaven(appearance, currStats);
     };
 
-    me.levelUp = function(lvl){
-        if (currStats[OBJECT_LEVEL] > lvl) return currStats;
-        if (!currStats.length) currStats = stats.slice();
-        for(var i=OBJECT_WILL; i<OBJECT_VEG; i++){
+    me.calcStats = function(lvl){
+        currStats = stats.slice();
+
+        var i,l,a,equip,item;
+        for(i=OBJECT_WILL; i<OBJECT_VEG; i++){
             currStats[i] = Ceil(currStats[i]*lvl); // negative is ok
+        }
+        for(a=HERO_HELM; a<HERO_QUIVER; a++){
+            equip = appearance[a];
+            if (!equip) continue;
+            item = equip[0];
+            for(i=OBJECT_WILL; i<OBJECT_DEMON; i++){
+                currStats[i] += item[i];
+            }
         }
         currStats[OBJECT_LEVEL] = lvl;
         return currStats;

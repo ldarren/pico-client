@@ -1340,10 +1340,11 @@ Object.freeze(G_UI = {
     PIETY: 196,
     FLAG: 202,
     LEVEL: 216,
-    HP: 663,
-    HP_EMPTY: 667,
     RATK: 568,
     DEX: 613,
+    HP: 663,
+    HP_EMPTY: 667,
+    STR: 668,
     WILL: 670,
     MATK: 671,
     SELECTED: 713
