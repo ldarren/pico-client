@@ -183,6 +183,7 @@ onLoad = function(){
         game.route('heroStop', [game.heroStop, renderer.draw]);
         game.route('gotoLevel', [game.gotoLevel, renderer.draw]);
         game.route('teleport', [game.teleport, renderer.draw]);
+        game.route('resetWorld', [game.resetWorld, renderer.draw]);
         game.route('reborn', [game.reborn, renderer.draw]);
         game.route('recover', [game.recover, uiWindow.update, renderer.draw]);
         game.route('openForSale', [uiWindow.maximise, bag.openForSale, renderer.draw]);
@@ -260,6 +261,9 @@ onLoad = function(){
         canvas.slot(canvas.FINGER_OUT, onFingerOut);
         window.addEventListener('resize', onResize, false);
         window.addEventListener('unload', game.exit, false);
+
+        if (game.mortal) game.go('showAltar', {callback:'reborn'});
+        else game.go('reborn');
 
         me.rogueMain.hideLoading();
     });

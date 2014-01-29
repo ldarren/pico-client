@@ -58,7 +58,6 @@ pico.def('ai', function(){
         objects = this.objects;
         flags = this.flags;
         terrain = this.terrain;
-        me.changeTheme();
 
         return objects;
     };

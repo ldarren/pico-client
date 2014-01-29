@@ -4,7 +4,7 @@ pico.def('god', 'picUIContent', function(){
     me = this,
     name = me.moduleName,
     labels = [G_LABEL.OFFER, G_LABEL.TITHE, G_LABEL.LEAVE],
-    isAltarOpened = true,
+    isAltarOpened = false,
     callback,
     heroBody,
     heroName,
@@ -153,6 +153,7 @@ pico.def('god', 'picUIContent', function(){
         if (undefined === evt) return;
         callback = evt.callback;
         isAltarOpened = true;
+        if (!this.mortal) this.mortal = me.createHero();
     };
 
     me.hide = function(ent, com, evt){

@@ -188,9 +188,6 @@ pico.def('hero', 'picUIContent', function(){
 
     me.init = function(){
         heroObj = this.mortal;
-        if (!heroObj){
-            heroObj = this.god.createHero();
-        }
         appearance = heroObj.appearance;
         stats = heroObj.stats;
         effects = heroObj.effects;
@@ -628,7 +625,7 @@ pico.def('hero', 'picUIContent', function(){
             if (!object){
                 map[id] |= G_TILE_TYPE.CREEP;
                 map[id] &= G_TILE_TYPE.SHOW;
-                objects[id] = ai.spawnCreep(this.deepestLevel);
+                objects[id] = ai.spawnCreep(currStats[OBJECT_LEVEL]);
                 me.setEngaged(id);
                 this.recalHints();
                 isSpell = false;

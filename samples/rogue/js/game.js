@@ -7,7 +7,7 @@ pico.def('game', 'pigSqrMap', function(){
     me = this,
     db = window.localStorage,
     fingerStack = [],
-    Max = Math.max,Abs = Math.abs,Floor = Math.floor,Random = Math.random,Pow = Math.pow,Sqrt = Math.sqrt,
+    Max=Math.max,Abs=Math.abs,Floor=Math.floor,Random=Math.random,Pow=Math.pow,Sqrt=Math.sqrt,
     pathElapsed = 0,
     loadGame = function(){
         var text = db.getItem(me.moduleName);
@@ -32,13 +32,13 @@ pico.def('game', 'pigSqrMap', function(){
                 prevLevel: me.prevLevel,
                 nextLevel: me.nextLevel,
                 deepestLevel: me.deepestLevel,
-                exitIndex: me.exitIndex,
                 mapWidth: me.mapWidth,
                 mapHeight: me.mapHeight,
                 map: me.map,
                 terrain: me.terrain,
-                hints: me.hints,
                 objects: me.objects,
+                exitIndex: me.exitIndex,
+                hints: me.hints,
                 flags: me.flags,
                 heaven: me.heaven,
                 mortal: me.mortal,
@@ -49,16 +49,12 @@ pico.def('game', 'pigSqrMap', function(){
         me.prevLevel = level ? me.currentLevel : 0;
         me.currentLevel = level;
         me.nextLevel = (me.currentLevel < me.prevLevel) ? me.currentLevel-1 : me.currentLevel+1;
-        
-        me.hero.move(undefined); // reinit hero pos to prevent hero.move deletes object at old map hero pos
+        if (me.deepestLevel < level) me.deepestLevel = level;
 
         var mapParams = G_MAP_PARAMS[level];
         Object.getPrototypeOf(me).init(mapParams[0], mapParams[1]);
 
-        if (me.currentLevel) generateRandomLevel(mapParams[2], mapParams[3]);
-        else populateStaticLevel();
-
-        me.hero.levelUp(level);
+        if (!populateStaticLevel(level)) generateRandomLevel(mapParams[2], mapParams[3]);
     },
     isOpen = function(i){
         var
@@ -80,7 +76,6 @@ pico.def('game', 'pigSqrMap', function(){
     fill = function(map, hints, width, i){
         var count = 0;
         if (i < 0 || !(map[i] & G_TILE_TYPE.HIDE)) return count;
-console.log(i);
         map[i] &= G_TILE_TYPE.SHOW;
         count = 1;
         if (0 === hints[i]){
@@ -99,33 +94,68 @@ console.log(i);
         }
         return count;
     },
-    populateStaticLevel = function(){
+    populateStaticLevel = function(level){
+        if (level >= G_STATIC_MAP.length) return false;
+
         var
-        ai = me.ai,
-        hero = me.hero,
+        staticMap = G_STATIC_MAP[level],
         objects = me.objects,
         hints = me.hints,
         flags = me.flags,
-        OBJ = G_TOWN_MAP.objects;
+        OBJ = staticMap.objects,
+        terrain, hints, i, l;
 
         objects.length = 0;
         hints.length = 0;
         flags.length = 0;
-        
-        for(var i=0,l=OBJ.length; i<l; i++){
+
+        me.map = staticMap.map.slice();
+        terrain = me.terrain = staticMap.terrain.slice();
+        me.flags = staticMap.flags.slice();
+        me.mortalLoc = staticMap.heroPos;
+        me.exitIndex = undefined;
+       
+        if (me.deepestLevel <= level){
+            for(i=0,l=terrain.length; i<l; i++){
+                if (sealDoor === terrain[i]){
+                    terrain[i] = G_FLOOR.LOCKED;
+                    me.exitIndex = i;
+                    sealDoor = -1;
+                }
+                if (ground === terrain[i]){
+                    me.mortalLoc = i;
+                    gound = -1;
+                }
+                if (-1 === sealDoor && -1 === ground) break;
+            }
+        }
+
+        for(i=0,l=OBJ.length; i<l; i++){
             if (OBJ[i]){
                 objects[i] = G_CREATE_OBJECT(OBJ[i]);
             }
         }
 
-        me.map = G_TOWN_MAP.map.slice();
-        me.terrain = G_TOWN_MAP.terrain.slice();
-        hero.move(G_TOWN_MAP.heroPos);
+        if (staticMap.hints){
+            me.hints = staticMap.hints.slice();
+        }else{
+            hints = me.hints = [];
+            for(i=0,l=terrain.length; i<l; i++){
+                hints[i] = 9;
+            }
+            me.recalHints();
+            fill(me.map, hints, mapW, me.mortalLoc);
+        }
+
+        var
+        sealDoor = (me.deepestLevel <= level ? -1 : G_FLOOR.EXIT),
+        ground = (undefined === me.mortalLoc ? (level < me.currentLevel ? G_FLOOR.STAIR_UP : G_FLOOR.STAIR_DOWN) : -1);
+
+        return true;
     },
     generateRandomLevel = function(creepCount, chestCount){
         var
         ai = me.ai,
-        hero = me.hero,
         map = me.map,
         mapW = me.mapWidth, mapH = me.mapHeight, mapSize = mapW*mapH,
         terrain = me.terrain,
@@ -174,19 +204,18 @@ console.log(i);
         c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
         me.exitIndex = c;
         map[c] |= G_TILE_TYPE.EXIT;
-        terrain[c] = me.deepestLevel < me.currentLevel ? G_FLOOR.LOCKED : me.prevLevel < me.currentLevel ? G_FLOOR.STAIR_DOWN : G_FLOOR.STAIR_UP;
+        terrain[c] = me.deepestLevel <= me.currentLevel ? G_FLOOR.LOCKED : me.prevLevel < me.currentLevel ? G_FLOOR.STAIR_DOWN : G_FLOOR.STAIR_UP;
 
         if (!(me.currentLevel % 1)){
             c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
             map[c] |= G_TILE_TYPE.WAYPOINT;
-            terrain[c] = me.hero.getLastWayPoint() >= me.currentLevel ? G_FLOOR.WAYPOINT : G_FLOOR.WAYPOINT_NEW;
+            terrain[c] = me.mortal && me.mortal.appearance[HERO_WAYPOINT] >= me.currentLevel ? G_FLOOR.WAYPOINT : G_FLOOR.WAYPOINT_NEW;
         }
 
         c = shuffle.splice(Floor(Random()*shuffle.length), 1)[0];
         terrain[c] = me.prevLevel < me.currentLevel ? G_FLOOR.STAIR_UP : G_FLOOR.STAIR_DOWN;
-        hero.move(c);
+        me.mortalLoc = c;
 
-console.log(JSON.stringify(hints));
         fill(map, hints, mapW, c);
 
         map[c] = G_TILE_TYPE.ENTRANCE; // must do after fill, becos fill will ignore revealed tile
@@ -211,19 +240,22 @@ console.log(JSON.stringify(hints));
     me.objects = [];
     me.flags = [];
 
+    // call in pageLogin onLoad
     me.load = function(){
         loadGame();
         return me.heaven ? me.heaven[1] : undefined;
     };
 
+    // call in pageLogin onPlay 
     me.init = function(name){
         me.heaven = me.god.init.call(me, name);
-        me.mortal = me.hero.init.call(me);
+
+        me.ai.changeTheme.call(me);
 
         if (!me.map.length)
             createLevel(me.currentLevel);
 
-        me.objects = me.ai.init.call(me);
+        me.ai.init.call(me);
     };
 
     me.exit = function(evt){
@@ -253,14 +285,6 @@ console.log(JSON.stringify(hints));
         var sd = me.smallDevice = data.smallDevice;
         me.tileWidth = sd ? 32 : 64;
         me.tileHeight = sd ? 32 : 64;
-    };
-
-    // call when player obtain the key
-    me.unlockLevel = function(level){
-        if (me.deepestLevel < level){
-            me.deepestLevel = level;
-            me.terrain[c] = me.prevLevel < me.currentLevel ? G_FLOOR.STAIR_DOWN : G_FLOOR.STAIR_UP;
-        }
     };
 
     me.openChest = function(elapsed, evt, entities){
@@ -424,12 +448,13 @@ console.log(JSON.stringify(hints));
             me.go('forceRefresh');
             objects[targetId] = creep;
             hero.move(pos);
-            me.ai.bury(targetId);
+            ai.bury(targetId);
             me.go('startEffect', {type:'damageEfx',targets:[pos] });
 
             if (hero.isDead()){
-                objects[pos] = G_CREATE_OBJECT(G_ICON.BONES),
-                me.hero.bury(me.god);
+                objects[pos] = G_CREATE_OBJECT(G_ICON.BONES);
+                me.currentLevel = me.deepestLevel = 0;
+                hero.bury(me.god);
                 me.routeInputs([function(){
                     me.go('hideInfo');
                     me.go('showDialog', {
@@ -437,8 +462,7 @@ console.log(JSON.stringify(hints));
                             'RIP',
                             'you were killed by '+creep[OBJECT_NAME]+' at level '+me.currentLevel,
                             'but your lineage will continue...'],
-                        callbacks: ['showAltar'],
-                        events: [{callback:'reborn'}]});
+                        callbacks: ['resetWorld']});
                     me.unlockInputs();
                 }]);
             }else{
@@ -463,9 +487,15 @@ console.log(JSON.stringify(hints));
     };
 
     me.gotoLevel = function(elapsed, level, entities){
-        me.objects = me.ai.init.call(me);
+        me.ai.changeTheme.call(me);
+
+        me.hero.move(undefined); // prevent hero.move deletes object at old map hero pos
 
         createLevel(level);
+
+        me.hero.levelUp(level);
+
+        me.ai.init.call(me);
 
         me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);
         return entities;
@@ -478,12 +508,24 @@ console.log(JSON.stringify(hints));
         return ret;
     };
 
-    me.reborn = function(elapsed, evt, entities){
-        me.deepestLevel = 0;
+    me.resetWorld = function(elpased, evt, entities){
+        me.currentLevel = me.deepestLevel = 0;
         me.mortal = undefined;
-        me.mortal = me.hero.init.call(me);
 
-        createLevel(0);
+        me.ai.changeTheme.call(me);
+
+        if (!me.map.length)
+            createLevel(me.currentLevel);
+
+        me.ai.init.call(me);
+
+        me.go('showAltar', {callback:'reborn'});
+
+        return entities;
+    };
+
+    me.reborn = function(elapsed, evt, entities){
+        me.hero.init.call(me);
 
         me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);
         return entities;

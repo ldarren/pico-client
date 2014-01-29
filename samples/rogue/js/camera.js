@@ -195,9 +195,9 @@ pico.def('camera', 'picBase', function(){
         fh = sd ? 16 : 32,
         fx = tileW - fw,
         fy = tileH - fh,
-        hero = this.hero,
-        hp = hero.getPosition(),
-        selectedSpell = hero.getSelectedSpell(),
+        //hero = this.hero,
+        //hp = hero.getPosition(),
+        //selectedSpell = hero.getSelectedSpell(),
         hint, flag, x, y, i, j, object, tileId;
 
         screenshotX = viewX, screenshotY = viewY;
