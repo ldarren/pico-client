@@ -20,12 +20,15 @@ pico.def('god', 'picUIContent', function(){
     onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
         var
         hero = this.hero,
+        mortal = this.mortal,
+        appearance = mortal.appearance,
+        stats = mortal.stats,
         ts = tss['default'],
         id = ui.userData.id;
 
         switch(id){
         case 'piety':
-            me.fillIconText(ctx, ts, 'You have '+hero.getPiety()+' `'+G_UI.PIETY+' piety points', rect, scale);
+            me.fillIconText(ctx, ts, 'You have '+appearance[HERO_PIETY]+' `'+G_UI.PIETY+' piety points', rect, scale);
             break;
         case 'offer':
             me.drawButton(ctx, ts, labels[0], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
@@ -37,7 +40,7 @@ pico.def('god', 'picUIContent', function(){
             me.drawButton(ctx, ts, labels[2], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
             break;
         case 'avatar':
-            me.drawButton(ctx, ts, '`'+(G_ICON.ROGUE+hero.getJob()), rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[2]);
+            me.drawButton(ctx, ts, '`'+stats[OBJECT_ICON], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[2]);
             break;
         case 'helm':
         case 'armor':
@@ -49,7 +52,8 @@ pico.def('god', 'picUIContent', function(){
         case 'quiver':
             var
             equipId = hero.convertEquipId(id),
-            item = hero.getEquippedItem(equipId);
+            slot = appearance[equipId],
+            item = slot[0];
             if (item) me.drawButton(ctx, ts, '`'+item[OBJECT_ICON], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[2]);
             else me.drawButton(ctx, ts, 'Add '+G_EQUIP_NAME[equipId], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[2]);
             break;
@@ -58,6 +62,9 @@ pico.def('god', 'picUIContent', function(){
     onCustomButton = function(ent, ctx, rect, ui, tss, scale){
         var
         hero = this.hero,
+        mortal = this.mortal,
+        appearance = mortal.appearance,
+        stats = mortal.stats,
         ts = tss['default'],
         id = ui.userData.id,
         label;
@@ -73,7 +80,7 @@ pico.def('god', 'picUIContent', function(){
             label = labels[2];
             break;
         case 'avatar':
-            label = '`'+(G_ICON.ROGUE+hero.getJob());
+            label = '`'+stats[OBJECT_ICON];
             break;
         case 'helm':
         case 'armor':
@@ -85,7 +92,9 @@ pico.def('god', 'picUIContent', function(){
         case 'quiver':
             var
             equipId = hero.convertEquipId(id),
-            item = hero.getEquippedItem(equipId);
+            slot = appearance[equipId],
+            item = slot[0];
+
             if (item) label = '`'+item[OBJECT_ICON];
             else label = 'Add '+G_EQUIP_NAME[equipId];
             break;
@@ -107,8 +116,8 @@ pico.def('god', 'picUIContent', function(){
             return true;
         case 'done':
             isAltarOpened = false;
-            this.go('hideAltar');
             this.go(callback);
+            this.go('hideAltar');
             return true;
         }
 

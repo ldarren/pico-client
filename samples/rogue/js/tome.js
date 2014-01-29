@@ -101,6 +101,7 @@ pico.def('tome', 'picUIContent', function(){
         return true;
     },
     onCustomUI = function(){
+        if (!this.mortal) return;
         switch(Array.prototype.shift.call(arguments)){
         case me.CUSTOM_BOUND: return onCustomBound.apply(this, arguments); break;
         case me.CUSTOM_DRAW: return onCustomDraw.apply(this, arguments); break;

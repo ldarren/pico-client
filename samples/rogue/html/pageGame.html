@@ -262,8 +262,8 @@ onLoad = function(){
         window.addEventListener('resize', onResize, false);
         window.addEventListener('unload', game.exit, false);
 
-        if (game.mortal) game.go('showAltar', {callback:'reborn'});
-        else game.go('reborn');
+        if (game.mortal) game.go('reborn');
+        else game.go('showAltar', {callback:'reborn'});
 
         me.rogueMain.hideLoading();
     });

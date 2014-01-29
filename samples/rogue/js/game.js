@@ -144,7 +144,7 @@ pico.def('game', 'pigSqrMap', function(){
                 hints[i] = 9;
             }
             me.recalHints();
-            fill(me.map, hints, mapW, me.mortalLoc);
+            fill(me.map, hints, me.mapWidth, me.mortalLoc);
         }
 
         var

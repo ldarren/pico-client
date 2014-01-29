@@ -170,6 +170,7 @@ pico.def('hero', 'picUIContent', function(){
         return false;
     },
     onCustomUI = function(){
+        if (!this.mortal) return;
         switch(Array.prototype.shift.call(arguments)){
         case me.CUSTOM_BOUND: return onCustomBound.apply(this, arguments); break;
         case me.CUSTOM_DRAW: return onCustomDraw.apply(this, arguments); break;
@@ -321,7 +322,9 @@ pico.def('hero', 'picUIContent', function(){
         return true;
     };
     me.getGold = function(){return appearance[HERO_GOLD]; };
-    me.getPiety = function(){return appearance[HERO_PIETY]; };
+    me.getPiety = function(){
+        return appearance[HERO_PIETY];
+    };
 
     me.convertEquipId = function(text){
         switch(text){
@@ -696,12 +699,12 @@ pico.def('hero', 'picUIContent', function(){
     me.getLastWayPoint = function(){ return appearance[HERO_WAYPOINT]; };
     me.setLastPortal = function(level){ appearance[HERO_PORTAL] = level; };
     me.setLastWayPoint = function(level){ if (appearance[HERO_WAYPOINT] < level) appearance[HERO_WAYPOINT] = level; };
-    me.getJob = function(){ return currStats[OBJECT_TYPE]; };
+    me.getJob = function(){ return currStats[OBJECT_SUB_TYPE]; };
     me.getBag = function(){ return bag; };
-    me.getBagCap = function(){ return appearance[HERO_BAG_CAP]; };
+    me.getBagCap = function(){ return appearance ? appearance[HERO_BAG_CAP] : 16; };
     me.getItem = function(id){ return bag[id]; }
     me.getTome = function(){ return tome; };
-    me.getTomeCap = function(){ return appearance[HERO_TOME_CAP]; };
+    me.getTomeCap = function(){ return appearance ? appearance[HERO_TOME_CAP] : 8; };
     me.putIntoTome = function(spell){ return tome.push(spell); };
     me.equal = function(obj){ return obj[OBJECT_ICON] === currStats[OBJECT_ICON] && obj[OBJECT_TYPE] === currStats[OBJECT_TYPE]; };
     me.getHp = function(){ return currStats[OBJECT_HP]; };
