@@ -389,6 +389,7 @@ pico.def('game', 'pigSqrMap', function(){
             }else{
                 hero.move(pos); // hero must move first
                 objects[targetId] = creep;
+                me.go('forceRefresh');
                 me.go('startEffect', {type:'damageEfx',targets:[targetId]});
             }
 

@@ -546,9 +546,6 @@ pico.def('hero', 'picUIContent', function(){
         // return true from here onwards
         spell[SPELL_COOLDOWN] = spell[SPELL_RELOAD]; // set cooldown;
 
-        // deselect spell 
-        selectedSpell = undefined;
-
         var
         castPt = G_D20_ROLL(),
         totalCastPt = castPt + currStats[OBJECT_WILL];
@@ -558,6 +555,9 @@ pico.def('hero', 'picUIContent', function(){
             this.go('attack', [true, [], G_MSG.CAST_FAILURE_MAJOR]);
             return true; // spell cast
         }
+
+        // deselect spell, major fail still need the spell to be selected
+        selectedSpell = undefined;
 
         if (totalCastPt < spell[SPELL_DIFFICULTY]){
             this.go('attack', [true, [], G_MSG.CAST_FAILURE_MINOR

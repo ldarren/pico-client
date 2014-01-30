@@ -308,6 +308,7 @@ pico.def('ai', function(){
             creep = G_CREATE_OBJECT(G_ICON.HEALTH_GLOBE);
         }
         hero.removeEngaged(id);
+        delete flags[id];
         god.incrPiety(1);
         objects[id] = creep;
 
