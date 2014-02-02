@@ -5,9 +5,8 @@ pico.def('hero', 'picUIContent', function(){
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
     objects, flags, ai,
     position, selectedSpell,
-    heroObj,
+    heroObj, currStats,
     appearance, stats, effects, bag, tome,
-    currStats,
     onCustomBound = function(ent, rect, ui, tileScale){
         var id = ui.userData.id;
 

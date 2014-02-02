@@ -98,7 +98,7 @@ pico.def('god', 'picUIContent', function(){
             else label = 'Add '+G_EQUIP_NAME[equipId];
             break;
         }
-        me.drawButton(ctx, ts, label, rect, scale, G_COLOR_TONE[3], G_COLOR_TONE[0], G_COLOR_TONE[1], 'top');
+        me.drawButton(ctx, ts, label, rect, scale, G_COLOR_TONE[3], G_COLOR_TONE[0], G_COLOR_TONE[1], 1);
     },
     onCustomClick = function(ent, ui){
         if (!ui){

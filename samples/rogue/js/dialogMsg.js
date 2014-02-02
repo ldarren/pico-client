@@ -19,9 +19,9 @@ pico.def('dialogMsg', 'picUIContent', function(){
             var
             info = msg.info,
             l = info.length,
-            x=rect[0],y=rect[1],w=rect[2],dh = rect[3]/l;
+            x=rect[0],y=rect[1],w=rect[2],dh=rect[3]/l;
 
-            for(var i=0,l=info.length; i<l; i++){
+            for(var i=0; i<l; i++){
                 me.fillIconText(ctx, ts, info[i], [x, y+dh*i, w, dh], scale);
             }
             break;
@@ -32,7 +32,7 @@ pico.def('dialogMsg', 'picUIContent', function(){
     },
     onCustomButton = function(ent, ctx, rect, ui, tss, scale){
         var ts = tss['default'];
-        me.drawButton(ctx, ts, msg.labels[ui.userData.id], rect, scale, '#204631', '#d7e894', '#aec440', 'top');
+        me.drawButton(ctx, ts, msg.labels[ui.userData.id], rect, scale, '#204631', '#d7e894', '#aec440', 1);
     },
     onCustomClick = function(ent, ui){
         var
@@ -56,10 +56,10 @@ pico.def('dialogMsg', 'picUIContent', function(){
     },
     onCustomUI = function(){
         switch(Array.prototype.shift.call(arguments)){
-        case me.CUSTOM_BOUND: return onCustomBound.apply(this, arguments); break;
-        case me.CUSTOM_DRAW: return onCustomDraw.apply(this, arguments); break;
-        case me.CUSTOM_CLICK: return onCustomClick.apply(this, arguments); break;
-        case me.CUSTOM_BUTTON: return onCustomButton.apply(this, arguments); break;
+        case me.CUSTOM_BOUND: return onCustomBound.apply(this, arguments);
+        case me.CUSTOM_DRAW: return onCustomDraw.apply(this, arguments);
+        case me.CUSTOM_CLICK: return onCustomClick.apply(this, arguments);
+        case me.CUSTOM_BUTTON: return onCustomButton.apply(this, arguments);
         }
         return false;
     };
@@ -91,11 +91,24 @@ pico.def('dialogMsg', 'picUIContent', function(){
         meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, height, style),
         rows = meshui.rows,
         labels = msg.labels,
-        row,cell,i;
+        // measurement start
+        info = msg.info,
+        cvs = document.createElement('canvas'),
+        ctx = cvs.getContext('2d'),
+        ts = this.tileSet,
+        scale = this.smallDevice ? 1 : 2,
+        // measurement end
+        row,cell,i,l;
+       
+       // measurement start
+        for (i=0,l=info.length; i<l; i++){
+            console.log(info[i]+' size:'+me.fillIconText(ctx, ts, info[i], [0, 0, width, 0], scale);
+        }
+        // measurement end
 
         if(labels){
             row=me.createMeshRow(rows);
-            for(var i=0,l=labels.length; i<l; i++){
+            for(i=0,l=labels.length; i<l; i++){
                 cell=me.createMeshCell(row);
                 me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 1, 0, {id:i});
             }

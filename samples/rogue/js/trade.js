@@ -32,7 +32,7 @@ pico.def('trade', 'picUIContent', function(){
     onCustomButton = function(ent, ctx, rect, ui, tss, scale){
         if ('btn1' === ui.userData.id){
             var ts = tss['default'];
-            me.drawButton(ctx, ts, labels[0], rect, scale, '#204631', '#d7e894', '#aec440', 'top');
+            me.drawButton(ctx, ts, labels[0], rect, scale, '#204631', '#d7e894', '#aec440', 1);
         }
     },
     onCustomClick = function(ent, ui){
