@@ -1208,6 +1208,19 @@ Object.freeze(G_OBJECT = [
     [406, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.EFFECT, G_EFFECT_TYPE.FROZEN],
     [407, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.EFFECT, G_EFFECT_TYPE.POISONED],
     [39, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.EFFECT, G_EFFECT_TYPE.POISON_BLADE],
+    undefined,undefined,undefined,undefined,undefined,
+    undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+    undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+    undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+    undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+    undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+    undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+    undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+    undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+    undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+    undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+    [143, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.MESSAGE_BOARD],
+    [143, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.MESSAGE_BOARD],
 ]);
 
 Object.freeze(G_CREEP_TEAM = {
@@ -1241,7 +1254,7 @@ Object.freeze(G_STATIC_MAP = [
         ],
         objects:[
             0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 186, 0, 0, 0,
+            0, 0, 701, 0, 186, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
             G_ICON.FOUNTAIN, 0, 0, 0, 0, 0, 0, G_ICON.ALTAR,
             184, 0, 0, 0, 0, 0, 0, 185,
@@ -1275,7 +1288,7 @@ Object.freeze(G_STATIC_MAP = [
         objects:[
             0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, G_ICON.MESSAGE_BOARD, 0, 0,
+            0, 0, 0, 0, 0, 702, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, G_ICON.KEY_GATE, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,

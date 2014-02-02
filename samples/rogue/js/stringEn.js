@@ -20,7 +20,7 @@ Object.freeze(G_MSG = {
     CAST_GAZE_FAILURE: ", but nothing is there, this spell has summoned a creep instead...",
     CAST_GAZE_SUCCEED: ", you have revealed a creeps",
     CAST_FIREBALL_SUCCEED: ", you have toasted NAME",
-    DLG_TUT_OBJECTIVE: "Proved your worth! Odin is recruiting an army to fight Ragnorak war, prove your worth by getting to 100th level and get the soul stones",
+    DLG_TUT_OBJECTIVE: "Lord Odin, the allfather of gods, is gathering an army of gods and heroic dead from Valhala to against the advancement Loki. Loki is the fire god of the Ill Fate, notorious for having the mighty frost giants assisted. Odin attributes this to the deadly dungeon known as Loki's Trial. Filled with unworthy dead and insidious monsters who come from Hel, it is a standing testament to the Loki's madness. Find this dungeon at the south of camp. Complete this trial to prove your worth in the final battle of the fate of gods.",
     DLG_TUT_OPEN_GATE: "To travel down the dungeons and get the ",
 });
 
@@ -298,6 +298,9 @@ Object.freeze(G_OBJECT_NAME = {
     593: 'Frozen', // immobilize, cooldown stop
     594: 'Poisoned', // hp dun heal
     595: 'Poison Blade',
+
+    701: 'Prove your worth',
+    702: 'Key objective',
 });
 Object.freeze(G_OBJECT_DESC = {
     32: 'Chest',
@@ -476,5 +479,8 @@ Object.freeze(G_OBJECT_DESC = {
     593: 'Frozen', // immobilize, cooldown stop
     594: 'Poisoned', // hp dun heal
     595: 'Poison Blade',
+
+    701: "Lord Odin, the allfather of gods, is gathering an army of gods and heroic dead from Valhala to battle against the forces of jotuns. Loki is the jatun lord of the Ill Fate, notorious for killing many gods. Odin attributes this to the deadly dungeon known as Loki's Trial. Filled with unworthy dead and insidious monsters who come from Hel, it is a standing testament to the Loki's madness. Find this dungeon at the south of camp. Complete this trial by retriveing soulstones from 100th level of dungeon to prove your worth in the final battle of the fate of gods.",
+    702: "Go near to key and use it to unlock the gate to bottom level",
 });
 
