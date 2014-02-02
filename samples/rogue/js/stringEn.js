@@ -19,7 +19,9 @@ Object.freeze(G_MSG = {
     CAST_POISONBLADE: ", your weapon has coated with poison",
     CAST_GAZE_FAILURE: ", but nothing is there, this spell has summoned a creep instead...",
     CAST_GAZE_SUCCEED: ", you have revealed a creeps",
-    CAST_FIREBALL_SUCCEED: ", you have toasted NAME"
+    CAST_FIREBALL_SUCCEED: ", you have toasted NAME",
+    DLG_TUT_OBJECTIVE: "Proved your worth! Odin is recruiting an army to fight Ragnorak war, prove your worth by getting to 100th level and get the soul stones",
+    DLG_TUT_OPEN_GATE: "To travel down the dungeons and get the ",
 });
 
 Object.freeze(G_LABEL = {
