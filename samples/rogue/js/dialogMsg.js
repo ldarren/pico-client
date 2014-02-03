@@ -93,40 +93,51 @@ pico.def('dialogMsg', 'picUIContent', function(){
         labels = msg.labels,
         // measurement start
         info = msg.info,
+        l = info.length,
         cvs = document.createElement('canvas'),
         ctx = cvs.getContext('2d'),
         ts = this.tileSet,
         scale = this.smallDevice ? 1 : 2,
+        textHeight = 8*scale,
+        rowH = textHeight * 2,
+        actualHeight = textHeight * (l+2), // 2 for buttons
+        dummyRows,
         // measurement end
-        row,cell,i,l;
+        row,cell,i;
        
-       // measurement start
-        for (i=0,l=info.length; i<l; i++){
-            console.log(info[i]+' size:'+me.fillIconText(ctx, ts, info[i], [0, 0, width, 0], scale);
+        // measurement start
+        for (i=0; i<l; i++){
+            actualHeight += me.fillIconText(ctx, ts, info[i], [0, 0, width, 0], scale, {textHeight: textHeight});
         }
+        actualHeight = Math.max(height, actualHeight);
+
+        dummyRows = Math.floor(actualHeight/rowH);
+        dummyRows = Math.min(dummyRows, 9); // maximum 7 dummy rows
+        rowH = Math.ceil(actualHeight/dummyRows);
         // measurement end
 
         if(labels){
             row=me.createMeshRow(rows);
             for(i=0,l=labels.length; i<l; i++){
                 cell=me.createMeshCell(row);
-                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 1, 0, {id:i});
+                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, rowH, 1, 0, {id:i});
             }
         }
 
-        row=me.createMeshRow(rows);
-        cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 3, 0, 0, {id:'text'});
+        dummyRows -= 2;
 
         row=me.createMeshRow(rows);
         cell=me.createMeshCell(row);
+        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, dummyRows, 0, 0, {id:'text'});
 
-        row=me.createMeshRow(rows);
-        cell=me.createMeshCell(row);
+        for(i=0; i<dummyRows; i++){
+            row=me.createMeshRow(rows);
+            me.createMeshCell(row);
+        }
 
         com.layout = meshui;
 
-        return [width, height];
+        return [width, actualHeight];
     };
 
     me.click = function(ent, x, y, state){
