@@ -111,7 +111,7 @@ pico.def('dialogMsg', 'picUIContent', function(){
         for (i=0; i<l; i++){
             actualHeight += me.fillIconText(ctx, ts, info[i], [0, 0, width, 0], scale, {textHeight: textHeight});
         }
-        actualHeight = Math.max(height, actualHeight);
+        meshui.h = actualHeight = Math.max(height, actualHeight);
 
         dummyRows = Math.floor(actualHeight/rowH);
         dummyRows = Math.min(dummyRows, 9); // maximum 7 dummy rows
@@ -133,8 +133,7 @@ pico.def('dialogMsg', 'picUIContent', function(){
         me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, dummyRows, 0, 0, {id:'text'});
 
         for(i=0; i<dummyRows; i++){
-            row=me.createMeshRow(rows);
-            me.createMeshCell(row);
+            me.createMeshRow(rows);
         }
 
         com.layout = meshui;
