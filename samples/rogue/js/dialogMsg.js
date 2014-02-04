@@ -98,12 +98,14 @@ pico.def('dialogMsg', 'picUIContent', function(){
         ctx = cvs.getContext('2d'),
         ts = this.tileSet,
         scale = this.smallDevice ? 1 : 2,
-        textHeight = 8*scale,
+        textHeight = 10*scale,
         rowH = textHeight * 2,
         actualHeight = textHeight * (l+2), // 2 for buttons
         dummyRows,
         // measurement end
         row,cell,i;
+
+        ctx.font ='bold 19px alagard';
        
         // measurement start
         for (i=0; i<l; i++){
