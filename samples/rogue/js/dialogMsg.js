@@ -1,7 +1,7 @@
 pico.def('dialogMsg', 'picUIContent', function(){
     var
     me = this,
-    Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
+    Floor = Math.floor, Ceil = Math.ceil, Min = Math.min, Max = Math.max, Round = Math.round, Random = Math.random,
     name = me.moduleName,
     msg,
     onCustomBound = function(ent, rect, ui, scale){
@@ -14,25 +14,17 @@ pico.def('dialogMsg', 'picUIContent', function(){
         ts = tss['default'],
         id=ui.userData.id;
 
-        switch(id){
-        case 'text':
-            var
-            info = msg.info,
-            l = info.length,
-            x=rect[0],y=rect[1],w=rect[2],dh=rect[3]/l;
-
-            for(var i=0; i<l; i++){
-                me.fillIconText(ctx, ts, info[i], [x, y+dh*i, w, dh], scale);
-            }
-            break;
-        default:
+        if ('number' === typeof id){
             me.drawButton(ctx, ts, msg.labels[id], rect, scale, '#d7e894', '#204631');
-            break;
+        }else{
+            var info = msg.info;
+
+            me.fillIconText(ctx, ts, info[id.charAt(4)], rect, scale);
         }
     },
     onCustomButton = function(ent, ctx, rect, ui, tss, scale){
         var ts = tss['default'];
-        me.drawButton(ctx, ts, msg.labels[ui.userData.id], rect, scale, '#204631', '#d7e894', '#aec440', 1);
+        me.drawButton(ctx, ts, msg.labels[ui.userData.id], rect, scale, '#204631', '#d7e894', '#aec440', 3);
     },
     onCustomClick = function(ent, ui){
         var
@@ -98,47 +90,45 @@ pico.def('dialogMsg', 'picUIContent', function(){
         ctx = cvs.getContext('2d'),
         ts = this.tileSet,
         scale = this.smallDevice ? 1 : 2,
-        textHeight = 10*scale,
-        rowH = textHeight * 2,
-        actualHeight = textHeight * (l+2), // 2 for buttons
-        dummyRows,
+        textH = 14*scale, // TODO: use actual font height
+        rowH = textH * 2,
+        actualH = textH * (l+2), // 2 for buttons
+        infoH, dummyRows,
         // measurement end
-        row,cell,i;
-
-        ctx.font ='bold 19px alagard';
-       
-        // measurement start
-        for (i=0; i<l; i++){
-            actualHeight += me.fillIconText(ctx, ts, info[i], [0, 0, width, 0], scale, {textHeight: textHeight});
-        }
-        meshui.h = actualHeight = Math.max(height, actualHeight);
-
-        dummyRows = Math.floor(actualHeight/rowH);
-        dummyRows = Math.min(dummyRows, 9); // maximum 7 dummy rows
-        rowH = Math.ceil(actualHeight/dummyRows);
-        // measurement end
+        row,cell,i,j;
 
         if(labels){
             row=me.createMeshRow(rows);
             for(i=0,l=labels.length; i<l; i++){
                 cell=me.createMeshCell(row);
-                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, rowH, 1, 0, {id:i});
+                me.createMeshCustom(cell, me.TOP, me.TOP, 0, 1, rowH, 1, 0, {id:i});
             }
         }
+       
+        // measurement start
+        ctx.font = com.font;
 
-        dummyRows -= 2;
+        for (i=0,l=info.length; i<l; i++){
+            infoH = me.fillIconText(ctx, ts, info[i], [0, 0, width, 0], scale, {textHeight: textH});
+            actualH += infoH;
 
-        row=me.createMeshRow(rows);
-        cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, dummyRows, 0, 0, {id:'text'});
+            dummyRows = Floor(infoH/rowH);
+            dummyRows = Min(dummyRows, 6); // maximum 7 dummy rows
 
-        for(i=0; i<dummyRows; i++){
-            me.createMeshRow(rows);
+            row=me.createMeshRow(rows);
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, dummyRows+1, 0, 0, {id:'info'+i});
+
+            for(j=0; j<dummyRows; j++){
+                me.createMeshRow(rows);
+            }
         }
+        // measurement end
+        meshui.h = Max(height, actualH);
 
         com.layout = meshui;
 
-        return [width, actualHeight];
+        return [meshui.w, meshui.h];
     };
 
     me.click = function(ent, x, y, state){
