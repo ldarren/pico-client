@@ -48,7 +48,7 @@ pico.def('game', 'pigSqrMap', function(){
     createLevel = function(level){
         me.prevLevel = level ? me.currentLevel : 0;
         me.currentLevel = level;
-        me.nextLevel = (me.currentLevel < me.prevLevel) ? me.currentLevel-1 : me.currentLevel+1;
+        me.nextLevel = (level < me.prevLevel) ? level-1 : level+1;
         if (me.deepestLevel < level) me.deepestLevel = level;
 
         var mapParams = G_MAP_PARAMS[level];
@@ -117,8 +117,21 @@ pico.def('game', 'pigSqrMap', function(){
 
         var
         sealDoor = (level && me.deepestLevel <= level ? G_FLOOR.STAIR_DOWN : -1),
-        ground = (undefined === me.mortalLoc ? (level < me.prevLevel ? G_FLOOR.STAIR_DOWN : G_FLOOR.STAIR_UP) : -1);
+        goinUp = level < me.prevLevel,
+        ground = (undefined === me.mortalLoc ? (goinUp ? G_FLOOR.STAIR_DOWN : G_FLOOR.STAIR_UP) : -1),
+        tile;
        
+        if (level && goinUp){
+            for(i=0,l=me.map.length; i<l; i++){
+                tile = me.map[i];
+                if (tile & G_TILE_TYPE.EXIT){
+                    me.map[i] = tile & G_TILE_TYPE.HIDE | G_TILE_TYPE.ENTRANCE;
+                }else if (tile & G_TILE_TYPE.ENTRANCE){
+                    me.map[i] = tile & G_TILE_TYPE.HIDE | G_TILE_TYPE.EXIT;
+                }
+            }
+        }
+
         for(i=0,l=terrain.length; i<l; i++){
             if (ground === terrain[i]){
                 me.mortalLoc = i;
@@ -738,9 +751,9 @@ pico.def('game', 'pigSqrMap', function(){
                 events:[this.prevLevel, null]});
         }else if(tileType & G_TILE_TYPE.EXIT){
             if (G_FLOOR.LOCKED !== this.terrain[hp]) {
-                if (this.currentLevel){
+                if (this.currentLevel && this.currentLevel === this.deepestLevel){
                 this.go('showDialog', {
-                    info: ['Congratulations! Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam interdum non odio eu bibendum. Vestibulum eget porttitor leo. Vestibulum quis congue velit. Praesent sit amet cursus ligula. Curabitur lacinia sagittis placerat. Nam ultrices, dui non feugiat ultricies, metus felis facilisis nibh, sed feugiat massa augue in nisl. Aenean lacinia malesuada porta. Sed metus ligula, tincidunt sed ligula ut, pulvinar aliquam velit. Nulla egestas erat lacus, id porttitor nulla placerat iaculis. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque a orci auctor, sagittis dolor at, porttitor nibh. Maecenas risus magna, vestibulum et pretium sed, luctus ut ante. Integer et neque lectus. Mauris vel elit blandit libero tincidunt varius. Ut ut diam volutpat, tempor ipsum vel, semper dolor. Donec est sapien, semper vel sapien ac, consectetur condimentum lorem. Sed eros diam, tincidunt nec molestie at, laoreet in risus. Pellentesque volutpat cursus venenatis. Maecenas sit amet gravida sapien. Nulla consequat nunc lobortis, tincidunt ligula rutrum, malesuada tortor. Cras gravida, est sed auctor eleifend, eros sapien bibendum arcu, sagittis eleifend lectus justo sit amet lacus. Pellentesque sagittis enim lectus, a vulputate elit fringilla a. Aenean mattis augue et augue adipiscing, nec volutpat risus ornare. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nullam rhoncus dolor vel risus scelerisque, nec vulputate nulla bibendum. Donec sed nunc quis sapien sodales tempus in vel lectus. Cras condimentum nulla ut dolor mattis, nec ultrices arcu condimentum', 'you have unlocked level '+this.nextLevel],
+                    info: ['Congratulations!', 'you have unlocked level '+this.nextLevel],
                     labels: ['Goto Level '+this.nextLevel],
                     callbacks: ['gotoLevel'],
                     events: [this.nextLevel]});

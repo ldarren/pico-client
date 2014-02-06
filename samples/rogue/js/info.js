@@ -238,7 +238,7 @@ pico.def('info', 'picUIContent', function(){
     },
     onCustomButton = function(ent, ctx, rect, ui, tss, scale){
         var ts = tss['default'];
-        me.drawButton(ctx, ts, labels[ui.userData.id], rect, scale, '#204631', '#d7e894', '#aec440', 1);
+        me.drawButton(ctx, ts, labels[ui.userData.id], rect, scale, '#204631', '#d7e894', '#aec440', 3);
     },
     onCustomClick = function(ent, ui){
         if (!ui){
