@@ -178,7 +178,9 @@ pico.def('info', 'picUIContent', function(){
                     case G_OBJECT_TYPE.CREEP:
                         break;
                     default:
-                        me.fillIconText(ctx, ts, target[OBJECT_DESC], rect, scale);
+                        var desc = target[OBJECT_DESC].toString();
+                        if (desc.length > 255) desc = desc.substr(0, 255)+'...';
+                        me.fillIconText(ctx, ts, desc, rect, scale);
                         break;
                     }
                     break;
@@ -288,6 +290,9 @@ pico.def('info', 'picUIContent', function(){
                 ai.incrHpAll(1);
                 this.go('forceRefresh');
                 this.go('heroMoveTo', [targetId]);
+                break;
+            case 'read':
+                this.go('showDialog', {info: [target[OBJECT_DESC]], labels:['Close'], callbacks:[]});
                 break;
             case 'rejuvenate':
                 hero.rejuvenate();
