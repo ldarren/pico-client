@@ -94,6 +94,61 @@ pico.def('game', 'pigSqrMap', function(){
         }
         return count;
     },
+    prepareTutorial = function(level){
+        if (!level) return 0;
+
+        var
+        map = me.map,
+        objects = me.objects,
+        ai = me.ai,
+        isDone = me.deepestLevel > level,
+        tile,object,i,l;
+
+        switch(level){
+        case 1: // key
+        case 2: // creep sweeping
+            for(i=0,l=map.length;i<l;i++){
+                tile = map[i];
+                if (tile & G_TILE_TYPE.CREEP){
+                    objects[i] = ai.spawnCreep(level);
+                }
+            }
+            if (isDone){
+                for(i=0,l=objects.length; i<l; i++){
+                    var object = objects[i];
+                    if (object && G_OBJECT_TYPE.KEY === object[OBJECT_TYPE]){
+                        delete objects[i];
+                        break;
+                    }
+                }
+            }
+            break;
+        case 3: // combat
+        case 4: // equip
+            var creeps = [], chestId;
+            for(i=0,l=map.length;i<l;i++){
+                tile = map[i];
+                if (tile & G_TILE_TYPE.CREEP){
+                    creeps.push(i);
+                    objects[i] = ai.spawnCreep(level);
+                }
+                if (tile & G_TILE_TYPE.CHEST){
+                    chestId = i;
+                }
+            }
+            objects[creeps[Floor(Random()*creeps.length)]][CREEP_ITEM] = G_CREATE_OBJECT(G_ICON.KEY_GATE);
+            if (chestId){
+                if (isDone){
+                    objects[i] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY)
+                }else{
+                    object = G_CREATE_OBJECT(G_ICON.CHEST);
+                    object[CHEST_ITEM] = ai.spawnItem(G_ICON.ROBE, G_GRADE.ENCHANTED, me.hero.getJob(), 1, 1);
+                    objects[chestId] = object;
+                }
+            }
+            break;
+        }
+    },
     populateStaticLevel = function(level){
         if (level >= G_STATIC_MAP.length) return false;
 
@@ -161,6 +216,8 @@ pico.def('game', 'pigSqrMap', function(){
             me.recalHints();
             fill(me.map, hints, me.mapWidth, me.mortalLoc);
         }
+
+        prepareTutorial(level);
 
         return true;
     },
@@ -316,8 +373,6 @@ pico.def('game', 'pigSqrMap', function(){
         labels: ['Loot', 'Discard'],
         events: [evt, undefined]});
 
-        delete this.flags[evt];
-
         return entities;
     };
 
@@ -379,6 +434,8 @@ pico.def('game', 'pigSqrMap', function(){
                 for(var i=0,l=engagedIds.length; i<l; i++){
                     delete flags[engagedIds[i]]; // must do it after ai.battle to avoid flag creep attacks
                 }
+            }else{
+                me.go('hideInfo');
             }
             return;
         }

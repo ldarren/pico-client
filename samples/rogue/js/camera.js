@@ -216,7 +216,7 @@ pico.def('camera', 'picBase', function(){
                     tileSet.draw(ctx, terrain[w], x, y, tileW, tileH);
                     object = objects[w];
                     flag = flags[w];
-                    if (flag){
+                    if (flag && object){
                         tileSet.draw(ctx, object[OBJECT_ICON], x, y, tileW, tileH);
                         tileSet.draw(ctx, flag, x, y, hw, hh);
                     }else if (object){

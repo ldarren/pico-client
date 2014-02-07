@@ -103,32 +103,10 @@ pico.def('ai', function(){
         return G_CREATE_OBJECT(G_ICON.CHEST);
     };
 
-    me.createGoods = function(npcType, goods){
-        switch(npcType){
-        case G_NPC_TYPE.ARCHMAGE:
-            goods.push(G_CREATE_OBJECT(G_ICON.SMALL_HP));
-            break;
-        case G_NPC_TYPE.BLACKSMITH:
-            goods.push(G_CREATE_OBJECT(G_ICON.SCIMITAR));
-            break;
-        }
-        return goods;
-    };
-
-    me.openChest = function(job, luck, level){
+    me.spawnItem = function(itemId, gradeType, job, lvl, luck){
         var
-        capLvl = (G_MAP_PARAMS.length - 1)*5,
-        minLvl = level < 4 ? 3 : level - 3,
-        maxLvl = level > capLvl-4 ? capLvl : level + 3,
-        lvl = minLvl + Round(Random()*(maxLvl - minLvl)),
-        grade = pick(G_GRADE_RATE, luck, G_GRADE.ALL),
-        gradeType = grade[DROP_ID],
-        dropInfo = pick(G_ITEM_RATE, luck, gradeType),
-        dropType = dropInfo[DROP_ID],
-        itemRates = G_ITEM_SUB_RATE[dropType],
-        itemRate = pick(itemRates, luck, gradeType),
-        item = G_OBJECT[itemRate[DROP_ID]].slice(),
-        itemName = G_OBJECT_NAME[item[OBJECT_ICON]],
+        item = G_CREATE_OBJECT(itemId),
+        itemName = item[OBJECT_NAME],
         itemType = item[OBJECT_TYPE],
         modifier, affix, stat, i, l, j, k, m;
 
@@ -189,6 +167,34 @@ pico.def('ai', function(){
         return item;
     };
 
+    me.openChest = function(job, luck, level){
+        var
+        capLvl = (G_MAP_PARAMS.length - 1)*5,
+        minLvl = level < 4 ? 3 : level - 3,
+        maxLvl = level > capLvl-4 ? capLvl : level + 3,
+        lvl = minLvl + Round(Random()*(maxLvl - minLvl)),
+        grade = pick(G_GRADE_RATE, luck, G_GRADE.ALL),
+        gradeType = grade[DROP_ID],
+        dropInfo = pick(G_ITEM_RATE, luck, gradeType),
+        dropType = dropInfo[DROP_ID],
+        itemRates = G_ITEM_SUB_RATE[dropType],
+        itemRate = pick(itemRates, luck, gradeType);
+        
+        return me.spawnItem(itemRate[DROP_ID], gradeType, job, lvl, luck);
+    };
+
+    me.createGoods = function(npcType, goods){
+        switch(npcType){
+        case G_NPC_TYPE.ARCHMAGE:
+            goods.push(G_CREATE_OBJECT(G_ICON.SMALL_HP));
+            break;
+        case G_NPC_TYPE.BLACKSMITH:
+            goods.push(G_CREATE_OBJECT(G_ICON.SCIMITAR));
+            break;
+        }
+        return goods;
+    };
+
     me.studyScroll = function(job, will, level){
         var
         spellInfo = pick(G_SPELL_RATE, will, level),
@@ -242,11 +248,9 @@ pico.def('ai', function(){
 
         if (map[id] & G_TILE_TYPE.HIDE){
             map[id] &= G_TILE_TYPE.SHOW;
-            flags[id] = G_UI.FLAG;
+            if (G_OBJECT_TYPE.CREEP === object[OBJECT_TYPE]) flags[id] = G_UI.FLAG;
             return;
-        }
-
-        if (flags[id]){
+        }else if (flags[id]){
             delete flags[id];
             hero.setEngaged(id);
             return;

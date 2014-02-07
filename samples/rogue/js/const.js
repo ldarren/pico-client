@@ -1230,7 +1230,7 @@ Object.freeze(G_CREEP_TEAM = {
 });
 
 Object.freeze(G_STATIC_MAP = [
-    {
+    { // town
         heroPos: 27,
         map:[
             0, 0, 0, 0, 0, 0, 0, 0,
@@ -1264,7 +1264,7 @@ Object.freeze(G_STATIC_MAP = [
         ],
         flags: [],
         hints: []
-    },{
+    },{ // tut 1: use key to open door
         map:[
             0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, G_TILE_TYPE.ENTRANCE, 0,
@@ -1296,14 +1296,14 @@ Object.freeze(G_STATIC_MAP = [
             0, 0, 0, 0, 0, 0, 0, 0,
         ],
         flags: []
-    },{
+    },{ // tut 2: creepsweeping basic
         map:[
             1, 1, 1, 1, 1, 1, 1, 1,
             1, 1, 1, 1, 1, 1, 1+G_TILE_TYPE.ENTRANCE, 1,
+            1, 1, 1, 1, 1+G_TILE_TYPE.CREEP, 1, 1, 1,
             1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1+G_TILE_TYPE.CHEST, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1+G_TILE_TYPE.CREEP, 1, 1+G_TILE_TYPE.CREEP, 1, 1,
+            1, 1, 1, 1, 1, 1+G_TILE_TYPE.CREEP, 1, 1,
             1, 1+G_TILE_TYPE.EXIT, 1, 1, 1, 1, 1, 1,
             1, 1, 1, 1, 1, 1, 1, 1,
         ],
@@ -1328,6 +1328,70 @@ Object.freeze(G_STATIC_MAP = [
             0, 0, 0, 0, 0, 0, 0, 0,
         ],
         flags: []
+    },{ // tut 3: combat, spell, globe
+        map:[
+            1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1+G_TILE_TYPE.EXIT, 1, 1, 1+G_TILE_TYPE.ENTRANCE, 1,
+            1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1+G_TILE_TYPE.CREEP, 1, 1, 1,
+            1, 1+G_TILE_TYPE.CREEP, 1, 1, 1, 1, 1+G_TILE_TYPE.CREEP, 1,
+            1, 1, 1, 1, 1+G_TILE_TYPE.CREEP, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1,
+        ],
+        terrain:[
+            10, 10, 10, 10, 10, 10, 10, 10,
+            10, 10, 10, G_FLOOR.STAIR_DOWN, 10, 10, G_FLOOR.STAIR_UP, 10,
+            10, 10, 10, 10, 10, 10, 10, 10,
+            10, 10, 10, 10, 10, 10, 10, 10,
+            10, 10, 10, 10, 10, 10, 10, 10,
+            10, 10, 10, 10, 10, 10, 10, 10,
+            10, 10, 10, 10, 10, 10, 10, 10,
+            10, 10, 10, 10, 10, 10, 10, 10,
+        ],
+        objects:[
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 702, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 702, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+        ],
+        flags: []
+    },{ // tut 4: chest, item, equip, spell level up, portal
+        map:[
+            1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1+G_TILE_TYPE.EXIT, 1, 1, 1+G_TILE_TYPE.ENTRANCE, 1,
+            1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1+G_TILE_TYPE.CREEP, 1, 1+G_TILE_TYPE.CHEST, 1, 1, 1, 1,
+            1, 1, 1+G_TILE_TYPE.WAYPOINT, 1, 1, 1, 1, 1,
+            1, 1, 1, 1+G_TILE_TYPE.CREEP, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1,
+        ],
+        terrain:[
+            10, 10, 10, 10, 10, 10, 10, 10,
+            10, 10, 10, G_FLOOR.STAIR_DOWN, 10, 10, G_FLOOR.STAIR_UP, 10,
+            10, 10, 10, 10, 10, 10, 10, 10,
+            10, 10, 10, 10, 10, 10, 10, 10,
+            10, 10, 10, 10, 10, 10, 10, 10,
+            10, 10, G_FLOOR.WAYPOINT_NEW, 10, 10, 10, 10, 10,
+            10, 10, 10, 10, 10, 10, 10, 10,
+            10, 10, 10, 10, 10, 10, 10, 10,
+        ],
+        objects:[
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 702, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 702, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 702, 0, 0, 0, 0,
+        ],
+        flags: []
     },
 ]);
 
@@ -1335,14 +1399,8 @@ Object.freeze(G_MAP_PARAMS = [
     [8, 8, 0, 0], // level 0 is a town
     [8, 8, 0, 0], // tut 1, learn key
     [8, 8, 0, 0], // tut 2, learn minesweeper
-    [8, 8, 0, 0], // tut 3, learn chest
-    [8, 8, 0, 0], // tut 4, learn equip
-    [8, 8, 0, 0], // tut 5, learn creep 
-    [8, 8, 0, 0], // tut 6, learn attack
-    [8, 8, 0, 0], // tut 7, learn health globe
-    [8, 8, 0, 0], // tut 8, learn spell
-    [8, 8, 0, 0], // tut 9, learn item level up spell 
-    [8, 8, 0, 0], // tut 10, learn portal
+    [8, 8, 0, 0], // tut 3, learn spell, creep, attack, health globe
+    [8, 8, 0, 0], // tut 4, learn chest, item, equip, level up spell, portal
     [8, 8, 5, 2], // width, height, creeps, chests
     [10, 8, 7, 4],
     [12, 8, 10, 6],
