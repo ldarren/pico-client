@@ -301,6 +301,12 @@ Object.freeze(G_OBJECT_NAME = {
 
     701: 'Prove your worth',
     702: 'Key objective',
+    703: 'Creep sweeping',
+    704: 'Combat training',
+    705: 'Combat rewards!',
+    706: 'Treasure hunting',
+    707: 'Waypoint!',
+    708: 'Equip items',
 });
 Object.freeze(G_OBJECT_DESC = {
     32: 'Chest',
@@ -482,5 +488,11 @@ Object.freeze(G_OBJECT_DESC = {
 
     701: "Lord Odin, the allfather of gods, is gathering an army of gods and heroic dead from Valhala to battle against the forces of jotuns. Loki is the jatun lord of the Ill Fate, notorious for killing many gods. Odin attributes this to the deadly dungeon known as Loki's Trial. Filled with unworthy dead and insidious monsters who come from Hel, it is a standing testament to the Loki's madness. Find this dungeon at the south of camp. Complete this trial by retriveing soulstones from 100th level of dungeon to prove your worth in the final battle of the fate of gods.",
     702: "Go near to key and use it to unlock the gate to bottom level",
+    703: 'Creep sweeping',
+    704: 'Combat training',
+    705: 'Combat rewards!',
+    706: 'Treasure hunting',
+    707: 'Waypoint!',
+    708: 'Equip items',
 });
 

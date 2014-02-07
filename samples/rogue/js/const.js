@@ -1221,6 +1221,12 @@ Object.freeze(G_OBJECT = [
     undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
     [143, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.MESSAGE_BOARD],
     [143, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.MESSAGE_BOARD],
+    [143, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.MESSAGE_BOARD],
+    [143, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.MESSAGE_BOARD],
+    [143, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.MESSAGE_BOARD],
+    [143, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.MESSAGE_BOARD],
+    [143, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.MESSAGE_BOARD],
+    [143, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.MESSAGE_BOARD],
 ]);
 
 Object.freeze(G_CREEP_TEAM = {
@@ -1320,7 +1326,7 @@ Object.freeze(G_STATIC_MAP = [
         objects:[
             0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 702, 0, 0,
+            0, 0, 0, 0, 0, 703, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, G_ICON.KEY_GATE, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
@@ -1352,10 +1358,10 @@ Object.freeze(G_STATIC_MAP = [
         objects:[
             0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 702, 0, 0,
+            0, 0, 0, 0, 0, 704, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 702, 0, 0, 0,
+            0, 0, 0, 0, 705, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
         ],
@@ -1384,12 +1390,12 @@ Object.freeze(G_STATIC_MAP = [
         objects:[
             0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 702, 0, 0,
+            0, 0, 0, 0, 0, 706, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
-            0, 702, 0, 0, 0, 0, 0, 0,
+            0, 707, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 702, 0, 0, 0, 0,
+            0, 0, 0, 708, 0, 0, 0, 0,
         ],
         flags: []
     },
