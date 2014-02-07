@@ -227,7 +227,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
         // HACK: to hack an android stock browser bug that create a canvas 'screenshot' when draw and resize happen within 1~2 frames
         this.pause();
-        window.setTimeout(function(game){game.go('forceRefresh'); game.resume();}, 30, this);
+        window.setTimeout(function(game){game.go('forceRefresh'); game.resume();}, 300, this);
 
         return entities;
     };
@@ -460,8 +460,10 @@ pico.def('uiWindow', 'picUIWindow', function(){
         evt[2] = evt[0];
         evt[3] = evt[1];
 
-        com.scrollX = x;
-        com.scrollY = y;
+        // some android browsers has problem to render decimal
+        com.scrollX = Floor(x);
+        com.scrollY = Floor(y);
+
         if (sh) sh[0] = comBox.x+Floor(x * sh[3]);
         if (sv) sv[1] = comBox.y+Floor(y * sv[3]);
         return entities;
@@ -512,11 +514,11 @@ pico.def('uiWindow', 'picUIWindow', function(){
         ctx.fillStyle = com.background;
         if (com.maximized) ctx.fillRect(clip[0], clip[1], clip[2], clip[3]);
         else ctx.fillRect(layout[0], layout[1], layout[2], layout[3]);
-
+console.log(com.scrollX+' '+com.scrollY+' '+com.contentSize[0]+' '+com.contentSize[1]+' '+comBox.x+' ' +comBox.y+' '+contentW+' '+contentH);
         ctx.drawImage(com.canvas,
             com.scrollX, com.scrollY, contentW, contentH,
             comBox.x, comBox.y, contentW, contentH);
-
+console.log('done');
         if (com.theme){
             var
             ts = this.tileSet,
