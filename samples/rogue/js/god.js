@@ -124,10 +124,10 @@ pico.def('god', 'picUIContent', function(){
     },
     onCustomUI = function(){
         switch(Array.prototype.shift.call(arguments)){
-        case me.CUSTOM_BOUND: return onCustomBound.apply(this, arguments); break;
-        case me.CUSTOM_DRAW: return onCustomDraw.apply(this, arguments); break;
-        case me.CUSTOM_CLICK: return onCustomClick.apply(this, arguments); break;
-        case me.CUSTOM_BUTTON: return onCustomButton.apply(this, arguments); break;
+        case me.CUSTOM_BOUND: return onCustomBound.apply(this, arguments);
+        case me.CUSTOM_DRAW: return onCustomDraw.apply(this, arguments);
+        case me.CUSTOM_CLICK: return onCustomClick.apply(this, arguments);
+        case me.CUSTOM_BUTTON: return onCustomButton.apply(this, arguments);
         }
     };
 

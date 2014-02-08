@@ -522,7 +522,6 @@ pico.def('game', 'pigSqrMap', function(){
 
             if (hero.isDead()){
                 objects[pos] = G_CREATE_OBJECT(G_ICON.BONES);
-                me.currentLevel = me.deepestLevel = 0;
                 hero.bury(me.god);
                 me.routeInputs([function(){
                     me.go('hideInfo');
@@ -582,7 +581,7 @@ pico.def('game', 'pigSqrMap', function(){
     };
 
     me.resetWorld = function(elpased, evt, entities){
-        me.currentLevel = me.deepestLevel = 0;
+        me.currentLevel = /*me.deepestLevel =*/ 0; // retain deepest level
         me.mortal = undefined;
 
         me.ai.changeTheme.call(me);
