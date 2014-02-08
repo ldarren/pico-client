@@ -61,9 +61,9 @@ pico.def('bag', 'picUIContent', function(){
         targetId = cell[2].userData.id;
         slot2 = slots[targetId];
         slots[sourceId] = slot2;
-        slot2[2] = sourceId;
+        if (slot2) slot2[2] = sourceId;
         slots[targetId] = slot1;
-        slot2[2] = targetId;
+        slot1[2] = targetId;
         return true;
     },
     onCustomUI = function(){

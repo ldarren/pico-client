@@ -486,13 +486,13 @@ Object.freeze(G_OBJECT_DESC = {
     594: 'Poisoned', // hp dun heal
     595: 'Poison Blade',
 
-    701: "Lord Odin, the allfather of gods, is gathering an army of gods and heroic dead from Valhala to battle against the forces of jotuns. Loki is the jatun lord of the Ill Fate, notorious for killing many gods. Odin attributes this to the deadly dungeon known as Loki's Trial. Filled with unworthy dead and insidious monsters who come from Hel, it is a standing testament to the Loki's madness. Find this dungeon at the south of camp. Complete this trial by retriveing soulstones from 100th level of dungeon to prove your worth in the final battle of the fate of gods.",
-    702: "Go near to key and use it to unlock the gate to bottom level",
-    703: 'Creep sweeping',
-    704: 'Combat training',
-    705: 'Combat rewards!',
-    706: 'Treasure hunting',
-    707: 'Waypoint!',
-    708: 'Equip items',
+    701: "Lord Odin, the allfather of gods, is gathering an army of gods and heroic dead from Valhala to battle against the forces of jotuns. Loki is the jatun lord of the Ill Fate, notorious for killing many gods. Odin attributes this to the deadly dungeon known as Loki's Trial. Filled with unworthy dead and insidious creeps who come from Hel, it is a standing testament to the Loki's madness. Find this dungeon at the south of camp. Complete this trial by retriveing soulstones from 100th level of dungeon to prove your worth in the final battle of the fate of gods.",
+    702: "Travel down to next level, use the key to unlock gate to next level. To use key, move near to the key `36 and click on it and choose unlock gate",
+    703: 'The key to down stair is concealed in dungeon, tab on hidden cell `8 to reveal it, but hidden cell may contains dangerous creep, the digit on cell indicates the number of adjacent cells which contains creeps. You can use this information to deduce creep-free cell, reveal creep-free cells to discover the key. Warning! a revealed creep may attack you immediately. if you get killed your soul will join Valhala and God Odin will reincarnate you, so don\'t be afraid to try',
+    704: 'The key to next level is keep by one of the hidden creeps, to get the key creeps must be defeated. Use the digit on the floor to deduce the creep location and use skill from tome to expose creep. exposed creeps has a `202 icon on them and they don\'t attack you by exposing them. to attack creep, tab on creep and choose fight.',
+    705: 'Beside getting key, defeating creep also reward you a health globe `135 and a piety point `196. consume a health globe restore one hit point 663 for you and all exposed creeps. Piety point can be used to get rewards from God Odin Altar at town',
+    706: 'Creeps are not the only objects conceled in dungeon, there treasure chests that you can find to get equipments, consumable items and spell scrolls. Expose all concealed objects to find treasures',
+    707: 'There is a waypoint in this dungeon. A Waypoint is a way to fast travel between dungeon and town. They appear as `9 when inactive, and `17 when activated. besides waypoint there are teleport scrolls to travel back to town immediately',
+    708: 'Looted item from treasure chest are kept in your bag. to equip item from bag, tab on the item and choose Equip. You can see equip item from expanded player stats window. Item may have enchantment that contain elemental power. Your skill requires elemental power to level up',
 });
 
