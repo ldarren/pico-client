@@ -2,7 +2,7 @@ pico.def('hero', 'picUIContent', function(){
     var
     me = this,
     name = me.moduleName,
-    Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
+    Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random, Max = Math.max,
     objects, flags, ai,
     position, selectedSpell,
     heroObj, currStats,
@@ -183,7 +183,7 @@ pico.def('hero', 'picUIContent', function(){
         return data;
     };
 
-    me.init = function(){
+    me.init = function(level){
         heroObj = this.mortal;
         appearance = heroObj.appearance;
         stats = heroObj.stats;
@@ -200,7 +200,7 @@ pico.def('hero', 'picUIContent', function(){
             this.go('showInfo', {targetId: targets[0], context:G_CONTEXT.WORLD});
         }
         currStats = []; // level up will update currStats
-        me.calcStats(this.deepestLevel);
+        me.calcStats(level);
         me.move(this.mortalLoc);
 
         return heroObj;
@@ -390,7 +390,7 @@ pico.def('hero', 'picUIContent', function(){
             default:
                 return false;
         }
-        me.calcStats(currStats[OBJECT_LEVEL]);
+        me.calcStats(appearance[HERO_LEVEL]);
         return true;
     };
 
@@ -410,7 +410,7 @@ pico.def('hero', 'picUIContent', function(){
             }
         }
 
-        me.calcStats(currStats[OBJECT_LEVEL]);
+        me.calcStats(appearance[HERO_LEVEL]);
         return ret;
     };
     me.isItemEquipped = function(slot){
@@ -497,11 +497,15 @@ pico.def('hero', 'picUIContent', function(){
     };
 
     me.calcStats = function(lvl){
+        var level = appearance[HERO_LEVEL];
+        if (level < lvl){
+            appearance[HERO_LEVEL] = level = lvl;
+        }
         currStats = stats.slice();
 
         var i,l,a,equip,item;
         for(i=OBJECT_WILL; i<OBJECT_VEG; i++){
-            currStats[i] = Ceil(currStats[i]*lvl); // negative is ok
+            currStats[i] = Ceil(currStats[i]*level); // negative is ok
         }
         for(a=HERO_HELM; a<HERO_QUIVER; a++){
             equip = appearance[a];
@@ -511,7 +515,7 @@ pico.def('hero', 'picUIContent', function(){
                 currStats[i] += item[i];
             }
         }
-        currStats[OBJECT_LEVEL] = lvl;
+        currStats[OBJECT_LEVEL] = level;
         return currStats;
     };
 

@@ -10,7 +10,7 @@ CREEP_HP=7, CREEP_ATK=8, CREEP_PDEF=9, CREEP_MDEF=10, CREEP_EFFECT=11, CREEP_ITE
 WEAPON_HANDED=21, CHEST_ITEM=7, TOMB_BODY=7, AMMO_SIZE=20,
 ENCHANTED_CLASS=4, ENCHANTED_SPELL=5,
 SPELL_DIFFICULTY=7, SPELL_RELOAD=8, SPELL_COOLDOWN=9, SPELL_ELEMENT=10, SPELL_STRENGTH=11,
-HERO_HELM=0,HERO_ARMOR=1,HERO_MAIN=2,HERO_OFF=3,HERO_RINGL=4,HERO_RINGR=5,HERO_AMULET=6,HERO_QUIVER=7,HERO_GOLD=8,
+HERO_HELM=0,HERO_ARMOR=1,HERO_MAIN=2,HERO_OFF=3,HERO_RINGL=4,HERO_RINGR=5,HERO_AMULET=6,HERO_QUIVER=7,HERO_GOLD=8,HERO_LEVEL=9,
 HERO_ENEMIES=10,HERO_PORTAL=11,HERO_WAYPOINT=12,HERO_BAG_CAP=13,HERO_TOME_CAP=14;
 
 function G_CREATE_OBJECT(id, name, desc){
@@ -753,14 +753,14 @@ Object.freeze(G_OBJECT = [
     [142, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.BANNER],
     [143, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.MESSAGE_BOARD],
     // id, name, desc, level, grade, type, heroType, hp, will, dex, luck, str, [patk, ratk], [def], [veg, insect, beast, undead, demon]
-    [144, '','',-1, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.ROGUE,     2, 0, 1, 1, 1,       0.1, 0.2,  0.1,  1,1,1,1,1],
-    [145, '','',-1, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.MONK,      3, 1, 0.1, 0, 2,     0.2, 0.1,  0.2,  1,1,1,1.2,1.2],
-    [146, '','',-1, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.BARBARIAN, 4, 0, 0.2, 0.1, 3,   0.3, 0.1,  0.3,  1,1,1,1,1],
-    [147, '','',-1, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.DRUID,     3, 1, 0.2, 0.1, 2,   0.2, 0.1,  0.2,  1,1,1,1,1],
-    [148, '','',-1, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.HUNTER,    2, 0, 0.2, 0.1, 2,   0.2, 0.4,  0.2,  1,1,1.5,1,1],
-    [149, '','',-1, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.PALADIN,   3, 1, 0, 0, 2,       0.2, 0.1,  0.4,  1,1,1,1.5,1],
-    [150, '','',-1, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.WIZARD,    1, 3, 0, 0.1, 0.5,   0.1, 0.1,  0.1,  1,1,1,1,1],
-    [151, '','',-1, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.WARLOCK,   1, 3, 0, 0, 0.3,     0.1, 0.1,  0.1,  1,1,1,1,1],
+    [144, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.ROGUE,     2, 0, 1, 1, 1,       0.1, 0.2,  0.1,  1,1,1,1,1],
+    [145, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.MONK,      3, 1, 0.1, 0, 2,     0.2, 0.1,  0.2,  1,1,1,1.2,1.2],
+    [146, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.BARBARIAN, 4, 0, 0.2, 0.1, 3,   0.3, 0.1,  0.3,  1,1,1,1,1],
+    [147, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.DRUID,     3, 1, 0.2, 0.1, 2,   0.2, 0.1,  0.2,  1,1,1,1,1],
+    [148, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.HUNTER,    2, 0, 0.2, 0.1, 2,   0.2, 0.4,  0.2,  1,1,1.5,1,1],
+    [149, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.PALADIN,   3, 1, 0, 0, 2,       0.2, 0.1,  0.4,  1,1,1,1.5,1],
+    [150, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.WIZARD,    1, 3, 0, 0.1, 0.5,   0.1, 0.1,  0.1,  1,1,1,1,1],
+    [151, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.WARLOCK,   1, 3, 0, 0, 0.3,     0.1, 0.1,  0.1,  1,1,1,1,1],
     // id, name, desc, level, grade, type, creepType, hp, atk, pdef, mdef, effect, item
     [152, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  1.1,     1.1,0,  [], null], //Rat
     [153, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.INSECT,   1,  1.1,     1.1,0,  [], null], //'Spiders',

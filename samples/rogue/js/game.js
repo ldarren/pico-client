@@ -566,7 +566,7 @@ pico.def('game', 'pigSqrMap', function(){
 
         createLevel(level);
 
-        hero.init.call(me);
+        hero.init.call(me, level);
         ai.init.call(me);
 
         me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);
@@ -581,12 +581,11 @@ pico.def('game', 'pigSqrMap', function(){
     };
 
     me.resetWorld = function(elpased, evt, entities){
-        me.currentLevel = /*me.deepestLevel =*/ 0; // retain deepest level
         me.mortal = undefined;
 
         me.ai.changeTheme.call(me);
 
-        createLevel(me.currentLevel);
+        createLevel(0);
 
         me.ai.init.call(me);
 
@@ -596,7 +595,7 @@ pico.def('game', 'pigSqrMap', function(){
     };
 
     me.reborn = function(elapsed, evt, entities){
-        me.hero.init.call(me);
+        me.hero.init.call(me, 0);
 
         me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);
         return entities;
