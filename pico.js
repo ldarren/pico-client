@@ -273,9 +273,10 @@ pico.changeState = function(uri, desc, userData){
     }
 };
 pico.onHashChange = function(evt){
-    var
-    newHash = evt.newURL.split('#')[1] || '',
-    oldHash = evt.oldURL.split('#')[1] || '';
+    var newHash='', oldHash='';
+    if (evt.oldURL) oldHash = evt.oldURL.split('#')[1] || '';
+    if (evt.newURL) newHash = evt.newURL.split('#')[1] || '';
+    else newHash = window.location.hash.split('#')[1] || '';
 
     pico.signal(pico.HASH_CHANGE, [oldHash, newHash]);
 };
@@ -510,7 +511,7 @@ window.addEventListener('load', function(){
 
         for (var i=0, l=vendorKeys.length; i<l; i++){
             key = vendorKeys[i];
-            if (-1 !== key.string.indexOf(key.subString)){
+            if (key.string && -1 !== key.string.indexOf(key.subString)){
                 states.browser = key.identity;
                 states.isWebKit = -1 !== key.string.indexOf('WebKit');
                 break;

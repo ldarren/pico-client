@@ -514,11 +514,9 @@ pico.def('uiWindow', 'picUIWindow', function(){
         ctx.fillStyle = com.background;
         if (com.maximized) ctx.fillRect(clip[0], clip[1], clip[2], clip[3]);
         else ctx.fillRect(layout[0], layout[1], layout[2], layout[3]);
-console.log(com.scrollX+' '+com.scrollY+' '+com.contentSize[0]+' '+com.contentSize[1]+' '+comBox.x+' ' +comBox.y+' '+contentW+' '+contentH);
         ctx.drawImage(com.canvas,
             com.scrollX, com.scrollY, contentW, contentH,
             comBox.x, comBox.y, contentW, contentH);
-console.log('done');
         if (com.theme){
             var
             ts = this.tileSet,

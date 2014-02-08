@@ -602,6 +602,9 @@ pico.def('hero', 'picUIContent', function(){
                         targets.push(contactId);
                     }
                     break;
+                case G_OBJECT_TYPE.ENV:
+                case G_OBJECT_TYPE.KEY:
+                    break;
                 default:
                     delete objects[contactId];
                     break;

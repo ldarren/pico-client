@@ -179,7 +179,7 @@ pico.def('info', 'picUIContent', function(){
                         break;
                     default:
                         var desc = target[OBJECT_DESC].toString();
-                        if (desc.length > 255) desc = desc.substr(0, 255)+'...';
+                        if (desc.length > 128) desc = desc.substr(0, 128)+'...';
                         me.fillIconText(ctx, ts, desc, rect, scale);
                         break;
                     }
