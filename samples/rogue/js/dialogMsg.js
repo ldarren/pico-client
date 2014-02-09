@@ -33,6 +33,7 @@ pico.def('dialogMsg', 'picUIContent', function(){
 
         if (ui){
             i = ui.userData.id;
+            this.go('hideDialog'); // only hide when click on button
         }
 
         var route = msg.callbacks[i];
@@ -41,8 +42,6 @@ pico.def('dialogMsg', 'picUIContent', function(){
             ret = true;
             this.go(route, msg.events ? msg.events[i] : undefined);
         }
-
-        this.go('hideDialog');
 
         return ret;
     },
