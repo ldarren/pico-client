@@ -511,7 +511,7 @@ pico.def('hero', 'picUIContent', function(){
             equip = appearance[a];
             if (!equip) continue;
             item = equip[0];
-            for(i=OBJECT_WILL; i<OBJECT_DEMON; i++){
+            for(i=OBJECT_WILL; i<=OBJECT_EARTH; i++){
                 currStats[i] += item[i];
             }
         }

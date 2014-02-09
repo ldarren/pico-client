@@ -344,14 +344,14 @@ pico.changeFrame = function(holder, query, url, effects){
     if (delays.length) style['-webkit-transition-delay'] = style['transition-delay'] = delays.join(' ');
 };
 
-Object.defineProperty(pico, 'LOAD', {value:'load', writable:false, configurable:false, enumerable:true});
-Object.defineProperty(pico, 'STATE_CHANGE', {value:'stateChange', writable:false, configurable:false, enumerable:true});
-Object.defineProperty(pico, 'HASH_CHANGE', {value:'hashChange', writable:false, configurable:false, enumerable:true});
-
-Object.defineProperty(pico, 'modules', {value:{}, writable:false, configurable:false, enumerable:false});
-Object.defineProperty(pico, 'slots', {value:{}, writable:false, configurable:false, enumerable:false});
-Object.defineProperty(pico, 'states', {value:{}, writable:false, configurable:false, enumerable:false});
-Object.defineProperty(pico, 'inner', {value:{
+Object.defineProperties(pico, {
+LOAD: {value:'load', writable:false, configurable:false, enumerable:true},
+STATE_CHANGE: {value:'stateChange', writable:false, configurable:false, enumerable:true},
+HASH_CHANGE: {value:'hashChange', writable:false, configurable:false, enumerable:true},
+modules: {value:{}, writable:false, configurable:false, enumerable:false},
+slots: {value:{}, writable:false, configurable:false, enumerable:false},
+states: {value:{}, writable:false, configurable:false, enumerable:false},
+inner: {value:{
   nn: function(i){
     if (!this._n.length) throw new Error('Nodes not set');
     if (arguments.length) return this._n[i];
@@ -457,7 +457,7 @@ Object.defineProperty(pico, 'inner', {value:{
       }
       return obj;
   }
-  }, writable:false, configurable:false, enumerable:false});
+  }, writable:false, configurable:false, enumerable:false}});
 
 if (!Object.freeze) Object.freeze = function(){};
 //Object.freeze(pico);//for common tools to add functionality
