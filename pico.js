@@ -1,3 +1,23 @@
+if (!window.addEventListener) window.addEventListener = function(name, func){ return window.attachEvent('on'+name, func); };
+if (!window.removeEventListner) window.removeEventListener = function(name, func){ return window.detachEvent('on'+name, func); };
+if (!Date.now) Date.now = function(){ return +new Date; };
+if (!Object.freeze) Object.freeze = function(){};
+if (!Object.keys) Object.keys = function(obj){
+    var result = [];
+    for(var key in obj){
+        result.push(key);
+    }
+    return result;
+};
+if (!Object.create) Object.create = function(obj, properties) {
+    if (!obj) obj = {};
+    for(var key in properties){
+        obj[key] = properties[key].value;
+    }
+    return obj;
+};
+if (!Object.defineProperties) Object.defineProperties = Object.create;
+
 pico = function(n){
   if (n){
     return Object.create(pico.inner,
@@ -35,8 +55,10 @@ pico.prototype.signal = pico.signal = function(channelName, events){
     var
     channel = this.slots[channelName],
     results = [],
-    mod;
+    mod,func;
     if (!channel) return results;
+    
+    events = events || [];
 
     for(var key in channel){
         mod = pico.modules[key];
@@ -149,7 +171,8 @@ pico.embed = function(holder, url, cb){
     if (4 !== xhr.readyState) return;
     holder.innerHTML = xhr.responseText;
 
-    var scripts = Array.prototype.slice.call(holder.getElementsByTagName('script'));
+    // <ie10 doesn't support Array.prototype.slice.call on NodeList
+    for (var scriptNodes=holder.getElementsByTagName('script'),scripts=[],i=0,l=scriptNodes.length; i<l; i++){ scripts.push(scriptNodes[i]); }
 
     pico.embedJS(scripts, function(){
         if (cb) return cb();
@@ -459,7 +482,6 @@ inner: {value:{
   }
   }, writable:false, configurable:false, enumerable:false}});
 
-if (!Object.freeze) Object.freeze = function(){};
 //Object.freeze(pico);//for common tools to add functionality
 
 window.addEventListener('load', function(){
