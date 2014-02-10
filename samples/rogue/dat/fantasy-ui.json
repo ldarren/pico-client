@@ -28,7 +28,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "text":"Level `216"
+                        "text":"Level `0216"
                     }
                 ],[
                     {},
@@ -111,7 +111,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "text":"Level `216"
+                        "text":"Level `0216"
                     }
                 ],[
                     {},
@@ -125,7 +125,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "text":"Aligned `216"
+                        "text":"Aligned `0216"
                     }
                 ],[
                     {},
@@ -142,7 +142,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "text":"Gold `195"
+                        "text":"Gold `0195"
                     }
                 ],[
                     {},
@@ -156,7 +156,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "text":"Piety `196"
+                        "text":"Piety `0196"
                     }
                 ],[
                     {},
@@ -173,7 +173,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "text":"Str `668"
+                        "text":"Str `0668"
                     }
                 ],[
                     {},
@@ -187,7 +187,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "text":"Dex `613"
+                        "text":"Dex `0613"
                     }
                 ],[
                     {},
@@ -204,7 +204,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "text":"Luck `193"
+                        "text":"Luck `0193"
                     }
                 ],[
                     {},
@@ -218,7 +218,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "text":"Will `670"
+                        "text":"Will `0670"
                     }
                 ],[
                     {},
@@ -235,7 +235,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "text":"Atk `190"
+                        "text":"Atk `0190"
                     }
                 ],[
                     {},
@@ -249,7 +249,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "text":"Def `192"
+                        "text":"Def `0192"
                     }
                 ],[
                     {},
@@ -472,7 +472,7 @@
                         "cellPt":16,
                         "uiPt":16,
                         "pad":5,
-                        "tileSet":"default",
+                        "tileSet":0,
                         "text":"Status Effects"
                     }
                 ]
@@ -651,8 +651,8 @@
                         "cellPt":12,
                         "uiPt":12,
                         "pad":5,
-                        "w":48,
-                        "h":48,
+                        "w":52,
+                        "h":52,
                         "button":1,
                         "userData":{"id":"amulet"}
                     }
@@ -663,8 +663,8 @@
                         "cellPt":8,
                         "uiPt":8,
                         "pad":5,
-                        "w":48,
-                        "h":48,
+                        "w":52,
+                        "h":52,
                         "button":1,
                         "userData":{"id":"helm"}
                     }
@@ -675,8 +675,8 @@
                         "cellPt":10,
                         "uiPt":10,
                         "pad":5,
-                        "w":48,
-                        "h":48,
+                        "w":52,
+                        "h":52,
                         "button":1,
                         "userData":{"id":"quiver"}
                     }
@@ -690,8 +690,8 @@
                         "cellPt":4,
                         "uiPt":4,
                         "pad":5,
-                        "w":48,
-                        "h":48,
+                        "w":52,
+                        "h":52,
                         "button":1,
                         "userData":{"id":"main"}
                     }
@@ -699,8 +699,8 @@
                     {},
                     {
                         "type":4,
-                        "w":48,
-                        "h":48,
+                        "w":52,
+                        "h":52,
                         "button":1,
                         "userData":{"id":"avatar"}
                     }
@@ -711,8 +711,8 @@
                         "cellPt":2,
                         "uiPt":2,
                         "pad":5,
-                        "w":48,
-                        "h":48,
+                        "w":52,
+                        "h":52,
                         "button":1,
                         "userData":{"id":"off"}
                     }
@@ -726,8 +726,8 @@
                         "cellPt":5,
                         "uiPt":5,
                         "pad":5,
-                        "w":48,
-                        "h":48,
+                        "w":52,
+                        "h":52,
                         "button":1,
                         "userData":{"id":"ringL"}
                     }
@@ -738,8 +738,8 @@
                         "cellPt":1,
                         "uiPt":1,
                         "pad":5,
-                        "w":48,
-                        "h":48,
+                        "w":52,
+                        "h":52,
                         "button":1,
                         "userData":{"id":"armor"}
                     }
@@ -750,8 +750,8 @@
                         "cellPt":3,
                         "uiPt":3,
                         "pad":5,
-                        "w":48,
-                        "h":48,
+                        "w":52,
+                        "h":52,
                         "button":1,
                         "userData":{"id":"ringR"}
                     }

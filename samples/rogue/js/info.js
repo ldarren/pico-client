@@ -135,7 +135,7 @@ pico.def('info', 'picUIContent', function(){
 
         var
         com = ent.getComponent(name),
-        ts = tss['default'],
+        ts = tss[0],
         tw = this.tileWidth,
         th = this.tileHeight,
         x=rect[0], y=rect[1], w=rect[2], h=rect[3],
@@ -203,7 +203,7 @@ pico.def('info', 'picUIContent', function(){
             break;
         case 'level':
             if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                me.fillIconText(ctx, ts, '`'+G_UI.LEVEL+': '+target[OBJECT_LEVEL], rect, scale);
+                me.fillIconText(ctx, tss, '`0'+G_UI.LEVEL+': '+target[OBJECT_LEVEL], rect, scale);
             }
             break;
         case 'hp':
@@ -212,24 +212,24 @@ pico.def('info', 'picUIContent', function(){
                 stat = this.ai.getStatByObject(target),
                 iconText = '';
                 for(var i=0, l=stat[CREEP_HP]; i<l; i++){
-                    iconText += ' `'+((i < target[CREEP_HP]) ? G_UI.HP : G_UI.HP_EMPTY);
+                    iconText += ' `0'+((i < target[CREEP_HP]) ? G_UI.HP : G_UI.HP_EMPTY);
                 }
-                me.fillIconText(ctx, ts, iconText, rect, scale);
+                me.fillIconText(ctx, tss, iconText, rect, scale);
             }
             break;
         case 'def':
             if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                me.fillIconText(ctx, ts, '`'+G_UI.PDEF+': '+target[CREEP_PDEF], rect, scale);
+                me.fillIconText(ctx, tss, '`0'+G_UI.PDEF+': '+target[CREEP_PDEF], rect, scale);
             }
             break;
         case 'mdef':
             if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                me.fillIconText(ctx, ts, '`'+G_UI.PDEF+': '+target[CREEP_MDEF], rect, scale);
+                me.fillIconText(ctx, tss, '`0'+G_UI.PDEF+': '+target[CREEP_MDEF], rect, scale);
             }
             break;
         case 'patk':
             if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                me.fillIconText(ctx, ts, '`'+G_UI.PATK+': '+target[CREEP_ATK], rect, scale);
+                me.fillIconText(ctx, tss, '`0'+G_UI.PATK+': '+target[CREEP_ATK], rect, scale);
             }
             break;
         default:
@@ -239,7 +239,7 @@ pico.def('info', 'picUIContent', function(){
 
     },
     onCustomButton = function(ent, ctx, rect, ui, tss, scale){
-        var ts = tss['default'];
+        var ts = tss[0];
         me.drawButton(ctx, ts, labels[ui.userData.id], rect, scale, '#204631', '#d7e894', '#aec440', 3);
     },
     onCustomClick = function(ent, ui){
@@ -462,6 +462,6 @@ pico.def('info', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.drawMeshUI.call(this, ctx, {default: this.tileSet}, ent, com, comBox, scale, onCustomUI);
+        return me.drawMeshUI.call(this, ctx, [this.tileSet], ent, com, comBox, scale, onCustomUI);
     };
 });

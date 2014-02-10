@@ -13,7 +13,7 @@ pico.def('trade', 'picUIContent', function(){
     onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
         var
         com = ent.getComponent(name),
-        ts = tss['default'],
+        ts = tss[0],
         i = ui.userData.id,
         x=rect[0], y=rect[1], w=rect[2], h=rect[3];
 
@@ -31,7 +31,7 @@ pico.def('trade', 'picUIContent', function(){
     },
     onCustomButton = function(ent, ctx, rect, ui, tss, scale){
         if ('btn1' === ui.userData.id){
-            var ts = tss['default'];
+            var ts = tss[0];
             me.drawButton(ctx, ts, labels[0], rect, scale, '#204631', '#d7e894', '#aec440', 3);
         }
     },
@@ -105,16 +105,16 @@ pico.def('trade', 'picUIContent', function(){
             cell=me.createMeshCell(row);
             cell=me.createMeshCell(row);
             cell=me.createMeshCell(row);
-            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
+            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 0, G_UI.SLOT);
             me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 0, {id:3+(i*4)});
             cell=me.createMeshCell(row);
-            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
+            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 0, G_UI.SLOT);
             me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 0, {id:2+(i*4)});
             cell=me.createMeshCell(row);
-            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
+            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 0, G_UI.SLOT);
             me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 0, {id:1+(i*4)});
             cell=me.createMeshCell(row);
-            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
+            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 0, G_UI.SLOT);
             me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 0, {id:0+(i*4)});
             cell=me.createMeshCell(row);
             cell=me.createMeshCell(row);

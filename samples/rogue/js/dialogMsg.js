@@ -11,7 +11,7 @@ pico.def('dialogMsg', 'picUIContent', function(){
         if (!me.isValid()) return;
 
         var
-        ts = tss['default'],
+        ts = tss[0],
         id=ui.userData.id;
 
         if ('number' === typeof id){
@@ -23,7 +23,7 @@ pico.def('dialogMsg', 'picUIContent', function(){
         }
     },
     onCustomButton = function(ent, ctx, rect, ui, tss, scale){
-        var ts = tss['default'];
+        var ts = tss[0];
         me.drawButton(ctx, ts, msg.labels[ui.userData.id], rect, scale, '#204631', '#d7e894', '#aec440', 3);
     },
     onCustomClick = function(ent, ui){
@@ -145,6 +145,6 @@ pico.def('dialogMsg', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.drawMeshUI.call(this, ctx, {default: this.tileSet}, ent, com, comBox, scale, onCustomUI);
+        return me.drawMeshUI.call(this, ctx, [this.tileSet], ent, com, comBox, scale, onCustomUI);
     };
 });

@@ -10,8 +10,8 @@ pico.def('tome', 'picUIContent', function(){
     },
     onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
         var
-        ts = tss['default'],
-        ss = tss['spells'],
+        ts = tss[0],
+        ss = tss[1],
         items = this.hero.getTome(),
         x=rect[0],y=rect[1],w=rect[2],h=rect[3],
         crop = scale * 4,
@@ -147,16 +147,16 @@ pico.def('tome', 'picUIContent', function(){
                 cell=me.createMeshCell(row, cellOpt);
                 cell=me.createMeshCell(row, cellOpt);
                 cell=me.createMeshCell(row, cellOpt);
-                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
+                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 0, G_UI.SLOT);
                 me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 1, {id:0+(i*4)});
                 cell=me.createMeshCell(row, cellOpt);
-                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
+                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 0, G_UI.SLOT);
                 me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 1, {id:1+(i*4)});
                 cell=me.createMeshCell(row, cellOpt);
-                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
+                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 0, G_UI.SLOT);
                 me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 1, {id:2+(i*4)});
                 cell=me.createMeshCell(row, cellOpt);
-                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
+                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 0, G_UI.SLOT);
                 me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 1, {id:3+(i*4)});
                 cell=me.createMeshCell(row, cellOpt);
                 cell=me.createMeshCell(row, cellOpt);
@@ -165,7 +165,7 @@ pico.def('tome', 'picUIContent', function(){
             for(i=0;i<cap;i++){
                 row=me.createMeshRow(rows);
                 cell=me.createMeshCell(row, cellOpt);
-                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 'default', G_UI.SLOT);
+                me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 0, G_UI.SLOT);
                 me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 0, {id:i});
             }
         }
@@ -216,6 +216,6 @@ pico.def('tome', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.drawMeshUI.call(this, ctx, {default: this.tileSet, spells: this.spellSet}, ent, com, comBox, scale, onCustomUI);
+        return me.drawMeshUI.call(this, ctx, [this.tileSet, this.spellSet], ent, com, comBox, scale, onCustomUI);
     };
 });

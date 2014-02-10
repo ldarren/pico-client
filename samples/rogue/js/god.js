@@ -22,24 +22,23 @@ pico.def('god', 'picUIContent', function(){
         mortal = this.mortal,
         appearance = mortal.appearance,
         stats = mortal.stats,
-        ts = tss['default'],
         id = ui.userData.id;
 
         switch(id){
         case 'piety':
-            me.fillIconText(ctx, ts, 'You have '+heroPiety+' `'+G_UI.PIETY+' piety points', rect, scale);
+            me.fillIconText(ctx, tss, 'You have '+heroPiety+' `0'+G_UI.PIETY+' piety points', rect, scale);
             break;
         case 'offer':
-            me.drawButton(ctx, ts, labels[0], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
+            me.drawButton(ctx, tss, labels[0], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
             break;
         case 'donate':
-            me.drawButton(ctx, ts, labels[1], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
+            me.drawButton(ctx, tss, labels[1], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
             break;
         case 'done':
-            me.drawButton(ctx, ts, labels[2], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
+            me.drawButton(ctx, tss, labels[2], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
             break;
         case 'avatar':
-            me.drawButton(ctx, ts, '`'+stats[OBJECT_ICON], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[2]);
+            me.drawButton(ctx, tss, '`0'+stats[OBJECT_ICON], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[2]);
             break;
         case 'helm':
         case 'armor':
@@ -53,8 +52,8 @@ pico.def('god', 'picUIContent', function(){
             equipId = hero.convertEquipId(id),
             slot = appearance[equipId],
             item = slot[0];
-            if (item) me.drawButton(ctx, ts, '`'+item[OBJECT_ICON], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[2]);
-            else me.drawButton(ctx, ts, 'Add '+G_EQUIP_NAME[equipId], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[2]);
+            if (item) me.drawButton(ctx, tss, '`0'+item[OBJECT_ICON], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[2]);
+            else me.drawButton(ctx, tss, 'Add '+G_EQUIP_NAME[equipId], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[2]);
             break;
         }
     },
@@ -64,7 +63,6 @@ pico.def('god', 'picUIContent', function(){
         mortal = this.mortal,
         appearance = mortal.appearance,
         stats = mortal.stats,
-        ts = tss['default'],
         id = ui.userData.id,
         label;
 
@@ -79,7 +77,7 @@ pico.def('god', 'picUIContent', function(){
             label = labels[2];
             break;
         case 'avatar':
-            label = '`'+stats[OBJECT_ICON];
+            label = '`0'+stats[OBJECT_ICON];
             break;
         case 'helm':
         case 'armor':
@@ -94,11 +92,11 @@ pico.def('god', 'picUIContent', function(){
             slot = appearance[equipId],
             item = slot[0];
 
-            if (item) label = '`'+item[OBJECT_ICON];
+            if (item) label = '`0'+item[OBJECT_ICON];
             else label = 'Add '+G_EQUIP_NAME[equipId];
             break;
         }
-        me.drawButton(ctx, ts, label, rect, scale, G_COLOR_TONE[3], G_COLOR_TONE[0], G_COLOR_TONE[1], 3);
+        me.drawButton(ctx, tss, label, rect, scale, G_COLOR_TONE[3], G_COLOR_TONE[0], G_COLOR_TONE[1], 3);
     },
     onCustomClick = function(ent, ui){
         if (!ui){
@@ -204,7 +202,7 @@ pico.def('god', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.drawMeshUI.call(this, ctx, {default: this.tileSet}, ent, com, comBox, scale, onCustomUI);
+        return me.drawMeshUI.call(this, ctx, [this.tileSet], ent, com, comBox, scale, onCustomUI);
     };
     
     me.createHero = function(){
