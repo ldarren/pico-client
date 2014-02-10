@@ -12,7 +12,6 @@ pico.def('bag', 'picUIContent', function(){
         com = ent.getComponent(name),
         ts = tss[0],
         i = ui.userData.id,
-        activated = com.activated,
         slots = this.hero.getBag(),
         x=rect[0], y=rect[1], w=rect[2], h=rect[3],
         slot, item, count;
@@ -46,6 +45,8 @@ pico.def('bag', 'picUIContent', function(){
             com.activated = i;
             this.go('showInfo', {targetId: i, context: com.forSale ? G_CONTEXT.MERCHANT_SALE : G_CONTEXT.BAG});
             return true;
+        }else{
+            this.go('hideInfo');
         }
         return false;
     },
@@ -175,6 +176,14 @@ pico.def('bag', 'picUIContent', function(){
         var com = ent.getComponent(name);
         com.forSale = true;
         return [ent];
+    };
+
+    me.deselectItem = function(elapsed, evt, entities){
+        var ent = me.findHost(entities, G_WIN_ID.BAG);
+        if (!ent) return entities;
+        var com = ent.getComponent(name);
+        com.activated = '';
+        return entities;
     };
 
     me.useItem = function(elapsed, evt, entities){

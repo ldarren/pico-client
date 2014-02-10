@@ -188,7 +188,7 @@ onLoad = function(){
         game.route('recover', [game.recover, uiWindow.update, renderer.draw]);
         game.route('openForSale', [uiWindow.maximise, bag.openForSale, renderer.draw]);
         game.route('showInfo', [uiWindow.showInfo, renderer.draw]);
-        game.route('hideInfo', [uiWindow.hideInfo, renderer.draw]);
+        game.route('hideInfo', [uiWindow.hideInfo, bag.deselectItem, uiWindow.update, renderer.draw]);
         game.route('showDialog', [uiWindow.hideAll, uiWindow.showDialog, renderer.draw]);
         game.route('hideDialog', [uiWindow.showAll, uiWindow.hideDialog, uiWindow.update, renderer.draw]);
         game.route('showTrade', [game.createGoods, uiWindow.hideAll, uiWindow.showTrade, uiWindow.update, renderer.draw]);

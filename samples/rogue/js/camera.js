@@ -131,6 +131,8 @@ pico.def('camera', 'picBase', function(){
 
         tileType = map[id]; // last action might hv updated tileType
         object = objects[id];
+
+        hero.selectSpell(undefined);
         
         if ((tileType & G_TILE_TYPE.HIDE)){
             this.audioSprite.play(1);

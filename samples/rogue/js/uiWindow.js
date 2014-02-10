@@ -270,8 +270,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
     };
 
     me.hideInfo = function(elapsed, evt, entities){
-        this.hideEntity(infoId, true);
-        return entities;
+        if (this.hideEntity(infoId, true))return entities;
     };
 
     me.showDialog = function(elapsed, evt, entities){
@@ -285,8 +284,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
     };
 
     me.hideDialog = function(elapsed, evt, entities){
-        this.hideEntity(dialogMsgId, true);
-        return entities;
+        if (this.hideEntity(dialogMsgId, true)) return entities;
     };
 
     me.showTrade = function(elapsed, evt, entities){
@@ -300,8 +298,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
     };
 
     me.hideTrade = function(elapsed, evt, entities){
-        this.hideEntity(tradeId, true);
-        return entities;
+        if (this.hideEntity(tradeId, true)) return entities;
     };
 
     me.showAltar = function(elapsed, evt, entities){
@@ -315,8 +312,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
     };
 
     me.hideAltar = function(elapsed, evt, entities){
-        this.hideEntity(altarId, true);
-        return entities;
+        if (this.hideEntity(altarId, true)) return entities;
     };
 
     me.maximise = function(elapsed, evt, entities){

@@ -34,7 +34,8 @@ pico.def('tome', 'picUIContent', function(){
         toggle = hero.getSelectedSpell() === spell;
 
         hero.selectSpell(toggle ? undefined : spell);
-        if (hero.getSelectedSpell()){
+        spell = hero.getSelectedSpell();
+        if (spell){
             var
             level = spell[OBJECT_LEVEL],
             info = spell[OBJECT_NAME]+' level '+level+
