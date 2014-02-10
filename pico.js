@@ -1,23 +1,3 @@
-if (!window.addEventListener) window.addEventListener = function(name, func){ return window.attachEvent('on'+name, func); };
-if (!window.removeEventListner) window.removeEventListener = function(name, func){ return window.detachEvent('on'+name, func); };
-if (!Date.now) Date.now = function(){ return +new Date; };
-if (!Object.freeze) Object.freeze = function(){};
-if (!Object.keys) Object.keys = function(obj){
-    var result = [];
-    for(var key in obj){
-        result.push(key);
-    }
-    return result;
-};
-if (!Object.create) Object.create = function(obj, properties) {
-    if (!obj) obj = {};
-    for(var key in properties){
-        obj[key] = properties[key].value;
-    }
-    return obj;
-};
-if (!Object.defineProperties) Object.defineProperties = Object.create;
-
 pico = function(n){
   if (n){
     return Object.create(pico.inner,
