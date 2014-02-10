@@ -37,55 +37,30 @@ pico.def('tome', 'picUIContent', function(){
         spell = hero.getSelectedSpell();
         if (spell){
             var
-            level = spell[OBJECT_LEVEL],
-            info = spell[OBJECT_NAME]+' level '+level+
-            ', elements['+G_ELEMENT_NAME[spell[SPELL_ELEMENT]]+']'+
-            ', difficulty: '+spell[SPELL_DIFFICULTY]+
-            ((spell[SPELL_DIFFICULTY]) ? ', strength: '+spell[SPELL_DIFFICULTY]+', ' : ', '),
-            labels=['Cast', 'Forget', 'Close'],
-            callbacks=['castSpell', 'showDialog'],
-            events=[null, {
-                info:['Forget spell','This will remove the selected spell permanently from tome'],
-                labels:['Forget', 'Keep'], callbacks:['forgetSpell']}];
+            labels=['Select a cell', 'Forget', 'Close'],
+            callbacks=['showDialog', 'showDialog'],
+            events=[
+                {info:['Tab a cell to cast','You can cast the selected spell directly by tapping on a cell on ground'], labels:['Close'], callbacks:[]},
+                {info:['Forget spell','This will remove the selected spell permanently from tome'], labels:['Forget', 'Close'], callbacks:['forgetSpell']}];
 
             switch(spell[OBJECT_SUB_TYPE]){
             case G_SPELL_TYPE.WHIRLWIND:
-                info+='spin attack all nearby objects';
-                break;
             case G_SPELL_TYPE.POISON_BLADE:
-                info+='coats Main Hand, Off Hand, or Ranged weapon with poisons';
+                labels[0] = 'Cast';
+                callbacks[0] = 'castSpell';
+                evets[0] = null;
+                break;
                 break;
             case G_SPELL_TYPE.GAZE:
-                info+='reveal object at hidden space, drawback: if gazing space is an empty space this spell summon a creep there, ';
-                switch(level){
-                case 1: break
-                case 2: info+='deal 1 damage to revealed creep, '; break;
-                default: info+='deal 2 damages to revealed creep, '; break;
-                }
-                info+='tap a tile to cast'
-                labels.shift();
-                callbacks.shift();
-                events.shift();
-                break;
             case G_SPELL_TYPE.FIREBALL:
-                switch(level){
-                case 1: info+='Hurls a fiery ball that causes 1 damage, '; break
-                case 2: info+='Hurls a fiery ball that causes 1 damage to all surrounding creeps, '; break;
-                default: info+='Hurls a fiery ball that causes 2 damages to all surrounding creeps, '; break;
-                }
-                info+='tap a tile to cast'
-                labels.shift();
-                callbacks.shift();
-                events.shift();
                 break;
             }
-            this.go('showInfo', {info: info, labels: labels, callbacks: callbacks, events: events});
-        }else{
-            this.go('hideInfo');
-            this.go('forceRefresh');
+            this.go('showInfo', {targetId: id, labels: labels, callbacks: callbacks, events: events});
+            return true;
         }
-
-        return undefined !== spell;
+        
+        this.go('hideInfo');
+        return false;
     },
     onCustomDrop = function(ent, ui, cell){
         var

@@ -133,6 +133,26 @@ pico.def('info', 'picUIContent', function(){
     onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
         if (!me.isValid()) return;
 
+        var 
+        com = ent.getComponent(name),
+        ts = tss[0],
+        tw = this.tileWidth,
+        th = this.tileHeight, 
+        x=rect[0], y=rect[1], w=rect[2], h=rect[3],
+        id = ui.userData.id;
+
+        switch(context){
+        case G_CONTEXT.TOME:
+            break;
+        case G_CONTEXT.BAG:
+            break;
+        case G_CONTEXT.WORLD:
+            break;
+        }
+    },
+    onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
+        if (!me.isValid()) return;
+
         var
         com = ent.getComponent(name),
         ts = tss[0],
@@ -142,24 +162,6 @@ pico.def('info', 'picUIContent', function(){
         id = ui.userData.id;
 
         switch(id){
-        case 'icon':
-            x = x + (w - tw)/2;
-            y = y + (h - th)/2;
-            if (targetId > -1){
-                switch(context){
-                case G_CONTEXT.TOME:
-                    ts.draw(ctx, target[OBJECT_ICON], x, y, tw, th);
-                    break;
-                case G_CONTEXT.BAG:
-                    ts.draw(ctx, target[0][OBJECT_ICON], x, y, tw, th);
-                    break;
-                case G_CONTEXT.WORLD:
-                    // can use target[OBJECT_TYPE] === G_OBJECT_TYPE.CREEP to get object type
-                    ts.draw(ctx, target[OBJECT_ICON], x, y, tw, th);
-                    break;
-                }
-            }
-            break;
         case 'text':
             if (targetId > -1){
                 switch(context){
@@ -402,7 +404,6 @@ pico.def('info', 'picUIContent', function(){
         style = {font:com.font, fillStyle:com.fontColor},
         meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, height, style),
         rows = meshui.rows,
-        hasIcon = 0 < targetId,
         row,cell;
 
         if (labels.length){
@@ -414,34 +415,38 @@ pico.def('info', 'picUIContent', function(){
         }
 
         row=me.createMeshRow(rows);
-        if (hasIcon){
-            cell=me.createMeshCell(row);
-            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 3, 0, 0, {id:'icon'});
-        }
         cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 2, 1, 0, 0, {id:'name'});
-        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 3, 3, 0, 0, {id:'text'});
+        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:10});
+        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 4, 3, 0, 0, {id:'text'});
         cell=me.createMeshCell(row);
+        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:11});
         cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 0, 0, {id:'level'});
+        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:12});
+        cell=me.createMeshCell(row);
+        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:13});
 
         row=me.createMeshRow(rows);
-        if (hasIcon) cell=me.createMeshCell(row);
         cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 2, 1, 0, 0, {id:'hp'});
+        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:20});
+        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 2, 2, 0, 0, {id:24});
         cell=me.createMeshCell(row);
+        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:21});
         cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 0, 0, {id:'def'});
+        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:22});
+        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 2, 2, 0, 0, {id:25});
+        cell=me.createMeshCell(row);
+        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:23});
 
         row=me.createMeshRow(rows);
-        if (hasIcon) cell=me.createMeshCell(row);
         cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 0, 0, {id:'patk'});
+        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:30});
+        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 4, 0, 0, {id:34});
         cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 0, 0, {id:'ratk'});
+        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:31});
         cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 0, 0, {id:'matk'});
-
+        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:32});
+        cell=me.createMeshCell(row);
+        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:33});
         com.layout = meshui;
 
         return [width, height];
