@@ -211,9 +211,10 @@ pico.def('god', 'picUIContent', function(){
         stats = G_CREATE_OBJECT(job, heroName);
 
         return {
-            //HERO_HELM=0,HERO_ARMOR=1,HERO_MAIN=2,HERO_OFF=3,HERO_RINGL=4,HERO_RINGR=5,HERO_AMULET=6,HERO_QUIVER=7,HERO_GOLD=8,HERO_LEVEL=9,
-            //HERO_ENEMIES=10,HERO_PORTAL=11,HERO_WAYPOINT=12,HERO_BAG_CAP=13,HERO_TOME_CAP=14;
-            appearance: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 16, 8],
+            //HERO_HELM=0,HERO_ARMOR=1,HERO_MAIN=2,HERO_OFF=3,HERO_RINGL=4,HERO_RINGR=5,HERO_AMULET=6,HERO_QUIVER=7,
+            //HERO_HP=8,HERO_GOLD=9,HERO_ATK=10,HERO_RATK=11,HERO_DEF=12,HERO_LEVEL=13,
+            //HERO_ENEMIES=14,HERO_PORTAL=15,HERO_WAYPOINT=16,HERO_BAG_CAP=17,HERO_TOME_CAP=18;
+            appearance: [0, 0, 0, 0, 0, 0, 0, 0, stats[OBJECT_HP], 0, 0, 0, 0, 0, 0, 0, 0, 16, 8],
             stats: stats,
             effects: [],
             bag: [[G_CREATE_OBJECT(G_ICON.CLAYMORE),1,0]],
