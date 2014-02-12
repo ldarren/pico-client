@@ -55,7 +55,7 @@ pico.def('tome', 'picUIContent', function(){
             case G_SPELL_TYPE.FIREBALL:
                 break;
             }
-            this.go('showInfo', {targetId: id, labels: labels, callbacks: callbacks, events: events});
+            this.go('showInfo', {targetId: id, labels: labels, callbacks: callbacks, events: events, context:G_CONTEXT.TOME});
             return true;
         }
         

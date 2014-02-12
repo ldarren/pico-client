@@ -131,7 +131,7 @@ pico.def('info', 'picUIContent', function(){
         return me.calcUIRect(rect, ui);
     },
     onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
-        if (!me.isValid()) return;
+        if (!me.isValid() || !target) return;
 
         var 
         com = ent.getComponent(name),
@@ -143,6 +143,11 @@ pico.def('info', 'picUIContent', function(){
 
         switch(context){
         case G_CONTEXT.TOME:
+            switch(id){
+            case 0:
+                me.fillIconText(ctx, tss, target[OBJECT_NAME], rect, scale);
+                break;
+            }
             break;
         case G_CONTEXT.BAG:
             break;
@@ -150,7 +155,7 @@ pico.def('info', 'picUIContent', function(){
             break;
         }
     },
-    onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
+    onCustomDraw1 = function(ent, ctx, rect, ui, tss, scale){
         if (!me.isValid()) return;
 
         var
@@ -370,7 +375,7 @@ pico.def('info', 'picUIContent', function(){
             case G_CONTEXT.TOME:
                 target = this.hero.getTome()[targetId];
                 break;
-            default:
+            case G_CONTEXT.WORLD:
                 target = this.objects[targetId];
                 break;
             }
