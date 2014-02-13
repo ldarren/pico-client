@@ -135,24 +135,65 @@ pico.def('info', 'picUIContent', function(){
 
         var 
         com = ent.getComponent(name),
+        hero = this.hero,
         ts = tss[0],
         tw = this.tileWidth,
         th = this.tileHeight, 
         x=rect[0], y=rect[1], w=rect[2], h=rect[3],
-        id = ui.userData.id;
+        id = ui.userData.id,
+        icon;
 
-        switch(context){
-        case G_CONTEXT.TOME:
-            switch(id){
-            case 0:
-                me.fillIconText(ctx, tss, target[OBJECT_NAME], rect, scale);
+        if (id < 10){
+            if (labels[id]) me.drawButton(ctx, ts, labels[id], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
+        }else{
+            switch(context){
+            case G_CONTEXT.TOME:
+                switch(id){
+                case 10:
+                    me.fillIconText(ctx, tss, target[OBJECT_NAME]+': '+target[OBJECT_DESC], rect, scale);
+                    break;
+                case 20:
+                    me.fillIconText(ctx, tss, 'Level `0'+G_UI.LEVEL+' '+target[OBJECT_LEVEL], rect, scale);
+                    break;
+                case 21:
+                    switch(target[SPELL_ATTR]){
+                    case OBJECT_HP: icon = G_UI.HP; break;
+                    case OBJECT_WILL: icon = G_UI.WILL; break;
+                    case OBJECT_PATK: icon = G_UI.PATK; break;
+                    case OBJECT_RATK: icon = G_UI.RATK; break;
+                    case OBJECT_DEF: icon = G_UI.PDEF; break;
+                    }
+                    me.fillIconText(ctx, tss, 'Cost `0'+icon+' '+target[SPELL_COST], rect, scale);
+                    break;
+                case 22:
+                    me.fillIconText(ctx, tss, 'Wait `0'+G_UI.COOLDOWN+' '+target[SPELL_RELOAD], rect, scale);
+                    break;
+                case 23:
+                    me.fillIconText(ctx, tss, 'Dmg `0'+G_UI.DAMAGE+' '+target[SPELL_DAMAGE], rect, scale);
+                    break;
+                case 30:
+                    if(target[OBJECT_LEVEL] < 3){
+                        me.fillIconText(ctx, tss, 'Level up:', rect, scale);
+                    }else{
+                        me.fillIconText(ctx, tss, 'Level maxed', rect, scale);
+                    }
+                    break;
+                case 31:
+                    if(target[OBJECT_LEVEL] < 3){
+                        icon = '';
+                        if (target[SPELL_FIRE]) icon += '`0'+G_UI.FIRE+' '+hero.getStat(OBJECT_FIRE)+'/'+target[SPELL_FIRE];
+                        if (target[SPELL_AIR]) icon += ' `0'+G_UI.AIR+' '+hero.getStat(OBJECT_AIR)+'/'+target[SPELL_AIR];
+                        if (target[SPELL_WATER]) icon += ' `0'+G_UI.WATER+' '+hero.getStat(OBJECT_WATER)+'/'+target[SPELL_WATER];
+                        if (target[SPELL_EARTH]) icon += ' `0'+G_UI.EARTH+' '+hero.getStat(OBJECT_EARTH)+'/'+target[SPELL_EARTH];
+                        me.fillIconText(ctx, tss, icon, rect, scale);
+                    }
+                }
+                break;
+            case G_CONTEXT.BAG:
+                break;
+            case G_CONTEXT.WORLD:
                 break;
             }
-            break;
-        case G_CONTEXT.BAG:
-            break;
-        case G_CONTEXT.WORLD:
-            break;
         }
     },
     onCustomDraw1 = function(ent, ctx, rect, ui, tss, scale){
@@ -240,14 +281,14 @@ pico.def('info', 'picUIContent', function(){
             }
             break;
         default:
-            if (labels[id]) me.drawButton(ctx, ts, labels[id], rect, scale, '#d7e894', '#204631');
+            if (labels[id]) me.drawButton(ctx, ts, labels[id], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
             break;
         }
 
     },
     onCustomButton = function(ent, ctx, rect, ui, tss, scale){
         var ts = tss[0];
-        me.drawButton(ctx, ts, labels[ui.userData.id], rect, scale, '#204631', '#d7e894', '#aec440', 3);
+        me.drawButton(ctx, ts, labels[ui.userData.id], rect, scale, G_COLOR_TONE[3], G_COLOR_TONE[0], G_COLOR_TONE[1], 3);
     },
     onCustomClick = function(ent, ui){
         if (!ui){
@@ -419,39 +460,39 @@ pico.def('info', 'picUIContent', function(){
             }
         }
 
-        row=me.createMeshRow(rows);
-        cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:10});
-        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 4, 3, 0, 0, {id:'text'});
-        cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:11});
-        cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:12});
-        cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:13});
+        switch(context){
+        case G_CONTEXT.WORLD:
+            break;
+        case G_CONTEXT.BAG:
+            row=me.createMeshRow(rows);
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:10});
+            break;
+        case G_CONTEXT.TOME:
+            row=me.createMeshRow(rows);
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:10});
 
-        row=me.createMeshRow(rows);
-        cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:20});
-        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 2, 2, 0, 0, {id:24});
-        cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:21});
-        cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:22});
-        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 2, 2, 0, 0, {id:25});
-        cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:23});
+            row=me.createMeshRow(rows);
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:20});
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:21});
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:22});
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:23});
 
-        row=me.createMeshRow(rows);
-        cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:30});
-        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 4, 0, 0, {id:34});
-        cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:31});
-        cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:32});
-        cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:33});
+            row=me.createMeshRow(rows);
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:30});
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 3, 1, 0, 0, {id:31});
+            me.createMeshCell(row);
+            me.createMeshCell(row);
+            break;
+        }
+
         com.layout = meshui;
 
         return [width, height];

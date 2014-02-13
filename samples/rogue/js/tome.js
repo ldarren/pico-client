@@ -48,8 +48,7 @@ pico.def('tome', 'picUIContent', function(){
             case G_SPELL_TYPE.POISON_BLADE:
                 labels[0] = 'Cast';
                 callbacks[0] = 'castSpell';
-                evets[0] = null;
-                break;
+                events[0] = null;
                 break;
             case G_SPELL_TYPE.GAZE:
             case G_SPELL_TYPE.FIREBALL:

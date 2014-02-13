@@ -562,20 +562,20 @@ pico.def('hero', 'picUIContent', function(){
         // deselect spell, major fail still need the spell to be selected
         selectedSpell = undefined;
 
-        if (totalCastPt < spell[SPELL_DIFFICULTY]){
+        if (totalCastPt < spell[SPELL_COST]){
             this.go('attack', [true, [], G_MSG.CAST_FAILURE_MINOR
                 .replace('TOTAL', totalCastPt)
                 .replace('ROLL', castPt)
                 .replace('STAT', currStats[OBJECT_WILL])
-                .replace('DIFF', spell[SPELL_DIFFICULTY])]);
+                .replace('DIFF', spell[SPELL_COST])]);
             return true; // spell cast
         }
 
         var
         targets = [],
         isSpell = true,
-        castStr = castPt + spell[SPELL_STRENGTH],
-        info = G_MSG.CAST_SUCCEED.replace('TOTAL',castStr).replace('ROLL',castPt).replace('STR',spell[SPELL_STRENGTH]);
+        castStr = castPt + spell[SPELL_DAMAGE],
+        info = G_MSG.CAST_SUCCEED.replace('TOTAL',castStr).replace('ROLL',castPt).replace('STR',spell[SPELL_DAMAGE]);
 
         switch(spell[OBJECT_SUB_TYPE]){
         case G_SPELL_TYPE.WHIRLWIND:
@@ -709,10 +709,11 @@ pico.def('hero', 'picUIContent', function(){
     me.getTomeCap = function(){ return appearance ? appearance[HERO_TOME_CAP] : 4; };
     me.putIntoTome = function(spell){ return tome.push(spell); };
     me.equal = function(obj){ return obj[OBJECT_ICON] === currStats[OBJECT_ICON] && obj[OBJECT_TYPE] === currStats[OBJECT_TYPE]; };
-    me.getHp = function(){ return currStats[OBJECT_HP]; };
+    me.getHp = function(){ return appearance[HERO_HP]; };
     me.getLuck = function(){ return currStats[OBJECT_LUCK]; };
     me.getWill = function(){ return currStats[OBJECT_WILL]; };
     me.getDef = function(){ return currStats[OBJECT_DEF]; };
+    me.getStat = function(stat){ return currStats[stat]; };
     me.carryRanged = function(){
         var
         mainSlot = appearance[HERO_MAIN],
