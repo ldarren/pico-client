@@ -50,6 +50,15 @@ Object.freeze(G_ELEMENT_NAME = {
     12: 'Water, Earth',
     15: 'Fire, Air, Water, Earth',
 });
+
+Object.freeze(G_STAT_NAME = [
+    'Icon','Name','Desc','Level','Grade','Type','SubType',
+    'HP', 'Fire', 'Dex', 'Luck', 'Str',
+    'Atk', 'Atk', 'Def',
+    'Plant', 'Insect', 'Beast', 'Undead', 'Demon',
+    'Fire', 'Air', 'Water', 'Earth'
+]);
+
 Object.freeze(G_CREEP_TYPE_NAME = [
     'NA',
     'Plant',

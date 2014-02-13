@@ -190,6 +190,37 @@ pico.def('info', 'picUIContent', function(){
                 }
                 break;
             case G_CONTEXT.BAG:
+                var
+                stat = target[0],
+                count = target[1];
+
+                switch(id){
+                case 10:
+                    me.fillIconText(ctx, tss, stat[OBJECT_NAME] + ':' + stat[WEAPON_HANDED]+ 'H', rect, scale);
+                    break;
+                case 11:
+                    me.fillIconText(ctx, tss, 'Level `0'+G_UI.LEVEL+' '+stat[OBJECT_LEVEL], rect, scale);
+                    break;
+                case 12:
+                    me.fillIconText(ctx, tss, 'Count: '+count, rect, scale);
+                    break;
+                default:
+                    var
+                    statTH = id - 20,
+                    currTH=-1,
+                    val;
+
+                    for(var i=OBJECT_HP,l=OBJECT_EARTH+1; i<l; i++){
+                        val = stat[i];
+                        if (OBJECT_VEG <= i && OBJECT_DEMON >= i) val -= 1;
+                        if (val) currTH++;
+                        if (currTH === statTH) {
+                            me.fillIconText(ctx, tss, G_STAT_NAME[i]+' `0'+G_STAT_ICON[i]+(val > 0 ? ' +':' ')+val, rect, scale);
+                            break;
+                        }
+                    }
+                    break;
+                }
                 break;
             case G_CONTEXT.WORLD:
                 break;
@@ -467,6 +498,30 @@ pico.def('info', 'picUIContent', function(){
             row=me.createMeshRow(rows);
             cell=me.createMeshCell(row);
             me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:10});
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:11});
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:12});
+
+            row=me.createMeshRow(rows);
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:20});
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:21});
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:22});
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:23});
+
+            row=me.createMeshRow(rows);
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:24});
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:25});
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:26});
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:27});
             break;
         case G_CONTEXT.TOME:
             row=me.createMeshRow(rows);

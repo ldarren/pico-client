@@ -1467,6 +1467,11 @@ Object.freeze(G_UI = {
     AIR: 536,
     RATK: 568,
     DEX: 613,
+    BEAST: 623,
+    INSECT: 627,
+    VEG: 632,
+    UNDEAD: 635,
+    DEMON: 641,
     HP: 663,
     HP_EMPTY: 667,
     STR: 668,
@@ -1474,6 +1479,14 @@ Object.freeze(G_UI = {
     DAMAGE: 671,
     SELECTED: 713
 });
+
+Object.freeze(G_STAT_ICON = [
+    0,0,0,0,0,0,0,
+    G_UI.HP, G_UI.WILL, G_UI.DEX, G_UI.LUCK, G_UI.STR,
+    G_UI.PATK, G_UI.RATK, G_UI.PDEF,
+    G_UI.VEG, G_UI.INSECT, G_UI.BEAST, G_UI.UNDEAD, G_UI.DEMON,
+    G_UI.FIRE, G_UI.AIR, G_UI.WATER, G_UI.EARTH
+]);
 
 Object.freeze(G_NUMERIC = {
     SMALL_LIGHT: 247,
