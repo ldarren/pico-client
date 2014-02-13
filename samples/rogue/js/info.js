@@ -194,35 +194,60 @@ pico.def('info', 'picUIContent', function(){
                 stat = target[0],
                 count = target[1];
 
-                switch(id){
-                case 10:
-                    me.fillIconText(ctx, tss, stat[OBJECT_NAME] + ':' + stat[WEAPON_HANDED]+ 'H', rect, scale);
-                    break;
-                case 11:
-                    me.fillIconText(ctx, tss, 'Level `0'+G_UI.LEVEL+' '+stat[OBJECT_LEVEL], rect, scale);
-                    break;
-                case 12:
-                    me.fillIconText(ctx, tss, 'Count: '+count, rect, scale);
-                    break;
-                default:
-                    var
-                    statTH = id - 20,
-                    currTH=-1,
-                    val;
-
-                    for(var i=OBJECT_HP,l=OBJECT_EARTH+1; i<l; i++){
-                        val = stat[i];
-                        if (OBJECT_VEG <= i && OBJECT_DEMON >= i) val -= 1;
-                        if (val) currTH++;
-                        if (currTH === statTH) {
-                            me.fillIconText(ctx, tss, G_STAT_NAME[i]+' `0'+G_STAT_ICON[i]+(val > 0 ? ' +':' ')+val, rect, scale);
-                            break;
+                switch(stat[OBJECT_TYPE]){
+                case G_OBJECT_TYPE.WEAPON:
+                case G_OBJECT_TYPE.AMMO:
+                case G_OBJECT_TYPE.ARMOR:
+                case G_OBJECT_TYPE.JEWEL:
+                    switch(id){
+                    case 10:
+                        if (G_OBJECT_TYPE.WEAPON === stat[OBJECT_TYPE]){
+                            me.fillIconText(ctx, tss, stat[OBJECT_NAME] + ':' + stat[WEAPON_HANDED]+ 'H', rect, scale);
+                        }else{
+                            me.fillIconText(ctx, tss, stat[OBJECT_NAME], rect, scale);
                         }
+                        break;
+                    case 11:
+                        me.fillIconText(ctx, tss, 'Level `0'+G_UI.LEVEL+' '+stat[OBJECT_LEVEL], rect, scale);
+                        break;
+                    case 12:
+                        me.fillIconText(ctx, tss, 'Count: '+count, rect, scale);
+                        break;
+                    default:
+                        var
+                        statTH = id - 20,
+                        currTH=-1,
+                        val;
+
+                        for(var i=OBJECT_HP,l=OBJECT_EARTH+1; i<l; i++){
+                            val = stat[i];
+                            if (OBJECT_VEG <= i && OBJECT_DEMON >= i) val -= 1;
+                            if (val) currTH++;
+                            if (currTH === statTH) {
+                                me.fillIconText(ctx, tss, G_STAT_NAME[i]+' `0'+G_STAT_ICON[i]+(val > 0 ? ' +':' ')+val, rect, scale);
+                                break;
+                            }
+                        }
+                        break;
                     }
                     break;
+                case G_OBJECT_TYPE.POTION:
+                case G_OBJECT_TYPE.SCROLL:
+                case G_OBJECT_TYPE.MATERIAL:
+                default:
+                    me.fillIconText(ctx, tss, stat[OBJECT_DESC], rect, scale);
+                    break;
                 }
-                break;
             case G_CONTEXT.WORLD:
+                switch(target[OBJECT_TYPE]){
+                case G_OBJECT_TYPE.CREEP:
+                    break;
+                default:
+                    var desc = target[OBJECT_DESC].toString();
+                    if (desc.length > 64) desc = desc.substr(0, 64)+'...';
+                    me.fillIconText(ctx, ts, desc, rect, scale);
+                    break;
+                }
                 break;
             }
         }
