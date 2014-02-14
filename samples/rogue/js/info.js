@@ -222,11 +222,18 @@ pico.def('info', 'picUIContent', function(){
 
                         for(var i=OBJECT_HP,l=OBJECT_EARTH+1; i<l; i++){
                             val = stat[i];
-                            if (OBJECT_VEG <= i && OBJECT_DEMON >= i) val -= 1;
-                            if (val) currTH++;
-                            if (currTH === statTH) {
-                                me.fillIconText(ctx, tss, G_STAT_NAME[i]+' `0'+G_STAT_ICON[i]+(val > 0 ? ' +':' ')+val, rect, scale);
-                                break;
+                            if (OBJECT_VEG <= i && OBJECT_DEMON >= i){
+                                if (1 !== val) currTH++;
+                                if (currTH === statTH) {
+                                    me.fillIconText(ctx, tss, G_STAT_NAME[i]+' `0'+G_STAT_ICON[i]+' X'+val, rect, scale);
+                                    break;
+                                }
+                            } else if (val){
+                                currTH++;
+                                if (currTH === statTH) {
+                                    me.fillIconText(ctx, tss, G_STAT_NAME[i]+' `0'+G_STAT_ICON[i]+(val > 0 ? ' +':' ')+val, rect, scale);
+                                    break;
+                                }
                             }
                         }
                         break;
@@ -245,7 +252,7 @@ pico.def('info', 'picUIContent', function(){
                 case G_OBJECT_TYPE.CREEP:
                     switch(id){
                     case 10:
-                        me.fillIconText(ctx, tss, target[OBJECT_NAME], rect, scale);
+                        me.fillIconText(ctx, tss, target[OBJECT_NAME]+' `0'+G_STAT_ICON[OBJECT_VEG+target[OBJECT_SUB_TYPE]-1], rect, scale);
                         break;
                     case 11:
                         me.fillIconText(ctx, tss, 'Level `0'+G_UI.LEVEL+' '+target[OBJECT_LEVEL], rect, scale);
@@ -324,8 +331,11 @@ pico.def('info', 'picUIContent', function(){
                 case G_OBJECT_TYPE.SCROLL:
                 case G_OBJECT_TYPE.MATERIAL:
                 case G_OBJECT_TYPE.CHEST:
-                default:
+                case G_OBJECT_TYPE.KEY:
                     if (9 === id)me.fillIconText(ctx, tss, target[OBJECT_NAME]+': '+target[OBJECT_DESC], rect, scale);
+                    break;
+                default:
+                    if (9 === id)me.fillIconText(ctx, tss, target, rect, scale);
                     break;
                 }
                 break;
