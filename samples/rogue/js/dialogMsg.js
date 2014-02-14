@@ -10,21 +10,18 @@ pico.def('dialogMsg', 'picUIContent', function(){
     onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
         if (!me.isValid()) return;
 
-        var
-        ts = tss[0],
-        id=ui.userData.id;
+        var id=ui.userData.id;
 
         if ('number' === typeof id){
-            me.drawButton(ctx, ts, msg.labels[id], rect, scale, '#d7e894', '#204631');
+            me.drawButton(ctx, tss, msg.labels[id], rect, scale, '#d7e894', '#204631');
         }else{
             var info = msg.info;
 
-            me.fillIconText(ctx, ts, info[id.charAt(4)], rect, scale);
+            me.fillIconText(ctx, tss, info[id.charAt(4)], rect, scale);
         }
     },
     onCustomButton = function(ent, ctx, rect, ui, tss, scale){
-        var ts = tss[0];
-        me.drawButton(ctx, ts, msg.labels[ui.userData.id], rect, scale, '#204631', '#d7e894', '#aec440', 3);
+        me.drawButton(ctx, tss, msg.labels[ui.userData.id], rect, scale, '#204631', '#d7e894', '#aec440', 3);
     },
     onCustomClick = function(ent, ui){
         var
@@ -87,7 +84,7 @@ pico.def('dialogMsg', 'picUIContent', function(){
         l = info.length,
         cvs = document.createElement('canvas'),
         ctx = cvs.getContext('2d'),
-        ts = this.tileSet,
+        tss = [this.tileSet, this.spellSet],
         scale = this.smallDevice ? 1 : 2,
         textH = 14*scale, // TODO: use actual font height
         rowH = textH * 2,
@@ -108,7 +105,7 @@ pico.def('dialogMsg', 'picUIContent', function(){
         ctx.font = com.font;
 
         for (i=0,l=info.length; i<l; i++){
-            infoH = me.fillIconText(ctx, ts, info[i], [0, 0, width, 0], scale, {textHeight: textH});
+            infoH = me.fillIconText(ctx, tss, info[i], [0, 0, width, 0], scale, {textHeight: textH});
             actualH += infoH;
 
             dummyRows = Floor(infoH/rowH);

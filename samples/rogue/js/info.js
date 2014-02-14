@@ -143,7 +143,7 @@ pico.def('info', 'picUIContent', function(){
         id = ui.userData.id,
         icon;
 
-        if (id < 10){
+        if (id < 9){
             if (labels[id]) me.drawButton(ctx, ts, labels[id], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
         }else{
             switch(context){
@@ -200,6 +200,7 @@ pico.def('info', 'picUIContent', function(){
                 case G_OBJECT_TYPE.ARMOR:
                 case G_OBJECT_TYPE.JEWEL:
                     switch(id){
+                    case 9: break;
                     case 10:
                         if (G_OBJECT_TYPE.WEAPON === stat[OBJECT_TYPE]){
                             me.fillIconText(ctx, tss, stat[OBJECT_NAME] + ':' + stat[WEAPON_HANDED]+ 'H', rect, scale);
@@ -235,17 +236,96 @@ pico.def('info', 'picUIContent', function(){
                 case G_OBJECT_TYPE.SCROLL:
                 case G_OBJECT_TYPE.MATERIAL:
                 default:
-                    me.fillIconText(ctx, tss, stat[OBJECT_DESC], rect, scale);
+                    if (9 === id) me.fillIconText(ctx, tss, stat[OBJECT_NAME]+': '+stat[OBJECT_DESC], rect, scale);
                     break;
                 }
+                break;
             case G_CONTEXT.WORLD:
                 switch(target[OBJECT_TYPE]){
                 case G_OBJECT_TYPE.CREEP:
+                    switch(id){
+                    case 10:
+                        me.fillIconText(ctx, tss, target[OBJECT_NAME], rect, scale);
+                        break;
+                    case 11:
+                        me.fillIconText(ctx, tss, 'Level `0'+G_UI.LEVEL+' '+target[OBJECT_LEVEL], rect, scale);
+                        break;
+                    case 12:
+                        me.fillIconText(ctx, tss, 'HP `0'+G_UI.HP+' '+target[CREEP_HP]+'/'+this.ai.getStatByObject(target)[CREEP_HP], rect, scale);
+                        break;
+                    case 20:
+                        me.fillIconText(ctx, tss, 'Atk `0'+G_UI.PATK+' '+target[CREEP_ATK], rect, scale);
+                        break;
+                    case 21:
+                        me.fillIconText(ctx, tss, 'Def `0'+G_UI.PDEF+' '+target[CREEP_PDEF], rect, scale);
+                        break;
+                    case 22:
+                        me.fillIconText(ctx, tss, 'Will `0'+G_UI.WILL+' '+target[CREEP_MDEF], rect, scale);
+                        break;
+                    case 30:
+                        var
+                        buf=target[CREEP_EFFECT],
+                        l=buf.length;
+                        icon = l ? 'Buf:' : 'No buf';
+                        for(var i=0; i<l; i++){
+                            icon += '`0'+buf[i][OBJECT_ICON]+' ';
+                        }
+                        me.fillIconText(ctx, tss, icon, rect, scale);
+                        break;
+                    }
                     break;
+                case G_OBJECT_TYPE.WEAPON:
+                case G_OBJECT_TYPE.AMMO:
+                case G_OBJECT_TYPE.ARMOR:
+                case G_OBJECT_TYPE.JEWEL:
+                    switch(id){
+                    case 9:
+                    case 10:
+                        if (G_OBJECT_TYPE.WEAPON === target[OBJECT_TYPE]){
+                            me.fillIconText(ctx, tss, target[OBJECT_NAME] + ':' + target[WEAPON_HANDED]+ 'H', rect, scale);
+                        }else{
+                            me.fillIconText(ctx, tss, target[OBJECT_NAME], rect, scale);
+                        }
+                        break;
+                    case 11:
+                        me.fillIconText(ctx, tss, 'Level `0'+G_UI.LEVEL+' '+target[OBJECT_LEVEL], rect, scale);
+                        break;
+                    case 12:
+                        if (G_OBJECT_TYPE.AMMO === target[OBJECT_TYPE]){
+                            me.fillIconText(ctx, tss, 'Count: '+target[AMMO_SIZE], rect, scale);
+                        }else{
+                            me.fillIconText(ctx, tss, 'Count: 1', rect, scale);
+                        }
+                        break;
+                    default:
+                        var
+                        targetTH = id - 20,
+                        currTH=-1,
+                        val;
+
+                        for(var i=OBJECT_HP,l=OBJECT_EARTH+1; i<l; i++){
+                            val = target[i];
+                            if (OBJECT_VEG <= i && OBJECT_DEMON >= i) val -= 1;
+                            if (val) currTH++;
+                            if (currTH === targetTH) {
+                                me.fillIconText(ctx, tss, G_STAT_NAME[i]+' `0'+G_STAT_ICON[i]+(val > 0 ? '++':' ')+val, rect, scale);
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                    break;
+                case G_OBJECT_TYPE.ENV:
+                    var icon = target[OBJECT_DESC].toString();
+                    if (icon.length > 96) icon = icon.substr(0, 108)+' ...';
+                    if (9 === id)me.fillIconText(ctx, tss, target[OBJECT_NAME]+': '+icon, rect, scale);
+                    break;
+                case G_OBJECT_TYPE.POTION:
+                case G_OBJECT_TYPE.SCROLL:
+                case G_OBJECT_TYPE.MATERIAL:
+                case G_OBJECT_TYPE.CHEST:
                 default:
-                    var desc = target[OBJECT_DESC].toString();
-                    if (desc.length > 64) desc = desc.substr(0, 64)+'...';
-                    me.fillIconText(ctx, ts, desc, rect, scale);
+                    if (9 === id)me.fillIconText(ctx, tss, target[OBJECT_NAME]+': '+target[OBJECT_DESC], rect, scale);
                     break;
                 }
                 break;
@@ -518,10 +598,9 @@ pico.def('info', 'picUIContent', function(){
 
         switch(context){
         case G_CONTEXT.WORLD:
-            break;
-        case G_CONTEXT.BAG:
             row=me.createMeshRow(rows);
             cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 3, 3, 0, 0, {id:9});
             me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:10});
             cell=me.createMeshCell(row);
             me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:11});
@@ -535,18 +614,41 @@ pico.def('info', 'picUIContent', function(){
             me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:21});
             cell=me.createMeshCell(row);
             me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:22});
-            cell=me.createMeshCell(row);
-            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:23});
 
             row=me.createMeshRow(rows);
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:23});
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 3, 1, 0, 0, {id:30});
             cell=me.createMeshCell(row);
             me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:24});
             cell=me.createMeshCell(row);
             me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:25});
+            break;
+        case G_CONTEXT.BAG:
+            row=me.createMeshRow(rows);
             cell=me.createMeshCell(row);
-            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:26});
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:10});
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 3, 3, 0, 0, {id:9});
             cell=me.createMeshCell(row);
-            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:27});
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:11});
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:12});
+
+            row=me.createMeshRow(rows);
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:20});
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:21});
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:22});
+
+            row=me.createMeshRow(rows);
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:23});
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:24});
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:25});
             break;
         case G_CONTEXT.TOME:
             row=me.createMeshRow(rows);
