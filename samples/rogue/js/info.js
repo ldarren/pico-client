@@ -127,7 +127,7 @@ pico.def('info', 'picUIContent', function(){
         }
         addOption('Close');
     },
-    equipInfo = function(stat, count){
+    equipInfo = function(id, stat, count, ctx, tss, rect, scale){
         switch(id){
         case 9: break;
         case 10:
@@ -240,7 +240,7 @@ pico.def('info', 'picUIContent', function(){
                 case G_OBJECT_TYPE.AMMO:
                 case G_OBJECT_TYPE.ARMOR:
                 case G_OBJECT_TYPE.JEWEL:
-                    equipInfo.call(this, id, stat, count);
+                    equipInfo.call(this, id, stat, count, ctx, tss, rect, scale);
                     break;
                 case G_OBJECT_TYPE.POTION:
                 case G_OBJECT_TYPE.SCROLL:
@@ -278,19 +278,19 @@ pico.def('info', 'picUIContent', function(){
                         l=buf.length;
                         icon = l ? 'Buf:' : 'No buf';
                         for(var i=0; i<l; i++){
-                            icon += '`0'+buf[i][OBJECT_ICON]+' ';
+                            icon += ' `1'+buf[i][OBJECT_ICON];
                         }
                         me.fillIconText(ctx, tss, icon, rect, scale);
                         break;
                     }
                     break;
                 case G_OBJECT_TYPE.AMMO:
-                    equipInfo.call(this, id, target, target[AMMO_SIZE]);
+                    equipInfo.call(this, id, target, target[AMMO_SIZE], ctx, tss, rect, scale);
                     break;
                 case G_OBJECT_TYPE.WEAPON:
                 case G_OBJECT_TYPE.ARMOR:
                 case G_OBJECT_TYPE.JEWEL:
-                    equipInfo.call(this, id, target, 1);
+                    equipInfo.call(this, id, target, 1, ctx, tss, rect, scale);
                     break;
                 case G_OBJECT_TYPE.ENV:
                     var icon = target[OBJECT_DESC].toString();
@@ -511,7 +511,7 @@ pico.def('info', 'picUIContent', function(){
             row=me.createMeshRow(rows);
             cell=me.createMeshCell(row);
             me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:23});
-            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 3, 1, 0, 0, {id:30});
+            me.createMeshCustom(cell, me.TOP, me.TOP, -3, 3, 1, 0, 0, {id:30});
             cell=me.createMeshCell(row);
             me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:24});
             cell=me.createMeshCell(row);
@@ -588,6 +588,6 @@ pico.def('info', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.drawMeshUI.call(this, ctx, [this.tileSet], ent, com, comBox, scale, onCustomUI);
+        return me.drawMeshUI.call(this, ctx, [this.tileSet, this.spellSet], ent, com, comBox, scale, onCustomUI);
     };
 });

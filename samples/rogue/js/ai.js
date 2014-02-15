@@ -1,4 +1,6 @@
 pico.def('ai', function(){
+    this.use('tome');
+
     var
     me = this,
     Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round,
@@ -7,13 +9,33 @@ pico.def('ai', function(){
     level = 0,
     god,hero,objects,flags,terrain,
     createCreepStat = function(creepId, level){
-        var s = me.getStatByCreepId(creepId).slice();
+        var
+        tome = me.tome,
+        s = me.getStatByCreepId(creepId).slice(),
+        templ = s[CREEP_EFFECT],
+        effects = [];
+
         for(var i=CREEP_ATK; i<=CREEP_MDEF; i++){
             s[i] = Ceil(s[i]*level); // negative is allowed
         }
         s[OBJECT_NAME] = G_OBJECT_NAME[creepId];
         s[OBJECT_DESC] = G_OBJECT_DESC[creepId];
         s[OBJECT_LEVEL] = level;
+
+        for(i=0,l=templ.length; i<l; i++){
+            effects.push(tome.createEffect(templ[i], level));
+        }
+
+        effects.push(tome.createEffect(G_EFFECT_TYPE.BURNED, level));
+        effects.push(tome.createEffect(G_EFFECT_TYPE.CURSED, level));
+        effects.push(tome.createEffect(G_EFFECT_TYPE.DISEASED, level));
+        effects.push(tome.createEffect(G_EFFECT_TYPE.FEARED, level));
+        effects.push(tome.createEffect(G_EFFECT_TYPE.FROZEN, level));
+        effects.push(tome.createEffect(G_EFFECT_TYPE.POISONED, level));
+        effects.push(tome.createEffect(G_EFFECT_TYPE.POISON_BLADE, level));
+
+        s[CREEP_EFFECT] = effects;
+
         return s;
     },
     pick = function(list, luck, grade){

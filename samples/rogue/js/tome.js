@@ -86,6 +86,39 @@ pico.def('tome', 'picUIContent', function(){
         }
     };
 
+    me.createEffect = function(type, level, icon){
+        var efx;
+
+        switch(type){
+        case G_EFFECT_TYPE.BURNED:
+            efx = G_CREATE_OBJECT(G_ICON.EFX_BURNED);
+            break;
+        case G_EFFECT_TYPE.CURSED:
+            efx = G_CREATE_OBJECT(G_ICON.EFX_CURSED);
+            break;
+        case G_EFFECT_TYPE.DISEASED:
+            efx = G_CREATE_OBJECT(G_ICON.EFX_DISEASED);
+            break;
+        case G_EFFECT_TYPE.FEARED:
+            efx = G_CREATE_OBJECT(G_ICON.EFX_FEARED);
+            break;
+        case G_EFFECT_TYPE.FROZEN:
+            efx = G_CREATE_OBJECT(G_ICON.EFX_FROZEN);
+            break;
+        case G_EFFECT_TYPE.POISONED:
+            efx = G_CREATE_OBJECT(G_ICON.EFX_POISONED);
+            break;
+        case G_EFFECT_TYPE.POISON_BLADE:
+            efx = G_CREATE_OBJECT(G_ICON.EFX_POISON_BLADE);
+            break;
+        }
+
+        if (icon) efx[OBJECT_ICON] = icon;
+        if (level) efx[OBJECT_LEVEL] = level;
+
+        return efx;
+    };
+
     me.create = function(ent, data){
         data = me.base.create.call(this, ent, data);
 
