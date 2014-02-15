@@ -127,6 +127,47 @@ pico.def('info', 'picUIContent', function(){
         }
         addOption('Close');
     },
+    equipInfo = function(stat, count){
+        switch(id){
+        case 9: break;
+        case 10:
+            if (G_OBJECT_TYPE.WEAPON === stat[OBJECT_TYPE]){
+                me.fillIconText(ctx, tss, stat[OBJECT_NAME] + ':' + stat[WEAPON_HANDED]+ 'H', rect, scale);
+            }else{
+                me.fillIconText(ctx, tss, stat[OBJECT_NAME], rect, scale);
+            }
+            break;
+        case 11:
+            me.fillIconText(ctx, tss, 'Level `0'+G_UI.LEVEL+' '+stat[OBJECT_LEVEL], rect, scale);
+            break;
+        case 12:
+            me.fillIconText(ctx, tss, 'Count: '+count, rect, scale);
+            break;
+        default:
+            var
+            statTH = id - 20,
+            currTH=-1,
+            val;
+
+            for(var i=OBJECT_HP,l=OBJECT_EARTH+1; i<l; i++){
+                val = stat[i];
+                if (OBJECT_VEG <= i && OBJECT_DEMON >= i){
+                    if (1 !== val) currTH++;
+                    if (currTH === statTH) {
+                        me.fillIconText(ctx, tss, G_STAT_NAME[i]+' `0'+G_STAT_ICON[i]+' X'+val, rect, scale);
+                        break;
+                    }
+                } else if (val){
+                    currTH++;
+                    if (currTH === statTH) {
+                        me.fillIconText(ctx, tss, G_STAT_NAME[i]+' `0'+G_STAT_ICON[i]+(val > 0 ? ' +':' ')+val, rect, scale);
+                        break;
+                    }
+                }
+            }
+            break;
+        }
+    },
     onCustomBound = function(ent, rect, ui, scale){
         return me.calcUIRect(rect, ui);
     },
@@ -199,45 +240,7 @@ pico.def('info', 'picUIContent', function(){
                 case G_OBJECT_TYPE.AMMO:
                 case G_OBJECT_TYPE.ARMOR:
                 case G_OBJECT_TYPE.JEWEL:
-                    switch(id){
-                    case 9: break;
-                    case 10:
-                        if (G_OBJECT_TYPE.WEAPON === stat[OBJECT_TYPE]){
-                            me.fillIconText(ctx, tss, stat[OBJECT_NAME] + ':' + stat[WEAPON_HANDED]+ 'H', rect, scale);
-                        }else{
-                            me.fillIconText(ctx, tss, stat[OBJECT_NAME], rect, scale);
-                        }
-                        break;
-                    case 11:
-                        me.fillIconText(ctx, tss, 'Level `0'+G_UI.LEVEL+' '+stat[OBJECT_LEVEL], rect, scale);
-                        break;
-                    case 12:
-                        me.fillIconText(ctx, tss, 'Count: '+count, rect, scale);
-                        break;
-                    default:
-                        var
-                        statTH = id - 20,
-                        currTH=-1,
-                        val;
-
-                        for(var i=OBJECT_HP,l=OBJECT_EARTH+1; i<l; i++){
-                            val = stat[i];
-                            if (OBJECT_VEG <= i && OBJECT_DEMON >= i){
-                                if (1 !== val) currTH++;
-                                if (currTH === statTH) {
-                                    me.fillIconText(ctx, tss, G_STAT_NAME[i]+' `0'+G_STAT_ICON[i]+' X'+val, rect, scale);
-                                    break;
-                                }
-                            } else if (val){
-                                currTH++;
-                                if (currTH === statTH) {
-                                    me.fillIconText(ctx, tss, G_STAT_NAME[i]+' `0'+G_STAT_ICON[i]+(val > 0 ? ' +':' ')+val, rect, scale);
-                                    break;
-                                }
-                            }
-                        }
-                        break;
-                    }
+                    equipInfo.call(this, id, stat, count);
                     break;
                 case G_OBJECT_TYPE.POTION:
                 case G_OBJECT_TYPE.SCROLL:
@@ -281,50 +284,17 @@ pico.def('info', 'picUIContent', function(){
                         break;
                     }
                     break;
-                case G_OBJECT_TYPE.WEAPON:
                 case G_OBJECT_TYPE.AMMO:
+                    equipInfo.call(this, id, target, target[AMMO_SIZE]);
+                    break;
+                case G_OBJECT_TYPE.WEAPON:
                 case G_OBJECT_TYPE.ARMOR:
                 case G_OBJECT_TYPE.JEWEL:
-                    switch(id){
-                    case 9:
-                    case 10:
-                        if (G_OBJECT_TYPE.WEAPON === target[OBJECT_TYPE]){
-                            me.fillIconText(ctx, tss, target[OBJECT_NAME] + ':' + target[WEAPON_HANDED]+ 'H', rect, scale);
-                        }else{
-                            me.fillIconText(ctx, tss, target[OBJECT_NAME], rect, scale);
-                        }
-                        break;
-                    case 11:
-                        me.fillIconText(ctx, tss, 'Level `0'+G_UI.LEVEL+' '+target[OBJECT_LEVEL], rect, scale);
-                        break;
-                    case 12:
-                        if (G_OBJECT_TYPE.AMMO === target[OBJECT_TYPE]){
-                            me.fillIconText(ctx, tss, 'Count: '+target[AMMO_SIZE], rect, scale);
-                        }else{
-                            me.fillIconText(ctx, tss, 'Count: 1', rect, scale);
-                        }
-                        break;
-                    default:
-                        var
-                        targetTH = id - 20,
-                        currTH=-1,
-                        val;
-
-                        for(var i=OBJECT_HP,l=OBJECT_EARTH+1; i<l; i++){
-                            val = target[i];
-                            if (OBJECT_VEG <= i && OBJECT_DEMON >= i) val -= 1;
-                            if (val) currTH++;
-                            if (currTH === targetTH) {
-                                me.fillIconText(ctx, tss, G_STAT_NAME[i]+' `0'+G_STAT_ICON[i]+(val > 0 ? '++':' ')+val, rect, scale);
-                                break;
-                            }
-                        }
-                        break;
-                    }
+                    equipInfo.call(this, id, target, 1);
                     break;
                 case G_OBJECT_TYPE.ENV:
                     var icon = target[OBJECT_DESC].toString();
-                    if (icon.length > 96) icon = icon.substr(0, 108)+' ...';
+                    if (icon.length > 128) icon = icon.substr(0, 128)+' ...';
                     if (9 === id)me.fillIconText(ctx, tss, target[OBJECT_NAME]+': '+icon, rect, scale);
                     break;
                 case G_OBJECT_TYPE.POTION:
@@ -332,105 +302,18 @@ pico.def('info', 'picUIContent', function(){
                 case G_OBJECT_TYPE.MATERIAL:
                 case G_OBJECT_TYPE.CHEST:
                 case G_OBJECT_TYPE.KEY:
-                    if (9 === id)me.fillIconText(ctx, tss, target[OBJECT_NAME]+': '+target[OBJECT_DESC], rect, scale);
-                    break;
                 default:
-                    if (9 === id)me.fillIconText(ctx, tss, target, rect, scale);
+                    if (9 === id){
+                        if (targetId > -1)
+                            me.fillIconText(ctx, tss, target[OBJECT_NAME]+': '+target[OBJECT_DESC], rect, scale);
+                        else
+                            me.fillIconText(ctx, tss, target, rect, scale);
+                    }
                     break;
                 }
                 break;
             }
         }
-    },
-    onCustomDraw1 = function(ent, ctx, rect, ui, tss, scale){
-        if (!me.isValid()) return;
-
-        var
-        com = ent.getComponent(name),
-        ts = tss[0],
-        tw = this.tileWidth,
-        th = this.tileHeight,
-        x=rect[0], y=rect[1], w=rect[2], h=rect[3],
-        id = ui.userData.id;
-
-        switch(id){
-        case 'text':
-            if (targetId > -1){
-                switch(context){
-                case G_CONTEXT.TOME:
-                    me.fillIconText(ctx, ts, target[OBJECT_NAME], rect, scale);
-                    break;
-                case G_CONTEXT.BAG:
-                    var
-                    stat = target[0],
-                    count = target[1];
-            
-                    me.fillIconText(ctx, ts, stat[OBJECT_NAME]+' count('+count+')', rect, scale);
-                    break;
-                case G_CONTEXT.WORLD:
-                    switch(target[OBJECT_TYPE]){
-                    case G_OBJECT_TYPE.CREEP:
-                        break;
-                    default:
-                        var desc = target[OBJECT_DESC].toString();
-                        if (desc.length > 64) desc = desc.substr(0, 64)+'...';
-                        me.fillIconText(ctx, ts, desc, rect, scale);
-                        break;
-                    }
-                    break;
-                }
-            }else{
-                if (labels.length){
-                    me.fillIconText(ctx, ts, target, rect, scale);
-                }else{
-                    var
-                    x=rect[0],y=rect[1],w=rect[2],h2=rect[3]/2;
-                    me.fillIconText(ctx, ts, target, [x,y,w,h2], scale);
-                    me.fillIconText(ctx, ts, 'tab to continue...', [x,y+h2,w,h2], scale);
-                }
-            }
-            break;
-        case 'name':
-            if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                me.fillIconText(ctx, ts, target[OBJECT_NAME]+' ('+G_CREEP_TYPE_NAME[target[OBJECT_SUB_TYPE]]+')', rect, scale);
-            }
-            break;
-        case 'level':
-            if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                me.fillIconText(ctx, tss, '`0'+G_UI.LEVEL+' : '+target[OBJECT_LEVEL], rect, scale);
-            }
-            break;
-        case 'hp':
-            if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                var
-                stat = this.ai.getStatByObject(target),
-                iconText = '';
-                for(var i=0, l=stat[CREEP_HP]; i<l; i++){
-                    iconText += ' `0'+((i < target[CREEP_HP]) ? G_UI.HP : G_UI.HP_EMPTY);
-                }
-                me.fillIconText(ctx, tss, iconText, rect, scale);
-            }
-            break;
-        case 'def':
-            if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                me.fillIconText(ctx, tss, '`0'+G_UI.PDEF+' : '+target[CREEP_PDEF], rect, scale);
-            }
-            break;
-        case 'mdef':
-            if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                me.fillIconText(ctx, tss, '`0'+G_UI.PDEF+' : '+target[CREEP_MDEF], rect, scale);
-            }
-            break;
-        case 'patk':
-            if (G_CONTEXT.WORLD === context && G_OBJECT_TYPE.CREEP === target[OBJECT_TYPE]){
-                me.fillIconText(ctx, tss, '`0'+G_UI.PATK+' : '+target[CREEP_ATK], rect, scale);
-            }
-            break;
-        default:
-            if (labels[id]) me.drawButton(ctx, ts, labels[id], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
-            break;
-        }
-
     },
     onCustomButton = function(ent, ctx, rect, ui, tss, scale){
         var ts = tss[0];
