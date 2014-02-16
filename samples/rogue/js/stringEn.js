@@ -418,8 +418,8 @@ Object.freeze(G_OBJECT_DESC = {
     129: 'Skull',
     130: 'Skeleton',
     131: 'Tomb',
-    132: 'Altar of Vili, the god of creation. Make offering to god to gain piety. you exhange piety for exhancement.',
-    133: 'Fountain of Eir, drink it to restore full health',
+    132: 'Altar of the god of creation. Make offering to god to gain piety. you may exhange piety for exhancements.',
+    133: 'Drink it to restore full health',
     134: 'Soulstones',
     135: 'Health Globe',
     136: 'Symbol of Protection', // Pentagram
@@ -472,7 +472,7 @@ Object.freeze(G_OBJECT_DESC = {
     183: 'Devil',
     184: 'Mighty dwarf that can build any item with a reasonable price',
     185: 'The leader of the mages guild, deep knowledge in making potions and enchanting items',
-    186: 'Full plated town guardian, which only hobby is to gamble with traveller',
+    186: 'Full plated town guardian, his hobby is to gamble with traveller',
 
     196: 'Spin attack all nearby objects',
     197: 'Spin attack all nearby objects',

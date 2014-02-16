@@ -10,11 +10,6 @@ pico.def('hero', 'picUIContent', function(){
     onCustomBound = function(ent, rect, ui, tileScale){
         var id = ui.userData.id;
 
-        if ('custom1Label' === id) id = 'goldLabel';
-        else if ('custom2Label' === id) id = 'pietyLabel';
-        else if ('custom1' === id) id = 'gold';
-        else if ('custom2' === id) id = 'piety';
-
         switch(id){
         case 'avatar':
         case 'helm':
@@ -39,14 +34,7 @@ pico.def('hero', 'picUIContent', function(){
         com = ent.getComponent(name),
         id = ui.userData.id,
         ts = tss[0],
-        ss = tss[1],
-        enemyCount = appearance[HERO_ENEMIES].length,
-        ranged = me.carryRanged();
-
-        if ('custom1Label' === id) id = enemyCount ? (ranged ? 'rangedLabel' : 'meleeLabel') : 'goldLabel';
-        else if ('custom2Label' === id) id = enemyCount ? 'armorLabel' : 'pietyLabel';
-        else if ('custom1' === id) id = enemyCount ? 'atk' : 'gold';
-        else if ('custom2' === id) id = enemyCount ? 'def' : 'piety';
+        ss = tss[1];
 
         switch(id){
         case 'avatar':
