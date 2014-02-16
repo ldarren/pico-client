@@ -78,42 +78,52 @@ pico.def('hero', 'picUIContent', function(){
             me.fillIconText(ctx, tss, ''+currStats[OBJECT_LUCK], rect, tileScale);
             break;
         case 'will':
-            me.fillIconText(ctx, tss, ''+currStats[OBJECT_WILL], rect, tileScale);
+            me.fillIconText(ctx, tss, ''+appearance[HERO_WILL]+'/'+currStats[OBJECT_WILL], rect, tileScale);
             break;
         case 'hp':
-            // draw hp
-            var iconText='HP:';
-            for(var i=0, l=stats[OBJECT_HP]; i<l; i++){
-                iconText += ' `0'+((i < currStats[OBJECT_HP]) ? G_UI.HP : G_UI.HP_EMPTY);
-            }
-            me.fillIconText(ctx, tss, iconText, rect, tileScale);
-            break;
-        case 'goldLabel':
-            me.fillIconText(ctx, tss, 'Gold `0'+G_UI.GOLD, rect, tileScale);
+            me.fillIconText(ctx, tss, ''+currStats[OBJECT_HP]+'/'+stats[OBJECT_HP], rect, tileScale);
             break;
         case 'gold':
             me.fillIconText(ctx, tss, ''+appearance[HERO_GOLD], rect, tileScale);
             break;
-        case 'pietyLabel':
-            me.fillIconText(ctx, tss, 'Piety `0'+G_UI.PIETY, rect, tileScale);
-            break;
         case 'piety':
             me.fillIconText(ctx, tss, ''+this.god.getPiety(), rect, tileScale);
             break;
-        case 'meleeLabel':
-            me.fillIconText(ctx, tss, 'Atk `0'+G_UI.PATK, rect, tileScale);
+        case 'patk':
+            me.fillIconText(ctx, tss, ''+appearance[HERO_PATK]+'/'+currStats[OBJECT_PATK], rect, tileScale);
             break;
-        case 'atk':
-            me.fillIconText(ctx, tss, ''+(ranged ? currStats[OBJECT_RATK] : currStats[OBJECT_PATK]), rect, tileScale);
-            break;
-        case 'rangedLabel':
-            me.fillIconText(ctx, tss, 'Atk `0'+G_UI.RATK, rect, tileScale);
-            break;
-        case 'armorLabel':
-            me.fillIconText(ctx, tss, 'Def `0'+G_UI.PDEF, rect, tileScale);
+        case 'ratk':
+            me.fillIconText(ctx, tss, ''+appearance[HERO_RATK]+'/'+currStats[OBJECT_RATK], rect, tileScale);
             break;
         case 'def':
-            me.fillIconText(ctx, tss, ''+currStats[OBJECT_DEF], rect, tileScale);
+            me.fillIconText(ctx, tss, ''+appearance[HERO_DEF]+'/'+currStats[OBJECT_DEF], rect, tileScale);
+            break;
+        case 'veg':
+            me.fillIconText(ctx, tss, 'X'+Floor(currStats[OBJECT_VEG]*100)+'%', rect, tileScale);
+            break;
+        case 'insect':
+            me.fillIconText(ctx, tss, 'X'+Floor(currStats[OBJECT_INSECT]*100)+'%', rect, tileScale);
+            break;
+        case 'beast':
+            me.fillIconText(ctx, tss, 'X'+Floor(currStats[OBJECT_BEAST]*100)+'%', rect, tileScale);
+            break;
+        case 'undead':
+            me.fillIconText(ctx, tss, 'X'+Floor(currStats[OBJECT_UNDEAD]*100)+'%', rect, tileScale);
+            break;
+        case 'demon':
+            me.fillIconText(ctx, tss, 'X'+Floor(currStats[OBJECT_DEMON]*100)+'%', rect, tileScale);
+            break;
+        case 'fire':
+            me.fillIconText(ctx, tss, ''+currStats[OBJECT_FIRE], rect, tileScale);
+            break;
+        case 'air':
+            me.fillIconText(ctx, tss, ''+currStats[OBJECT_AIR], rect, tileScale);
+            break;
+        case 'water':
+            me.fillIconText(ctx, tss, ''+currStats[OBJECT_WATER], rect, tileScale);
+            break;
+        case 'earth':
+            me.fillIconText(ctx, tss, ''+currStats[OBJECT_EARTH], rect, tileScale);
             break;
         case 'helm':
         case 'armor':

@@ -8,17 +8,71 @@
                 [
                     {},
                     {
-                        "type":4,
-                        "uiPt":16,
-                        "cellPt":16,
-                        "userData":{"id":"name"}
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "text":"`0216"
                     }
                 ],[
                     {},
                     {
                         "type":4,
+                        "w":3,
+                        "userData":{"id":"level"}
+                    }
+                ],[
+                ],[
+                ],[
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "text":"`0663"
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "w":3,
                         "userData":{"id":"hp"}
                     }
+                ],[
+                ],[
+                ],[
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "text":"`0195"
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "w":3,
+                        "userData":{"id":"gold"}
+                    }
+                ],[
+                ],[
+                ],[
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "text":"`0196"
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "w":3,
+                        "userData":{"id":"piety"}
+                    }
+                ],[
+                ],[
                 ]
             ],[
                 {},
@@ -28,42 +82,68 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "text":"Level `0216"
+                        "text":"`0190"
                     }
                 ],[
                     {},
                     {
                         "type":4,
-                        "userData":{"id":"level"}
+                        "w":3,
+                        "userData":{"id":"patk"}
                     }
+                ],[
+                ],[
                 ],[
                     {},
                     {
-                        "type":4,
+                        "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "userData":{"id":"custom1Label"}
+                        "text":"`0568"
                     }
                 ],[
                     {},
                     {
                         "type":4,
-                        "userData":{"id":"custom1"}
+                        "w":3,
+                        "userData":{"id":"ratk"}
                     }
+                ],[
+                ],[
                 ],[
                     {},
                     {
-                        "type":4,
+                        "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "userData":{"id":"custom2Label"}
+                        "text":"`0192"
                     }
                 ],[
                     {},
                     {
                         "type":4,
-                        "userData":{"id":"custom2"}
+                        "w":3,
+                        "userData":{"id":"def"}
                     }
+                ],[
+                ],[
+                ],[
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "text":"`0670"
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "w":3,
+                        "userData":{"id":"will"}
+                    }
+                ],[
+                ],[
                 ]
             ]
         ]
@@ -74,7 +154,7 @@
         "uiPt":1,
         "pad":0,
         "w":1.0,
-        "h":700,
+        "h":1280,
         "rows":[
             {"font":"bold 12pt alagard","fillStyle":"#aec440"},
             [
@@ -85,27 +165,26 @@
                         "type":4,
                         "cellPt":2,
                         "uiPt":2,
-                        "w":4,
                         "userData":{"id":"name"}
                     }
-                ],[
-                ],[
-                ],[
-                ],[
-                    {},
-                    {
-                        "type":4,
-                        "cellPt":2,
-                        "uiPt":2,
-                        "w":2,
-                        "h":1,
-                        "userData":{"id":"hp"}
-                    }
-                ],[
                 ]
             ],[
                 {},
                 [
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "text":"HP `0663"
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"hp"}
+                    }
+                ],[
                     {},
                     {
                         "type":1,
@@ -118,20 +197,6 @@
                     {
                         "type":4,
                         "userData":{"id":"level"}
-                    }
-                ],[
-                    {},
-                    {
-                        "type":1,
-                        "cellPt":4,
-                        "uiPt":4,
-                        "text":"Aligned `0216"
-                    }
-                ],[
-                    {},
-                    {
-                        "type":4,
-                        "userData":{"id":"aligned"}
                     }
                 ]
             ],[
@@ -173,7 +238,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "text":"Str `0668"
+                        "text":"Strength `0668"
                     }
                 ],[
                     {},
@@ -187,7 +252,7 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "text":"Dex `0613"
+                        "text":"Dexterity `0613"
                     }
                 ],[
                     {},
@@ -235,13 +300,13 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "text":"Atk `0190"
+                        "text":"Melee `0190"
                     }
                 ],[
                     {},
                     {
                         "type":4,
-                        "userData":{"id":"atk"}
+                        "userData":{"id":"patk"}
                     }
                 ],[
                     {},
@@ -249,13 +314,199 @@
                         "type":1,
                         "cellPt":4,
                         "uiPt":4,
-                        "text":"Def `0192"
+                        "text":"Range `0568"
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"ratk"}
+                    }
+                ]
+            ],[
+                {},
+                [
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "text":"Defense `0192"
                     }
                 ],[
                     {},
                     {
                         "type":4,
                         "userData":{"id":"def"}
+                    }
+                ],[
+                ],[
+                ]
+            ],[
+                {},
+                [
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":16,
+                        "uiPt":16,
+                        "pad":5,
+                        "text":"Damage VS."
+                    }
+                ]
+            ],[
+                {},
+                [
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "text":"Plant `0632"
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"veg"}
+                    }
+                ],[
+                ],[
+                ]
+            ],[
+                {},
+                [
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "text":"Insect `0627"
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"insect"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "text":"Beast `0623"
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"beast"}
+                    }
+                ]
+            ],[
+                {},
+                [
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "text":"Undead `0635"
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"undead"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "text":"Demon `0641"
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"demon"}
+                    }
+                ]
+            ],[
+                {},
+                [
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":16,
+                        "uiPt":16,
+                        "pad":5,
+                        "text":"Elemental Powers"
+                    }
+                ]
+            ],[
+                {},
+                [
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "text":"Fire `0535"
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"fire"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "text":"Air `0536"
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"air"}
+                    }
+                ]
+            ],[
+                {},
+                [
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "text":"Water `0534"
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"water"}
+                    }
+                ],[
+                    {},
+                    {
+                        "type":1,
+                        "cellPt":4,
+                        "uiPt":4,
+                        "text":"Earth `0533"
+                    }
+                ],[
+                    {},
+                    {
+                        "type":4,
+                        "userData":{"id":"earth"}
                     }
                 ]
             ],[

@@ -470,9 +470,9 @@ Object.freeze(G_OBJECT_DESC = {
     181: 'Werewolf',
     182: 'Werebear',
     183: 'Devil',
-    184: 'Mighty dward that can build any item with a reasonable price',
-    185: 'The leader of the mages guild, deep knowledge in making potion and enchanting items',
-    186: 'Full plated guardian of town, which only hobby is gambling with traverller',
+    184: 'Mighty dwarf that can build any item with a reasonable price',
+    185: 'The leader of the mages guild, deep knowledge in making potions and enchanting items',
+    186: 'Full plated town guardian, which only hobby is to gamble with traveller',
 
     196: 'Spin attack all nearby objects',
     197: 'Spin attack all nearby objects',
