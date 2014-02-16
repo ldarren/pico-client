@@ -171,6 +171,18 @@ pico.def('hero', 'picUIContent', function(){
         case me.CUSTOM_CLICK: return onCustomClick.apply(this, arguments); break;
         case me.CUSTOM_BUTTON: return onCustomDraw.apply(this, arguments); break;
         }
+    },
+    restoreStat = function(targetIdx, currIdx, val){
+        var
+        target = currStats[targetIdx],
+        curr = appearance[currIdx];
+
+        if (curr === target) return;
+
+        if (target > curr) curr += val;
+        if (curr > target) curr = target;
+
+        appearance[currIdx] = curr;
     };
 
     me.create = function(ent, data){
@@ -209,7 +221,10 @@ pico.def('hero', 'picUIContent', function(){
     };
 
     me.step = function(steps){
-        var spell, cooldown;
+        var
+        target, curr,
+        spell, cooldown;
+
         for(var i=0, l=tome.length; i<l; i++){
             spell = tome[i];
             if (!spell) continue;
@@ -220,6 +235,11 @@ pico.def('hero', 'picUIContent', function(){
             }
             spell[SPELL_COOLDOWN] = cooldown;
         }
+
+        restoreStat(OBJECT_PATK, HERO_PATK, steps);
+        restoreStat(OBJECT_RATK, HERO_RATK, steps);
+        restoreStat(OBJECT_DEF, HERO_DEF, steps);
+        restoreStat(OBJECT_WILL, HERO_WILL, steps);
     };
 
     me.battle = function(id){
@@ -500,20 +520,36 @@ pico.def('hero', 'picUIContent', function(){
             appearance[HERO_LEVEL] = level = lvl;
         }
         currStats = stats.slice();
+        currStats[OBJECT_PATK] = currStats[OBJECT_RATK] = 0
 
-        var i,l,a,equip,item;
-        for(i=OBJECT_WILL; i<OBJECT_VEG; i++){
+        var i,l,a,al,equip,item;
+        for(i=OBJECT_WILL; i<OBJECT_PATK; i++){
             currStats[i] = Ceil(currStats[i]*level); // negative is ok
         }
         for(a=HERO_HELM; a<HERO_QUIVER; a++){
             equip = appearance[a];
             if (!equip) continue;
             item = equip[0];
-            for(i=OBJECT_WILL; i<=OBJECT_EARTH; i++){
+            for(i=OBJECT_HP,l=OBJECT_EARTH+1; i<=l; i++){
                 currStats[i] += item[i];
             }
         }
+        for(a=0,al=effects.length; a<al; a++){
+            equip = effects[a];
+            if (!equip) continue;
+            for(i=OBJECT_HP,l=OBJECT_EARTH+1; i<=l; i++){
+                currStats[i] += equip[i];
+            }
+        }
+        currStats[OBJECT_PATK] = Ceil((currStats[OBJECT_PATK] > 0 ? currStats[OBJECT_PATK] : stats[OBJECT_PATK])*currStats[OBJECT_STR]);
+        currStats[OBJECT_RATK] = Ceil((currStats[OBJECT_RATK] > 0 ? currStats[OBJECT_RATK] : stats[OBJECT_RATK])*currStats[OBJECT_DEX]);
         currStats[OBJECT_LEVEL] = level;
+
+        restoreStat(OBJECT_PATK, HERO_PATK, 0);
+        restoreStat(OBJECT_RATK, HERO_RATK, 0);
+        restoreStat(OBJECT_DEF, HERO_DEF, 0);
+        restoreStat(OBJECT_WILL, HERO_WILL, 0);
+
         return currStats;
     };
 

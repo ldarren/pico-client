@@ -116,6 +116,8 @@ pico.def('tome', 'picUIContent', function(){
         if (icon) efx[OBJECT_ICON] = icon;
         if (level) efx[OBJECT_LEVEL] = level;
 
+        efx[EFFECT_PERIOD] = 3;
+
         return efx;
     };
 

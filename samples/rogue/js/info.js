@@ -197,14 +197,7 @@ pico.def('info', 'picUIContent', function(){
                     me.fillIconText(ctx, tss, 'Level `0'+G_UI.LEVEL+' '+target[OBJECT_LEVEL], rect, scale);
                     break;
                 case 21:
-                    switch(target[SPELL_ATTR]){
-                    case OBJECT_HP: icon = G_UI.HP; break;
-                    case OBJECT_WILL: icon = G_UI.WILL; break;
-                    case OBJECT_PATK: icon = G_UI.PATK; break;
-                    case OBJECT_RATK: icon = G_UI.RATK; break;
-                    case OBJECT_DEF: icon = G_UI.PDEF; break;
-                    }
-                    me.fillIconText(ctx, tss, 'Cost `0'+icon+' '+target[SPELL_COST], rect, scale);
+                    me.fillIconText(ctx, tss, 'Cost `0'+G_STAT_ICON[target[SPELL_ATTR]]+' '+target[SPELL_COST], rect, scale);
                     break;
                 case 22:
                     me.fillIconText(ctx, tss, 'Wait `0'+G_UI.COOLDOWN+' '+target[SPELL_RELOAD], rect, scale);
