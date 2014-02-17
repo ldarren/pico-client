@@ -668,7 +668,8 @@ pico.def('hero', 'picUIContent', function(){
             if (!creepCount && !chestCount) info += G_MSG.CAST_VOID; 
             break;
         case G_SPELL_TYPE.POISON_BLADE:
-            effects.push(me.tome.createEffect(G_EFFECT_TYPE.POISON_BLADE, spell[OBJECT_LEVEL], spell[OBJECT_ICON]));
+            var level = spell[OBJECT_LEVEL];
+            effects.push(me.tome.createEffect(G_EFFECT_TYPE.POISON_BLADE, spell[OBJECT_LEVEL], 3 * level, spell[OBJECT_ICON]));
             info += G_MSG.CAST_POISONBLADE;
             break;
         case G_SPELL_TYPE.GAZE:

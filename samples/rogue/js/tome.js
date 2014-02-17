@@ -86,7 +86,7 @@ pico.def('tome', 'picUIContent', function(){
         }
     };
 
-    me.createEffect = function(type, level, icon){
+    me.createEffect = function(type, level, period, icon){
         var efx;
 
         switch(type){
@@ -116,9 +116,12 @@ pico.def('tome', 'picUIContent', function(){
         if (icon) efx[OBJECT_ICON] = icon;
         if (level) efx[OBJECT_LEVEL] = level;
 
-        efx[EFFECT_PERIOD] = 3;
+        efx[EFFECT_PERIOD] = period || -1;
 
         return efx;
+    };
+
+    me.destroyEffect = function(){
     };
 
     me.create = function(ent, data){

@@ -10,13 +10,24 @@ pico.def('ai', function(){
     god,hero,objects,flags,terrain,
     updateCreepStat = function(creep, level){
         var
-        stat = me.getStatByCreepId(creep[OBJECT_ICON]),
+        stat = me.getStatByCreepId(creep[OBJECT_ICON]).slice(),
         bufs = stat[CREEP_EFFECT],
         buf,i,l;
 
         for(i=CREEP_ATK; i<=CREEP_MDEF; i++){
-            stat[i] = Ceil(stat[i]*level); // negative is allowed
+            creep[i] = Ceil(stat[i]*level); // negative is allowed
         }
+
+        for(i=0,l=bufs.length; i<l; i++){
+            buf = bufs[i];
+            if (!buf) continue;
+            creep[CREEP_HP] += buf[OBJECT_HP];
+            creep[CREEP_ATK] += buf[OBJECT_PATK]+buf[OBJECT_RATK];
+            creep[CREEP_PDEF] += buf[OBJECT_DEF];
+            creep[CREEP_MDEF] += buf[CHARMED_WILL];
+        }
+
+        return creep;
     },
     createCreepStat = function(creepId, level){
         var
@@ -27,23 +38,23 @@ pico.def('ai', function(){
         i, l;
 
         for(i=0,l=templ.length; i<l; i++){
-            effects.push(tome.createEffect(templ[i], level));
+            effects.push(tome.createEffect(templ[i], level, -1));
         }
 
-        effects.push(tome.createEffect(G_EFFECT_TYPE.BURNED, level));
-        effects.push(tome.createEffect(G_EFFECT_TYPE.CURSED, level));
-        effects.push(tome.createEffect(G_EFFECT_TYPE.DISEASED, level));
-        effects.push(tome.createEffect(G_EFFECT_TYPE.FEARED, level));
-        effects.push(tome.createEffect(G_EFFECT_TYPE.FROZEN, level));
-        effects.push(tome.createEffect(G_EFFECT_TYPE.POISONED, level));
-        effects.push(tome.createEffect(G_EFFECT_TYPE.POISON_BLADE, level));
+        effects.push(tome.createEffect(G_EFFECT_TYPE.BURNED, level, -1));
+        effects.push(tome.createEffect(G_EFFECT_TYPE.CURSED, level, -1));
+        effects.push(tome.createEffect(G_EFFECT_TYPE.DISEASED, level, -1));
+        effects.push(tome.createEffect(G_EFFECT_TYPE.FEARED, level, -1));
+        effects.push(tome.createEffect(G_EFFECT_TYPE.FROZEN, level, -1));
+        effects.push(tome.createEffect(G_EFFECT_TYPE.POISONED, level, -1));
+        effects.push(tome.createEffect(G_EFFECT_TYPE.POISON_BLADE, level, 10));
 
         s[CREEP_EFFECT] = effects;
         s[OBJECT_NAME] = G_OBJECT_NAME[creepId];
         s[OBJECT_DESC] = G_OBJECT_DESC[creepId];
         s[OBJECT_LEVEL] = level;
 
-        updateCreepStat(creep, level);
+        updateCreepStat(s, level);
 
         return s;
     },
@@ -107,6 +118,11 @@ pico.def('ai', function(){
             remain = [];
             for(b=0,bl=bufs.length; b<bl; b++){
                 buf = bufs[i];
+                if (!buf) continue;
+                if (buf[EFFECT_PERIOD] < 0){
+                    remain.push(buf);
+                    continue;
+                }
                 buf[EFFECT_PERIOD] -= steps;
                 if (buf[EFFECT_PERIOD] > 0) remain.push(buf);
             }
