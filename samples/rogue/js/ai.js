@@ -8,19 +8,23 @@ pico.def('ai', function(){
     currIndex = 0,
     level = 0,
     god,hero,objects,flags,terrain,
+    updateCreepStat = function(creep, level){
+        var
+        stat = me.getStatByCreepId(creep[OBJECT_ICON]),
+        bufs = stat[CREEP_EFFECT],
+        buf,i,l;
+
+        for(i=CREEP_ATK; i<=CREEP_MDEF; i++){
+            stat[i] = Ceil(stat[i]*level); // negative is allowed
+        }
+    },
     createCreepStat = function(creepId, level){
         var
         tome = me.tome,
         s = me.getStatByCreepId(creepId).slice(),
         templ = s[CREEP_EFFECT],
-        effects = [];
-
-        for(var i=CREEP_ATK; i<=CREEP_MDEF; i++){
-            s[i] = Ceil(s[i]*level); // negative is allowed
-        }
-        s[OBJECT_NAME] = G_OBJECT_NAME[creepId];
-        s[OBJECT_DESC] = G_OBJECT_DESC[creepId];
-        s[OBJECT_LEVEL] = level;
+        effects = [],
+        i, l;
 
         for(i=0,l=templ.length; i<l; i++){
             effects.push(tome.createEffect(templ[i], level));
@@ -35,6 +39,11 @@ pico.def('ai', function(){
         effects.push(tome.createEffect(G_EFFECT_TYPE.POISON_BLADE, level));
 
         s[CREEP_EFFECT] = effects;
+        s[OBJECT_NAME] = G_OBJECT_NAME[creepId];
+        s[OBJECT_DESC] = G_OBJECT_DESC[creepId];
+        s[OBJECT_LEVEL] = level;
+
+        updateCreepStat(creep, level);
 
         return s;
     },
@@ -89,6 +98,23 @@ pico.def('ai', function(){
     };
 
     me.step = function(steps){
+        var creep, bufs, remain, buf, b, bl;
+        for(var i=0, l=objects.length; i<l; i++){
+            creep = objects[i];
+            if (!creep || G_OBJECT_TYPE.CREEP !== creep[OBJECT_TYPE]) continue;
+
+            bufs = creep[CREEP_EFFECT];
+            remain = [];
+            for(b=0,bl=bufs.length; b<bl; b++){
+                buf = bufs[i];
+                buf[EFFECT_PERIOD] -= steps;
+                if (buf[EFFECT_PERIOD] > 0) remain.push(buf);
+            }
+            if (bufs.length !== remain.length){
+                creep[CREEP_EFFECT] = remain;
+                updateCreepStat(creep, creep[OBJECT_LEVEL]);
+            }
+        }
     };
 
     me.changeTheme = function(){
@@ -252,10 +278,10 @@ pico.def('ai', function(){
     };
 
     me.incrHpAll = function(inc){
-        var creep, stati, creepHp, statHp;
+        var creep, stat, creepHp, statHp;
         for(var i=0, l=objects.length; i<l; i++){
             creep = objects[i];
-            if (!creep || G_OBJECT_TYPE.CREEP !== creep[OBJECT_ICON]) continue;
+            if (!creep || G_OBJECT_TYPE.CREEP !== creep[OBJECT_TYPE]) continue;
 
             stat = me.getStatByObject(creep);
             creepHp = creep[CREEP_HP];
