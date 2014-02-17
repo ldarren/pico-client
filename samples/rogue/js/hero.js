@@ -185,6 +185,8 @@ pico.def('hero', 'picUIContent', function(){
         appearance[currIdx] = curr;
     };
 
+    me.use('tome');
+
     me.create = function(ent, data){
         data = me.base.create.call(this, ent, data);
 
@@ -222,18 +224,31 @@ pico.def('hero', 'picUIContent', function(){
 
     me.step = function(steps){
         var
+        remain = [],
         target, curr,
-        spell, cooldown;
+        magic, cooldown,
+        i,l;
 
-        for(var i=0, l=tome.length; i<l; i++){
-            spell = tome[i];
-            if (!spell) continue;
-            cooldown = spell[SPELL_COOLDOWN];
+        for(i=0,l=effects.length; i<l; i++){
+            magic = effects[i];
+            if (!magic) continue;
+            magic[EFFECT_PERIOD] -= steps;
+            if (magic[EFFECT_PERIOD] > 0) remain.push(magic);
+        }
+        if (effects.length !== remain.length){
+            effects = remain;
+            me.calcStats(appearance[HERO_LEVEL]);
+        }
+
+        for(i=0, l=tome.length; i<l; i++){
+            magic = tome[i];
+            if (!magic) continue;
+            cooldown = magic[SPELL_COOLDOWN];
             if (cooldown) {
                 cooldown -= steps;
                 if (cooldown < 0) cooldown = 0;
             }
-            spell[SPELL_COOLDOWN] = cooldown;
+            magic[SPELL_COOLDOWN] = cooldown;
         }
 
         restoreStat(OBJECT_PATK, HERO_PATK, steps);
@@ -348,65 +363,65 @@ pico.def('hero', 'picUIContent', function(){
         count = item[1];
 
         switch(stat[OBJECT_TYPE]){
-            case G_OBJECT_TYPE.WEAPON:
-                if (2 === stat[WEAPON_HANDED]){
-                    if (appearance[HERO_MAIN] || appearance[HERO_OFF]) return false;
-                    appearance[HERO_MAIN] = appearance[HERO_OFF] = item;
-                    return true;
-                }else{
-                    if (!appearance[HERO_MAIN]){
-                        appearance[HERO_MAIN] = item;
-                        return true;
-                    }
-                    if (G_HERO_CLASS.BARBARIAN === currStats[OBJECT_SUB_TYPE] && !appearance[HERO_OFF]){
-                        appearance[HERO_OFF] = item;
-                        return true;
-                    }
+        case G_OBJECT_TYPE.WEAPON:
+            if (2 === stat[WEAPON_HANDED]){
+                if (appearance[HERO_MAIN] || appearance[HERO_OFF]) return false;
+                appearance[HERO_MAIN] = appearance[HERO_OFF] = item;
+            }else{
+                if (!appearance[HERO_MAIN]){
+                    appearance[HERO_MAIN] = item;
+                } else if (G_HERO_CLASS.BARBARIAN === currStats[OBJECT_SUB_TYPE] && !appearance[HERO_OFF]){
+                    appearance[HERO_OFF] = item;
+                } else {
+                    return false;
+                }
+            }
+            break;
+        case G_OBJECT_TYPE.ARMOR:
+            switch(stat[OBJECT_SUB_TYPE]){
+            case G_ARMOR_TYPE.HELM:
+                if (appearance[HERO_HELM]) return false;
+                appearance[HERO_HELM] = item;
+                break;
+            case G_ARMOR_TYPE.ARMOR:
+                if (appearance[HERO_ARMOR]) return false;
+                appearance[HERO_ARMOR] = item;
+                break;
+            case G_ARMOR_TYPE.SHEILD:
+                if (appearance[HERO_OFF]) return false;
+                appearance[HERO_OFF] = item;
+                break;
+            default:
+                return false;
+            }
+            break;
+        case G_OBJECT_TYPE.JEWEL:
+            switch(stat[OBJECT_SUB_TYPE]){
+            case G_JEWEL_TYPE.RING:
+                if (!appearance[HERO_RINGL]){
+                    appearance[HERO_RINGL] = item;
+                } else if (!appearance[HERO_RINGR]){
+                    appearance[HERO_RINGR] = item;
+                } else {
                     return false;
                 }
                 break;
-            case G_OBJECT_TYPE.ARMOR:
-                switch(stat[OBJECT_SUB_TYPE]){
-                    case G_ARMOR_TYPE.HELM:
-                        if (appearance[HERO_HELM]) return false;
-                        appearance[HERO_HELM] = item;
-                        return true;
-                    case G_ARMOR_TYPE.ARMOR:
-                        if (appearance[HERO_ARMOR]) return false;
-                        appearance[HERO_ARMOR] = item;
-                        return true;
-                    case G_ARMOR_TYPE.SHEILD:
-                        if (appearance[HERO_OFF]) return false;
-                        appearance[HERO_OFF] = item;
-                        return true;
-                }
-                return false;
-            case G_OBJECT_TYPE.JEWEL:
-                switch(stat[OBJECT_SUB_TYPE]){
-                    case G_JEWEL_TYPE.RING:
-                        if (!appearance[HERO_RINGL]){
-                            appearance[HERO_RINGL] = item;
-                            return true;
-                        }
-                        if (!appearance[HERO_RINGR]){
-                            appearance[HERO_RINGR] = item;
-                            return true;
-                        }
-                        return false;
-                    case G_JEWEL_TYPE.AMULET:
-                        if (appearance[HERO_AMULET]) return false;
-                        appearance[HERO_AMULET] = item;
-                        return true;
-                }
-                return false;
-            case G_OBJECT_TYPE.AMMO:
-                var ammo = appearance[HERO_QUIVER];
-                if (!ammo) appearance[HERO_QUIVER] = item;
-                else if (ammo[0][OBJECT_ICON] === stat[OBJECT_ICON]) ammo[1] += count;
-                else return false;
-                return true;
+            case G_JEWEL_TYPE.AMULET:
+                if (appearance[HERO_AMULET]) return false;
+                appearance[HERO_AMULET] = item;
+                break;
             default:
                 return false;
+            }
+            break;
+        case G_OBJECT_TYPE.AMMO:
+            var ammo = appearance[HERO_QUIVER];
+            if (!ammo) appearance[HERO_QUIVER] = item;
+            else if (ammo[0][OBJECT_ICON] === stat[OBJECT_ICON]) ammo[1] += count;
+            else return false;
+            break;
+        default:
+            return false;
         }
         me.calcStats(appearance[HERO_LEVEL]);
         return true;
@@ -653,7 +668,7 @@ pico.def('hero', 'picUIContent', function(){
             if (!creepCount && !chestCount) info += G_MSG.CAST_VOID; 
             break;
         case G_SPELL_TYPE.POISON_BLADE:
-            effects.push(tome.createEffect(G_EFFECT_TYPE.POISON_BLADE, spell[OBJECT_LEVEL], spell[OBJECT_ICON]));
+            effects.push(me.tome.createEffect(G_EFFECT_TYPE.POISON_BLADE, spell[OBJECT_LEVEL], spell[OBJECT_ICON]));
             info += G_MSG.CAST_POISONBLADE;
             break;
         case G_SPELL_TYPE.GAZE:
