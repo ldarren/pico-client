@@ -161,10 +161,10 @@ pico.def('ai', function(){
                         affix = G_ENCHANTED_PREFIX[modifier[DROP_ID]];
                         itemName = affix + ' ' + itemName;
                         if (job & modifier[ENCHANTED_CLASS]){
-                            item[OBJECT_FIRE] = stat[ENHANTED_FIRE];
-                            item[OBJECT_AIR] = stat[ENHANTED_AIR];
-                            item[OBJECT_WATER] = stat[ENHANTED_WATER];
-                            item[OBJECT_EARTH] = stat[ENHANTED_EARTH];
+                            item[OBJECT_FIRE] = modifier[ENHANTED_FIRE];
+                            item[OBJECT_AIR] = modifier[ENHANTED_AIR];
+                            item[OBJECT_WATER] = modifier[ENHANTED_WATER];
+                            item[OBJECT_EARTH] = modifier[ENHANTED_EARTH];
                         }
                         // fall through
                     case G_GRADE.CHARMED:

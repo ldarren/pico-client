@@ -856,7 +856,7 @@
                     {
                         "type":4,
                         "button":1,
-                        "h": 32,
+                        "h": 0.5,
                         "cellPt":1,
                         "uiPt":1,
                         "userData":{"id":"offer"}
@@ -866,7 +866,7 @@
                     {
                         "type":4,
                         "button":1,
-                        "h": 32,
+                        "h": 0.5,
                         "cellPt":1,
                         "uiPt":1,
                         "userData":{"id":"donate"}
@@ -876,7 +876,7 @@
                     {
                         "type":4,
                         "button":1,
-                        "h": 32,
+                        "h": 0.5,
                         "cellPt":1,
                         "uiPt":1,
                         "userData":{"id":"done"}
