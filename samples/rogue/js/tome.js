@@ -121,9 +121,6 @@ pico.def('tome', 'picUIContent', function(){
         return efx;
     };
 
-    me.destroyEffect = function(){
-    };
-
     me.create = function(ent, data){
         data = me.base.create.call(this, ent, data);
 

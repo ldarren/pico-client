@@ -31,23 +31,22 @@ pico.def('ai', function(){
     },
     createCreepStat = function(creepId, level){
         var
-        tome = me.tome,
         s = me.getStatByCreepId(creepId).slice(),
         templ = s[CREEP_EFFECT],
         effects = [],
         i, l;
 
         for(i=0,l=templ.length; i<l; i++){
-            effects.push(tome.createEffect(templ[i], level, -1));
+            effects.push(createEffect(templ[i], level, -1));
         }
 
-        effects.push(tome.createEffect(G_EFFECT_TYPE.BURNED, level, -1));
-        effects.push(tome.createEffect(G_EFFECT_TYPE.CURSED, level, -1));
-        effects.push(tome.createEffect(G_EFFECT_TYPE.DISEASED, level, -1));
-        effects.push(tome.createEffect(G_EFFECT_TYPE.FEARED, level, -1));
-        effects.push(tome.createEffect(G_EFFECT_TYPE.FROZEN, level, -1));
-        effects.push(tome.createEffect(G_EFFECT_TYPE.POISONED, level, -1));
-        effects.push(tome.createEffect(G_EFFECT_TYPE.POISON_BLADE, level, 10));
+        effects.push(createEffect(G_EFFECT_TYPE.BURNED, level, -1));
+        effects.push(createEffect(G_EFFECT_TYPE.CURSED, level, -1));
+        effects.push(createEffect(G_EFFECT_TYPE.DISEASED, level, -1));
+        effects.push(createEffect(G_EFFECT_TYPE.FEARED, level, -1));
+        effects.push(createEffect(G_EFFECT_TYPE.FROZEN, level, -1));
+        effects.push(createEffect(G_EFFECT_TYPE.POISONED, level, -1));
+        effects.push(createEffect(G_EFFECT_TYPE.POISON_BLADE, level, 10));
 
         s[CREEP_EFFECT] = effects;
         s[OBJECT_NAME] = G_OBJECT_NAME[creepId];
@@ -57,6 +56,22 @@ pico.def('ai', function(){
         updateCreepStat(s, level);
 
         return s;
+    },
+    createEffect = function(type, level, period, icon){
+        return me.tome.createEffect(type, level, period, icon);
+    },
+    updateEffect = function(creep, effect, steps){
+        if (effect[EFFECT_PERIOD] < 0){
+            // long live effect
+            return true;
+        }
+        effect[EFFECT_PERIOD] -= steps;
+        if (effect[EFFECT_PERIOD] > 0) return true;
+        
+        destroyEffect(creep, effect);
+        return false;
+    },
+    destroyEffect = function(creep, effect){
     },
     pick = function(list, luck, grade){
         var
@@ -117,14 +132,9 @@ pico.def('ai', function(){
             bufs = creep[CREEP_EFFECT];
             remain = [];
             for(b=0,bl=bufs.length; b<bl; b++){
-                buf = bufs[i];
+                buf = bufs[b];
                 if (!buf) continue;
-                if (buf[EFFECT_PERIOD] < 0){
-                    remain.push(buf);
-                    continue;
-                }
-                buf[EFFECT_PERIOD] -= steps;
-                if (buf[EFFECT_PERIOD] > 0) remain.push(buf);
+                if (updateEffect(creep, buf, steps)) remain.push(buf);
             }
             if (bufs.length !== remain.length){
                 creep[CREEP_EFFECT] = remain;

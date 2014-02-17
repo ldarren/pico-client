@@ -183,6 +183,19 @@ pico.def('hero', 'picUIContent', function(){
         if (curr > target) curr = target;
 
         appearance[currIdx] = curr;
+    },
+    createEffect = function(type, level, period, icon){
+        return me.tome.createEffect(type, level, period, icon);
+    },
+    updateEffect = function(effect, steps){
+        effect[EFFECT_PERIOD] -= steps;
+        if (effect[EFFECT_PERIOD] > 0){
+            return true;
+        }
+        destroyEffect(effect);
+        return false;
+    },
+    destroyEffect = function(effect){
     };
 
     me.use('tome');
@@ -232,8 +245,9 @@ pico.def('hero', 'picUIContent', function(){
         for(i=0,l=effects.length; i<l; i++){
             magic = effects[i];
             if (!magic) continue;
-            magic[EFFECT_PERIOD] -= steps;
-            if (magic[EFFECT_PERIOD] > 0) remain.push(magic);
+            if (updateEffect(magic, steps)){
+                remain.push(magic);
+            }
         }
         if (effects.length !== remain.length){
             effects = remain;
@@ -669,7 +683,7 @@ pico.def('hero', 'picUIContent', function(){
             break;
         case G_SPELL_TYPE.POISON_BLADE:
             var level = spell[OBJECT_LEVEL];
-            effects.push(me.tome.createEffect(G_EFFECT_TYPE.POISON_BLADE, spell[OBJECT_LEVEL], 3 * level, spell[OBJECT_ICON]));
+            effects.push(createEffect(G_EFFECT_TYPE.POISON_BLADE, spell[OBJECT_LEVEL], 3 * level, spell[OBJECT_ICON]));
             info += G_MSG.CAST_POISONBLADE;
             break;
         case G_SPELL_TYPE.GAZE:
