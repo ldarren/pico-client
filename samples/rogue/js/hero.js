@@ -190,24 +190,25 @@ pico.def('hero', 'picUIContent', function(){
         case G_EFFECT_TYPE.SQUEAL:
             suppressEffects([G_EFFECT_TYPE.SQUEAL, G_EFFECT_TYPE.NOCTURNAL, G_EFFECT_TYPE.LYCAN, G_EFFECT_TYPE.GROWL]);
             stats = G_CREATE_OBJECT(G_ICON.ASH_RAT, orgStats[OBJECT_NAME]);
-            stats[OBJECT_TYPE] = orgStats[OBJECT_TYPE];
+            stats[OBJECT_SUB_TYPE] = orgStats[OBJECT_SUB_TYPE];
             break;
         case G_EFFECT_TYPE.NOCTURNAL:
             suppressEffects([G_EFFECT_TYPE.SQUEAL, G_EFFECT_TYPE.NOCTURNAL, G_EFFECT_TYPE.LYCAN, G_EFFECT_TYPE.GROWL]);
             stats = G_CREATE_OBJECT(G_ICON.TAINTED_BAT, orgStats[OBJECT_NAME]);
-            stats[OBJECT_TYPE] = orgStats[OBJECT_TYPE];
+            stats[OBJECT_SUB_TYPE] = orgStats[OBJECT_SUB_TYPE];
             break;
         case G_EFFECT_TYPE.LYCAN:
             suppressEffects([G_EFFECT_TYPE.SQUEAL, G_EFFECT_TYPE.NOCTURNAL, G_EFFECT_TYPE.LYCAN, G_EFFECT_TYPE.GROWL]);
             stats = G_CREATE_OBJECT(G_ICON.DIRE_WOLF, orgStats[OBJECT_NAME]);
-            stats[OBJECT_TYPE] = orgStats[OBJECT_TYPE];
+            stats[OBJECT_SUB_TYPE] = orgStats[OBJECT_SUB_TYPE];
             break;
         case G_EFFECT_TYPE.GROWL:
             suppressEffects([G_EFFECT_TYPE.SQUEAL, G_EFFECT_TYPE.NOCTURNAL, G_EFFECT_TYPE.LYCAN, G_EFFECT_TYPE.GROWL]);
             stats = G_CREATE_OBJECT(G_ICON.ARCTIC_BEAR, orgStats[OBJECT_NAME]);
-            stats[OBJECT_TYPE] = orgStats[OBJECT_TYPE];
+            stats[OBJECT_SUB_TYPE] = orgStats[OBJECT_SUB_TYPE];
             break;
         }
+        heroObj.stats = stats;
         return me.tome.createEffect(type, level, period, icon);
     },
     updateEffect = function(effect, steps){
@@ -222,16 +223,30 @@ pico.def('hero', 'picUIContent', function(){
         var
         remain = [],
         effect, a, al;
+        loop1:
         for(var i=0,l=effects.length; i<l; i++){
             effect = effects[i];
             for (a=0,al=arr.length; a<al; a++){
-                if (arr[a] === effect[OBJECT_SUB_TYPE]) continue;
-                remain.push(effect);
+                if (arr[a] === effect[OBJECT_SUB_TYPE]) continue loop1;
             }
+            remain.push(effect);
         }
-        if (remain.length !== effects.length) effects = remain;
+        if (remain.length !== effects.length){
+            effects.length = 0;
+            Array.prototype.push.apply(effects, remain);
+        }
     },
     destroyEffect = function(effect){
+        var orgStats = stats;
+        switch(effect[OBJECT_SUB_TYPE]){
+        case G_EFFECT_TYPE.SQUEAL:
+        case G_EFFECT_TYPE.NOCTURNAL:
+        case G_EFFECT_TYPE.LYCAN:
+        case G_EFFECT_TYPE.GROWL:
+            stats = G_CREATE_OBJECT(G_HERO_ICON[orgStats[OBJECT_SUB_TYPE]], orgStats[OBJECT_NAME]);
+            break;
+        }
+        heroObj.stats = stats;
     };
 
     me.use('tome');
@@ -268,6 +283,11 @@ pico.def('hero', 'picUIContent', function(){
     };
 
     me.exit = function(){
+        heroObj.appearance = appearance;
+        heroObj.stats = stats;
+        heroObj.effects = effects;
+        heroObj.bag = bag;
+        heroObj.tome = tome;
         return heroObj;
     };
 
@@ -587,7 +607,7 @@ pico.def('hero', 'picUIContent', function(){
         currStats = stats.slice();
         currStats[OBJECT_PATK] = currStats[OBJECT_RATK] = 0
 
-        var i,l,a,al,equip,item;
+        var i,a,al,equip,item;
         for(i=OBJECT_WILL; i<OBJECT_PATK; i++){
             currStats[i] = Ceil(currStats[i]*level); // negative is ok
         }
@@ -595,14 +615,14 @@ pico.def('hero', 'picUIContent', function(){
             equip = appearance[a];
             if (!equip) continue;
             item = equip[0];
-            for(i=OBJECT_HP,l=OBJECT_EARTH+1; i<=l; i++){
+            for(i=OBJECT_HP; i<=OBJECT_EARTH; i++){
                 currStats[i] += item[i];
             }
         }
         for(a=0,al=effects.length; a<al; a++){
             equip = effects[a];
             if (!equip) continue;
-            for(i=OBJECT_HP,l=OBJECT_EARTH+1; i<=l; i++){
+            for(i=OBJECT_HP; i<=OBJECT_EARTH; i++){
                 currStats[i] += equip[i];
             }
         }
@@ -614,6 +634,8 @@ pico.def('hero', 'picUIContent', function(){
         restoreStat(OBJECT_RATK, HERO_RATK, 0);
         restoreStat(OBJECT_DEF, HERO_DEF, 0);
         restoreStat(OBJECT_WILL, HERO_WILL, 0);
+
+        objects[position] = currStats;
 
         return currStats;
     };
@@ -793,6 +815,9 @@ pico.def('hero', 'picUIContent', function(){
             ai.reveal(id);
             break;
         }
+
+        me.calcStats(appearance[HERO_LEVEL]);
+
         this.go('hideInfo');
         this.go('startEffect', {
             type:'castEfx',

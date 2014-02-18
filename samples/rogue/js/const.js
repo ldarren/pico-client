@@ -374,6 +374,22 @@ Object.freeze(G_ICON = {
     DIRE_WOLF: 693,
     ARCTIC_BEAR: 694
 });
+
+Object.freeze(G_HERO_ICON = {
+    1: G_ICON.ROGUE,
+    2: G_ICON.MONK,
+    4: G_ICON.BARBARIAN,
+    8: G_ICON.DRUID,
+    16: G_ICON.HUNTER,
+    32: G_ICON.PALADIN,
+    64: G_ICON.WIZARD,
+    128: G_ICON.WARLOCK,
+    256: G_ICON.ASH_RAT,
+    512: G_ICON.TAINTED_BAT,   
+    1024: G_ICON.DIRE_WOLF,
+    2048: G_ICON.ARCTIC_BEAR
+});
+
 // id, rate, luck factor, grade
 Object.freeze(G_GRADE_RATE = [
     [G_GRADE.LEGENDARY,    1,      G_QUALITY.HIGH,     G_GRADE.ALL], // legend, 2 enchants, 2 charms
