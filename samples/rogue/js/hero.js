@@ -185,6 +185,29 @@ pico.def('hero', 'picUIContent', function(){
         appearance[currIdx] = curr;
     },
     createEffect = function(type, level, period, icon){
+        var orgStats = stats;
+        switch(type){
+        case G_EFFECT_TYPE.SQUEAL:
+            suppressEffects([G_EFFECT_TYPE.SQUEAL, G_EFFECT_TYPE.NOCTURNAL, G_EFFECT_TYPE.LYCAN, G_EFFECT_TYPE.GROWL]);
+            stats = G_CREATE_OBJECT(G_ICON.ASH_RAT, orgStats[OBJECT_NAME]);
+            stats[OBJECT_TYPE] = orgStats[OBJECT_TYPE];
+            break;
+        case G_EFFECT_TYPE.NOCTURNAL:
+            suppressEffects([G_EFFECT_TYPE.SQUEAL, G_EFFECT_TYPE.NOCTURNAL, G_EFFECT_TYPE.LYCAN, G_EFFECT_TYPE.GROWL]);
+            stats = G_CREATE_OBJECT(G_ICON.TAINTED_BAT, orgStats[OBJECT_NAME]);
+            stats[OBJECT_TYPE] = orgStats[OBJECT_TYPE];
+            break;
+        case G_EFFECT_TYPE.LYCAN:
+            suppressEffects([G_EFFECT_TYPE.SQUEAL, G_EFFECT_TYPE.NOCTURNAL, G_EFFECT_TYPE.LYCAN, G_EFFECT_TYPE.GROWL]);
+            stats = G_CREATE_OBJECT(G_ICON.DIRE_WOLF, orgStats[OBJECT_NAME]);
+            stats[OBJECT_TYPE] = orgStats[OBJECT_TYPE];
+            break;
+        case G_EFFECT_TYPE.GROWL:
+            suppressEffects([G_EFFECT_TYPE.SQUEAL, G_EFFECT_TYPE.NOCTURNAL, G_EFFECT_TYPE.LYCAN, G_EFFECT_TYPE.GROWL]);
+            stats = G_CREATE_OBJECT(G_ICON.ARCTIC_BEAR, orgStats[OBJECT_NAME]);
+            stats[OBJECT_TYPE] = orgStats[OBJECT_TYPE];
+            break;
+        }
         return me.tome.createEffect(type, level, period, icon);
     },
     updateEffect = function(effect, steps){
@@ -194,6 +217,19 @@ pico.def('hero', 'picUIContent', function(){
         }
         destroyEffect(effect);
         return false;
+    },
+    suppressEffects = function(arr){
+        var
+        remain = [],
+        effect, a, al;
+        for(var i=0,l=effects.length; i<l; i++){
+            effect = effects[i];
+            for (a=0,al=arr.length; a<al; a++){
+                if (arr[a] === effect[OBJECT_SUB_TYPE]) continue;
+                remain.push(effect);
+            }
+        }
+        if (remain.length !== effects.length) effects = remain;
     },
     destroyEffect = function(effect){
     };
