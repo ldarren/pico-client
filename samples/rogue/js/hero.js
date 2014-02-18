@@ -606,6 +606,10 @@ pico.def('hero', 'picUIContent', function(){
         switch(spell[OBJECT_SUB_TYPE]){
         case G_SPELL_TYPE.WHIRLWIND:
         case G_SPELL_TYPE.POISON_BLADE:
+        case G_SPELL_TYPE.SQUEAL:
+        case G_SPELL_TYPE.NOCTURNAL:
+        case G_SPELL_TYPE.LYCAN:
+        case G_SPELL_TYPE.GROWL:
             if (hp !== id) return false;
         }
 
@@ -684,6 +688,26 @@ pico.def('hero', 'picUIContent', function(){
         case G_SPELL_TYPE.POISON_BLADE:
             var level = spell[OBJECT_LEVEL];
             effects.push(createEffect(G_EFFECT_TYPE.POISON_BLADE, spell[OBJECT_LEVEL], 3 * level, spell[OBJECT_ICON]));
+            info += G_MSG.CAST_POISONBLADE;
+            break;
+        case G_SPELL_TYPE.SQUEAL:
+            var level = spell[OBJECT_LEVEL];
+            effects.push(createEffect(G_EFFECT_TYPE.SQUEAL, spell[OBJECT_LEVEL], 5 * level, spell[OBJECT_ICON]));
+            info += G_MSG.CAST_POISONBLADE;
+            break;
+        case G_SPELL_TYPE.NOCTURNAL:
+            var level = spell[OBJECT_LEVEL];
+            effects.push(createEffect(G_EFFECT_TYPE.NOCTURNAL, spell[OBJECT_LEVEL], 5 * level, spell[OBJECT_ICON]));
+            info += G_MSG.CAST_POISONBLADE;
+            break;
+        case G_SPELL_TYPE.LYCAN:
+            var level = spell[OBJECT_LEVEL];
+            effects.push(createEffect(G_EFFECT_TYPE.LYCAN, spell[OBJECT_LEVEL], 5 * level, spell[OBJECT_ICON]));
+            info += G_MSG.CAST_POISONBLADE;
+            break;
+        case G_SPELL_TYPE.GROWL:
+            var level = spell[OBJECT_LEVEL];
+            effects.push(createEffect(G_EFFECT_TYPE.GROWL, spell[OBJECT_LEVEL], 5 * level, spell[OBJECT_ICON]));
             info += G_MSG.CAST_POISONBLADE;
             break;
         case G_SPELL_TYPE.GAZE:

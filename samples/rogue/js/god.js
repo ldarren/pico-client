@@ -219,6 +219,10 @@ pico.def('god', 'picUIContent', function(){
             effects: [],
             bag: [[G_CREATE_OBJECT(G_ICON.CLAYMORE),1,0]],
             tome: [
+                G_CREATE_OBJECT(G_ICON.SQUEAL),
+                G_CREATE_OBJECT(G_ICON.NOCTURNAL),
+                G_CREATE_OBJECT(G_ICON.LYCAN),
+                G_CREATE_OBJECT(G_ICON.GROWL),
                 G_CREATE_OBJECT(G_ICON.GAZE),
                 G_CREATE_OBJECT(G_ICON.FIREBALL),
                 G_CREATE_OBJECT(G_ICON.POISON_BLADE),

@@ -119,14 +119,24 @@ Object.freeze(G_HERO_CLASS = {
     PALADIN: 32,
     WIZARD: 64,
     WARLOCK: 128,
+    RAT: 256,               // spread fire, reduce hp by turn
+    BAT: 512,               // spread disease, reduce max hp by turn
+    WOLF: 1024,             // spread poison
+    BEAR: 2048,             // spread cold
+    VENOM: 1,               // rogue
+    STEALTH: 129,           // rogue + warlock
     RANGER: 17,             // rogue + hunter
-    HEALER: 34,             // paladin + monk
-    TANKER: 42,             // paladin + druid + monk
-    MELEE: 46,              // paladin + druid + barbarian
-    SPELLCASTER: 192,       // warlock + wizard
+    TRAPPER: 17,            // rogue + hunter
+    PET: 24,                // druid + hunter
+    HEALER: 42,             // paladin + druid + monk
+    TANKER: 46,             // paladin + druid + monk + barbarian
+    MELEE: 46,              // paladin + druid + monk + barbarian
+    NUKER: 192,             // warlock + wizard
+    SHAMAN: 128,            // warlock
+    ANGELIC: 96,            // paladin + wizard
     DPS: 220,               // warlock + wizard + hunter + druid + barbarian
     LIGHT_ARMOR: 191,       // except wizard
-    ARMOR: 46,              // monk + barbarian + druid + paladin
+    ARMOR: 38,              // monk + barbarian + paladin
     HEAVY_ARMOR: 32,        // paladin
     ALL: 255
 });
@@ -310,7 +320,7 @@ Object.freeze(G_ICON = {
     CENTIPEDE: 158,
     SERPENT: 159,
     FUNGI: 160,
-    Hare: 161,
+    HARE: 161,
     BAT: 162,
     BAT_CHAMPION: 163,
     SNAKE: 164,
@@ -342,6 +352,10 @@ Object.freeze(G_ICON = {
     POISON_BLADE: 226,
     GAZE: 256,
     FIREBALL: 295,
+    LYCAN: 562,
+    NOCTURNAL: 565,
+    GROWL: 568,
+    SQUEAL: 571,
 
     EFX_BURNED: 589,
     EFX_CURSED: 590,
@@ -350,6 +364,15 @@ Object.freeze(G_ICON = {
     EFX_FROZEN: 593,
     EFX_POISONED: 594,
     EFX_POISON_BLADE: 595,
+    EFX_SQUEAL: 596,
+    EFX_NOCTURNAL: 597,
+    EFX_LYCAN: 598,
+    EFX_GROWL: 599,
+
+    ASH_RAT: 691,
+    TAINTED_BAT: 692,
+    DIRE_WOLF: 693,
+    ARCTIC_BEAR: 694
 });
 // id, rate, luck factor, grade
 Object.freeze(G_GRADE_RATE = [
@@ -496,8 +519,11 @@ Object.freeze(G_SPELL_TYPE = {
     TORNADO: 25,
     VINES: 26,
     WHIRLWIND: 27,
-    WILD: 28,
-    WINDGRASP: 29,
+    LYCAN: 28,
+    NOCTURNAL: 29,
+    GROWL: 30,
+    SQUEAL: 31,
+    WINDGRASP: 32,
 });
 // from manuscript to spell rate
 Object.freeze(G_SPELL_RATE = [
@@ -506,13 +532,20 @@ Object.freeze(G_SPELL_RATE = [
     [G_ICON.FIREBALL,       5,      G_QUALITY.LOW,      G_GRADE.ALL],
 ]);
 Object.freeze(G_EFFECT_TYPE = {
+    NONE: 0,
+
     BURNED: 1,
     CURSED: 2,
     DISEASED: 3,
     FEARED: 4,
     FROZEN: 5,
     POISONED: 6,
-    POISON_BLADE: 7
+
+    POISON_BLADE: 7,
+    SQUEAL: 8,
+    NOCTURNAL: 9, 
+    LYCAN: 10,
+    GROWL: 11
 });
 Object.freeze(G_WEAPON_TYPE = {
     SWORD: 1,
@@ -757,14 +790,14 @@ Object.freeze(G_OBJECT = [
     [142, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.BANNER],
     [143, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.MESSAGE_BOARD],
     // id, name, desc, level, grade, type, heroType, hp, luck, will, dex, str, [patk, ratk], [def], [veg, insect, beast, undead, demon] [fire, air, water, earth]
-    [144, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.ROGUE,     3, 3, 0.5, 3.0, 1.0,  0.2, 0.0,  0,  1.0,1.0,1.0,1.0,1.0, 0.0,0.0,0.0,0.0],
-    [145, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.MONK,      5, 0, 1.5, 1.5, 2.0,  0.3, 0.0,  0,  1.0,1.0,1.0,1.2,1.2, 0.0,0.0,0.0,0.0],
-    [146, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.BARBARIAN, 9, 1, 0.5, 0.5, 4.0,  0.5, 0.0,  0,  1.0,1.0,1.0,1.0,1.0, 0.0,0.0,0.0,0.0],
-    [147, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.DRUID,     5, 0, 1.8, 2.0, 2.0,  0.3, 0.0,  0,  1.0,1.0,1.0,1.0,1.0, 0.0,0.0,0.0,0.0],
-    [148, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.HUNTER,    4, 2, 1.0, 3.0, 2.0,  0.3, 0.0,  0,  1.0,1.0,1.5,1.0,1.0, 0.0,0.0,0.0,0.0],
-    [149, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.PALADIN,   5, 0, 1.5, 0.5, 2.0,  0.4, 0.0,  1,  1.0,1.0,1.0,1.5,1.0, 0.0,0.0,0.0,0.0],
-    [150, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.WIZARD,    2, 2, 3.0, 0.1, 0.2,  0.1, 0.0,  0,  1,0,1.0,1.0,1.0,1.0, 0.0,0.0,0.0,0.0],
-    [151, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.WARLOCK,   3, 0, 2.5, 0.5, 0.5,  0.2, 0.0,  0,  1.0,1.0,1.0,1.0,1.0, 0.0,0.0,0.0,0.0],
+    [144, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.ROGUE,     3, 3, 0.5, 3.0, 1.0,  0.2, 0.0,  0,  1.0,1.0,1.0,1.0,1.0, 0,0,0,0],
+    [145, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.MONK,      5, 0, 1.5, 1.5, 2.0,  0.3, 0.0,  0,  1.0,1.0,1.0,1.2,1.2, 0,0,0,0],
+    [146, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.BARBARIAN, 9, 1, 0.5, 0.5, 4.0,  0.5, 0.0,  0,  1.0,1.0,1.0,1.0,1.0, 0,0,0,0],
+    [147, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.DRUID,     5, 0, 1.8, 2.0, 2.0,  0.3, 0.0,  0,  1.0,1.0,1.0,1.0,1.0, 0,0,0,0],
+    [148, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.HUNTER,    4, 2, 1.0, 3.0, 2.0,  0.3, 0.0,  0,  1.0,1.0,1.5,1.0,1.0, 0,0,0,0],
+    [149, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.PALADIN,   5, 0, 1.5, 0.5, 2.0,  0.4, 0.0,  1,  1.0,1.0,1.0,1.5,1.0, 0,0,0,0],
+    [150, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.WIZARD,    2, 2, 3.0, 0.1, 0.2,  0.1, 0.0,  0,  1,0,1.0,1.0,1.0,1.0, 0,0,0,0],
+    [151, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.WARLOCK,   3, 0, 2.5, 0.5, 0.5,  0.2, 0.0,  0,  1.0,1.0,1.0,1.0,1.0, 0,0,0,0],
     // id, name, desc, level, grade, type, creepType, hp, atk, pdef, mdef, effect, item
     [152, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  1.1,     1.1,0,  [], null], //Rat
     [153, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.INSECT,   1,  1.1,     1.1,0,  [], null], //'Spiders',
@@ -1178,18 +1211,18 @@ Object.freeze(G_OBJECT = [
     [372, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.TORNADO, 5, 9, 3, 0, 1, 0, 1,0,0,0], // 559
     [373, '','', 2, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.TORNADO, 5, 9, 3, 0, 1, 0, 1,0,0,0],
     [374, '','', 3, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.TORNADO, 5, 9, 3, 0, 1, 0, 1,0,0,0],
-    [375, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.WILD, 5, 9, 3, 0, 1, 0, 1,0,0,0],
-    [376, '','', 2, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.WILD, 5, 9, 3, 0, 1, 0, 1,0,0,0],
-    [377, '','', 3, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.WILD, 5, 9, 3, 0, 1, 0, 1,0,0,0],
-    [378, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.WILD, 5, 9, 3, 0, 1, 0, 1,0,0,0], // 565
-    [379, '','', 2, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.WILD, 5, 9, 3, 0, 1, 0, 1,0,0,0],
-    [380, '','', 3, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.WILD, 5, 9, 3, 0, 1, 0, 1,0,0,0],
-    [381, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.WILD, 5, 9, 3, 0, 1, 0, 1,0,0,0],
-    [382, '','', 2, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.WILD, 5, 9, 3, 0, 1, 0, 1,0,0,0],
-    [383, '','', 3, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.WILD, 5, 9, 3, 0, 1, 0, 1,0,0,0],
-    [384, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.WILD, 5, 9, 3, 0, 1, 0, 1,0,0,0], // 571
-    [385, '','', 2, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.WILD, 5, 9, 3, 0, 1, 0, 1,0,0,0],
-    [386, '','', 3, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.WILD, 5, 9, 3, 0, 1, 0, 1,0,0,0],
+    [375, '','', 1, G_GRADE.ENCHANTED, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.LYCAN, 5, 9, 3, 0, 1, 0, 1,0,0,0],
+    [376, '','', 2, G_GRADE.ENCHANTED, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.LYCAN, 5, 9, 3, 0, 1, 0, 1,0,0,0],
+    [377, '','', 3, G_GRADE.ENCHANTED, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.LYCAN, 5, 9, 3, 0, 1, 0, 1,0,0,0],
+    [378, '','', 1, G_GRADE.ENCHANTED, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.NOCTURNAL, 5, 9, 3, 0, 1, 0, 1,0,0,0], // 565
+    [379, '','', 2, G_GRADE.ENCHANTED, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.NOCTURNAL, 5, 9, 3, 0, 1, 0, 1,0,0,0],
+    [380, '','', 3, G_GRADE.ENCHANTED, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.NOCTURNAL, 5, 9, 3, 0, 1, 0, 1,0,0,0],
+    [381, '','', 1, G_GRADE.LEGENDARY, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.GROWL, 5, 9, 3, 0, 1, 0, 1,0,0,0],
+    [382, '','', 2, G_GRADE.LEGENDARY, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.GROWL, 5, 9, 3, 0, 1, 0, 1,0,0,0],
+    [383, '','', 3, G_GRADE.LEGENDARY, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.GROWL, 5, 9, 3, 0, 1, 0, 1,0,0,0],
+    [384, '','', 1, G_GRADE.LEGENDARY, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.SQUEAL, 5, 9, 3, 0, 1, 0, 1,0,0,0], // 571
+    [385, '','', 2, G_GRADE.LEGENDARY, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.SQUEAL, 5, 9, 3, 0, 1, 0, 1,0,0,0],
+    [386, '','', 3, G_GRADE.LEGENDARY, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.SQUEAL, 5, 9, 3, 0, 1, 0, 1,0,0,0],
     [387, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.WINDGRASP, 5, 9, 3, 0, 1, 0, 1,0,0,0],
     [388, '','', 2, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.WINDGRASP, 5, 9, 3, 0, 1, 0, 1,0,0,0],
     [389, '','', 3, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.WINDGRASP, 5, 9, 3, 0, 1, 0, 1,0,0,0],
@@ -1205,14 +1238,18 @@ Object.freeze(G_OBJECT = [
     [399, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.WINDGRASP, 5, 9, 3, 0, 1, 0, 1,0,0,0],
     [400, '','', 2, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.WINDGRASP, 5, 9, 3, 0, 1, 0, 1,0,0,0],
     [401, '','', 3, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.WINDGRASP, 5, 9, 3, 0, 1, 0, 1,0,0,0],
-    [402, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.EFFECT, G_EFFECT_TYPE.BURNED,         0, 0, 0.0, 0.0, 0.0,  0.0, 0.0,  0.0,  0.0,0.0,0.0,0.0,0.0, 0.0,0.0,0.0,0.0, 0], // 589
-    [403, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.EFFECT, G_EFFECT_TYPE.CURSED,         0, 0, 0.0, 0.0, 0.0,  0.0, 0.0,  0.0,  0.0,0.0,0.0,0.0,0.0, 0.0,0.0,0.0,0.0, 0],
-    [404, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.EFFECT, G_EFFECT_TYPE.DISEASED,       0, 0, 0.0, 0.0, 0.0,  0.0, 0.0,  0.0,  0.0,0.0,0.0,0.0,0.0, 0.0,0.0,0.0,0.0, 0],
-    [405, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.EFFECT, G_EFFECT_TYPE.FEARED,         0, 0, 0.0, 0.0, 0.0,  0.0, 0.0,  0.0,  0.0,0.0,0.0,0.0,0.0, 0.0,0.0,0.0,0.0, 0],
-    [406, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.EFFECT, G_EFFECT_TYPE.FROZEN,         0, 0, 0.0, 0.0, 0.0,  0.0, 0.0,  0.0,  0.0,0.0,0.0,0.0,0.0, 0.0,0.0,0.0,0.0, 0],
-    [407, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.EFFECT, G_EFFECT_TYPE.POISONED,       0, 0, 0.0, 0.0, 0.0,  0.0, 0.0,  0.0,  0.0,0.0,0.0,0.0,0.0, 0.0,0.0,0.0,0.0, 0],
-    [39, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.EFFECT, G_EFFECT_TYPE.POISON_BLADE,    0, 0, 0.0, 0.0, 0.0,  0.0, 0.0,  0.0,  0.0,0.0,0.0,0.0,0.0, 0.0,0.0,0.0,0.0, 0],
-    undefined,undefined,undefined,undefined,undefined,
+    [402, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.EFFECT, G_EFFECT_TYPE.BURNED,         0, 0, 0.0, 0.0, 0.0,  0.0, 0.0,  0.0,  0,0,0,0,0.0, 0,0,0,0, 5], // 589
+    [403, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.EFFECT, G_EFFECT_TYPE.CURSED,         0, 0, 0.0, 0.0, 0.0,  0.0, 0.0,  0.0,  0,0,0,0,0.0, 0,0,0,0, 5],
+    [404, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.EFFECT, G_EFFECT_TYPE.DISEASED,       0, 0, 0.0, 0.0, 0.0,  0.0, 0.0,  0.0,  0,0,0,0,0.0, 0,0,0,0, 5],
+    [405, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.EFFECT, G_EFFECT_TYPE.FEARED,         0, 0, 0.0, 0.0, 0.0,  0.0, 0.0,  0.0,  0,0,0,0,0.0, 0,0,0,0, 5],
+    [406, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.EFFECT, G_EFFECT_TYPE.FROZEN,         0, 0, 0.0, 0.0, 0.0,  0.0, 0.0,  0.0,  0,0,0,0,0.0, 0,0,0,0, 5],
+    [407, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.EFFECT, G_EFFECT_TYPE.POISONED,       0, 0, 0.0, 0.0, 0.0,  0.0, 0.0,  0.0,  0,0,0,0,0.0, 0,0,0,0, 5],
+    [39,  '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.EFFECT, G_EFFECT_TYPE.POISON_BLADE,   0, 0, 0.0, 0.0, 0.0,  0.0, 0.0,  0.0,  0,0,0,0,0.0, 0,0,0,0, 0],
+    [375, '','', 1, G_GRADE.ENCHANTED, G_OBJECT_TYPE.EFFECT, G_EFFECT_TYPE.SQUEAL,      0, 0, 0.0, 0.0, 0.0,  0.0, 0.0,  0.0,  0,0,0,0,0.0, 0,0,0,0, 0],
+    [378, '','', 1, G_GRADE.ENCHNATED, G_OBJECT_TYPE.EFFECT, G_EFFECT_TYPE.NOCTURNAL,   0, 0, 0.0, 0.0, 0.0,  0.0, 0.0,  0.0,  0,0,0,0,0.0, 0,0,0,0, 0],
+    [381, '','', 1, G_GRADE.LEGENDARY, G_OBJECT_TYPE.EFFECT, G_EFFECT_TYPE.LYCAN,       0, 0, 0.0, 0.0, 0.0,  0.0, 0.0,  0.0,  0,0,0,0,0.0, 0,0,0,0, 0],
+    [384, '','', 1, G_GRADE.LEGENDARY, G_OBJECT_TYPE.EFFECT, G_EFFECT_TYPE.GROWL,       0, 0, 0.0, 0.0, 0.0,  0.0, 0.0,  0.0,  0,0,0,0,0.0, 0,0,0,0, 0],
+    undefined,
     undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
     undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
     undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
@@ -1222,8 +1259,12 @@ Object.freeze(G_OBJECT = [
     undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
     undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
     undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
-    undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
-    [143, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.MESSAGE_BOARD],
+    [152, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.RAT,   1, 0, 1.0, 10.0, 1.0,  1.0, 0.0,  0,  1.0,1.0,1.0,1.0,1.0, 0,0,0,0], // 691
+    [155, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.BAT,   1, 0, 1.0, 10.0, 1.0,  1.0, 0.0,  0,  1.0,1.0,1.0,1.0,1.0, 0,0,0,0],
+    [165, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.WOLF,   5, 0, 5.0, 8.0, 8.0,  1.0, 0.0,  4,  1.0,1.0,1.0,1.0,1.0, 0,0,0,0],
+    [167, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.BEAR,   10, 0, 5.0, 2.0, 11.0,  1.0, 0.0,  10,  1.0,1.0,1.0,1.0,1.0, 0,0,0,0],
+    undefined,undefined,undefined,undefined,undefined,undefined,
+    [143, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.MESSAGE_BOARD], // 701
     [143, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.MESSAGE_BOARD],
     [143, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.MESSAGE_BOARD],
     [143, '','', 0, 0, G_OBJECT_TYPE.ENV, G_ENV_TYPE.MESSAGE_BOARD],

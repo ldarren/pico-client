@@ -76,6 +76,10 @@ Object.freeze(G_HERO_CLASS_NAME = {
     32: 'Paladin',
     64: 'Wizard',
     128: 'Warlock',
+    256: 'Ash Rat',
+    512: 'Tainted Bat',
+    1024: 'Dire Wolf',
+    2048: 'Arctic Bear',
     17: 'Rogue, Hunter',
     34: 'Monk, Hunter',
     42: 'Monk, Druid, Paladin',
@@ -299,6 +303,18 @@ Object.freeze(G_OBJECT_NAME = {
     295: 'Fireball',
     296: 'Fireball',
     297: 'Fireball',
+    562: 'Lycan',
+    563: 'Lycan',
+    564: 'Lycan',
+    565: 'Nocturnal',
+    566: 'Nocturnal',
+    567: 'Nocturnal',
+    568: 'Growl',
+    569: 'Growl',
+    570: 'Growl',
+    571: 'Squeal',
+    572: 'Squeal',
+    573: 'Squeal',
 
     589: 'Burned', // reduce hp
     590: 'Cursed', // reduce roll
@@ -307,6 +323,15 @@ Object.freeze(G_OBJECT_NAME = {
     593: 'Frozen', // immobilize, cooldown stop
     594: 'Poisoned', // hp dun heal
     595: 'Poison Blade',
+    596: 'Squeal',
+    597: 'Nocturnal',
+    598: 'Lycan',
+    599: 'Growl',
+
+    691: 'Ash Rat',
+    692: 'Tainted Bat',
+    693: 'Dire wolf',
+    694: 'Arctic Bear',
 
     701: 'Prove your worth',
     702: 'Key objective',
@@ -486,14 +511,22 @@ Object.freeze(G_OBJECT_DESC = {
     295: 'Hurls a fiery ball to selected cell',
     296: 'Hurls a fiery fireball to selected cell',
     297: 'Hurls a fiery mateor to selected cell',
+    562: 'Shape shift to a fast and furious dire wolf can spread poison when attack',
+    565: 'Shape shift to a tainted bat that spread disease to any object come in contact',
+    568: 'Shape shift to a mighty arctic bear that frozen attack object',
+    571: 'Shape shift to ash rat that burn any object come in contact',
 
-    589: 'Burned', // reduce hp
-    590: 'Cursed', // reduce roll
-    591: 'Diseased', // reduce max hp
-    592: 'Feared', // reduce atk and def 
-    593: 'Frozen', // immobilize, cooldown stop
-    594: 'Poisoned', // hp dun heal
-    595: 'Poison Blade',
+    589: 'Reduce HP per turn', // reduce hp
+    590: 'Increase skill casting cost', // reduce roll
+    591: 'Reduce MAX HP per turn', // reduce max hp
+    592: 'Stop attack point regeneration', // reduce atk and def 
+    593: 'Stop cooldown', // immobilize, cooldown stop
+    594: 'Prevent object from healing', // hp dun heal
+    595: 'Poison object when deal damage',
+    596: 'Weak creature that burn creep when touch',
+    597: 'Weak creature that spread disease to contacted creep',
+    598: 'Fast and furious creature that spread poison when attack',
+    599: 'Sturdy and strong creature that freeze contact',
 
     701: "Lord Odin, the allfather of gods, is gathering an army of gods and heroic dead from Valhala to battle against the forces of jotuns. Loki is the jatun lord of the Ill Fate, notorious for killing many gods. Odin attributes this to the deadly dungeon known as Loki's Trial. Filled with unworthy dead and insidious creeps who come from Hel, it is a standing testament to the Loki's madness. Find this dungeon at the south of camp. Complete this trial by retriveing soulstones from 100th level of dungeon to prove your worth in the final battle of the fate of gods.",
     702: "Travel down to next level, use the key to unlock gate to next level. To use key, move near to the key `036 and click on it and choose unlock gate",
@@ -502,6 +535,6 @@ Object.freeze(G_OBJECT_DESC = {
     705: 'Beside getting key, defeating creep also reward you a health globe `0135 and a piety point `0196 . consume a health globe restore one hit point 663 for you and all exposed creeps. Piety point can be used to get rewards from God Odin Altar at town',
     706: 'Creeps are not the only objects conceled in dungeon, there treasure chests that you can find to get equipments, consumable items and spell scrolls. Expose all concealed objects to find treasures',
     707: 'There is a waypoint in this dungeon. A Waypoint is a way to fast travel between dungeon and town. They appear as `09 when inactive, and `017 when activated. besides waypoint there are teleport scrolls to travel back to town immediately',
-    708: 'Looted item from treasure chest are kept in your bag. to equip item from bag, tab on the item and choose Equip. You can see equip item from expanded player stats window. Item may have enchantment that contain elemental power. Your skill requires elemental power to level up',
+    708: 'Looted artifacts from treasure chest are kept in your bag. to equip item from bag, tab on the item and choose Equip. You can see equip item from expanded player stats window. Item may have enchantment that contain elemental power. Your skill requires elemental power to level up',
 });
 

@@ -46,6 +46,10 @@ pico.def('tome', 'picUIContent', function(){
             switch(spell[OBJECT_SUB_TYPE]){
             case G_SPELL_TYPE.WHIRLWIND:
             case G_SPELL_TYPE.POISON_BLADE:
+            case G_SPELL_TYPE.SQUEAL:
+            case G_SPELL_TYPE.NOCTURNAL:
+            case G_SPELL_TYPE.LYCAN:
+            case G_SPELL_TYPE.GROWL:
                 labels[0] = 'Cast';
                 callbacks[0] = 'castSpell';
                 events[0] = null;
@@ -90,27 +94,17 @@ pico.def('tome', 'picUIContent', function(){
         var efx;
 
         switch(type){
-        case G_EFFECT_TYPE.BURNED:
-            efx = G_CREATE_OBJECT(G_ICON.EFX_BURNED);
-            break;
-        case G_EFFECT_TYPE.CURSED:
-            efx = G_CREATE_OBJECT(G_ICON.EFX_CURSED);
-            break;
-        case G_EFFECT_TYPE.DISEASED:
-            efx = G_CREATE_OBJECT(G_ICON.EFX_DISEASED);
-            break;
-        case G_EFFECT_TYPE.FEARED:
-            efx = G_CREATE_OBJECT(G_ICON.EFX_FEARED);
-            break;
-        case G_EFFECT_TYPE.FROZEN:
-            efx = G_CREATE_OBJECT(G_ICON.EFX_FROZEN);
-            break;
-        case G_EFFECT_TYPE.POISONED:
-            efx = G_CREATE_OBJECT(G_ICON.EFX_POISONED);
-            break;
-        case G_EFFECT_TYPE.POISON_BLADE:
-            efx = G_CREATE_OBJECT(G_ICON.EFX_POISON_BLADE);
-            break;
+        case G_EFFECT_TYPE.BURNED:      efx = G_CREATE_OBJECT(G_ICON.EFX_BURNED);       break;
+        case G_EFFECT_TYPE.CURSED:      efx = G_CREATE_OBJECT(G_ICON.EFX_CURSED);       break;
+        case G_EFFECT_TYPE.DISEASED:    efx = G_CREATE_OBJECT(G_ICON.EFX_DISEASED);     break;
+        case G_EFFECT_TYPE.FEARED:      efx = G_CREATE_OBJECT(G_ICON.EFX_FEARED);       break;
+        case G_EFFECT_TYPE.FROZEN:      efx = G_CREATE_OBJECT(G_ICON.EFX_FROZEN);       break;
+        case G_EFFECT_TYPE.POISONED:    efx = G_CREATE_OBJECT(G_ICON.EFX_POISONED);     break;
+        case G_EFFECT_TYPE.POISON_BLADE:efx = G_CREATE_OBJECT(G_ICON.EFX_POISON_BLADE); break;
+        case G_EFFECT_TYPE.SQUEAL:      efx = G_CREATE_OBJECT(G_ICON.EFX_SQUEAL);       break;
+        case G_EFFECT_TYPE.NOCTURNAL:   efx = G_CREATE_OBJECT(G_ICON.EFX_NOCTURNAL);    break;
+        case G_EFFECT_TYPE.LYCAN:       efx = G_CREATE_OBJECT(G_ICON.EFX_LYCAN);        break;
+        case G_EFFECT_TYPE.GROWL:       efx = G_CREATE_OBJECT(G_ICON.EFX_GROWL);        break;
         }
 
         if (icon) efx[OBJECT_ICON] = icon;
