@@ -135,7 +135,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
             data.minHeight = this.smallDevice ? 180 : 360;
             break;
         case infoId:
-            data.minHeight = this.smallDevice ? 112 : 160;
+            data.minHeight = this.smallDevice ? 112 : 224;
             break;
         case dialogMsgId:
         case tradeId:

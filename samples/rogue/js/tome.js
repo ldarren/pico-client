@@ -90,6 +90,14 @@ pico.def('tome', 'picUIContent', function(){
         }
     };
 
+    me.createSpell = function(id, job){
+        var spell = G_CREATE_OBJECT(id);
+        if (job & spell[SPELL_CLASS]){
+            spell[SPELL_COST] = Ceil(spell[SPELL_COST]*0.1);
+        }
+        return spell;
+    };
+
     me.createEffect = function(type, level, period, icon){
         var efx;
 

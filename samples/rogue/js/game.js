@@ -630,7 +630,7 @@ pico.def('game', 'pigSqrMap', function(){
 
         switch(stat[OBJECT_SUB_TYPE]){
             case G_SCROLL_TYPE.MANUSCRIPT:
-                hero.putIntoTome(me.ai.studyScroll(hero.getJob(), hero.getWill(), this.currentLevel));
+                hero.putIntoTome.call(this);
                 break;
             case G_SCROLL_TYPE.IDENTITY:
                 break;

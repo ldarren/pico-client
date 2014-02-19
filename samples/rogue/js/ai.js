@@ -275,13 +275,6 @@ pico.def('ai', function(){
         return goods;
     };
 
-    me.studyScroll = function(job, will, level){
-        var
-        spellInfo = pick(G_SPELL_RATE, will, level),
-        id = spellInfo[DROP_ID];
-        return G_CREATE_OBJECT(id);
-    };
-
     me.getStatByTileId = function(id){ return me.getStatByObject(objects[id]); };
     me.getStatByObject = function(creep){ return me.getStatByCreepId(creep[0]); };
     me.getStatByCreepId = function(id){ return G_OBJECT[id]; };

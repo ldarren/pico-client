@@ -594,6 +594,15 @@ pico.def('hero', 'picUIContent', function(){
         return stat;
     };
 
+    me.putIntoTome = function(spellId){
+        if (!spellId){
+            var spellInfo = pick(G_SPELL_RATE, currStats[OBJECT_LUCK], this.currentLevel);
+            //spellId === G_ICON
+            spellId = spellInfo[DROP_ID];
+        }
+        return tome.push(me.tome.createSpell(spellId, currStats[OBJECT_SUB_TYPE]));
+    };
+
     me.bury = function(god){
         me.clearEngaged();
         god.toHeaven(appearance, currStats);
@@ -853,7 +862,6 @@ pico.def('hero', 'picUIContent', function(){
     me.getItem = function(id){ return bag[id]; }
     me.getTome = function(){ return tome; };
     me.getTomeCap = function(){ return appearance ? appearance[HERO_TOME_CAP] : 4; };
-    me.putIntoTome = function(spell){ return tome.push(spell); };
     me.equal = function(obj){ return obj[OBJECT_ICON] === currStats[OBJECT_ICON] && obj[OBJECT_TYPE] === currStats[OBJECT_TYPE]; };
     me.getHp = function(){ return appearance[HERO_HP]; };
     me.getLuck = function(){ return currStats[OBJECT_LUCK]; };
