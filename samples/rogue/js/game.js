@@ -415,17 +415,12 @@ pico.def('game', 'pigSqrMap', function(){
         var
         hero = this.hero,
         isSpell = evt[0],
-        targetIds = evt[1],
-        attackMsg = evt[2];
-
-        if (!attackMsg) return;
-
-        me.go('showInfo', { info: attackMsg } );
+        targetIds = evt[1];
 
         if (!targetIds || !targetIds.length){
             me.go('counter', me.ai.battle());
 
-            // for spell, reveal level is set at hero.castSpell
+            // for spell, revealng extent is set at hero.castSpell
             if (!isSpell){
                 var
                 flags = me.flags,
@@ -434,8 +429,6 @@ pico.def('game', 'pigSqrMap', function(){
                 for(var i=0,l=engagedIds.length; i<l; i++){
                     delete flags[engagedIds[i]]; // must do it after ai.battle to avoid flag creep attacks
                 }
-            }else{
-                me.go('hideInfo');
             }
             return;
         }

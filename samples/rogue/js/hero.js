@@ -657,17 +657,12 @@ pico.def('hero', 'picUIContent', function(){
     me.castSpell = function(id){
         var spell = selectedSpell;
         if (!spell || spell[SPELL_COOLDOWN]) return false;
-        else this.go('forceRefresh'); // TODO: find a better way to show cooldown counter
 
         var
         map = this.map,
         hp = me.getPosition(),
         object = objects[id],
         objectType = object ? object[OBJECT_TYPE] : undefined;
-                
-        if (object && (G_OBJECT_TYPE.NPC === objectType || 
-            G_OBJECT_TYPE.KEY === objectType || 
-            G_OBJECT_TYPE.ENV === objectType)) return false;
 
         // some spell can only apply to hero
         switch(spell[OBJECT_SUB_TYPE]){
@@ -677,39 +672,53 @@ pico.def('hero', 'picUIContent', function(){
         case G_SPELL_TYPE.NOCTURNAL:
         case G_SPELL_TYPE.LYCAN:
         case G_SPELL_TYPE.GROWL:
-            if (hp !== id) return false;
+            if (hp !== id) id = hp;
         }
+                
+        if (object && (G_OBJECT_TYPE.NPC === objectType || 
+            G_OBJECT_TYPE.KEY === objectType || 
+            G_OBJECT_TYPE.ENV === objectType)) return false;
+
+        var
+        damages = [],
+        cost = spell[SPELL_COST];
+
+        switch (spell[SPELL_ATTR]){
+        case OBJECT_HP:
+            if (appearance[HERO_HP] < cost) return false;
+            appearance[HERO_HP] -= cost;
+            break;
+        case OBJECT_WILL:
+            if (appearance[HERO_WILL] < cost) return false;
+            appearance[HERO_WILL] -= cost;
+            break;
+        case OBJECT_PATK:
+            if (appearance[HERO_PATK] < cost) return false;
+            appearance[HERO_PATK] -= cost;
+            break;
+        case OBJECT_RATK:
+            if (appearance[HERO_RATK] < cost) return false;
+            appearance[HERO_RATK] -= cost;
+            break;
+        case OBJECT_DEF:
+            if (appearance[HERO_DEF] < cost) return false;
+            appearance[HERO_DEF] -= cost;
+            break;
+        default: return false;
+        }
+
+        this.go('forceRefresh'); // TODO: find a better way to show cooldown counter
 
         // return true from here onwards
         spell[SPELL_COOLDOWN] = spell[SPELL_RELOAD]; // set cooldown;
 
-        var
-        castPt = G_D20_ROLL(),
-        totalCastPt = castPt + currStats[OBJECT_WILL];
-
-        if (0 === castPt){
-            this.go('forgetSpell');
-            this.go('attack', [true, [], G_MSG.CAST_FAILURE_MAJOR]);
-            return true; // spell cast
-        }
-
         // deselect spell, major fail still need the spell to be selected
         selectedSpell = undefined;
-
-        if (totalCastPt < spell[SPELL_COST]){
-            this.go('attack', [true, [], G_MSG.CAST_FAILURE_MINOR
-                .replace('TOTAL', totalCastPt)
-                .replace('ROLL', castPt)
-                .replace('STAT', currStats[OBJECT_WILL])
-                .replace('DIFF', spell[SPELL_COST])]);
-            return true; // spell cast
-        }
 
         var
         targets = [],
         isSpell = true,
-        castStr = castPt + spell[SPELL_DAMAGE],
-        info = G_MSG.CAST_SUCCEED.replace('TOTAL',castStr).replace('ROLL',castPt).replace('STR',spell[SPELL_DAMAGE]);
+        castStr = spell[SPELL_DAMAGE];
 
         switch(spell[OBJECT_SUB_TYPE]){
         case G_SPELL_TYPE.WHIRLWIND:
@@ -727,9 +736,6 @@ pico.def('hero', 'picUIContent', function(){
                         targets.push(contactId);
                         ai.incrHp(contactId, -1);
                         ai.bury(contactId);
-                        info += G_MSG.CAST_WHIRLWIND_SUCCEED.replace('DEF', contact[CREEP_MDEF]).replace('NAME', contact[OBJECT_NAME]); 
-                    }else{
-                        info += G_MSG.CAST_WHIRLWIND_FAILURE.replace('DEF', contact[CREEP_MDEF]).replace('NAME', contact[OBJECT_NAME]); 
                     }
                     creepCount++;
                     break;
@@ -749,33 +755,26 @@ pico.def('hero', 'picUIContent', function(){
                 }
                 ai.reveal(contactId);
             }
-            if (chestCount) info += G_MSG.CAST_DESTROY_CHEST.replace('COUNT', chestCount);
-            if (!creepCount && !chestCount) info += G_MSG.CAST_VOID; 
             break;
         case G_SPELL_TYPE.POISON_BLADE:
             var level = spell[OBJECT_LEVEL];
             effects.push(createEffect(G_EFFECT_TYPE.POISON_BLADE, spell[OBJECT_LEVEL], 3 * level, spell[OBJECT_ICON]));
-            info += G_MSG.CAST_POISONBLADE;
             break;
         case G_SPELL_TYPE.SQUEAL:
             var level = spell[OBJECT_LEVEL];
             effects.push(createEffect(G_EFFECT_TYPE.SQUEAL, spell[OBJECT_LEVEL], 5 * level, spell[OBJECT_ICON]));
-            info += G_MSG.CAST_POISONBLADE;
             break;
         case G_SPELL_TYPE.NOCTURNAL:
             var level = spell[OBJECT_LEVEL];
             effects.push(createEffect(G_EFFECT_TYPE.NOCTURNAL, spell[OBJECT_LEVEL], 5 * level, spell[OBJECT_ICON]));
-            info += G_MSG.CAST_POISONBLADE;
             break;
         case G_SPELL_TYPE.LYCAN:
             var level = spell[OBJECT_LEVEL];
             effects.push(createEffect(G_EFFECT_TYPE.LYCAN, spell[OBJECT_LEVEL], 5 * level, spell[OBJECT_ICON]));
-            info += G_MSG.CAST_POISONBLADE;
             break;
         case G_SPELL_TYPE.GROWL:
             var level = spell[OBJECT_LEVEL];
             effects.push(createEffect(G_EFFECT_TYPE.GROWL, spell[OBJECT_LEVEL], 5 * level, spell[OBJECT_ICON]));
-            info += G_MSG.CAST_POISONBLADE;
             break;
         case G_SPELL_TYPE.GAZE:
             if (!this.currentLevel) return false;
@@ -786,10 +785,8 @@ pico.def('hero', 'picUIContent', function(){
                 me.setEngaged(id);
                 this.recalHints();
                 isSpell = false;
-                info += G_MSG.CAST_GAZE_FAILURE;
             }else{
                 flags[id] = G_UI.FLAG;
-                info += G_MSG.CAST_GAZE_SUCCEED;
                 ai.reveal(id);
             }
             break;
@@ -798,12 +795,7 @@ pico.def('hero', 'picUIContent', function(){
                 switch(objectType){
                 case G_OBJECT_TYPE.CREEP:
                     ai.incrHp(id, -1);
-                    info += G_MSG.CAST_FIREBALL_SUCCEED.replace('NAME', object[OBJECT_NAME]);
-                    if (ai.bury(id)){
-                        info += G_MSG.CREEP_KILL;
-                    }else{
-                        info += G_MSG.CREEP_ALIVE;
-                    }
+                    ai.bury(id);
                     targets.push(id);
                     break;
                 case G_OBJECT_TYPE.HERO:
@@ -813,7 +805,6 @@ pico.def('hero', 'picUIContent', function(){
                     if (object[OBJECT_SUB_TYPE] || object[CHEST_ITEM]){
                         objects[id] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
                         targets.push(id);
-                        info += G_MSG.CAST_DESTROY_CHEST.replace('COUNT', 1);
                     }
                     break;
                 default:
@@ -827,13 +818,12 @@ pico.def('hero', 'picUIContent', function(){
 
         me.calcStats(appearance[HERO_LEVEL]);
 
-        this.go('hideInfo');
         this.go('startEffect', {
             type:'castEfx',
             targets:[id],
             spells:[spell[OBJECT_ICON]],
             callback:'attack',
-            event:[isSpell, targets, info]
+            event:[isSpell, targets, damages]
         });
         return true;
     };

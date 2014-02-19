@@ -25,6 +25,7 @@ pico.def('effect', 'picBase', function(){
 
     me.use(TWEENER);
     me.use('camera');
+    me.use('picUIContent');
     me.use('picRenderer');
 
     me.draw = function(ctx, ent, clip){
@@ -83,6 +84,37 @@ pico.def('effect', 'picBase', function(){
             ctx.fillStyle = G_COLOR_TONE[0];
             ctx.fillRect(clip[0], clip[1], clip[2], clip[3]);
             break;
+        case 'battleText':
+            var
+            targets = evt.targets,
+            objects = this.objects,
+            mapW = this.mapWidth,
+            tileW = this.tileWidth,
+            tileH = this.tileHeight,
+            tss = [this.tileSet],
+            scale = this.smallDevice ? 1 : 2,
+            view = me.camera.viewPos(),
+            fill = me.picUIContent.fillIconText,
+            rect = [0, 0, tileW*3, tileH],
+            target, pos, attr, val, text;
+
+            ctx.save();
+            ctx.fillStyle = G_COLOR_TONE[0];
+            ctx.font = scale ? '10px Helvetica' : '12px alagard';
+
+            for(var i=0,l=targets.length; i<l; i++){
+                target = targets[i];
+                pos = target[0];
+                attr = target[1];
+                val = target[2];
+                rect[0] = (view[0] + tileW * (pos%mapW))-tileW, rect[1] = view[1] + tileH * Floor(pos/mapW);
+                text = '`0'+G_STAT_ICON[attr]+(val > 0 ? ' +' : ' ')+val;
+                fill(ctx, tss, text, rect, scale);
+            }
+
+            ctx.load();
+                            
+            break;
         case 'boltEfx':
             var x = tweenOpt.p1, y = tweenOpt.p2;
             ctx.globalAlpha = 0.1;
@@ -127,6 +159,11 @@ pico.def('effect', 'picBase', function(){
         case 'damageEfx':
             tweenOpt.p1 = 0;
             opt.p1 = 200;
+            tweenRateOpt.p1 = 1000;
+            break;
+        case 'battleText':
+            tweenOpt.p1 = 0;
+            opt.p1 = 400;
             tweenRateOpt.p1 = 1000;
             break;
         case 'castEfx':
