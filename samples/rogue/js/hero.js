@@ -679,9 +679,7 @@ pico.def('hero', 'picUIContent', function(){
             G_OBJECT_TYPE.KEY === objectType || 
             G_OBJECT_TYPE.ENV === objectType)) return false;
 
-        var
-        damages = [],
-        cost = spell[SPELL_COST];
+        var cost = spell[SPELL_COST];
 
         switch (spell[SPELL_ATTR]){
         case OBJECT_HP:
@@ -717,14 +715,21 @@ pico.def('hero', 'picUIContent', function(){
 
         var
         targets = [],
-        isSpell = true,
+        damages = [],
+        branches = {
+            type:'battleText',
+            targets:[[hp, spell[SPELL_ATTR], cost]],
+            callback: undefined,
+            event: undefined
+        },
+        branch = branches,
         castStr = spell[SPELL_DAMAGE];
 
         switch(spell[OBJECT_SUB_TYPE]){
         case G_SPELL_TYPE.WHIRLWIND:
             var
             touched = this.getAllTouched(id),
-            contact, contactId, creepCount=0, chestCount=0;
+            contact, contactId;
 
             for(var i=0,l=touched.length; i<l; i++){
                 contactId = touched[i];
@@ -734,23 +739,21 @@ pico.def('hero', 'picUIContent', function(){
                 case G_OBJECT_TYPE.CREEP:
                     if (castStr > contact[CREEP_MDEF]){
                         targets.push(contactId);
+                        damages.push([contactId, OBJECT_HP, -1]);
                         ai.incrHp(contactId, -1);
-                        ai.bury(contactId);
                     }
-                    creepCount++;
                     break;
                 case G_OBJECT_TYPE.CHEST:
                     if (contact[OBJECT_SUB_TYPE] || contact[CHEST_ITEM]){
-                        objects[contactId] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
-                        chestCount++;
                         targets.push(contactId);
                     }
                     break;
+                case G_OBJECT_TYPE.HERO:
                 case G_OBJECT_TYPE.ENV:
                 case G_OBJECT_TYPE.KEY:
                     break;
                 default:
-                    delete objects[contactId];
+                    targets.push(contactId);
                     break;
                 }
                 ai.reveal(contactId);
@@ -784,7 +787,6 @@ pico.def('hero', 'picUIContent', function(){
                 objects[id] = ai.spawnCreep(currStats[OBJECT_LEVEL]);
                 me.setEngaged(id);
                 this.recalHints();
-                isSpell = false;
             }else{
                 flags[id] = G_UI.FLAG;
                 ai.reveal(id);
@@ -795,20 +797,20 @@ pico.def('hero', 'picUIContent', function(){
                 switch(objectType){
                 case G_OBJECT_TYPE.CREEP:
                     ai.incrHp(id, -1);
-                    ai.bury(id);
                     targets.push(id);
                     break;
                 case G_OBJECT_TYPE.HERO:
+                case G_OBJECT_TYPE.ENV:
+                case G_OBJECT_TYPE.KEY:
                     // ignore
                     break;
                 case G_OBJECT_TYPE.CHEST:
                     if (object[OBJECT_SUB_TYPE] || object[CHEST_ITEM]){
-                        objects[id] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
                         targets.push(id);
                     }
                     break;
                 default:
-                    delete objects[id];
+                    targets.push(id);
                     break;
                 }
             }
@@ -818,13 +820,20 @@ pico.def('hero', 'picUIContent', function(){
 
         me.calcStats(appearance[HERO_LEVEL]);
 
-        this.go('startEffect', {
-            type:'castEfx',
-            targets:[id],
-            spells:[spell[OBJECT_ICON]],
-            callback:'attack',
-            event:[isSpell, targets, damages]
-        });
+        if (targets && targets.length){
+            branch.callback = 'startEffect',
+            branch.event = {
+                type: 'damageEfx',
+                targets:targets,
+                callback: 'startEffect',
+                event: {
+                    type: 'battleText',
+                    targets: damages,
+                    callback: 'battleEnd',
+                    event: targets.slice()
+                }
+            };
+        }
         return true;
     };
 

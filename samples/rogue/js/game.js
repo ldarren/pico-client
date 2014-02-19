@@ -547,6 +547,38 @@ pico.def('game', 'pigSqrMap', function(){
         return entities;
     };
 
+    me.battleEnd = function(elapsed, evt, entities){
+        if (!evt || !evt.length) return;
+
+        var
+        objects = this.objects,
+        ai = this.ai,
+        obj, objId;
+
+        for(var i=0,l=evt.length; i<l; i++){
+            objId = evt[i];
+            obj = objects[objId];
+            switch(obj[OBJECT_TYPE]){
+            case G_OBJECT_TYPE.CREEP:
+                ai.bury(objId);
+                break;
+            case G_OBJECT_TYPE.CHEST:
+                if (contact[OBJECT_SUB_TYPE] || contact[CHEST_ITEM]){
+                    objects[objId] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
+                }
+                break;
+            case G_OBJECT_TYPE.HERO:
+            case G_OBJECT_TYPE.ENV:
+            case G_OBJECT_TYPE.KEY:
+                break;
+            default:
+                delete objects[objId];
+                break;
+            }
+        }
+        return entities;
+    };
+
     me.gotoLevel = function(elapsed, level, entities){
         var
         ai = me.ai,
