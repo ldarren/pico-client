@@ -478,7 +478,7 @@ pico.def('game', 'pigSqrMap', function(){
                 me.go('showDialog', {
                     info: [
                         'Ascending to Valhalla,',
-                        'You were killed by '+creep[OBJECT_NAME]+' at level '+me.currentLevel,
+                        'You were killed at level '+me.currentLevel,
                         'Death is permanent. Although you have died, all of your piety points and the dungeons you have explored will be ready on next trial'],
                     callbacks: ['resetWorld']});
             }else{
