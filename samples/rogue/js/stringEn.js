@@ -435,7 +435,7 @@ Object.freeze(G_OBJECT_DESC = {
     132: 'Altar of the god of creation. Make offering to god to gain piety. you may exhange piety for exhancements.',
     133: 'Drink it to restore full health',
     134: 'Soulstones',
-    135: 'Health Globe',
+    135: 'consume it to heal yourself (and enemies)',
     136: 'Symbol of Protection', // Pentagram
     137: 'Key of Life', // ankh
     138: 'Mark of All Seeing Eye',

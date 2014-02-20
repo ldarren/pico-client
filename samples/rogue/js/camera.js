@@ -125,6 +125,7 @@ pico.def('camera', 'picBase', function(){
 
                 if (tileType & G_TILE_TYPE.CREEP){
                     hero.setEngaged(id);
+                    this.go('counter', this.ai.battle());
                 }
             }
         }
@@ -137,13 +138,14 @@ pico.def('camera', 'picBase', function(){
         if ((tileType & G_TILE_TYPE.HIDE)){
             this.audioSprite.play(1);
             this.go('heroMoveTo', [this.nextTile(id, hp)]);
+            this.go('counter', this.ai.battle());
         }else{
             if(object){
                 if (hero.equal(object)){
                     steps = this.solve(hp);
                     if (!steps) return entities;
                     this.go('gameStep', steps);
-                }else if (!hero.isEngaged(id)){
+                }else{
                     if (isNear && G_ENV_TYPE.ALTAR === object[OBJECT_SUB_TYPE]) this.go('showAltar', {callback: 'forceRefresh'});
                     else this.go('showInfo', { targetId: id, context: G_CONTEXT.WORLD });
                 }
@@ -151,10 +153,10 @@ pico.def('camera', 'picBase', function(){
                 this.go('hideInfo');
                 this.audioSprite.play(1);
                 this.go('heroMoveTo', [id]);
+                this.go('counter', this.ai.battle());
             }
         }
 
-        this.go('counter', this.ai.battle());
         return entities;
     };
 

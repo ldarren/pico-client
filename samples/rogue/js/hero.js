@@ -69,7 +69,7 @@ pico.def('hero', 'picUIContent', function(){
             me.fillIconText(ctx, tss, ''+appearance[HERO_WILL]+'/'+currStats[OBJECT_WILL], rect, tileScale);
             break;
         case 'hp':
-            me.fillIconText(ctx, tss, ''+currStats[OBJECT_HP]+'/'+stats[OBJECT_HP], rect, tileScale);
+            me.fillIconText(ctx, tss, ''+appearance[HERO_HP]+'/'+currStats[OBJECT_HP], rect, tileScale);
             break;
         case 'gold':
             me.fillIconText(ctx, tss, ''+appearance[HERO_GOLD], rect, tileScale);
@@ -344,6 +344,8 @@ pico.def('hero', 'picUIContent', function(){
         if (atk > def) {
             ai.incrHp(id, -1);
             ret.push([id, OBJECT_HP, -1]);
+        }else{
+            ret.push([id, OBJECT_HP, 0]);
         }
 
         me.incrAtk(-def);
@@ -846,6 +848,7 @@ pico.def('hero', 'picUIContent', function(){
         return true;
     };
 
+    me.isDead = function(){ return appearance[HERO_HP] < 1; };
     me.incrHp = function(inc){return restoreStat(OBJECT_HP, HERO_HP, inc);};
     me.incrWill = function(inc){return restoreStat(OBJECT_WILL, HERO_WILL, inc);};
     me.incrAtk = function(inc){
@@ -928,7 +931,6 @@ pico.def('hero', 'picUIContent', function(){
 
         if (validList.length) appearance[HERO_ENEMIES] = targets.concat(validList);
     };
-    me.isDead = function(){ return currStats[OBJECT_HP] < 1; };
 
     me.resize = function(ent, width, height){
         var

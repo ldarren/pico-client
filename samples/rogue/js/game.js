@@ -514,6 +514,7 @@ pico.def('game', 'pigSqrMap', function(){
                 }
             });
         }, 500);
+        return entities;
     };
 
     me.flee = function(elapsed, evt, entities){
