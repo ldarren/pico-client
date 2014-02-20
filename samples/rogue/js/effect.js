@@ -99,20 +99,22 @@ pico.def('effect', 'picBase', function(){
             target, pos, attr, val, text;
 
             ctx.save();
-            ctx.fillStyle = G_COLOR_TONE[0];
-            ctx.font = scale ? '10px Helvetica' : '12px alagard';
+            ctx.font = 1 === scale ? '14px Helvetica' : 'bold 24px alagard';
 
             for(var i=0,l=targets.length; i<l; i++){
                 target = targets[i];
                 pos = target[0];
                 attr = target[1];
                 val = target[2];
-                rect[0] = (view[0] + tileW * (pos%mapW))-tileW, rect[1] = view[1] + tileH * Floor(pos/mapW);
+                rect[0] = (view[0] + tileW * (pos%mapW))-tileW, rect[1] = view[1] + tileH * (Floor(pos/mapW)-0.5);
                 text = '`0'+G_STAT_ICON[attr]+(val > 0 ? ' +' : ' ')+val;
+                
+                ctx.fillStyle = val > 0 ? 'YELLOW' : 'RED';
+                
                 fill(ctx, tss, text, rect, scale);
             }
 
-            ctx.load();
+            ctx.restore();
                             
             break;
         case 'boltEfx':
@@ -163,7 +165,7 @@ pico.def('effect', 'picBase', function(){
             break;
         case 'battleText':
             tweenOpt.p1 = 0;
-            opt.p1 = 400;
+            opt.p1 = 800;
             tweenRateOpt.p1 = 1000;
             break;
         case 'castEfx':

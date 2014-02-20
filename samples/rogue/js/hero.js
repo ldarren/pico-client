@@ -172,17 +172,19 @@ pico.def('hero', 'picUIContent', function(){
         case me.CUSTOM_BUTTON: return onCustomDraw.apply(this, arguments); break;
         }
     },
-    restoreStat = function(targetIdx, currIdx, val){
+    restoreStat = function(maxIdx, currIdx, val){
         var
-        target = currStats[targetIdx],
+        max = currStats[maxIdx],
         curr = appearance[currIdx];
 
-        if (curr === target) return;
+        if (undefined === val) val = max;
 
-        if (target > curr) curr += val;
-        if (curr > target) curr = target;
+        curr += val;
+        if (curr > max) curr = max;
+        else if (curr < 0) curr = 0;
 
         appearance[currIdx] = curr;
+        return curr;
     },
     createEffect = function(type, level, period, icon){
         var orgStats = stats;
@@ -332,25 +334,22 @@ pico.def('hero', 'picUIContent', function(){
 
         var
         target = objects[id],
-        creepName = target[OBJECT_NAME],
-        roll = G_D20_ROLL(),
-        atk = me.getAtk(),
+        ranged = me.carryRanged(),
+        HERO_ATK = ranged ? HERO_RATK : HERO_PATK,
+        atk = appearance[HERO_ATK],
         def = target[CREEP_PDEF],
-        total = roll + atk,
-        hit = total > def ? 1 : (0===roll ? 2 : 0),
-        attackMsg = (hit ? G_MSG.ATTACK_WIN : G_MSG.ATTACK_LOST)
-            .replace('NAME', creepName)
-            .replace('TOTAL', total)
-            .replace('ROLL', roll)
-            .replace('ATK', atk)
-            .replace('DEF', def)
-            .replace('DMG', hit);
+        ret = [];
 
-        if (ai.incrHp(id, -hit) < 1){
-            attackMsg += G_MSG.CREEP_KILL;
+
+        if (atk > def) {
+            ai.incrHp(id, -1);
+            ret.push([id, OBJECT_HP, -1]);
         }
 
-        return [false, [id], attackMsg];
+        me.incrAtk(-def);
+        ret.push([position, ranged ? OBJECT_RATK : OBJECT_PATK, -def]);
+
+        return ret;
     };
 
     me.flee = function(){
@@ -639,6 +638,7 @@ pico.def('hero', 'picUIContent', function(){
         currStats[OBJECT_RATK] = Ceil((currStats[OBJECT_RATK] > 0 ? currStats[OBJECT_RATK] : stats[OBJECT_RATK])*currStats[OBJECT_DEX]);
         currStats[OBJECT_LEVEL] = level;
 
+        // make sure dun exceed max
         restoreStat(OBJECT_PATK, HERO_PATK, 0);
         restoreStat(OBJECT_RATK, HERO_RATK, 0);
         restoreStat(OBJECT_DEF, HERO_DEF, 0);
@@ -658,11 +658,7 @@ pico.def('hero', 'picUIContent', function(){
         var spell = selectedSpell;
         if (!spell || spell[SPELL_COOLDOWN]) return false;
 
-        var
-        map = this.map,
-        hp = me.getPosition(),
-        object = objects[id],
-        objectType = object ? object[OBJECT_TYPE] : undefined;
+        var hp = me.getPosition();
 
         // some spell can only apply to hero
         switch(spell[OBJECT_SUB_TYPE]){
@@ -674,6 +670,10 @@ pico.def('hero', 'picUIContent', function(){
         case G_SPELL_TYPE.GROWL:
             if (hp !== id) id = hp;
         }
+
+        var
+        object = objects[id],
+        objectType = object ? object[OBJECT_TYPE] : undefined;
                 
         if (object && (G_OBJECT_TYPE.NPC === objectType || 
             G_OBJECT_TYPE.KEY === objectType || 
@@ -684,23 +684,23 @@ pico.def('hero', 'picUIContent', function(){
         switch (spell[SPELL_ATTR]){
         case OBJECT_HP:
             if (appearance[HERO_HP] < cost) return false;
-            appearance[HERO_HP] -= cost;
+            me.incrHp(-cost);
             break;
         case OBJECT_WILL:
             if (appearance[HERO_WILL] < cost) return false;
-            appearance[HERO_WILL] -= cost;
+            me.incrWill(-cost);
             break;
         case OBJECT_PATK:
             if (appearance[HERO_PATK] < cost) return false;
-            appearance[HERO_PATK] -= cost;
+            me.incrAtk(-cost);
             break;
         case OBJECT_RATK:
             if (appearance[HERO_RATK] < cost) return false;
-            appearance[HERO_RATK] -= cost;
+            me.incrAtk(-cost);
             break;
         case OBJECT_DEF:
             if (appearance[HERO_DEF] < cost) return false;
-            appearance[HERO_DEF] -= cost;
+            me.incrDef(-cost);
             break;
         default: return false;
         }
@@ -714,15 +714,22 @@ pico.def('hero', 'picUIContent', function(){
         selectedSpell = undefined;
 
         var
+        map = this.map,
         targets = [],
         damages = [],
         branches = {
-            type:'battleText',
-            targets:[[hp, spell[SPELL_ATTR], cost]],
-            callback: undefined,
-            event: undefined
+            type:'castEfx',
+            targets:[id],
+            spells:[spell[OBJECT_ICON]],
+            callback: 'startEffect',
+            event: {
+                type:'battleText',
+                targets:[[hp, spell[SPELL_ATTR], -cost]],
+                callback: undefined,
+                event: undefined
+            }
         },
-        branch = branches,
+        branch = branches.event,
         castStr = spell[SPELL_DAMAGE];
 
         switch(spell[OBJECT_SUB_TYPE]){
@@ -798,6 +805,7 @@ pico.def('hero', 'picUIContent', function(){
                 case G_OBJECT_TYPE.CREEP:
                     ai.incrHp(id, -1);
                     targets.push(id);
+                    damages.push([id, OBJECT_HP, -1]);
                     break;
                 case G_OBJECT_TYPE.HERO:
                 case G_OBJECT_TYPE.ENV:
@@ -834,21 +842,25 @@ pico.def('hero', 'picUIContent', function(){
                 }
             };
         }
+        this.go('startEffect', branches);
         return true;
     };
 
-    me.incrHp = function(inc) {
-        var hp = currStats[OBJECT_HP];
-        hp += inc;
-        if (hp > stats[OBJECT_HP]) hp = stats[OBJECT_HP];
-        currStats[OBJECT_HP] = hp;
-        return hp;
+    me.incrHp = function(inc){return restoreStat(OBJECT_HP, HERO_HP, inc);};
+    me.incrWill = function(inc){return restoreStat(OBJECT_WILL, HERO_WILL, inc);};
+    me.incrAtk = function(inc){
+        if (me.carryRanged()) return restoreStat(OBJECT_RATK, HERO_RATK, inc);
+        return restoreStat(OBJECT_PATK, HERO_PATK, inc);
     };
+    me.incrDef = function(inc){return restoreStat(OBJECT_DEF, HERO_DEF, inc);};
 
-    me.rejuvenate = function() {
-        currStats[OBJECT_HP] = stats[OBJECT_HP];
+    me.getHp = function(){ return appearance[HERO_HP]; };
+    me.getWill = function(){ return appearance[OBJECT_WILL]; };
+    me.getDef = function(){ return appearance[HERO_DEF]; };
+    me.getAtk = function(){
+        if (me.carryRanged()) return appearance[HERO_RATK];
+        return appearance[HERO_PATK];
     };
-
     me.getSelectedSpell = function(){ return selectedSpell; };
     me.getPosition = function(){ return position; };
     me.getLastPortal = function(){ return appearance[HERO_PORTAL]; };
@@ -862,10 +874,6 @@ pico.def('hero', 'picUIContent', function(){
     me.getTome = function(){ return tome; };
     me.getTomeCap = function(){ return appearance ? appearance[HERO_TOME_CAP] : 4; };
     me.equal = function(obj){ return obj[OBJECT_ICON] === currStats[OBJECT_ICON] && obj[OBJECT_TYPE] === currStats[OBJECT_TYPE]; };
-    me.getHp = function(){ return appearance[HERO_HP]; };
-    me.getLuck = function(){ return currStats[OBJECT_LUCK]; };
-    me.getWill = function(){ return currStats[OBJECT_WILL]; };
-    me.getDef = function(){ return currStats[OBJECT_DEF]; };
     me.getStat = function(stat){ return currStats[stat]; };
     me.carryRanged = function(){
         var
@@ -881,10 +889,6 @@ pico.def('hero', 'picUIContent', function(){
             return false;
         }
         return true;
-    };
-    me.getAtk = function(){
-        if (me.carryRanged()) return currStats[OBJECT_RATK];
-        return currStats[OBJECT_PATK];
     };
     me.isEngaged = function(id){
         var targets = appearance[HERO_ENEMIES];

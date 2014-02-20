@@ -362,7 +362,7 @@ pico.def('game', 'pigSqrMap', function(){
         loot = object[CHEST_ITEM];
 
         if (!loot) {
-            loot = object[CHEST_ITEM] = this.ai.openChest(hero.getJob(), hero.getLuck(), this.currentLevel);
+            loot = object[CHEST_ITEM] = this.ai.openChest(hero.getJob(), hero.getStat(OBJECT_LUCK), this.currentLevel);
         }
 
         me.go('showDialog', {
@@ -411,55 +411,44 @@ pico.def('game', 'pigSqrMap', function(){
         return entities;
     };
 
-    me.attackAnim = function(elapsed, evt, entities){
-        var
-        hero = this.hero,
-        isSpell = evt[0],
-        targetIds = evt[1];
+    me.attackAnim = function(elapsed, targets, entities){
+        var hero = this.hero;
 
-        if (!targetIds || !targetIds.length){
+        if (!targets || !targets.length){
             me.go('counter', me.ai.battle());
 
-            // for spell, revealng extent is set at hero.castSpell
-            if (!isSpell){
-                var
-                flags = me.flags,
-                engagedIds = hero.getEngaged();
-                
-                for(var i=0,l=engagedIds.length; i<l; i++){
-                    delete flags[engagedIds[i]]; // must do it after ai.battle to avoid flag creep attacks
-                }
+            var
+            flags = me.flags,
+            engagedIds = hero.getEngaged();
+            
+            for(var i=0,l=engagedIds.length; i<l; i++){
+                delete flags[engagedIds[i]]; // must do it after ai.battle to avoid flag creep attacks
             }
             return;
         }
 
-        me.lockInputs();
+        var
+        objects = this.objects,
+        targetId = targets[0][0],
+        pos = hero.getPosition(),
+        creep = objects[targetId];
 
-        if (!isSpell){
-            var
-            targetId = targetIds.pop(),
-            objects = this.objects,
-            pos = hero.getPosition(),
-            creep = objects[targetId];
-
-            hero.move(targetId);
-        }
+        hero.move(targetId);
 
         setTimeout(function(){
-            if(isSpell){
-                me.go('startEffect', {type:'damageEfx',targets:targetIds.slice()});
-                targetIds.length = 0;
-            }else{
-                hero.move(pos); // hero must move first
-                objects[targetId] = creep;
-                me.go('forceRefresh');
-                me.go('startEffect', {type:'damageEfx',targets:[targetId]});
-            }
-
-            me.routeInputs([function(){
-                me.unlockInputs();
-                me.go('attack', evt);
-            }]);
+            hero.move(pos); // hero must move first
+            objects[targetId] = creep;
+            me.go('forceRefresh');
+            me.go('startEffect', {
+                type:'damageEfx',
+                targets:[targetId],
+                callback: 'startEffect',
+                event:{
+                    type:'battleText',
+                    targets:targets,
+                    callback:'attack'
+                }
+            });
         }, 500);
 
         return entities;
@@ -468,41 +457,43 @@ pico.def('game', 'pigSqrMap', function(){
     me.counterAnim = function(elapsed, evt, entities){
         var
         hero = me.hero,
+        pos = hero.getPosition(),
         ai = me.ai,
-        targetIds = evt[0],
-        msgs = evt[1];
+        targetId = evt[0].pop(),
+        damage = evt[1].pop(),
+        objects = this.objects,
+        creep = objects[targetId];
 
-        if (!targetIds.length){
+        if (!creep){
             var engagedIds = hero.getEngaged();
             
             for(var i=0,l=engagedIds.length; i<l; i++){
                 ai.bury(engagedIds[i]);
             }
 
-            engagedIds = hero.getEngaged();
-            me.go('forceRefresh');
-            if (engagedIds.length)
-                me.go('showInfo', { targetId:engagedIds[0], context:G_CONTEXT.WORLD});
+            if (hero.isDead()){
+                objects[pos] = G_CREATE_OBJECT(G_ICON.BONES);
+                hero.bury(me.god);
+                me.go('hideInfo');
+                me.go('showDialog', {
+                    info: [
+                        'Ascending to Valhalla,',
+                        'You were killed by '+creep[OBJECT_NAME]+' at level '+me.currentLevel,
+                        'Death is permanent. Although you have died, all of your piety points and the dungeons you have explored will be ready on next trial'],
+                    callbacks: ['resetWorld']});
+            }else{
+                engagedIds = hero.getEngaged();
+                me.go('forceRefresh');
+                if (engagedIds.length)
+                    me.go('showInfo', { targetId:engagedIds[0], context:G_CONTEXT.WORLD});
+            }
             return;
         }
 
-        var
-        targetId = targetIds.pop(),
-        msg = msgs.pop();
-
-        if (!hero.isEngaged(targetId) || !msg){
+        if (!hero.isEngaged(targetId) || !damage){
             this.go('counter', evt);
             return;
         }
-
-        var
-        objects = this.objects,
-        pos = hero.getPosition(),
-        creep = objects[targetId];
-
-        me.lockInputs();
-
-        me.go('showInfo', {info: msg});
 
         objects[targetId] = undefined;
         objects[pos] = creep;
@@ -511,27 +502,17 @@ pico.def('game', 'pigSqrMap', function(){
             objects[targetId] = creep;
             hero.move(pos);
             ai.bury(targetId);
-            me.go('startEffect', {type:'damageEfx',targets:[pos] });
-
-            if (hero.isDead()){
-                objects[pos] = G_CREATE_OBJECT(G_ICON.BONES);
-                hero.bury(me.god);
-                me.routeInputs([function(){
-                    me.go('hideInfo');
-                    me.go('showDialog', {
-                        info: [
-                            'Ascending to Valhalla,',
-                            'You were killed by '+creep[OBJECT_NAME]+' at level '+me.currentLevel,
-                            'Death is permanent. Although you have died, all of your piety points and the dungeons you have explored will be ready on next trial'],
-                        callbacks: ['resetWorld']});
-                    me.unlockInputs();
-                }]);
-            }else{
-                me.routeInputs([function(){
-                    me.go('counter', evt);
-                    me.unlockInputs();
-                }]);
-            }
+            me.go('startEffect', {
+                type:'damageEfx',
+                targets:[pos],
+                callback: 'startEffect',
+                event:{
+                    type:'battleText',
+                    targets:[damage],
+                    callback:'counter',
+                    event: evt
+                }
+            });
         }, 500);
     };
 

@@ -210,7 +210,8 @@ pico.def('god', 'picUIContent', function(){
     me.createHero = function(){
         var
         job = Round(G_ICON.ROGUE + Random()*(G_ICON.WARLOCK-G_ICON.ROGUE)),
-        stats = G_CREATE_OBJECT(job, heroName);
+        stats = G_CREATE_OBJECT(job, heroName),
+        heroClass = stats[OBJECT_SUB_TYPE];
 
         return {
             //HERO_HELM=0,HERO_ARMOR=1,HERO_MAIN=2,HERO_OFF=3,HERO_RINGL=4,HERO_RINGR=5,HERO_AMULET=6,HERO_QUIVER=7,
@@ -221,14 +222,14 @@ pico.def('god', 'picUIContent', function(){
             effects: [],
             bag: [[G_CREATE_OBJECT(G_ICON.CLAYMORE),1,0]],
             tome: [
-                me.tome.createSpell(G_ICON.SQUEAL, job),
-                me.tome.createSpell(G_ICON.NOCTURNAL, job),
-                me.tome.createSpell(G_ICON.LYCAN, job),
-                me.tome.createSpell(G_ICON.GROWL, job),
-                me.tome.createSpell(G_ICON.GAZE, job),
-                me.tome.createSpell(G_ICON.FIREBALL, job),
-                me.tome.createSpell(G_ICON.POISON_BLADE, job),
-                me.tome.createSpell(G_ICON.WHIRLWIND, job)]
+                me.tome.createSpell(G_ICON.SQUEAL, heroClass),
+                me.tome.createSpell(G_ICON.NOCTURNAL, heroClass),
+                me.tome.createSpell(G_ICON.LYCAN, heroClass),
+                me.tome.createSpell(G_ICON.GROWL, heroClass),
+                me.tome.createSpell(G_ICON.GAZE, heroClass),
+                me.tome.createSpell(G_ICON.FIREBALL, heroClass),
+                me.tome.createSpell(G_ICON.POISON_BLADE, heroClass),
+                me.tome.createSpell(G_ICON.WHIRLWIND, heroClass)]
         };
     };
 

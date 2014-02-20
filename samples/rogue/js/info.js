@@ -344,7 +344,7 @@ pico.def('info', 'picUIContent', function(){
                 break;
             case 'fight':
                 this.audioSprite.play(2);
-                this.go('attack', hero.battle(targetId, false));
+                this.go('attack', hero.battle(targetId));
                 break;
             case 'flee':
                 this.go('flee');
@@ -365,7 +365,7 @@ pico.def('info', 'picUIContent', function(){
                 this.go('showDialog', {info: [target[OBJECT_DESC]], labels:['Close'], callbacks:[]});
                 break;
             case 'rejuvenate':
-                hero.rejuvenate();
+                hero.incrHp();
                 this.go('forceRefresh');
                 break;
             case 'recover':

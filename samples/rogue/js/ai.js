@@ -333,10 +333,12 @@ pico.def('ai', function(){
     me.battle = function(){
         var
         targetIds = hero.getEngaged(),
-        counterMsgs = [],
+        creepIds = [],
+        targets = [],
         def = hero.getDef(),
+        pos = hero.getPosition(),
         hp = hero.getHp(),
-        total, roll, atk, hit, targetId, target, creepName, counterMsg;
+        atk, targetId, target;
 
         for(var i=0,l=targetIds.length; i<l; i++){
             targetId = targetIds[i];
@@ -344,33 +346,17 @@ pico.def('ai', function(){
             atk = target[CREEP_ATK];
 
             if (flags[targetId] || !atk || hp < 1){
-                counterMsgs.push(null);
                 continue;
             }
 
-            creepName = target[OBJECT_NAME];
-            roll = G_D20_ROLL();
-
-            total = roll+atk;
-            hit = total > def ? 1 : (0===roll ? 2:1);
-
-            counterMsg = (hit ? G_MSG.COUNTER_WIN : G_MSG.COUNTER_LOST)
-                .replace('NAME', creepName)
-                .replace('TOTAL', total)
-                .replace('ROLL', roll)
-                .replace('ATK', atk)
-                .replace('DEF', def)
-                .replace('HP', hit);
-
-            hp = hero.incrHp(-1*hit);
-
-            if (hp < 1){
-                counterMsg += G_MSG.HERO_KILL.replace('NAME', creepName);
+            if (atk > def) {
+                hp = hero.incrHp(-1);
+                creepIds.push(targetId);
+                targets.push([pos, OBJECT_HP, -1]);
             }
-            counterMsgs.push(counterMsg);
         }
 
-        return [targetIds, counterMsgs];
+        return [creepIds, targets];
     };
 
     me.bury = function(id){
