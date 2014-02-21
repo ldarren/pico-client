@@ -278,7 +278,7 @@ pico.def('hero', 'picUIContent', function(){
             this.go('showInfo', {targetId: targets[0], context:G_CONTEXT.WORLD});
         }
         currStats = []; // level up will update currStats
-        me.calcStats(level);
+        me.calcStats.call(this, level, true);
         me.move(this.mortalLoc);
 
         return heroObj;
@@ -309,7 +309,7 @@ pico.def('hero', 'picUIContent', function(){
         }
         if (effects.length !== remain.length){
             effects = remain;
-            me.calcStats(appearance[HERO_LEVEL]);
+            me.calcStats.call(this, appearance[HERO_LEVEL]);
         }
 
         for(i=0, l=tome.length; i<l; i++){
@@ -400,7 +400,7 @@ pico.def('hero', 'picUIContent', function(){
         for (var i=HERO_HELM,l=HERO_QUIVER; i<=l; i++){
             slot = body[i];
             if (slot){
-                recovered = me.equipItem(slot);
+                recovered = me.equipItem.call(this, slot);
                 if (!recovered) recovered = me.putIntoBag(slot[0]);
             }
             if (!recovered) return recovered;
@@ -494,7 +494,7 @@ pico.def('hero', 'picUIContent', function(){
         default:
             return false;
         }
-        me.calcStats(appearance[HERO_LEVEL]);
+        me.calcStats.call(this, appearance[HERO_LEVEL]);
         return true;
     };
 
@@ -514,7 +514,7 @@ pico.def('hero', 'picUIContent', function(){
             }
         }
 
-        me.calcStats(appearance[HERO_LEVEL]);
+        me.calcStats.call(this, appearance[HERO_LEVEL]);
         return ret;
     };
     me.isItemEquipped = function(slot){
@@ -609,7 +609,7 @@ pico.def('hero', 'picUIContent', function(){
         god.toHeaven(appearance, currStats);
     };
 
-    me.calcStats = function(lvl){
+    me.calcStats = function(lvl, isInit){
         var level = appearance[HERO_LEVEL];
         if (level < lvl){
             appearance[HERO_LEVEL] = level = lvl;
@@ -645,6 +645,8 @@ pico.def('hero', 'picUIContent', function(){
         restoreStat(OBJECT_RATK, HERO_RATK, 0);
         restoreStat(OBJECT_DEF, HERO_DEF, 0);
         restoreStat(OBJECT_WILL, HERO_WILL, 0);
+
+        me.tome.upgradeSpell.call(this, me.getTome(), currStats[OBJECT_FIRE], currStats[OBJECT_AIR], currStats[OBJECT_WATER], currStats[OBJECT_EARTH], isInit);
 
         objects[position] = currStats;
 
@@ -828,7 +830,7 @@ pico.def('hero', 'picUIContent', function(){
             break;
         }
 
-        me.calcStats(appearance[HERO_LEVEL]);
+        me.calcStats.call(this, appearance[HERO_LEVEL]);
 
         if (targets && targets.length){
             branch.callback = 'startEffect',

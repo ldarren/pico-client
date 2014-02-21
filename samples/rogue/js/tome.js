@@ -90,6 +90,39 @@ pico.def('tome', 'picUIContent', function(){
         }
     };
 
+    me.upgradeSpell = function(tome, fireC, airC, waterC, earthC, isInit){
+        var
+        changes = [],
+        spell, oldLevel, newLevel, oldCooldown, spellTempl, spellTemplId, lvl;
+
+        for(var i=0,l=tome.length; i<l; i++){
+            spell = tome[i];
+            if (!spell) continue;
+            spellTemplId = G_SPELL_ICON[spell[OBJECT_SUB_TYPE]];
+            for(lvl=0; lvl<2; lvl++){
+                spellTempl = G_OBJECT[spellTemplId+lvl];
+                if (fireC < spellTempl[SPELL_FIRE] || airC < spellTempl[SPELL_AIR] || waterC < spellTempl[SPELL_WATER] || earthC < spellTempl[SPELL_EARTH])
+                    break;
+            }
+            oldLevel = spell[OBJECT_LEVEL];
+            oldCooldown = spell[SPELL_COOLDOWN];
+            spellTempl = G_OBJECT[spellTemplId+lvl];
+            newLevel = spellTempl[OBJECT_LEVEL];
+            if (newLevel === oldLevel) continue;
+            spell = G_CREATE_OBJECT(spellTemplId+lvl);
+            spell[SPELL_COOLDOWN] = oldCooldown;
+            tome[i] = spell;
+            changes.push('`1'+spell[OBJECT_ICON]+' '+spell[OBJECT_NAME]+' has changed from level '+oldLevel+' to '+newLevel);
+        }
+        if (!isInit && changes.length){
+            this.go('showDialog', {
+                info:changes,
+                labels:['Close'],
+                callbacks:[]
+            });
+        }
+    };
+
     me.createSpell = function(id, job){
         var spell = G_CREATE_OBJECT(id);
         if (job & spell[SPELL_CLASS]){

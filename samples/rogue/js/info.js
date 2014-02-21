@@ -337,10 +337,10 @@ pico.def('info', 'picUIContent', function(){
 
             switch(callback){
             case 'equip':
-                hero.equipItem(target);
+                hero.equipItem.call(this, target);
                 break;
             case 'unequip':
-                hero.unequipItem(target);
+                hero.unequipItem.call(this, target);
                 break;
             case 'fight':
                 this.audioSprite.play(2);

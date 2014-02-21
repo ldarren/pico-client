@@ -616,7 +616,7 @@ pico.def('game', 'pigSqrMap', function(){
 
         delete objects[targetId];
 
-        me.hero.recoverBody(tomb[TOMB_BODY]);
+        me.hero.recoverBody.call(this, tomb[TOMB_BODY]);
     };
 
     me.createGoods = function(elapsed, evt, entities){

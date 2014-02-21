@@ -196,10 +196,10 @@ pico.def('ai', function(){
                         for(i=DROP_GRADE+1, l=DROP_GRADE+3; i<l; i++){
                             stat = G_ENCHANTED_RATE[modifier[i]];
                             if (!(job & stat[ENCHANTED_CLASS])) continue;
-                            item[OBJECT_FIRE] = stat[ENHANTED_FIRE];
-                            item[OBJECT_AIR] = stat[ENHANTED_AIR];
-                            item[OBJECT_WATER] = stat[ENHANTED_WATER];
-                            item[OBJECT_EARTH] = stat[ENHANTED_EARTH];
+                            item[OBJECT_FIRE] = stat[ENCHANTED_FIRE];
+                            item[OBJECT_AIR] = stat[ENCHANTED_AIR];
+                            item[OBJECT_WATER] = stat[ENCHANTED_WATER];
+                            item[OBJECT_EARTH] = stat[ENCHANTED_EARTH];
                         }
                         for(i=DROP_GRADE+3, l=DROP_GRADE+5; i<l; i++){
                             stat = G_CHARMED_RATE[modifier[i]];
@@ -213,12 +213,12 @@ pico.def('ai', function(){
                         affix = G_ENCHANTED_PREFIX[modifier[DROP_ID]];
                         itemName = affix + ' ' + itemName;
                         if (job & modifier[ENCHANTED_CLASS]){
-                            item[OBJECT_FIRE] = modifier[ENHANTED_FIRE];
-                            item[OBJECT_AIR] = modifier[ENHANTED_AIR];
-                            item[OBJECT_WATER] = modifier[ENHANTED_WATER];
-                            item[OBJECT_EARTH] = modifier[ENHANTED_EARTH];
+                            item[OBJECT_FIRE] = modifier[ENCHANTED_FIRE];
+                            item[OBJECT_AIR] = modifier[ENCHANTED_AIR];
+                            item[OBJECT_WATER] = modifier[ENCHANTED_WATER];
+                            item[OBJECT_EARTH] = modifier[ENCHANTED_EARTH];
                         }
-                        // fall through
+                        break;
                     case G_GRADE.CHARMED:
                         modifier = pick(G_CHARMED_RATE, luck, gradeType);
                         affix = G_CHARMED_POSTFIX[modifier[DROP_ID]];
