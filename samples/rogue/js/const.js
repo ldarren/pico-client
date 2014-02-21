@@ -852,7 +852,7 @@ Object.freeze(G_OBJECT = [
     [147, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.DRUID,     5, 0, 1.8, 2.0, 2.0,  0.3, 0.0,  0,  1.0,1.0,1.0,1.0,1.0, 0,0,0,0],
     [148, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.HUNTER,    4, 2, 1.0, 3.0, 2.0,  0.3, 0.0,  0,  1.0,1.0,1.5,1.0,1.0, 0,0,0,0],
     [149, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.PALADIN,   5, 0, 1.5, 0.5, 2.0,  0.4, 0.0,  1,  1.0,1.0,1.0,1.5,1.0, 0,0,0,0],
-    [150, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.WIZARD,    2, 2, 3.0, 0.1, 0.2,  0.1, 0.0,  0,  1,0,1.0,1.0,1.0,1.0, 0,0,0,0],
+    [150, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.WIZARD,    2, 2, 3.0, 0.1, 0.2,  0.1, 0.0,  0,  1.0,1.0,1.0,1.0,1.0, 0,0,0,0],
     [151, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.WARLOCK,   3, 0, 2.5, 0.5, 0.5,  0.2, 0.0,  0,  1.0,1.0,1.0,1.0,1.0, 0,0,0,0],
     // id, name, desc, level, grade, type, creepType, hp, atk, pdef, mdef, effect, item
     [152, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.BEAST,    1,  1.1,     0.0,0,  [], null], //Rat
