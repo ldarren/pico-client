@@ -685,25 +685,20 @@ pico.def('hero', 'picUIContent', function(){
 
         var cost = spell[SPELL_COST];
 
-        switch (spell[SPELL_ATTR]){
+        switch (me.affordableSpell(spell)){
         case OBJECT_HP:
-            if (appearance[HERO_HP] < cost) return false;
             me.incrHp(-cost);
             break;
         case OBJECT_WILL:
-            if (appearance[HERO_WILL] < cost) return false;
             me.incrWill(-cost);
             break;
         case OBJECT_PATK:
-            if (appearance[HERO_PATK] < cost) return false;
             me.incrAtk(-cost);
             break;
         case OBJECT_RATK:
-            if (appearance[HERO_RATK] < cost) return false;
             me.incrAtk(-cost);
             break;
         case OBJECT_DEF:
-            if (appearance[HERO_DEF] < cost) return false;
             me.incrDef(-cost);
             break;
         default: return false;
@@ -848,6 +843,29 @@ pico.def('hero', 'picUIContent', function(){
         }
         this.go('startEffect', branches);
         return true;
+    };
+
+    me.affordableSpell = function(spell){
+        var cost = spell[SPELL_COST];
+
+        switch (spell[SPELL_ATTR]){
+        case OBJECT_HP:
+            if (appearance[HERO_HP] < cost) return false;
+            return OBJECT_HP;
+        case OBJECT_WILL:
+            if (appearance[HERO_WILL] < cost) return false;
+            return OBJECT_WILL;
+        case OBJECT_PATK:
+            if (appearance[HERO_PATK] < cost) return false;
+            return OBJECT_PATK;
+        case OBJECT_RATK:
+            if (appearance[HERO_RATK] < cost) return false;
+            return OBJECT_RATK;
+        case OBJECT_DEF:
+            if (appearance[HERO_DEF] < cost) return false;
+            return OBJECT_DEF;
+        }
+        return false;
     };
 
     me.isDead = function(){ return appearance[HERO_HP] < 1; };

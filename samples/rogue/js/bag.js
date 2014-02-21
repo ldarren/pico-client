@@ -21,14 +21,14 @@ pico.def('bag', 'picUIContent', function(){
         item = slot[0];
         count = slot[1];
         ts.draw(ctx, item[OBJECT_ICON], x, y, w, h);
+        if (i === com.activated) {
+            ts.draw(ctx, G_UI.SELECTED, x, y, w, h);
+        }
         if(count > 1)  {
             ctx.textBaseline='bottom';
             ctx.textAlign='left';
             var border = 4*scale;
             ctx.fillText(count, x+border, y+h-border, w);
-        }
-        if (i === com.activated) {
-            ts.draw(ctx, G_UI.SELECTED, x, y, w, h);
         }
     },
     onCustomClick = function(ent, ui){

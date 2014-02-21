@@ -12,7 +12,8 @@ pico.def('tome', 'picUIContent', function(){
         var
         ts = tss[0],
         ss = tss[1],
-        items = this.hero.getTome(),
+        hero = this.hero,
+        items = hero.getTome(),
         x=rect[0],y=rect[1],w=rect[2],h=rect[3],
         crop = scale * 4,
         cropLength = scale * 24,
@@ -22,8 +23,16 @@ pico.def('tome', 'picUIContent', function(){
         if (!item) return;
         // crop spell image to show slot frame
         ss.draw(ctx, item[OBJECT_ICON], x+crop, y+crop, cropLength, cropLength, 4, 4, 24, 24);
-        if (item[SPELL_COOLDOWN]) me.fillIconText(ctx, tss, item[SPELL_COOLDOWN], rect, scale);
-        else if (item === this.hero.getSelectedSpell()) ts.draw(ctx, G_UI.SELECTED, x, y, w, h);
+        if (item[SPELL_COOLDOWN]) {
+            var
+            ch = cropLength * (item[SPELL_COOLDOWN]/item[SPELL_RELOAD]),
+            cy = cropLength - ch;
+            ctx.globalCompositeOperation = 'lighter';
+            ctx.fillRect(x+crop, y+crop+cy, cropLength, ch);
+        }else if (!hero.affordableSpell(item)){
+            ts.draw(ctx, G_SHADE[4], x+crop, y+crop, cropLength, cropLength);
+        }
+        if (item === hero.getSelectedSpell()) ts.draw(ctx, G_UI.SELECTED, x, y, w, h);
     },
     onCustomClick = function(ent, ui){
         if (!ui) return false;
@@ -57,6 +66,11 @@ pico.def('tome', 'picUIContent', function(){
             case G_SPELL_TYPE.GAZE:
             case G_SPELL_TYPE.FIREBALL:
                 break;
+            }
+            if (spell[SPELL_COOLDOWN] || !hero.affordableSpell(spell)){
+                labels.shift();
+                callbacks.shift();
+                events.shift();
             }
             this.go('showInfo', {targetId: id, labels: labels, callbacks: callbacks, events: events, context:G_CONTEXT.TOME});
             return true;
