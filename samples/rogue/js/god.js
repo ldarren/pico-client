@@ -220,7 +220,10 @@ pico.def('god', 'picUIContent', function(){
             appearance: [0, 0, 0, 0, 0, 0, 0, 0, stats[OBJECT_HP], 0, 0, 0, 0, 0, 1, 0, 0, 0, 16, 8],
             stats: stats,
             effects: [],
-            bag: [[G_CREATE_OBJECT(G_ICON.CLAYMORE),1,0]],
+            bag: [
+                [G_CREATE_OBJECT(G_ICON.DAGGER),1,0],
+                [G_CREATE_OBJECT(G_ICON.SMALL_HP),10,0]
+            ],
             tome: [
                 me.tome.createSpell(G_ICON.SQUEAL, heroClass),
                 me.tome.createSpell(G_ICON.NOCTURNAL, heroClass),
