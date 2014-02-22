@@ -269,8 +269,9 @@ pico.def('uiWindow', 'picUIWindow', function(){
         return entities;
     };
 
-    me.hideInfo = function(elapsed, evt, entities){
+    me.hideInfo = function(elapsed, force, entities){
         if (this.hideEntity(infoId, true))return entities;
+        if (force) return entities; // force update and refresh all ui
     };
 
     me.showDialog = function(elapsed, evt, entities){

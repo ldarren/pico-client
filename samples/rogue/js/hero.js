@@ -686,25 +686,15 @@ pico.def('hero', 'picUIContent', function(){
         var cost = spell[SPELL_COST];
 
         switch (me.affordableSpell(spell)){
-        case OBJECT_HP:
-            me.incrHp(-cost);
-            break;
-        case OBJECT_WILL:
-            me.incrWill(-cost);
-            break;
-        case OBJECT_PATK:
-            me.incrAtk(-cost);
-            break;
-        case OBJECT_RATK:
-            me.incrAtk(-cost);
-            break;
-        case OBJECT_DEF:
-            me.incrDef(-cost);
-            break;
+        case OBJECT_HP: me.incrHp(-cost); break;
+        case OBJECT_WILL: me.incrWill(-cost); break;
+        case OBJECT_PATK: me.incrPAtk(-cost); break;
+        case OBJECT_RATK: me.incrRAtk(-cost); break;
+        case OBJECT_DEF: me.incrDef(-cost); break;
         default: return false;
         }
 
-        this.go('forceRefresh'); // TODO: find a better way to show cooldown counter
+        this.go('hideInfo', true); // if cast spell by tap on ground, spell info might still open
 
         // return true from here onwards
         spell[SPELL_COOLDOWN] = spell[SPELL_RELOAD]; // set cooldown;
@@ -786,13 +776,14 @@ pico.def('hero', 'picUIContent', function(){
             effects.push(createEffect(G_EFFECT_TYPE.GROWL, spell[OBJECT_LEVEL], 5 * level, spell[OBJECT_ICON]));
             break;
         case G_SPELL_TYPE.GAZE:
-            if (!this.currentLevel) return false;
             if (!object){
-                map[id] |= G_TILE_TYPE.CREEP;
-                map[id] &= G_TILE_TYPE.SHOW;
-                objects[id] = ai.spawnCreep(currStats[OBJECT_LEVEL]);
-                me.setEngaged(id);
-                this.recalHints();
+                if (this.currentLevel){ // dun spawn creep at town ;)
+                    map[id] |= G_TILE_TYPE.CREEP;
+                    map[id] &= G_TILE_TYPE.SHOW;
+                    objects[id] = ai.spawnCreep(currStats[OBJECT_LEVEL]);
+                    me.setEngaged(id);
+                    this.recalHints();
+                }
             }else{
                 flags[id] = G_UI.FLAG;
                 ai.reveal(id);
@@ -871,6 +862,8 @@ pico.def('hero', 'picUIContent', function(){
     me.isDead = function(){ return appearance[HERO_HP] < 1; };
     me.incrHp = function(inc){return restoreStat(OBJECT_HP, HERO_HP, inc);};
     me.incrWill = function(inc){return restoreStat(OBJECT_WILL, HERO_WILL, inc);};
+    me.incrPAtk = function(inc){return restoreStat(OBJECT_PATK, HERO_PATK, inc);};
+    me.incrRAtk = function(inc){return restoreStat(OBJECT_RATK, HERO_RATK, inc);};
     me.incrAtk = function(inc){
         if (me.carryRanged()) return restoreStat(OBJECT_RATK, HERO_RATK, inc);
         return restoreStat(OBJECT_PATK, HERO_PATK, inc);

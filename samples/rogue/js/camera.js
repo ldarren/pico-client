@@ -199,10 +199,8 @@ pico.def('camera', 'picBase', function(){
         fh = sd ? 16 : 32,
         fx = tileW - fw,
         fy = tileH - fh,
-        //hero = this.hero,
-        //hp = hero.getPosition(),
-        //selectedSpell = hero.getSelectedSpell(),
-        hint, flag, x, y, i, j, object, tileId;
+        hero = this.hero,
+        hp, hint, flag, x, y, i, j, object, tileId;
 
         screenshotX = viewX, screenshotY = viewY;
 
@@ -255,10 +253,11 @@ pico.def('camera', 'picBase', function(){
         }
 
         // draw player active skill
-        //if (selectedSpell && selectedSpell[OBJECT_ICON] === G_ICON.ALL_SEEING){
-        //    x = viewX + tileW * (hp%mapW), y = viewY + tileH * Floor(hp/mapW);
-        //    tileSet.draw(ctx, G_UI.FLAG, x, y, hw, hh);
-        //}
+        if (hero.getSelectedSpell()){
+            hp = hero.getPosition();
+            x = viewX + tileW * (hp%mapW), y = viewY + tileH * Floor(hp/mapW);
+            tileSet.draw(ctx, G_UI.DAMAGE, x, y, hw, hh);
+        }
 
         // draw transparent objects
         //ctx.globalAlpha = 0.6;

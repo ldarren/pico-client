@@ -76,7 +76,7 @@ pico.def('tome', 'picUIContent', function(){
             return true;
         }
         
-        this.go('hideInfo');
+        this.go('hideInfo', true);
         return false;
     },
     onCustomDrop = function(ent, ui, cell){

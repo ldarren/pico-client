@@ -239,7 +239,7 @@ pico.def('info', 'picUIContent', function(){
                 case G_OBJECT_TYPE.SCROLL:
                 case G_OBJECT_TYPE.MATERIAL:
                 default:
-                    if (9 === id) me.fillIconText(ctx, tss, stat[OBJECT_NAME]+': '+stat[OBJECT_DESC], rect, scale);
+                    if (9 === id) me.fillIconText(ctx, tss, stat[OBJECT_NAME]+' (X'+count+') : '+stat[OBJECT_DESC], rect, scale);
                     break;
                 }
                 break;

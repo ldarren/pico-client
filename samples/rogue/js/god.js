@@ -222,7 +222,7 @@ pico.def('god', 'picUIContent', function(){
             effects: [],
             bag: [
                 [G_CREATE_OBJECT(G_ICON.DAGGER),1,0],
-                [G_CREATE_OBJECT(G_ICON.SMALL_HP),10,0]
+                [G_CREATE_OBJECT(G_ICON.SMALL_HP),9999,0]
             ],
             tome: [
                 me.tome.createSpell(G_ICON.SQUEAL, heroClass),
