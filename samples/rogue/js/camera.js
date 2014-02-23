@@ -71,7 +71,6 @@ pico.def('camera', 'picBase', function(){
                 continue;
             }
             //if (x > vx && y > vy && x < vx+vw && y < vy+vh){
-console.log('camera checkBound');
                 com.isValidClick = true;
                 return [e];
             //}

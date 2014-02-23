@@ -350,8 +350,6 @@ pico.def('uiWindow', 'picUIWindow', function(){
             comBox = ent.getComponent(com.box);
             layout = com.layouts[com.maximized];
             com.isValidClick = active = (layout[0] < x && (layout[0]+layout[2]) > x && layout[1] < y && (layout[1]+layout[3]) > y);
-console.log('uiWindow checkBound '+x+','+y+': '+layout[0]+','+layout[1]+','+layout[2]+','+layout[3]);
-console.log('active:'+active);
             if (active !== com.active){
                 com.active = active;
             }

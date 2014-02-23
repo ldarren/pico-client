@@ -24,23 +24,19 @@ pico.def('dialogMsg', 'picUIContent', function(){
         me.drawButton(ctx, tss, msg.labels[ui.userData.id], rect, scale, '#204631', '#d7e894', '#aec440', 3);
     },
     onCustomClick = function(ent, ui){
+        if (!ui) return false;
+
         var
-        i = 0,
-        ret = false;
+        i = ui.userData.id,
+        route = msg.callbacks[i];
 
-        if (ui){
-            i = ui.userData.id;
-            this.go('hideDialog'); // only hide when click on button
-        }
-
-        var route = msg.callbacks[i];
+        this.go('hideDialog'); // only hide when click on button
 
         if (route){
-            ret = true;
             this.go(route, msg.events ? msg.events[i] : undefined);
         }
 
-        return ret;
+        return true;
     },
     onCustomUI = function(){
         switch(Array.prototype.shift.call(arguments)){
