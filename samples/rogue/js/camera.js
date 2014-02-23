@@ -53,13 +53,13 @@ pico.def('camera', 'picBase', function(){
 
     me.checkBound = function(elapsed, evt, entities){
         var
-        x = evt[0], y = evt[1],
+        /*x = evt[0], y = evt[1],
         tw = this.tileWidth,
         th = this.tileHeight,
         vx = viewX + (viewStart % this.mapWidth)*tw,
         vy = viewY + Floor(viewStart / this.mapWidth)*tw,
         vw = viewWidth*tw,
-        vh = viewHeight*th,
+        vh = viewHeight*th,*/
         unknowns = [],
         e, com;
 
@@ -70,10 +70,11 @@ pico.def('camera', 'picBase', function(){
                 unknowns.push(e);
                 continue;
             }
-            if (x > vx && y > vy && x < vx+vw && y < vy+vh){
+            //if (x > vx && y > vy && x < vx+vw && y < vy+vh){
+console.log('camera checkBound');
                 com.isValidClick = true;
                 return [e];
-            }
+            //}
         }
 
         return unknowns;
@@ -99,7 +100,7 @@ pico.def('camera', 'picBase', function(){
         y = Floor((evt[1] - viewY) / this.tileHeight),
         id, tileType, object, steps, isNear;
 
-        if (y > mapH || x > mapW) return entities;
+        if (y < 0 || x < 0 || y > mapH || x > mapW) return entities;
 
         id = mapW * y + x;
 
