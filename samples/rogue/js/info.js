@@ -381,7 +381,13 @@ pico.def('info', 'picUIContent', function(){
                 this.go('showTrade', [targetId]);
                 break;
             case 'showMyGoods':
-                this.go('openForSale', [G_WIN_ID.BAG, 'sale']);
+                this.go('showTrade', {
+                    info:['Select an item to trade with merchant'],
+                    content: hero.getBag() || [],
+                    labels: ['Sell', 'Close'],
+                    callbacks:[''],
+                    type: G_ICON.GOLD
+                });
                 break;
             case 'chant':
                 this.go('chant', [targetId]);

@@ -4,6 +4,7 @@ pico.def('trade', 'picUIContent', function(){
     Floor=Math.floor,Ceil=Math.ceil,Round=Math.round,Random=Math.random,Max=Math.max,Min=Math.min,
     name = me.moduleName,
     TRADE_ROW = 4, TRADE_COL = 4,
+    money = '',
     info = undefined,
     content = undefined,
     labels = undefined,
@@ -16,13 +17,13 @@ pico.def('trade', 'picUIContent', function(){
         com = ent.getComponent(name),
         ts = tss[0],
         id = ui.userData.id,
-        x=rect[0], y=rect[1], w=rect[2], h=rect[3];
+        x=rect[0], y=rect[1], w=rect[2], h=rect[3],
+        slot, good, value;
 
         if ('number' === typeof id){
-            var slot = content[id];
+            slot = content[id];
             if (!slot) return;
-            var
-            good = slot[0],
+            good = slot[0];
             count = slot[1];
 
             ts.draw(ctx, good[OBJECT_ICON], x, y, w, h);
@@ -44,7 +45,14 @@ pico.def('trade', 'picUIContent', function(){
                 ctx.fillText(count, x1, y1, w);
             }
         }else{
-            if (-1 !== id.indexOf('btn')){
+            if (-1 !== id.indexOf('price')){
+                slot = content[id.substr(5)];
+                if (!slot) return;
+                good = slot[0];
+                count = slot[1];
+
+                me.fillIconText(ctx, tss, money+me.price(good, count), rect, scale);
+            }else if (-1 !== id.indexOf('btn')){
                 me.drawButton(ctx, tss, labels[id.charAt(3)], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
             }else if (-1 !== id.indexOf('info')){
                 me.fillIconText(ctx, tss, info[id.charAt(4)], rect, scale);
@@ -95,6 +103,24 @@ pico.def('trade', 'picUIContent', function(){
         }
     };
 
+    me.price = function(object, count){
+        if (!object) return 0;
+        var baseValue = 1;
+        switch(object[OBJECT_TYPE]){
+        case G_OBJECT_TYPE.POTION: baseValue = 1; break;
+        case G_OBJECT_TYPE.SCROLL: baseValue = 2; break;
+        case G_OBJECT_TYPE.WEAPON: baseValue = 2; break;
+        case G_OBJECT_TYPE.AMMO: baseValue = 1; break;
+        case G_OBJECT_TYPE.ARMOR: baseValue = 3; break;
+        case G_OBJECT_TYPE.JEWEL: baseValue = 3; break;
+        case G_OBJECT_TYPE.MATERIAL: baseValue = 1; break;
+        }
+        baseValue *= object[OBJECT_LEVEL];
+        baseValue *= object[OBJECT_GRADE];
+        baseValue *= count;
+        return baseValue;
+    };
+
     me.create = function(ent, data){
         data = me.base.create.call(this, ent, data);
 
@@ -109,6 +135,7 @@ pico.def('trade', 'picUIContent', function(){
         content = evt.content;
         labels = evt.labels;
         callbacks = evt.callbacks;
+        money = evt.type ? '`0'+evt.type+' ' : '`0195 '
     };
 
     me.hide = function(ent, com, evt){
@@ -128,10 +155,10 @@ pico.def('trade', 'picUIContent', function(){
         style = {font: com.font,fillStyle:com.fontColor},
         tw = this.tileWidth,
         th = this.tileHeight,
-        rowC = Max(TRADE_ROW, Ceil(content.length / TRADE_COL)),
+        rowC = Max(TRADE_ROW, Ceil(2 * content.length / TRADE_COL)),
         meshui,rows,row,cell,i,l;
 
-        meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, th * (1 + info.length + rowC + 1)), style);
+        meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, th * (2 + info.length + rowC + 1)), style);
         rows=meshui.rows;
 
         row=me.createMeshRow(rows);
@@ -145,6 +172,8 @@ pico.def('trade', 'picUIContent', function(){
             cell=me.createMeshCell(row);
             me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 0, 0, {id:'info'+i});
         }
+
+        me.createMeshRow(rows);
 
         for(i=0,l=rowC;i<l;i++){
             row=me.createMeshRow(rows);
@@ -162,6 +191,20 @@ pico.def('trade', 'picUIContent', function(){
             cell=me.createMeshCell(row);
             me.createMeshTile(cell, me.CENTER, me.CENTER, 0, tw, th, 0, G_UI.SLOT);
             me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, tw, th, 1, 0, {id:3+(i*TRADE_COL)});
+            me.createMeshCell(row);
+            me.createMeshCell(row);
+
+            row=me.createMeshRow(rows);
+            me.createMeshCell(row);
+            me.createMeshCell(row);
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, tw, th, 1, 0, {id:'price'+(i*TRADE_COL)});
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, tw, th, 1, 0, {id:'price'+(1+(i*TRADE_COL))});
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, tw, th, 1, 0, {id:'price'+(2+(i*TRADE_COL))});
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, tw, th, 1, 0, {id:'price'+(3+(i*TRADE_COL))});
             me.createMeshCell(row);
             me.createMeshCell(row);
         }

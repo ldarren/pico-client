@@ -113,6 +113,7 @@ pico.def('god', 'picUIContent', function(){
                 info:['Select an item from your bag and make it an offerring to god'],
                 content: hero.getBag() || [],
                 labels:['Donate', 'Close'],
+                type: G_ICON.PIETY,
                 callbacks:['makeOffer']});
             return true;
         case 'tithe':
@@ -136,6 +137,7 @@ pico.def('god', 'picUIContent', function(){
     };
 
     me.use('tome');
+    me.use('ai');
 
     me.init = function(name){
         var h = this.heaven;
