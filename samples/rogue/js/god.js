@@ -9,8 +9,8 @@ pico.def('god', 'picUIContent', function(){
     heroBody, heroName, heroPiety,
     onCustomBound = function(ent, rect, ui, scale){
         switch(ui.userData.id){
-        case 'offer':
         case 'donate':
+        case 'tithe':
         case 'done':
             return me.calcUIRect(rect, ui);
         }
@@ -28,10 +28,10 @@ pico.def('god', 'picUIContent', function(){
         case 'piety':
             me.fillIconText(ctx, tss, 'You have '+heroPiety+' `0'+G_UI.PIETY+' piety points', rect, scale);
             break;
-        case 'offer':
+        case 'donate':
             me.drawButton(ctx, tss, labels[0], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
             break;
-        case 'donate':
+        case 'tithe':
             me.drawButton(ctx, tss, labels[1], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
             break;
         case 'done':
@@ -67,10 +67,15 @@ pico.def('god', 'picUIContent', function(){
         label;
 
         switch(id){
-        case 'offer':
-            label = labels[0];
-            break;
         case 'donate':
+            label = labels[0];
+            this.go('showTrade', {
+                info:['Select an item from your bag and make it an offerring to god'],
+                content: hero.getBag(),
+                labels:['Donate', 'Close'],
+                callbacks:['makeOffer']});
+            break;
+        case 'tithe':
             label = labels[1];
             break;
         case 'done':
@@ -107,9 +112,9 @@ pico.def('god', 'picUIContent', function(){
         i = ui.userData.id;
 
         switch(i){
-        case 'offer':
-            return true;
         case 'donate':
+            return true;
+        case 'tithe':
             return true;
         case 'done':
             isAltarOpened = false;
@@ -258,7 +263,7 @@ pico.def('god', 'picUIContent', function(){
         return tomb; 
     };
 
-    me.offering = function(){
+    me.offerring = function(){
     };
 
     me.getPiety = function(){ return heroPiety; };

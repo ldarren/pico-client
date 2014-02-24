@@ -4,11 +4,12 @@ pico.def('trade', 'picUIContent', function(){
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random, Max = Math.max,
     name = me.moduleName,
     TRADE_ROW = 4, TRADE_COL = 4,
-    labels = ['Close'],
-    goods = undefined,
+    info = undefined,
+    contents = undefined,
+    labels = undefined,
+    callbacks = undefined,
     onCustomBound = function(ent, rect, ui, scale){
-        if ('btn1' === ui.userData.id) return me.calcUIRect(rect, ui);
-        return me.calcUIRect(rect, ui, scale);
+        return me.calcUIRect(rect, ui);
     },
     onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
         var
@@ -20,7 +21,7 @@ pico.def('trade', 'picUIContent', function(){
         if ('btn1' === i){
             me.drawButton(ctx, ts, labels[0], rect, scale, '#d7e894', '#204631');
         }else{
-            var good = goods[i];
+            var good = content[i];
             if (!good) return;
 
             ts.draw(ctx, good[OBJECT_ICON], x, y, w, h);
@@ -46,7 +47,7 @@ pico.def('trade', 'picUIContent', function(){
         if ('btn1' === i){
             this.go('hideTrade');
         }else{
-            slot = goods[i];
+            slot = content[i];
 
             if (slot){
                 com.activated = i;
@@ -73,56 +74,68 @@ pico.def('trade', 'picUIContent', function(){
     };
 
     me.show = function(ent, com, evt){
-        goods = evt;
+        info = evt.info;
+        content = evt.content;
+        labels = evt.labels;
+        callbacks = evt.callbacks;
     };
 
     me.hide = function(ent, com, evt){
         if (undefined === evt) return;
-        goods = undefined;
+        content = undefined;
     };
 
     me.isValid = function(){
-        return undefined !== goods;
+        return undefined !== content;
     };
 
     me.resize = function(ent, width, height){
+        if (!me.isValid()) return [width, height];
+
         var
         com = ent.getComponent(name),
         style = {font: com.font,fillStyle:com.fontColor},
-        size = 32,
-        actualSize = this.smallDevice ? size : size*2,
+        tw = this.tileWidth,
+        th = this.tileHeight,
+        rowC = Min(TRADE_ROW, Ceil(content.length / TRADE_COL)),
         meshui,rows,row,cell,i,l;
 
-        meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, actualSize * 4), style);
+        meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, th * (1 + info.length + rowC + 1)), style);
         rows=meshui.rows;
 
         row=me.createMeshRow(rows);
-        cell=me.createMeshCell(row);
-        me.createMeshText(cell, me.CENTER, me.CENTER, 0, 1, 1, com.name);
-
-        for(i=0,l=TRADE_ROW;i<l;i++){
-            row=me.createMeshRow(rows);
+        for(i=0,l=labels.length; i<l; i++){
             cell=me.createMeshCell(row);
-            cell=me.createMeshCell(row);
-            cell=me.createMeshCell(row);
-            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 0, G_UI.SLOT);
-            me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 0, {id:3+(i*4)});
-            cell=me.createMeshCell(row);
-            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 0, G_UI.SLOT);
-            me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 0, {id:2+(i*4)});
-            cell=me.createMeshCell(row);
-            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 0, G_UI.SLOT);
-            me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 0, {id:1+(i*4)});
-            cell=me.createMeshCell(row);
-            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 0, G_UI.SLOT);
-            me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, size, size, 1, 0, {id:0+(i*4)});
-            cell=me.createMeshCell(row);
-            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, th, 1, 0, {id:'btn'+i});
         }
 
         row=me.createMeshRow(rows);
-        cell=me.createMeshCell(row);
-        me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 1, 0, {id:'btn1'});
+        for(i=0,l=info.length; i<l; i++){
+            cell=me.createMeshCell(row);
+            me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 0, 0, {id:'info'+i});
+        }
+
+        for(i=0,l=RowC;i<l;i++){
+            row=me.createMeshRow(rows);
+            me.createMeshCell(row);
+            me.createMeshCell(row);
+            cell=me.createMeshCell(row);
+            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, tw, th, 0, G_UI.SLOT);
+            me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, tw, th, 1, 0, {id:(i*TRADE_COL)});
+            cell=me.createMeshCell(row);
+            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, tw, th, 0, G_UI.SLOT);
+            me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, tw, th, 1, 0, {id:1+(i*TRADE_COL)});
+            cell=me.createMeshCell(row);
+            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, tw, th, 0, G_UI.SLOT);
+            me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, tw, th, 1, 0, {id:2+(i*TRADE_COL)});
+            cell=me.createMeshCell(row);
+            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, tw, th, 0, G_UI.SLOT);
+            me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, tw, th, 1, 0, {id:3+(i*TRADE_COL)});
+            me.createMeshCell(row);
+            me.createMeshCell(row);
+        }
+
+        me.createMeshRow(rows);
 
         com.layout = meshui;
 
