@@ -69,11 +69,6 @@ pico.def('god', 'picUIContent', function(){
         switch(id){
         case 'donate':
             label = labels[0];
-            this.go('showTrade', {
-                info:['Select an item from your bag and make it an offerring to god'],
-                content: hero.getBag(),
-                labels:['Donate', 'Close'],
-                callbacks:['makeOffer']});
             break;
         case 'tithe':
             label = labels[1];
@@ -108,11 +103,17 @@ pico.def('god', 'picUIContent', function(){
             return false;
         }
         var
+        hero = this.hero,
         com = ent.getComponent(name),
-        i = ui.userData.id;
+        id = ui.userData.id;
 
-        switch(i){
+        switch(id){
         case 'donate':
+            this.go('showTrade', {
+                info:['Select an item from your bag and make it an offerring to god'],
+                content: hero.getBag() || [],
+                labels:['Donate', 'Close'],
+                callbacks:['makeOffer']});
             return true;
         case 'tithe':
             return true;

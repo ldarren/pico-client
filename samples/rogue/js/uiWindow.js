@@ -140,11 +140,11 @@ pico.def('uiWindow', 'picUIWindow', function(){
         case dialogMsgId:
         case tradeId:
             data.minWidth = this.smallDevice ? 320 : 640;
-            data.minHeight = this.smallDevice ? 180 : 360;
+            data.minHeight = this.smallDevice ? 320 : 640;
             break;
         case altarId:
             data.minWidth = this.smallDevice ? 320 : 640;
-            data.minHeight = this.smallDevice ? 480 : 600;
+            data.minHeight = this.smallDevice ? 480 : 640;
             break;
         }
 
@@ -234,25 +234,38 @@ pico.def('uiWindow', 'picUIWindow', function(){
     };
 
     me.showAll = function(elapsed, evt, entities){
+        if (me.dialogMsg.isValid()){
+            this.showEntity(dialogMsgId);
+            return entities;
+        }
+        if (me.trade.isValid()){
+            this.showEntity(tradeId);
+            return entities;
+        }
+        if (me.god.isValid()){
+            this.showEntity(altarId);
+            return entities;
+        }
+
         this.showEntity(playerId);
         this.showEntity(tomeId);
         this.showEntity(bagId);
+
         if (me.info.isValid()) this.showEntity(infoId);
-        if (me.dialogMsg.isValid()) this.showEntity(dialogMsgId);
-        if (me.trade.isValid()) this.showEntity(tradeId);
-        if (me.god.isValid()) this.showEntity(altarId);
 
         return entities;
     };
 
     me.hideAll = function(elapsed, evt, entities){
+        this.hideEntity(infoId);
+
         this.hideEntity(playerId);
         this.hideEntity(tomeId);
         this.hideEntity(bagId);
-        this.hideEntity(infoId);
-        this.hideEntity(dialogMsgId);
-        this.hideEntity(tradeId);
+
         this.hideEntity(altarId);
+        this.hideEntity(tradeId);
+        this.hideEntity(dialogMsgId);
 
         return entities;
     };

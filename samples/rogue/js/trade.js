@@ -1,11 +1,11 @@
 pico.def('trade', 'picUIContent', function(){
     var
     me = this,
-    Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random, Max = Math.max,
+    Floor=Math.floor,Ceil=Math.ceil,Round=Math.round,Random=Math.random,Max=Math.max,Min=Math.min,
     name = me.moduleName,
     TRADE_ROW = 4, TRADE_COL = 4,
     info = undefined,
-    contents = undefined,
+    content = undefined,
     labels = undefined,
     callbacks = undefined,
     onCustomBound = function(ent, rect, ui, scale){
@@ -15,25 +15,49 @@ pico.def('trade', 'picUIContent', function(){
         var
         com = ent.getComponent(name),
         ts = tss[0],
-        i = ui.userData.id,
+        id = ui.userData.id,
         x=rect[0], y=rect[1], w=rect[2], h=rect[3];
 
-        if ('btn1' === i){
-            me.drawButton(ctx, ts, labels[0], rect, scale, '#d7e894', '#204631');
-        }else{
-            var good = content[i];
-            if (!good) return;
+        if ('number' === typeof id){
+            var slot = content[id];
+            if (!slot) return;
+            var
+            good = slot[0],
+            count = slot[1];
 
             ts.draw(ctx, good[OBJECT_ICON], x, y, w, h);
-            if (i === com.activated) {
+            if (id === com.activated) {
                 ts.draw(ctx, G_UI.SELECTED, x, y, w, h);
+            }
+            if(count > 1)  {
+                ctx.textBaseline='bottom';
+                ctx.textAlign='left';
+                var 
+                border = 4*scale,
+                x1 = x+border,
+                y1 = y+h-border;
+
+                ctx.strokeStyle = G_COLOR_TONE[3];
+                ctx.lineWidth = 2;
+                ctx.strokeText(count, x1, y1, w);
+                ctx.fillStyle = G_COLOR_TONE[0];
+                ctx.fillText(count, x1, y1, w);
+            }
+        }else{
+            if (-1 !== id.indexOf('btn')){
+                me.drawButton(ctx, tss, labels[id.charAt(3)], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
+            }else if (-1 !== id.indexOf('info')){
+                me.fillIconText(ctx, tss, info[id.charAt(4)], rect, scale);
             }
         }
     },
     onCustomButton = function(ent, ctx, rect, ui, tss, scale){
-        if ('btn1' === ui.userData.id){
-            var ts = tss[0];
-            me.drawButton(ctx, ts, labels[0], rect, scale, '#204631', '#d7e894', '#aec440', 3);
+        var id = ui.userData.id;
+
+        if ('string' === typeof id){
+            if (-1 !== id.indexOf('btn')){
+                me.drawButton(ctx, tss, labels[id.charAt(3)], rect, scale, G_COLOR_TONE[3], G_COLOR_TONE[0], G_COLOR_TONE[1], 3);
+            }
         }
     },
     onCustomClick = function(ent, ui){
@@ -42,18 +66,24 @@ pico.def('trade', 'picUIContent', function(){
         }
         var
         com = ent.getComponent(name),
-        i = ui.userData.id;
+        id = ui.userData.id,
+        slot,btnId;
 
-        if ('btn1' === i){
-            this.go('hideTrade');
-        }else{
-            slot = content[i];
+        if ('number' === typeof id){
+            slot = content[id];
 
             if (slot){
-                com.activated = i;
+                com.activated = id;
                 return true;
             }
+        }else{
+            btnId = id.indexOf(3);
+            slot = callbacks[btnId];
+            if (slot) this.go(slot, com.activated);
+            this.go('hideTrade');
+            return true;
         }
+
         return false;
     },
     onCustomUI = function(){
@@ -74,7 +104,8 @@ pico.def('trade', 'picUIContent', function(){
     };
 
     me.show = function(ent, com, evt){
-        info = evt.info;
+        if (!evt) return;
+        info = evt.info
         content = evt.content;
         labels = evt.labels;
         callbacks = evt.callbacks;
@@ -97,7 +128,7 @@ pico.def('trade', 'picUIContent', function(){
         style = {font: com.font,fillStyle:com.fontColor},
         tw = this.tileWidth,
         th = this.tileHeight,
-        rowC = Min(TRADE_ROW, Ceil(content.length / TRADE_COL)),
+        rowC = Max(TRADE_ROW, Ceil(content.length / TRADE_COL)),
         meshui,rows,row,cell,i,l;
 
         meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, th * (1 + info.length + rowC + 1)), style);
@@ -106,7 +137,7 @@ pico.def('trade', 'picUIContent', function(){
         row=me.createMeshRow(rows);
         for(i=0,l=labels.length; i<l; i++){
             cell=me.createMeshCell(row);
-            me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, th, 1, 0, {id:'btn'+i});
+            me.createMeshCustom(cell, me.TOP, me.TOP, 0, 1, th, 1, 0, {id:'btn'+i});
         }
 
         row=me.createMeshRow(rows);
@@ -115,7 +146,7 @@ pico.def('trade', 'picUIContent', function(){
             me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 0, 0, {id:'info'+i});
         }
 
-        for(i=0,l=RowC;i<l;i++){
+        for(i=0,l=rowC;i<l;i++){
             row=me.createMeshRow(rows);
             me.createMeshCell(row);
             me.createMeshCell(row);
@@ -157,6 +188,6 @@ pico.def('trade', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.drawMeshUI.call(this, ctx, {default: this.tileSet}, ent, com, comBox, scale, onCustomUI);
+        return me.drawMeshUI.call(this, ctx, [this.tileSet], ent, com, comBox, scale, onCustomUI);
     };
 });

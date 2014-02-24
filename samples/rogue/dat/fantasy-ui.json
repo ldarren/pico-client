@@ -859,7 +859,7 @@
                         "h": 0.5,
                         "cellPt":1,
                         "uiPt":1,
-                        "userData":{"id":"offer"}
+                        "userData":{"id":"donate"}
                     }
                 ],[
                     {},
@@ -869,7 +869,7 @@
                         "h": 0.5,
                         "cellPt":1,
                         "uiPt":1,
-                        "userData":{"id":"donate"}
+                        "userData":{"id":"tithe"}
                     }
                 ],[
                     {},

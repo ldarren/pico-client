@@ -192,11 +192,11 @@ onLoad = function(){
         game.route('showInfo', [uiWindow.showInfo, renderer.draw]);
         game.route('hideInfo', [uiWindow.hideInfo, bag.deselectItem, uiWindow.update, renderer.draw]);
         game.route('showDialog', [uiWindow.hideAll, uiWindow.showDialog, renderer.draw]);
-        game.route('hideDialog', [uiWindow.showAll, uiWindow.hideDialog, uiWindow.update, renderer.draw]);
-        game.route('showTrade', [game.createGoods, uiWindow.hideAll, uiWindow.showTrade, uiWindow.update, renderer.draw]);
-        game.route('hideTrade', [uiWindow.showAll, uiWindow.hideTrade, uiWindow.update, renderer.draw]);
+        game.route('hideDialog', [uiWindow.hideDialog, uiWindow.showAll, uiWindow.update, renderer.draw]);
+        game.route('showTrade', [uiWindow.hideAll, uiWindow.showTrade, uiWindow.update, renderer.draw]);
+        game.route('hideTrade', [uiWindow.hideTrade, uiWindow.showAll, uiWindow.update, renderer.draw]);
         game.route('showAltar', [uiWindow.hideAll, uiWindow.showAltar, uiWindow.update, renderer.draw]);
-        game.route('hideAltar', [uiWindow.showAll, uiWindow.hideAltar, uiWindow.update, renderer.draw]);
+        game.route('hideAltar', [uiWindow.hideAltar, uiWindow.showAll, uiWindow.update, renderer.draw]);
 
         var
         cameraEnt = game.addEntity('camera'),
