@@ -3,7 +3,7 @@ pico.def('god', 'picUIContent', function(){
     Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round,
     me = this,
     name = me.moduleName,
-    labels = [G_LABEL.OFFER, G_LABEL.TITHE, G_LABEL.LEAVE],
+    labels = [G_LABEL.OFFER, G_LABEL.TITHE, G_LABEL.CLOSE],
     isAltarOpened = false,
     callback,
     heroBody, heroName, heroPiety,

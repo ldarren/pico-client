@@ -17,8 +17,8 @@ Object.freeze(G_LABEL = {
     CLOSE: 'Close',
     DONE: 'Done',
     LEAVE: 'Leave',
-    OFFER: 'Giving',
-    TITHE: 'Tithing', 
+    OFFER: 'Donate',
+    TITHE: 'Tithe', 
 });
 
 Object.freeze(G_ELEMENT_NAME = {

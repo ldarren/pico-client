@@ -654,7 +654,7 @@ pico.def('hero', 'picUIContent', function(){
     };
 
     me.selectSpell = function(spell){
-        if (spell && spell[SPELL_COOLDOWN]) return;
+        if (spell && (!me.affordableSpell(spell) || spell[SPELL_COOLDOWN])) return;
         selectedSpell = spell;
     };
 

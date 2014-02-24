@@ -144,7 +144,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
             break;
         case altarId:
             data.minWidth = this.smallDevice ? 320 : 640;
-            data.minHeight = this.smallDevice ? 480 : 640;
+            data.minHeight = this.smallDevice ? 480 : 600;
             break;
         }
 
@@ -205,9 +205,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
             case dialogMsgId:
             case tradeId:
             case altarId:
-                layouts.push(me.fitIntoGrid(
-                    [evt[0] + Ceil((evt[2] - com.minWidth)/2), evt[1] + Ceil((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight],
-                    gs, gs, false));
+                layouts.push([evt[0] + Ceil((evt[2] - com.minWidth)/2), evt[1] + Ceil((evt[3] - com.minHeight)/2), com.minWidth, com.minHeight]);
                 break;
             }
             // maximized layout

@@ -27,8 +27,16 @@ pico.def('bag', 'picUIContent', function(){
         if(count > 1)  {
             ctx.textBaseline='bottom';
             ctx.textAlign='left';
-            var border = 4*scale;
-            ctx.fillText(count, x+border, y+h-border, w);
+            var 
+            border = 4*scale,
+            x1 = x+border,
+            y1 = y+h-border;
+
+            ctx.strokeStyle = G_COLOR_TONE[3];
+            ctx.lineWidth = 2;
+            ctx.strokeText(count, x1, y1, w);
+            ctx.fillStyle = G_COLOR_TONE[0];
+            ctx.fillText(count, x1, y1, w);
         }
     },
     onCustomClick = function(ent, ui){

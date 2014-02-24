@@ -43,7 +43,6 @@ pico.def('tome', 'picUIContent', function(){
         toggle = hero.getSelectedSpell() === spell;
 
         hero.selectSpell(toggle ? undefined : spell);
-        spell = hero.getSelectedSpell();
         if (spell){
             var
             labels=['Select a cell', 'Forget', 'Close'],
