@@ -229,8 +229,8 @@ pico.def('god', 'picUIContent', function(){
             stats: stats,
             effects: [],
             bag: [
-                [G_CREATE_OBJECT(G_ICON.DAGGER),1,0],
-                [G_CREATE_OBJECT(G_ICON.SMALL_HP),9999,0]
+                [me.ai.spawnItem(G_ICON.DAGGER, G_LEGENDARY_RATE[0], G_GRADE.LEGENDARY, heroClass, 1),1,0],
+                [me.ai.spawnItem(G_ICON.SMALL_HP, {}, G_GRADE.COMMON, heroClass, 1),99,0]
             ],
             tome: [
                 me.tome.createSpell(G_ICON.SQUEAL, heroClass),

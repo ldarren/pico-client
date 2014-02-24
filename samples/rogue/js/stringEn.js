@@ -110,7 +110,7 @@ Object.freeze(G_GRADE_NAME = {
     15: 'All',
 });
 Object.freeze(G_LEGENDARY_AFFIX = [
-    ["Glimmerborg's", "of Brave"]
+    ["Glimmerborg's", "of Brave"],
     ["Negablade's", "of Ordeal"]
 ]);
 Object.freeze(G_ENCHANTED_PREFIX = [
