@@ -884,7 +884,7 @@ pico.def('hero', 'picUIContent', function(){
     me.getTome = function(){ return tome; };
     me.getTomeCap = function(){ return appearance ? appearance[HERO_TOME_CAP] : 4; };
     me.equal = function(obj){ return obj[OBJECT_ICON] === currStats[OBJECT_ICON] && obj[OBJECT_TYPE] === currStats[OBJECT_TYPE]; };
-    me.getStat = function(stat){ return currStats[stat]; };
+    me.getStat = function(stat){ return currStats ? currStats[stat] : 0; };
     me.carryRanged = function(){
         var
         mainSlot = appearance[HERO_MAIN],

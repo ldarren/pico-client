@@ -3,6 +3,7 @@ pico.def('god', 'picUIContent', function(){
     Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round,
     me = this,
     name = me.moduleName,
+    FORGE_COST = 100,
     heroClasses = [
     [G_OBJECT[G_ICON.ROGUE], 1],
     [G_OBJECT[G_ICON.MONK], 1],
@@ -119,6 +120,7 @@ pico.def('god', 'picUIContent', function(){
         var
         hero = this.hero,
         mortal = this.mortal,
+        appearance = mortal.appearance,
         stats = mortal.stats,
         com = ent.getComponent(name),
         id = ui.userData.id;
@@ -176,11 +178,32 @@ pico.def('god', 'picUIContent', function(){
             var
             equipId = hero.convertEquipId(id),
             slot = appearance[equipId],
-            item = slot[0];
+            item = slot[0],
+            cost = FORGE_COST;
 
-            if (item) label = '`0'+item[OBJECT_ICON];
-            else label = 'Add '+G_EQUIP_NAME[equipId];
-            break;
+            if (item){
+                cost = Max(1, cost - me.trade.price(item, slot[1]));
+            }
+
+            if (cost > me.getPiety()){
+                this.go('showDialog', {
+                    info: [
+                    'You don\'t have enough piety',
+                    'You need '+cost+' piety'],
+                    labels: ['Close'],
+                    callbacks: [null]
+                });
+            }else{
+                this.go('showDialog', {
+                    info: [
+                        'Do you want to forge a '+G_EQUIP_NAME[equipId]+' with piety points?',
+                        'That\'s '+cost+' piety'],
+                    labels: ['Forge', 'Close'],
+                    callbacks: ['holyForge', null],
+                    events:[equipId]
+                });
+            }
+            return true;
         }
 
         return false;
@@ -209,7 +232,7 @@ pico.def('god', 'picUIContent', function(){
             heroPiety = h[2];
         }else{
             h = [null, name, 0];
-            heroPiety = 0;
+            heroPiety = 9999;
         }
         if (name) heroName = name; // always get new from loginPage
         return h;
@@ -360,5 +383,32 @@ pico.def('god', 'picUIContent', function(){
         this.mortal = me.createHero(job[OBJECT_ICON]);
 
         this.go('hideTrade');
+    };
+
+    me.holyForge = function(elapsed, equipId, entities){
+        var
+        hero = this.hero,
+        mortal = this.mortal,
+        appearance = mortal.appearance,
+        stats = mortal.stats,
+        slot = appearance[equipId],
+        item = slot[0],
+        cost = FORGE_COST;
+
+        if (item){
+            cost = Max(1, cost - me.trade.price(item, slot[1]));
+        }
+
+        if (cost > me.getPiety()) return;
+
+        me.incrPiety(-cost);
+
+        appearance[equipId] = [
+        me.ai.spawnItemByType(
+            G_EQUIP_RATE[equipId],
+            G_GRADE.ENCHANTED, 
+            stats[OBJECT_SUB_TYPE], 
+            hero.getStat(OBJECT_LUCK), 
+            hero.getStat(OBJECT_LEVEL)), slot[1]];
     };
 });

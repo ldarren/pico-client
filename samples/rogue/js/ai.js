@@ -190,6 +190,20 @@ pico.def('ai', function(){
         return G_CREATE_OBJECT(G_ICON.CHEST);
     };
 
+    me.spawnItemByType = function(itemRates, gradeType, job, luck, lvl){
+        var
+        itemRate = pick(itemRates, luck, gradeType),
+        modifier;
+
+        switch(gradeType){
+        case G_GRADE.LEGENDARY: modifier = pick(G_LEGENDARY_RATE, luck, gradeType); break; 
+        case G_GRADE.ENCHANTED: modifier = pick(G_ENCHANTED_RATE, luck, gradeType); break; 
+        case G_GRADE.CHARMED: modifier = pick(G_CHARMED_RATE, luck, gradeType); break; 
+        }
+
+        return me.spawnItem(itemRate[OBJECT_ICON], modifier, gradeType, job, lvl);
+    };
+
     me.spawnItem = function(itemId, modifier, gradeType, job, lvl){
         var
         item = G_CREATE_OBJECT(itemId),

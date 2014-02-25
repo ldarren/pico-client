@@ -191,6 +191,7 @@ onLoad = function(){
         game.route('offerring', [bag.offerItem, uiWindow.update, renderer.draw]);
         game.route('tenthing', [god.tenthing]);
         game.route('changeJob', [god.changeJob]);
+        game.route('holyForge', [god.holyForge]);
         game.route('showInfo', [uiWindow.showInfo, renderer.draw]);
         game.route('hideInfo', [uiWindow.hideInfo, bag.deselectItem, uiWindow.update, renderer.draw]);
         game.route('showDialog', [uiWindow.hideAll, uiWindow.showDialog, renderer.draw]);
