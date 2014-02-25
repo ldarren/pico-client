@@ -1,6 +1,6 @@
 pico.def('god', 'picUIContent', function(){
     var
-    Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round,
+    Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round, Max = Math.max,
     me = this,
     name = me.moduleName,
     FORGE_COST = 100,
@@ -316,7 +316,7 @@ pico.def('god', 'picUIContent', function(){
             effects: [],
             bag: [
                 [me.ai.spawnItem(G_ICON.DAGGER, G_LEGENDARY_RATE[0], G_GRADE.LEGENDARY, heroClass, 1),1,0],
-                [me.ai.spawnItem(G_ICON.SMALL_HP, {}, G_GRADE.COMMON, heroClass, 1),9999,0]
+                [me.ai.spawnItem(G_ICON.SMALL_HP, {}, G_GRADE.COMMON, heroClass, 1),9999,1]
             ],
             tome: [
                 me.tome.createSpell(G_ICON.SQUEAL, heroClass),
@@ -391,8 +391,10 @@ pico.def('god', 'picUIContent', function(){
         mortal = this.mortal,
         appearance = mortal.appearance,
         stats = mortal.stats,
+        bag = mortal.bag,
         slot = appearance[equipId],
         item = slot[0],
+        slotId = slot[2],
         cost = FORGE_COST;
 
         if (item){
@@ -403,12 +405,16 @@ pico.def('god', 'picUIContent', function(){
 
         me.incrPiety(-cost);
 
-        appearance[equipId] = [
+        slot = [
         me.ai.spawnItemByType(
             G_EQUIP_RATE[equipId],
             G_GRADE.ENCHANTED, 
             stats[OBJECT_SUB_TYPE], 
             hero.getStat(OBJECT_LUCK), 
-            hero.getStat(OBJECT_LEVEL)), slot[1]];
+            hero.getStat(OBJECT_LEVEL)), slot[1], item ? bag.length : slotId];
+
+        if (item) bag[slotId] = slot;
+        else bag.push(slot);
+        appearance[equipId] = slot;
     };
 });
