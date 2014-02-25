@@ -864,7 +864,7 @@ pico.def('hero', 'picUIContent', function(){
     };
     me.incrDef = function(inc){return restoreStat(OBJECT_DEF, HERO_DEF, inc);};
 
-    me.getHp = function(){ return appearance[HERO_HP]; };
+    me.getHp = function(){ return appearance ? appearance[HERO_HP] : 0; };
     me.getWill = function(){ return appearance[OBJECT_WILL]; };
     me.getDef = function(){ return appearance[HERO_DEF]; };
     me.getAtk = function(){

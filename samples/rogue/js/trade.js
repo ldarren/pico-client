@@ -120,6 +120,7 @@ pico.def('trade', 'picUIContent', function(){
         if (!object) return 0;
         var baseValue = 1;
         switch(object[OBJECT_TYPE]){
+        case G_OBJECT_TYPE.HERO: return 1000;
         case G_OBJECT_TYPE.POTION: baseValue = 1; break;
         case G_OBJECT_TYPE.SCROLL: baseValue = 2; break;
         case G_OBJECT_TYPE.WEAPON: baseValue = 2; break;
@@ -191,8 +192,8 @@ pico.def('trade', 'picUIContent', function(){
         cell=me.createMeshCell(row);
         me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 0, 0, {id:'piety'});
 
-        row=me.createMeshRow(rows);
         for(i=0,l=info.length; i<l; i++){
+            row=me.createMeshRow(rows);
             cell=me.createMeshCell(row);
             me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 0, 0, {id:'info'+i});
         }

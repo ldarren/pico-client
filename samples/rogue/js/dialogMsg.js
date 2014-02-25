@@ -13,7 +13,7 @@ pico.def('dialogMsg', 'picUIContent', function(){
         var id=ui.userData.id;
 
         if ('number' === typeof id){
-            me.drawButton(ctx, tss, msg.labels[id], rect, scale, '#d7e894', '#204631');
+            me.drawButton(ctx, tss, msg.labels[id], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
         }else{
             var info = msg.info;
 
@@ -21,7 +21,7 @@ pico.def('dialogMsg', 'picUIContent', function(){
         }
     },
     onCustomButton = function(ent, ctx, rect, ui, tss, scale){
-        me.drawButton(ctx, tss, msg.labels[ui.userData.id], rect, scale, '#204631', '#d7e894', '#aec440', 3);
+        me.drawButton(ctx, tss, msg.labels[ui.userData.id], rect, scale, G_COLOR_TONE[3], G_COLOR_TONE[0], G_COLOR_TONE[1], 3);
     },
     onCustomClick = function(ent, ui){
         if (!ui) return false;

@@ -190,6 +190,7 @@ onLoad = function(){
         game.route('openForSale', [uiWindow.maximise, bag.openForSale, renderer.draw]);
         game.route('offerring', [bag.offerItem, uiWindow.update, renderer.draw]);
         game.route('tenthing', [god.tenthing]);
+        game.route('changeJob', []);
         game.route('showInfo', [uiWindow.showInfo, renderer.draw]);
         game.route('hideInfo', [uiWindow.hideInfo, bag.deselectItem, uiWindow.update, renderer.draw]);
         game.route('showDialog', [uiWindow.hideAll, uiWindow.showDialog, renderer.draw]);

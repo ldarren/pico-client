@@ -3,6 +3,16 @@ pico.def('god', 'picUIContent', function(){
     Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round,
     me = this,
     name = me.moduleName,
+    heroClasses = [
+    [G_OBJECT[G_ICON.ROGUE], 1],
+    [G_OBJECT[G_ICON.MONK], 1],
+    [G_OBJECT[G_ICON.BARBARIAN], 1],
+    [G_OBJECT[G_ICON.DRUID], 1],
+    [G_OBJECT[G_ICON.HUNTER], 1],
+    [G_OBJECT[G_ICON.PALADIN], 1],
+    [G_OBJECT[G_ICON.WIZARD], 1],
+    [G_OBJECT[G_ICON.WARLOCK], 1],
+    ],
     labels = [G_LABEL.OFFER, G_LABEL.TITHE, G_LABEL.CLOSE],
     isAltarOpened = false,
     callback,
@@ -38,7 +48,10 @@ pico.def('god', 'picUIContent', function(){
             me.drawButton(ctx, tss, labels[2], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
             break;
         case 'avatar':
-            me.drawButton(ctx, tss, '`0'+stats[OBJECT_ICON], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[2]);
+            if (hero.getHp())
+                me.fillIconText(ctx, tss, '`0'+stats[OBJECT_ICON], rect, scale);
+            else
+                me.drawButton(ctx, tss, '`0'+stats[OBJECT_ICON], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[2]);
             break;
         case 'helm':
         case 'armor':
@@ -77,6 +90,7 @@ pico.def('god', 'picUIContent', function(){
             label = labels[2];
             break;
         case 'avatar':
+            if (hero.getHp()) return;
             label = '`0'+stats[OBJECT_ICON];
             break;
         case 'helm':
@@ -104,6 +118,8 @@ pico.def('god', 'picUIContent', function(){
         }
         var
         hero = this.hero,
+        mortal = this.mortal,
+        stats = mortal.stats,
         com = ent.getComponent(name),
         id = ui.userData.id;
 
@@ -121,7 +137,7 @@ pico.def('god', 'picUIContent', function(){
             if (donation){
                 this.go('showDialog', {
                     info: [
-                        'Do you want to contribute a one-tenth of your golds to god Vill?',
+                        'Do you want to contribute a one-tenth of your golds to god Vili?',
                         'That\'s '+donation+' golds'],
                     labels: ['Donate', 'Close'],
                     callbacks: ['tenthing', null]
@@ -139,6 +155,32 @@ pico.def('god', 'picUIContent', function(){
             this.go(callback);
             this.go('hideAltar');
             return true;
+        case 'avatar':
+            if (hero.getHp()) return true;
+            this.go('showTrade', {
+                info:['God Vili is reincarnating you as a '+G_HERO_CLASS_NAME[stats[OBJECT_SUB_TYPE]],
+                'you can spend some piety points to change it'],
+                content: heroClasses,
+                labels:['Change', 'Close'],
+                type: G_UI.PIETY,
+                callbacks:['changeJob']});
+            return true;
+        case 'helm':
+        case 'armor':
+        case 'main':
+        case 'off':
+        case 'ringL':
+        case 'ringR':
+        case 'amulet':
+        case 'quiver':
+            var
+            equipId = hero.convertEquipId(id),
+            slot = appearance[equipId],
+            item = slot[0];
+
+            if (item) label = '`0'+item[OBJECT_ICON];
+            else label = 'Add '+G_EQUIP_NAME[equipId];
+            break;
         }
 
         return false;
