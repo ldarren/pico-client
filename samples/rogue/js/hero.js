@@ -359,20 +359,17 @@ pico.def('hero', 'picUIContent', function(){
         if (!targets || !targets.length) return false; // return error?
 
         var
-        roll = G_D20_ROLL(),
-        total = roll + currStats[OBJECT_DEX],
-        target, i, l;
+        level = appearance[HERO_LEVEL] * 100,
+        dex = currStats[OBJECT_DEX],
+        luck = currStats[OBJECT_LUCK],
+        atk, target, totalLevel, i, l;
 
         for (i=0,l=targets.length; i<l; i++){
             target = objects[targets[i]];
-            if (total <= target[CREEP_ATK]) {
-                return [false, G_MSG.FLEE_LOST
-                        .replace('TOTAL', total)
-                        .replace('ROLL', roll)
-                        .replace('DEX', currStats[OBJECT_DEX])
-                        .replace('NAME', target[OBJECT_NAME])
-                        .replace('ATK', target[CREEP_ATK])
-                        .replace('HP', 1)];
+            totalLevel = level + (target[OBJECT_LEVEL]*100);
+            atk = target[CREEP_ATK];
+            if ((G_D20_ROLL(totalLevel) + luck + dex) <= (atk + (totalLevel * 0.5))) {
+                return [false, G_MSG.FLEE_LOST];
             }
         }
 
@@ -380,10 +377,7 @@ pico.def('hero', 'picUIContent', function(){
             flags[targets[i]] = G_UI.FLAG;
         }
         me.clearEngaged();
-        return [true, G_MSG.FLEE_WIN
-            .replace('TOTAL', total)
-            .replace('ROLL', roll)
-            .replace('DEX', currStats[OBJECT_DEX])];
+        return [true, G_MSG.FLEE_WIN];
     };
 
     me.move = function(pos){

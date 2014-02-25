@@ -113,7 +113,7 @@ pico.def('god', 'picUIContent', function(){
                 info:['Select an item from your bag and make it an offerring to god'],
                 content: hero.getBag() || [],
                 labels:['Donate', 'Close'],
-                type: G_ICON.PIETY,
+                type: G_UI.PIETY,
                 callbacks:['makeOffer']});
             return true;
         case 'tithe':
@@ -230,7 +230,7 @@ pico.def('god', 'picUIContent', function(){
             effects: [],
             bag: [
                 [me.ai.spawnItem(G_ICON.DAGGER, G_LEGENDARY_RATE[0], G_GRADE.LEGENDARY, heroClass, 1),1,0],
-                [me.ai.spawnItem(G_ICON.SMALL_HP, {}, G_GRADE.COMMON, heroClass, 1),99,0]
+                [me.ai.spawnItem(G_ICON.SMALL_HP, {}, G_GRADE.COMMON, heroClass, 1),9999,0]
             ],
             tome: [
                 me.tome.createSpell(G_ICON.SQUEAL, heroClass),
@@ -264,9 +264,6 @@ pico.def('god', 'picUIContent', function(){
         tomb[TOMB_BODY] = appearance;
         heroBody = undefined;
         return tomb; 
-    };
-
-    me.offerring = function(){
     };
 
     me.getPiety = function(){ return heroPiety; };

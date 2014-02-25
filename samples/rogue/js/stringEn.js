@@ -7,8 +7,8 @@ Object.freeze(G_MSG = {
     CREEP_KILL: ", and you have defeated it",
     CREEP_ALIVE: " but it is still alive",
     HERO_KILL: ", and you have been killed by NAME",
-    FLEE_WIN: "You rolled a TOTAL(ROLL+DEX) beat all surrounding creeps `0190 , you fled the scene",
-    FLEE_LOST: "You failed to flee by rolling a TOTAL(ROLL+DEX) lower than NAME's attack ATK, you lost HP hp",
+    FLEE_WIN: "You fled the battle area",
+    FLEE_LOST: "You failed to flee, improve your `0613 dex and `0193 luck to increase your chances",
     DLG_TUT_OBJECTIVE: "Lord Odin, the allfather of gods, is gathering an army of gods and heroic dead from Valhala to against the advancement Loki. Loki is the fire god of the Ill Fate, notorious for having the mighty frost giants assisted. Odin attributes this to the deadly dungeon known as Loki's Trial. Filled with unworthy dead and insidious monsters who come from Hel, it is a standing testament to the Loki's madness. Find this dungeon at the south of camp. Complete this trial to prove your worth in the final battle of the fate of gods.",
     DLG_TUT_OPEN_GATE: "To travel down the dungeons and get the ",
 });

@@ -79,16 +79,21 @@ pico.def('trade', 'picUIContent', function(){
 
         if ('number' === typeof id){
             slot = content[id];
+            com.activated = -1;
 
             if (slot){
                 com.activated = id;
                 return true;
             }
         }else{
-            btnId = id.indexOf(3);
+            btnId = id.substr(3);
             slot = callbacks[btnId];
-            if (slot) this.go(slot, com.activated);
-            this.go('hideTrade');
+            if (slot) {
+                var selected = com.activated;
+                if (content[selected]) this.go(slot, selected);
+            }else{
+                this.go('hideTrade');
+            }
             return true;
         }
 
@@ -136,6 +141,7 @@ pico.def('trade', 'picUIContent', function(){
         labels = evt.labels;
         callbacks = evt.callbacks;
         money = evt.type ? '`0'+evt.type+' ' : '`0195 '
+        com.activated = -1;
     };
 
     me.hide = function(ent, com, evt){
@@ -178,7 +184,6 @@ pico.def('trade', 'picUIContent', function(){
         for(i=0,l=rowC;i<l;i++){
             row=me.createMeshRow(rows);
             me.createMeshCell(row);
-            me.createMeshCell(row);
             cell=me.createMeshCell(row);
             me.createMeshTile(cell, me.CENTER, me.CENTER, 0, tw, th, 0, G_UI.SLOT);
             me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, tw, th, 1, 0, {id:(i*TRADE_COL)});
@@ -192,20 +197,17 @@ pico.def('trade', 'picUIContent', function(){
             me.createMeshTile(cell, me.CENTER, me.CENTER, 0, tw, th, 0, G_UI.SLOT);
             me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, tw, th, 1, 0, {id:3+(i*TRADE_COL)});
             me.createMeshCell(row);
-            me.createMeshCell(row);
 
             row=me.createMeshRow(rows);
             me.createMeshCell(row);
-            me.createMeshCell(row);
             cell=me.createMeshCell(row);
-            me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, tw, th, 1, 0, {id:'price'+(i*TRADE_COL)});
+            me.createMeshCustom(cell, me.TOP, me.TOP, 0, 1, 1, 0, 0, {id:'price'+(i*TRADE_COL)});
             cell=me.createMeshCell(row);
-            me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, tw, th, 1, 0, {id:'price'+(1+(i*TRADE_COL))});
+            me.createMeshCustom(cell, me.TOP, me.TOP, 0, 1, 1, 0, 0, {id:'price'+(1+(i*TRADE_COL))});
             cell=me.createMeshCell(row);
-            me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, tw, th, 1, 0, {id:'price'+(2+(i*TRADE_COL))});
+            me.createMeshCustom(cell, me.TOP, me.TOP, 0, 1, 1, 0, 0, {id:'price'+(2+(i*TRADE_COL))});
             cell=me.createMeshCell(row);
-            me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, tw, th, 1, 0, {id:'price'+(3+(i*TRADE_COL))});
-            me.createMeshCell(row);
+            me.createMeshCustom(cell, me.TOP, me.TOP, 0, 1, 1, 0, 0, {id:'price'+(3+(i*TRADE_COL))});
             me.createMeshCell(row);
         }
 

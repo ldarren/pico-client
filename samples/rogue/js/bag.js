@@ -89,6 +89,9 @@ pico.def('bag', 'picUIContent', function(){
         }
     };
 
+    me.use('god');
+    me.use('trade');
+
     me.create = function(ent, data){
         data = me.base.create.call(this, ent, data);
 
@@ -220,6 +223,21 @@ pico.def('bag', 'picUIContent', function(){
         this.hero.putIntoBag(loot);
 
         this.objects[evt] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
+
+        return entities;
+    };
+
+    me.offerItem = function(elapsed, evt, entities){
+        var
+        hero = this.hero,
+        bag = hero.getBag(),
+        slot = bag[evt];
+
+        if (!slot) return;
+
+        me.god.incrPiety(me.trade.price(slot[0], 1));
+
+        hero.removeFromBag(evt);
 
         return entities;
     };
