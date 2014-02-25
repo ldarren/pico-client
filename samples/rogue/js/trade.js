@@ -57,6 +57,11 @@ pico.def('trade', 'picUIContent', function(){
             }else if (-1 !== id.indexOf('info')){
                 me.fillIconText(ctx, tss, info[id.charAt(4)], rect, scale);
             }
+            if ('piety' === id){
+                me.fillIconText(ctx, tss, me.god.getPiety(), rect, scale);
+            }else if ('gold' === id){
+                me.fillIconText(ctx, tss, me.hero.getGold(), rect, scale);
+            }
         }
     },
     onCustomButton = function(ent, ctx, rect, ui, tss, scale){
@@ -107,6 +112,9 @@ pico.def('trade', 'picUIContent', function(){
         case me.CUSTOM_BUTTON: return onCustomButton.apply(this, arguments); break;
         }
     };
+
+    me.use('god');
+    me.use('hero');
 
     me.price = function(object, count){
         if (!object) return 0;
@@ -164,7 +172,7 @@ pico.def('trade', 'picUIContent', function(){
         rowC = Max(TRADE_ROW, Ceil(2 * content.length / TRADE_COL)),
         meshui,rows,row,cell,i,l;
 
-        meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, th * (2 + info.length + rowC + 1)), style);
+        meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, th * (3 + info.length + rowC + 1)), style);
         rows=meshui.rows;
 
         row=me.createMeshRow(rows);
@@ -172,6 +180,16 @@ pico.def('trade', 'picUIContent', function(){
             cell=me.createMeshCell(row);
             me.createMeshCustom(cell, me.TOP, me.TOP, 0, 1, th, 1, 0, {id:'btn'+i});
         }
+
+        row=me.createMeshRow(rows);
+        cell=me.createMeshCell(row);
+        me.createMeshText(cell, me.CENTER, me.CENTER, 0, 1, 1, '`0'+G_UI.GOLD);
+        cell=me.createMeshCell(row);
+        me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 0, 0, {id:'gold'});
+        cell=me.createMeshCell(row);
+        me.createMeshText(cell, me.CENTER, me.CENTER, 0, 1, 1, '`0'+G_UI.PIETY);
+        cell=me.createMeshCell(row);
+        me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 0, 0, {id:'piety'});
 
         row=me.createMeshRow(rows);
         for(i=0,l=info.length; i<l; i++){

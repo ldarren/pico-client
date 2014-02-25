@@ -406,7 +406,7 @@ pico.def('hero', 'picUIContent', function(){
     };
 
     me.incrGold = function(count){ appearance[HERO_GOLD] += count; };
-    me.getGold = function(){return appearance[HERO_GOLD]; };
+    me.getGold = function(){return appearance ? appearance[HERO_GOLD] : 0; };
 
     me.convertEquipId = function(text){
         switch(text){
