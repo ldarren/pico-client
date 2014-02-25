@@ -199,6 +199,7 @@ pico.def('god', 'picUIContent', function(){
 
     me.use('tome');
     me.use('ai');
+    me.use('trade');
 
     me.init = function(name){
         var h = this.heaven;
@@ -276,9 +277,10 @@ pico.def('god', 'picUIContent', function(){
         return me.drawMeshUI.call(this, ctx, [this.tileSet], ent, com, comBox, scale, onCustomUI);
     };
     
-    me.createHero = function(){
+    me.createHero = function(job){
+        job = job || Round(G_ICON.ROGUE + Random()*(G_ICON.WARLOCK-G_ICON.ROGUE));
+
         var
-        job = Round(G_ICON.ROGUE + Random()*(G_ICON.WARLOCK-G_ICON.ROGUE)),
         stats = G_CREATE_OBJECT(job, heroName),
         heroClass = stats[OBJECT_SUB_TYPE];
 
@@ -344,5 +346,19 @@ pico.def('god', 'picUIContent', function(){
         me.incrPiety(donation);
 
         return entities;
+    };
+
+    me.changeJob = function(elapsed, evt, entities){
+        var
+        job = heroClasses[evt][0],
+        price = me.trade.price(job, 1);
+
+        if (price > me.getPiety()) return;
+
+        me.incrPiety(-price);
+
+        this.mortal = me.createHero(job[OBJECT_ICON]);
+
+        this.go('hideTrade');
     };
 });
