@@ -188,7 +188,8 @@ onLoad = function(){
         game.route('reborn', [game.reborn, renderer.draw]);
         game.route('recover', [game.recover, uiWindow.update, renderer.draw]);
         game.route('openForSale', [uiWindow.maximise, bag.openForSale, renderer.draw]);
-        game.route('makeOffer', [bag.offerItem, uiWindow.update, renderer.draw]);
+        game.route('offerring', [bag.offerItem, uiWindow.update, renderer.draw]);
+        game.route('tenthing', [god.tenthing]);
         game.route('showInfo', [uiWindow.showInfo, renderer.draw]);
         game.route('hideInfo', [uiWindow.hideInfo, bag.deselectItem, uiWindow.update, renderer.draw]);
         game.route('showDialog', [uiWindow.hideAll, uiWindow.showDialog, renderer.draw]);

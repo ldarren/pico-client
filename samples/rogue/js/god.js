@@ -114,9 +114,25 @@ pico.def('god', 'picUIContent', function(){
                 content: hero.getBag() || [],
                 labels:['Donate', 'Close'],
                 type: G_UI.PIETY,
-                callbacks:['makeOffer']});
+                callbacks:['offerring']});
             return true;
         case 'tithe':
+            var donation = tenth(hero.getGold());
+            if (donation){
+                this.go('showDialog', {
+                    info: [
+                        'Do you want to contribute a one-tenth of your golds to god Vill?',
+                        'That\'s '+donation+' golds'],
+                    labels: ['Donate', 'Close'],
+                    callbacks: ['tenthing', null]
+                });
+            }else{
+                this.go('showDialog', {
+                    info: ['You don\'t have enough gold'],
+                    labels: ['Close'],
+                    callbacks: [null]
+                });
+            }
             return true;
         case 'done':
             isAltarOpened = false;
@@ -134,6 +150,9 @@ pico.def('god', 'picUIContent', function(){
         case me.CUSTOM_CLICK: return onCustomClick.apply(this, arguments);
         case me.CUSTOM_BUTTON: return onCustomButton.apply(this, arguments);
         }
+    },
+    tenth = function(gold){
+        return Ceil(gold/10);
     };
 
     me.use('tome');
@@ -225,7 +244,7 @@ pico.def('god', 'picUIContent', function(){
             //HERO_HELM=0,HERO_ARMOR=1,HERO_MAIN=2,HERO_OFF=3,HERO_RINGL=4,HERO_RINGR=5,HERO_AMULET=6,HERO_QUIVER=7,
             //HERO_HP=8,HERO_GOLD=9,HERO_PATK=10,HERO_RATK=11,HERO_DEF=12,HERO_WILL=13,HERO_LEVEL=14,
             //HERO_ENEMIES=15,HERO_PORTAL=16,HERO_WAYPOINT=17,HERO_BAG_CAP=18,HERO_TOME_CAP=19;
-            appearance: [0, 0, 0, 0, 0, 0, 0, 0, stats[OBJECT_HP], 0, 0, 0, 0, 0, 1, 0, 0, 0, 16, 8],
+            appearance: [0, 0, 0, 0, 0, 0, 0, 0, stats[OBJECT_HP], 100, 0, 0, 0, 0, 1, 0, 0, 0, 16, 8],
             stats: stats,
             effects: [],
             bag: [
@@ -272,5 +291,16 @@ pico.def('god', 'picUIContent', function(){
     me.toHeaven = function(appearance, stats){
         appearance[HERO_ENEMIES] = [];
         heroBody = [appearance, stats];
+    };
+
+    me.tenthing = function(elapsed, evt, entities){
+        var
+        hero = this.hero,
+        donation = tenth(hero.getGold());
+
+        hero.incrGold(-donation);
+        me.incrPiety(donation);
+
+        return entities;
     };
 });
