@@ -133,6 +133,9 @@ pico.def('info', 'picUIContent', function(){
                 case G_OBJECT_TYPE.KEY:
                     addOption('Unlock Gate', 'unlock');
                     break;
+                case G_OBJECT_TYPE.MATERIAL:
+                    addOption('Acquire', 'acquire');
+                    break;
                 }
             }else{
                 addOption('Move', 'move');
@@ -434,6 +437,16 @@ pico.def('info', 'picUIContent', function(){
                 break;
             case 'unlock':
                 this.go('openGate', [targetId]);
+                break;
+            case 'acquire':
+                this.go('showDialog', {
+                    info: [
+                        'Congratulations!',
+                        'Well done brave soul, you have completed the testament i given to you, now ascending to Valhalla, come to my side and aid me in the Ragnorak!'
+                    ],
+                    callbacks:['resetWorld'],
+                    labels:['Reborn']
+                });
                 break;
             case 'imbue':
                 break;

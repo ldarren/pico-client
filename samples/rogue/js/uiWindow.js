@@ -510,7 +510,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
     me.draw = function(ctx, ent, clip){
         var com = ent.getComponent(name);
-        if (!com || !this.mortal) return;
+        if (!com) return;
 
         var
         layout = com.layouts[com.maximized],

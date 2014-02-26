@@ -62,9 +62,8 @@ pico.def('trade', 'picUIContent', function(){
             }else if ('gold' === id){
                 me.fillIconText(ctx, tss, me.hero.getGold(), rect, scale);
             }else if ('desc' === id){
-                var selectedId = com.activated;
-                if (-1 !== selectedId){
-                    slot = content[selectedId];
+                if (-1 !== com.activated){
+                    slot = content[com.activated];
                     good = slot[0];
                     value = good[OBJECT_ICON];
                     me.fillIconText(ctx, tss, G_OBJECT_NAME[value]+': '+G_OBJECT_DESC[value], rect, scale);

@@ -54,7 +54,7 @@ pico.def('game', 'pigSqrMap', function(){
         var mapParams = G_MAP_PARAMS[level];
         Object.getPrototypeOf(me).init(mapParams[0], mapParams[1]);
 
-        if (!populateStaticLevel(level)) generateRandomLevel(mapParams[2], mapParams[3]);
+        if (!populateStaticLevel(level)) generateRandomLevel(mapParams[2], mapParams[3], G_MAP_PARAMS.length === level+1);
     },
     isOpen = function(i){
         var
@@ -221,7 +221,7 @@ pico.def('game', 'pigSqrMap', function(){
 
         return true;
     },
-    generateRandomLevel = function(creepCount, chestCount){
+    generateRandomLevel = function(creepCount, chestCount, lastLevel){
         var
         ai = me.ai,
         map = me.map,
@@ -252,7 +252,7 @@ pico.def('game', 'pigSqrMap', function(){
             map[c] |= G_TILE_TYPE.CREEP;
             objects[c] = ai.spawnCreep(me.currentLevel);
         }
-        objects[c][CREEP_ITEM] = G_CREATE_OBJECT(G_ICON.KEY_GATE);
+        objects[c][CREEP_ITEM] = lastLevel ? G_CREATE_OBJECT(G_ICON.SOUL_STONE) : G_CREATE_OBJECT(G_ICON.KEY_GATE);
 
         // add chests
         for(i=0,l=chestCount; i<l; i++){
@@ -480,7 +480,9 @@ pico.def('game', 'pigSqrMap', function(){
                         'Ascending to Valhalla,',
                         'You were killed at level '+me.currentLevel,
                         'Death is permanent. Although you have died, all of your piety points and the dungeons you have explored will be ready on next trial'],
-                    callbacks: ['resetWorld']});
+                    callbacks: ['resetWorld'],
+                    labels:['Reborn']
+                });
             }else{
                 engagedIds = hero.getEngaged();
                 me.go('forceRefresh');
@@ -522,7 +524,7 @@ pico.def('game', 'pigSqrMap', function(){
         if (!ret) return;
 
         if (!ret[0]){
-            this.go('counter', [[], ret[1]]);
+            this.go('counter', this.ai.battle());
             return;
         }
         this.go('showInfo', {info: ret[1]});
@@ -545,7 +547,7 @@ pico.def('game', 'pigSqrMap', function(){
                 ai.bury(objId);
                 break;
             case G_OBJECT_TYPE.CHEST:
-                if (contact[OBJECT_SUB_TYPE] || contact[CHEST_ITEM]){
+                if (obj[OBJECT_SUB_TYPE] || obj[CHEST_ITEM]){
                     objects[objId] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
                 }
                 break;
@@ -602,6 +604,8 @@ pico.def('game', 'pigSqrMap', function(){
     };
 
     me.reborn = function(elapsed, evt, entities){
+        if (!me.mortal) me.mortal = me.god.createHero();
+
         me.hero.init.call(me, 0);
 
         me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);

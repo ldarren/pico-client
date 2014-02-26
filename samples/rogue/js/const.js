@@ -1586,7 +1586,7 @@ Object.freeze(G_MAP_PARAMS = [
     [8, 8, 0, 0], // tut 3, learn spell, creep, attack, health globe
     [8, 8, 0, 0], // tut 4, learn chest, item, equip, level up spell, portal
     [8, 8, 5, 2], // width, height, creeps, chests
-    [10, 8, 7, 4],
+/*    [10, 8, 7, 4],
     [12, 8, 10, 6],
     [14, 8, 13, 8],
     [16, 8, 15, 10],
@@ -1611,7 +1611,7 @@ Object.freeze(G_MAP_PARAMS = [
     [32, 30, 150, 48],
     [32, 32, 170, 50],
     [32, 32, 200, 52],
-]);
+*/]);
 
 Object.freeze(G_WIN_ID = {
     PLAYER: 'uiPlayer',

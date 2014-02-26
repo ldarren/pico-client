@@ -139,7 +139,7 @@ pico.def('god', 'picUIContent', function(){
             if (donation){
                 this.go('showDialog', {
                     info: [
-                        'Do you want to contribute a one-tenth of your golds to god Vili?',
+                        'Do you want to contribute a one-tenth of your golds to god Wodinaz?',
                         'That\'s '+donation+' golds'],
                     labels: ['Donate', 'Close'],
                     callbacks: ['tenthing', null]
@@ -160,7 +160,7 @@ pico.def('god', 'picUIContent', function(){
         case 'avatar':
             if (hero.getHp()) return true;
             this.go('showTrade', {
-                info:['God Vili is reincarnating you as a '+G_HERO_CLASS_NAME[stats[OBJECT_SUB_TYPE]],
+                info:['God Wodinaz is reincarnating you as a '+G_HERO_CLASS_NAME[stats[OBJECT_SUB_TYPE]],
                 'you can spend some piety points to change it'],
                 content: heroClasses,
                 labels:['Change', 'Close'],

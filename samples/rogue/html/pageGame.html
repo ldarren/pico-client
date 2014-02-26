@@ -267,8 +267,19 @@ onLoad = function(){
         window.addEventListener('resize', onResize, false);
         window.addEventListener('unload', game.exit, false);
 
-        if (game.mortal) game.go('reborn');
-        else game.go('showAltar', {callback:'reborn'});
+        if (game.mortal)
+            game.go('reborn');
+        else {
+            game.go('showDialog', {
+                info: [
+                    'Welcome to Dungeon Chronicles!',
+                    'Brave soul, I\'m God Wodinaz, I\'ll give you a new body to test your strength and purity of your soul.',
+                    'You must travel down the 40 levels dungeon and retrieve soul stone to prove yourself, you might die alot during the trial, but need not to worry, I\'ll reincarnate you everytime you die. go now, i\'m awaiting you at Valhalla'
+                ],
+                callbacks:['reborn'],
+                labels:['Born']
+            });
+        }
 
         me.rogueMain.hideLoading();
     });
