@@ -170,10 +170,10 @@ pico.def('trade', 'picUIContent', function(){
         style = {font: com.font,fillStyle:com.fontColor},
         tw = this.tileWidth,
         th = this.tileHeight,
-        rowC = Max(TRADE_ROW, Ceil(2 * content.length / TRADE_COL)),
+        rowC = Max(TRADE_ROW, Ceil(content.length / TRADE_COL)),
         meshui,rows,row,cell,i,l;
 
-        meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, th * (3 + info.length + rowC + 1)), style);
+        meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, th * (3 + info.length + (2*rowC) + 1)), style);
         rows=meshui.rows;
 
         row=me.createMeshRow(rows);
