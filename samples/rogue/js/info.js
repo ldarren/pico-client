@@ -3,6 +3,26 @@ pico.def('info', 'picUIContent', function(){
     var
     me = this,
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
+    smithShop = [
+        [G_OBJECT[G_ICON.DAGGER], 1],
+        [G_OBJECT[G_ICON.SCIMITAR], 1],
+        [G_OBJECT[G_ICON.GLADIUS], 1],
+        [G_OBJECT[G_ICON.XIPHOS], 1],
+        [G_OBJECT[G_ICON.CUTLASS], 1],
+        [G_OBJECT[G_ICON.CLAYMORE], 1],
+        [G_OBJECT[G_ICON.ESPADON], 1],
+        [G_OBJECT[G_ICON.FLAMEBERGE], 1],
+    ],
+    mageShop = [
+        [G_OBJECT[G_ICON.ANTIDOT], 1],
+        [G_OBJECT[G_ICON.SMALL_HP], 1],
+        [G_OBJECT[G_ICON.MEDIUM_HP], 1],
+        [G_OBJECT[G_ICON.LARGE_HP], 1],
+        [G_OBJECT[G_ICON.MEDICINE], 1],
+        [G_OBJECT[G_ICON.LUCK_POTION], 1],
+        [G_OBJECT[G_ICON.HOLY_WATER], 1],
+        [G_OBJECT[G_ICON.FIRE_WATER], 1],
+    ],
     name = me.moduleName,
     layouts = [],
     labels = [],
@@ -41,16 +61,19 @@ pico.def('info', 'picUIContent', function(){
                 case G_OBJECT_TYPE.NPC:
                     switch(target[OBJECT_SUB_TYPE]){
                     case G_NPC_TYPE.BLACKSMITH:
-                        addOption('Buy Items', 'showMerchantGoods');
-                        addOption('Craft', 'craft');
+                        addOption('Buy', 'showGoods');
+                        addOption('Upgrade', 'upgrade');
+                        addOption('Exchange', 'xchange');
                         break;
                     case G_NPC_TYPE.ARCHMAGE:
-                        addOption('Buy Items', 'showMerchantGoods');
-                        addOption('Identify', 'identify');
+                        addOption('Buy', 'showGoods');
+                        addOption('Imbue', 'imbue');
+                        addOption('Exchange', 'xchange');
                         break;
                     case G_NPC_TYPE.TOWN_GUARD:
-                        addOption('Sale Items', 'showMyGoods');
+                        addOption('Sale', 'showBag');
                         addOption('Gamble', 'gamble');
+                        addOption('Exchange', 'xchange');
                         break;
                     }
                     break;
@@ -377,10 +400,25 @@ pico.def('info', 'picUIContent', function(){
             case 'unlock':
                 this.go('openGate', [targetId]);
                 break;
-            case 'showMerchantGoods':
-                this.go('showTrade', [targetId]);
+            case 'imbue':
                 break;
-            case 'showMyGoods':
+            case 'upgrade':
+                break;
+            case 'showGoods':
+                var content;
+                switch(target[OBJECT_SUB_TYPE]){
+                case G_NPC_TYPE.BLACKSMITH: content = smithShop; break;
+                case G_NPC_TYPE.ARCHMAGE: content = mageShop; break;
+                }
+                this.go('showTrade', {
+                    info:['Buy an item for your anventure'],
+                    content: content,
+                    labels: ['Buy', 'Close'],
+                    callbacks:[''],
+                    type: G_ICON.GOLD
+                });
+                break;
+            case 'showBag':
                 this.go('showTrade', {
                     info:['Select an item to trade with merchant'],
                     content: hero.getBag() || [],
