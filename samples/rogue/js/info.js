@@ -3,57 +3,6 @@ pico.def('info', 'picUIContent', function(){
     var
     me = this,
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
-    smithShop = [
-        [G_OBJECT[G_ICON.DAGGER], 1],
-        [G_OBJECT[G_ICON.SCIMITAR], 1],
-        [G_OBJECT[G_ICON.GLADIUS], 1],
-        [G_OBJECT[G_ICON.XIPHOS], 1],
-        [G_OBJECT[G_ICON.CUTLASS], 1],
-        [G_OBJECT[G_ICON.HATCHET], 1],
-        [G_OBJECT[G_ICON.CLEAVER], 1],
-        [G_OBJECT[G_ICON.TOMAHAWK], 1],
-        [G_OBJECT[G_ICON.TABARZIN], 1],
-        [G_OBJECT[G_ICON.SHURIKEN], 1],
-        [G_OBJECT[G_ICON.DART], 1],
-        [G_OBJECT[G_ICON.RECURVE_BOW], 1],
-        [G_OBJECT[G_ICON.LONG_BOW], 1],
-        [G_OBJECT[G_ICON.CROSS_BOW], 1],
-        [G_OBJECT[G_ICON.GRENADES], 1],
-        [G_OBJECT[G_ICON.FIRE_BOMB], 1],
-        [G_OBJECT[G_ICON.HUNTER_ARROWS], 1],
-        [G_OBJECT[G_ICON.HUNTER_BOLTS], 1],
-        [G_OBJECT[G_ICON.ROBE], 1],
-        [G_OBJECT[G_ICON.LEATHER_ARMOR], 1],
-        [G_OBJECT[G_ICON.SCALE_ARMOR], 1],
-        [G_OBJECT[G_ICON.CUIRASS], 1],
-        [G_OBJECT[G_ICON.PLATE_MAIL], 1],
-        [G_OBJECT[G_ICON.HOOD], 1],
-        [G_OBJECT[G_ICON.SALLET], 1],
-        [G_OBJECT[G_ICON.SPANGEN], 1],
-        [G_OBJECT[G_ICON.CORINTHIAN], 1],
-        [G_OBJECT[G_ICON.BUCKLER], 1],
-        [G_OBJECT[G_ICON.PARMA], 1],
-        [G_OBJECT[G_ICON.RONDACHE], 1],
-        [G_OBJECT[G_ICON.HEATER], 1],
-        [G_OBJECT[G_ICON.KITE], 1],
-    ],
-    mageShop = [
-        [G_OBJECT[G_ICON.ANTIDOT], 1],
-        [G_OBJECT[G_ICON.SMALL_HP], 1],
-        [G_OBJECT[G_ICON.MEDICINE], 1],
-        [G_OBJECT[G_ICON.LUCK_POTION], 1],
-        [G_OBJECT[G_ICON.HOLY_WATER], 1],
-        [G_OBJECT[G_ICON.FIRE_WATER], 1],
-        [G_OBJECT[G_ICON.TELEPORT_SCROLL], 1],
-        [G_OBJECT[G_ICON.TOME_KNOWLEDGE], 1],
-        [G_OBJECT[G_ICON.TOME_WISDOM], 1],
-        [G_OBJECT[G_ICON.ORB], 1],
-        [G_OBJECT[G_ICON.MACE], 1],
-        [G_OBJECT[G_ICON.WAND], 1],
-        [G_OBJECT[G_ICON.STAFF], 1],
-        [G_OBJECT[G_ICON.RING1], 1],
-        [G_OBJECT[G_ICON.AMULET1], 1],
-    ],
     name = me.moduleName,
     layouts = [],
     labels = [],
@@ -455,8 +404,8 @@ pico.def('info', 'picUIContent', function(){
             case 'showGoods':
                 var content;
                 switch(target[OBJECT_SUB_TYPE]){
-                case G_NPC_TYPE.BLACKSMITH: content = smithShop; break;
-                case G_NPC_TYPE.ARCHMAGE: content = mageShop; break;
+                case G_NPC_TYPE.BLACKSMITH: content = me.trade.setShop(0); break;
+                case G_NPC_TYPE.ARCHMAGE: content = me.trade.setShop(1); break;
                 }
                 this.go('showTrade', {
                     info:['Buy an item for your anventure'],
@@ -493,6 +442,8 @@ pico.def('info', 'picUIContent', function(){
         }
         return false;
     };
+
+    me.use('trade');
 
     me.create = function(ent, data){
         data = me.base.create.call(this, ent, data);

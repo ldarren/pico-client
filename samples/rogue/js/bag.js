@@ -234,10 +234,17 @@ pico.def('bag', 'picUIContent', function(){
     me.buyItem = function(elapsed, evt, entities){
         var
         hero = this.hero,
-        item = this.ai.spawnItem(evt, null, G_GRADE.COMMON, hero.getJob(), hero.getLevel());
+        shop = me.trade.getShop(),
+        slot = shop[evt],
+        templ = slot[0],
+        count = slot[1],
+        item = this.ai.spawnItem(templ[OBJECT_ICON], null, G_GRADE.COMMON, hero.getJob(), hero.getLevel());
 
         if (!item) return;
 
+        if (G_OBJECT_TYPE.AMMO === item[OBJECT_TYPE]) item[AMMO_SIZE] = count;
+
+        hero.incrGold(-me.trade.price(item, count));
         hero.putIntoBag(item);
 
         return entities;

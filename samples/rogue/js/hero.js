@@ -881,6 +881,7 @@ pico.def('hero', 'picUIContent', function(){
     me.getLastWayPoint = function(){ return appearance[HERO_WAYPOINT]; };
     me.setLastPortal = function(level){ appearance[HERO_PORTAL] = level; };
     me.setLastWayPoint = function(level){ if (appearance[HERO_WAYPOINT] < level) appearance[HERO_WAYPOINT] = level; };
+    me.getLevel = function(){ return appearance[HERO_LEVEL]; };
     me.getJob = function(){ return currStats[OBJECT_SUB_TYPE]; };
     me.getBag = function(){ return bag; };
     me.getBagCap = function(){ return appearance ? appearance[HERO_BAG_CAP] : 4; };

@@ -4,6 +4,7 @@ pico.def('trade', 'picUIContent', function(){
     Floor=Math.floor,Ceil=Math.ceil,Round=Math.round,Random=Math.random,Max=Math.max,Min=Math.min,
     name = me.moduleName,
     TRADE_ROW = 4, TRADE_COL = 4,
+    shopListing = 0,
     money = '',
     info = undefined,
     content = undefined,
@@ -142,6 +143,9 @@ pico.def('trade', 'picUIContent', function(){
         baseValue *= count;
         return baseValue;
     };
+
+    me.setShop = function(listing) { shopListing = listing; return G_SHOP[shopListing]; };
+    me.getShop = function() { return G_SHOP[shopListing]; };
 
     me.create = function(ent, data){
         data = me.base.create.call(this, ent, data);
