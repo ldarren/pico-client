@@ -537,6 +537,7 @@ pico.def('hero', 'picUIContent', function(){
     me.putIntoBag = function(item){
         var
         cap = me.getBagCap(),
+        count = 1,
         stack, stat, i, l;
 
         switch(item[OBJECT_TYPE]){
@@ -547,6 +548,9 @@ pico.def('hero', 'picUIContent', function(){
             case G_OBJECT_TYPE.WEAPON:
             case G_OBJECT_TYPE.JEWEL:
                 break;
+            case G_OBJECT_TYPE.JEWEL:
+                count = item[AMMO_SIZE];
+                // through
             case G_OBJECT_TYPE.SCROLL:
                 if (G_SCROLL_TYPE.MENUSCRIPT === item[OBJECT_SUB_TYPE]){
                     break;
@@ -558,7 +562,7 @@ pico.def('hero', 'picUIContent', function(){
                     if (!stack) continue;
                     stat = stack[0]; 
                     if (stat[OBJECT_ICON] === item[OBJECT_ICON]){
-                        stack[1]++;
+                        stack[1]+=count;
                         return true;
                     }
                 }
@@ -567,12 +571,12 @@ pico.def('hero', 'picUIContent', function(){
         for(i=0,l=bag.length; i<l; i++){
             stack = bag[i];
             if (!stack){
-                bag[i] = [item, 1, i];
+                bag[i] = [item, count, i];
                 return true;
             }
         }
         if (cap <= bag.length) return false;
-        bag.push([item, 1, bag.length]);
+        bag.push([item, count, bag.length]);
         return true;
     };
 

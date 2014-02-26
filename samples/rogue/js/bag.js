@@ -42,10 +42,9 @@ pico.def('bag', 'picUIContent', function(){
     onCustomClick = function(ent, ui){
         var com = ent.getComponent(name);
 
-        com.activated = '';
+        com.activated = -1;
 
         if (!ui){
-            com.forSale = false; // click on bag but on the window
             return false;
         }
         var
@@ -54,7 +53,7 @@ pico.def('bag', 'picUIContent', function(){
 
         if (slot){
             com.activated = i;
-            this.go('showInfo', {targetId: i, context: com.forSale ? G_CONTEXT.MERCHANT_SALE : G_CONTEXT.BAG});
+            this.go('showInfo', {targetId: i, context: G_CONTEXT.BAG});
             return true;
         }else{
             this.go('hideInfo');
@@ -89,14 +88,12 @@ pico.def('bag', 'picUIContent', function(){
         }
     };
 
-    me.use('god');
     me.use('trade');
 
     me.create = function(ent, data){
         data = me.base.create.call(this, ent, data);
 
-        data.forSale = false;
-        data.activated = '';
+        data.activated = -1;
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
         return data;
     };
@@ -184,19 +181,11 @@ pico.def('bag', 'picUIContent', function(){
         return me.dropMeshUI.call(this, x, y, ent, com, comBox, scale, onCustomUI);
     };
 
-    me.openForSale = function(elapsed, evt, entities){
-        var ent = me.findHost(entities, G_WIN_ID.BAG);
-        if (!ent) return entities;
-        var com = ent.getComponent(name);
-        com.forSale = true;
-        return [ent];
-    };
-
     me.deselectItem = function(elapsed, evt, entities){
         var ent = me.findHost(entities, G_WIN_ID.BAG);
         if (!ent) return entities;
         var com = ent.getComponent(name);
-        com.activated = '';
+        com.activated = -1;
         return entities;
     };
 
@@ -235,7 +224,34 @@ pico.def('bag', 'picUIContent', function(){
 
         if (!slot) return;
 
-        me.god.incrPiety(me.trade.price(slot[0], 1));
+        this.god.incrPiety(me.trade.price(slot[0], 1));
+
+        hero.removeFromBag(evt);
+
+        return entities;
+    };
+
+    me.buyItem = function(elapsed, evt, entities){
+        var
+        hero = this.hero,
+        item = this.ai.spawnItem(evt, null, G_GRADE.COMMON, hero.getJob(), hero.getLevel());
+
+        if (!item) return;
+
+        hero.putIntoBag(item);
+
+        return entities;
+    };
+
+    me.sellItem = function(elapsed, evt, entities){
+        var
+        hero = this.hero,
+        bag = hero.getBag(),
+        slot = bag[evt];
+
+        if (!slot) return;
+
+        hero.incrGold(me.trade.price(slot[0], 1));
 
         hero.removeFromBag(evt);
 

@@ -102,7 +102,7 @@ pico.def('info', 'picUIContent', function(){
                         addOption('Exchange', 'xchange');
                         break;
                     case G_NPC_TYPE.TOWN_GUARD:
-                        addOption('Sale', 'showBag');
+                        addOption('Sell', 'showBag');
                         addOption('Gamble', 'gamble');
                         addOption('Exchange', 'xchange');
                         break;
@@ -176,7 +176,7 @@ pico.def('info', 'picUIContent', function(){
             addOption('Buy', 'buy');
             break;
         case G_CONTEXT.MERCHANT_SALE:
-            addOption('Sale', 'sale');
+            addOption('Sell', 'sell');
             break;
         case G_CONTEXT.CREEP_EFFECT:
             addOption('Details', 'details');
@@ -462,7 +462,7 @@ pico.def('info', 'picUIContent', function(){
                     info:['Buy an item for your anventure'],
                     content: content,
                     labels: ['Buy', 'Close'],
-                    callbacks:[''],
+                    callbacks:['buy'],
                     type: G_ICON.GOLD
                 });
                 break;
@@ -471,7 +471,7 @@ pico.def('info', 'picUIContent', function(){
                     info:['Select an item to trade with merchant'],
                     content: hero.getBag() || [],
                     labels: ['Sell', 'Close'],
-                    callbacks:[''],
+                    callbacks:['sell'],
                     type: G_ICON.GOLD
                 });
                 break;

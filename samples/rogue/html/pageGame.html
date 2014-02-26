@@ -187,8 +187,9 @@ onLoad = function(){
         game.route('resetWorld', [game.resetWorld, renderer.draw]);
         game.route('reborn', [game.reborn, renderer.draw]);
         game.route('recover', [game.recover, uiWindow.update, renderer.draw]);
-        game.route('openForSale', [uiWindow.maximise, bag.openForSale, renderer.draw]);
         game.route('offerring', [bag.offerItem, uiWindow.update, renderer.draw]);
+        game.route('sell', [bag.sellItem, uiWindow.update, renderer.draw]);
+        game.route('buy', [bag.buyItem, uiWindow.update, renderer.draw]);
         game.route('tenthing', [god.tenthing]);
         game.route('changeJob', [god.changeJob]);
         game.route('holyForge', [god.holyForge]);
