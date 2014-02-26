@@ -61,6 +61,14 @@ pico.def('trade', 'picUIContent', function(){
                 me.fillIconText(ctx, tss, me.god.getPiety(), rect, scale);
             }else if ('gold' === id){
                 me.fillIconText(ctx, tss, me.hero.getGold(), rect, scale);
+            }else if ('desc' === id){
+                var selectedId = com.activated;
+                if (-1 !== selectedId){
+                    slot = content[selectedId];
+                    good = slot[0];
+                    value = good[OBJECT_ICON];
+                    me.fillIconText(ctx, tss, G_OBJECT_NAME[value]+': '+G_OBJECT_DESC[value], rect, scale);
+                }
             }
         }
     },
@@ -198,7 +206,9 @@ pico.def('trade', 'picUIContent', function(){
             me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 0, 0, {id:'info'+i});
         }
 
-        me.createMeshRow(rows);
+        row=me.createMeshRow(rows);
+        cell=me.createMeshCell(row);
+        me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 0, 0, {id:'desc'});
 
         for(i=0,l=rowC;i<l;i++){
             row=me.createMeshRow(rows);
