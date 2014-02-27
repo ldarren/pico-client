@@ -44,37 +44,9 @@ pico.def('tome', 'picUIContent', function(){
 
         hero.selectSpell(toggle ? undefined : spell);
         if (spell){
-            var
-            labels=['Select a cell', 'Recycle', 'Close'],
-            callbacks=['showDialog', 'showDialog'],
-            events=[
-                {info:['Tab a cell to cast','You can cast the selected spell directly by tapping on a dungeon cell'], labels:['Close'], callbacks:[]},
-                {info:['Recycle spell','This will remove the selected spell permanently from tomei, and add 1 `0196'], labels:['Recycle', 'Close'], callbacks:['forgetSpell'],events:[id]}];
-
-            switch(spell[OBJECT_SUB_TYPE]){
-            case G_SPELL_TYPE.WHIRLWIND:
-            case G_SPELL_TYPE.POISON_BLADE:
-            case G_SPELL_TYPE.SQUEAL:
-            case G_SPELL_TYPE.NOCTURNAL:
-            case G_SPELL_TYPE.LYCAN:
-            case G_SPELL_TYPE.GROWL:
-                labels[0] = 'Cast';
-                callbacks[0] = 'castSpell';
-                events[0] = null;
-                break;
-            case G_SPELL_TYPE.GAZE:
-            case G_SPELL_TYPE.FIREBALL:
-                break;
-            }
-            if (spell[SPELL_COOLDOWN] || !hero.affordableSpell(spell)){
-                labels.shift();
-                callbacks.shift();
-                events.shift();
-            }
-            this.go('showInfo', {targetId: id, labels: labels, callbacks: callbacks, events: events, context:G_CONTEXT.TOME});
+            this.go('showInfo', {targetId: id, context:G_CONTEXT.TOME});
             return true;
         }
-        
         this.go('hideInfo', true);
         return false;
     },
