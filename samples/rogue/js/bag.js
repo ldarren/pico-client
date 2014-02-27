@@ -90,6 +90,113 @@ pico.def('bag', 'picUIContent', function(){
 
     me.use('trade');
 
+    me.useItem = function(elapsed, evt, entities){
+        var
+        targetName = evt.bag,
+        e = me.findHost(entities, targetName);
+
+        if (!e) return;
+
+        var slots = this.hero.getBag();
+        if (slots[evt.index]){
+            return [e];
+        }
+    };
+
+    me.lootItem = function(elapsed, evt, entities){
+        var
+        object = this.objects[evt],
+        loot = object[CHEST_ITEM];
+
+        if (!loot) return;
+
+        this.hero.putIntoBag(loot);
+
+        this.objects[evt] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
+
+        return entities;
+    };
+
+    me.offerItem = function(elapsed, evt, entities){
+        var
+        hero = this.hero,
+        bag = hero.getBag(),
+        slot = bag[evt];
+
+        if (!slot) return;
+
+        this.god.incrPiety(me.trade.price(slot[0], 1));
+
+        hero.removeFromBag(evt);
+
+        return entities;
+    };
+
+    me.buyItem = function(elapsed, evt, entities){
+        var
+        hero = this.hero,
+        shop = me.trade.getShop(),
+        slot = shop[evt],
+        templ = slot[0],
+        count = slot[1],
+        item = this.ai.spawnItem(templ[OBJECT_ICON], null, G_GRADE.COMMON, hero.getJob(), hero.getLevel());
+
+        if (!item) return;
+
+        if (G_OBJECT_TYPE.AMMO === item[OBJECT_TYPE]) item[AMMO_SIZE] = count;
+
+        hero.incrGold(-me.trade.price(item, count));
+        hero.putIntoBag(item);
+
+        return entities;
+    };
+
+    me.sellItem = function(elapsed, evt, entities){
+        var
+        hero = this.hero,
+        bag = hero.getBag(),
+        slot = bag[evt];
+
+        if (!slot) return;
+
+        hero.incrGold(me.trade.price(slot[0], 1));
+
+        hero.removeFromBag(evt);
+
+        return entities;
+    };
+
+    me.recycleItem = function(elapsed, evt, entities){
+        var
+        hero = this.hero,
+        bag = hero.getBag(),
+        slot = bag[evt];
+
+        if (!slot) return;
+
+        switch(slot[0][OBJECT_TYPE]){
+        case G_OBJECT_TYPE.WEAPON:
+            hero.incrPAtk(1);
+            break;
+        case G_OBJECT_TYPE.AMMO:
+            hero.incrRAtk(1);
+            break;
+        case G_OBJECT_TYPE.ARMOR:
+            hero.incrDef(1);
+            break;
+        case G_OBJECT_TYPE.JEWEL:
+        case G_OBJECT_TYPE.POTION:
+        case G_OBJECT_TYPE.SCROLL:
+        case G_OBJECT_TYPE.MATERIAL:
+            hero.incrWill(1);
+            break;
+        }
+
+        hero.removeFromBag(evt);
+
+        return entities;
+    };
+
     me.create = function(ent, data){
         data = me.base.create.call(this, ent, data);
 
@@ -186,82 +293,6 @@ pico.def('bag', 'picUIContent', function(){
         if (!ent) return entities;
         var com = ent.getComponent(name);
         com.activated = -1;
-        return entities;
-    };
-
-    me.useItem = function(elapsed, evt, entities){
-        var
-        targetName = evt.bag,
-        e = me.findHost(entities, targetName);
-
-        if (!e) return;
-
-        var slots = this.hero.getBag();
-        if (slots[evt.index]){
-            return [e];
-        }
-    };
-
-    me.lootItem = function(elapsed, evt, entities){
-        var
-        object = this.objects[evt],
-        loot = object[CHEST_ITEM];
-
-        if (!loot) return;
-
-        this.hero.putIntoBag(loot);
-
-        this.objects[evt] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
-
-        return entities;
-    };
-
-    me.offerItem = function(elapsed, evt, entities){
-        var
-        hero = this.hero,
-        bag = hero.getBag(),
-        slot = bag[evt];
-
-        if (!slot) return;
-
-        this.god.incrPiety(me.trade.price(slot[0], 1));
-
-        hero.removeFromBag(evt);
-
-        return entities;
-    };
-
-    me.buyItem = function(elapsed, evt, entities){
-        var
-        hero = this.hero,
-        shop = me.trade.getShop(),
-        slot = shop[evt],
-        templ = slot[0],
-        count = slot[1],
-        item = this.ai.spawnItem(templ[OBJECT_ICON], null, G_GRADE.COMMON, hero.getJob(), hero.getLevel());
-
-        if (!item) return;
-
-        if (G_OBJECT_TYPE.AMMO === item[OBJECT_TYPE]) item[AMMO_SIZE] = count;
-
-        hero.incrGold(-me.trade.price(item, count));
-        hero.putIntoBag(item);
-
-        return entities;
-    };
-
-    me.sellItem = function(elapsed, evt, entities){
-        var
-        hero = this.hero,
-        bag = hero.getBag(),
-        slot = bag[evt];
-
-        if (!slot) return;
-
-        hero.incrGold(me.trade.price(slot[0], 1));
-
-        hero.removeFromBag(evt);
-
         return entities;
     };
 

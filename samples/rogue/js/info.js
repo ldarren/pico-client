@@ -310,11 +310,10 @@ pico.def('info', 'picUIContent', function(){
         me.drawButton(ctx, ts, labels[ui.userData.id], rect, scale, G_COLOR_TONE[3], G_COLOR_TONE[0], G_COLOR_TONE[1], 3);
     },
     onCustomClick = function(ent, ui){
+        this.go('hideInfo');
         if (!ui){
             if (!labels.length && callbacks.length){
                 this.go(callbacks[0], events[0]);
-            }else{
-                this.go('hideInfo');
             }
             return false;
         }
@@ -414,39 +413,48 @@ pico.def('info', 'picUIContent', function(){
                 });
                 break;
             case 'recycle':
+                var name, info, callback;
                 switch(context){
                 case G_CONTEXT.BAG:
                     var stat = target[0];
+                    name = stat[OBJECT_NAME];
+                    info = 'This will remove '+name+' permanently from your bag, and add 1 ';
+                    callback = 'recycleItem';
                     switch(stat[OBJECT_TYPE]){
                     case G_OBJECT_TYPE.WEAPON:
+                        info += 'ATK `0'+G_UI.PATK;
+                        break;
                     case G_OBJECT_TYPE.AMMO:
+                        info += 'ATK `0'+G_UI.RATK;
+                        break;
                     case G_OBJECT_TYPE.ARMOR:
+                        info += 'DEF `0'+G_UI.PDEF;
+                        break;
                     case G_OBJECT_TYPE.JEWEL:
-                        break;
                     case G_OBJECT_TYPE.POTION:
-                        break;
                     case G_OBJECT_TYPE.SCROLL:
-                        break;
                     case G_OBJECT_TYPE.MATERIAL:
+                        info += 'Will `0'+G_UI.WILL;
                         break;
                     }
                     break;
                 case G_CONTEXT.TOME:
-            var
-            labels=['Select a cell', 'Recycle', 'Close'],
-            callbacks=['showDialog', 'showDialog'],
-            events=[
-                {info:['Tab a cell to cast','You can cast the selected spell directly by tapping on a dungeon cell'], labels:['Close'], callbacks:[]},
-                {info:['Recycle spell','This will remove the selected spell permanently from tomei, and add 1 `0196'], labels:['Recycle', 'Close'], callbacks:['forgetSpell'],events:[id]}];
+                    name = target[OBJECT_NAME];
+                    info = 'This will remove the selected spell permanently from tome, and add 1 HP `0'+G_UI.HP;
+                    callback = 'forgetSpell';
                     break;
                 }
+                this.go('showDialog',{
+                    info:['Recycling '+name, info],
+                    labels:['Recycle', 'Close'],
+                    callbacks:[callback],
+                    events:[targetId]});
                 break;
             case 'chant':
                 this.go('chant', [targetId]);
                 break;
             }
         }
-        this.go('hideInfo');
 
         return true;
     },

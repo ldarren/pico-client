@@ -392,26 +392,6 @@ pico.def('game', 'pigSqrMap', function(){
         });
     };
 
-    me.castSpell = function(elapsed, evt, entities){
-        var hero = this.hero;
-        if (hero.castSpell.call(this, hero.getPosition())) return entities;
-        return; // return nothing
-    };
-
-    me.forgetSpell = function(elapsed, evt, entities){
-        var
-        hero = this.hero,
-        tome = hero.getTome(),
-        spell = tome[evt];
-
-        if (!spell) return;
-
-        delete tome[evt];
-
-        hero.incrHp(1);
-        return entities;
-    };
-
     me.attackAnim = function(elapsed, targets, entities){
         var hero = this.hero;
 

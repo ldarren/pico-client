@@ -36,13 +36,16 @@ pico.def('tome', 'picUIContent', function(){
     },
     onCustomClick = function(ent, ui){
         if (!ui) return false;
+
         var
         id = ui.userData.id,
         hero = this.hero,
         spell = hero.getTome()[id],
         toggle = hero.getSelectedSpell() === spell;
 
-        hero.selectSpell(toggle ? undefined : spell);
+        hero.selectSpell(); // disable first
+        if (!toggle) hero.selectSpell(spell);
+
         if (spell){
             this.go('showInfo', {targetId: id, context:G_CONTEXT.TOME});
             return true;
@@ -73,6 +76,26 @@ pico.def('tome', 'picUIContent', function(){
         case me.CUSTOM_BUTTON: return onCustomDraw.apply(this, arguments); break;
         case me.CUSTOM_DROP: return onCustomDrop.apply(this, arguments); break;
         }
+    };
+
+    me.castSpell = function(elapsed, evt, entities){
+        var hero = this.hero;
+        if (hero.castSpell.call(this, hero.getPosition())) return entities;
+        return; // return nothing
+    };
+
+    me.forgetSpell = function(elapsed, evt, entities){
+        var
+        hero = this.hero,
+        tome = hero.getTome(),
+        spell = tome[evt];
+
+        if (!spell) return;
+
+        delete tome[evt];
+
+        hero.incrHp(1);
+        return entities;
     };
 
     me.upgradeSpell = function(tome, fireC, airC, waterC, earthC, isInit){

@@ -97,7 +97,6 @@ pico.def('dialogMsg', 'picUIContent', function(){
             }
         }
        
-        // measurement start
         ctx.font = com.font;
 
         for (i=0,l=info.length; i<l; i++){
@@ -115,8 +114,15 @@ pico.def('dialogMsg', 'picUIContent', function(){
                 me.createMeshRow(rows);
             }
         }
-        // measurement end
-        meshui.h = Max(height, actualH);
+        if (actualH < height){
+            dummyRows = Floor((height - actualH)/rowH);
+            for(j=0; j<dummyRows; j++){
+                me.createMeshRow(rows);
+            }
+            meshui.h = height;
+        }else{
+            meshui.h = actualH;
+        }
 
         com.layout = meshui;
 

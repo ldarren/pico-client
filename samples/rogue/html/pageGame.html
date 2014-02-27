@@ -161,7 +161,6 @@ onLoad = function(){
         game.route('moveCamera', [game.useSelected, camera.swipe, renderer.drawScreenshot]);
         game.route('moveCameraEnd', [game.releaseSelected, renderer.releaseScreenshot, renderer.draw]);
         game.route('useItem', [bag.useItem, renderer.draw]);
-        //game.route('selectSpell', [tome.selectSpell, renderer.draw]);
         game.route('openGate', [game.openGate, renderer.draw]);
         game.route('openChest', [game.openChest, renderer.draw]);
         game.route('loot', [bag.lootItem, uiWindow.update, renderer.draw]);
@@ -171,7 +170,8 @@ onLoad = function(){
         game.route('flee', [game.flee, renderer.draw]);
         game.route('battleEnd', [game.battleEnd, renderer.draw]);
         game.route('castSpell', [game.castSpell]);
-        game.route('forgetSpell', [game.forgetSpell, uiWindow.update, renderer.draw]);
+        game.route('forgetSpell', [tome.forgetSpell, uiWindow.update, renderer.draw]);
+        game.route('recycleItem', [bag.recycleItem, uiWindow.update, renderer.draw]);
         game.route('startEffect', [renderer.captureScreenshot, effect.start]);
         game.route('doEffect', [tween.update, renderer.drawScreenshot]);
         game.route('clearEffect', [effect.clear, uiWindow.hideAll, renderer.clear, uiWindow.showAll, effect.stop]);
