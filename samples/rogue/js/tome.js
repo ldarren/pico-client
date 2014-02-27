@@ -45,11 +45,11 @@ pico.def('tome', 'picUIContent', function(){
         hero.selectSpell(toggle ? undefined : spell);
         if (spell){
             var
-            labels=['Select a cell', 'Forget', 'Close'],
+            labels=['Select a cell', 'Recycle', 'Close'],
             callbacks=['showDialog', 'showDialog'],
             events=[
-                {info:['Tab a cell to cast','You can cast the selected spell directly by tapping on a cell on ground'], labels:['Close'], callbacks:[]},
-                {info:['Forget spell','This will remove the selected spell permanently from tome'], labels:['Forget', 'Close'], callbacks:['forgetSpell']}];
+                {info:['Tab a cell to cast','You can cast the selected spell directly by tapping on a dungeon cell'], labels:['Close'], callbacks:[]},
+                {info:['Recycle spell','This will remove the selected spell permanently from tomei, and add 1 `0196'], labels:['Recycle', 'Close'], callbacks:['forgetSpell'],events:[id]}];
 
             switch(spell[OBJECT_SUB_TYPE]){
             case G_SPELL_TYPE.WHIRLWIND:

@@ -671,6 +671,11 @@ pico.def('hero', 'picUIContent', function(){
         case G_SPELL_TYPE.LYCAN:
         case G_SPELL_TYPE.GROWL:
             if (hp !== id) id = hp;
+            break;
+        case G_SPELL_TYPE.GAZE:
+        case G_SPELL_TYPE.FIREBALL:
+            if (hp === id) return false;
+            break;
         }
 
         var
@@ -745,6 +750,7 @@ pico.def('hero', 'picUIContent', function(){
                 case G_OBJECT_TYPE.HERO:
                 case G_OBJECT_TYPE.ENV:
                 case G_OBJECT_TYPE.KEY:
+                case G_OBJECT_TYPE.MATERIAL:  // soul stone
                     break;
                 default:
                     targets.push(contactId);

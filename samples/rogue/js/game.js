@@ -142,7 +142,7 @@ pico.def('game', 'pigSqrMap', function(){
                     objects[i] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY)
                 }else{
                     object = G_CREATE_OBJECT(G_ICON.CHEST);
-                    object[CHEST_ITEM] = ai.spawnItem(G_ICON.ROBE, G_GRADE.ENCHANTED, me.hero.getJob(), 1, 1);
+                    object[CHEST_ITEM] = ai.spawnItem(G_ICON.ROBE, G_ENCHANTED_RATE[0], G_GRADE.ENCHANTED, me.hero.getJob(), 1);
                     objects[chestId] = object;
                 }
             }
@@ -339,7 +339,6 @@ pico.def('game', 'pigSqrMap', function(){
         me.god.step.call(me, steps);
         me.hero.step.call(me, steps);
         me.ai.step.call(me, steps);
-        me.go('forceRefresh');
 
         return entities;
     };
@@ -403,11 +402,13 @@ pico.def('game', 'pigSqrMap', function(){
         var
         hero = this.hero,
         tome = hero.getTome(),
-        spell = hero.getSelectedSpell();
+        spell = tome[evt];
 
-        delete tome[tome.indexOf(spell)];
+        if (!spell) return;
 
-        hero.selectSpell();
+        delete tome[evt];
+
+        hero.incrHp(1);
         return entities;
     };
 
@@ -909,5 +910,6 @@ pico.def('game', 'pigSqrMap', function(){
 
     me.branchFingerOut = function(elapsed, evt, entities){
         this.go(('camera' === entities[0].name) ? 'moveCameraEnd' : 'scrollWinEnd', evt);
+        this.go('forceRefresh');
     };
 });

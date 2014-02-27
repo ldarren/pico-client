@@ -101,25 +101,25 @@ pico.def('info', 'picUIContent', function(){
                     addOption('Unequip', 'unequip');
                 }else{
                     addOption('Equip', 'equip');
-                    addOption('Discard', 'discard');
+                    addOption('Recycle', 'recycle');
                 }
                 break;
             case G_OBJECT_TYPE.POTION:
                 addOption('Drink', 'drink');
-                addOption('Discard', 'discard');
+                addOption('Recycle', 'recycle');
                 break;
             case G_OBJECT_TYPE.SCROLL:
                 addOption('Chant', 'chant');
-                addOption('Discard', 'discard');
+                addOption('Recycle', 'recycle');
                 break;
             case G_OBJECT_TYPE.MATERIAL:
-                addOption('Discard', 'discard');
+                addOption('Recycle', 'recycle');
                 break;
             }
             break;
         case G_CONTEXT.TOME:
             addOption('Cast', 'cast');
-            addOption('Forget', 'forget');
+            addOption('Recycle', 'recycle');
             break;
         case G_CONTEXT.MERCHANT_BUY:
             addOption('Buy', 'buy');
@@ -356,7 +356,6 @@ pico.def('info', 'picUIContent', function(){
                 delete this.objects[targetId];
                 hero.incrHp(1);
                 ai.incrHpAll(1);
-                this.go('forceRefresh');
                 this.go('heroMoveTo', [targetId]);
                 break;
             case 'read':
@@ -368,7 +367,6 @@ pico.def('info', 'picUIContent', function(){
                 hero.incrRAtk();
                 hero.incrDef();
                 hero.incrWill();
-                this.go('forceRefresh');
                 break;
             case 'recover':
                 this.go('recover', [targetId]);
@@ -415,6 +413,28 @@ pico.def('info', 'picUIContent', function(){
                     callbacks:['sell'],
                     type: G_ICON.GOLD
                 });
+                break;
+            case 'recycle':
+                switch(context){
+                case G_CONTEXT.BAG:
+                    var stat = target[0];
+                    switch(stat[OBJECT_TYPE]){
+                    case G_OBJECT_TYPE.WEAPON:
+                    case G_OBJECT_TYPE.AMMO:
+                    case G_OBJECT_TYPE.ARMOR:
+                    case G_OBJECT_TYPE.JEWEL:
+                        break;
+                    case G_OBJECT_TYPE.POTION:
+                        break;
+                    case G_OBJECT_TYPE.SCROLL:
+                        break;
+                    case G_OBJECT_TYPE.MATERIAL:
+                        break;
+                    }
+                    break;
+                case G_CONTEXT.TOME:
+                    break;
+                }
                 break;
             case 'chant':
                 this.go('chant', [targetId]);

@@ -521,13 +521,28 @@ pico.def('uiWindow', 'picUIWindow', function(){
         sh = com.scrollBarH, sv = com.scrollBarV;
 
         ctx.save();
+
         ctx.beginPath();
         ctx.fillStyle = com.background;
         if (com.maximized) ctx.fillRect(clip[0], clip[1], clip[2], clip[3]);
-        else ctx.fillRect(layout[0], layout[1], layout[2], layout[3]);
+        else{ 
+            if (G_WIN_ID.PLAYER === ent.name && this.hero.getSelectedSpell()){
+                ctx.fillRect(clip[0], clip[1], clip[2], layout[3]*2);
+                ctx.save();
+                ctx.fillStyle = G_COLOR_TONE[0];
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+                ctx.font = this.smallDevice ? '18px Helvetica' : '38px alagard';
+                ctx.fillText('Tab on adjacent dungeon cell to cast', layout[0]+layout[2]/2, layout[1]+layout[3]*2, layout[2]);
+                ctx.restore();
+            }else{
+                ctx.fillRect(layout[0], layout[1], layout[2], layout[3]);
+            }
+        }
         ctx.drawImage(com.canvas,
             com.scrollX, com.scrollY, contentW, contentH,
             comBox.x, comBox.y, contentW, contentH);
+
         if (com.theme){
             var
             ts = this.tileSet,

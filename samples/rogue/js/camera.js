@@ -116,7 +116,7 @@ pico.def('camera', 'picBase', function(){
 
         tileType = map[id];
         object = objects[id];
-        isNear = this.nearToHero(id);
+        isNear = hp === id || this.nearToHero(id);
 
         if (isNear){
             if (hero.castSpell.call(this, id)) return entities;
@@ -253,11 +253,11 @@ pico.def('camera', 'picBase', function(){
         }
 
         // draw player active skill
-        if (hero.getSelectedSpell()){
-            hp = hero.getPosition();
-            x = viewX + tileW * (hp%mapW), y = viewY + tileH * Floor(hp/mapW);
-            tileSet.draw(ctx, G_UI.DAMAGE, x, y, hw, hh);
-        }
+        //if (hero.getSelectedSpell()){
+            //hp = hero.getPosition();
+            //x = viewX + tileW * (hp%mapW), y = viewY + tileH * Floor(hp/mapW);
+            //tileSet.draw(ctx, G_UI.DAMAGE, x, y, hw, hh);
+        //}
 
         // draw transparent objects
         //ctx.globalAlpha = 0.6;
