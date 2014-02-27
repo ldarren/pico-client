@@ -133,7 +133,7 @@ pico.def('info', 'picUIContent', function(){
         }
         addOption('Close');
     },
-    equipInfo = function(id, stat, count, ctx, tss, rect, scale){
+    equipInfo = function(id, stat, ctx, tss, rect, scale){
         switch(id){
         case 9: break;
         case 10:
@@ -144,10 +144,9 @@ pico.def('info', 'picUIContent', function(){
             }
             break;
         case 11:
-            me.fillIconText(ctx, tss, 'Level `0'+G_UI.LEVEL+' '+stat[OBJECT_LEVEL], rect, scale);
             break;
         case 12:
-            me.fillIconText(ctx, tss, 'Count: '+count, rect, scale);
+            me.fillIconText(ctx, tss, 'Level `0'+G_UI.LEVEL+' '+stat[OBJECT_LEVEL], rect, scale);
             break;
         default:
             var
@@ -157,19 +156,14 @@ pico.def('info', 'picUIContent', function(){
 
             for(var i=OBJECT_HP,l=OBJECT_EARTH+1; i<l; i++){
                 val = stat[i];
+                if (val) currTH++;
+                if (currTH !== statTH) continue;
                 if (OBJECT_VEG <= i && OBJECT_DEMON >= i){
-                    if (1 !== val) currTH++;
-                    if (currTH === statTH) {
-                        me.fillIconText(ctx, tss, G_STAT_NAME[i]+' `0'+G_STAT_ICON[i]+' X'+val, rect, scale);
-                        break;
-                    }
-                } else if (val){
-                    currTH++;
-                    if (currTH === statTH) {
-                        me.fillIconText(ctx, tss, G_STAT_NAME[i]+' `0'+G_STAT_ICON[i]+(val > 0 ? ' +':' ')+val, rect, scale);
-                        break;
-                    }
+                    me.fillIconText(ctx, tss, G_STAT_NAME[i]+' `0'+G_STAT_ICON[i]+' X'+val, rect, scale);
+                } else {
+                    me.fillIconText(ctx, tss, G_STAT_NAME[i]+' `0'+G_STAT_ICON[i]+(val > 0 ? ' +':' ')+val, rect, scale);
                 }
+                break;
             }
             break;
         }
@@ -230,22 +224,20 @@ pico.def('info', 'picUIContent', function(){
                 }
                 break;
             case G_CONTEXT.BAG:
-                var
-                stat = target[0],
-                count = target[1];
+                var stat = target[0];
 
                 switch(stat[OBJECT_TYPE]){
                 case G_OBJECT_TYPE.WEAPON:
                 case G_OBJECT_TYPE.AMMO:
                 case G_OBJECT_TYPE.ARMOR:
                 case G_OBJECT_TYPE.JEWEL:
-                    equipInfo.call(this, id, stat, count, ctx, tss, rect, scale);
+                    equipInfo.call(this, id, stat, ctx, tss, rect, scale);
                     break;
                 case G_OBJECT_TYPE.POTION:
                 case G_OBJECT_TYPE.SCROLL:
                 case G_OBJECT_TYPE.MATERIAL:
                 default:
-                    if (9 === id) me.fillIconText(ctx, tss, stat[OBJECT_NAME]+' (X'+count+') : '+stat[OBJECT_DESC], rect, scale);
+                    if (9 === id) me.fillIconText(ctx, tss, stat[OBJECT_NAME]+': '+stat[OBJECT_DESC], rect, scale);
                     break;
                 }
                 break;
@@ -556,7 +548,7 @@ pico.def('info', 'picUIContent', function(){
         case G_CONTEXT.BAG:
             row=me.createMeshRow(rows);
             cell=me.createMeshCell(row);
-            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:10});
+            me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 2, 1, 0, 0, {id:10});
             me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 3, 3, 0, 0, {id:9});
             cell=me.createMeshCell(row);
             me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, 1, 0, 0, {id:11});
