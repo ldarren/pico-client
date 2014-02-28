@@ -402,8 +402,24 @@ pico.def('info', 'picUIContent', function(){
                 });
                 break;
             case 'imbue':
+                this.go('showTrade', {
+                    info:['Select an item to replace it magic attributes'],
+                    content: hero.getBag() || [],
+                    labels: ['Imbue', 'Close'],
+                    callbacks:['imbue'],
+                    market: me.trade.imbuePrice, 
+                    type: G_UI.GOLD
+                });
                 break;
             case 'upgrade':
+                this.go('showTrade', {
+                    info:['Select an item to upgrade it\'s level'],
+                    content: hero.getBag() || [],
+                    labels: ['Upgrade', 'Close'],
+                    callbacks:['upgrade'],
+                    market: me.trade.upgradePrice, 
+                    type: G_UI.GOLD
+                });
                 break;
             case 'showGoods':
                 var content;
