@@ -213,22 +213,21 @@ pico.def('bag', 'picUIContent', function(){
         hero = this.hero,
         shop = me.trade.getShop(),
         slot = shop[evt],
-        templ = slot[0],
-        count = slot[1],
-        item = this.ai.spawnItem(templ[OBJECT_ICON], null, G_GRADE.COMMON, hero.getJob(), hero.getLevel());
-
-        if (!item) return;
+        templ = slot[0];
 
         if (hero.isBagFull()){
             this.go('showDialog', {info:G_MSG.BAG_FULL});
             return;
         }
+        
+        var item = this.ai.gamble(templ[OBJECT_ICON], hero.getJob(), hero.getStat(OBJECT_LEVEL), hero.getLevel());
 
-        if (G_OBJECT_TYPE.AMMO === item[OBJECT_TYPE]) item[AMMO_SIZE] = count;
+        if (!item) return;
 
-        hero.incrGold(-me.trade.buyPrice(item, count));
+        hero.incrGold(-me.trade.gamblePrice(templ, count));
         hero.putIntoBag(item);
 
+        this.go('hideTrade');
         return entities;
     };
 

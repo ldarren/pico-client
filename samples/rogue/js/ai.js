@@ -281,6 +281,25 @@ pico.def('ai', function(){
         return me.spawnItem(itemRate[DROP_ID], modifier, gradeType, job, lvl);
     };
 
+    me.gamble = function(itemId, job, luck, level){
+        var
+        capLvl = (G_MAP_PARAMS.length - 1)*5,
+        minLvl = level < 4 ? 3 : level - 3,
+        maxLvl = level > capLvl-4 ? capLvl : level + 3,
+        lvl = minLvl + Round(Random()*(maxLvl - minLvl)),
+        grade = pick(G_GRADE_RATE, luck, G_GRADE.ALL),
+        gradeType = grade[DROP_ID],
+        modifier;
+
+        switch(gradeType){
+        case G_GRADE.LEGENDARY: modifier = pick(G_LEGENDARY_RATE, luck, gradeType); break; 
+        case G_GRADE.ENCHANTED: modifier = pick(G_ENCHANTED_RATE, luck, gradeType); break; 
+        case G_GRADE.CHARMED: modifier = pick(G_CHARMED_RATE, luck, gradeType); break; 
+        }
+        
+        return me.spawnItem(itemId, modifier, gradeType, job, lvl);
+    };
+
     me.createGoods = function(npcType, goods){
         switch(npcType){
         case G_NPC_TYPE.ARCHMAGE:
