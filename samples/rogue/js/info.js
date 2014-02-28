@@ -386,6 +386,20 @@ pico.def('info', 'picUIContent', function(){
                 });
                 break;
             case 'gamble':
+                var 
+                shop = G_SHOP[2].slice(),
+                content = [];
+                for(var i=0; i<12; i++){
+                    content.push(shop.splice(Floor(Random()*shop.length), 1)[0]);
+                }
+                this.go('showTrade', {
+                    info:['You might get some good stuffs here'],
+                    content: content,
+                    labels: ['Bet', 'Close'],
+                    callbacks:['bet'],
+                    market: me.trade.gamblePrice, 
+                    type: G_UI.GOLD
+                });
                 break;
             case 'imbue':
                 break;
@@ -394,15 +408,16 @@ pico.def('info', 'picUIContent', function(){
             case 'showGoods':
                 var content;
                 switch(target[OBJECT_SUB_TYPE]){
-                case G_NPC_TYPE.BLACKSMITH: content = me.trade.setShop(0); break;
-                case G_NPC_TYPE.ARCHMAGE: content = me.trade.setShop(1); break;
+                case G_NPC_TYPE.BLACKSMITH: content = G_SHOP[0]; break;
+                case G_NPC_TYPE.ARCHMAGE: content = G_SHOP[1]; break;
                 }
                 this.go('showTrade', {
                     info:['Buy an item for your anventure'],
                     content: content,
                     labels: ['Buy', 'Close'],
                     callbacks:['buy'],
-                    type: G_ICON.GOLD
+                    market: me.trade.buyPrice, 
+                    type: G_UI.GOLD
                 });
                 break;
             case 'showBag':
@@ -411,7 +426,8 @@ pico.def('info', 'picUIContent', function(){
                     content: hero.getBag() || [],
                     labels: ['Sell', 'Close'],
                     callbacks:['sell'],
-                    type: G_ICON.GOLD
+                    market: me.trade.sellPrice, 
+                    type: G_UI.GOLD
                 });
                 break;
             case 'recycle':

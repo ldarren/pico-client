@@ -4,12 +4,12 @@ pico.def('trade', 'picUIContent', function(){
     Floor=Math.floor,Ceil=Math.ceil,Round=Math.round,Random=Math.random,Max=Math.max,Min=Math.min,
     name = me.moduleName,
     TRADE_ROW = 4, TRADE_COL = 4,
-    shopListing = 0,
     money = '',
     info = undefined,
     content = undefined,
     labels = undefined,
     callbacks = undefined,
+    market,
     onCustomBound = function(ent, rect, ui, scale){
         return me.calcUIRect(rect, ui);
     },
@@ -52,7 +52,7 @@ pico.def('trade', 'picUIContent', function(){
                 good = slot[0];
                 count = slot[1];
 
-                me.fillIconText(ctx, tss, money+me.price(good, count), rect, scale);
+                me.fillIconText(ctx, tss, money+market(good, count), rect, scale);
             }else if (-1 !== id.indexOf('btn')){
                 me.drawButton(ctx, tss, labels[id.charAt(3)], rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
             }else if (-1 !== id.indexOf('info')){
@@ -125,7 +125,7 @@ pico.def('trade', 'picUIContent', function(){
     me.use('god');
     me.use('hero');
 
-    me.price = function(object, count){
+    me.sellPrice = function(object, count){
         if (!object) return 0;
         var baseValue = 1;
         switch(object[OBJECT_TYPE]){
@@ -144,8 +144,15 @@ pico.def('trade', 'picUIContent', function(){
         return baseValue;
     };
 
-    me.setShop = function(listing) { shopListing = listing; return G_SHOP[shopListing]; };
-    me.getShop = function() { return G_SHOP[shopListing]; };
+    me.buyPrice = function(object, count){
+        return Ceil(me.sellPrice(object, count)*1.5);
+    };
+
+    me.gamblePrice = function(object){return object[OBJECT_LEVEL] * 100;};
+
+    me.getShop = function() { return content; };
+    me.getMarket = function() { return market; };
+    me.getMoneyIcon = function() { return money; };
 
     me.create = function(ent, data){
         data = me.base.create.call(this, ent, data);
@@ -161,17 +168,18 @@ pico.def('trade', 'picUIContent', function(){
         content = evt.content;
         labels = evt.labels;
         callbacks = evt.callbacks;
-        money = evt.type ? '`0'+evt.type+' ' : '`0195 '
+        money = evt.type ? '`0'+evt.type+' ' : '`0195 ';
+        market = evt.market || me.sellPrice;
         com.activated = -1;
     };
 
     me.hide = function(ent, com, evt){
         if (undefined === evt) return;
-        content = undefined;
+        callbacks = undefined;
     };
 
     me.isValid = function(){
-        return undefined !== content;
+        return undefined !== callbacks;
     };
 
     me.resize = function(ent, width, height){

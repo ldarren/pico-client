@@ -131,7 +131,7 @@ pico.def('bag', 'picUIContent', function(){
 
         if (!slot) return;
 
-        this.god.incrPiety(me.trade.price(slot[0], 1));
+        this.god.incrPiety(me.trade.sellPrice(slot[0], 1));
 
         hero.removeFromBag(evt);
 
@@ -156,7 +156,7 @@ pico.def('bag', 'picUIContent', function(){
 
         if (G_OBJECT_TYPE.AMMO === item[OBJECT_TYPE]) item[AMMO_SIZE] = count;
 
-        hero.incrGold(-me.trade.price(item, count));
+        hero.incrGold(-me.trade.buyPrice(item, count));
         hero.putIntoBag(item);
 
         return entities;
@@ -170,7 +170,7 @@ pico.def('bag', 'picUIContent', function(){
 
         if (!slot) return;
 
-        hero.incrGold(me.trade.price(slot[0], 1));
+        hero.incrGold(me.trade.sellPrice(slot[0], 1));
 
         hero.removeFromBag(evt);
 
@@ -204,6 +204,30 @@ pico.def('bag', 'picUIContent', function(){
         }
 
         hero.removeFromBag(evt);
+
+        return entities;
+    };
+
+    me.betItem = function(elapsed, evt, entities){
+        var
+        hero = this.hero,
+        shop = me.trade.getShop(),
+        slot = shop[evt],
+        templ = slot[0],
+        count = slot[1],
+        item = this.ai.spawnItem(templ[OBJECT_ICON], null, G_GRADE.COMMON, hero.getJob(), hero.getLevel());
+
+        if (!item) return;
+
+        if (hero.isBagFull()){
+            this.go('showDialog', {info:G_MSG.BAG_FULL});
+            return;
+        }
+
+        if (G_OBJECT_TYPE.AMMO === item[OBJECT_TYPE]) item[AMMO_SIZE] = count;
+
+        hero.incrGold(-me.trade.buyPrice(item, count));
+        hero.putIntoBag(item);
 
         return entities;
     };

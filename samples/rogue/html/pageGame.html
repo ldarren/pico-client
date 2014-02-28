@@ -190,6 +190,7 @@ onLoad = function(){
         game.route('offerring', [bag.offerItem, uiWindow.update, renderer.draw]);
         game.route('sell', [bag.sellItem, uiWindow.update, renderer.draw]);
         game.route('buy', [bag.buyItem, uiWindow.update, renderer.draw]);
+        game.route('bet', [bag.betItem]);
         game.route('tenthing', [god.tenthing]);
         game.route('changeJob', [god.changeJob]);
         game.route('holyForge', [god.holyForge]);

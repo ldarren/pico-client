@@ -132,6 +132,7 @@ pico.def('god', 'picUIContent', function(){
                 content: hero.getBag() || [],
                 labels:['Donate', 'Close'],
                 type: G_UI.PIETY,
+                market: me.trade.sellPrice,
                 callbacks:['offerring']});
             return true;
         case 'tithe':
@@ -161,6 +162,7 @@ pico.def('god', 'picUIContent', function(){
                 content: heroClasses,
                 labels:['Change', 'Close'],
                 type: G_UI.PIETY,
+                market: me.trade.buyPrice,
                 callbacks:['changeJob']});
             return true;
         case 'helm':
@@ -178,7 +180,7 @@ pico.def('god', 'picUIContent', function(){
             cost = FORGE_COST;
 
             if (item){
-                cost = Max(1, cost - me.trade.price(item, slot[1]));
+                cost = Max(1, cost - me.trade.buyPrice(item, slot[1]));
             }
 
             if (cost > me.getPiety()){
@@ -367,7 +369,7 @@ pico.def('god', 'picUIContent', function(){
     me.changeJob = function(elapsed, evt, entities){
         var
         job = heroClasses[evt][0],
-        price = me.trade.price(job, 1);
+        price = me.trade.buyPrice(job, 1);
 
         if (price > me.getPiety()) return;
 
@@ -391,7 +393,7 @@ pico.def('god', 'picUIContent', function(){
         cost = FORGE_COST;
 
         if (item){
-            cost = Max(1, cost - me.trade.price(item, slot[1]));
+            cost = Max(1, cost - me.trade.BuyPrice(item, slot[1]));
         }
 
         if (cost > me.getPiety()) return;
