@@ -209,7 +209,10 @@ pico.def('ai', function(){
         item = G_CREATE_OBJECT(itemId),
         itemName = item[OBJECT_NAME],
         itemType = item[OBJECT_TYPE],
+        capLvl = G_MAP_PARAMS.length - 1,
         affix, stat, i, l;
+
+        lvl = (lvl < 1 ? 1 : (lvl > capLvl ? capLvl : lvl));
 
         switch(itemType){
             case G_OBJECT_TYPE.WEAPON:
@@ -250,7 +253,7 @@ pico.def('ai', function(){
             case G_OBJECT_TYPE.WEAPON:
             case G_OBJECT_TYPE.ARMOR:
             case G_OBJECT_TYPE.JEWEL:
-                for(i=OBJECT_HP+1,l=OBJECT_VEG; i<l; i++){
+                for(i=OBJECT_WILL,l=OBJECT_VEG; i<l; i++){
                     item[i] = Round(item[i]*lvl);
                 }
                 break;
@@ -261,8 +264,8 @@ pico.def('ai', function(){
     me.openChest = function(job, luck, level){
         var
         capLvl = (G_MAP_PARAMS.length - 1)*5,
-        minLvl = level < 4 ? 3 : level - 3,
-        maxLvl = level > capLvl-4 ? capLvl : level + 3,
+        minLvl = level - 3,
+        maxLvl = level + 3,
         lvl = minLvl + Round(Random()*(maxLvl - minLvl)),
         grade = pick(G_GRADE_RATE, luck, G_GRADE.ALL),
         gradeType = grade[DROP_ID],
@@ -283,10 +286,6 @@ pico.def('ai', function(){
 
     me.gamble = function(itemId, job, luck, level){
         var
-        capLvl = (G_MAP_PARAMS.length - 1)*5,
-        minLvl = level < 4 ? 3 : level - 3,
-        maxLvl = level > capLvl-4 ? capLvl : level + 3,
-        lvl = minLvl + Round(Random()*(maxLvl - minLvl)),
         grade = pick(G_GRADE_RATE, luck, G_GRADE.ALL),
         gradeType = grade[DROP_ID],
         modifier;
@@ -297,7 +296,7 @@ pico.def('ai', function(){
         case G_GRADE.CHARMED: modifier = pick(G_CHARMED_RATE, luck, gradeType); break; 
         }
         
-        return me.spawnItem(itemId, modifier, gradeType, job, lvl);
+        return me.spawnItem(itemId, modifier, gradeType, job, level);
     };
 
     me.createGoods = function(npcType, goods){

@@ -1773,7 +1773,7 @@ Object.freeze(G_UI = {
 });
 
 Object.freeze(G_STAT_ICON = [
-    0,0,0,0,0,0,0,
+    0,0,0,G_UI.LEVEL,0,0,0,
     G_UI.HP, G_UI.LUCK, G_UI.WILL, G_UI.DEX, G_UI.STR,
     G_UI.PATK, G_UI.RATK, G_UI.PDEF,
     G_UI.VEG, G_UI.INSECT, G_UI.BEAST, G_UI.UNDEAD, G_UI.DEMON,

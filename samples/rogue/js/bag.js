@@ -149,11 +149,6 @@ pico.def('bag', 'picUIContent', function(){
 
         if (!item) return;
 
-        if (hero.isBagFull()){
-            this.go('showDialog', {info:G_MSG.BAG_FULL});
-            return;
-        }
-
         if (G_OBJECT_TYPE.AMMO === item[OBJECT_TYPE]) item[AMMO_SIZE] = count;
 
         hero.incrGold(-me.trade.buyPrice(item, count));
@@ -208,19 +203,17 @@ pico.def('bag', 'picUIContent', function(){
         return entities;
     };
 
+    // bag capacity already verified
     me.betItem = function(elapsed, evt, entities){
         var
         hero = this.hero,
+        level = hero.getLevel(),
+        minLvl = level - 3,
+        lvl = minLvl + Round(Random()*6),
         shop = me.trade.getShop(),
         slot = shop[evt],
-        templ = slot[0];
-
-        if (hero.isBagFull()){
-            this.go('showDialog', {info:G_MSG.BAG_FULL});
-            return;
-        }
-        
-        var item = this.ai.gamble(templ[OBJECT_ICON], hero.getJob(), hero.getStat(OBJECT_LEVEL), hero.getLevel());
+        templ = slot[0],
+        item = this.ai.gamble(templ[OBJECT_ICON], hero.getJob(), hero.getStat(OBJECT_LUCK), lvl);
 
         if (!item) return;
 
@@ -228,6 +221,61 @@ pico.def('bag', 'picUIContent', function(){
         hero.putIntoBag(item);
 
         this.go('hideTrade');
+        this.go('showDialog', {info:['Congrats!', 'You have obtained a '+item[OBJECT_NAME]]});
+        return entities;
+    };
+
+    // item level already verified
+    me.upgradeItem = function(elapsed, evt, entities){
+        var
+        hero = this.hero,
+        shop = me.trade.getShop(),
+        slot = shop[evt],
+        templ = slot[0],
+        item = this.ai.spawnItem(templ[OBJECT_ICON], null, G_GRADE.COMMON, hero.getJob(), templ[OBJECT_LEVEL]+1),
+        info = ['Congrats, Item Level Up!'],
+        diff;
+
+        for(var i=OBJECT_LEVEL,l=item.length; i<l; i++){
+            diff = item[i] - templ[i];
+            if (diff){
+                info.push('`0'+G_STAT_ICON[i]+' '+G_STAT_NAME[i]+(diff > 0 ? ' + ' : ' ')+diff);
+            }
+        }
+
+        slot[0] = item;
+
+        hero.incrGold(-me.trade.upgradePrice(templ, count));
+
+        this.go('hideTrade');
+        this.go('showDialog', {info:info});
+        return entities;
+    };
+
+    me.imbueItem = function(elapsed, evt, entities){
+        var
+        hero = this.hero,
+        shop = me.trade.getShop(),
+        slot = shop[evt],
+        templ = slot[0],
+        item = this.ai.gamble(templ[OBJECT_ICON], hero.getJob(), hero.getStat(OBJECT_LUCK)+99, templ[OBJECT_LEVEL]),
+        info = [],
+        diff;
+
+        info.push((templ[OBJECT_NAME] === item[OBJECT_NAME] ? 'Item imbue failed!' : 'Congrats, you have obtained '+item[OBJECT_NAME]));
+
+        for(var i=OBJECT_LEVEL,l=item.length; i<l; i++){
+            diff = item[i] - templ[i];
+            if (diff){
+                info.push('`0'+G_STAT_ICON[i]+' '+G_STAT_NAME[i]+(diff > 0 ? ' + ' : ' ')+diff);
+            }
+        }
+
+        slot[0] = item;
+        hero.incrGold(-me.trade.imbuePrice(templ, count));
+
+        this.go('hideTrade');
+        this.go('showDialog', {info:info});
         return entities;
     };
 

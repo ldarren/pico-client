@@ -68,7 +68,7 @@ pico.def('trade', 'picUIContent', function(){
                     if (!slot) return;
                     good = slot[0];
                     value = good[OBJECT_ICON];
-                    me.fillIconText(ctx, tss, G_OBJECT_NAME[value]+': '+G_OBJECT_DESC[value], rect, scale);
+                    me.fillIconText(ctx, tss, (good[OBJECT_NAME] || G_OBJECT_NAME[value])+': '+(good[OBJECT_DESC] || G_OBJECT_DESC[value]), rect, scale);
                 }
             }
         }
@@ -144,11 +144,10 @@ pico.def('trade', 'picUIContent', function(){
         return baseValue;
     };
 
-    me.buyPrice = function(object, count){
-        return Ceil(me.sellPrice(object, count)*1.5);
-    };
-
+    me.buyPrice = function(object, count){ return Ceil(me.sellPrice(object, count)*1.5); };
     me.gamblePrice = function(object){return object[OBJECT_LEVEL] * 100;};
+    me.upgradePrice = function(object){return count * object[OBJECT_LEVEL] * 2;};
+    me.imbuePrice = function(object){return count * object[OBJECT_LEVEL] * 2;};
 
     me.getShop = function() { return content; };
     me.getMarket = function() { return market; };

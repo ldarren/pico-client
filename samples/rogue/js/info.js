@@ -386,6 +386,11 @@ pico.def('info', 'picUIContent', function(){
                 });
                 break;
             case 'gamble':
+                if (hero.isBagFull()){
+                    this.go('showDialog', {info:G_MSG.BAG_FULL});
+                    return;
+                }
+
                 var 
                 shop = G_SHOP[2].slice(),
                 content = [];
@@ -402,9 +407,25 @@ pico.def('info', 'picUIContent', function(){
                 });
                 break;
             case 'imbue':
+                var
+                bag = hero.getBag(),
+                content = [],
+                item, slot;
+                for(var i=0,l=bag.length; i<l; i++){
+                    slot = bag[i];
+                    if (!slot) continue;
+                    item = slot[0];
+                    switch(item[OBJECT_TYPE]){
+                    case G_OBJECT_TYPE.WEAPON:
+                    case G_OBJECT_TYPE.ARMOR:
+                    case G_OBJECT_TYPE.AMMO:
+                    case G_OBJECT_TYPE.JEWEL:
+                        content.push(slot);
+                    }
+                }
                 this.go('showTrade', {
                     info:['Select an item to replace it magic attributes'],
-                    content: hero.getBag() || [],
+                    content: content,
                     labels: ['Imbue', 'Close'],
                     callbacks:['imbue'],
                     market: me.trade.imbuePrice, 
@@ -412,9 +433,26 @@ pico.def('info', 'picUIContent', function(){
                 });
                 break;
             case 'upgrade':
+                var
+                capLvl = G_MAP_PARAMS.length - 1,
+                bag = hero.getBag(),
+                content = [],
+                item, slot;
+                for(var i=0,l=bag.length; i<l; i++){
+                    slot = bag[i];
+                    if (!slot) continue;
+                    item = slot[0];
+                    if (G_GRADE.COMMON !== item[OBJECT_GRADE] || capLvl === item[OBJECT_LEVEL]) continue;
+                    switch(item[OBJECT_TYPE]){
+                    case G_OBJECT_TYPE.WEAPON:
+                    case G_OBJECT_TYPE.ARMOR:
+                    case G_OBJECT_TYPE.AMMO:
+                        content.push(slot);
+                    }
+                }
                 this.go('showTrade', {
-                    info:['Select an item to upgrade it\'s level'],
-                    content: hero.getBag() || [],
+                    info:['Select a non-magical item to upgrade it\'s level'],
+                    content: content,
                     labels: ['Upgrade', 'Close'],
                     callbacks:['upgrade'],
                     market: me.trade.upgradePrice, 
@@ -422,6 +460,11 @@ pico.def('info', 'picUIContent', function(){
                 });
                 break;
             case 'showGoods':
+                if (hero.isBagFull()){
+                    this.go('showDialog', {info:G_MSG.BAG_FULL});
+                    return;
+                }
+
                 var content;
                 switch(target[OBJECT_SUB_TYPE]){
                 case G_NPC_TYPE.BLACKSMITH: content = G_SHOP[0]; break;
