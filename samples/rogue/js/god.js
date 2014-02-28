@@ -17,7 +17,7 @@ pico.def('god', 'picUIContent', function(){
     labels = [G_LABEL.OFFER, G_LABEL.TITHE, G_LABEL.CLOSE],
     isAltarOpened = false,
     callback,
-    heroBody, heroName, heroPiety,
+    heroBody, heroName, heroPiety, heroBagCap=8, heroTomeCap=8,
     onCustomBound = function(ent, rect, ui, scale){
         switch(ui.userData.id){
         case 'donate':
@@ -139,17 +139,13 @@ pico.def('god', 'picUIContent', function(){
             if (donation){
                 this.go('showDialog', {
                     info: [
-                        'Do you want to contribute a one-tenth of your golds to god Wodinaz?',
+                        'Do you want to contribute a one-tenth of your golds to god?',
                         'That\'s '+donation+' golds'],
                     labels: ['Donate', 'Close'],
                     callbacks: ['tenthing', null]
                 });
             }else{
-                this.go('showDialog', {
-                    info: ['You don\'t have enough gold'],
-                    labels: ['Close'],
-                    callbacks: [null]
-                });
+                this.go('showDialog', { info: ['You don\'t have enough gold'] });
             }
             return true;
         case 'done':
@@ -186,13 +182,7 @@ pico.def('god', 'picUIContent', function(){
             }
 
             if (cost > me.getPiety()){
-                this.go('showDialog', {
-                    info: [
-                    'You don\'t have enough piety',
-                    'You need '+cost+' piety'],
-                    labels: ['Close'],
-                    callbacks: [null]
-                });
+                this.go('showDialog', { info: ['You don\'t have enough piety', 'You need '+cost+' piety'] });
             }else{
                 this.go('showDialog', {
                     info: [
@@ -226,20 +216,19 @@ pico.def('god', 'picUIContent', function(){
 
     me.init = function(name){
         var h = this.heaven;
-        if (h){
-            heroBody = h[0];
-            heroName = h[1];
-            heroPiety = h[2];
-        }else{
-            h = [null, name, 0];
-            heroPiety = 9999;
+        if (!h){
+            h = [null, name, 1000, heroBagCap, heroTomeCap];
         }
-        if (name) heroName = name; // always get new from loginPage
+        heroBody = h[GOD_BODY];
+        heroName = name || h[GOD_NAME]; // always get new from loginPage
+        heroPiety = h[GOD_PIETY];
+        heroBagCap = h[GOD_BAG_CAP];
+        heroTomeCap = h[GOD_TOME_CAP];
         return h;
     };
 
     me.exit = function(){
-        this.heaven = [heroBody, heroName, heroPiety];
+        this.heaven = [heroBody, heroName, heroPiety, heroBagCap, heroTomeCap];
     };
 
     me.step = function(steps){
@@ -310,8 +299,8 @@ pico.def('god', 'picUIContent', function(){
         return {
             //HERO_HELM=0,HERO_ARMOR=1,HERO_MAIN=2,HERO_OFF=3,HERO_RINGL=4,HERO_RINGR=5,HERO_AMULET=6,HERO_QUIVER=7,
             //HERO_HP=8,HERO_GOLD=9,HERO_PATK=10,HERO_RATK=11,HERO_DEF=12,HERO_WILL=13,HERO_LEVEL=14,
-            //HERO_ENEMIES=15,HERO_PORTAL=16,HERO_WAYPOINT=17,HERO_BAG_CAP=18,HERO_TOME_CAP=19;
-            appearance: [0, 0, 0, 0, 0, 0, 0, 0, stats[OBJECT_HP], 100, 0, 0, 0, 0, 1, 0, 0, 0, 16, 8],
+            //HERO_ENEMIES=15,HERO_PORTAL=16,HERO_WAYPOINT=17;
+            appearance: [0, 0, 0, 0, 0, 0, 0, 0, stats[OBJECT_HP], 100, 0, 0, 0, 0, 1, 0, 0, 0],
             stats: stats,
             effects: [],
             bag: [
@@ -354,6 +343,10 @@ pico.def('god', 'picUIContent', function(){
 
     me.getPiety = function(){ return heroPiety; };
     me.incrPiety = function(piety){ heroPiety += piety; };
+    me.getBagCap = function(){ return heroBagCap; };
+    me.incrBagCap = function(){ heroBagCap = 16; };
+    me.getTomeCap = function(){ return heroTomeCap; };
+    me.incrTomeCap = function(){ heroTomeCap = 12; };
 
     me.toHeaven = function(appearance, stats){
         appearance[HERO_ENEMIES] = [];

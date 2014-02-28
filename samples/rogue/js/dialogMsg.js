@@ -56,7 +56,14 @@ pico.def('dialogMsg', 'picUIContent', function(){
     };
 
     me.show = function(ent, com, evt){
+        if (!evt) return;
         msg = evt;
+        var labels = evt.labels || [];
+        if (!labels.length){
+            labels.push('Close');
+            msg.labels = labels;
+            msg.callbacks = msg.callbacks || [];
+        }
     };
 
     me.hide = function(ent, com, evt){

@@ -357,7 +357,7 @@ pico.def('info', 'picUIContent', function(){
                 this.go('heroMoveTo', [targetId]);
                 break;
             case 'read':
-                this.go('showDialog', {info: [target[OBJECT_DESC]], labels:['Close'], callbacks:[]});
+                this.go('showDialog', {info: [target[OBJECT_DESC]]});
                 break;
             case 'rejuvenate':
                 hero.incrHp();
@@ -384,6 +384,8 @@ pico.def('info', 'picUIContent', function(){
                     callbacks:['resetWorld'],
                     labels:['Reborn']
                 });
+                break;
+            case 'gamble':
                 break;
             case 'imbue':
                 break;

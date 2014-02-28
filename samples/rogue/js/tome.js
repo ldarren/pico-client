@@ -84,6 +84,32 @@ pico.def('tome', 'picUIContent', function(){
         return; // return nothing
     };
 
+    me.chantScroll = function(elapsed, evt, entities){
+        var
+        targetId = evt[0],
+        hero = this.hero,
+        stat = hero.removeFromBag(targetId);
+
+        switch(stat[OBJECT_SUB_TYPE]){
+            case G_SCROLL_TYPE.MANUSCRIPT:
+                if (hero.isTomeFull()){
+                    this.go('showDialog', {info:G_MSG.TOME_FULL});
+                    return;
+                }
+                hero.putIntoTome.call(this);
+                break;
+            case G_SCROLL_TYPE.IDENTITY:
+                break;
+            case G_SCROLL_TYPE.TELEPORT:
+                hero.setLastWayPoint(this.currentLevel);
+                this.go('teleport', 0);
+                break;
+            case G_SCROLL_TYPE.MAP:
+                break;
+        }
+        return entities;
+    };
+
     me.forgetSpell = function(elapsed, evt, entities){
         var
         hero = this.hero,
@@ -123,11 +149,7 @@ pico.def('tome', 'picUIContent', function(){
             changes.push('`1'+spell[OBJECT_ICON]+' '+spell[OBJECT_NAME]+' has changed from level '+oldLevel+' to '+newLevel);
         }
         if (!isInit && changes.length){
-            this.go('showDialog', {
-                info:changes,
-                labels:['Close'],
-                callbacks:[]
-            });
+            this.go('showDialog', {info:changes});
         }
     };
 
@@ -179,14 +201,14 @@ pico.def('tome', 'picUIContent', function(){
         style = {font: com.font,fillStyle:com.fontColor},
         cellOpt = {drop: 1},
         size = 32,
-        actualSize = this.smallDevice ? size : size*2,
+        actualSize = this.tileWidth,
         meshui,rows,row,cell,i,l;
 
         if (comWin.maximized){
-            meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, actualSize * 4), style);
+            meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, actualSize * (2+(cap/4))), style);
             rows=meshui.rows;
         }else{
-            meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, actualSize * 9), style);
+            meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, actualSize * (1+cap)), style);
             rows=meshui.rows;
         }
 

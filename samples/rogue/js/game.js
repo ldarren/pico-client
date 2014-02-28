@@ -614,28 +614,6 @@ pico.def('game', 'pigSqrMap', function(){
         return entities;
     };
 
-    me.chantScroll = function(elapsed, evt, entities){
-        var
-        targetId = evt[0],
-        hero = me.hero,
-        stat = hero.removeFromBag(targetId);
-
-        switch(stat[OBJECT_SUB_TYPE]){
-            case G_SCROLL_TYPE.MANUSCRIPT:
-                hero.putIntoTome.call(this);
-                break;
-            case G_SCROLL_TYPE.IDENTITY:
-                break;
-            case G_SCROLL_TYPE.TELEPORT:
-                hero.setLastWayPoint(this.currentLevel);
-                this.go('teleport', 0);
-                break;
-            case G_SCROLL_TYPE.MAP:
-                break;
-        }
-        return entities;
-    };
-
     me.recalHints = function(){
         var
         map = me.map,

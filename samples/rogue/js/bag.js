@@ -105,12 +105,18 @@ pico.def('bag', 'picUIContent', function(){
 
     me.lootItem = function(elapsed, evt, entities){
         var
+        hero = this.hero,
         object = this.objects[evt],
         loot = object[CHEST_ITEM];
 
         if (!loot) return;
 
-        this.hero.putIntoBag(loot);
+        if (hero.isBagFull()){
+            this.go('showDialog', {info:G_MSG.BAG_FULL});
+            return;
+        }
+
+        hero.putIntoBag(loot);
 
         this.objects[evt] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
 
@@ -142,6 +148,11 @@ pico.def('bag', 'picUIContent', function(){
         item = this.ai.spawnItem(templ[OBJECT_ICON], null, G_GRADE.COMMON, hero.getJob(), hero.getLevel());
 
         if (!item) return;
+
+        if (hero.isBagFull()){
+            this.go('showDialog', {info:G_MSG.BAG_FULL});
+            return;
+        }
 
         if (G_OBJECT_TYPE.AMMO === item[OBJECT_TYPE]) item[AMMO_SIZE] = count;
 
@@ -213,14 +224,14 @@ pico.def('bag', 'picUIContent', function(){
         style = {font: com.font,fillStyle:com.fontColor},
         cellOpt = {drop: 1},
         size = 32,
-        actualSize = this.smallDevice ? size : size*2,
+        actualSize = this.tileWidth,
         meshui,rows,row,cell,i,l;
 
         if (comWin.maximized){
-            meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, actualSize * 4), style);
+            meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, actualSize * (2+(cap/4))), style);
             rows=meshui.rows;
         }else{
-            meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, actualSize * 17), style);
+            meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, actualSize * (1+cap)), style);
             rows=meshui.rows;
         }
 

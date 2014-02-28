@@ -252,6 +252,7 @@ pico.def('hero', 'picUIContent', function(){
     };
 
     me.use('tome');
+    me.use('god');
 
     me.create = function(ent, data){
         data = me.base.create.call(this, ent, data);
@@ -387,22 +388,25 @@ pico.def('hero', 'picUIContent', function(){
     };
 
     me.recoverBody = function(body){
-        var
-        recovered = true,
-        slot;
+        var recovered=0, slot, i, l;
+
+        for (i=HERO_HELM,l=HERO_QUIVER; i<=l; i++){
+            if (body[i]) recovered++;
+        }
+
+        if (hero.isBagFull(recovered)){
+            this.go('showDialog', {info:G_MSG.BAG_FULL});
+            return false;
+        }
 
         for (var i=HERO_HELM,l=HERO_QUIVER; i<=l; i++){
             slot = body[i];
             if (slot){
-                recovered = me.equipItem.call(this, slot);
-                if (!recovered) recovered = me.putIntoBag(slot[0]);
+                me.putIntoBag(slot[0]);
             }
-            if (!recovered) return recovered;
         }
         me.incrGold(body[HERO_GOLD]);
-        if (body[HERO_BAG_CAP] > appearance[HERO_BAG_CAP]) appearance[HERO_BAG_CAP] = body[HERO_BAG_CAP];
-        if (body[HERO_TOME_CAP] > appearance[HERO_TOME_CAP]) appearance[HERO_TOME_CAP] = body[HERO_TOME_CAP];
-        return recovered;
+        return true;
     };
 
     me.incrGold = function(count){ appearance[HERO_GOLD] += count; };
@@ -890,10 +894,32 @@ pico.def('hero', 'picUIContent', function(){
     me.getLevel = function(){ return appearance[HERO_LEVEL]; };
     me.getJob = function(){ return currStats[OBJECT_SUB_TYPE]; };
     me.getBag = function(){ return bag; };
-    me.getBagCap = function(){ return appearance ? appearance[HERO_BAG_CAP] : 4; };
-    me.getItem = function(id){ return bag[id]; }
+    me.getBagCap = function(){ return me.god.getBagCap(); };
+    me.isBagFull = function(count){ 
+        if (!bag) return true; 
+        count = count || 1;
+        for(var i=0,l=me.god.getBagCap(); i<l; i++){ 
+            if (!bag[i]){
+                count--;
+                if (!count) return false;
+            }
+        }
+        return true;
+    };
+    me.getItem = function(id){ return bag[id]; };
     me.getTome = function(){ return tome; };
-    me.getTomeCap = function(){ return appearance ? appearance[HERO_TOME_CAP] : 4; };
+    me.getTomeCap = function(){ return me.god.getTomeCap(); };
+    me.isTomeFull = function(count){ 
+        if (!tome) return true; 
+        count = count || 1;
+        for(var i=0,l=me.god.getTomeCap(); i<l; i++){ 
+            if (!tome[i]){
+                count--;
+                if (!count) return false;
+            }
+        }
+        return true;
+    };
     me.equal = function(obj){ return obj[OBJECT_ICON] === currStats[OBJECT_ICON] && obj[OBJECT_TYPE] === currStats[OBJECT_TYPE]; };
     me.getStat = function(stat){ return currStats ? currStats[stat] : 0; };
     me.carryRanged = function(){

@@ -1,14 +1,9 @@
 Object.freeze(G_MSG = {
     POSTFIX_SEPARATOR: " of ",
-    ATTACK_WIN: "You rolled a TOTAL(ROLL+ATK) beat NAME's defense DEF, you've dealt DMG damage",
-    ATTACK_LOST: "You missed by rolling a TOTAL(ROLL+ATK) lowered than NAME's defense DEF",
-    COUNTER_WIN: "NAME has rolled a TOTAL(ROLL+ATK) which is over your defense DEF, you lost HP hp",
-    COUNTER_LOST: "NAME missed by rolling a TOTAL(ROLL+ATK) less than your defense DEF",
-    CREEP_KILL: ", and you have defeated it",
-    CREEP_ALIVE: " but it is still alive",
-    HERO_KILL: ", and you have been killed by NAME",
     FLEE_WIN: "You fled the battle area",
     FLEE_LOST: "You failed to flee, improve your `0613 dex and `0193 luck to increase your chances",
+    BAG_FULL: ["You cannot receive this item. Your bag may be full."],
+    TOME_FULL: ["You cannot learn this scroll. Your tome may be full."],
     DLG_TUT_OBJECTIVE: "Lord Odin, the allfather of gods, is gathering an army of gods and heroic dead from Valhala to against the advancement Loki. Loki is the fire god of the Ill Fate, notorious for having the mighty frost giants assisted. Odin attributes this to the deadly dungeon known as Loki's Trial. Filled with unworthy dead and insidious monsters who come from Hel, it is a standing testament to the Loki's madness. Find this dungeon at the south of camp. Complete this trial to prove your worth in the final battle of the fate of gods.",
     DLG_TUT_OPEN_GATE: "To travel down the dungeons and get the ",
 });
