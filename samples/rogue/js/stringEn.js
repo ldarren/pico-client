@@ -4,8 +4,6 @@ Object.freeze(G_MSG = {
     FLEE_LOST: "You failed to flee, improve your `0613 dex and `0193 luck to increase your chances",
     BAG_FULL: ["You cannot receive this item. Your bag may be full."],
     TOME_FULL: ["You cannot learn this scroll. Your tome may be full."],
-    DLG_TUT_OBJECTIVE: "Lord Odin, the allfather of gods, is gathering an army of gods and heroic dead from Valhala to against the advancement Loki. Loki is the fire god of the Ill Fate, notorious for having the mighty frost giants assisted. Odin attributes this to the deadly dungeon known as Loki's Trial. Filled with unworthy dead and insidious monsters who come from Hel, it is a standing testament to the Loki's madness. Find this dungeon at the south of camp. Complete this trial to prove your worth in the final battle of the fate of gods.",
-    DLG_TUT_OPEN_GATE: "To travel down the dungeons and get the ",
 });
 
 Object.freeze(G_LABEL = {
@@ -327,7 +325,7 @@ Object.freeze(G_OBJECT_NAME = {
     708: 'Equip items',
 });
 Object.freeze(G_OBJECT_DESC = {
-    32: 'Acquire treasure depend on your luck',
+    32: 'Contains treasures depend on your luck',
     33: 'A looted chest',
     34: 'Chest Key',
     35: 'Treasure Key',
@@ -469,7 +467,7 @@ Object.freeze(G_OBJECT_DESC = {
     171: 'Kraken',
     172: 'Vampire',
     173: 'Mummy',
-    174: 'Wraith',
+    174: 'Angry spirit of failed heroes',
     175: 'Beholder',
     176: 'Goblin',
     177: 'Zombie',
@@ -512,8 +510,8 @@ Object.freeze(G_OBJECT_DESC = {
     598: 'Fast and furious creature that spread poison when attack',
     599: 'Sturdy and strong creature that freeze contact',
 
-    701: "Lord Odin, the allfather of gods, is gathering an army of gods and heroic dead from Valhala to battle against the forces of jotuns. Loki is the jatun lord of the Ill Fate, notorious for killing many gods. Odin attributes this to the deadly dungeon known as Loki's Trial. Filled with unworthy dead and insidious creeps who come from Hel, it is a standing testament to the Loki's madness. Find this dungeon at the south of camp. Complete this trial by retriveing soulstones from 100th level of dungeon to prove your worth in the final battle of the fate of gods.",
-    702: "Travel down to next level, use the key to unlock gate to next level. To use key, move near to the key `036 and click on it and choose unlock gate",
+    701: "Welcome to Loki's Trial, God has created this town to guard the dungeon named Loki's Trail, to test the strength and purity of our soul. travel down to the deepest level and retrieve a soul stone to complete the test",
+    702: "Your goal is to unlock the exit gate `012 of each level and travel down to next level. Key `036 is required to unlock gate, go near to the key `036 tap on it and choose 'Unlock Gate'",
     703: 'The key to down stair is concealed in dungeon, tab on hidden cell `08 to reveal it, but hidden cell may contains dangerous creep, the digit on cell indicates the number of adjacent cells which contains creeps. You can use this information to deduce creep-free cell, reveal creep-free cells to discover the key. Warning! a revealed creep may attack you immediately. if you get killed your soul will join Valhala and God Wodinaz will reincarnate you, so don\'t be afraid to try',
     704: 'The key to next level is keep by one of the hidden creeps, to get the key creeps must be defeated. Use the digit on the floor to deduce the creep location and use skill from tome to expose creep. exposed creeps has a `0202 icon on them and they don\'t attack you by exposing them. to attack creep, tab on creep and choose fight.',
     705: 'Beside getting key, defeating creep also reward you a health globe `0135 and a piety point `0196 . consume a health globe restore one hit point 663 for you and all exposed creeps. Piety point can be used to get rewards from God Wodinaz Altar at town',
