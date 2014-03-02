@@ -67,9 +67,6 @@ pico.def('rogueMain', function(){
     me = this,
     loadPageStyle,
     onLoad = function(){
-        if ('phonegap' === pico.states.browser){
-            document.createElement('script').setAttribute('src', 'cordova.js');
-        }
         loadPageStyle = document.querySelector('div#loading').style;
         pico.addFrame(document.body, 'div#page', 'html/pageLogin.html');
     };
@@ -82,6 +79,9 @@ pico.def('rogueMain', function(){
         loadPageStyle.display = 'none';
     };
 
+    if ('phonegap' === pico.states.browser){
+        document.createElement('script').setAttribute('src', 'cordova.js');
+    }
     me.slot(pico.LOAD, onLoad);
 });
 </script>

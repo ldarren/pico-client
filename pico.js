@@ -465,60 +465,16 @@ inner: {value:{
 //Object.freeze(pico);//for common tools to add functionality
 
 window.addEventListener('load', function(){
-    var
-    te = 'transitionend',
-    wkte = 'webkittransitionend',
-    appVerTag = document.querySelector('meta[name=app-version]'),
-    newModules = pico.states.newModules = Object.keys(pico.modules), // signal load event, if newModules being called in loadDeps
-    states = pico.states,
-    onDeviceReady = function(){
+    var onDeviceReady = function(){
+        var newModules = pico.states.newModules = Object.keys(pico.modules); // signal load event, if newModules being called in loadDeps
         pico.setup(newModules, function(){
             pico.signal(pico.LOAD);
         });
     };
 
-    states.transitionEnd = pico.detectEvent(te) ? te : pico.detectEvent(wkte) ? 'webkitTransitionEnd' : undefined;
-
-    states.appVer = appVerTag ? appVerTag.getAttribute('content') : '0';
-
-
-    if (document.URL.indexOf( 'http://' ) === -1 &&
-        document.URL.indexOf( 'https://' ) === -1 &&
-        navigator &&
-        navigator.userAgent &&
-        navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/)){
-        states.browser = 'Phonegap';
-        states.isWebKit = true;
+    if ('Phonegap' === pico.states.browser){
         document.addEventListener('deviceready', onDeviceReady, false);
     }else{
-        var
-        // http://www.quirksmode.org/js/detect.html
-        vendorKeys = [
-        { string: navigator.userAgent,  subString: "Chrome",    identity: "Chrome"},
-        { string: navigator.userAgent,  subString: "OmniWeb",   identity: "OmniWeb"},
-        { string: navigator.vendor,     subString: "Apple",     identity: "Safari"},
-        { string: navigator.userAgent,  subString: "Opera",     identity: "Opera"},
-        { string: navigator.vendor,     subString: "iCab",      identity: "iCab"},
-        { string: navigator.vendor,     subString: "KDE",       identity: "Konqueror"},
-        { string: navigator.userAgent,  subString: "Firefox",   identity: "Firefox"},
-        { string: navigator.vendor,     subString: "Camino",    identity: "Camino"},
-        { string: navigator.userAgent,  subString: "Netscape",  identity: "Netscape"},
-        { string: navigator.userAgent,  subString: "MSIE",      identity: "Explorer"},
-        { string: navigator.userAgent,  subString: "Gecko",     identity: "Mozilla"},
-        { string: navigator.userAgent,  subString: "Mozilla",   identity: "Netscape"}],
-        key;
-
-        states.browser = 'Unknown';
-        states.isWebKit = false;
-
-        for (var i=0, l=vendorKeys.length; i<l; i++){
-            key = vendorKeys[i];
-            if (key.string && -1 !== key.string.indexOf(key.subString)){
-                states.browser = key.identity;
-                states.isWebKit = -1 !== key.string.indexOf('WebKit');
-                break;
-            }
-        }
         onDeviceReady();
     }
 });
@@ -530,3 +486,52 @@ window.addEventListener('popstate', function(evt){
 window.addEventListener('hashchange', function(evt){
     pico.onHashChange(evt);
 }, false);
+
+(function(states){
+  var
+  te = 'transitionend',
+  wkte = 'webkittransitionend',
+  appVerTag = document.querySelector('meta[name=app-version]');
+
+  states.transitionEnd = pico.detectEvent(te) ? te : pico.detectEvent(wkte) ? 'webkitTransitionEnd' : undefined;
+
+  states.appVer = appVerTag ? appVerTag.getAttribute('content') : '0';
+
+  if (document.URL.indexOf( 'http://' ) === -1 &&
+      document.URL.indexOf( 'https://' ) === -1 &&
+      navigator &&
+      navigator.userAgent &&
+      navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/)){
+      states.browser = 'Phonegap';
+      states.isWebKit = true;
+  }else{
+      var
+      // http://www.quirksmode.org/js/detect.html
+      vendorKeys = [
+      { string: navigator.userAgent,  subString: "Chrome",    identity: "Chrome"},
+      { string: navigator.userAgent,  subString: "OmniWeb",   identity: "OmniWeb"},
+      { string: navigator.vendor,     subString: "Apple",     identity: "Safari"},
+      { string: navigator.userAgent,  subString: "Opera",     identity: "Opera"},
+      { string: navigator.vendor,     subString: "iCab",      identity: "iCab"},
+      { string: navigator.vendor,     subString: "KDE",       identity: "Konqueror"},
+      { string: navigator.userAgent,  subString: "Firefox",   identity: "Firefox"},
+      { string: navigator.vendor,     subString: "Camino",    identity: "Camino"},
+      { string: navigator.userAgent,  subString: "Netscape",  identity: "Netscape"},
+      { string: navigator.userAgent,  subString: "MSIE",      identity: "Explorer"},
+      { string: navigator.userAgent,  subString: "Gecko",     identity: "Mozilla"},
+      { string: navigator.userAgent,  subString: "Mozilla",   identity: "Netscape"}],
+      key;
+
+      states.browser = 'Unknown';
+      states.isWebKit = false;
+
+      for (var i=0, l=vendorKeys.length; i<l; i++){
+          key = vendorKeys[i];
+          if (key.string && -1 !== key.string.indexOf(key.subString)){
+              states.browser = key.identity;
+              states.isWebKit = -1 !== key.string.indexOf('WebKit');
+              break;
+          }
+      }
+  }
+})(pico.states);
