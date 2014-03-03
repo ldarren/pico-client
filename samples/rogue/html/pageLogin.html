@@ -198,14 +198,22 @@ onLoad = function(){
 };
 
 window.fbAsyncInit = function() {
-    // init the FB JS SDK
-    FB.init({
-        appId      : '515256841901768',                     // App ID from the app dashboard
-        channelUrl : '//dungeon-chronicles.com/rogue/html/fbChannel.html',  // Channel file for x-domain comms
-        status     : true,                                  // Check Facebook Login status
-        cookie     : true, // enable cookies to allow the server to access the session
-        xfbml      : true                                   // Look for social plugins on the page
-    });
+    if ('Phonegap' === pico.states.browser){
+        FB.init({
+            appId: '515256841901768',
+            nativeInterface: CDV.FB,
+            useCachedDialogs: false
+        });
+    }else{
+        // init the FB JS SDK
+        FB.init({
+            appId      : '515256841901768',                     // App ID from the app dashboard
+            channelUrl : '//dungeon-chronicles.com/rogue/html/fbChannel.html',  // Channel file for x-domain comms
+            status     : true,                                  // Check Facebook Login status
+            cookie     : true, // enable cookies to allow the server to access the session
+            xfbml      : true                                   // Look for social plugins on the page
+        });
+    }
 
     // Additional initialization code such as adding Event Listeners goes here
     FB.getLoginStatus(function(res){

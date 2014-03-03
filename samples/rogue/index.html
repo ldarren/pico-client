@@ -36,6 +36,11 @@
 
 <div id=loading></div>
 
+<script src=cordova.js></script>
+<script src=cdv-plugin-fb-connect.js></script>
+<script src=facebook-js-sdk.js></script> 
+<script src=pico-plugin-goog.js></script> 
+
 <script src=lib/pico/pico.js></script>
 <script src=lib/pico/lib/piCanvas.js></script>
 <script src=lib/pico/lib/piReactor.js></script>
@@ -79,9 +84,6 @@ pico.def('rogueMain', function(){
         loadPageStyle.display = 'none';
     };
 
-    if ('phonegap' === pico.states.browser){
-        document.createElement('script').setAttribute('src', 'cordova.js');
-    }
     me.slot(pico.LOAD, onLoad);
 });
 </script>
