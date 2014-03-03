@@ -150,7 +150,7 @@ this.use('game');
 
 var
 me = this,
-playBtn, nameTextbox, fbUserId, fbAccessToken, btnLabel,
+playBtn, nameTextbox, fbUserId, fbAccessToken,
 onPlay = function(){
     me.piHTMLAudio.preload();
     me.rogueMain.showLoading();
@@ -162,7 +162,7 @@ fbLogout = function(){ FB.logout(); },
 fbLogined = function(){
     var frames = document.getElementsByClassName('frame');
     for (var i=0,l=frames.length; i<l; i++){
-        frames.style.display = 'block';
+        frames[i].style.display = 'block';
     }
     FB.api('/me/friends?limit=10', function(friends){
         var
@@ -211,9 +211,7 @@ window.fbAsyncInit = function() {
     FB.getLoginStatus(function(res){
         switch(res.status){
         case 'connected':
-            playBtn.textContent = 'Resume';
-            playBtn.addEventListener('click', onPlay, false);
-            fbLogined();
+            // do it in authResponseChange
             break;
         case 'not_authorized':
         case 'unknown':
@@ -228,14 +226,24 @@ window.fbAsyncInit = function() {
     // for any authentication related change, such as login, logout or session refresh. This means that
     // whenever someone who was previously logged out tries to log in again, the correct case below 
     // will be handled. 
-    FB.Event.subscribe('auth.authResponseChange', function(response) {
-        if (response.authResponse) {
-            fbUserId = response.authResponse.userId;
-            fbToken = response.authResponse.accessToken;
-            onPlay();
-        } else {
-            //user hit cancel button
-            console.log('Facebook login failed:', response.status);
+    FB.Event.subscribe('auth.authResponseChange', function(res) {
+        switch(res.status){
+        case 'connected':
+            if (fbUserId){
+                onPlay();
+            }else{
+                fbUserId = res.authResponse.userId;
+                fbToken = res.authResponse.accessToken;
+                playBtn.textContent = 'Resume';
+                playBtn.addEventListener('click', onPlay, false);
+                fbLogined();
+            }
+            break;
+        case 'not_authorized':
+        case 'unknown':
+        default:
+            console.warn('Facebook authorization cancelled?');
+            break;
         }
     });
 };
