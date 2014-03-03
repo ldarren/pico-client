@@ -234,6 +234,8 @@ window.fbAsyncInit = function() {
     // whenever someone who was previously logged out tries to log in again, the correct case below 
     // will be handled. 
     FB.Event.subscribe('auth.authResponseChange', function(res) {
+        playBtn.removeEventListener('click', fbLogin);
+        playBtn.removeEventListener('click', onPlay);
         switch(res.status){
         case 'connected':
             if (fbUserId){
@@ -250,6 +252,7 @@ window.fbAsyncInit = function() {
         case 'unknown':
         default:
             console.warn('Facebook authorization cancelled?');
+            playBtn.addEventListener('click', fbLogin, false);
             break;
         }
     });
