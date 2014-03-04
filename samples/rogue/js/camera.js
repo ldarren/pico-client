@@ -88,20 +88,21 @@ pico.def('camera', 'picBase', function(){
         com.isValidClick = false;
 
         var
-        map = this.map,
         mapW = this.mapWidth,
         mapH = this.mapHeight,
+        x = Floor((evt[0] - viewX) / this.tileWidth),
+        y = Floor((evt[1] - viewY) / this.tileHeight);
+
+        if (y < 0 || x < 0 || y > mapH || x > mapW) return entities;
+
+        var
+        map = this.map,
         objects = this.objects,
         hero = this.hero,
         engaged = hero.getEngaged(),
         hp = hero.getPosition(),
-        x = Floor((evt[0] - viewX) / this.tileWidth),
-        y = Floor((evt[1] - viewY) / this.tileHeight),
-        id, tileType, object, steps, isNear;
-
-        if (y < 0 || x < 0 || y > mapH || x > mapW) return entities;
-
-        id = mapW * y + x;
+        id = mapW * y + x,
+        tileType, object, steps, isNear;
 
         if (engaged && engaged.length && !hero.isEngaged(id)){
             this.go('showDialog', {
