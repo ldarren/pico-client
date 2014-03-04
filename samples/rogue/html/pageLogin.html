@@ -138,19 +138,19 @@ div.fbProfile span{
 </script>
 
 <script id=fbProfile type=text/templ>
-<img src="https://graph.facebook.com/USER_ID/picture">
+<img src=PROFILE>
 <span>NAME</span>
 </script>
 
 <script name=loginPage>
 this.use('rogueMain');
 this.use('piHTMLAudio');
-this.use('piSocials');
+this.use('socials');
 this.use('game');
 
 var
 me = this,
-playBtn, nameTextbox, fbUserId, fbAccessToken,
+playBtn, nameTextbox, 
 onPlay = function(){
     me.piHTMLAudio.preload();
     me.rogueMain.showLoading();
@@ -159,27 +159,42 @@ onPlay = function(){
 },
 fbLogin = function(){ FB.login(null, {scope:''}); },
 fbLogout = function(){ FB.logout(); },
-fbLogined = function(){
-    var frames = document.getElementsByClassName('frame');
+fbUpdate = function(){
+    var
+    socials = me.socials,
+    frames = document.getElementsByClassName('frame');
+
     for (var i=0,l=frames.length; i<l; i++){
         frames[i].style.display = 'block';
     }
-    FB.api('/me/friends?limit=10', function(friends){
+    socials.fbFriends(100, function(friends){
         var
-        data = friends.data,
         list = document.querySelector('content.fbProfileList'),
         templ = document.querySelector('script#fbProfile').textContent,
         profile;
 
         list.innerHTML = '';
 
-        for(var i=0,l=data.length; i<l; i++){
+        for(var i=0,l=friends.length; i<l; i++){
             profile = document.createElement('div');
             profile.className = 'fbProfile';
-            profile.innerHTML = templ.replace('USER_ID', data[i].id).replace('NAME', data[i].name);
+            profile.innerHTML = templ
+                .replace('PROFILE', socials.fbProfile(friends[i].id, 64))
+                .replace('NAME', friends[i].name);
             list.appendChild(profile);
         }
     });
+},
+onFacebookUpdate = function(userId){
+    playBtn.removeEventListener('click', fbLogin);
+    playBtn.removeEventListener('click', onPlay);
+    if (userId){
+        playBtn.textContent = 'Begin';
+        playBtn.addEventListener('click', onPlay, false);
+    }else{
+        playBtn.textContent = 'Login';
+        playBtn.addEventListener('click', fbLogin, false);
+    }
 },
 onLoad = function(){
     playBtn = document.querySelector('ul.mainMenu li:nth-child(1) a');
@@ -191,70 +206,11 @@ onLoad = function(){
     }
 
     me.piHTMLAudio.create('dat/fantasy-sfx.json', function(err, audioSprite){
-        me.piSocials.loadFacebook();
+        me.socials.loadFacebook(
+            '515256841901768', 
+            'Phonegap' === pico.states.browser ? CDV.FB : '//dungeon-chronicles.com/rogue/html/fbChannel.html',
+            onFacebookUpdate);
         /* if no network */ me.rogueMain.hideLoading();
-    });
-};
-
-window.fbAsyncInit = function() {
-    if ('Phonegap' === pico.states.browser){
-        FB.init({
-            appId: '515256841901768',
-            nativeInterface: CDV.FB,
-            useCachedDialogs: false
-        });
-    }else{
-        // init the FB JS SDK
-        FB.init({
-            appId      : '515256841901768',                     // App ID from the app dashboard
-            channelUrl : '//dungeon-chronicles.com/rogue/html/fbChannel.html',  // Channel file for x-domain comms
-            status     : true,                                  // Check Facebook Login status
-            cookie     : true, // enable cookies to allow the server to access the session
-            xfbml      : true                                   // Look for social plugins on the page
-        });
-    }
-
-    // Additional initialization code such as adding Event Listeners goes here
-    FB.getLoginStatus(function(res){
-        switch(res.status){
-        case 'connected':
-            // do it in authResponseChange
-            break;
-        case 'not_authorized':
-        case 'unknown':
-        default:
-            playBtn.textContent = 'Start';
-            playBtn.addEventListener('click', fbLogin, false);
-            break;
-        }
-    });
-
-    // Here we subscribe to the auth.authResponseChange JavaScript event. This event is fired
-    // for any authentication related change, such as login, logout or session refresh. This means that
-    // whenever someone who was previously logged out tries to log in again, the correct case below 
-    // will be handled. 
-    FB.Event.subscribe('auth.authResponseChange', function(res) {
-        playBtn.removeEventListener('click', fbLogin);
-        playBtn.removeEventListener('click', onPlay);
-        switch(res.status){
-        case 'connected':
-            if (fbUserId){
-                onPlay();
-            }else{
-                fbUserId = res.authResponse.userId;
-                fbToken = res.authResponse.accessToken;
-                playBtn.textContent = 'Resume';
-                playBtn.addEventListener('click', onPlay, false);
-                fbLogined();
-            }
-            break;
-        case 'not_authorized':
-        case 'unknown':
-        default:
-            console.warn('Facebook authorization cancelled?');
-            playBtn.addEventListener('click', fbLogin, false);
-            break;
-        }
     });
 };
 
