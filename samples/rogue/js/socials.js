@@ -13,7 +13,7 @@ pico.def('socials', 'piSocials', function(){
     };
 
     me.fbProfile = function(id, size){
-        return FB_PROFILE_URL.replace('USER_ID', id).replace('WIDTH', size).replace('TOKEN',fbToken);
+        return FB_PROFILE_URL.replace('USER_ID', id).replace('SIZE', size).replace('TOKEN',fbToken);
     };
 
     me.loadFacebook = function(appId, api, cb){

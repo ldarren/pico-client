@@ -188,6 +188,7 @@ onFacebookUpdate = function(userId){
     playBtn.removeEventListener('click', onPlay);
     if (userId){
         playBtn.textContent = 'Begin';
+        fbUpdate();
         playBtn.addEventListener('click', onPlay, false);
     }else{
         playBtn.textContent = 'Login';
