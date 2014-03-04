@@ -45,10 +45,6 @@ onFingerUp = function(evt, x, y){
     if (fingerTracker) fingerTracker = undefined;
     me.game.go('fingerUp', [x, y]);
 },
-onFingerTwice = function(evt, x, y){
-    if (fingerTracker) return cancelTracking(x, y) // is a move not a click
-    me.game.go('fingerTwice', [x, y]);
-},
 onFingerMove = function(evt, x, y){
     if (!fingerTracker){
         fingerTracker = [x, y, fingerStartPos[0], fingerStartPos[1]];
@@ -146,11 +142,6 @@ onLoad = function(){
             uiWindow.click, 
             camera.click, 
             game.branchFingerOut
-        ]);
-        game.route('fingerTwice', [
-            game.useSelected, 
-            game.releaseSelected, 
-            info.doubleClick,
         ]);
         game.route('fingerMove', [game.useSelected, game.branchFingerMove]);
         game.route('fingerOut', [game.useSelected, game.branchFingerOut]);
@@ -266,7 +257,6 @@ onLoad = function(){
         canvas.slot(canvas.FINGER_DOWN, onFingerDown);
         canvas.slot(canvas.FINGER_MOVE, onFingerMove);
         canvas.slot(canvas.FINGER_UP, onFingerUp);
-        canvas.slot(canvas.FINGER_TWICE, onFingerTwice);
         canvas.slot(canvas.FINGER_OUT, onFingerOut);
         window.addEventListener('resize', onResize, false);
         window.addEventListener('unload', game.exit, false);

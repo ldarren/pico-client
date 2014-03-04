@@ -607,10 +607,6 @@ pico.def('info', 'picUIContent', function(){
         return undefined !== targetId;
     };
 
-    me.doubleClick = function(elapsed, evt, entities){
-        console.log('DOUBLE CLICKED!');
-    };
-
     me.resize = function(ent, width, height){
         var
         com = ent.getComponent(name),
