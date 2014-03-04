@@ -63,8 +63,9 @@ pico.def('socials', 'piSocials', function(){
         FB.Event.subscribe('auth.authResponseChange', function(res) {
             switch(res.status){
             case 'connected':
-                fbUserId = res.authResponse.userId;
-                fbToken = res.authResponse.accessToken;
+                var auth = res.authResponse;
+                fbUserId =auth.userId || auth.userID;
+                fbToken = auth.accessToken;
                 fbCallback(fbUserId);
                 break;
             case 'not_authorized':
@@ -84,5 +85,14 @@ pico.def('socials', 'piSocials', function(){
         batch = batch || 100;
         if (fbFriends.length) return cb(fbFriends);
         getFBFriends('/me/friends?fields=id,name,installed&limit='+batch, cb);
+    };
+
+    me.fbLogin = function(){
+        if ('Phonegap' === pico.states.browser) FB.login(null, {scope:''});
+        else FB.login();
+    };
+
+    me.fbLogout = function(){
+        FB.logout();
     };
 });
