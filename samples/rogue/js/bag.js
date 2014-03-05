@@ -127,13 +127,14 @@ pico.def('bag', 'picUIContent', function(){
         var
         hero = this.hero,
         bag = hero.getBag(),
-        slot = bag[evt];
+        selected = evt.selected,
+        slot = bag[selected];
 
         if (!slot) return;
 
         this.god.incrPiety(me.trade.sellPrice(slot[0], 1));
 
-        hero.removeFromBag(evt);
+        hero.removeFromBag(selected);
 
         return entities;
     };
@@ -142,7 +143,8 @@ pico.def('bag', 'picUIContent', function(){
         var
         hero = this.hero,
         shop = me.trade.getShop(),
-        slot = shop[evt],
+        selected = evt.selected,
+        slot = shop[selected],
         templ = slot[0],
         count = slot[1],
         item = this.ai.spawnItem(templ[OBJECT_ICON], null, G_GRADE.COMMON, hero.getJob(), hero.getLevel());
@@ -161,14 +163,30 @@ pico.def('bag', 'picUIContent', function(){
         var
         hero = this.hero,
         bag = hero.getBag(),
-        slot = bag[evt];
+        selected = evt.selected,
+        slot = bag[selected];
 
         if (!slot) return;
 
         hero.incrGold(me.trade.sellPrice(slot[0], 1));
 
-        hero.removeFromBag(evt);
+        hero.removeFromBag(selected);
 
+        return entities;
+    };
+
+    me.giftItem = function(elapsed, evt, entities){
+        var
+        hero = this.hero,
+        bag = hero.getBag(),
+        selected = evt.selected,
+        slot = bag[selected];
+
+        if (!slot) return;
+
+        hero.removeFromBag(selected);
+
+        this.go('hideTrade');
         return entities;
     };
 
@@ -176,7 +194,8 @@ pico.def('bag', 'picUIContent', function(){
         var
         hero = this.hero,
         bag = hero.getBag(),
-        slot = bag[evt];
+        selected = evt.selected,
+        slot = bag[selected];
 
         if (!slot) return;
 
@@ -198,7 +217,7 @@ pico.def('bag', 'picUIContent', function(){
             break;
         }
 
-        hero.removeFromBag(evt);
+        hero.removeFromBag(selected);
 
         return entities;
     };
@@ -211,7 +230,8 @@ pico.def('bag', 'picUIContent', function(){
         minLvl = level - 3,
         lvl = minLvl + Round(Random()*6),
         shop = me.trade.getShop(),
-        slot = shop[evt],
+        selected = evt.selected,
+        slot = shop[selected],
         templ = slot[0],
         item = this.ai.gamble(templ[OBJECT_ICON], hero.getJob(), hero.getStat(OBJECT_LUCK), lvl);
 
@@ -230,7 +250,8 @@ pico.def('bag', 'picUIContent', function(){
         var
         hero = this.hero,
         shop = me.trade.getShop(),
-        slot = shop[evt],
+        selected = evt.selected,
+        slot = shop[selected],
         templ = slot[0],
         item = this.ai.spawnItem(templ[OBJECT_ICON], null, G_GRADE.COMMON, hero.getJob(), templ[OBJECT_LEVEL]+1),
         info = ['Congrats, Item Level Up!'],
@@ -256,7 +277,8 @@ pico.def('bag', 'picUIContent', function(){
         var
         hero = this.hero,
         shop = me.trade.getShop(),
-        slot = shop[evt],
+        selected = evt.selected,
+        slot = shop[selected],
         templ = slot[0],
         item = this.ai.gamble(templ[OBJECT_ICON], hero.getJob(), hero.getStat(OBJECT_LUCK)+99, templ[OBJECT_LEVEL]),
         info = [],

@@ -95,4 +95,24 @@ pico.def('socials', 'piSocials', function(){
     me.fbLogout = function(){
         FB.logout();
     };
+
+    me.sendGift = function(elapsed, evt, entities){
+        var
+        hero = this.hero,
+        bag = hero.getBag(),
+        selected = evt.selected,
+        slot = bag[selected];
+
+        if (!slot) return;
+
+        FB.ui({
+            method: 'apprequests',
+            message: 'My Great Request',
+            to: evt.npc.id
+        }, function(){
+            this.go('giftSent', {selected: selected});
+        });
+
+        return entities;
+    };
 });

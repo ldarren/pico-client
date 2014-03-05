@@ -16,12 +16,13 @@ pico.def('game', 'pigSqrMap', function(){
         var i = npc.length;
         if (i >= 3 || friends.length === i) return cb();
         var
-        id = friends[i].id,
+        friend = friends[i],
+        id = friend.id,
         img = new Image();
 
         img.onload = function(){
             me.npcSet.paste(this, 0, 0, me.tileWidth, me.tileHeight, i);
-            npc.push(id);
+            npc.push(friend);
             loadNPC(friends, npc, cb);
         };
         img.src = me.socials.fbProfile(id, me.tileWidth);

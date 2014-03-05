@@ -9,6 +9,7 @@ pico.def('trade', 'picUIContent', function(){
     content = undefined,
     labels = undefined,
     callbacks = undefined,
+    event = undefined,
     market,
     onCustomBound = function(ent, rect, ui, scale){
         return me.calcUIRect(rect, ui);
@@ -103,8 +104,8 @@ pico.def('trade', 'picUIContent', function(){
             btnId = id.substr(3);
             slot = callbacks[btnId];
             if (slot) {
-                var selected = com.activated;
-                if (content[selected]) this.go(slot, selected);
+                var selected = event['selected'] = com.activated;
+                if (content[selected]) this.go(slot, event);
             }else{
                 this.go('hideTrade');
             }
@@ -167,6 +168,7 @@ pico.def('trade', 'picUIContent', function(){
         content = evt.content;
         labels = evt.labels;
         callbacks = evt.callbacks;
+        event = evt.event || {};
         money = evt.type ? '`0'+evt.type+' ' : '`0195 ';
         market = evt.market || me.sellPrice;
         com.activated = -1;

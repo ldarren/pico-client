@@ -16,6 +16,7 @@ this.use('rogueMain');
 this.use('game');
 this.use('camera');
 this.use('effect');
+this.use('socials');
 this.use('uiWindow');
 this.use('god');
 this.use('hero');
@@ -92,6 +93,7 @@ onLoad = function(){
     game = me.game,
     camera = me.camera,
     effect = me.effect,
+    socials = me.socials,
     uiWindow = me.uiWindow,
     bag = me.bag,
     tome = me.tome,
@@ -168,6 +170,8 @@ onLoad = function(){
         game.route('offerring', [bag.offerItem, uiWindow.update, renderer.draw]);
         game.route('sell', [bag.sellItem, uiWindow.update, renderer.draw]);
         game.route('buy', [bag.buyItem, uiWindow.update, renderer.draw]);
+        game.route('gifting', [socials.sendGift]);
+        game.route('giftSent', [bag.giftItem]);
         game.route('bet', [bag.betItem]);
         game.route('upgrade', [bag.upgradeItem]);
         game.route('imbue', [bag.imbueItem]);
