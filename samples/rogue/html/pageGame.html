@@ -9,8 +9,6 @@ div#gameStage{
 <script name=gamePage>
 this.use('piCanvas');
 this.use('piReactor');
-this.use('piAtlas');
-this.use('piHTMLAudio');
 this.use('picRect');
 this.use('picTween');
 this.use('picRenderer');
@@ -84,53 +82,42 @@ onResize = function(){
     resize(this.innerWidth, this.innerHeight);
 },
 onLoad = function(){
-    me.piAtlas.create('dat/img/fantasy-tileset-combined.png', 'dat/fantasy-tileset.json', function(err, tileSet){
-        if (err) return alert(err);
-    me.piAtlas.create('dat/img/fantasy-spells.png', 'dat/fantasy-spells.json', function(err, spellSet){
-        if (err) return alert(err);
-    me.piHTMLAudio.create('dat/fantasy-sfx.json', function(err, audioSprite){
-        if (err) return alert(err);
-    me.hero.loadMeshUITemplates('dat/fantasy-ui.json', function(err){
-        if (err) return alert(err);
+    gameStage = document.querySelector('div#gameStage');
 
-        audioSprite.playList([0], 1000, 60000, true); // TODO: move to load scene method, diff sound for town and dungeons
-        gameStage = document.querySelector('div#gameStage');
+    var
+    reactor = me.piReactor,
+    rect = me.picRect,
+    tween = me.picTween,
+    renderer = me.picRenderer,
+    game = me.game,
+    camera = me.camera,
+    effect = me.effect,
+    uiWindow = me.uiWindow,
+    bag = me.bag,
+    tome = me.tome,
+    info = me.info,
+    god = me.god,
+    hero = me.hero,
+    dialogMsg = me.dialogMsg,
+    trade = me.trade,
+    canvas = me.piCanvas,
+    smallDevice = window.innerWidth > 800 || window.innerHeight > 800 ? false : true;
 
-        var
-        reactor = me.piReactor,
-        rect = me.picRect,
-        tween = me.picTween,
-        renderer = me.picRenderer,
-        game = me.game,
-        camera = me.camera,
-        effect = me.effect,
-        uiWindow = me.uiWindow,
-        bag = me.bag,
-        tome = me.tome,
-        info = me.info,
-        god = me.god,
-        hero = me.hero,
-        dialogMsg = me.dialogMsg,
-        trade = me.trade,
-        canvas = me.piCanvas,
-        smallDevice = window.innerWidth > 800 || window.innerHeight > 800 ? false : true;
+    canvas.init(gameStage);
 
-        canvas.init(gameStage);
+    var
+    gameLayer = canvas.addLayer('game'),
+    efxLayer = canvas.addLayer('efx'),
+    uiLayer = canvas.addLayer('ui');
 
-        var
-        gameLayer = canvas.addLayer('game'),
-        efxLayer = canvas.addLayer('efx'),
-        uiLayer = canvas.addLayer('ui');
+    renderer.registerContext('viewPane', gameLayer.getContext());
+    renderer.registerContext('efxPane', efxLayer.getContext());
+    renderer.registerContext('uiPane', uiLayer.getContext());
+    renderer.setBG('viewPane', G_COLOR_TONE[2]);
 
-        renderer.registerContext('viewPane', gameLayer.getContext());
-        renderer.registerContext('efxPane', efxLayer.getContext());
-        renderer.registerContext('uiPane', uiLayer.getContext());
-        renderer.setBG('viewPane', G_COLOR_TONE[2]);
+    reactor.addGroup(game);
 
-        reactor.addGroup(game);
-
-        game.style({tileSet:tileSet, spellSet:spellSet, audioSprite:audioSprite, smallDevice:smallDevice});
-
+    game.style(smallDevice, function(){
         game.route('fingerDown', [
             uiWindow.checkBound,
             camera.checkBound,
@@ -276,9 +263,6 @@ onLoad = function(){
         }
 
         me.rogueMain.hideLoading();
-    });
-    });
-    });
     });
 };
 

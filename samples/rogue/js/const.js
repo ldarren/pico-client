@@ -966,9 +966,9 @@ Object.freeze(G_OBJECT = [
     [182, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    6,  1.5,     3.0,0,  [], null], //'Werebear',
     [183, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    7,  2.0,     4.0,1,  [], null],   //'Devil'
     // NPC
-    [145, '','', 0, 0, G_OBJECT_TYPE.NPC, G_NPC_TYPE.BLACKSMITH], // 184
-    [150, '','', 0, 0, G_OBJECT_TYPE.NPC, G_NPC_TYPE.ARCHMAGE], // 185
-    [149, '','', 0, 0, G_OBJECT_TYPE.NPC, G_NPC_TYPE.TOWN_GUARD], // 186
+    [0, '','', 0, 0, G_OBJECT_TYPE.NPC, G_NPC_TYPE.BLACKSMITH], // 184
+    [2, '','', 0, 0, G_OBJECT_TYPE.NPC, G_NPC_TYPE.ARCHMAGE], // 185
+    [3, '','', 0, 0, G_OBJECT_TYPE.NPC, G_NPC_TYPE.TOWN_GUARD], // 186
     // SPELL_COST=7, SPELL_ATTR=8, SPELL_RELOAD=9, SPELL_COOLDOWN=10, SPELL_DAMAGE=11, SPELL_AOE=12, SPELL_FIRE=13, SPELL_AIR=14, SPELL_WATER=15, SPELL_EARTH=16,
     [0, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.AIR_BURST, 5, 9, 0, 3, 0, 1, 0, 1,0,0,0], // 197
     [1, '','', 2, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.AIR_BURST, 5, 9, 0, 3, 0, 1, 0, 1,0,0,0],
@@ -1763,7 +1763,7 @@ Object.freeze(G_UI = {
     INSECT: 627,
     VEG: 632,
     UNDEAD: 635,
-    DEMON: 641,
+    DEMON: 640,
     HP: 663,
     HP_EMPTY: 667,
     STR: 668,

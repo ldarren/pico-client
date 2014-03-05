@@ -1,4 +1,7 @@
 pico.def('game', 'pigSqrMap', function(){
+    this.use('piAtlas');
+    this.use('piHTMLAudio');
+    this.use('socials');
     this.use('god');
     this.use('hero');
     this.use('ai');
@@ -9,6 +12,19 @@ pico.def('game', 'pigSqrMap', function(){
     fingerStack = [],
     Max=Math.max,Abs=Math.abs,Floor=Math.floor,Random=Math.random,Pow=Math.pow,Sqrt=Math.sqrt,
     pathElapsed = 0,
+    loadNPC = function(friends, npc, cb){
+        if (npc.length >= 3 || friends.length === npc.length) return cb();
+        var
+        id = friends[i].id,
+        img = new Image();
+
+        img.onLoad = function(){
+            me.npcSet.paste(this, 0, 0, me.tileWidth, me.tileHeight, npc.length);
+            npc.push(id);
+            cb();
+        };
+        img.src = me.socials.fbProfile(id, me.tileWidth);
+    },
     loadGame = function(){
         var text = db.getItem(me.moduleName);
         if (!text) return false;
@@ -291,6 +307,7 @@ pico.def('game', 'pigSqrMap', function(){
 
     me.tileSet = null;
     me.spellSet = null;
+    me.npcSet = null;
     me.audioSprite = null;
     me.smallDevice = false;
     me.tileWidth = 16;
@@ -307,6 +324,7 @@ pico.def('game', 'pigSqrMap', function(){
     me.hints = []; // 08:creep, 80:chest, 800:stair:
     me.objects = [];
     me.flags = [];
+    me.npc = [];
 
     // call in pageLogin onLoad
     me.load = function(){
@@ -343,15 +361,41 @@ pico.def('game', 'pigSqrMap', function(){
         return entities;
     };
 
-    // data = {tileSet:atlas, spellSet:atlas, audioSprite: sprite, smallDevice: 0:1}
-    me.style = function(data){
-        me.tileSet = data.tileSet;
-        me.spellSet = data.spellSet;
-        me.audioSprite = data.audioSprite;
+    me.style = function(smallDevice, cb){
+        me.smallDevice = smallDevice;
+        var
+        tw = me.tileWidth = smallDevice ? 32 : 64,
+        th = me.tileHeight = smallDevice ? 32 : 64;
 
-        var sd = me.smallDevice = data.smallDevice;
-        me.tileWidth = sd ? 32 : 64;
-        me.tileHeight = sd ? 32 : 64;
+        me.piAtlas.create('dat/img/fantasy-tileset-combined.png', 'dat/fantasy-tileset.json', function(err, tileSet){
+            if (err) return alert(err);
+            me.tileSet = tileSet;
+        me.piAtlas.create('dat/img/fantasy-spells.png', 'dat/fantasy-spells.json', function(err, spellSet){
+            if (err) return alert(err);
+            me.spellSet = spellSet;
+        me.piAtlas.blank('npcSet', tw*3, th, [[0,0,tw,th],[tw,0,tw,th],[tw*2,0,tw,th]], function(err, npcSet){
+            if (err) return alert(err);
+            me.npcSet = npcSet;
+            npcSet.paste(tileSet.cut(G_ICON.BLACKSMITH, tw, th), 0, 0, tw, th, 0);
+            npcSet.paste(tileSet.cut(G_ICON.ARCHMAGE, tw, th), 0, 0, tw, th, 0);
+            npcSet.paste(tileSet.cut(G_ICON.TOWN_GUARD, tw, th), 0, 0, tw, th, 0);
+        me.piHTMLAudio.create('dat/fantasy-sfx.json', function(err, audioSprite){
+            if (err) return alert(err);
+            me.audioSprite = audioSprite;
+        me.hero.loadMeshUITemplates('dat/fantasy-ui.json', function(err){
+            if (err) return alert(err);
+
+            audioSprite.playList([0], 1000, 60000, true); // TODO: move to load scene method, diff sound for town and dungeons
+
+            me.socials.fbFriends(100, function(friends){
+                loadNPC(friends, me.npc, function(){
+                    cb();
+                });
+            });
+        });
+        });
+        });
+        });
     };
 
     me.openChest = function(elapsed, evt, entities){
