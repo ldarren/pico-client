@@ -194,6 +194,7 @@ pico.def('camera', 'picBase', function(){
         tileW = this.tileWidth,
         tileH = this.tileHeight,
         sd = this.smallDevice,
+        hero = this.hero,
         hw = Floor(tileW/2),
         hh = Floor(tileH/2),
         w = viewStart,
@@ -201,7 +202,8 @@ pico.def('camera', 'picBase', function(){
         fh = sd ? 16 : 32,
         fx = tileW - fw,
         fy = tileH - fh,
-        hero = this.hero,
+        crop = sd ? 4 : 8,
+        cropLength = sd ? 24 : 48,
         hp, hint, flag, x, y, i, j, object, tileId;
 
         screenshotX = viewX, screenshotY = viewY;
@@ -227,7 +229,7 @@ pico.def('camera', 'picBase', function(){
                         if (G_OBJECT_TYPE.CHEST === object[OBJECT_TYPE] && object[CHEST_ITEM])
                             tileSet.draw(ctx, object[CHEST_ITEM][OBJECT_ICON], x, y, tileW, tileH);
                         else if (G_OBJECT_TYPE.NPC === object[OBJECT_TYPE])
-                            npcSet.draw(ctx, object[OBJECT_ICON], x, y, tileW, tileH);
+                            npcSet.draw(ctx, object[OBJECT_ICON], x+crop, y+crop, cropLength, cropLength);
                         else
                             tileSet.draw(ctx, object[OBJECT_ICON], x, y, tileW, tileH);
                     }
