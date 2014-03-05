@@ -183,6 +183,7 @@ pico.def('camera', 'picBase', function(){
     me.draw = function(ctx, ent, clip){
         var
         tileSet = this.tileSet,
+        npcSet = this.npcSet,
         map = this.map,
         terrain = this.terrain,
         mapW = this.mapWidth,
@@ -225,6 +226,8 @@ pico.def('camera', 'picBase', function(){
                     }else if (object){
                         if (G_OBJECT_TYPE.CHEST === object[OBJECT_TYPE] && object[CHEST_ITEM])
                             tileSet.draw(ctx, object[CHEST_ITEM][OBJECT_ICON], x, y, tileW, tileH);
+                        else if (G_OBJECT_TYPE.NPC === object[OBJECT_TYPE])
+                            npcSet.draw(ctx, object[OBJECT_ICON], x, y, tileW, tileH);
                         else
                             tileSet.draw(ctx, object[OBJECT_ICON], x, y, tileW, tileH);
                     }

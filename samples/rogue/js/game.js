@@ -13,15 +13,16 @@ pico.def('game', 'pigSqrMap', function(){
     Max=Math.max,Abs=Math.abs,Floor=Math.floor,Random=Math.random,Pow=Math.pow,Sqrt=Math.sqrt,
     pathElapsed = 0,
     loadNPC = function(friends, npc, cb){
-        if (npc.length >= 3 || friends.length === npc.length) return cb();
+        var i = npc.length;
+        if (i >= 3 || friends.length === i) return cb();
         var
         id = friends[i].id,
         img = new Image();
 
-        img.onLoad = function(){
-            me.npcSet.paste(this, 0, 0, me.tileWidth, me.tileHeight, npc.length);
+        img.onload = function(){
+            me.npcSet.paste(this, 0, 0, me.tileWidth, me.tileHeight, i);
             npc.push(id);
-            cb();
+            loadNPC(friends, npc, cb);
         };
         img.src = me.socials.fbProfile(id, me.tileWidth);
     },
@@ -309,7 +310,7 @@ pico.def('game', 'pigSqrMap', function(){
     me.spellSet = null;
     me.npcSet = null;
     me.audioSprite = null;
-    me.smallDevice = false;
+    me.smallDevice = 0;
     me.tileWidth = 16;
     me.tileHeight = 16;
     me.currentLevel = 0;
@@ -362,7 +363,7 @@ pico.def('game', 'pigSqrMap', function(){
     };
 
     me.style = function(smallDevice, cb){
-        me.smallDevice = smallDevice;
+        me.smallDevice = smallDevice ? 1 : 0;
         var
         tw = me.tileWidth = smallDevice ? 32 : 64,
         th = me.tileHeight = smallDevice ? 32 : 64;
@@ -377,8 +378,8 @@ pico.def('game', 'pigSqrMap', function(){
             if (err) return alert(err);
             me.npcSet = npcSet;
             npcSet.paste(tileSet.cut(G_ICON.BLACKSMITH, tw, th), 0, 0, tw, th, 0);
-            npcSet.paste(tileSet.cut(G_ICON.ARCHMAGE, tw, th), 0, 0, tw, th, 0);
-            npcSet.paste(tileSet.cut(G_ICON.TOWN_GUARD, tw, th), 0, 0, tw, th, 0);
+            npcSet.paste(tileSet.cut(G_ICON.ARCHMAGE, tw, th), 0, 0, tw, th, 1);
+            npcSet.paste(tileSet.cut(G_ICON.TOWN_GUARD, tw, th), 0, 0, tw, th, 2);
         me.piHTMLAudio.create('dat/fantasy-sfx.json', function(err, audioSprite){
             if (err) return alert(err);
             me.audioSprite = audioSprite;
@@ -392,6 +393,7 @@ pico.def('game', 'pigSqrMap', function(){
                     cb();
                 });
             });
+        });
         });
         });
         });
