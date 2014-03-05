@@ -98,19 +98,23 @@ pico.def('socials', 'piSocials', function(){
 
     me.sendGift = function(elapsed, evt, entities){
         var
+        game = this,
         hero = this.hero,
         bag = hero.getBag(),
         selected = evt.selected,
-        slot = bag[selected];
+        slot = bag[selected],
+        item;
 
         if (!slot) return;
+        item = slot[0];
 
         FB.ui({
             method: 'apprequests',
-            message: 'My Great Request',
-            to: evt.npc.id
+            message: 'Send a '+item[OBJECT_NAME]+' gift over Facebook',
+            to: evt.npc.id,
+            data: JSON.stringify(item)
         }, function(){
-            this.go('giftSent', {selected: selected});
+            game.go('giftSent', {selected: selected});
         });
 
         return entities;
