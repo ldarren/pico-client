@@ -115,7 +115,7 @@ pico.def('socials', 'piSocials', function(){
             npcIds=[],
             npc, npcId,
             i,l,ri,request,gifts;
-            for(i=0,l=(requests.length >= target ? target : request.length); i<l; i++){
+            for(i=0,l=(requests.length >= target ? target : requests.length); i<l; i++){
                 if (!requests.length) break;
                 gifts = [];
                 request = requests.splice(Random()*requests.length, 1)[0];
