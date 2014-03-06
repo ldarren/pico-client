@@ -227,16 +227,16 @@ pico.def('trade', 'picUIContent', function(){
             row=me.createMeshRow(rows);
             me.createMeshCell(row);
             cell=me.createMeshCell(row);
-            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, tw, th, 0, G_UI.SLOT);
+            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, 32, 32, 0, G_UI.SLOT);
             me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, tw, th, 1, 0, {id:(i*TRADE_COL)});
             cell=me.createMeshCell(row);
-            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, tw, th, 0, G_UI.SLOT);
+            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, 32, 32, 0, G_UI.SLOT);
             me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, tw, th, 1, 0, {id:1+(i*TRADE_COL)});
             cell=me.createMeshCell(row);
-            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, tw, th, 0, G_UI.SLOT);
+            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, 32, 32, 0, G_UI.SLOT);
             me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, tw, th, 1, 0, {id:2+(i*TRADE_COL)});
             cell=me.createMeshCell(row);
-            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, tw, th, 0, G_UI.SLOT);
+            me.createMeshTile(cell, me.CENTER, me.CENTER, 0, 32, 32, 0, G_UI.SLOT);
             me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, tw, th, 1, 0, {id:3+(i*TRADE_COL)});
             me.createMeshCell(row);
 
