@@ -463,7 +463,7 @@ pico.def('info', 'picUIContent', function(){
                 var friend = this.npc[target[OBJECT_ICON]];
                 if (!friend) return;
                 this.go('showTrade', {
-                    info:['Send an item to '+friend.name],
+                    info:['Choose an item as gift to '+friend.name],
                     content: this.hero.getBag(),
                     labels: ['Send', 'Close'],
                     callbacks:['gifting'],

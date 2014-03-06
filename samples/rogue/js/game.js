@@ -18,10 +18,13 @@ pico.def('game', 'pigSqrMap', function(){
         var
         friend = friends[i],
         id = friend.id,
-        img = new Image();
+        img = new Image(),
+        sd = me.smallDevice,
+        cr = sd ? 4 : 8,
+        cl = sd ? 24 : 48;
 
         img.onload = function(){
-            me.npcSet.paste(this, 0, 0, me.tileWidth, me.tileHeight, i);
+            me.npcSet.paste(this, 0, 0, this.width, this.height, i, cr, cr, cl, cl);
             npc.push(friend);
             loadNPC(friends, npc, cb);
         };
