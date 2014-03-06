@@ -389,7 +389,7 @@ pico.def('game', 'pigSqrMap', function(){
 
             audioSprite.playList([0], 1000, 60000, true); // TODO: move to load scene method, diff sound for town and dungeons
 
-            me.socials.fbFriends(100, function(friends){
+            me.socials.getNPCs(function(friends){
                 loadNPC(friends, me.npc, function(){
                     cb();
                 });

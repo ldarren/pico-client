@@ -165,7 +165,7 @@ fbUpdate = function(){
     for (var i=0,l=frames.length; i<l; i++){
         frames[i].style.display = 'block';
     }
-    socials.fbFriends(100, function(friends){
+    socials.loadNPCs(function(friends){
         var
         list = document.querySelector('content.fbProfileList'),
         templ = document.querySelector('script#fbProfile').textContent,
