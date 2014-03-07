@@ -82,13 +82,10 @@ pico.def('socials', 'piSocials', function(){
         if (!slot) return;
         item = slot[0];
 
-        me.fbWriteRequests(G_MSG.TRADE.replace('ITEM', item[OBJECT_NAME]), evt.npc.id, JSON.stringify(item), function(recipients){
+        me.fbWriteRequests(G_MSG.TRADE.replace('ITEM', item[OBJECT_NAME]), evt.npc[NPC_ID], JSON.stringify(item), function(recipients){
             if (recipients && recipients.length) game.go('giftSent', {selected: selected});
         });
 
         return entities;
-    };
-
-    me.acceptGift = function(npcId){
     };
 });

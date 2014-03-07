@@ -61,17 +61,17 @@ pico.def('info', 'picUIContent', function(){
                     case G_NPC_TYPE.BLACKSMITH:
                         addOption('Buy', 'showGoods');
                         addOption('Upgrade', 'upgrade');
-                        if (this.npc[0]) addOption('Trade', 'gift');
+                        if (this.realNPCs[0]) addOption('Trade', 'gift');
                         break;
                     case G_NPC_TYPE.ARCHMAGE:
                         addOption('Buy', 'showGoods');
                         addOption('Imbue', 'imbue');
-                        if (this.npc[1]) addOption('Trade', 'gift');
+                        if (this.realNPCs[1]) addOption('Trade', 'gift');
                         break;
                     case G_NPC_TYPE.TOWN_GUARD:
                         addOption('Sell', 'showBag');
                         addOption('Gamble', 'gamble');
-                        if (this.npc[2]) addOption('Trade', 'gift');
+                        if (this.realNPCs[2]) addOption('Trade', 'gift');
                         break;
                     }
                     break;
