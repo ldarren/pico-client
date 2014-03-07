@@ -7,13 +7,14 @@ CHARMED_HP=4, CHARMED_LUCK=5, CHARMED_WILL=6, CHARMED_DEX=7, CHARMED_STR=8,
 CHARMED_PATK=9, CHARMED_RATK=10, CHARMED_DEF=11,
 CHARMED_VEG=12, CHARMED_INSECT=13, CHARMED_BEAST=14, CHARMED_UNDEAD=15, CHARMED_DEMON=16,
 CREEP_HP=7, CREEP_ATK=8, CREEP_PDEF=9, CREEP_MDEF=10, CREEP_EFFECT=11, CREEP_ITEM=12,
-WEAPON_HANDED=24, CHEST_ITEM=7, TOMB_BODY=7, AMMO_SIZE=24, ARMOR_CLASS=24,EFFECT_PERIOD=24,NPC_GIFTS=7,
+WEAPON_HANDED=24, CHEST_ITEM=7, TOMB_BODY=7, AMMO_SIZE=24, ARMOR_CLASS=24,EFFECT_PERIOD=24,STASH_OWNER=7,STASH_LOC=7,
 ENCHANTED_CLASS=4, ENCHANTED_FIRE=5, ENCHANTED_AIR=6, ENCHANTED_WATER=7, ENCHANTED_EARTH=8,
 SPELL_COST=7, SPELL_ATTR=8, SPELL_CLASS=9, SPELL_RELOAD=10, SPELL_COOLDOWN=11, SPELL_DAMAGE=12, SPELL_AOE=13, SPELL_FIRE=14, SPELL_AIR=15, SPELL_WATER=16, SPELL_EARTH=17,
 GOD_BODY=0,GOD_NAME=1,GOD_PIETY=2,GOD_BAG_CAP=3,GOD_TOME_CAP=4,
 HERO_HELM=0,HERO_ARMOR=1,HERO_MAIN=2,HERO_OFF=3,HERO_RINGL=4,HERO_RINGR=5,HERO_AMULET=6,HERO_QUIVER=7,
 HERO_HP=8,HERO_GOLD=9,HERO_PATK=10,HERO_RATK=11,HERO_DEF=12,HERO_WILL=13,
-HERO_LEVEL=14,HERO_ENEMIES=15,HERO_PORTAL=16,HERO_WAYPOINT=17;
+HERO_LEVEL=14,HERO_ENEMIES=15,HERO_PORTAL=16,HERO_WAYPOINT=17,
+NPC_ID=0, NPC_NAME=1, NPC_GIFTS=2;
 
 function G_CREATE_OBJECT(id, name, desc){
     var obj = G_OBJECT[id].slice();
@@ -143,9 +144,16 @@ Object.freeze(G_HERO_CLASS = {
 });
 
 Object.freeze(G_NPC_TYPE = {
-    BLACKSMITH: 145,
-    ARCHMAGE: 150,
-    TOWN_GUARD: 149,
+    BLACKSMITH: 1,
+    ARCHMAGE: 2,
+    TOWN_GUARD: 3,
+});
+
+Object.freeze(G_CHEST_TYPE = {
+    CHEST_EMPTY: 0,
+    CHEST: 1,
+    STASH_EMPTY: 2,
+    STASH: 3,
 });
 
 Object.freeze(G_ENV_TYPE = {
@@ -345,9 +353,9 @@ Object.freeze(G_ICON = {
     WEREBEAR: 182,
     DEVIL: 183,
 
-    BLACKSMITH: 145,
-    ARCHMAGE: 150,
-    TOWN_GUARD: 149,
+    BLACKSMITH: 184,
+    ARCHMAGE: 185,
+    TOWN_GUARD: 186,
 
     WHIRLWIND: 196,
     POISON_BLADE: 226,
@@ -369,6 +377,9 @@ Object.freeze(G_ICON = {
     EFX_NOCTURNAL: 597,
     EFX_LYCAN: 598,
     EFX_GROWL: 599,
+
+    STASH: 681,
+    STASH_EMPTY: 682,
 
     ASH_RAT: 691,
     TAINTED_BAT: 692,
@@ -807,8 +818,8 @@ Object.freeze(G_OBJECT = [
     undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
     undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
     // icon, name, level, grade, type, sub_type
-    [32, '','', 0, 0, G_OBJECT_TYPE.CHEST, 1, null],
-    [33, '','', 0, 0, G_OBJECT_TYPE.CHEST, 0, null],
+    [32, '','', 0, 0, G_OBJECT_TYPE.CHEST, G_CHEST_TYPE.CHEST, null],
+    [33, '','', 0, 0, G_OBJECT_TYPE.CHEST, G_CHEST_TYPE.CHEST_EMPTY, null],
     [34, '','', 0, 0, G_OBJECT_TYPE.KEY, 0],
     [35, '','', 0, 0, G_OBJECT_TYPE.KEY, 0],
     [36, '','', 0, 0, G_OBJECT_TYPE.KEY, 0],
@@ -966,9 +977,9 @@ Object.freeze(G_OBJECT = [
     [182, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    6,  1.5,     3.0,0,  [], null], //'Werebear',
     [183, '','', 0, 0, G_OBJECT_TYPE.CREEP, G_CREEP_TYPE.DEMON,    7,  2.0,     4.0,1,  [], null],   //'Devil'
     // NPC, 7: GIFTS
-    [0, '','', 0, 0, G_OBJECT_TYPE.NPC, G_NPC_TYPE.BLACKSMITH,  null], // 184
-    [1, '','', 0, 0, G_OBJECT_TYPE.NPC, G_NPC_TYPE.ARCHMAGE,    null], // 185
-    [2, '','', 0, 0, G_OBJECT_TYPE.NPC, G_NPC_TYPE.TOWN_GUARD,  null], // 186
+    [0, '','', 0, 0, G_OBJECT_TYPE.NPC, G_NPC_TYPE.BLACKSMITH,  40], // 184
+    [1, '','', 0, 0, G_OBJECT_TYPE.NPC, G_NPC_TYPE.ARCHMAGE,    47], // 185
+    [2, '','', 0, 0, G_OBJECT_TYPE.NPC, G_NPC_TYPE.TOWN_GUARD,  13], // 186
     // SPELL_COST=7, SPELL_ATTR=8, SPELL_RELOAD=9, SPELL_COOLDOWN=10, SPELL_DAMAGE=11, SPELL_AOE=12, SPELL_FIRE=13, SPELL_AIR=14, SPELL_WATER=15, SPELL_EARTH=16,
     [0, '','', 1, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.AIR_BURST, 5, 9, 0, 3, 0, 1, 0, 1,0,0,0], // 197
     [1, '','', 2, G_GRADE.COMMON, G_OBJECT_TYPE.SPELL, G_SPELL_TYPE.AIR_BURST, 5, 9, 0, 3, 0, 1, 0, 1,0,0,0],
@@ -1392,7 +1403,9 @@ Object.freeze(G_OBJECT = [
     undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
     undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
     undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
-    undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+    [32, '','', 0, 0, G_OBJECT_TYPE.CHEST, G_CHEST_TYPE.STASH, 0], // 681,
+    [33, '','', 0, 0, G_OBJECT_TYPE.CHEST, G_CHEST_TYPE.STASH_EMPTY, 0], //682
+    undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
     [152, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.RAT,   1, 0, 1.0, 10.0, 1.0,  1.0, 0.0,  0,  1.0,1.0,1.0,1.0,1.0, 0,0,0,0], // 691
     [155, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.BAT,   1, 0, 1.0, 10.0, 1.0,  1.0, 0.0,  0,  1.0,1.0,1.0,1.0,1.0, 0,0,0,0],
     [165, '','',0, 0, G_OBJECT_TYPE.HERO, G_HERO_CLASS.WOLF,   5, 0, 5.0, 8.0, 8.0,  1.0, 0.0,  4,  1.0,1.0,1.0,1.0,1.0, 0,0,0,0],
@@ -1538,7 +1551,7 @@ Object.freeze(G_STATIC_MAP = [
             0, 0, 0, G_TILE_TYPE.PORTAL, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, G_TILE_TYPE.EXIT, 0,
+            0, 0, 0, 0, 0, G_TILE_TYPE.EXIT, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0,
         ],
         terrain:[
@@ -1548,7 +1561,7 @@ Object.freeze(G_STATIC_MAP = [
             10, 10, 10, G_FLOOR.PORTAL, 10, 10, 10, 10,
             10, 10, 10, 10, 10, 10, 10, 10,
             10, 10, 10, 10, 10, 10, 10, 10,
-            10, 10, 10, 10, 10, 10, G_FLOOR.STAIR_DOWN, 10,
+            10, 10, 10, 10, 10, G_FLOOR.STAIR_DOWN, 10, 10,
             10, 10, 10, 10, 10, 10, 10, 10,
         ],
         objects:[

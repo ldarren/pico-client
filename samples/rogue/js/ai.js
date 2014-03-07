@@ -299,18 +299,6 @@ pico.def('ai', function(){
         return me.spawnItem(itemId, modifier, gradeType, job, level);
     };
 
-    me.createGoods = function(npcType, goods){
-        switch(npcType){
-        case G_NPC_TYPE.ARCHMAGE:
-            goods.push(G_CREATE_OBJECT(G_ICON.SMALL_HP));
-            break;
-        case G_NPC_TYPE.BLACKSMITH:
-            goods.push(G_CREATE_OBJECT(G_ICON.SCIMITAR));
-            break;
-        }
-        return goods;
-    };
-
     me.getStatByTileId = function(id){ return me.getStatByObject(objects[id]); };
     me.getStatByObject = function(creep){ return me.getStatByCreepId(creep[0]); };
     me.getStatByCreepId = function(id){ return G_OBJECT[id]; };

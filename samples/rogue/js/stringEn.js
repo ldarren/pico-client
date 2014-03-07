@@ -311,6 +311,9 @@ Object.freeze(G_OBJECT_NAME = {
     598: 'Lycan',
     599: 'Growl',
 
+    681: 'Stash',
+    682: 'Empty stash',
+
     691: 'Ash Rat',
     692: 'Tainted Bat',
     693: 'Dire wolf',
@@ -510,6 +513,9 @@ Object.freeze(G_OBJECT_DESC = {
     597: 'Weak creature that spread disease to contacted creep',
     598: 'Fast and furious creature that spread poison when attack',
     599: 'Sturdy and strong creature that freeze contact',
+
+    681: 'It holds items for your friends',
+    682: 'It holds items for your friends',
 
     701: "Welcome to Loki's Trial, God has created this town to guard the dungeon named Loki's Trail, to test the strength and purity of our soul. travel down to the deepest level and retrieve a soul stone to complete the test",
     702: "Your goal is to unlock the exit gate `012 of each level and travel down to next level. Key `036 is required to unlock gate, go near to the key `036 tap on it and choose 'Unlock Gate'",

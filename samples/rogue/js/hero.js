@@ -747,7 +747,7 @@ pico.def('hero', 'picUIContent', function(){
                     }
                     break;
                 case G_OBJECT_TYPE.CHEST:
-                    if (contact[OBJECT_SUB_TYPE] || contact[CHEST_ITEM]){
+                    if (G_CHEST_TYPE.CHEST === contact[OBJECT_SUB_TYPE]){
                         targets.push(contactId);
                     }
                     break;
@@ -811,7 +811,7 @@ pico.def('hero', 'picUIContent', function(){
                     // ignore
                     break;
                 case G_OBJECT_TYPE.CHEST:
-                    if (object[OBJECT_SUB_TYPE] || object[CHEST_ITEM]){
+                    if (G_CHEST_TYPE.CHEST === object[OBJECT_SUB_TYPE]){
                         targets.push(id);
                     }
                     break;

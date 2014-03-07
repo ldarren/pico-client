@@ -170,6 +170,7 @@ onLoad = function(){
         game.route('offerring', [bag.offerItem, uiWindow.update, renderer.draw]);
         game.route('sell', [bag.sellItem, uiWindow.update, renderer.draw]);
         game.route('buy', [bag.buyItem, uiWindow.update, renderer.draw]);
+        game.route('accept', [bag.acceptGift, uiWindow.update, renderer.draw]);
         game.route('gifting', [socials.sendGift]);
         game.route('giftSent', [bag.giftItem]);
         game.route('bet', [bag.betItem]);

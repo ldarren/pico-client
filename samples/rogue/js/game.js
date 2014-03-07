@@ -17,7 +17,7 @@ pico.def('game', 'pigSqrMap', function(){
         if (i >= 3 || friends.length === i) return cb();
         var
         friend = friends[i],
-        id = friend.id,
+        id = friend[NPC_ID],
         img = new Image(),
         sd = me.smallDevice,
         cr = sd ? 4 : 8,
@@ -116,8 +116,6 @@ pico.def('game', 'pigSqrMap', function(){
         return count;
     },
     prepareTutorial = function(level){
-        if (!level) return 0;
-
         var
         map = me.map,
         objects = me.objects,
@@ -126,6 +124,21 @@ pico.def('game', 'pigSqrMap', function(){
         tile,object,i,l;
 
         switch(level){
+        case 0:
+            var
+            npcList = [G_OBJECT[G_ICON.BLACKSMITH], G_OBJECT[G_ICON.ARCHMAGE], G_OBJECT[G_ICON.TOWN_GUARD]],
+            realNPCs = me.realNPCs,
+            stash;
+            for(i=0,l=npcList.length; i<l; i++){
+                if (realNPCs[i]){
+                    stash = G_CREATE_OBJECT(G_ICON.STASH);
+                    stash[STASH_OWNER] = i;
+                    objects[npcList[i][STASH_LOC]] = stash;
+                }else{
+                    objects[npcList[i][STASH_LOC]] = G_CREATE_OBJECT(G_ICON.STASH_EMPTY);
+                }
+            }
+            break;
         case 1: // key
         case 2: // creep sweeping
             for(i=0,l=map.length;i<l;i++){
@@ -329,7 +342,7 @@ pico.def('game', 'pigSqrMap', function(){
     me.hints = []; // 08:creep, 80:chest, 800:stair:
     me.objects = [];
     me.flags = [];
-    me.npc = [];
+    me.realNPCs = [];
 
     // call in pageLogin onLoad
     me.load = function(){
@@ -381,9 +394,9 @@ pico.def('game', 'pigSqrMap', function(){
         me.piAtlas.blank('npcSet', tw*3, th, [[0,0,tw,th],[tw,0,tw,th],[tw*2,0,tw,th]], function(err, npcSet){
             if (err) return alert(err);
             me.npcSet = npcSet;
-            npcSet.paste(tileSet.cut(G_ICON.BLACKSMITH, tw, th), 0, 0, tw, th, 0);
-            npcSet.paste(tileSet.cut(G_ICON.ARCHMAGE, tw, th), 0, 0, tw, th, 1);
-            npcSet.paste(tileSet.cut(G_ICON.TOWN_GUARD, tw, th), 0, 0, tw, th, 2);
+            npcSet.paste(tileSet.cut(G_ICON.MONK, tw, th), 0, 0, tw, th, 0);
+            npcSet.paste(tileSet.cut(G_ICON.WIZARD, tw, th), 0, 0, tw, th, 1);
+            npcSet.paste(tileSet.cut(G_ICON.PALADIN, tw, th), 0, 0, tw, th, 2);
         me.piHTMLAudio.create('dat/fantasy-sfx.json', function(err, audioSprite){
             if (err) return alert(err);
             me.audioSprite = audioSprite;
@@ -393,7 +406,8 @@ pico.def('game', 'pigSqrMap', function(){
             audioSprite.playList([0], 1000, 60000, true); // TODO: move to load scene method, diff sound for town and dungeons
 
             me.socials.getNPCs(function(friends){
-                loadNPC(friends, me.npc, function(){
+                loadNPC(friends, me.realNPCs, function(){
+                    prepareTutorial(0);
                     cb();
                 });
             });
@@ -417,9 +431,11 @@ pico.def('game', 'pigSqrMap', function(){
         me.go('showDialog', {
         info: [
             'You have discovered a '+G_OBJECT_TYPE_NAME[loot[OBJECT_TYPE]],
-            'Item name '+loot[OBJECT_NAME]+', item level '+loot[OBJECT_LEVEL]+', item grade '+G_GRADE_NAME[loot[OBJECT_GRADE]]],
+            'Name: '+loot[OBJECT_NAME]+', Level: '+loot[OBJECT_LEVEL]+', Grade: '+G_GRADE_NAME[loot[OBJECT_GRADE]],
+            'Item attributes only available when item is in your bag'
+        ],
         callbacks: ['loot', undefined],
-        labels: ['Loot', 'Discard'],
+        labels: ['Loot', 'Later'],
         events: [evt, undefined]});
 
         return entities;
@@ -578,7 +594,7 @@ pico.def('game', 'pigSqrMap', function(){
                 ai.bury(objId);
                 break;
             case G_OBJECT_TYPE.CHEST:
-                if (obj[OBJECT_SUB_TYPE] || obj[CHEST_ITEM]){
+                if (G_CHEST_TYPE.CHEST === obj[OBJECT_SUB_TYPE]){
                     objects[objId] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
                 }
                 break;
@@ -652,16 +668,6 @@ pico.def('game', 'pigSqrMap', function(){
         delete objects[targetId];
 
         me.hero.recoverBody.call(this, tomb[TOMB_BODY]);
-    };
-
-    me.createGoods = function(elapsed, evt, entities){
-        var
-        targetId = evt[0],
-        target = me.objects[targetId];
-
-        evt.length = 0;
-        me.ai.createGoods(target[OBJECT_SUB_TYPE], evt);
-        return entities;
     };
 
     me.recalHints = function(){

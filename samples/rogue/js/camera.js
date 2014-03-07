@@ -147,8 +147,10 @@ pico.def('camera', 'picBase', function(){
                     if (!steps) return entities;
                     this.go('gameStep', steps);
                 }else{
-                    if (isNear && G_ENV_TYPE.ALTAR === object[OBJECT_SUB_TYPE]) this.go('showAltar', {callback: 'forceRefresh'});
-                    else this.go('showInfo', { targetId: id, context: G_CONTEXT.WORLD });
+                    if (isNear && G_OBJECT_TYPE.ENV === object[OBJECT_TYPE] && G_ENV_TYPE.ALTAR === object[OBJECT_SUB_TYPE])
+                        this.go('showAltar', {callback: 'forceRefresh'});
+                    else
+                        this.go('showInfo', { targetId: id, context: G_CONTEXT.WORLD });
                 }
             }else{
                 this.go('hideInfo');

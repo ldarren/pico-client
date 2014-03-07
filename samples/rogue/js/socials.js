@@ -2,6 +2,8 @@ pico.def('socials', 'piSocials', function(){
     var
     Random=Math.random,
     me = this,
+    fbAllies = [],
+    fbNewbees = [],
     fbNPCs = [];
 
     me.loadNPCs = function(cb){
@@ -16,42 +18,42 @@ pico.def('socials', 'piSocials', function(){
                 if (!requests.length) break;
                 gifts = [];
                 request = requests.splice(Random()*requests.length, 1)[0];
-                if (request.data) gifts.push([request.id, JSON.parse(request.data)]);
+                if (request.data) gifts.push([JSON.parse(request.data), 1, request.id]);
                 npcId = request.from.id;
                 npcIds.push(npcId);
-                fbNPCs.push({name: request.from.name, id: npcId, gifts:gifts});
+                fbNPCs.push([npcId, request.from.name, gifts]);
                 for (ri=requests.length-1; ri>-1; ri--){
                     request = requests[ri];
                     if (request.from.id === npcId){
-                        if (request.data) gifts.push([request.id, JSON.parse(request.data)]);
+                        if (request.data) gifts.push([JSON.parse(request.data), 1, request.id]);
                         requests.splice(ri, 1);
                     }
                 }
             }
             me.fbFriends(1000, function(friends){
-                var newUsers = [], friend;
+                var friend;
+                fbNewbees.length = 0;
                 for (i=friends.length-1; i>-1; i--){
                     friend = friends[i];
                     if (friend.installed) {
                         if (-1 !== npcIds.indexOf(friend.id)) friends.splice(i, 1);
                         continue;
                     }
-                    newUsers.push(friend);
+                    fbNewbees.push(friend);
                     friends.splice(i, 1);
                 }
-                if (newUsers.length){
-                    friend = newUsers.splice(Random()*newUsers.length, 1)[0];
+                if (fbNewbees.length){
+                    friend = fbNewbees.splice(Random()*fbNewbees.length, 1)[0];
                     npcId = friend.id;
                     npcIds.push(npcId);
-                    fbNPCs.push({name: friend.name, id: npcId, gifts:[]});
+                    fbNPCs.push([npcId, friend.name, []]);
                 }
                 target = 3 - fbNPCs.length;
                 for(i=0,l=(friends.length >= target ? target : friends.length); i<l; i++){
-                    gifts = [];
                     friend = friends.splice(Random()*friends.length, 1)[0];
                     npcId = request.data.id;
                     npcIds.push(npcId);
-                    fbNPCs.push({name: friend.name, id: npcId, gifts:gifts});
+                    fbNPCs.push([npcId, friend.name, gifts]);
                 }
                 cb(friends);
             });
@@ -59,7 +61,7 @@ pico.def('socials', 'piSocials', function(){
     };
 
     me.loadRanking = function(cb){
-        if (fbFriends.length) return cb(fbFriends); // placeholder
+        if (fbAllies.length) return cb(fbAllies); // placeholder
         me.loadNPCs(cb);
     };
 
@@ -85,5 +87,8 @@ pico.def('socials', 'piSocials', function(){
         });
 
         return entities;
+    };
+
+    me.acceptGift = function(npcId){
     };
 });

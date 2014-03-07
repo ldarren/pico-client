@@ -30,12 +30,30 @@ pico.def('info', 'picUIContent', function(){
                     }
                     break;
                 case G_OBJECT_TYPE.CHEST:
-                    if (target[OBJECT_SUB_TYPE]){
+                    switch(target[OBJECT_SUB_TYPE]){
+                    case G_CHEST_TYPE.CHEST:
                         if (target[CHEST_ITEM]){
                             this.go('openChest', targetId);
                             return;
                         }
-                        addOption('Open', 'open');
+                        break;
+                    case G_CHEST_TYPE.STASH:
+                        var npc = this.realNPCs[target[STASH_OWNER]];
+                        if (!npc || !npc[NPC_GIFTS]) return;
+                        this.go('showTrade', {
+                            info:[npc[NPC_NAME]+": let's trade, these items are all for you, i'm looking forward to receive your items"],
+                            content: npc[NPC_GIFTS],
+                            labels: ['Accept', 'Sell', 'Close'],
+                            callbacks:['accept', 'accept'],
+                            events:[{npc:npc, isSell:false}, {npc:npc, isSell:true}],
+                            market: me.trade.sellPrice, 
+                            type: G_UI.GOLD
+                        });
+                        return;
+                    case G_CHEST_TYPE.CHEST_EMPTY:
+                    case G_CHEST_TYPE.STASH_EMPTY:
+                    default:
+                        break;
                     }
                     break;
                 case G_OBJECT_TYPE.NPC:
@@ -345,9 +363,6 @@ pico.def('info', 'picUIContent', function(){
             case 'flee':
                 this.go('flee');
                 break;
-            case 'open':
-                this.go('openChest', targetId);
-                break;
             case 'speak':
                 break;
             case 'consume':
@@ -460,14 +475,14 @@ pico.def('info', 'picUIContent', function(){
                 });
                 break;
             case 'gift':
-                var friend = this.npc[target[OBJECT_ICON]];
-                if (!friend) return;
+                var npc = this.realNPCs[target[OBJECT_ICON]];
+                if (!npc) return;
                 this.go('showTrade', {
-                    info:['Choose an item to trade with '+friend.name, friend.name+' might return something useful to you'],
+                    info:['Choose an item to trade with '+npc[NPC_NAME], npc[NPC_NAME]+' might return something useful to you'],
                     content: this.hero.getBag(),
                     labels: ['Trade', 'Close'],
                     callbacks:['gifting'],
-                    event: {npc: friend},
+                    events: [{npc: npc}],
                     market: me.trade.sellPrice, 
                     type: G_UI.GOLD
                 });

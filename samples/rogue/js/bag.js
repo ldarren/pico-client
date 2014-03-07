@@ -88,6 +88,7 @@ pico.def('bag', 'picUIContent', function(){
         }
     };
 
+    me.use('socials');
     me.use('trade');
 
     me.useItem = function(elapsed, evt, entities){
@@ -117,6 +118,35 @@ pico.def('bag', 'picUIContent', function(){
         }
 
         hero.putIntoBag(loot);
+
+        this.objects[evt] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
+
+        return entities;
+    };
+
+    me.acceptGift = function(elapsed, evt, entities){
+        var
+        hero = this.hero,
+        npc = evt.npc,
+        selected = evt.selected,
+        stash = npc[NPC_GIFTS];
+
+        if (!stash || selected+1 > stash.length) return;
+
+        var slot = stash[selected];
+
+        if (evt.isSell){
+            me.socials.fbDeleteRequests(slot[2]);
+            hero.incrGold(me.trade.sellPrice(slot[0], 1));
+        }else{
+            if (hero.isBagFull()){
+                this.go('showDialog', {info:G_MSG.BAG_FULL});
+                return;
+            }
+            me.socials.fbDeleteRequests(slot[2]);
+            hero.putIntoBag(slot[0]);
+        }
+        stash.splice(selected, 1);
 
         this.objects[evt] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
 
