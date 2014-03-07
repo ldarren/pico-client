@@ -205,7 +205,7 @@ onLoad = function(){
     }
 
     me.piHTMLAudio.create('dat/fantasy-sfx.json', function(err, audioSprite){
-        me.socials.loadFacebook(
+        me.socials.fbInit(
             '515256841901768', 
             'Phonegap' === pico.states.browser ? CDV.FB : '//dungeon-chronicles.com/rogue/html/fbChannel.html',
             onFacebookUpdate);

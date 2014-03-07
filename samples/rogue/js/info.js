@@ -43,17 +43,17 @@ pico.def('info', 'picUIContent', function(){
                     case G_NPC_TYPE.BLACKSMITH:
                         addOption('Buy', 'showGoods');
                         addOption('Upgrade', 'upgrade');
-                        if (this.npc[0]) addOption('Gift', 'gift');
+                        if (this.npc[0]) addOption('Trade', 'gift');
                         break;
                     case G_NPC_TYPE.ARCHMAGE:
                         addOption('Buy', 'showGoods');
                         addOption('Imbue', 'imbue');
-                        if (this.npc[1]) addOption('Gift', 'gift');
+                        if (this.npc[1]) addOption('Trade', 'gift');
                         break;
                     case G_NPC_TYPE.TOWN_GUARD:
                         addOption('Sell', 'showBag');
                         addOption('Gamble', 'gamble');
-                        if (this.npc[2]) addOption('Gift', 'gift');
+                        if (this.npc[2]) addOption('Trade', 'gift');
                         break;
                     }
                     break;
@@ -463,9 +463,9 @@ pico.def('info', 'picUIContent', function(){
                 var friend = this.npc[target[OBJECT_ICON]];
                 if (!friend) return;
                 this.go('showTrade', {
-                    info:['Choose an item as gift to '+friend.name],
+                    info:['Choose an item to trade with '+friend.name, friend.name+' might return something useful to you'],
                     content: this.hero.getBag(),
-                    labels: ['Send', 'Close'],
+                    labels: ['Trade', 'Close'],
                     callbacks:['gifting'],
                     event: {npc: friend},
                     market: me.trade.sellPrice, 

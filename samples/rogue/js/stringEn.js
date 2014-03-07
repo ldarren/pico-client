@@ -1,4 +1,5 @@
 Object.freeze(G_MSG = {
+    TRADE: "Let's trade, here is my 'ITEM'",
     POSTFIX_SEPARATOR: " of ",
     FLEE_WIN: "You fled the battle area",
     FLEE_LOST: "You failed to flee, improve your `0613 dex and `0193 luck to increase your chances",
