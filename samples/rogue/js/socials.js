@@ -42,18 +42,19 @@ pico.def('socials', 'piSocials', function(){
                     fbNewbees.push(friend);
                     friends.splice(i, 1);
                 }
-                if (fbNewbees.length){
-                    friend = fbNewbees.splice(Random()*fbNewbees.length, 1)[0];
-                    npcId = friend.id;
-                    npcIds.push(npcId);
-                    fbNPCs.push([npcId, friend.name, []]);
-                }
-                target = 3 - fbNPCs.length;
+                target = 2 - fbNPCs.length; // if npc count less than 2, fill than number of installed friends
                 for(i=0,l=(friends.length >= target ? target : friends.length); i<l; i++){
                     friend = friends.splice(Random()*friends.length, 1)[0];
                     npcId = request.data.id;
                     npcIds.push(npcId);
                     fbNPCs.push([npcId, friend.name, gifts]);
+                }
+                target = 3 - fbNPCs.length; // fill the rest  of npc with friends without this app
+                for(i=0,l=(fbNewbees.length >= target ? target : fbNewbees.length); i<l; i++){
+                    friend = fbNewbees.splice(Random()*fbNewbees.length, 1)[0];
+                    npcId = friend.id;
+                    npcIds.push(npcId);
+                    fbNPCs.push([npcId, friend.name, []]);
                 }
                 cb(friends);
             });

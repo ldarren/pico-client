@@ -38,14 +38,16 @@ pico.def('info', 'picUIContent', function(){
                         }
                         break;
                     case G_CHEST_TYPE.STASH:
-                        var npc = this.realNPCs[target[STASH_OWNER]];
+                        var
+                        npcId = target[STASH_OWNER],
+                        npc = this.realNPCs[npcId];
                         if (!npc || !npc[NPC_GIFTS]) return;
                         this.go('showTrade', {
                             info:[npc[NPC_NAME]+": let's trade, these items are all for you, i'm looking forward to receive your items"],
                             content: npc[NPC_GIFTS],
                             labels: ['Accept', 'Sell', 'Close'],
                             callbacks:['accept', 'accept'],
-                            events:[{npc:npc, isSell:false}, {npc:npc, isSell:true}],
+                            events:[{npcId:npcId, isSell:false}, {npcId:npcId, isSell:true}],
                             market: me.trade.sellPrice, 
                             type: G_UI.GOLD
                         });

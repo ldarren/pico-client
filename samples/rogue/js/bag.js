@@ -127,7 +127,8 @@ pico.def('bag', 'picUIContent', function(){
     me.acceptGift = function(elapsed, evt, entities){
         var
         hero = this.hero,
-        npc = evt.npc,
+        npcId = evt.npcId,
+        npc = this.realNPCs[npcId],
         selected = evt.selected,
         stash = npc[NPC_GIFTS];
 
@@ -148,7 +149,16 @@ pico.def('bag', 'picUIContent', function(){
         }
         stash.splice(selected, 1);
 
-        this.objects[evt] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
+        if (!stash.length){
+            var
+            npcList = [G_ICON.BLACKSMITH, G_ICON.ARCHMAGE, G_ICON.TOWN_GUARD],
+            npcTempl = G_OBJECT[npcList[npcId]],
+            stashLoc = npcTempl[STASH_LOC];
+
+            this.objects[stashLoc] = G_CREATE_OBJECT(G_ICON.STASH_EMPTY);
+            this.go('hideTrade');
+            return;
+        }
 
         return entities;
     };

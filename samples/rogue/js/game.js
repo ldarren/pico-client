@@ -130,7 +130,7 @@ pico.def('game', 'pigSqrMap', function(){
             realNPCs = me.realNPCs,
             stash;
             for(i=0,l=npcList.length; i<l; i++){
-                if (realNPCs[i]){
+                if (realNPCs[i] && realNPCs[i][NPC_GIFTS].length){
                     stash = G_CREATE_OBJECT(G_ICON.STASH);
                     stash[STASH_OWNER] = i;
                     objects[npcList[i][STASH_LOC]] = stash;
