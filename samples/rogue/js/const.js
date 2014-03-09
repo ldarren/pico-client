@@ -351,7 +351,7 @@ Object.freeze(G_ICON = {
     CYCLOPS: 180,
     WEREWOLF: 181,
     WEREBEAR: 182,
-    DEVIL: 183,
+    DIABLO: 183,
 
     BLACKSMITH: 184,
     ARCHMAGE: 185,
