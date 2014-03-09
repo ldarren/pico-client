@@ -376,6 +376,8 @@ pico.def('game', 'pigSqrMap', function(){
         me.hero.step.call(me, steps);
         me.ai.step.call(me, steps);
 
+        this.go('counter', me.ai.battle());
+
         return entities;
     };
 
@@ -462,7 +464,7 @@ pico.def('game', 'pigSqrMap', function(){
         var hero = this.hero;
 
         if (!targets || !targets.length){
-            me.go('counter', me.ai.battle());
+            me.go('gameStep', 1);
 
             var
             flags = me.flags,
@@ -571,7 +573,7 @@ pico.def('game', 'pigSqrMap', function(){
         if (!ret) return;
 
         if (!ret[0]){
-            this.go('counter', this.ai.battle());
+            this.go('gameStep', 1);
             return;
         }
         this.go('showInfo', {info: ret[1]});
