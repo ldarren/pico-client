@@ -5,8 +5,11 @@ pico.def('socials', 'piSocials', function(){
     fbAllies = [],
     fbNewbees = [],
     fbNPCs = [],
+    fbAlliesCB,
     addAllies = function(user, score){
-        fbAllies.push([user.id, user.name, score]);
+        var data = [user.id, user.name, score];
+        fbAllies.push(data);
+        if (fbAlliesCB) fbAlliesCB([data]);
     };
 
     me.loadNPCs = function(cb){
@@ -61,14 +64,14 @@ pico.def('socials', 'piSocials', function(){
                     npcIds.push(npcId);
                     fbNPCs.push([npcId, friend.name, []]);
                 }
-                cb(friends);
+                cb(fbNPCs);
             });
         });
     };
 
-    me.loadRanking = function(cb){
-        if (fbAllies.length) return cb(fbAllies); // placeholder
-        me.loadNPCs(cb);
+    me.loadAllies = function(cb){
+        if (fbAllies.length) cb(fbAllies);
+        fbAlliesCB = cb;
     };
 
     me.getNPCs = function(cb){

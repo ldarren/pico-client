@@ -112,7 +112,7 @@ div.fbProfile span{
 <li><input type=checkbox>Silence</input></li>
 </ul>
 
-<div id=ranking class=frame>
+<div id=ranking class="frame fantasyBg">
 <h4>Game Map</h4>
 <content class=fbProfileList>Require facebook connect</content>
 </div>
@@ -168,23 +168,26 @@ fbUpdate = function(){
     for (var i=0,l=frames.length; i<l; i++){
         frames[i].style.display = 'block';
     }
-    socials.loadNPCs(function(friends){
+    socials.loadNPCs(function(npcs){
         var list = document.querySelector('content.fbProfileList');
         if (!list) return;
-        var
-        templ = document.querySelector('script#fbProfile').textContent,
-        profile;
+        var templ = document.querySelector('script#fbProfile').textContent;
+        socials.loadAllies(function(friends){
 
-        list.innerHTML = '';
+            list.innerHTML = '';
 
-        for(var i=0,l=friends.length; i<l; i++){
-            profile = document.createElement('div');
-            profile.className = 'fbProfile';
-            profile.innerHTML = templ
-                .replace('PROFILE', socials.fbProfile(friends[i].id, 64))
-                .replace('NAME', friends[i].name);
-            list.appendChild(profile);
-        }
+            var profile, friend;
+
+            for(var i=0,l=friends.length; i<l; i++){
+                friend = friends[i];
+                profile = document.createElement('div');
+                profile.className = 'fbProfile';
+                profile.innerHTML = templ
+                    .replace('PROFILE', socials.fbProfile(friend[0], 64))
+                    .replace('NAME', friend[1]);
+                list.appendChild(profile);
+            }
+        });
     });
 },
 onFacebookUpdate = function(userId){
