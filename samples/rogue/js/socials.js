@@ -4,7 +4,10 @@ pico.def('socials', 'piSocials', function(){
     me = this,
     fbAllies = [],
     fbNewbees = [],
-    fbNPCs = [];
+    fbNPCs = [],
+    addAllies = function(user, score){
+        fbAllies.push([user.id, user.name, score]);
+    };
 
     me.loadNPCs = function(cb){
         fbNPCs.length = 0;
@@ -21,6 +24,7 @@ pico.def('socials', 'piSocials', function(){
                 if (request.data) gifts.push([JSON.parse(request.data), 1, request.id]);
                 npcId = request.from.id;
                 npcIds.push(npcId);
+                me.fbReadScore(npcId, addAllies);
                 fbNPCs.push([npcId, request.from.name, gifts]);
                 for (ri=requests.length-1; ri>-1; ri--){
                     request = requests[ri];
@@ -37,6 +41,7 @@ pico.def('socials', 'piSocials', function(){
                     friend = friends[i];
                     if (friend.installed) {
                         if (-1 !== npcIds.indexOf(friend.id)) friends.splice(i, 1);
+                        else me.fbReadScore(friend.id, addAllies);
                         continue;
                     }
                     fbNewbees.push(friend);
@@ -45,9 +50,9 @@ pico.def('socials', 'piSocials', function(){
                 target = 2 - fbNPCs.length; // if npc count less than 2, fill than number of installed friends
                 for(i=0,l=(friends.length >= target ? target : friends.length); i<l; i++){
                     friend = friends.splice(Random()*friends.length, 1)[0];
-                    npcId = request.data.id;
+                    npcId = friend.id;
                     npcIds.push(npcId);
-                    fbNPCs.push([npcId, friend.name, gifts]);
+                    fbNPCs.push([npcId, friend.name, []]);
                 }
                 target = 3 - fbNPCs.length; // fill the rest  of npc with friends without this app
                 for(i=0,l=(fbNewbees.length >= target ? target : fbNewbees.length); i<l; i++){

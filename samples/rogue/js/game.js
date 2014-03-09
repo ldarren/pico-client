@@ -70,7 +70,10 @@ pico.def('game', 'pigSqrMap', function(){
         me.prevLevel = level ? me.currentLevel : 0;
         me.currentLevel = level;
         me.nextLevel = (level < me.prevLevel) ? level-1 : level+1;
-        if (me.deepestLevel < level) me.deepestLevel = level;
+        if (me.deepestLevel < level) {
+            me.deepestLevel = level;
+            me.socials.fbWriteScore(me.deepestLevel);
+        }
 
         var mapParams = G_MAP_PARAMS[level];
         Object.getPrototypeOf(me).init(mapParams[0], mapParams[1]);
