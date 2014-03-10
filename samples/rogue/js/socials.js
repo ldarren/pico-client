@@ -6,7 +6,16 @@ pico.def('socials', 'piSocials', function(){
     fbNewbees = [],
     fbNPCs = [],
     fbAlliesCB,
-    addAllies = function(user, score){
+    readLevel = function(id, cb){
+        me.fbReadScore(id, function(user, score){
+            var
+            maxLevel = G_MA_PARAMS.length,
+            times = score % maxLevel,
+            level = score - (times*maxLevel);
+            cb(user, times, level);
+        });
+    },
+    addAllies = function(user, times, score){
         var data = [user.id, user.name, score];
         fbAllies.push(data);
         if (fbAlliesCB) fbAlliesCB([data]);
@@ -14,6 +23,7 @@ pico.def('socials', 'piSocials', function(){
 
     me.loadNPCs = function(cb){
         fbNPCs.length = 0;
+        readLevel('me', addAllies);
         me.fbReadRequests(1000, function(requests){
             var 
             target = 2,
@@ -27,7 +37,9 @@ pico.def('socials', 'piSocials', function(){
                 if (request.data) gifts.push([JSON.parse(request.data), 1, request.id]);
                 npcId = request.from.id;
                 npcIds.push(npcId);
-                me.fbReadScore(npcId, addAllies);
+
+                readLevel(npcId, addAllies);
+
                 fbNPCs.push([npcId, request.from.name, gifts]);
                 for (ri=requests.length-1; ri>-1; ri--){
                     request = requests[ri];
@@ -44,7 +56,7 @@ pico.def('socials', 'piSocials', function(){
                     friend = friends[i];
                     if (friend.installed) {
                         if (-1 !== npcIds.indexOf(friend.id)) friends.splice(i, 1);
-                        else me.fbReadScore(friend.id, addAllies);
+                        else readLevel(friend.id, addAllies);
                         continue;
                     }
                     fbNewbees.push(friend);
@@ -96,5 +108,11 @@ pico.def('socials', 'piSocials', function(){
         });
 
         return entities;
+    };
+
+    me.updateLevel = function(level){
+        readLevel('me', function(user, times, score){
+            me.fbWriteScore((times*G_MAP_PARAMS.length) + level);
+        });
     };
 });

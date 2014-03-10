@@ -41,9 +41,7 @@
     filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#5cb811', endColorstr='#77d42a');
     background-color:#5cb811;
 }
-.cssBtn:active {
-    top:1px;
-}
+.cssBtn:active {top:1px;}
 
 .fb-connect {
     background:url(css/fb_white_29.png) no-repeat 5px 5px #29447e;
@@ -64,10 +62,11 @@
     padding:2px 57px 3px;
     font-family: 'Helvetica Neue',Helvetica,Arial, 'lucida grande',tahoma,verdana,arial,sans-serif;
 }
+.fb-connect:active {background-color:#3b579d;}
 
 .goog-connect {
-    background:url(css/goog_white_32.png) no-repeat 5px 5px #dd4b39;
-    display:inline-block;
+    background:url(css/goog_white_32.png) no-repeat 4px 3px #dd4b39;
+    display:block;
     line-height:32px;
     outline:medium none;
     padding:0 0 0 1px;
@@ -85,6 +84,8 @@
     padding:2px 54px 3px;
     font-family: 'Helvetica Neue', Helvetica, Arial, 'lucida grande',tahoma,verdana,arial,sans-serif;
 }
+.goog-connect:active {background-color:#c03d28;}
+.goog-connect:active span{border-left: #a43422 solid 1px;}
 
 h3{
     margin: 10px auto;
@@ -124,6 +125,11 @@ ul.mainMenu li input[type=text]{
     width:200px;
     margin: 10px auto;
 }
+div.fbProfileList{
+    overflow:scroll;
+}
+div.fbProfileRow{
+}
 div.fbProfile{
     display:inline-block;
     vertical-align:top;
@@ -157,16 +163,16 @@ div.fbProfile span{
 
 <div id=ranking class="frame fantasyBg">
 <h4>Game Map</h4>
-<content class=fbProfileList>Require facebook connect</content>
+<content class=fbProfileList></content>
 </div>
 
 <div id=badges class=frame>
-<h4>Badges</h4>
-<span>Require facebook connect</span>
+<h4>Achievements</h4>
+<span></span>
 </div>
 
 <div id=deviceSync class=frame>
-<h4>Data Backup</h4>
+<h4>Cloud Save</h4>
 <div><a href=# class=goog-connect><span>Sign In</span></a></div>
 </div>
 
@@ -212,21 +218,25 @@ fbUpdate = function(){
     socials.loadNPCs(function(npcs){
         var list = document.querySelector('content.fbProfileList');
         if (!list) return;
+        list.innerHTML = '';
         var templ = document.querySelector('script#fbProfile').textContent;
         socials.loadAllies(function(friends){
-
-            list.innerHTML = '';
-
-            var profile, friend;
+            var deepest, level, row, profile, friend;
 
             for(var i=0,l=friends.length; i<l; i++){
                 friend = friends[i];
+                for(deepest = list.children.length || 0, level = friend[2]; deepest < level; deepest++){
+                    row = document.createElement('div');
+                    row.className = 'fbProfileRow fantasyRow';
+                    list.appendChild(row);
+                }
+                row = list.querySelector('div:nth-child('+level+')');
                 profile = document.createElement('div');
                 profile.className = 'fbProfile';
                 profile.innerHTML = templ
                     .replace('PROFILE', socials.fbProfile(friend[0], 64))
                     .replace('NAME', friend[1]);
-                list.appendChild(profile);
+                row.appendChild(profile);
             }
         });
     });

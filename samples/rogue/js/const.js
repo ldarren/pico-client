@@ -322,7 +322,7 @@ Object.freeze(G_ICON = {
     WARLOCK: 151,
     RAT: 152,
     SPIDERS: 153,
-    KOMODO: 154,
+    SALAMANDRA: 154,
     SPIDER_CHAMPION: 155,
     TOAD: 156,
     SCARAB: 157,
