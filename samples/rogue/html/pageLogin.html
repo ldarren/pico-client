@@ -44,6 +44,29 @@
 .cssBtn:active {
     top:1px;
 }
+
+.fb-connect {
+    background:url(https://s-static.ak.fbcdn.net/images/connect_sprite.png) no-repeat scroll left -60px #29447e;
+    display:none;
+    line-height:32px;
+    outline:medium none;
+    padding:0 0 0 1px;
+    text-decoration:none;
+}
+.fb-connect span {
+    background:url(https://s-static.ak.fbcdn.net/images/connect_sprite.png) repeat scroll 0 0 #5f78ab;
+    border-bottom:1px solid #1a356e;
+    border-top:1px solid #879ac0;
+    color:#fff;
+    cursor:pointer;
+    display:block;
+    font-size:14px;
+    font-weight:bold;
+    margin:1px 1px 0 38px;
+    padding:2px 55px 3px;
+    font-family: 'Lucida Grande', Verdana, Arial, sans-serif;
+}
+
 h3{
     margin: 10px auto;
     text-align:center;
@@ -108,6 +131,7 @@ div.fbProfile span{
 
 <ul class=mainMenu>
 <li><a href=# class=cssBtn>Connecting...</a></li>
+<li><a href=# class=fb-connect><span>Log in</span></a></li>
 <li><input type=text placeholder="Hero Name: Nameless"></input></li>
 <li><input type=checkbox>Silence</input></li>
 </ul>
@@ -127,14 +151,12 @@ div.fbProfile span{
 <div><a href=# class=cssBtn>Google+ Connect</a></div>
 </div>
 
-<script id=fbScore type=text/templ>
+<script id=fbBadge type=text/templ>
 <img src="https://graph.facebook.com/USER_ID/picture">
 <span>NAME</span>
 </script>
 
-<script id=fbBadge type=text/templ>
-<img src="https://graph.facebook.com/USER_ID/picture">
-<span>NAME</span>
+<script id=fbScoreRow type=text/templ>
 </script>
 
 <script id=fbProfile type=text/templ>
@@ -150,7 +172,7 @@ this.use('game');
 
 var
 me = this,
-playBtn, nameTextbox, 
+playBtn, fbBtn, gpBtn, nameTextbox, 
 onPlay = function(){
     me.piHTMLAudio.preload();
     me.rogueMain.showLoading();
@@ -191,20 +213,24 @@ fbUpdate = function(){
     });
 },
 onFacebookUpdate = function(userId){
-    playBtn.removeEventListener('click', onLogin);
+    fbBtn.removeEventListener('click', onLogin);
     playBtn.removeEventListener('click', onPlay);
     if (userId){
+        fbBtn.style.display = 'none';
+        playBtn.style.display = 'block';
         playBtn.textContent = 'Begin';
         fbUpdate();
         playBtn.addEventListener('click', onPlay, false);
     }else{
-        playBtn.textContent = 'Login';
-        playBtn.addEventListener('click', onLogin, false);
+        playBtn.style.display = 'none';
+        fbBtn.style.display = 'inline-block';
+        fbBtn.addEventListener('click', onLogin, false);
     }
 },
 onLoad = function(){
     playBtn = document.querySelector('ul.mainMenu li:nth-child(1) a');
-    nameTextbox = document.querySelector('ul.mainMenu li:nth-child(2) input');
+    fbBtn = document.querySelector('ul.mainMenu li:nth-child(2) a');
+    nameTextbox = document.querySelector('ul.mainMenu li:nth-child(3) input');
 
     var name = me.game.load();
     if (name){
