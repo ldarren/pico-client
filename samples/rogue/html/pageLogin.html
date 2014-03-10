@@ -46,25 +46,44 @@
 }
 
 .fb-connect {
-    background:url(https://s-static.ak.fbcdn.net/images/connect_sprite.png) no-repeat scroll left -60px #29447e;
+    background:url(css/fb_white_29.png) no-repeat 5px 5px #29447e;
     display:none;
     line-height:32px;
     outline:medium none;
     padding:0 0 0 1px;
     text-decoration:none;
+    border-radius: 2px 2px;
 }
 .fb-connect span {
-    background:url(https://s-static.ak.fbcdn.net/images/connect_sprite.png) repeat scroll 0 0 #5f78ab;
-    border-bottom:1px solid #1a356e;
-    border-top:1px solid #879ac0;
     color:#fff;
     cursor:pointer;
     display:block;
     font-size:14px;
     font-weight:bold;
     margin:1px 1px 0 38px;
-    padding:2px 55px 3px;
-    font-family: 'Lucida Grande', Verdana, Arial, sans-serif;
+    padding:2px 57px 3px;
+    font-family: 'Helvetica Neue',Helvetica,Arial, 'lucida grande',tahoma,verdana,arial,sans-serif;
+}
+
+.goog-connect {
+    background:url(css/goog_white_32.png) no-repeat 5px 5px #dd4b39;
+    display:inline-block;
+    line-height:32px;
+    outline:medium none;
+    padding:0 0 0 1px;
+    text-decoration:none;
+    border-radius: 2px 2px;
+}
+.goog-connect span {
+    color:#fff;
+    cursor:pointer;
+    display:block;
+    font-size:14px;
+    font-weight:bold;
+    border-left: #be3f2b solid 1px;
+    margin:1px 1px 0 38px;
+    padding:2px 54px 3px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, 'lucida grande',tahoma,verdana,arial,sans-serif;
 }
 
 h3{
@@ -131,7 +150,7 @@ div.fbProfile span{
 
 <ul class=mainMenu>
 <li><a href=# class=cssBtn>Connecting...</a></li>
-<li><a href=# class=fb-connect><span>Log in</span></a></li>
+<li><a href=# class=fb-connect><span>Log In</span></a></li>
 <li><input type=text placeholder="Hero Name: Nameless"></input></li>
 <li><input type=checkbox>Silence</input></li>
 </ul>
@@ -148,7 +167,7 @@ div.fbProfile span{
 
 <div id=deviceSync class=frame>
 <h4>Data Backup</h4>
-<div><a href=# class=cssBtn>Google+ Connect</a></div>
+<div><a href=# class=goog-connect><span>Sign In</span></a></div>
 </div>
 
 <script id=fbBadge type=text/templ>
