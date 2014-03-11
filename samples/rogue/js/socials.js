@@ -1,6 +1,6 @@
 pico.def('socials', 'piSocials', function(){
     var
-    Random=Math.random,
+    Random=Math.random,Floor=Math.floor,
     me = this,
     fbAllies = [],
     fbNewbees = [],
@@ -8,16 +8,18 @@ pico.def('socials', 'piSocials', function(){
     fbAlliesCB,
     readLevel = function(id, cb){
         me.fbReadScore(id, function(user, score){
+            if (!user) return; // no score for this player
             var
-            maxLevel = G_MA_PARAMS.length,
-            times = score % maxLevel,
-            level = score - (times*maxLevel);
-            cb(user, times, level);
+            level = score ? score - 1 : 0,  // minus 1 to prevent at last level being finish dungeon
+            maxLevel = G_MAP_PARAMS.length;
+
+            cb(user, Floor(level / maxLevel), (level % maxLevel)+1);
         });
     },
     addAllies = function(user, times, score){
         var data = [user.id, user.name, score];
         fbAllies.push(data);
+console.warn('addAllies: '+user.name);
         if (fbAlliesCB) fbAlliesCB([data]);
     };
 
@@ -82,7 +84,8 @@ pico.def('socials', 'piSocials', function(){
     };
 
     me.loadAllies = function(cb){
-        if (fbAllies.length) cb(fbAllies);
+console.warn('loadAllies: '+fbAllies.slice());
+        if (fbAllies.length) cb(fbAllies.slice());
         fbAlliesCB = cb;
     };
 

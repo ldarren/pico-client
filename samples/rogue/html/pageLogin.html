@@ -44,7 +44,7 @@
 .cssBtn:active {top:1px;}
 
 .fb-connect {
-    background:url(css/fb_white_29.png) no-repeat 5px 5px #29447e;
+    background:url(css/fb_white_29.png) no-repeat 5px 5px #3b579d;
     display:none;
     line-height:32px;
     outline:medium none;
@@ -62,7 +62,7 @@
     padding:2px 57px 3px;
     font-family: 'Helvetica Neue',Helvetica,Arial, 'lucida grande',tahoma,verdana,arial,sans-serif;
 }
-.fb-connect:active {background-color:#3b579d;}
+.fb-connect:active {background-color:#29447e;}
 
 .goog-connect {
     background:url(css/goog_white_32.png) no-repeat 4px 3px #dd4b39;
@@ -118,35 +118,35 @@ ul.mainMenu li input[type=text]{
     border: 3px solid #d7e894;
     border-radius: 15px;
     margin:5px auto;
-    padding:5px;
+    padding:5px 0 5px 0;
     display:none;
 }
 .frame div{
     width:200px;
     margin: 10px auto;
 }
-div.fbProfileList{
-    overflow:scroll;
+content.fbProfileList{
 }
-div.fbProfileRow{
+span.fbProfileRow{
+    display:block;
+    min-height:100px;
+    white-space:nowrap;
+    overflow:auto;
 }
 div.fbProfile{
     display:inline-block;
     vertical-align:top;
     width: 90px;
-    height: 100px;
     padding:5px;
 }
 div.fbProfile img{
     display:block;
     margin: 0 auto;
-    padding:5px;
 }
 div.fbProfile span{
     display:block;
-    width: 100%;
     text-align: center;
-    padding:5px;
+    padding:3px;
 }
 </style>
 
@@ -162,7 +162,7 @@ div.fbProfile span{
 </ul>
 
 <div id=ranking class="frame fantasyBg">
-<h4>Game Map</h4>
+<h4>Dungeon Map</h4>
 <content class=fbProfileList></content>
 </div>
 
@@ -221,21 +221,30 @@ fbUpdate = function(){
         list.innerHTML = '';
         var templ = document.querySelector('script#fbProfile').textContent;
         socials.loadAllies(function(friends){
-            var deepest, level, row, profile, friend;
+            var deepest, currLevel, level, row, profile, friend, label;
 
             for(var i=0,l=friends.length; i<l; i++){
                 friend = friends[i];
-                for(deepest = list.children.length || 0, level = friend[2]; deepest < level; deepest++){
-                    row = document.createElement('div');
-                    row.className = 'fbProfileRow fantasyRow';
-                    list.appendChild(row);
+                for(deepest = list.children.length || 0, currLevel = friend[2]; deepest < currLevel; deepest++){
+                    level = document.createElement('span');
+                    level.className = 'fantasyRow';
+
+                    row = document.createElement('span');
+                    row.className = 'fbProfileRow';
+                    level.appendChild(row);
+
+                    label = document.createElement('h5');
+                    label.textContent = 'Level '+(deepest+1);
+                    level.appendChild(label);
+
+                    list.appendChild(level);
                 }
-                row = list.querySelector('div:nth-child('+level+')');
+                row = list.querySelector('span:nth-child('+currLevel+') span');
                 profile = document.createElement('div');
                 profile.className = 'fbProfile';
                 profile.innerHTML = templ
-                    .replace('PROFILE', socials.fbProfile(friend[0], 64))
-                    .replace('NAME', friend[1]);
+                    .replace('PROFILE', socials.fbProfile(friend[0], 42))
+                    .replace('NAME', friend[1].split(' ')[0]);
                 row.appendChild(profile);
             }
         });
