@@ -198,11 +198,16 @@ pico.ajax = function(method, url, params, headers, cb, userData){
     xhr = window.XMLHttpRequest ? new window.XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP'),
     post = 'POST' === (method = method.toUpperCase());
 
-    url = encodeURI(url) + '?appVer='+pico.states.appVer;
+    url = encodeURI(url);
 
-    if (!post && params){
-        url += encodeURIComponent(params);
-        params = null;
+    if (!post){
+        url += '?appVer='+pico.states.appVer;
+        if (params){
+            url += '&';
+            if ('string' === typeof params) url += +encodeURIComponent(params);
+            else url += Object.keys(params).reduce(function(a,k){a.push(k+'='+encodeURIComponent(params[k]));return a},[]).join('&');
+            params = null;
+        }
     }
 
     xhr.open(method, url, true);

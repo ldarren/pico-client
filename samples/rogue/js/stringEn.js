@@ -109,12 +109,14 @@ Object.freeze(G_LEGENDARY_AFFIX = [
 ]);
 Object.freeze(G_ENCHANTED_PREFIX = [
 'Burning','Strong','Heavy','Nimble','Crafty','Sharp','Thin','Grim','Stalwart','Bendy','Balanced','Weak','Grand','Broad','Pointy','Immovable',
-'Disingenuous'
+'Disingenuous','Vamoose','Enamor','Bewitch','Enrapture','psychic'
 ]);
 Object.freeze(G_CHARMED_POSTFIX = [
 'the Phoenix','Strength','Agility','Luck','Health','Precision','Heartseeking','Armor','Defense','Magical Attraction',
 'the Heavy','the Thief','Blades','the Golem','the Ninja','the Lion','the Bounty Hunter','the Loser','the Hermit','Kings',
-'Beleaguer','Ordeal','Anguish','Torment','Nightmare','Agony','Misery','Burden','Torture',
+'Beleaguer','Ordeal','Anguish','Torment','Nightmare','Agony','Misery','Burden','Torture','Heretic','Dread','Callous','Vain','Arduous',
+'Excruciate','Obliterate','Oratory','Deplorer','Unadulterated','Bewilderment','Imminent','Ruin','Despoil','Plunder','Pillage','Sack',
+'Ruin','Waste','Desolation'
 ]);
 Object.freeze(G_EQUIP_NAME = ['Helm', 'Armor', 'Weapon', 'Sheild', 'Ring', 'Ring', 'Amulet', 'Ammo']);
 
