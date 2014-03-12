@@ -3,19 +3,27 @@
 <head>
 <title>pico Socials Admin Tool</title>
 <style>
-content#badge{
+content{
     display:none;
+    padding:20px;
 }
-content#badge input{
+content input{
     width: 100%;
 }
 </style>
 </head>
 <body>
 <div id=fb-root />
-<content id=badge>
+<content id=badgeCreate>
 <input value="http://dungeon-chronicles.com/rogue/html/fbBadge.html"></input>
 <a href=#>Create</a>
+</content>
+<content id=badgeRead>
+<a href=#>Read All</a>
+</content>
+<content id=badgeDelete>
+<input value="http://dungeon-chronicles.com/rogue/html/fbBadge.html"></input>
+<a href=#>Delete</a>
 </content>
 <script src=../lib/pico/pico.js></script>
 <script src=../lib/pico/lib/piSocials.js></script>
@@ -25,23 +33,44 @@ pico.def('fbAdmin', function(){
 
     var
     me = this,
-    badgeContent, badgeUrl,
-    onSubmitBadge = function(evt){
-console.log('creating badge: '+badgeUrl.value);
-        me.piSocials.fbCreateAchievement(badgeUrl.value, function(res){
+    badgeCreate, badgeRead, badgeDelete, badgeCreateUrl, badgeDeleteUrl,
+    onCreateBadge = function(evt){
+        me.piSocials.fbCreateAchievement(badgeCreateUrl.value, function(res){
             console.log('create badge result: '+JSON.stringify(res));
+        });
+    },
+    onReadBadges = function(evt){
+        me.piSocials.fbReadAchievements(function(res){
+            console.log('read badge result: ');
+            console.dir(res);
+        });
+    },
+    onDeleteBadge = function(evt){
+        me.piSocials.fbDeleteAchievement(badgeDeleteUrl.value, function(res){
+            console.log('delete badge result: '+JSON.stringify(res));
         });
     },
     onFacebookUpdate = function(userId){
         me.piSocials.fbAppToken('ceae9710172e21eff23af662380d8747', function(token){
-            if (token) badgeContent.style.display = 'block';
+            if (token) {
+                badgeCreate.style.display = 'block';
+                badgeRead.style.display = 'block';
+                badgeDelete.style.display = 'block';
+            }
         });
     },
     onLoad = function(evt){
-        badgeContent = document.querySelector('content#badge');
-        badgeUrl = badgeContent.querySelector('input');
-        var btn = badgeContent.querySelector('a');
-        btn.addEventListener('click', onSubmitBadge);
+        badgeCreate = document.querySelector('content#badgeCreate');
+        badgeRead = document.querySelector('content#badgeRead');
+        badgeDelete = document.querySelector('content#badgeDelete');
+        badgeCreateUrl = badgeCreate.querySelector('input');
+        badgeDeleteUrl = badgeDelete.querySelector('input');
+        var btn = badgeCreate.querySelector('a');
+        btn.addEventListener('click', onCreateBadge);
+        btn = badgeRead.querySelector('a');
+        btn.addEventListener('click', onReadBadges);
+        btn = badgeDelete.querySelector('a');
+        btn.addEventListener('click', onDeleteBadge);
         me.piSocials.fbInit('515256841901768','//dungeon-chronicles.com/rogue/html/fbChannel.html',onFacebookUpdate);
     };
 
