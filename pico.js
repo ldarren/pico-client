@@ -196,7 +196,8 @@ pico.ajax = function(method, url, params, headers, cb, userData){
     if (!url) return cb(new Error('url not defined'));
     var
     xhr = window.XMLHttpRequest ? new window.XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP'),
-    post = 'POST' === (method = method.toUpperCase());
+    post = 'POST' === (method = method.toUpperCase()),
+    paramIsString = 'string' === typeof params;
 
     url = encodeURI(url);
 
@@ -204,7 +205,7 @@ pico.ajax = function(method, url, params, headers, cb, userData){
         url += '?appVer='+pico.states.appVer;
         if (params){
             url += '&';
-            if ('string' === typeof params) url += +encodeURIComponent(params);
+            if (paramIsString) url += +encodeURIComponent(params);
             else url += Object.keys(params).reduce(function(a,k){a.push(k+'='+encodeURIComponent(params[k]));return a},[]).join('&');
             params = null;
         }
@@ -223,13 +224,13 @@ pico.ajax = function(method, url, params, headers, cb, userData){
     }
     xhr.onerror=function(evt){if (cb) return cb(evt, xhr, userData);}
     
-    if (post) xhr.setRequestHeader('Content-type', 'application/json');
+    if (post && params && !paramIsString) xhr.setRequestHeader('Content-type', 'application/json');
     for (var key in headers){
         xhr.setRequestHeader(key, headers[key]);
     }
 
     if (params){
-        xhr.send('string' === typeof params ? params : JSON.stringify(params));
+        xhr.send(paramIsString ? params : JSON.stringify(params));
     }else{
         xhr.send();
     }
