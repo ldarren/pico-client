@@ -108,7 +108,8 @@ Object.freeze(G_LEGENDARY_AFFIX = [
     ["Negablade's", "Ordeal"]
 ]);
 Object.freeze(G_ENCHANTED_PREFIX = [
-'Burning','Strong','Heavy','Nimble','Crafty','Sharp','Thin','Grim','Stalwart','Bendy','Balanced','Weak','Grand','Broad','Pointy','Immovable'
+'Burning','Strong','Heavy','Nimble','Crafty','Sharp','Thin','Grim','Stalwart','Bendy','Balanced','Weak','Grand','Broad','Pointy','Immovable',
+'Disingenuous'
 ]);
 Object.freeze(G_CHARMED_POSTFIX = [
 'the Phoenix','Strength','Agility','Luck','Health','Precision','Heartseeking','Armor','Defense','Magical Attraction',
@@ -127,11 +128,11 @@ Object.freeze(G_OBJECT_NAME = {
     38: 'Mystic Key',
     39: 'Skeleton Key',
     40: 'Antidot',
-    41: 'Small Healing Potion',
-    42: 'Healing Potion',
+    41: 'Minor Healing Potion',
+    42: 'Greater Healing Potion',
     43: 'Medicinal Potion',
     44: 'Potion of Luck',
-    45: 'Small Healing Potion',
+    45: 'Master Healing Potion',
     46: 'Holy Water',
     47: 'Fire Water',
     48: 'Manuscript',
