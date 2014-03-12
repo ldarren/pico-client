@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>pico Socials Admin Tool</title>
+<style>
+content#badge{
+    display:none;
+}
+content#badge input{
+    width: 100%;
+}
+</style>
+</head>
+<body>
+<div id=fb-root />
+<content id=badge>
+<input value="http://dungeon-chronicles.com/rogue/html/fbBadge.html"></input>
+<a href=#>Create</a>
+</content>
+<script src=../lib/pico/pico.js></script>
+<script src=../lib/pico/lib/piSocials.js></script>
+<script>
+pico.def('fbAdmin', function(){
+    this.use('piSocials');
+
+    var
+    me = this,
+    badgeContent, badgeUrl,
+    onSubmitBadge = function(evt){
+console.log('creating badge: '+badgeUrl.value);
+        me.piSocials.fbCreateAchievement(badgeUrl.value, function(res){
+            console.log('create badge result: '+JSON.stringify(res));
+        });
+    },
+    onFacebookUpdate = function(userId){
+        me.piSocials.fbAppToken('ceae9710172e21eff23af662380d8747', function(token){
+            if (token) badgeContent.style.display = 'block';
+        });
+    },
+    onLoad = function(evt){
+        badgeContent = document.querySelector('content#badge');
+        badgeUrl = badgeContent.querySelector('input');
+        var btn = badgeContent.querySelector('a');
+        btn.addEventListener('click', onSubmitBadge);
+        me.piSocials.fbInit('515256841901768','//dungeon-chronicles.com/rogue/html/fbChannel.html',onFacebookUpdate);
+    };
+
+    me.slot(pico.LOAD, onLoad);
+});
+</script>
+</body>
+</html>
