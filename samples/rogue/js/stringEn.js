@@ -116,7 +116,7 @@ Object.freeze(G_CHARMED_POSTFIX = [
 'the Heavy','the Thief','Blades','the Golem','the Ninja','the Lion','the Bounty Hunter','the Loser','the Hermit','Kings',
 'Beleaguer','Ordeal','Anguish','Torment','Nightmare','Agony','Misery','Burden','Torture','Heretic','Dread','Callous','Vain','Arduous',
 'Excruciate','Obliterate','Oratory','Deplorer','Unadulterated','Bewilderment','Imminent','Ruin','Despoil','Plunder','Pillage','Sack',
-'Ruin','Waste','Desolation'
+'Ruin','Waste','Desolation','Solitary','Deviant','Uncanny'
 ]);
 Object.freeze(G_EQUIP_NAME = ['Helm', 'Armor', 'Weapon', 'Sheild', 'Ring', 'Ring', 'Amulet', 'Ammo']);
 

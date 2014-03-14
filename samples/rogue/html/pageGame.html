@@ -158,7 +158,7 @@ onLoad = function(){
         game.route('stopEffect', [renderer.releaseScreenshot, renderer.draw]);
         game.route('gameStep', [game.step, renderer.draw]);
         game.route('forceRefresh', [uiWindow.update, renderer.draw]);
-        game.route('resize', [camera.resize, uiWindow.resize]);
+        game.route('resize', [camera.resize, uiWindow.resize, uiWindow.update, renderer.draw]);
         game.route('heroMoveTo', [game.heroMoveTo]);
         game.route('heroMove', [game.heroMove, renderer.draw]);
         game.route('heroStop', [game.heroStop, renderer.draw]);

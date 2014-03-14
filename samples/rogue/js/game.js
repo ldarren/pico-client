@@ -630,7 +630,8 @@ pico.def('game', 'pigSqrMap', function(){
         hero.init.call(me, level);
         ai.init.call(me);
 
-        me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);
+        //me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);
+        me.go('forceRefresh');
         return entities;
     };
 
@@ -660,7 +661,8 @@ pico.def('game', 'pigSqrMap', function(){
 
         me.hero.init.call(me, 0);
 
-        me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);
+        //me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);
+        me.go('forceRefresh');
         return entities;
     };
 
