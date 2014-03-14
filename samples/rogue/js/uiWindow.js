@@ -226,8 +226,8 @@ pico.def('uiWindow', 'picUIWindow', function(){
             resizeContent.call(this, ent, com);
         }
 
-        this.pause();
-        window.setTimeout(function(game){game.go('forceRefresh');}, 1000, this);
+        //this.pause();
+        //window.setTimeout(function(game){game.go('forceRefresh');}, 1000, this);
         return entities;
     };
 
