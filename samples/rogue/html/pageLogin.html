@@ -2,6 +2,7 @@
 .cssBtn {
     position:relative;
     box-sizing: border-box;
+    -webkit-box-sizing: border-box;
     -moz-box-shadow:inset 0px 1px 0px 0px #caefab;
     -webkit-box-shadow:inset 0px 1px 0px 0px #caefab;
     box-shadow:inset 0px 1px 0px 0px #caefab;
@@ -47,9 +48,8 @@
 .fb-connect {
     background:url(css/fb_white_29.png) no-repeat 5px 5px #3b579d;
     display:none;
-    line-height:32px;
+    line-height:39px;
     outline:medium none;
-    padding:0 0 0 1px;
     text-decoration:none;
     border-radius: 2px 2px;
 }
@@ -59,8 +59,10 @@
     display:block;
     font-size:14px;
     font-weight:bold;
-    margin:1px 1px 0 38px;
-    padding:2px 58px 3px;
+    margin: 0 0 0 39px;
+    width:161px;
+    text-height:39px;
+    text-align:center;
     font-family: 'Helvetica Neue',Helvetica,Arial, 'lucida grande',tahoma,verdana,arial,sans-serif;
 }
 .fb-connect:active {background-color:#29447e;}
@@ -68,9 +70,8 @@
 .goog-connect {
     background:url(css/goog_white_32.png) no-repeat 4px 3px #dd4b39;
     display:block;
-    line-height:32px;
+    line-height:39px;
     outline:medium none;
-    padding:0 0 0 1px;
     text-decoration:none;
     border-radius: 2px 2px;
 }
@@ -81,8 +82,10 @@
     font-size:14px;
     font-weight:bold;
     border-left: #be3f2b solid 1px;
-    margin:1px 1px 0 38px;
-    padding:2px 54px 3px;
+    margin:0 0 0 39px;
+    width:168px;
+    text-height:39px;
+    text-align:center;
     font-family: 'Helvetica Neue', Helvetica, Arial, 'lucida grande',tahoma,verdana,arial,sans-serif;
 }
 .goog-connect:active {background-color:#c03d28;}
@@ -109,6 +112,7 @@ ul.mainMenu li{
 }
 ul.mainMenu li input[type=text]{
     box-sizing: border-box;
+    -webkit-box-sizing: border-box;
     line-height:30px;
     text-align:center;
     width:100%;
