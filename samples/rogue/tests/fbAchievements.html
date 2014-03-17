@@ -6,6 +6,7 @@
 content{
     display:none;
     padding:20px;
+    border: 1px solid black;
 }
 content input{
     width: 100%;
@@ -13,7 +14,13 @@ content input{
 </style>
 </head>
 <body>
-<div id=fb-root />
+<div id=fb-root></div>
+<content id=fbInfo>
+<input placeholder="Facebook App Id"></input>
+<input placeholder="Facebook App Secret"></input>
+<input placeholder="Facebook App Cache URL"></input>
+<a href=#>Connect</a>
+</content>
 <content id=badgeCreate>
 <input value="http://dungeon-chronicles.com/rogue/html/fbBadge.html"></input>
 <a href=#>Create</a>
@@ -33,7 +40,19 @@ pico.def('fbAdmin', function(){
 
     var
     me = this,
+    appId, appSecret, appCache,
     badgeCreate, badgeRead, badgeDelete, badgeCreateUrl, badgeDeleteUrl,
+    onFBConnect = function(evt){
+        var info = document.querySelector('content#fbInfo');
+        info.style.display = 'block';
+        appId = info.querySelector('input:nth-child(1)').value;
+        appSecret = info.querySelector('input:nth-child(2)').value;
+        appCache = info.querySelector('input:nth-child(3)').value;
+
+        if (!appId || !appSecret) return console.error('Missing appId or app secret');
+
+        me.piSocials.fbInit(appId,appCache,onFacebookUpdate);
+    },
     onCreateBadge = function(evt){
         me.piSocials.fbCreateAchievement(badgeCreateUrl.value, function(res){
             console.log('create badge result: '+JSON.stringify(res));
@@ -51,7 +70,7 @@ pico.def('fbAdmin', function(){
         });
     },
     onFacebookUpdate = function(userId){
-        me.piSocials.fbAppToken('ceae9710172e21eff23af662380d8747', function(token){
+        me.piSocials.fbAppToken(appSecret, function(token){
             if (token) {
                 badgeCreate.style.display = 'block';
                 badgeRead.style.display = 'block';
@@ -60,18 +79,23 @@ pico.def('fbAdmin', function(){
         });
     },
     onLoad = function(evt){
+        var info = document.querySelector('content#fbInfo');
+        info.style.display = 'block';
+        var btn = info.querySelector('a');
+        btn.addEventListener('click', onFBConnect);
+
         badgeCreate = document.querySelector('content#badgeCreate');
         badgeRead = document.querySelector('content#badgeRead');
         badgeDelete = document.querySelector('content#badgeDelete');
         badgeCreateUrl = badgeCreate.querySelector('input');
         badgeDeleteUrl = badgeDelete.querySelector('input');
-        var btn = badgeCreate.querySelector('a');
+
+        btn = badgeCreate.querySelector('a');
         btn.addEventListener('click', onCreateBadge);
         btn = badgeRead.querySelector('a');
         btn.addEventListener('click', onReadBadges);
         btn = badgeDelete.querySelector('a');
         btn.addEventListener('click', onDeleteBadge);
-        me.piSocials.fbInit('515256841901768','//dungeon-chronicles.com/rogue/html/fbChannel.html',onFacebookUpdate);
     };
 
     me.slot(pico.LOAD, onLoad);
