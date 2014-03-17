@@ -109,7 +109,7 @@ Object.freeze(G_LEGENDARY_AFFIX = [
 ]);
 Object.freeze(G_ENCHANTED_PREFIX = [
 'Burning','Strong','Heavy','Nimble','Crafty','Sharp','Thin','Grim','Stalwart','Bendy','Balanced','Weak','Grand','Broad','Pointy','Immovable',
-'Disingenuous','Vamoose','Enamor','Bewitch','Enrapture','psychic'
+'Disingenuous','Vamoose','Enamor','Bewitch','Enrapture','psychic', 'Fabled'
 ]);
 Object.freeze(G_CHARMED_POSTFIX = [
 'the Phoenix','Strength','Agility','Luck','Health','Precision','Heartseeking','Armor','Defense','Magical Attraction',
