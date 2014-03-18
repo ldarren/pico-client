@@ -6,7 +6,7 @@ pico.def('socials', 'piSocials', function(){
     fbNewbees = [],
     fbNPCs = [],
     fbAlliesCB,
-    fbBadgeTarget={
+    fbMedalTarget={
         beast: [0, 50,500,5000],
         burn: [0, 50,500,5000],
         cast: [0, 50,500,5000],
@@ -51,12 +51,13 @@ pico.def('socials', 'piSocials', function(){
 console.warn('addAllies: '+user.name);
         if (fbAlliesCB) fbAlliesCB([data]);
     },
-    accomplished = function(badgeId, count){
+    accomplished = function(medalId, count){
     };
 
     me.use('god');
 
     me.loadNPCs = function(cb){
+        fbAllies.length = 0;
         fbNPCs.length = 0;
         readLevel('me', addAllies);
         me.fbReadRequests(1000, function(requests){
@@ -117,7 +118,7 @@ console.warn('addAllies: '+user.name);
     };
 
     me.loadAllies = function(cb){
-console.warn('loadAllies: '+fbAllies.slice());
+console.warn('loadAllies: '+JSON.stringify(fbAllies));
         if (fbAllies.length) cb(fbAllies.slice());
         fbAlliesCB = cb;
     };

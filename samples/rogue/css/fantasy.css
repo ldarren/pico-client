@@ -17,6 +17,11 @@ body{
     color:#aec440;
     background-color:#204631;
 }
+
+h3{
+    text-align:center;
+    line-height:70px;
+}
 .fantasyBtn {
     position:relative;
     box-sizing: border-box;

@@ -55,7 +55,7 @@ pico.prototype.link = function(name, url){
 };
 
 pico.def = function(name){
-    if (this.modules[name]) return console.warn('Module name in used:', name);
+    if (this.modules[name]) console.warn('Replacing module: '+name);
     var module, ancestor, factory;
 
     if (3 === arguments.length){
@@ -79,7 +79,7 @@ pico.def = function(name){
     }
     // each pico object has their own slots and dependencies
 
-    factory.call(module);
+    factory.call(module, module); // this, me
     return this.modules[name] = module;
 };
 pico.getModule = function(key){
@@ -174,7 +174,7 @@ pico.embedJS = function(scripts, cb){
     try{
         var func = new Function('module', script.textContent || script.innerText); // secure this operation
     }catch(exp){
-        console.error('Syntax Error at script: ',script.getAttribute('name'));
+        console.error('Syntax Error at script: '+script.getAttribute('name'));
         return pico.embedJS(scripts, cb);
     }
 
@@ -338,7 +338,7 @@ pico.changeFrame = function(holder, query, url, effects){
         vl = value.length;
         if (vl < 3) {
             frame.removeEventListener(te, onTransitEnd);
-            return console.error('invalid effect:',value);
+            return console.error('invalid effect:'+value);
         }
         style[key] = value[0];
         properties.push(key);

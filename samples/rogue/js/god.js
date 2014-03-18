@@ -350,8 +350,8 @@ pico.def('god', 'picUIContent', function(){
     me.incrBagCap = function(){ heroBagCap = 16; };
     me.getTomeCap = function(){ return heroTomeCap; };
     me.incrTomeCap = function(){ heroTomeCap = 12; };
-    me.getProgress = function(badge){ return heroProgress[badge] || 0; };
-    me.incrProgress = function(badge, incr){ return heroProgress[badge] = (heroProgress[badge] || 0) + incr; };
+    me.getProgress = function(medalId){ return heroProgress[medalId] || 0; };
+    me.incrProgress = function(medalId, incr){ return heroProgress[medalId] = (heroProgress[medalId] || 0) + incr; };
 
     me.toHeaven = function(appearance, stats){
         appearance[HERO_ENEMIES] = [];
