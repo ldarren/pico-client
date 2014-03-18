@@ -1,53 +1,7 @@
 <style>
-.cssBtn {
-    position:relative;
-    box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    -moz-box-shadow:inset 0px 1px 0px 0px #caefab;
-    -webkit-box-shadow:inset 0px 1px 0px 0px #caefab;
-    box-shadow:inset 0px 1px 0px 0px #caefab;
-    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #77d42a), color-stop(1, #5cb811) );
-    background:-moz-linear-gradient( center top, #77d42a 5%, #5cb811 100% );
-    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#77d42a', endColorstr='#5cb811');
-    background-color:#77d42a;
-    -webkit-border-top-left-radius:0px;
-    -moz-border-radius-topleft:0px;
-    border-top-left-radius:0px;
-    -webkit-border-top-right-radius:0px;
-    -moz-border-radius-topright:0px;
-    border-top-right-radius:0px;
-    -webkit-border-bottom-right-radius:0px;
-    -moz-border-radius-bottomright:0px;
-    border-bottom-right-radius:0px;
-    -webkit-border-bottom-left-radius:0px;
-    -moz-border-radius-bottomleft:0px;
-    border-bottom-left-radius:0px;
-    text-indent:0;
-    border:1px solid #268a16;
-    display:inline-block;
-    color:#306108;
-    font-family:alagard, Arial;
-    font-size:15px;
-    font-weight:normal;
-    font-style:normal;
-    height:40px;
-    line-height:40px;
-    width:200px;
-    text-decoration:none;
-    text-align:center;
-    text-shadow:1px 1px 0px #aade7c;
-}
-.cssBtn:hover {
-    background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #5cb811), color-stop(1, #77d42a) );
-    background:-moz-linear-gradient( center top, #5cb811 5%, #77d42a 100% );
-    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#5cb811', endColorstr='#77d42a');
-    background-color:#5cb811;
-}
-.cssBtn:active {top:1px;}
-
 .fb-connect {
     background:url(css/fb_white_29.png) no-repeat 5px 5px #3b579d;
-    display:none;
+    display:block;
     line-height:39px;
     outline:medium none;
     text-decoration:none;
@@ -96,28 +50,10 @@ h3{
     text-align:center;
     line-height:50px;
 }
-h4{
-    margin: 0 auto 10px auto;
-    text-align:center;
-    line-height:20px;
-}
-ul.mainMenu{
-    width:200px;
-    margin: 10px auto;
-}
-ul.mainMenu li{
-    display: block;
-    list-style: none;
-    margin: 10px auto;
-}
-ul.mainMenu li input[type=text]{
-    box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    line-height:30px;
-    text-align:center;
-    width:100%;
-    height:30px;
-}
+
+.hidden{ display:none;}
+.shown{ display:block;}
+
 .frame{
     max-width: 512px;
     color:#aec440;
@@ -125,75 +61,54 @@ ul.mainMenu li input[type=text]{
     border-radius: 15px;
     margin:5px auto;
     padding:5px 0 5px 0;
-    display:none;
+    display:block;
+}
+.frame h4{
+    margin: 0 auto 10px auto;
+    text-align:center;
+    line-height:20px;
 }
 .frame div{
     width:200px;
     margin: 10px auto;
 }
-content.fbProfileList{
+.frame input[type=text]{
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    line-height:30px;
+    text-align:center;
+    width:100%;
+    height:30px;
 }
-span.fbProfileRow{
-    display:block;
-    min-height:100px;
-    white-space:nowrap;
-    overflow:auto;
-}
-div.fbProfile{
-    display:inline-block;
-    vertical-align:top;
-    width: 90px;
-    padding:5px;
-}
-div.fbProfile img{
-    display:block;
-    margin: 0 auto;
-}
-div.fbProfile span{
-    display:block;
-    text-align: center;
-    padding:3px;
+.frame input[type=checkbox]{
+    margin: 0 5px 0 0;
 }
 </style>
 
-<div id=fb-root></div>
-
 <h3>Dungeon Chronicles</h3>
 
-<ul class=mainMenu>
-<li><a href=# class=cssBtn>Connecting...</a></li>
-<li><a href=# class=fb-connect><span>Log In</span></a></li>
-<li><input type=text placeholder="Hero Name: Nameless"></input></li>
-<li><input type=checkbox>Silence</input></li>
-</ul>
-
-<div id=ranking class="frame fantasyBg">
-<h4>Dungeon Map</h4>
-<content class=fbProfileList></content>
+<div id=gameInfo class=frame>
+<h4>Game Info</h4>
+<div><a href=# class="fantasyBtn">Connecting...</a></div>
+<div><a href=# class="fb-connect hidden"><span>Log In</span></a></div>
+<div><input class="hidden" type=text placeholder="Hero Name: Nameless"></input></div>
+<div><input type=checkbox>Silence</input></div>
+<div><a href=# class="fantasyBtn hidden">Dungeon Map</a></div>
+<div><a href=# class="fantasyBtn hidden">Achievements</a></div>
 </div>
 
-<div id=badges class=frame>
-<h4>Achievements</h4>
-<span></span>
-</div>
-
-<div id=deviceSync class=frame>
+<div id=cloudSave class="frame hidden">
 <h4>Cloud Save</h4>
 <div><a href=# class=goog-connect><span>Sign In</span></a></div>
 </div>
 
-<script id=fbBadge type=text/templ>
-<img src="https://graph.facebook.com/USER_ID/picture">
-<span>NAME</span>
-</script>
-
-<script id=fbScoreRow type=text/templ>
-</script>
-
-<script id=fbProfile type=text/templ>
-<img src=PROFILE>
-<span>NAME</span>
-</script>
+<div id=encyclopedia class=frame>
+<h4>Encyclopedia</h4>
+<div><a href=# class=fantasyBtn>Heros</a></div>
+<div><a href=# class=fantasyBtn>Creeps</a></div>
+<div><a href=# class=fantasyBtn>Spells</a></div>
+<div><a href=# class=fantasyBtn>Status Effects</a></div>
+</div>
 
 <script name=loginPage>
 this.use('rogueMain');
@@ -203,7 +118,7 @@ this.use('game');
 
 var
 me = this,
-playBtn, fbBtn, gpBtn, nameTextbox, 
+playBtn, fbBtn, gpBtn, nameTextbox, audioSwitch, mapBtn, badgesBtn,
 onPlay = function(){
     me.piHTMLAudio.preload();
     me.rogueMain.showLoading();
@@ -213,14 +128,12 @@ onPlay = function(){
 onLogin = function(evt){
     me.socials.fbLogin({scope:'publish_actions,user_games_activity'});
 },
+onSwitchAudio = function(evt){
+    me.piHTMLAudio.volume(audioSwitch.checked ? 0 : 1);
+},
 fbUpdate = function(){
-    var
-    socials = me.socials,
-    frames = document.getElementsByClassName('frame');
+    var socials = me.socials;
 
-    for (var i=0,l=frames.length; i<l; i++){
-        frames[i].style.display = 'block';
-    }
     socials.loadNPCs(function(npcs){
         var list = document.querySelector('content.fbProfileList');
         if (!list) return;
@@ -259,22 +172,32 @@ fbUpdate = function(){
 onFacebookUpdate = function(userId){
     fbBtn.removeEventListener('click', onLogin);
     playBtn.removeEventListener('click', onPlay);
+    var cloudSave = document.querySelector('div#cloudSave');
     if (userId){
-        fbBtn.style.display = 'none';
-        playBtn.style.display = 'block';
+        fbBtn.className = 'hidden';
+        playBtn.className = 'fantasyBtn';
         playBtn.textContent = 'Begin';
+        nameTextbox.removeAttribute('class');
+        cloudSave.className = 'frame';
         fbUpdate();
         playBtn.addEventListener('click', onPlay, false);
     }else{
-        playBtn.style.display = 'none';
-        fbBtn.style.display = 'inline-block';
+        playBtn.className = 'hidden';
+        fbBtn.className = 'fb-connect';
+        nameTextbox.className = 'hidden';
+        cloudSave.className = 'hidden';
         fbBtn.addEventListener('click', onLogin, false);
     }
 },
 onLoad = function(){
-    playBtn = document.querySelector('ul.mainMenu li:nth-child(1) a');
-    fbBtn = document.querySelector('ul.mainMenu li:nth-child(2) a');
-    nameTextbox = document.querySelector('ul.mainMenu li:nth-child(3) input');
+    debugger;
+    var gameInfo = document.querySelector('div#gameInfo');
+    playBtn = gameInfo.querySelector('div:nth-of-type(1) a');
+    fbBtn = gameInfo.querySelector('div:nth-of-type(2) a');
+    nameTextbox = gameInfo.querySelector('div:nth-of-type(3) input');
+    audioSwitch = gameInfo.querySelector('div:nth-of-type(4) input');
+    mapBtn = gameInfo.querySelector('div:nth-of-type(5) a');
+    badgesBtn = gameInfo.querySelector('div:nth-of-type(6) a');
 
     var name = me.game.load();
     if (name){
@@ -282,6 +205,7 @@ onLoad = function(){
     }
 
     me.piHTMLAudio.create('dat/fantasy-sfx.json', function(err, audioSprite){
+        audioSwitch.addEventListener('click', onSwitchAudio, false);
         me.socials.fbInit(
             '515256841901768', 
             'Phonegap' === pico.states.browser ? CDV.FB : '//dungeon-chronicles.com/rogue/html/fbChannel.html',
