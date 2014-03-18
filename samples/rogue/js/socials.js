@@ -6,6 +6,35 @@ pico.def('socials', 'piSocials', function(){
     fbNewbees = [],
     fbNPCs = [],
     fbAlliesCB,
+    fbBadgeTarget={
+        beast: [0, 50,500,5000],
+        burn: [0, 50,500,5000],
+        cast: [0, 50,500,5000],
+        charm: [0, 50,500,5000],
+        chest: [0, 50,500,5000],
+        common: [0, 50,500,5000],
+        curse: [0, 50,500,5000],
+        def: [0, 50,500,5000],
+        demon: [0, 50,500,5000],
+        disease: [0, 50,500,5000],
+        drink: [0, 50,500,5000],
+        enchant: [0, 50,500,5000],
+        fall: [0, 50,500,5000],
+        fear: [0, 50,500,5000],
+        frozen: [0, 50,500,5000],
+        gold: [0, 50,500,5000],
+        insect: [0, 50,500,5000],
+        learn: [0, 50,500,5000],
+        legendary: [0, 50,500,5000],
+        patk: [0, 50,500,5000],
+        piety: [0, 50,500,5000],
+        plant: [0, 50,500,5000],
+        poison: [0, 50,500,5000],
+        ratk: [0, 50,500,5000],
+        undead: [0, 50,500,5000],
+        will: [0, 50,500,5000],
+        won: [0, 50,500,5000],
+    },
     readLevel = function(id, cb){
         me.fbReadScore(id, function(user, score){
             if (!user) return; // no score for this player
@@ -21,7 +50,11 @@ pico.def('socials', 'piSocials', function(){
         fbAllies.push(data);
 console.warn('addAllies: '+user.name);
         if (fbAlliesCB) fbAlliesCB([data]);
+    },
+    accomplished = function(badgeId, count){
     };
+
+    me.use('god');
 
     me.loadNPCs = function(cb){
         fbNPCs.length = 0;
@@ -117,5 +150,64 @@ console.warn('loadAllies: '+fbAllies.slice());
         readLevel('me', function(user, times, score){
             me.fbWriteScore((times*G_MAP_PARAMS.length) + level);
         });
+    };
+
+    me.castSpell = function(elapsed, evt, entities){
+        /*cast: [0, 50,500,5000],
+        burn: [0, 50,500,5000],
+        curse: [0, 50,500,5000],
+        disease: [0, 50,500,5000],
+        fear: [0, 50,500,5000],
+        frozen: [0, 50,500,5000],
+        poison: [0, 50,500,5000],*/
+        return entities;
+    };
+
+    me.chantScroll = function(elapsed, evt, entities){
+        // learn: [0, 50,500,5000],
+        return entities;
+    };
+
+    me.lootItem = function(elapsed, evt, entities){
+        /*chest: [0, 50,500,5000],
+        common: [0, 50,500,5000],
+        charm: [0, 50,500,5000],
+        enchant: [0, 50,500,5000],
+        legendary: [0, 50,500,5000],*/
+        return entities;
+    };
+
+    me.attack = function(elapsed, evt, entities){
+        /*patk: [0, 50,500,5000],
+        ratk: [0, 50,500,5000],
+        will: [0, 50,500,5000],
+        beast: [0, 50,500,5000],
+        demon: [0, 50,500,5000],
+        insect: [0, 50,500,5000],
+        plant: [0, 50,500,5000],
+        undead: [0, 50,500,5000],*/
+        return entities;
+    };
+
+    me.counter = function(elapsed, evt, entities){
+        //def: [0, 50,500,5000],
+        return entities;
+    };
+
+    me.sellItem = function(elapsed, evt, entities){
+        //gold: [0, 50,500,5000],
+        //piety: [0, 50,500,5000],
+        return entities;
+    };
+
+    me.useItem = function(elapsed, evt, entities){
+        //drink: [0, 50,500,5000],
+        return entities;
+    };
+
+    me.resetWorld = function(elapsed, evt, entities){
+        //fall: [0, 50,500,5000],
+        //won: [0, 50,500,5000],
+        return entities;
     };
 });

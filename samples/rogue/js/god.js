@@ -17,7 +17,7 @@ pico.def('god', 'picUIContent', function(){
     labels = [G_LABEL.OFFER, G_LABEL.TITHE, G_LABEL.CLOSE],
     isAltarOpened = false,
     callback,
-    heroBody, heroName, heroPiety, heroBagCap=8, heroTomeCap=8,
+    heroBody, heroName, heroPiety, heroBagCap=8, heroTomeCap=8,heroProgress={},
     onCustomBound = function(ent, rect, ui, scale){
         switch(ui.userData.id){
         case 'donate':
@@ -219,13 +219,14 @@ pico.def('god', 'picUIContent', function(){
     me.init = function(name){
         var h = this.heaven;
         if (!h){
-            h = [null, name, 1000, heroBagCap, heroTomeCap];
+            h = [null, name, 1000, heroBagCap, heroTomeCap, heroProgress];
         }
         heroBody = h[GOD_BODY];
         heroName = name || h[GOD_NAME]; // always get new from loginPage
         heroPiety = h[GOD_PIETY];
         heroBagCap = h[GOD_BAG_CAP];
         heroTomeCap = h[GOD_TOME_CAP];
+        heroProgress = h[GOD_PROGRESS];
         return h;
     };
 
@@ -349,6 +350,8 @@ pico.def('god', 'picUIContent', function(){
     me.incrBagCap = function(){ heroBagCap = 16; };
     me.getTomeCap = function(){ return heroTomeCap; };
     me.incrTomeCap = function(){ heroTomeCap = 12; };
+    me.getProgress = function(badge){ return heroProgress[badge] || 0; };
+    me.incrProgress = function(badge, incr){ return heroProgress[badge] = (heroProgress[badge] || 0) + incr; };
 
     me.toHeaven = function(appearance, stats){
         appearance[HERO_ENEMIES] = [];
