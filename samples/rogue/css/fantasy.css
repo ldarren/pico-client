@@ -59,13 +59,12 @@ div#page{height:100%;}
     background-color:#5cb811;
 }
 .fantasyBtn:active {top:1px;}
-.fantasyHead{
-    background: #204631 url(caveHead.png) repeat-x scroll -128px 0;
+.pageHead{
     width:100%;
     line-height:64px;
     font-size:28px;
 }
-.fantasyHead a{
+.pageHead a{
     display: block;
     float:left;
     width: 64px;
@@ -74,10 +73,10 @@ div#page{height:100%;}
     color:#aec440;
     text-decoration:none;
 }
-.fantasyHead a:active{
+.pageHead a:active{
     padding:5px 0 0 0;
 }
-.fantasyHead span{
+.pageHead span{
     display: block;
     line-height:64px;
     text-align:center;
@@ -85,6 +84,11 @@ div#page{height:100%;}
     text-decoration:none;
 }
 
+.fantasyHead{
+    background: #204631 url(caveHead.png) repeat-x scroll -128px 0;
+    width:100%;
+    line-height:64px;
+}
 .fantasyBg{
     background: #204631 url(caveBg.png) repeat scroll 0 0;
     min-height:100%;

@@ -21,15 +21,15 @@ content input{
 <input placeholder="Facebook App Cache URL"></input>
 <a href=#>Connect</a>
 </content>
-<content id=badgeCreate>
-<input value="http://dungeon-chronicles.com/rogue/html/fbBadge.html"></input>
+<content id=medalCreate>
+<input value="http://dungeon-chronicles.com/rogue/html/medals/.html"></input>
 <a href=#>Create</a>
 </content>
-<content id=badgeRead>
+<content id=medalRead>
 <a href=#>Read All</a>
 </content>
-<content id=badgeDelete>
-<input value="http://dungeon-chronicles.com/rogue/html/fbBadge.html"></input>
+<content id=medalDelete>
+<input value="http://dungeon-chronicles.com/rogue/html/medals/.html"></input>
 <a href=#>Delete</a>
 </content>
 <script src=../lib/pico/pico.js></script>
@@ -41,7 +41,7 @@ pico.def('fbAdmin', function(){
     var
     me = this,
     appId, appSecret, appCache,
-    badgeCreate, badgeRead, badgeDelete, badgeCreateUrl, badgeDeleteUrl,
+    medalCreate, medalRead, medalDelete, medalCreateUrl, medalDeleteUrl,
     onFBConnect = function(evt){
         var info = document.querySelector('content#fbInfo');
         info.style.display = 'block';
@@ -54,27 +54,27 @@ pico.def('fbAdmin', function(){
         me.piSocials.fbInit(appId,appCache,onFacebookUpdate);
     },
     onCreateBadge = function(evt){
-        me.piSocials.fbCreateAchievement(badgeCreateUrl.value, function(res){
-            console.log('create badge result: '+JSON.stringify(res));
+        me.piSocials.fbCreateAchievement(medalCreateUrl.value, function(res){
+            console.log('create medal result: '+JSON.stringify(res));
         });
     },
     onReadBadges = function(evt){
         me.piSocials.fbReadAchievements(function(res){
-            console.log('read badge result: ');
+            console.log('read medal result: ');
             console.dir(res);
         });
     },
     onDeleteBadge = function(evt){
-        me.piSocials.fbDeleteAchievement(badgeDeleteUrl.value, function(res){
-            console.log('delete badge result: '+JSON.stringify(res));
+        me.piSocials.fbDeleteAchievement(medalDeleteUrl.value, function(res){
+            console.log('delete medal result: '+JSON.stringify(res));
         });
     },
     onFacebookUpdate = function(userId){
         me.piSocials.fbAppToken(appSecret, function(token){
             if (token) {
-                badgeCreate.style.display = 'block';
-                badgeRead.style.display = 'block';
-                badgeDelete.style.display = 'block';
+                medalCreate.style.display = 'block';
+                medalRead.style.display = 'block';
+                medalDelete.style.display = 'block';
             }
         });
     },
@@ -84,17 +84,17 @@ pico.def('fbAdmin', function(){
         var btn = info.querySelector('a');
         btn.addEventListener('click', onFBConnect);
 
-        badgeCreate = document.querySelector('content#badgeCreate');
-        badgeRead = document.querySelector('content#badgeRead');
-        badgeDelete = document.querySelector('content#badgeDelete');
-        badgeCreateUrl = badgeCreate.querySelector('input');
-        badgeDeleteUrl = badgeDelete.querySelector('input');
+        medalCreate = document.querySelector('content#medalCreate');
+        medalRead = document.querySelector('content#medalRead');
+        medalDelete = document.querySelector('content#medalDelete');
+        medalCreateUrl = medalCreate.querySelector('input');
+        medalDeleteUrl = medalDelete.querySelector('input');
 
-        btn = badgeCreate.querySelector('a');
+        btn = medalCreate.querySelector('a');
         btn.addEventListener('click', onCreateBadge);
-        btn = badgeRead.querySelector('a');
+        btn = medalRead.querySelector('a');
         btn.addEventListener('click', onReadBadges);
-        btn = badgeDelete.querySelector('a');
+        btn = medalDelete.querySelector('a');
         btn.addEventListener('click', onDeleteBadge);
     };
 

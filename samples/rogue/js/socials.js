@@ -6,6 +6,7 @@ pico.def('socials', 'piSocials', function(){
     fbNewbees = [],
     fbNPCs = [],
     fbAlliesCB,
+    fbMedals={},
     fbMedalTarget={
         beast: [0, 50,500,5000],
         burn: [0, 50,500,5000],
@@ -150,6 +151,12 @@ console.warn('loadAllies: '+JSON.stringify(fbAllies));
     me.updateLevel = function(level){
         readLevel('me', function(user, times, score){
             me.fbWriteScore((times*G_MAP_PARAMS.length) + level);
+        });
+    };
+
+    me.readMedals = function(id, cb){
+        me.fbReadAchievements(id, function(res){
+            cb(res);
         });
     };
 
