@@ -21,9 +21,12 @@ div.fbProfile span{
     padding:3px;
 }
 </style>
+<div class=fantasyHead>
+<a href=#>&lt;&lt;</a>
+<span>Dungeon Map</span>
+</div>
 
 <div id=ranking class="fantasyBg">
-<a href=# class="fantasyBtn">&lt;&lt; Dungeon Map</a>
 <content class=fbProfileList></content>
 </div>
 
@@ -42,7 +45,7 @@ onLoad = function(){
     var 
     socials = me.socials,
     list = document.querySelector('content.fbProfileList'),
-    backBtn = document.querySelector('div#ranking a');
+    backBtn = document.querySelector('div.fantasyHead a');
 
     if (!list) return;
 
