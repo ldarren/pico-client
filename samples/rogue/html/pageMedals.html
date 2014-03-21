@@ -22,6 +22,7 @@
 .medal h4{
 }
 .medal p{
+    padding: 5px 0;
 }
 .medal span:nth-of-type(1){
     display:block;
@@ -40,7 +41,7 @@
 </div>
 
 <script id=medalTempl type=text/templ>
-<img src="dat/img/medals/ID.png" width=SIZE>
+<img src="dat/img/medals/ID.png">
 <div>
 <h4>NAME</h4>
 <p>DESC</p>
@@ -67,7 +68,6 @@ onLoad = function(){
     backBtn = document.querySelector('div.pageHead a'),
     medalCont = document.querySelector('div#medals'),
     templ = document.querySelector('script#medalTempl').textContent,
-    size = window.innerWidth > 800 ? 128 : 64,
     medalId,medalEle;
 
     backBtn.addEventListener('click', onBack);
@@ -80,12 +80,11 @@ onLoad = function(){
         medalEle.className = 'medal';
         medalEle.innerHTML = templ
                                 .replace('ID', medalId)
-                                .replace('SIZE', size)
                                 .replace('NAME', G_MEDAL_GRADE[0] + G_MEDAL_NAME[medalId])
                                 .replace('DESC', G_MEDAL_DESC[medalId])
                                 .replace('CURR', '9999')
-                                .replace('TOTAL', '9999')
-                                .replace('REWARD', '1 Piety point');
+                                .replace('TOTAL', '99999')
+                                .replace('REWARD', '9999 Piety point');
         medalCont.appendChild(medalEle);
     }
 

@@ -1,13 +1,13 @@
 <div class=pageHead>
 <a href=#>&lt;&lt;</a>
-<span>Status Effects</span>
+<span>Skills</span>
 </div>
 
-<div id=effects>
+<div id=skills>
 </div>
 
-<script id=effectTempl type=text/templ>
-<img src="dat/img/effects/ID.png" width=SIZE>
+<script id=skillTempl type=text/templ>
+<img src="dat/img/skills/ID.png" width=SIZE>
 <div>
 <h4>NAME</h4>
 <p>DESC</p>
@@ -16,7 +16,7 @@
 </div>
 </script>
 
-<script name=effectsPage>
+<script name=skillsPage>
 var
 me = this,
 onBack = function(evt){
@@ -25,8 +25,8 @@ onBack = function(evt){
 onLoad = function(){
     var 
     backBtn = document.querySelector('div.pageHead a'),
-    list = document.querySelector('div#effects'),
-    templ = document.querySelector('script#effectTempl').textContent,
+    list = document.querySelector('div#skills'),
+    templ = document.querySelector('script#skillTempl').textContent,
     id,ele;
 
     backBtn.addEventListener('click', onBack);
