@@ -21,6 +21,7 @@ pico.def('socials', 'piSocials', function(){
         drink: [0, 50,500,5000],
         enchant: [0, 50,500,5000],
         fall: [0, 50,500,5000],
+        fame: [0, 5, 500, 5000],
         fear: [0, 50,500,5000],
         frozen: [0, 50,500,5000],
         gold: [0, 50,500,5000],
