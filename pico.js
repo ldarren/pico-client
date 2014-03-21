@@ -540,4 +540,5 @@ window.addEventListener('hashchange', function(evt){
           }
       }
   }
+  console.log('pico states: '+JSON.stringify(states));
 })(pico.states);

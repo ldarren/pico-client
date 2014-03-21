@@ -116,7 +116,14 @@ onLoad = function(){
     renderer.registerContext('viewPane', gameLayer.getContext());
     renderer.registerContext('efxPane', efxLayer.getContext());
     renderer.registerContext('uiPane', uiLayer.getContext());
-    renderer.setBG('viewPane', G_COLOR_TONE[2]);
+    if ('Chrome' !== pico.states.browser){
+        // stock android browser shows ghost image if refresh with clearRect, which is the best way
+        // curse u whoever created this bug and refuse to solve it over so many android versions
+        console.log('set clearHack');
+        renderer.setBG('viewPane', 'transparent', game.clearHack);
+        renderer.setBG('efxPane', 'transparent', game.clearHack);
+        renderer.setBG('uiPane', 'transparent', game.clearHack);
+    }
 
     reactor.addGroup(game);
 

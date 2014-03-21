@@ -185,7 +185,7 @@ pico.def('effect', 'picBase', function(){
 
         this.lockInputs();
             
-        me.picRenderer.setBG('efxPane', 'transparent', function(){});
+        me.picRenderer.setBG('efxPane', 'transparent', this.clearNone);
 
         me[TWEENER].slot('stop', effectEnd);
         this.startLoop('doEffect', evt);
@@ -194,7 +194,8 @@ pico.def('effect', 'picBase', function(){
     };
 
     me.clear = function(elapsed, evt, entities){
-        me.picRenderer.setBG('efxPane');
+        if ('Chrome' === pico.states.browser) me.picRenderer.setBG('efxPane');
+        else me.picRenderer.setBG('efxPane', 'transparent', this.clearHack);
         return entities;
     };
 

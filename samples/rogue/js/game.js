@@ -933,4 +933,10 @@ pico.def('game', 'pigSqrMap', function(){
         this.go(('camera' === entities[0].name) ? 'moveCameraEnd' : 'scrollWinEnd', evt);
         this.go('forceRefresh');
     };
+
+    me.clearNone = function(){};
+    me.clearHack = function(){
+        console.log('clearHack');
+        this.canvas.width = this.canvas.width;
+    };
 });
