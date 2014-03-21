@@ -138,11 +138,9 @@ fbUpdate = function(){
         socials.loadAllies(function(friends){
             mapBtn.className = 'fantasyBtn';
             mapBtn.addEventListener('click', onShowMap, false);
-            socials.readMedals('me', function(medals){
-                console.dir(medals);
-                medalBtn.className = 'fantasyBtn';
-                medalBtn.addEventListener('click', onShowMedals, false);
-            });
+
+            medalBtn.className = 'fantasyBtn';
+            medalBtn.addEventListener('click', onShowMedals, false);
         });
     });
 },

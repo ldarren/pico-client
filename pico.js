@@ -258,16 +258,7 @@ pico.detectEvent = function(eventName, tagName){
     return isSupported;
 };
 pico.onStateChange = function(evt){
-    var
-    search = location.search.substring(1), // remove leading ?
-    pairs = search.split("&"),
-    pair, obj={};
-    for (var i=0, l=pairs.length; i<l; i++){
-        pair = pairs[i].split("=");
-        if (!pair[0]) continue;
-        obj[pair[0]] = pair[1];
-    }
-    pico.signal(pico.STATE_CHANGE, [obj, evt.state]);
+    pico.signal(pico.STATE_CHANGE, [pico.getState(), evt.state]);
 };
 pico.changeState = function(uri, desc, userData){
     var search = '?';
@@ -281,11 +272,23 @@ pico.changeState = function(uri, desc, userData){
         this.onStateChange({});
     }
 };
+pico.getState = function(){
+    var
+    search = location.search.substring(1), // remove leading ?
+    pairs = search.split('&'),
+    pair, obj={};
+    for (var i=0, l=pairs.length; i<l; i++){
+        pair = pairs[i].split('=');
+        if (!pair[0]) continue;
+        obj[pair[0]] = pair[1];
+    }
+    return obj;
+};
 pico.onHashChange = function(evt){
     var newHash='', oldHash='';
-    if (evt.oldURL) oldHash = evt.oldURL.split('#')[1] || '';
-    if (evt.newURL) newHash = evt.newURL.split('#')[1] || '';
-    else newHash = window.location.hash.split('#')[1] || '';
+    if (evt.oldURL) oldHash = evt.oldURL.substring(1) || '';
+    if (evt.newURL) newHash = evt.newURL.substring(1) || '';
+    else newHash = window.location.hash.substring(1) || '';
 
     pico.signal(pico.HASH_CHANGE, [oldHash, newHash]);
 };

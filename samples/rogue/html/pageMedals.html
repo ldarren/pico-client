@@ -4,20 +4,30 @@
 }
 .medal{
     background:#204631;
+    border-top:#527f39 5px solid;
 }
 .medal img{
     display:inline-block;
     padding:5px;
+    vertical-align:top;
+    max-width:128px;
+    width:20%;
 }
 .medal div{
     display:inline-block;
     padding:5px;
+    vertical-align:top;
+    width:70%;
 }
 .medal h4{
 }
 .medal p{
 }
-.medal span{
+.medal span:nth-of-type(1){
+    display:block;
+}
+.medal span:nth-of-type(2){
+    display:block;
 }
 </style>
 
@@ -34,6 +44,7 @@
 <div>
 <h4>NAME</h4>
 <p>DESC</p>
+<span>CURR/TOTAL</span>
 <span>Unlock: REWARD</span>
 </div>
 </script>
@@ -42,11 +53,13 @@
 var
 me = this,
 medalList = [
-'won', 'fall', 'gold', 'piety', 'plant','chest', 'common', 'charm', 'enchant', 'legendary', 'drink', 'learn', 
+'won', 'fall', 'gold', 'piety', 'fame', 'plant','chest', 'common', 'charm', 'enchant', 'legendary', 'drink', 'learn', 
 'insect', 'beast', 'undead', 'demon', 'def', 'patk', 'ratk', 'will', 'cast', 
 'burn', 'curse', 'disease', 'fear', 'frozen', 'poison'],
 onBack = function(evt){
-    pico.changeFrame(document.body, 'div#page', 'html/pageLogin.html', {opacity:[0,1,'1s']});
+    var hash = window.location.hash;
+    if (!hash || '#me' === hash) pico.changeFrame(document.body, 'div#page', 'html/pageLogin.html', {opacity:[0,1,'1s']});
+    else pico.changeFrame(document.body, 'div#page', 'html/pageMap.html', {opacity:[0,1,'1s']});
 },
 onLoad = function(){
     var 
@@ -68,11 +81,18 @@ onLoad = function(){
         medalEle.innerHTML = templ
                                 .replace('ID', medalId)
                                 .replace('SIZE', size)
-                                .replace('NAME', medalId)
-                                .replace('DESC', 'blac blac blac')
+                                .replace('NAME', G_MEDAL_GRADE[0] + G_MEDAL_NAME[medalId])
+                                .replace('DESC', G_MEDAL_DESC[medalId])
+                                .replace('CURR', '9999')
+                                .replace('TOTAL', '9999')
                                 .replace('REWARD', '1 Piety point');
         medalCont.appendChild(medalEle);
     }
+
+    var id = window.location.hash.substring(1);
+    socials.readMedals(id ? id : 'me', function(medals){
+        console.dir(medals);
+    });
 };
 
 me.use('socials');
