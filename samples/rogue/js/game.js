@@ -179,7 +179,7 @@ pico.def('game', 'pigSqrMap', function(){
                     objects[i] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY)
                 }else{
                     object = G_CREATE_OBJECT(G_ICON.CHEST);
-                    object[CHEST_ITEM] = ai.spawnItem(G_ICON.ROBE, G_ENCHANTED_RATE[0], G_GRADE.ENCHANTED, me.hero.getJob(), 1);
+                    object[CHEST_ITEM] = ai.spawnItem(G_ICON.ROBE, G_ENCHANTED_RATE[0], G_GRADE.ENCHANTED, 1);
                     objects[chestId] = object;
                 }
             }
@@ -375,11 +375,21 @@ pico.def('game', 'pigSqrMap', function(){
 
     me.step = function(elapsed, steps, entities){
         if (!steps) return;
+        var hero = me.hero;
+
         me.god.step.call(me, steps);
-        me.hero.step.call(me, steps);
+        hero.step.call(me, steps);
         me.ai.step.call(me, steps);
 
         this.go('counter', me.ai.battle());
+
+        var
+        flags = me.flags,
+        engagedIds = hero.getEngaged();
+        
+        for(var i=0,l=engagedIds.length; i<l; i++){
+            delete flags[engagedIds[i]]; // must do it after ai.battle to avoid flag creep attacks
+        }
 
         return entities;
     };
@@ -430,7 +440,7 @@ pico.def('game', 'pigSqrMap', function(){
         loot = object[CHEST_ITEM];
 
         if (!loot) {
-            loot = object[CHEST_ITEM] = this.ai.openChest(hero.getJob(), hero.getStat(OBJECT_LUCK), this.currentLevel);
+            loot = object[CHEST_ITEM] = this.ai.openChest(hero.getStat(OBJECT_LUCK), this.currentLevel);
         }
 
         me.go('showDialog', {
@@ -468,14 +478,6 @@ pico.def('game', 'pigSqrMap', function(){
 
         if (!targets || !targets.length){
             me.go('gameStep', 1);
-
-            var
-            flags = me.flags,
-            engagedIds = hero.getEngaged();
-            
-            for(var i=0,l=engagedIds.length; i<l; i++){
-                delete flags[engagedIds[i]]; // must do it after ai.battle to avoid flag creep attacks
-            }
             return;
         }
 

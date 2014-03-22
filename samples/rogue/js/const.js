@@ -8,7 +8,7 @@ CHARMED_PATK=9, CHARMED_RATK=10, CHARMED_DEF=11,
 CHARMED_VEG=12, CHARMED_INSECT=13, CHARMED_BEAST=14, CHARMED_UNDEAD=15, CHARMED_DEMON=16,
 CREEP_HP=7, CREEP_ATK=8, CREEP_PDEF=9, CREEP_MDEF=10, CREEP_EFFECT=11, CREEP_ITEM=12,
 WEAPON_HANDED=24, CHEST_ITEM=7, TOMB_BODY=7, AMMO_SIZE=24, ARMOR_CLASS=24,EFFECT_PERIOD=24,STASH_OWNER=7,STASH_LOC=7,
-ENCHANTED_CLASS=4, ENCHANTED_FIRE=5, ENCHANTED_AIR=6, ENCHANTED_WATER=7, ENCHANTED_EARTH=8,
+ENCHANTED_FIRE=4, ENCHANTED_AIR=5, ENCHANTED_WATER=6, ENCHANTED_EARTH=7, ENCHANTED_CHARM=8,
 SPELL_COST=7, SPELL_ATTR=8, SPELL_CLASS=9, SPELL_RELOAD=10, SPELL_COOLDOWN=11, SPELL_DAMAGE=12, SPELL_AOE=13, SPELL_FIRE=14, SPELL_AIR=15, SPELL_WATER=16, SPELL_EARTH=17,
 GOD_BODY=0,GOD_NAME=1,GOD_PIETY=2,GOD_BAG_CAP=3,GOD_TOME_CAP=4,GOD_PROGRESS=5,
 HERO_HELM=0,HERO_ARMOR=1,HERO_MAIN=2,HERO_OFF=3,HERO_RINGL=4,HERO_RINGR=5,HERO_AMULET=6,HERO_QUIVER=7,
@@ -122,7 +122,7 @@ Object.freeze(G_HERO_CLASS = {
     WIZARD: 64,
     WARLOCK: 128,
     RAT: 256,               // spread fire, reduce hp by turn
-    BAT: 512,               // spread disease, reduce max hp by turn
+    BAT: 512,               // spread plague, reduce max hp by turn
     WOLF: 1024,             // spread poison
     BEAR: 2048,             // spread cold
     VENOM: 1,               // rogue
@@ -409,29 +409,29 @@ Object.freeze(G_GRADE_RATE = [
     [G_GRADE.CHARMED,      20,     G_QUALITY.MEDIUM,   G_GRADE.ALL], // charmed, 1 charm
     [G_GRADE.COMMON,       100,    G_QUALITY.LOW,      G_GRADE.ALL], // common
 ]);
-// id, drop rate, luck factor, grade, enchant1, enchant2, charm1, charm2
+// id, drop rate, luck factor, grade, enchant1, enchant2
 Object.freeze(G_LEGENDARY_RATE = [
-    [0, 10, G_QUALITY.HIGH,     G_GRADE.G13,    0, 1, 0, 1],
-    [1, 10, G_QUALITY.MEDIUM,   G_GRADE.G13,    2, 3, 2, 3],
+    [0, 10, G_QUALITY.HIGH,     G_GRADE.G13,    0, 1],
+    [1, 10, G_QUALITY.MEDIUM,   G_GRADE.G13,    2, 3],
 ]);
-// id, drop rate, luck factor, grade, class, fire, air, water, earth
+// id, drop rate, luck factor, grade, fire, air, water, earth, charm
 Object.freeze(G_ENCHANTED_RATE = [
-    [0,     10, G_QUALITY.LOW,      G_GRADE.ALL, G_HERO_CLASS.ROGUE,  0,0,2,0 ],
-    [1,     10, G_QUALITY.LOW,      G_GRADE.ALL, G_HERO_CLASS.MONK,  0,2,0,0 ],
-    [2,     10, G_QUALITY.LOW,      G_GRADE.ALL, G_HERO_CLASS.BARBARIAN,  2,0,0,0 ],
-    [3,     10, G_QUALITY.LOW,      G_GRADE.ALL, G_HERO_CLASS.DRUID,  0,1,1,0 ],
-    [4,     10, G_QUALITY.LOW,      G_GRADE.ALL, G_HERO_CLASS.HUNTER,  1,0,0,1 ],
-    [5,     10, G_QUALITY.LOW,      G_GRADE.ALL, G_HERO_CLASS.PALADIN,  0,1,0,1 ],
-    [6,     10, G_QUALITY.LOW,      G_GRADE.ALL, G_HERO_CLASS.WIZARD,  0,0,1,1 ],
-    [7,     10, G_QUALITY.LOW,      G_GRADE.ALL, G_HERO_CLASS.WARLOCK,  1,1,0,0 ],
-    [8,     10, G_QUALITY.MEDIUM,   G_GRADE.ALL, G_HERO_CLASS.RANGER,  2,2,0,0 ],
-    [9,     10, G_QUALITY.MEDIUM,   G_GRADE.ALL, G_HERO_CLASS.HEALER,  4,0,0,0 ],
-    [10,    10, G_QUALITY.MEDIUM,   G_GRADE.ALL, G_HERO_CLASS.TANKER,  0,4,0,0 ],
-    [11,    10, G_QUALITY.MEDIUM,   G_GRADE.ALL, G_HERO_CLASS.MELEE,  0,0,4,0 ],
-    [12,    10, G_QUALITY.MEDIUM,   G_GRADE.ALL, G_HERO_CLASS.NUKER,  0,0,0,4 ],
-    [13,    10, G_QUALITY.MEDIUM,   G_GRADE.ALL, G_HERO_CLASS.DPS,  0,0,3,1 ],
-    [14,    10, G_QUALITY.MEDIUM,   G_GRADE.ALL, G_HERO_CLASS.MONK + G_HERO_CLASS.ROGUE,  1,1,0,0 ],
-    [15,    10, G_QUALITY.HIGH,     G_GRADE.ALL, G_HERO_CLASS.ALL,  2,1,2,2 ],
+    [0,     10, G_QUALITY.LOW,      G_GRADE.ALL, 0,0,2,0, 0 ],
+    [1,     10, G_QUALITY.LOW,      G_GRADE.ALL, 0,2,0,0, 1 ],
+    [2,     10, G_QUALITY.LOW,      G_GRADE.ALL, 2,0,0,0, 2 ],
+    [3,     10, G_QUALITY.LOW,      G_GRADE.ALL, 0,1,1,0, 3 ],
+    [4,     10, G_QUALITY.LOW,      G_GRADE.ALL, 1,0,0,1, 4 ],
+    [5,     10, G_QUALITY.LOW,      G_GRADE.ALL, 0,1,0,1, 5 ],
+    [6,     10, G_QUALITY.LOW,      G_GRADE.ALL, 0,0,1,1, 6 ],
+    [7,     10, G_QUALITY.LOW,      G_GRADE.ALL, 1,1,0,0, 7 ],
+    [8,     10, G_QUALITY.MEDIUM,   G_GRADE.ALL, 2,2,0,0, 8 ],
+    [9,     10, G_QUALITY.MEDIUM,   G_GRADE.ALL, 4,0,0,0, 9 ],
+    [10,    10, G_QUALITY.MEDIUM,   G_GRADE.ALL, 0,4,0,0, 10 ],
+    [11,    10, G_QUALITY.MEDIUM,   G_GRADE.ALL, 0,0,4,0, 11 ],
+    [12,    10, G_QUALITY.MEDIUM,   G_GRADE.ALL, 0,0,0,4, 12 ],
+    [13,    10, G_QUALITY.MEDIUM,   G_GRADE.ALL, 0,0,3,1, 13 ],
+    [14,    10, G_QUALITY.MEDIUM,   G_GRADE.ALL, 1,1,0,0, 14 ],
+    [15,    10, G_QUALITY.HIGH,     G_GRADE.ALL, 2,1,2,2, 15 ],
 ]);
 // id, drop rate, luck factor, grade, hp, will, dex, luck, str,  patk,ratk, def, veg,insect,beast,undead,demon
 Object.freeze(G_CHARMED_RATE = [

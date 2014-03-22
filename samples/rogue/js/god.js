@@ -307,8 +307,8 @@ pico.def('god', 'picUIContent', function(){
             stats: stats,
             effects: [],
             bag: [
-                [me.ai.spawnItem(G_ICON.DAGGER, G_LEGENDARY_RATE[0], G_GRADE.LEGENDARY, heroClass, 1),1,0],
-                [me.ai.spawnItem(G_ICON.SMALL_HP, null, G_GRADE.COMMON, heroClass, 1),9999,1]
+                [me.ai.spawnItem(G_ICON.DAGGER, G_LEGENDARY_RATE[0], G_GRADE.LEGENDARY, 1),1,0],
+                [me.ai.spawnItem(G_ICON.SMALL_HP, null, G_GRADE.COMMON, 1),9999,1]
             ],
             tome: [
                 me.tome.createSpell(G_ICON.SQUEAL, heroClass),
@@ -407,7 +407,6 @@ pico.def('god', 'picUIContent', function(){
         me.ai.spawnItemByType(
             G_EQUIP_RATE[equipId],
             G_GRADE.ENCHANTED, 
-            stats[OBJECT_SUB_TYPE], 
             hero.getStat(OBJECT_LUCK), 
             hero.getStat(OBJECT_LEVEL)), slot[1], item ? bag.length : slotId];
 

@@ -17,7 +17,7 @@ pico.def('socials', 'piSocials', function(){
         curse: [0, 50,500,5000],
         def: [0, 50,500,5000],
         demon: [0, 50,500,5000],
-        disease: [0, 50,500,5000],
+        plague: [0, 50,500,5000],
         drink: [0, 50,500,5000],
         enchant: [0, 50,500,5000],
         fall: [0, 50,500,5000],
@@ -165,7 +165,7 @@ console.warn('loadAllies: '+JSON.stringify(fbAllies));
         /*cast: [0, 50,500,5000],
         burn: [0, 50,500,5000],
         curse: [0, 50,500,5000],
-        disease: [0, 50,500,5000],
+        plague: [0, 50,500,5000],
         fear: [0, 50,500,5000],
         frozen: [0, 50,500,5000],
         poison: [0, 50,500,5000],*/

@@ -272,7 +272,7 @@ Object.freeze(G_OBJECT_NAME = {
     180: 'Cyclops',
     181: 'Werewolf',
     182: 'Werebear',
-    183: 'Diablo',
+    183: 'Balrog',
     184: 'Blacksmith',
     185: 'Arch-Mage',
     186: 'Town Guard',
@@ -304,7 +304,7 @@ Object.freeze(G_OBJECT_NAME = {
 
     589: 'Burned', // reduce hp
     590: 'Cursed', // reduce roll
-    591: 'Diseased', // reduce max hp
+    591: 'Plague', // reduce max hp
     592: 'Feared', // reduce atk and def 
     593: 'Frozen', // immobilize, cooldown stop
     594: 'Poisoned', // hp dun heal
@@ -343,7 +343,7 @@ Object.freeze(G_OBJECT_DESC = {
     40: 'Drink it to cure poison',
     41: 'Drink it to restore 1 HP',
     42: 'Drink it to restore 3 HP',
-    43: 'Drink it to cure diseases',
+    43: 'Drink it to cure for the plague',
     44: 'Drink it to be lucky for 4 turns',
     45: 'Drink it to restore 8 HP',
     46: 'Drink it to remove curse',
@@ -501,7 +501,7 @@ Object.freeze(G_OBJECT_DESC = {
     296: 'Hurls a fiery fireball to selected cell',
     297: 'Hurls a fiery mateor to selected cell',
     562: 'Shape shift to a fast and furious dire wolf can spread poison when attack',
-    565: 'Shape shift to a tainted bat that spread disease to any object come in contact',
+    565: 'Shape shift to a tainted bat that spread plague to any object come in contact',
     568: 'Shape shift to a mighty arctic bear that frozen attack object',
     571: 'Shape shift to ash rat that burn any object come in contact',
 
@@ -513,7 +513,7 @@ Object.freeze(G_OBJECT_DESC = {
     594: 'Prevent object from healing', // hp dun heal
     595: 'Poison object when deal damage',
     596: 'Weak creature that burn creep when touch',
-    597: 'Weak creature that spread disease to contacted creep',
+    597: 'Weak creature that spread plague to contacted creep',
     598: 'Fast and furious creature that spread poison when attack',
     599: 'Sturdy and strong creature that freeze contact',
 
@@ -538,27 +538,27 @@ piety:          'Faith',
 chest:          'Quest',
 fame:           'Fame',
 common:         'Favour',
-charm:          'Admiration',
-enchant:        'Acclaim',
-legendary:      'Esteem',
+charm:          'Luck',
+enchant:        'Fortune',
+legendary:      'Fate',
 drink:          'Indulgence',
 learn:          'Arcanum', 
-plant:          'Frontier',
+plant:          'Blight',
 insect:         'Pestilence',
-beast:          'Havoc',
+beast:          'Fury',
 undead:         'Acolyte',
-demon:          'Exorcism',
+demon:          'Torment',
 def:            'Fortitude',
-patk:           'Armmament',
-ratk:           'Ordnance',
-will:           'Commitment',
+patk:           'Mastery',
+ratk:           'Deadeye',
+will:           'Oath',
 cast:           'Adept',
-burn:           'Firestorm',
+burn:           'Inferno',
 curse:          'Conjure',
-disease:        'Catastrophe',
+plague:         'Retribution',
 fear:           'Terror',
 frozen:         'Blizzard',
-poison:         'Malice',
+poison:         'Alchemy',
 });
 Object.freeze(G_MEDAL_DESC = {
 won:            'Return the soul stone',
@@ -585,7 +585,7 @@ will:           'Deal damage with skills',
 cast:           'Actively cast spell',
 burn:           'Burn creeps number of times',
 curse:          'Curse creeps number of times',
-disease:        'Spread disease to creeps',
+plague:         'Spread disease to creeps',
 fear:           'Causing fear to creeps',
 frozen:         'Freeze creeps number of times',
 poison:         'Spread poison to creeps',

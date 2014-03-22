@@ -57,13 +57,14 @@ pico.def('ai', function(){
 
         return s;
     },
-    enchantItem = function(job, item, modifier){
-        if (job & modifier[ENCHANTED_CLASS]){
-            item[OBJECT_FIRE] += modifier[ENCHANTED_FIRE];
-            item[OBJECT_AIR] += modifier[ENCHANTED_AIR];
-            item[OBJECT_WATER] += modifier[ENCHANTED_WATER];
-            item[OBJECT_EARTH] += modifier[ENCHANTED_EARTH];
-        }
+    enchantItem = function(item, modifier){
+        item[OBJECT_FIRE] += modifier[ENCHANTED_FIRE];
+        item[OBJECT_AIR] += modifier[ENCHANTED_AIR];
+        item[OBJECT_WATER] += modifier[ENCHANTED_WATER];
+        item[OBJECT_EARTH] += modifier[ENCHANTED_EARTH];
+
+        var stat = G_CHARMED_RATE[modifier[ENCHANTED_CHARM]];
+        charmItem(item, stat);
     },
     charmItem = function(item, modifier){
         for(var j=CHARMED_HP,k=CHARMED_DEMON,m=OBJECT_HP; j<=k; j++,m++){
@@ -98,8 +99,8 @@ pico.def('ai', function(){
             if (grade & drop[DROP_GRADE]){
                 cap += drop[DROP_RATE];
                 switch(drop[DROP_QUALITY]){
-                    case G_QUALITY.MEDIUM: cap += luckMed; break;
-                    case G_QUALITY.HIGH: cap += luckHi; break;
+                case G_QUALITY.MEDIUM: cap += luckMed; break;
+                case G_QUALITY.HIGH: cap += luckHi; break;
                 }
             }
         }
@@ -112,8 +113,8 @@ pico.def('ai', function(){
             if (grade & drop[DROP_GRADE]){
                 cap += drop[DROP_RATE];
                 switch(drop[DROP_QUALITY]){
-                    case G_QUALITY.MEDIUM: cap += luckMed; break;
-                    case G_QUALITY.HIGH: cap += luckHi; break;
+                case G_QUALITY.MEDIUM: cap += luckMed; break;
+                case G_QUALITY.HIGH: cap += luckHi; break;
                 }
                 if (cap >= select) return drop; 
             }
@@ -190,7 +191,7 @@ pico.def('ai', function(){
         return G_CREATE_OBJECT(G_ICON.CHEST);
     };
 
-    me.spawnItemByType = function(itemRates, gradeType, job, luck, lvl){
+    me.spawnItemByType = function(itemRates, gradeType, luck, lvl){
         var
         itemRate = pick(itemRates, luck, gradeType),
         modifier;
@@ -201,10 +202,10 @@ pico.def('ai', function(){
         case G_GRADE.CHARMED: modifier = pick(G_CHARMED_RATE, luck, gradeType); break; 
         }
 
-        return me.spawnItem(itemRate[OBJECT_ICON], modifier, gradeType, job, lvl);
+        return me.spawnItem(itemRate[OBJECT_ICON], modifier, gradeType, lvl);
     };
 
-    me.spawnItem = function(itemId, modifier, gradeType, job, lvl){
+    me.spawnItem = function(itemId, modifier, gradeType, lvl){
         var
         item = G_CREATE_OBJECT(itemId),
         itemName = item[OBJECT_NAME],
@@ -215,34 +216,30 @@ pico.def('ai', function(){
         lvl = (lvl < 1 ? 1 : (lvl > capLvl ? capLvl : lvl));
 
         switch(itemType){
-            case G_OBJECT_TYPE.WEAPON:
-            case G_OBJECT_TYPE.ARMOR:
-            case G_OBJECT_TYPE.JEWEL:
-                switch(gradeType){
-                    case G_GRADE.LEGENDARY:
-                        affix = G_LEGENDARY_AFFIX[modifier[DROP_ID]];
-                        itemName = affix[0] + ' ' + itemName + G_MSG.POSTFIX_SEPARATOR + affix[1];
-                        for(i=DROP_GRADE+1, l=DROP_GRADE+3; i<l; i++){
-                            stat = G_ENCHANTED_RATE[modifier[i]];
-                            enchantItem(job, item, stat);
-                        }
-                        for(i=DROP_GRADE+3, l=DROP_GRADE+5; i<l; i++){
-                            stat = G_CHARMED_RATE[modifier[i]];
-                            charmItem(item, stat);
-                        }
-                        break;
-                    case G_GRADE.ENCHANTED:
-                        affix = G_ENCHANTED_PREFIX[modifier[DROP_ID]];
-                        itemName = affix + ' ' + itemName;
-                        enchantItem(job, item, modifier);
-                        break;
-                    case G_GRADE.CHARMED:
-                        affix = G_CHARMED_POSTFIX[modifier[DROP_ID]];
-                        itemName = itemName + G_MSG.POSTFIX_SEPARATOR + affix;
-                        charmItem(item, modifier);
-                        break;
+        case G_OBJECT_TYPE.WEAPON:
+        case G_OBJECT_TYPE.ARMOR:
+        case G_OBJECT_TYPE.JEWEL:
+            switch(gradeType){
+            case G_GRADE.LEGENDARY:
+                affix = G_LEGENDARY_AFFIX[modifier[DROP_ID]];
+                itemName = affix[0] + ' ' + itemName + G_MSG.POSTFIX_SEPARATOR + affix[1];
+                for(i=DROP_GRADE+1, l=DROP_GRADE+3; i<l; i++){
+                    stat = G_ENCHANTED_RATE[modifier[i]];
+                    enchantItem(item, stat);
                 }
                 break;
+            case G_GRADE.ENCHANTED:
+                affix = G_ENCHANTED_PREFIX[modifier[DROP_ID]];
+                itemName = affix + ' ' + itemName;
+                enchantItem(item, modifier);
+                break;
+            case G_GRADE.CHARMED:
+                affix = G_CHARMED_POSTFIX[modifier[DROP_ID]];
+                itemName = itemName + G_MSG.POSTFIX_SEPARATOR + affix;
+                charmItem(item, modifier);
+                break;
+            }
+            break;
         }
         
         item[OBJECT_NAME] = itemName;
@@ -250,18 +247,18 @@ pico.def('ai', function(){
         item[OBJECT_GRADE] = gradeType;
 
         switch(itemType){
-            case G_OBJECT_TYPE.WEAPON:
-            case G_OBJECT_TYPE.ARMOR:
-            case G_OBJECT_TYPE.JEWEL:
-                for(i=OBJECT_WILL,l=OBJECT_VEG; i<l; i++){
-                    item[i] = Round(item[i]*lvl);
-                }
-                break;
+        case G_OBJECT_TYPE.WEAPON:
+        case G_OBJECT_TYPE.ARMOR:
+        case G_OBJECT_TYPE.JEWEL:
+            for(i=OBJECT_WILL,l=OBJECT_VEG; i<l; i++){
+                item[i] = Round(item[i]*lvl);
+            }
+            break;
         }
         return item;
     };
 
-    me.openChest = function(job, luck, level){
+    me.openChest = function(luck, level){
         var
         capLvl = (G_MAP_PARAMS.length - 1)*5,
         minLvl = level - 3,
@@ -281,10 +278,10 @@ pico.def('ai', function(){
         case G_GRADE.CHARMED: modifier = pick(G_CHARMED_RATE, luck, gradeType); break; 
         }
         
-        return me.spawnItem(itemRate[DROP_ID], modifier, gradeType, job, lvl);
+        return me.spawnItem(itemRate[DROP_ID], modifier, gradeType, lvl);
     };
 
-    me.gamble = function(itemId, job, luck, level){
+    me.gamble = function(itemId, luck, level){
         var
         grade = pick(G_GRADE_RATE, luck, G_GRADE.ALL),
         gradeType = grade[DROP_ID],
@@ -296,7 +293,7 @@ pico.def('ai', function(){
         case G_GRADE.CHARMED: modifier = pick(G_CHARMED_RATE, luck, gradeType); break; 
         }
         
-        return me.spawnItem(itemId, modifier, gradeType, job, level);
+        return me.spawnItem(itemId, modifier, gradeType, level);
     };
 
     me.getStatByTileId = function(id){ return me.getStatByObject(objects[id]); };

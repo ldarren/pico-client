@@ -187,7 +187,7 @@ pico.def('bag', 'picUIContent', function(){
         slot = shop[selected],
         templ = slot[0],
         count = slot[1],
-        item = this.ai.spawnItem(templ[OBJECT_ICON], null, G_GRADE.COMMON, hero.getJob(), hero.getLevel());
+        item = this.ai.spawnItem(templ[OBJECT_ICON], null, G_GRADE.COMMON, hero.getLevel());
 
         if (!item) return;
 
@@ -273,7 +273,7 @@ pico.def('bag', 'picUIContent', function(){
         selected = evt.selected,
         slot = shop[selected],
         templ = slot[0],
-        item = this.ai.gamble(templ[OBJECT_ICON], hero.getJob(), hero.getStat(OBJECT_LUCK), lvl);
+        item = this.ai.gamble(templ[OBJECT_ICON], hero.getStat(OBJECT_LUCK), lvl);
 
         if (!item) return;
 
@@ -293,7 +293,7 @@ pico.def('bag', 'picUIContent', function(){
         selected = evt.selected,
         slot = shop[selected],
         templ = slot[0],
-        item = this.ai.spawnItem(templ[OBJECT_ICON], null, G_GRADE.COMMON, hero.getJob(), templ[OBJECT_LEVEL]+1),
+        item = this.ai.spawnItem(templ[OBJECT_ICON], null, G_GRADE.COMMON, templ[OBJECT_LEVEL]+1),
         info = ['Congrats, Item Level Up!'],
         diff;
 
@@ -320,7 +320,7 @@ pico.def('bag', 'picUIContent', function(){
         selected = evt.selected,
         slot = shop[selected],
         templ = slot[0],
-        item = this.ai.gamble(templ[OBJECT_ICON], hero.getJob(), hero.getStat(OBJECT_LUCK)+99, templ[OBJECT_LEVEL]),
+        item = this.ai.gamble(templ[OBJECT_ICON], hero.getStat(OBJECT_LUCK)+99, templ[OBJECT_LEVEL]),
         info = [],
         diff;
 
