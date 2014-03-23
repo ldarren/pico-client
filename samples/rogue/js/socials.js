@@ -2,40 +2,71 @@ pico.def('socials', 'piSocials', function(){
     var
     Random=Math.random,Floor=Math.floor,
     me = this,
+    MEDAL_URL = 'http://dungeon-chronicles.com/rogue/html/medals/',
     fbAllies = [],
     fbNewbees = [],
     fbNPCs = [],
     fbAlliesCB,
     fbMedals={},
-    fbMedalTarget={
-        beast: [0, 50,500,5000],
-        burn: [0, 50,500,5000],
-        cast: [0, 50,500,5000],
-        charm: [0, 50,500,5000],
-        chest: [0, 50,500,5000],
-        common: [0, 50,500,5000],
-        curse: [0, 50,500,5000],
-        def: [0, 50,500,5000],
-        demon: [0, 50,500,5000],
-        plague: [0, 50,500,5000],
-        drink: [0, 50,500,5000],
-        enchant: [0, 50,500,5000],
-        fall: [0, 50,500,5000],
-        fame: [0, 5, 500, 5000],
-        fear: [0, 50,500,5000],
-        frozen: [0, 50,500,5000],
-        gold: [0, 50,500,5000],
-        insect: [0, 50,500,5000],
-        learn: [0, 50,500,5000],
-        legendary: [0, 50,500,5000],
-        patk: [0, 50,500,5000],
-        piety: [0, 50,500,5000],
-        plant: [0, 50,500,5000],
-        poison: [0, 50,500,5000],
-        ratk: [0, 50,500,5000],
-        undead: [0, 50,500,5000],
-        will: [0, 50,500,5000],
-        won: [0, 50,500,5000],
+    fbMedalRewards={
+        beast:      [10, 10,100,1000],
+        burn:       [10, 10,100,1000],
+        cast:       [10, 10,100,1000],
+        charm:      [10, 10,100,1000],
+        chest:      [10, 10,100,1000],
+        common:     [10, 10,100,1000],
+        curse:      [10, 10,100,1000],
+        def:        [10, 10,100,1000],
+        demon:      [10, 10,100,1000],
+        plague:     [10, 10,100,1000],
+        drink:      [10, 10,100,1000],
+        enchant:    [10, 10,100,1000],
+        fall:       [10, 10,100,1000],
+        fame:       [10, 10,100,1000],
+        fear:       [10, 10,100,1000],
+        frozen:     [10, 10,100,1000],
+        gold:       [10, 10,100,1000],
+        insect:     [10, 10,100,1000],
+        learn:      [10, 10,100,1000],
+        legendary:  [10, 10,100,1000],
+        patk:       [10, 10,100,1000],
+        piety:      [10, 10,100,1000],
+        plant:      [10, 10,100,1000],
+        poison:     [10, 10,100,1000],
+        ratk:       [10, 10,100,1000],
+        undead:     [10, 10,100,1000],
+        will:       [10, 10,100,1000],
+        won:        [10, 10,100,1000],
+    },
+    fbMedalTargets={
+        beast:      [50, 50,500,5000],
+        burn:       [50, 50,500,5000],
+        cast:       [50, 50,500,5000],
+        charm:      [50, 50,500,5000],
+        chest:      [50, 50,500,5000],
+        common:     [50, 50,500,5000],
+        curse:      [50, 50,500,5000],
+        def:        [50, 50,500,5000],
+        demon:      [50, 50,500,5000],
+        plague:     [50, 50,500,5000],
+        drink:      [50, 50,500,5000],
+        enchant:    [50, 50,500,5000],
+        fall:       [50, 50,500,5000],
+        fame:       [5, 5, 500, 5000],
+        fear:       [50, 50,500,5000],
+        frozen:     [50, 50,500,5000],
+        gold:       [50, 50,500,5000],
+        insect:     [50, 50,500,5000],
+        learn:      [50, 50,500,5000],
+        legendary:  [50, 50,500,5000],
+        patk:       [50, 50,500,5000],
+        piety:      [50, 50,500,5000],
+        plant:      [50, 50,500,5000],
+        poison:     [50, 50,500,5000],
+        ratk:       [50, 50,500,5000],
+        undead:     [50, 50,500,5000],
+        will:       [50, 50,500,5000],
+        won:        [50, 50,500,5000],
     },
     readLevel = function(id, cb){
         me.fbReadScore(id, function(user, score){
@@ -50,10 +81,29 @@ pico.def('socials', 'piSocials', function(){
     addAllies = function(user, times, score){
         var data = [user.id, user.name, score];
         fbAllies.push(data);
-console.warn('addAllies: '+user.name);
         if (fbAlliesCB) fbAlliesCB([data]);
     },
-    accomplished = function(medalId, count){
+    accomplished = function(id, incr){
+        var currLevel = fbMedals[id] || 0;
+        if (currLevel > 2) return currLevel;
+
+        var
+        val = me.god.incrProgress(id, incr),
+        targets = fbMedalTargets[id],
+        level = 0;
+
+        for(var i=0,l=targets.length; i<l; i++){
+            if (val > targets[i]) level++;
+            else break;
+        }
+        if (level > currLevel){
+            me.fbWriteAchievement(MEDAL_URL+id+'-'+level+'.html', function(res){
+                if (res) me.god.incrPiety(me.getMedalReward(level));
+            });
+            fbMedals[id] = level;
+            return level;
+        }
+        return currLevel;
     };
 
     me.use('god');
@@ -155,11 +205,40 @@ console.warn('loadAllies: '+JSON.stringify(fbAllies));
         });
     };
 
-    me.readMedals = function(id, cb){
-        me.fbReadAchievements(id, function(res){
-            cb(res);
+    me.syncMedals = function(cb){
+        me.readMedals(me.fbUserId(), function(medals){
+            for(var key in fbMedalTargets){
+                accomplished(key, 0);
+            }
+            if (cb) cb();
         });
     };
+
+    me.readMedals = function(id, cb){
+        id = 'me' === id ? me.fbUserId() : id;
+        var medals = fbMedals[id];
+        if (medals) return cb(medals);
+        me.fbReadAchievements(id, function(res){
+            var
+            arr = res.data,
+            medalId, url;
+
+            medals = {};
+            if (arr && arr.length) {
+                for(var i=0,l=arr.length; i<l; i++){
+                    url = arr[i].data.url;
+                    medalId = url.substring(MEDAL_URL.length, url.indexOf('-'));
+                    medals[medalId] = (medals[medalId] || 0) + 1;
+                }
+            }
+            fbMedals[id] = medals;
+            cb(medals);
+        });
+    };
+
+    me.getMedalLevel = function(id){ return fbMedals[id] || 0; };
+    me.getMedalTarget = function(id, lvl){ return fbMedalTargets[id][lvl || me.getMedalLevel(id)]; };
+    me.getMedalReward = function(id, lvl){ return fbMedalRewards[id][lvl || me.getMedalLevel(id)]; };
 
     me.castSpell = function(elapsed, evt, entities){
         /*cast: [0, 50,500,5000],
@@ -214,9 +293,14 @@ console.warn('loadAllies: '+JSON.stringify(fbAllies));
         return entities;
     };
 
+    me.tradeItem = function(elapsed, evt, entities){
+        accomplised('fame', 1);
+        return entities;
+    };
+
     me.resetWorld = function(elapsed, evt, entities){
-        //fall: [0, 50,500,5000],
-        //won: [0, 50,500,5000],
+        //accomplised('won', 1);
+        accomplised('fall', 1);
         return entities;
     };
 });

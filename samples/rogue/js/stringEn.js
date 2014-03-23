@@ -562,7 +562,7 @@ poison:         'Alchemy',
 });
 Object.freeze(G_MEDAL_DESC = {
 won:            'Return the soul stone',
-fall:           'Persistantly retry after dead', 
+fall:           'A dutifully fearless spirit that stuborn challenge the legion from Hel', 
 gold:           'Earning golds',
 piety:          'Earning piety points',
 chest:          'Open chests on dungeon floors',

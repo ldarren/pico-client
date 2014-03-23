@@ -41,7 +41,7 @@
 </div>
 
 <script id=medalTempl type=text/templ>
-<img src="dat/img/medals/ID.png">
+<img src="dat/img/medals/FNAME.png">
 <div>
 <h4>NAME</h4>
 <p>DESC</p>
@@ -65,10 +65,11 @@ onBack = function(evt){
 onLoad = function(){
     var 
     socials = me.socials,
+    god = me.god,
     backBtn = document.querySelector('div.pageHead a'),
     medalCont = document.querySelector('div#medals'),
     templ = document.querySelector('script#medalTempl').textContent,
-    medalId,medalEle;
+    medalId,medalEle,medalLevel;
 
     backBtn.addEventListener('click', onBack);
 
@@ -76,15 +77,16 @@ onLoad = function(){
 
     for(var i=0,l=medalList.length; i<l; i++){
         medalId = medalList[i];
+        medalLevel = socials.getMedalLevel(medalId);
         medalEle = document.createElement('div');
         medalEle.className = 'medal';
         medalEle.innerHTML = templ
-                                .replace('ID', medalId)
-                                .replace('NAME', G_MEDAL_GRADE[0] + G_MEDAL_NAME[medalId])
+                                .replace('FNAME', medalId+'-'+medalLevel)
+                                .replace('NAME', G_MEDAL_GRADE[medalLevel] + G_MEDAL_NAME[medalId])
                                 .replace('DESC', G_MEDAL_DESC[medalId])
-                                .replace('CURR', '9999')
-                                .replace('TOTAL', '99999')
-                                .replace('REWARD', '9999 Piety point');
+                                .replace('CURR', god.getProgress(medalId))
+                                .replace('TOTAL', socials.getMedalTarget(medalId))
+                                .replace('REWARD', socials.getMedalReward(medalId)+' Piety points');
         medalCont.appendChild(medalEle);
     }
 

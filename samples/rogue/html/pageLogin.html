@@ -151,8 +151,10 @@ fbUpdate = function(){
             mapBtn.className = 'fantasyBtn';
             mapBtn.addEventListener('click', onShowMap, false);
 
-            medalBtn.className = 'fantasyBtn';
-            medalBtn.addEventListener('click', onShowMedals, false);
+            socials.syncMedals(function(){
+                medalBtn.className = 'fantasyBtn';
+                medalBtn.addEventListener('click', onShowMedals, false);
+            });
         });
     });
 },
