@@ -351,7 +351,7 @@ Object.freeze(G_ICON = {
     CYCLOPS: 180,
     WEREWOLF: 181,
     WEREBEAR: 182,
-    DIABLO: 183,
+    BALROG: 183,
 
     BLACKSMITH: 184,
     ARCHMAGE: 185,
@@ -400,6 +400,37 @@ Object.freeze(G_HERO_ICON = {
     512: G_ICON.TAINTED_BAT,   
     1024: G_ICON.DIRE_WOLF,
     2048: G_ICON.ARCTIC_BEAR
+});
+
+Object.freeze(G_MEDAL_ICON = {
+    'beast-1':0,    'beast-2':1,    'beast-3':2,
+    'burn-1':3,    'burn-2':4,    'burn-3':5,
+    'cast-1':6,    'cast-2':7,    'cast-3':8,
+    'charm-1':9,    'charm-2':10,    'charm-3':11,
+    'chest-1':12,    'chest-2':13,    'chest-3':14,
+    'common-1':15,    'common-2':16    'common-3':17,
+    'curse-1':18,    'curse-2':19,    'curse-3':20,
+    'def-1':21,    'def-2':22,    'def-3':23,
+    'demon-1':24,    'demon-2':25,    'demon-3':26,
+    'drink-1':27,    'drink-2':28,    'drink-3':29,
+    'enchant-1':30,    'enchant-2':31,    'enchant-3':32,
+    'fall-1':33,    'fall-2':34,    'fall-3':35,
+    'fame-1':36,    'fame-2':37,    'fame-3':38,
+    'fear-1':39,    'fear-2':40,    'fear-3':41,
+    'frozen-1':42,    'frozen-2':43,    'frozen-3':44,
+    'gold-1':45,    'gold-2':46,    'gold-3':47,
+    'insect-1':48,    'insect-2':49,    'insect-3':50,
+    'learn-1':51,    'learn-2':52,    'learn-3':53,
+    'legendary-1':54,    'legendary-2':55,    'legendary-3':56,
+    'patk-1':57,    'patk-2':58,    'patk-3':59,
+    'piety-1':60,    'piety-2':61,    'piety-3':62,
+    'plague-1':63,    'plague-2':64,    'plague-3':65,
+    'plant-1':66,    'plant-2':67,    'plant-3':68,
+    'poison-1':69,    'poison-2':70,    'poison-3':71,
+    'ratk-1':72,    'ratk-2':73,    'ratk-3':74,
+    'undead-1':75,    'undead-2':76,    'undead-3':77,
+    'will-1':78,    'will-2':79,    'will-3':80,
+    'won-1':81,    'won-2':82,    'won-3':83,
 });
 
 // id, rate, luck factor, grade

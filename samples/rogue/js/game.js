@@ -329,6 +329,7 @@ pico.def('game', 'pigSqrMap', function(){
     me.tileSet = null;
     me.spellSet = null;
     me.npcSet = null;
+    me.medalSet = null;
     me.audioSprite = null;
     me.smallDevice = 0;
     me.tileWidth = 16;
@@ -397,16 +398,20 @@ pico.def('game', 'pigSqrMap', function(){
     me.style = function(smallDevice, cb){
         me.smallDevice = smallDevice ? 1 : 0;
         var
+        atlas = me.piAtlas,
         tw = me.tileWidth = smallDevice ? 32 : 64,
         th = me.tileHeight = smallDevice ? 32 : 64;
 
-        me.piAtlas.create('dat/img/fantasy-tileset-combined.png', 'dat/fantasy-tileset.json', function(err, tileSet){
+        atlas.create('dat/img/fantasy-tileset-combined.png', 'dat/fantasy-tileset.json', function(err, tileSet){
             if (err) return alert(err);
             me.tileSet = tileSet;
-        me.piAtlas.create('dat/img/fantasy-spells.png', 'dat/fantasy-spells.json', function(err, spellSet){
+        atlas.create('dat/img/fantasy-spells.png', 'dat/fantasy-spells.json', function(err, spellSet){
             if (err) return alert(err);
             me.spellSet = spellSet;
-        me.piAtlas.blank('npcSet', tw*3, th, [[0,0,tw,th],[tw,0,tw,th],[tw*2,0,tw,th]], function(err, npcSet){
+        atlas.create('dat/img/medals.png', 'dat/medals.json', function(err, medalSet){
+            if (err) return alert(err);
+            me.medalSet = medalSet;
+        atlas.blank('npcSet', tw*3, th, [[0,0,tw,th],[tw,0,tw,th],[tw*2,0,tw,th]], function(err, npcSet){
             if (err) return alert(err);
             me.npcSet = npcSet;
             npcSet.paste(tileSet.cut(G_ICON.MONK, tw, th), 0, 0, tw, th, 0);
@@ -426,6 +431,7 @@ pico.def('game', 'pigSqrMap', function(){
                     cb();
                 });
             });
+        });
         });
         });
         });
