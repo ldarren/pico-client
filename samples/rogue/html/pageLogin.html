@@ -148,13 +148,12 @@ fbUpdate = function(){
         mapBtn.removeEventListener('click', onShowMap);
         medalBtn.removeEventListener('click', onShowMedals);
         socials.loadAllies(function(friends){
-            mapBtn.className = 'fantasyBtn';
-            mapBtn.addEventListener('click', onShowMap, false);
-
-            socials.syncMedals(function(){
-                medalBtn.className = 'fantasyBtn';
-                medalBtn.addEventListener('click', onShowMedals, false);
-            });
+        });
+        mapBtn.className = 'fantasyBtn';
+        mapBtn.addEventListener('click', onShowMap, false);
+        socials.syncMedals(function(){
+            medalBtn.className = 'fantasyBtn';
+            medalBtn.addEventListener('click', onShowMedals, false);
         });
     });
 },

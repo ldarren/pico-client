@@ -51,8 +51,8 @@ pico.def('socials', 'piSocials', function(){
         plague:     [50, 50,500,5000],
         drink:      [50, 50,500,5000],
         enchant:    [50, 50,500,5000],
-        fall:       [50, 50,500,5000],
-        fame:       [5, 5, 500, 5000],
+        fall:       [1, 1,500,5000],
+        fame:       [5, 5,500,5000],
         fear:       [50, 50,500,5000],
         frozen:     [50, 50,500,5000],
         gold:       [50, 50,500,5000],
@@ -92,8 +92,8 @@ pico.def('socials', 'piSocials', function(){
         targets = fbMedalTargets[id],
         level = 0;
 
-        for(var i=0,l=targets.length; i<l; i++){
-            if (val > targets[i]) level++;
+        for(var i=1,l=targets.length; i<l; i++){
+            if (val >= targets[i]) level++;
             else break;
         }
         if (level > currLevel){
@@ -221,13 +221,14 @@ console.warn('loadAllies: '+JSON.stringify(fbAllies));
         me.fbReadAchievements(id, function(res){
             var
             arr = res.data,
+            domainLen = MEDAL_URL.length,
             medalId, url;
 
             medals = {};
             if (arr && arr.length) {
                 for(var i=0,l=arr.length; i<l; i++){
-                    url = arr[i].data.url;
-                    medalId = url.substring(MEDAL_URL.length, url.indexOf('-'));
+                    url = arr[i].data.achievement.url;
+                    medalId = url.substring(domainLen, url.indexOf('-', domainLen));
                     medals[medalId] = (medals[medalId] || 0) + 1;
                 }
             }
@@ -236,9 +237,12 @@ console.warn('loadAllies: '+JSON.stringify(fbAllies));
         });
     };
 
-    me.getMedalLevel = function(id){ return fbMedals[id] || 0; };
-    me.getMedalTarget = function(id, lvl){ return fbMedalTargets[id][lvl || me.getMedalLevel(id)]; };
-    me.getMedalReward = function(id, lvl){ return fbMedalRewards[id][lvl || me.getMedalLevel(id)]; };
+    me.getMedalLevel = function(userId, id){ 
+        userId = ('me' === userId ? me.fbUserId() : userId);
+        return fbMedals[userId][id] || 0;
+    };
+    me.getMedalTarget = function(id, lvl){ return fbMedalTargets[id][lvl]; };
+    me.getMedalReward = function(id, lvl){ return fbMedalRewards[id][lvl]; };
 
     me.castSpell = function(elapsed, evt, entities){
         /*cast: [0, 50,500,5000],
@@ -294,13 +298,13 @@ console.warn('loadAllies: '+JSON.stringify(fbAllies));
     };
 
     me.tradeItem = function(elapsed, evt, entities){
-        accomplised('fame', 1);
+        accomplished('fame', 1);
         return entities;
     };
 
     me.resetWorld = function(elapsed, evt, entities){
         //accomplised('won', 1);
-        accomplised('fall', 1);
+        accomplished('fall', 1);
         return entities;
     };
 });
