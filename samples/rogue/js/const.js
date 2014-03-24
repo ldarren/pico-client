@@ -408,7 +408,7 @@ Object.freeze(G_MEDAL_ICON = {
     'cast-1':6,    'cast-2':7,    'cast-3':8,
     'charm-1':9,    'charm-2':10,    'charm-3':11,
     'chest-1':12,    'chest-2':13,    'chest-3':14,
-    'common-1':15,    'common-2':16    'common-3':17,
+    'common-1':15,    'common-2':16,    'common-3':17,
     'curse-1':18,    'curse-2':19,    'curse-3':20,
     'def-1':21,    'def-2':22,    'def-3':23,
     'demon-1':24,    'demon-2':25,    'demon-3':26,

@@ -87,7 +87,7 @@ pico.def('dialogMsg', 'picUIContent', function(){
         l = info.length,
         cvs = document.createElement('canvas'),
         ctx = cvs.getContext('2d'),
-        tss = [this.tileSet, this.spellSet],
+        tss = [this.tileSet, this.spellSet, this.medalSet],
         scale = this.smallDevice ? 1 : 2,
         textH = 14*scale, // TODO: use actual font height
         rowH = textH * 2,
@@ -151,6 +151,6 @@ pico.def('dialogMsg', 'picUIContent', function(){
         comBox = ent.getComponent(com.box),
         scale = this.smallDevice ? 1 : 2;
 
-        return me.drawMeshUI.call(this, ctx, [this.tileSet, this.spellSet], ent, com, comBox, scale, onCustomUI);
+        return me.drawMeshUI.call(this, ctx, [this.tileSet, this.spellSet, this.medalSet], ent, com, comBox, scale, onCustomUI);
     };
 });

@@ -51,7 +51,7 @@ pico.def('socials', 'piSocials', function(){
         plague:     [50,500,5000, 5000],
         drink:      [50,500,5000, 5000],
         enchant:    [50,500,5000, 5000],
-        fall:       [1,500,5000, 5000],
+        fall:       [1,2,5000, 5000],
         fame:       [5,500,5000, 5000],
         fear:       [50,500,5000, 5000],
         frozen:     [50,500,5000, 5000],
@@ -84,7 +84,9 @@ pico.def('socials', 'piSocials', function(){
         if (fbAlliesCB) fbAlliesCB([data]);
     },
     accomplished = function(id, incr){
-        var currLevel = fbMedals[id] || 0;
+        var
+        medals = fbMedals[me.fbUserId()],
+        currLevel = medals[id] || 0;
         if (currLevel > 2) return currLevel;
 
         var
@@ -92,18 +94,29 @@ pico.def('socials', 'piSocials', function(){
         targets = fbMedalTargets[id],
         level = 0;
 
-        for(var i=1,l=targets.length; i<l; i++){
+        for(var i=0; i<3; i++){
             if (val >= targets[i]) level++;
             else break;
         }
         if (level > currLevel){
             me.fbWriteAchievement(MEDAL_URL+id+'-'+level+'.html', function(res){
-                if (res) me.god.incrPiety(me.getMedalReward(level));
+                if (res) me.god.incrPiety(me.getMedalReward(id, level));
             });
-            fbMedals[id] = level;
+            medals[id] = level;
             return level;
         }
-        return currLevel;
+    },
+    unlockNoti = function(id, level){
+        if (!level) return;
+
+        this.go('showDialog', {
+        info: [
+            '`2'+(G_MEDAL_ICON[id + '-' + level])+' You have unlocked '+(G_MEDAL_GRADE[level] + G_MEDAL_NAME[id]),
+            'You have been rewarded with '+me.getMedalReward(id, level)+' Piety points'
+        ],
+        callbacks: [],
+        labels: ['Ok'],
+        events: []});
     };
 
     me.use('god');
@@ -170,7 +183,6 @@ pico.def('socials', 'piSocials', function(){
     };
 
     me.loadAllies = function(cb){
-console.warn('loadAllies: '+JSON.stringify(fbAllies));
         if (fbAllies.length) cb(fbAllies.slice());
         fbAlliesCB = cb;
     };
@@ -242,7 +254,9 @@ console.warn('loadAllies: '+JSON.stringify(fbAllies));
         return fbMedals[userId][id] || 0;
     };
     me.getMedalTarget = function(id, lvl){ return fbMedalTargets[id][lvl]; };
-    me.getMedalReward = function(id, lvl){ return fbMedalRewards[id][lvl]; };
+    me.getMedalReward = function(id, lvl){ 
+        return fbMedalRewards[id][lvl];
+    };
 
     me.castSpell = function(elapsed, evt, entities){
         /*cast: [0, 50,500,5000],
@@ -298,13 +312,17 @@ console.warn('loadAllies: '+JSON.stringify(fbAllies));
     };
 
     me.tradeItem = function(elapsed, evt, entities){
-        accomplished('fame', 1);
+        var newLevel = accomplished('fame', 1);
+        if (newLevel) unlockNoti.call(this, 'fame', newLevel);
         return entities;
     };
 
     me.resetWorld = function(elapsed, evt, entities){
         //accomplised('won', 1);
-        accomplished('fall', 1);
+        var
+        id = 'fall',
+        newLevel = accomplished(id, 5);
+        if (newLevel) unlockNoti.call(this, id, newLevel);
         return entities;
     };
 });
