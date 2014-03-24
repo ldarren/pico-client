@@ -43,10 +43,10 @@
 <script id=medalTempl type=text/templ>
 <img src="dat/img/medals/FNAME.png">
 <div>
-<h4>NAME</h4>
+<h4>NAME (UNLOCK/3)</h4>
 <p>DESC</p>
-<span>CURR/TOTAL</span>
-<span>Unlock: REWARD</span>
+<span>Next unlock: CURR/TOTAL</span>
+<span>Unlock rewards: REWARD</span>
 </div>
 </script>
 
@@ -84,6 +84,7 @@ onLoad = function(){
             medalEle.className = 'medal';
             medalEle.innerHTML = templ
                                     .replace('FNAME', medalId+'-'+medalLevel)
+                                    .replace('UNLOCK', medalLevel)
                                     .replace('NAME', G_MEDAL_GRADE[medalLevel] + G_MEDAL_NAME[medalId])
                                     .replace('DESC', G_MEDAL_DESC[medalId])
                                     .replace('CURR', god.getProgress(medalId))
