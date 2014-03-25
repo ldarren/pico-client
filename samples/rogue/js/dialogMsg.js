@@ -113,11 +113,13 @@ pico.def('dialogMsg', 'picUIContent', function(){
             dummyRows = Floor(infoH/rowH);
             dummyRows = Min(dummyRows, 6); // maximum 7 dummy rows
 
+            me.createMeshRow(rows); // add 1 space
+
             row=me.createMeshRow(rows);
             cell=me.createMeshCell(row);
             me.createMeshCustom(cell, me.TOP_LEFT, me.TOP_LEFT, 0, 1, dummyRows+1, 0, 0, {id:'info'+i});
 
-            for(j=0; j<dummyRows; j++){
+            for(j=0; j<dummyRows-1; j++){ // minus one at the top
                 me.createMeshRow(rows);
             }
         }

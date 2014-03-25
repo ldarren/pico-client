@@ -111,7 +111,8 @@ pico.def('socials', 'piSocials', function(){
 
         this.go('showDialog', {
         info: [
-            '`2'+(G_MEDAL_ICON[id + '-' + level])+' You have unlocked '+(G_MEDAL_GRADE[level] + G_MEDAL_NAME[id]),
+            '`2'+(G_MEDAL_ICON[id + '-' + level]),
+            'You have unlocked '+(G_MEDAL_GRADE[level] + G_MEDAL_NAME[id]),
             'You have been rewarded with '+me.getMedalReward(id, level)+' Piety points'
         ],
         callbacks: [],
