@@ -149,9 +149,10 @@ fbUpdate = function(){
     });
 },
 onFacebookUpdate = function(userId){
+    var cloudSave = document.querySelector('div#cloudSave');
+    if (!cloudSave) return;
     fbBtn.removeEventListener('click', onLogin);
     playBtn.removeEventListener('click', onPlay);
-    var cloudSave = document.querySelector('div#cloudSave');
     if (userId){
         playBtn.textContent = 'Begin';
 
