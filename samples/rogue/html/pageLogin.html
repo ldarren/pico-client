@@ -89,6 +89,8 @@
 <div><input type=checkbox>Silence</input></div>
 <div><a href=# class=hidden>Dungeon Map</a></div>
 <div><a href=# class=hidden>Medals</a></div>
+<div><a href=# class=hidden>Shop</a></div>
+<div><a href=# class=fantasyBtn>Credits</a></div>
 </div>
 
 <div id=cloudSave class=hidden>
@@ -112,7 +114,7 @@ this.use('game');
 
 var
 me = this,
-playBtn, fbBtn, gpBtn, nameTextbox, audioSwitch, mapBtn, medalBtn,
+playBtn, fbBtn, gpBtn, nameTextbox, audioSwitch, mapBtn, medalBtn, shopBtn,
 onPlay = function(){
     me.piHTMLAudio.preload();
     me.piHTMLAudio.volume(audioSwitch.checked ? 0 : 1);
@@ -123,32 +125,21 @@ onPlay = function(){
 onLogin = function(evt){
     me.socials.fbLogin({scope:'publish_actions'});
 },
-onShowMap = function(evt){
-    pico.changeFrame(document.body, 'div#page', 'html/pageMap.html', {opacity:[0,1,'1s']});
-},
-onShowMedals = function(evt){
-    pico.changeFrame(document.body, 'div#page', 'html/pageMedals.html', {opacity:[0,1,'1s']});
-},
-onShowHeroes = function(evt){
-    pico.changeFrame(document.body, 'div#page', 'html/pageHeroes.html', {opacity:[0,1,'1s']});
-},
-onShowCreeps = function(evt){
-    pico.changeFrame(document.body, 'div#page', 'html/pageCreeps.html', {opacity:[0,1,'1s']});
-},
-onShowSkills = function(evt){
-    pico.changeFrame(document.body, 'div#page', 'html/pageSkills.html', {opacity:[0,1,'1s']});
-},
-onShowEffects = function(evt){
-    pico.changeFrame(document.body, 'div#page', 'html/pageEffects.html', {opacity:[0,1,'1s']});
-},
+onShowMap = function(evt){ pico.changeFrame(document.body, 'div#page', 'html/pageMap.html', {opacity:[0,1,'1s']}); },
+onShowMedals = function(evt){ pico.changeFrame(document.body, 'div#page', 'html/pageMedals.html', {opacity:[0,1,'1s']}); },
+onShowHeroes = function(evt){ pico.changeFrame(document.body, 'div#page', 'html/pageHeroes.html', {opacity:[0,1,'1s']}); },
+onShowCreeps = function(evt){ pico.changeFrame(document.body, 'div#page', 'html/pageCreeps.html', {opacity:[0,1,'1s']}); },
+onShowSkills = function(evt){ pico.changeFrame(document.body, 'div#page', 'html/pageSkills.html', {opacity:[0,1,'1s']}); },
+onShowEffects = function(evt){ pico.changeFrame(document.body, 'div#page', 'html/pageEffects.html', {opacity:[0,1,'1s']}); },
+onShowShop = function(evt){ pico.changeFrame(document.body, 'div#page', 'html/pageShop.html', {opacity:[0,1,'1s']}); },
+onShowCredits = function(evt){ pico.changeFrame(document.body, 'div#page', 'html/pageCredits.html', {opacity:[0,1,'1s']}); },
 fbUpdate = function(){
     var socials = me.socials;
 
+    mapBtn.removeEventListener('click', onShowMap);
+    medalBtn.removeEventListener('click', onShowMedals);
+
     socials.loadNPCs(function(npcs){
-        mapBtn.removeEventListener('click', onShowMap);
-        medalBtn.removeEventListener('click', onShowMedals);
-        socials.loadAllies(function(friends){
-        });
         mapBtn.className = 'fantasyBtn';
         mapBtn.addEventListener('click', onShowMap, false);
         socials.syncMedals(function(){
@@ -171,12 +162,18 @@ onFacebookUpdate = function(userId){
         fbUpdate();
         playBtn.addEventListener('click', onPlay, false);
     }else{
-        playBtn.className = 'hidden';
         fbBtn.className = 'fb-connect';
+        playBtn.className = 'hidden';
         nameTextbox.className = 'hidden';
         cloudSave.className = 'hidden';
         fbBtn.addEventListener('click', onLogin, false);
     }
+},
+onShopOpen = function(){
+    shopBtn.removeEventListener('click', onShowShop);
+    console.log(JSON.stringify(arguments));
+    shopBtn.className = 'fantasyBtn';
+    shopBtn.addEventListener('click', onShowShop, false);
 },
 onLoad = function(){
     var frame = document.querySelector('div#gameInfo');
@@ -186,9 +183,15 @@ onLoad = function(){
     audioSwitch = frame.children[4].children[0];
     mapBtn = frame.children[5].children[0];
     medalBtn = frame.children[6].children[0];
+    shopBtn = frame.children[7].children[0];
+    if (window.GOOG){
+        window.GOOG.iab.open('', onShopOpen);
+    }
+    var btn= frame.children[8].children[0];
+    btn.addEventListener('click', onShowCredits, false);
 
     frame = document.querySelector('div#encyclopedia');
-    var btn = frame.children[1].children[0];
+    btn = frame.children[1].children[0];
     btn.addEventListener('click', onShowHeroes, false);
     btn = frame.children[2].children[0];
     btn.addEventListener('click', onShowCreeps, false);

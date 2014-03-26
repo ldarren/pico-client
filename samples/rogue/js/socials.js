@@ -21,7 +21,7 @@ pico.def('socials', 'piSocials', function(){
         plague:     [10,100,1000, 1000],
         drink:      [10,100,1000, 1000],
         enchant:    [10,100,1000, 1000],
-        fall:       [10,100,1000, 1000],
+        die:       [10,100,1000, 1000],
         fame:       [10,100,1000, 1000],
         fear:       [10,100,1000, 1000],
         frozen:     [10,100,1000, 1000],
@@ -51,7 +51,7 @@ pico.def('socials', 'piSocials', function(){
         plague:     [50,500,5000, 5000],
         drink:      [50,500,5000, 5000],
         enchant:    [50,500,5000, 5000],
-        fall:       [1,2,5000, 5000],
+        die:       [1,2,5000, 5000],
         fame:       [5,500,5000, 5000],
         fear:       [50,500,5000, 5000],
         frozen:     [50,500,5000, 5000],
@@ -321,7 +321,7 @@ pico.def('socials', 'piSocials', function(){
     me.resetWorld = function(elapsed, evt, entities){
         //accomplised('won', 1);
         var
-        id = 'fall',
+        id = 'die',
         newLevel = accomplished(id, 5);
         if (newLevel) unlockNoti.call(this, id, newLevel);
         return entities;

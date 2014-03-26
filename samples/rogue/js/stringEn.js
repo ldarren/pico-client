@@ -532,7 +532,7 @@ Object.freeze(G_OBJECT_DESC = {
 Object.freeze(G_MEDAL_GRADE = ['Medal of ', 'Medal of ', 'Order of ', 'Hero of ', 'Hero of ']);
 Object.freeze(G_MEDAL_NAME = {
 won:            'Glory',
-fall:           'the Steadfast', 
+die:           'the Steadfast', 
 gold:           'Wealth',
 piety:          'Faith',
 chest:          'Quest',
@@ -561,8 +561,8 @@ frozen:         'Blizzard',
 poison:         'Alchemy',
 });
 Object.freeze(G_MEDAL_DESC = {
-won:            'Return the soul stone',
-fall:           'A dutifully fearless spirit that stuborn challenge the legion from Hel', 
+won:            'The deeper the dungeon, the more glory in overcoming it and retrieve the soul stones',
+die:           'A dutifully fearless spirit that stuborn challenge the legion from Hel, rise every time falling', 
 gold:           'Earning golds',
 piety:          'Earning piety points',
 chest:          'Open chests on dungeon floors',

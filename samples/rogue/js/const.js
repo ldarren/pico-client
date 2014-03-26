@@ -414,7 +414,7 @@ Object.freeze(G_MEDAL_ICON = {
     'demon-1':24,    'demon-2':25,    'demon-3':26,
     'drink-1':27,    'drink-2':28,    'drink-3':29,
     'enchant-1':30,    'enchant-2':31,    'enchant-3':32,
-    'fall-1':33,    'fall-2':34,    'fall-3':35,
+    'die-1':33,    'die-2':34,    'die-3':35,
     'fame-1':36,    'fame-2':37,    'fame-3':38,
     'fear-1':39,    'fear-2':40,    'fear-3':41,
     'frozen-1':42,    'frozen-2':43,    'frozen-3':44,
