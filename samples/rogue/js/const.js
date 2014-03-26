@@ -1782,6 +1782,10 @@ Object.freeze(G_WIN_ID = {
     ALTAR: 'uiALTAR',
 });
 
+Object.freeze(G_SHOP = [
+'dungeon_chronicles.bag.slot12', 'dungeon_chronicles.tome.slot4'  
+]);
+
 Object.freeze(G_SHADE = [0, 1, 2, 3, 4, 5, 6, 7 ]);
 Object.freeze(G_HINT_COLOR = ['BLACK', 'RED', 'YELLOW', 'ORANGE', 'BLUE', 'PURPLE', '#aec440', 'WHITE' ]);
 Object.freeze(G_COLOR_TONE = ['#d7e894','#aec440','#527f39','#204631']);

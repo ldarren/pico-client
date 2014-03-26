@@ -170,9 +170,9 @@ onFacebookUpdate = function(userId){
         fbBtn.addEventListener('click', onLogin, false);
     }
 },
-onShopOpen = function(){
+onShopOpen = function(err){
+    if (err) return console.error(JSON.stringify(err));
     shopBtn.removeEventListener('click', onShowShop);
-    console.log(JSON.stringify(arguments));
     shopBtn.className = 'fantasyBtn';
     shopBtn.addEventListener('click', onShowShop, false);
 },
