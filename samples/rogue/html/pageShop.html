@@ -2,6 +2,7 @@
 #shop{
     background:#527f39;
 }
+.hidden{display:none;}
 .item{
     background:#204631;
     border-top:#527f39 5px solid;
@@ -92,7 +93,7 @@ onShowShop = function(err, inventory){
             .replace('CODE', purchased ? 'Item' : detail.price_currency_code)
             .replace('PRICE', purchased ? 'purchased' : detail.price);
         btn = ele.querySelector('a');
-        if (purchased) btn.style = 'display:none;';
+        if (purchased) btn.className = 'hidden';
         else btn.addEventListener('click', onPurchase, false);
         list.appendChild(ele);
     }
