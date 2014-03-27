@@ -159,7 +159,10 @@ onFacebookUpdate = function(userId){
         fbBtn.className = 'hidden';
         playBtn.className = 'fantasyBtn';
         nameTextbox.removeAttribute('class');
-        cloudSave.className = 'frame';
+        if (window.GOOG){
+            cloudSave.className = 'frame';
+            window.GOOG.iab.open('', onShopOpen);
+        }
         fbUpdate();
         playBtn.addEventListener('click', onPlay, false);
     }else{
@@ -185,9 +188,6 @@ onLoad = function(){
     mapBtn = frame.children[5].children[0];
     medalBtn = frame.children[6].children[0];
     shopBtn = frame.children[7].children[0];
-    if (window.GOOG){
-        window.GOOG.iab.open('', onShopOpen);
-    }
     var btn= frame.children[8].children[0];
     btn.addEventListener('click', onShowCredits, false);
 
