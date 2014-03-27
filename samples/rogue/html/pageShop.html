@@ -32,12 +32,13 @@
 }
 </style>
 <div class=pageHead>
-<a class=fantasyBtn href=#>&lt;&lt;</a>
+<a href=#>&lt;&lt;</a>
 <span>Shop</span>
 </div>
 
+<p>All items listed here are one time In-App-Purchase that permanently unlock game features.</p>
 <p>
-All items listed here are one time In-App-Purchase that permanently unlock game features. The game is full playable even without any of these features unlocked, but it will make game more enjoyable and we would appreciate your financial support for further game development
+The game is full playable even without any of these features unlocked, but it will make the game more enjoyable and we would appreciate your financial support for further game development
 </p>
 
 <div id=shop>
@@ -49,7 +50,7 @@ All items listed here are one time In-App-Purchase that permanently unlock game 
 <h4>TITLE</h4>
 <p>DESC</p>
 <span>CODE PRICE</span>
-<a href=#>Purchase</a>
+<a class=fantasyBtn href=#>Purchase</a>
 </div>
 </script>
 
@@ -70,9 +71,10 @@ onShowShop = function(err, inventory){
 
     var
     details = inventory.skuDetailsList,
+    owned = inventory.ownedSkus,
     list = document.querySelector('div#shop'),
     templ = document.querySelector('script#itemTempl').textContent,
-    id,detail,ele;
+    id,detail,ele,btn,pirchased;
 
     list.innerHTML = '';
     
@@ -81,14 +83,17 @@ onShowShop = function(err, inventory){
         ele = document.createElement('div');
         id = detail.productId;
         ele.id = id;
+        purchased = -1 !== owned.indexOf(id);
         ele.className = 'item';
         ele.innerHTML = templ
             .replace('ID', id)
             .replace('TITLE', detail.title)
             .replace('DESC', detail.description)
-            .replace('CODE', detail.price_currency_code)
-            .replcae('PRICE', detail.price);
-        ele.querySelector('a').addEventListener('click', onPurchase, false);
+            .replace('CODE', purchased ? 'Item' : detail.price_currency_code)
+            .replace('PRICE', purchased ? 'purchased' : detail.price);
+        btn = ele.querySelector('a');
+        if (purchased) btn.style = 'display:none;';
+        else btn.addEventListener('click', onPurchase, false);
         list.appendChild(ele);
     }
 },
