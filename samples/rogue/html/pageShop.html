@@ -28,9 +28,6 @@
 .item span{
     display:block;
 }
-.item a{
-    display:block;
-}
 </style>
 <div class=pageHead>
 <a href=#>&lt;&lt;</a>
@@ -84,10 +81,10 @@ onShowShop = function(err, inventory){
         ele = document.createElement('div');
         id = detail.productId;
         ele.id = id;
-        purchased = -1 !== owned.indexOf(id);
+        purchased = (-1 !== owned.indexOf(id));
         ele.className = 'item';
         ele.innerHTML = templ
-            .replace('ID', id)
+            .replace('ID', id+(purchased ? '' : '.0'))
             .replace('TITLE', detail.title)
             .replace('DESC', detail.description)
             .replace('CODE', purchased ? 'Item' : detail.price_currency_code)
