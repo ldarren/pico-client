@@ -439,6 +439,20 @@ pico.def('game', 'pigSqrMap', function(){
         });
     };
 
+    me.checkIAB = function(skus, cb){
+        if (window.GOOG){
+            return window.GOOG.iab.inventory(skus, cb);
+        }
+        cb();
+    };
+
+    me.makeIAB = function(sku, cb){
+        window.GOOG.iab.buy(sku, 'YOYO', function(err, purchase){
+            if (err) return cb(err);
+            window.GOOG.iab.inventory([sku], cb);
+        });
+    };
+
     me.openChest = function(elapsed, evt, entities){
         var
         hero = this.hero,

@@ -99,7 +99,7 @@ onShowShop = function(err, inventory){
 onLoad = function(){
     document.querySelector('div.pageHead a').addEventListener('click', onBack);
 
-    window.GOOG.iab.inventory(G_SHOP, onShowShop);
+    window.GOOG.iab.inventory(G_FEATURE_SHOP, onShowShop);
 };
 
 me.slot(pico.LOAD, onLoad);

@@ -17,7 +17,7 @@ pico.def('god', 'picUIContent', function(){
     labels = [G_LABEL.OFFER, G_LABEL.TITHE, G_LABEL.CLOSE],
     isAltarOpened = false,
     callback,
-    heroBody, heroName, heroPiety,heroProgress={}, heroBagExt=false, heroTomeExt=false,
+    heroBody, heroName, heroPiety,heroProgress={},
     onCustomBound = function(ent, rect, ui, scale){
         switch(ui.userData.id){
         case 'donate':
@@ -225,13 +225,6 @@ pico.def('god', 'picUIContent', function(){
         heroName = name || h[GOD_NAME]; // always get new from loginPage
         heroPiety = h[GOD_PIETY];
         heroProgress = h[GOD_PROGRESS];
-        if (window.GOOG){
-            window.GOOG.inventory(G_FEATURE_SHOP, function(err, inventory){
-                var owned = inventory.ownedSkus;
-                heroBagExt = (-1 !== owned.indexOf(G_FEATURE_SHOP[0]));
-                heroTomeExt = (-1 !== owned.indexOf(G_FEATURE_SHOP[1]));
-            });
-        }
         return h;
     };
 

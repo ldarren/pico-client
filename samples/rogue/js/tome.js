@@ -199,27 +199,24 @@ pico.def('tome', 'picUIContent', function(){
     };
 
     me.create = function(ent, data){
-        if (window.GOOG){
-            window.GOOG.iab.inventory([SKU], me.checkExt);
-        }else{
-            purchasable = false;
-            CAP = 4;
-        }
+        me.checkExt(null, data.iab);
         data = me.base.create.call(this, ent, data);
 
         data.font = this.smallDevice ? data.fontSmall : data.fontBig;
         return data;
     };
 
-    me.onPurchase = function(){
-        window.GOOG.iab.buy(SKU, 'YOYO', function(err, purchase){
-            if (err) return console.error(JSON.stringify(err));
-            window.GOOG.iab.inventory([SKU], me.checkExt);
-        });
-    };
-
-    me.checkExt = function(err, inventory){
-        if (-1 !== inventory.ownedSkus.indexOf(SKU)){
+    me.checkExt = function(err, iab){
+        if (err) return console.error(JSON.stringify(err));
+        if (!iab){
+            purchasable = false;
+            CAP = 4;
+            return;
+        }
+        if (-1 === iab.ownedSkus.indexOf(SKU)){
+            purchasable = true;
+            CAP = 4;
+        }else{
             purchasable = false;
             CAP = 4 + 4;
         }

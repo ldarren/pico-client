@@ -68,7 +68,7 @@ pico.def('bag', 'picUIContent', function(){
             return true;
         }else{
             if (i === CAP){
-                me.onPurchase();
+                this.makeIAB(SKU, me.checkExt);
             }
             this.go('hideInfo');
         }
@@ -356,12 +356,7 @@ pico.def('bag', 'picUIContent', function(){
     };
 
     me.create = function(ent, data){
-        if (window.GOOG){
-            window.GOOG.iab.inventory([SKU], me.checkExt);
-        }else{
-            purchasable = false;
-            CAP = 8;
-        }
+        me.checkExt(null, data.iab);
         data = me.base.create.call(this, ent, data);
 
         data.activated = -1;
@@ -369,15 +364,17 @@ pico.def('bag', 'picUIContent', function(){
         return data;
     };
 
-    me.onPurchase = function(){
-        window.GOOG.iab.buy(SKU, 'YOYO', function(err, purchase){
-            if (err) return console.error(JSON.stringify(err));
-            window.GOOG.iab.inventory([SKU], me.checkExt);
-        });
-    };
-
-    me.checkExt = function(err, inventory){
-        if (-1 !== inventory.ownedSkus.indexOf(SKU)){
+    me.checkExt = function(err, iab){
+        if (err) return console.error(JSON.stringify(err));
+        if (!iab){
+            purchasable = false;
+            CAP = 8;
+            return;
+        }
+        if (-1 === iab.ownedSkus.indexOf(SKU)){
+            purchasable = true;
+            CAP = 8;
+        }else{
             purchasable = false;
             CAP = 8 + 12;
         }
