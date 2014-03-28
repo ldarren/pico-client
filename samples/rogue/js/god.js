@@ -17,7 +17,7 @@ pico.def('god', 'picUIContent', function(){
     labels = [G_LABEL.OFFER, G_LABEL.TITHE, G_LABEL.CLOSE],
     isAltarOpened = false,
     callback,
-    heroBody, heroName, heroPiety, heroBagCap=8, heroTomeCap=8,heroProgress={},
+    heroBody, heroName, heroPiety,heroProgress={}, heroBagExt=false, heroTomeExt=false,
     onCustomBound = function(ent, rect, ui, scale){
         switch(ui.userData.id){
         case 'donate':
@@ -219,19 +219,24 @@ pico.def('god', 'picUIContent', function(){
     me.init = function(name){
         var h = this.heaven;
         if (!h){
-            h = [null, name, 1000, heroBagCap, heroTomeCap, heroProgress];
+            h = [null, name, 0, heroProgress];
         }
         heroBody = h[GOD_BODY];
         heroName = name || h[GOD_NAME]; // always get new from loginPage
         heroPiety = h[GOD_PIETY];
-        heroBagCap = h[GOD_BAG_CAP];
-        heroTomeCap = h[GOD_TOME_CAP];
         heroProgress = h[GOD_PROGRESS];
+        if (window.GOOG){
+            window.GOOG.inventory(G_FEATURE_SHOP, function(err, inventory){
+                var owned = inventory.ownedSkus;
+                heroBagExt = (-1 !== owned.indexOf(G_FEATURE_SHOP[0]));
+                heroTomeExt = (-1 !== owned.indexOf(G_FEATURE_SHOP[1]));
+            });
+        }
         return h;
     };
 
     me.exit = function(){
-        this.heaven = [heroBody, heroName, heroPiety, heroBagCap, heroTomeCap];
+        this.heaven = [heroBody, heroName, heroPiety, heroProgress];
     };
 
     me.step = function(steps){
@@ -311,14 +316,8 @@ pico.def('god', 'picUIContent', function(){
                 [me.ai.spawnItem(G_ICON.SMALL_HP, null, G_GRADE.COMMON, 1),9999,1]
             ],
             tome: [
-                me.tome.createSpell(G_ICON.SQUEAL, heroClass),
-                me.tome.createSpell(G_ICON.NOCTURNAL, heroClass),
-                me.tome.createSpell(G_ICON.LYCAN, heroClass),
-                me.tome.createSpell(G_ICON.GROWL, heroClass),
-                me.tome.createSpell(G_ICON.GAZE, heroClass),
-                me.tome.createSpell(G_ICON.FIREBALL, heroClass),
-                me.tome.createSpell(G_ICON.POISON_BLADE, heroClass),
-                me.tome.createSpell(G_ICON.WHIRLWIND, heroClass)]
+                me.tome.createSpell(G_ICON.GAZE, heroClass)
+            ]
         };
     };
 
@@ -346,10 +345,6 @@ pico.def('god', 'picUIContent', function(){
 
     me.getPiety = function(){ return heroPiety; };
     me.incrPiety = function(piety){ heroPiety += piety; };
-    me.getBagCap = function(){ return heroBagCap; };
-    me.incrBagCap = function(){ heroBagCap = 16; };
-    me.getTomeCap = function(){ return heroTomeCap; };
-    me.incrTomeCap = function(){ heroTomeCap = 12; };
     me.getProgress = function(medalId){ return heroProgress[medalId] || 0; };
     me.incrProgress = function(medalId, incr){ return heroProgress[medalId] = (heroProgress[medalId] || 0) + incr; };
 

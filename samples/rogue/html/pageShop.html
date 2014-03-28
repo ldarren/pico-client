@@ -61,7 +61,7 @@ onBack = function(evt){
 onPurchase = function(evt){
     window.GOOG.iab.buy(evt.srcElement.id, 'YOYO', function(err, purchase){
         if (err) return console.error(JSON.stringify(err));
-        window.GOOG.iab.inventory(G_SHOP, onShowShop);
+        window.GOOG.iab.inventory(G_FEATURE_SHOP, onShowShop);
     });
 },
 onShowShop = function(err, inventory){
@@ -90,6 +90,7 @@ onShowShop = function(err, inventory){
             .replace('CODE', purchased ? 'Item' : detail.price_currency_code)
             .replace('PRICE', purchased ? 'purchased' : detail.price);
         btn = ele.querySelector('a');
+        btn.id = id;
         if (purchased) btn.className = 'hidden';
         else btn.addEventListener('click', onPurchase, false);
         list.appendChild(ele);

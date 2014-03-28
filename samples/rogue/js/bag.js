@@ -2,18 +2,26 @@ pico.def('bag', 'picUIContent', function(){
     var
     me = this,
     Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round, Max = Math.max,
-    BAG_ROW = 4,
+    CAP = 8, SKU = G_FEATURE_SHOP[0],
+    purchasable = false,
     name = me.moduleName,
     onCustomBound = function(ent, rect, ui, scale){
         return me.calcUIRect(rect, ui, scale);
     },
     onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
+        var i = ui.userData.id;
+
+        // draw purchase button
+        if (i === CAP){
+            me.drawButton(ctx, tss, G_MSG.BUY_LABEL, rect, scale, G_COLOR_TONE[0], G_COLOR_TONE[3]);
+            return;
+        }
+
         var
         com = ent.getComponent(name),
         ts = tss[0],
-        i = ui.userData.id,
-        slots = this.hero.getBag(),
         x=rect[0], y=rect[1], w=rect[2], h=rect[3],
+        slots = this.hero.getBag(),
         slot, item, count;
 
         slot = slots[i];
@@ -39,6 +47,9 @@ pico.def('bag', 'picUIContent', function(){
             ctx.fillText(count, x1, y1, w);
         }
     },
+    onCustomButton = function(ent, ctx, rect, ui, tss, scale){
+        me.drawButton(ctx, tss, G_MSG.BUY_LABEL, rect, scale, G_COLOR_TONE[3], G_COLOR_TONE[0], G_COLOR_TONE[1], 3);
+    },
     onCustomClick = function(ent, ui){
         var com = ent.getComponent(name);
 
@@ -56,6 +67,9 @@ pico.def('bag', 'picUIContent', function(){
             this.go('showInfo', {targetId: i, context: G_CONTEXT.BAG});
             return true;
         }else{
+            if (i === CAP){
+                me.onPurchase();
+            }
             this.go('hideInfo');
         }
         return false;
@@ -83,7 +97,7 @@ pico.def('bag', 'picUIContent', function(){
         case me.CUSTOM_BOUND: return onCustomBound.apply(this, arguments); break;
         case me.CUSTOM_DRAW: return onCustomDraw.apply(this, arguments); break;
         case me.CUSTOM_CLICK: return onCustomClick.apply(this, arguments); break;
-        case me.CUSTOM_BUTTON: return onCustomDraw.apply(this, arguments); break;
+        case me.CUSTOM_BUTTON: return onCustomButton.apply(this, arguments); break;
         case me.CUSTOM_DROP: return onCustomDrop.apply(this, arguments); break;
         }
     };
@@ -342,6 +356,12 @@ pico.def('bag', 'picUIContent', function(){
     };
 
     me.create = function(ent, data){
+        if (window.GOOG){
+            window.GOOG.iab.inventory([SKU], me.checkExt);
+        }else{
+            purchasable = false;
+            CAP = 8;
+        }
         data = me.base.create.call(this, ent, data);
 
         data.activated = -1;
@@ -349,11 +369,26 @@ pico.def('bag', 'picUIContent', function(){
         return data;
     };
 
+    me.onPurchase = function(){
+        window.GOOG.iab.buy(SKU, 'YOYO', function(err, purchase){
+            if (err) return console.error(JSON.stringify(err));
+            window.GOOG.iab.inventory([SKU], me.checkExt);
+        });
+    };
+
+    me.checkExt = function(err, inventory){
+        if (-1 !== inventory.ownedSkus.indexOf(SKU)){
+            purchasable = false;
+            CAP = 8 + 12;
+        }
+    };
+
+    me.getCap = function(){return CAP;};
+
     me.resize = function(ent, width, height){
         var
         com = ent.getComponent(name),
         comWin = ent.getComponent(com.win),
-        cap = this.hero.getBagCap(),
         style = {font: com.font,fillStyle:com.fontColor},
         cellOpt = {drop: 1},
         size = 32,
@@ -361,10 +396,10 @@ pico.def('bag', 'picUIContent', function(){
         meshui,rows,row,cell,i,l;
 
         if (comWin.maximized){
-            meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, actualSize * (2+(cap/4))), style);
+            meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, actualSize * ((purchasable ? 3 : 2)+(CAP/4))), style);
             rows=meshui.rows;
         }else{
-            meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, actualSize * (1+cap)), style);
+            meshui = me.createMeshUI(null, me.TOP_LEFT, me.TOP_LEFT, 0, width, Max(height, actualSize * (1+CAP)), style);
             rows=meshui.rows;
         }
 
@@ -373,7 +408,7 @@ pico.def('bag', 'picUIContent', function(){
         me.createMeshText(cell, me.CENTER, me.CENTER, 0, 1, 1, com.name);
 
         if (comWin.maximized){
-            for(i=0,l=cap/4;i<l;i++){
+            for(i=0,l=CAP/4;i<l;i++){
                 row=me.createMeshRow(rows);
                 cell=me.createMeshCell(row, cellOpt);
                 cell=me.createMeshCell(row, cellOpt);
@@ -392,8 +427,16 @@ pico.def('bag', 'picUIContent', function(){
                 cell=me.createMeshCell(row, cellOpt);
                 cell=me.createMeshCell(row, cellOpt);
             }
+
+            if (purchasable){
+                row=me.createMeshRow(rows);
+                cell=me.createMeshCell(row);
+                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 1, 0, {id:CAP});
+            }
+
+            row=me.createMeshRow(rows);
         }else{
-            for(i=0;i<cap;i++){
+            for(i=0;i<CAP;i++){
                 row=me.createMeshRow(rows);
                 cell=me.createMeshCell(row, cellOpt);
                 me.createMeshTile(cell, me.CENTER, me.CENTER, 0, size, size, 0, G_UI.SLOT);

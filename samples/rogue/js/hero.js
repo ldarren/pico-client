@@ -252,6 +252,7 @@ pico.def('hero', 'picUIContent', function(){
     };
 
     me.use('tome');
+    me.use('bag');
     me.use('god');
 
     me.create = function(ent, data){
@@ -540,7 +541,7 @@ pico.def('hero', 'picUIContent', function(){
 
     me.putIntoBag = function(item){
         var
-        cap = me.getBagCap(),
+        cap = me.bag.getCap(),
         count = 1,
         stack, stat, i, l;
 
@@ -894,11 +895,10 @@ pico.def('hero', 'picUIContent', function(){
     me.getLevel = function(){ return appearance[HERO_LEVEL]; };
     me.getJob = function(){ return currStats[OBJECT_SUB_TYPE]; };
     me.getBag = function(){ return bag; };
-    me.getBagCap = function(){ return me.god.getBagCap(); };
     me.isBagFull = function(count){ 
         if (!bag) return true; 
         count = count || 1;
-        for(var i=0,l=me.god.getBagCap(); i<l; i++){ 
+        for(var i=0,l=me.bag.getCap(); i<l; i++){ 
             if (!bag[i]){
                 count--;
                 if (!count) return false;
@@ -908,11 +908,10 @@ pico.def('hero', 'picUIContent', function(){
     };
     me.getItem = function(id){ return bag[id]; };
     me.getTome = function(){ return tome; };
-    me.getTomeCap = function(){ return me.god.getTomeCap(); };
     me.isTomeFull = function(count){ 
         if (!tome) return true; 
         count = count || 1;
-        for(var i=0,l=me.god.getTomeCap(); i<l; i++){ 
+        for(var i=0,l=me.tome.getCap(); i<l; i++){ 
             if (!tome[i]){
                 count--;
                 if (!count) return false;

@@ -3,6 +3,7 @@ Object.freeze(G_MSG = {
     POSTFIX_SEPARATOR: " of ",
     FLEE_WIN: "You fled the battle area",
     FLEE_LOST: "You failed to flee, improve your `0613 dex and `0193 luck to increase your chances",
+    BUY_LABEL: 'Get Extra Slots',
     BAG_FULL: ["You cannot receive this item. Your bag may be full."],
     TOME_FULL: ["You cannot learn this scroll. Your tome may be full."],
 });
