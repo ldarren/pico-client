@@ -139,6 +139,7 @@ onLoad = function(){
         game.route('moveCameraStart', [game.useSelected, renderer.captureScreenshot]);
         game.route('moveCamera', [game.useSelected, camera.swipe, renderer.drawScreenshot]);
         game.route('moveCameraEnd', [game.releaseSelected, renderer.releaseScreenshot, renderer.draw]);
+        game.route('makeIAB', [game.makeIAB, uiWindow.update, renderer.draw]);
         game.route('useItem', [bag.useItem, socials.useItem, renderer.draw]);
         game.route('openGate', [game.openGate, renderer.draw]);
         game.route('openChest', [game.openChest, renderer.draw]);

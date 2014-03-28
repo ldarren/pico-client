@@ -65,7 +65,7 @@ pico.def('tome', 'picUIContent', function(){
         }else{
             this.go('hideInfo', true);
             if (id === CAP){
-                this.makeIAB(SKU, me.checkExt);
+                this.go('makeIAB', {sku:SKU, cb: me.checkExt});
             }
         }
         return false;

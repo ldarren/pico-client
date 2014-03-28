@@ -60,17 +60,17 @@ pico.def('bag', 'picUIContent', function(){
             return false;
         }
         var
-        i = ui.userData.id,
-        slot = this.hero.getBag()[i];
+        id = ui.userData.id,
+        slot = this.hero.getBag()[id];
 
         if (slot){
-            com.activated = i;
-            this.go('showInfo', {targetId: i, context: G_CONTEXT.BAG});
+            com.activated = id;
+            this.go('showInfo', {targetId: id, context: G_CONTEXT.BAG});
             return true;
         }else{
             this.go('hideInfo', true);
-            if (i === CAP){
-                this.makeIAB(SKU, me.checkExt);
+            if (id === CAP){
+                this.go('makeIAB', {sku:SKU, cb: me.checkExt});
             }
         }
         return false;

@@ -446,7 +446,8 @@ pico.def('game', 'pigSqrMap', function(){
         cb();
     };
 
-    me.makeIAB = function(sku, cb){
+    me.makeIAB = function(elapsed, evt, entities){
+        var sku = evt.sku, cb = evt.cb;
         window.GOOG.iab.buy(sku, 'YOYO', function(err, purchase){
             if (err) return cb(err);
             window.GOOG.iab.inventory([sku], cb);
