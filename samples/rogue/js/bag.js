@@ -67,10 +67,11 @@ pico.def('bag', 'picUIContent', function(){
             this.go('showInfo', {targetId: i, context: G_CONTEXT.BAG});
             return true;
         }else{
+            this.go('hideInfo', true);
             if (i === CAP){
                 this.makeIAB(SKU, me.checkExt);
+                return true;
             }
-            this.go('hideInfo');
         }
         return false;
     },
@@ -428,7 +429,7 @@ pico.def('bag', 'picUIContent', function(){
             if (purchasable){
                 row=me.createMeshRow(rows);
                 cell=me.createMeshCell(row);
-                me.createMeshCustom(cell, me.CENTER, me.CENTER, 0, 1, 1, 1, 0, {id:CAP});
+                me.createMeshCustom(cell, me.TOP, me.TOP, 0, 1, actualSize, 1, 0, {id:CAP});
             }
 
             row=me.createMeshRow(rows);
