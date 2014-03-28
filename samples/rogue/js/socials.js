@@ -141,7 +141,7 @@ pico.def('socials', 'piSocials', function(){
                 npcIds.push(npcId);
 
                 readLevel(npcId, addAllies);
-
+                // fill all the noc with gifted friends
                 fbNPCs.push([npcId, request.from.name, gifts]);
                 for (ri=requests.length-1; ri>-1; ri--){
                     request = requests[ri];
@@ -164,7 +164,8 @@ pico.def('socials', 'piSocials', function(){
                     fbNewbees.push(friend);
                     friends.splice(i, 1);
                 }
-                target = 2 - fbNPCs.length; // if npc count less than 2, fill than number of installed friends
+                // if npc count less than 2 or 3 if no new newbees, fill than number of installed friends
+                target = (fbNewbees.length ? 2 - fbNPCs.length : 3 - fbNPCs.length);
                 for(i=0,l=(friends.length >= target ? target : friends.length); i<l; i++){
                     friend = friends.splice(Random()*friends.length, 1)[0];
                     npcId = friend.id;
