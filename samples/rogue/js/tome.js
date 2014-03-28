@@ -44,7 +44,8 @@ pico.def('tome', 'picUIContent', function(){
         if (item === hero.getSelectedSpell()) ts.draw(ctx, G_UI.SELECTED, x, y, w, h);
     },
     onCustomButton = function(ent, ctx, rect, ui, tss, scale){
-        me.drawButton(ctx, tss, G_MSG.BUY_LABEL, rect, scale, G_COLOR_TONE[3], G_COLOR_TONE[0], G_COLOR_TONE[1], 3);
+        if (CAP === ui.userData.id)
+            me.drawButton(ctx, tss, G_MSG.BUY_LABEL, rect, scale, G_COLOR_TONE[3], G_COLOR_TONE[0], G_COLOR_TONE[1], 3);
     },
     onCustomClick = function(ent, ui){
         if (!ui) return false;
@@ -63,9 +64,8 @@ pico.def('tome', 'picUIContent', function(){
             return true;
         }else{
             this.go('hideInfo', true);
-            if (i === CAP){
+            if (id === CAP){
                 this.makeIAB(SKU, me.checkExt);
-                return true;
             }
         }
         return false;

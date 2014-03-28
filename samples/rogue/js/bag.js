@@ -48,7 +48,8 @@ pico.def('bag', 'picUIContent', function(){
         }
     },
     onCustomButton = function(ent, ctx, rect, ui, tss, scale){
-        me.drawButton(ctx, tss, G_MSG.BUY_LABEL, rect, scale, G_COLOR_TONE[3], G_COLOR_TONE[0], G_COLOR_TONE[1], 3);
+        if (CAP === ui.userData.id)
+            me.drawButton(ctx, tss, G_MSG.BUY_LABEL, rect, scale, G_COLOR_TONE[3], G_COLOR_TONE[0], G_COLOR_TONE[1], 3);
     },
     onCustomClick = function(ent, ui){
         var com = ent.getComponent(name);
@@ -70,7 +71,6 @@ pico.def('bag', 'picUIContent', function(){
             this.go('hideInfo', true);
             if (i === CAP){
                 this.makeIAB(SKU, me.checkExt);
-                return true;
             }
         }
         return false;
