@@ -76,6 +76,7 @@ pico.def('dialogMsg', 'picUIContent', function(){
     };
 
     me.resize = function(ent, width, height){
+        if (!me.isValid()) return [2,2];
         var
         com = ent.getComponent(name),
         style = {font:com.font, fillStyle:com.fontColor},
