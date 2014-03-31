@@ -140,6 +140,8 @@ onStateLoaded = function(err, result){
     playBtn.addEventListener('click', onPlay, false);
 },
 onSignedIn = function(err, result){
+    var cloudSave = document.querySelector('div#cloudSave');
+    cloudSave.className = 'frame';
     googBtn.removeEventListener('click', onSignin);
     if (err) {
         googBtn.className = 'goog-connect';
@@ -150,12 +152,6 @@ onSignedIn = function(err, result){
     }
 },
 onSignin = function(evt){
-    me.socials.googLogin(onSignedIn);
-},
-onGOOGInit = function(err, config){
-    if (err || !config){
-        me.socials.googLoadState(1, onStateLoaded);
-    }
     me.socials.googLogin(onSignedIn);
 },
 onShowMap = function(evt){ pico.changeFrame(document.body, 'div#page', 'html/pageMap.html', {opacity:[0,1,'1s']}); },
@@ -199,18 +195,18 @@ onFacebookUpdate = function(userId){
         nameTextbox.removeAttribute('class');
         if (GOOG){
             GOOG.iab.open('', onShopOpen);
-            me.socials.googInit(GOOG.gms.CLIENT_APPSTATE, null, onGOOGInit);
-            cloudSave.className = 'frame';
+            me.socials.googInit(GOOG.gms.CLIENT_APPSTATE);
+            me.socials.googLogin(onSignedIn);
         }else{
             me.socials.googStateLoad(1, onStateLoaded);
         }
         fbUpdate();
     }else{
-        fbBtn.className = 'fb-connect';
         playBtn.className = 'hidden';
         nameTextbox.className = 'hidden';
         cloudSave.className = 'hidden';
         shopBtn.className = 'hidden';
+        fbBtn.className = 'fb-connect';
         fbBtn.addEventListener('click', onLogin, false);
     }
 },
