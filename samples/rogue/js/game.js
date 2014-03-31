@@ -8,7 +8,6 @@ pico.def('game', 'pigSqrMap', function(){
 
     var
     me = this,
-    db = window.localStorage,
     fingerStack = [],
     Max=Math.max,Abs=Math.abs,Floor=Math.floor,Random=Math.random,Pow=Math.pow,Sqrt=Math.sqrt,
     pathElapsed = 0,
@@ -30,14 +29,17 @@ pico.def('game', 'pigSqrMap', function(){
         };
         img.src = me.socials.fbProfile(id, me.tileWidth);
     },
-    loadGame = function(){
-        var text = db.getItem(me.moduleName);
+    loadGame = function(text){
         if (!text) return false;
 
-        var
-        obj = JSON.parse(text),
-        keys = Object.keys(obj),
-        key;
+        try{
+            var
+            obj = JSON.parse(pico.strTools.strCodec(parseInt(me.socials.fbUserId()), text)),
+            keys = Object.keys(obj),
+            key;
+        }catch(exp){
+            return;
+        }
 
         Object.getPrototypeOf(me).init(obj.mapWidth, obj.mapHeight);
 
@@ -48,7 +50,7 @@ pico.def('game', 'pigSqrMap', function(){
         return true;
     },
     saveGame = function(){
-        db.setItem(me.moduleName, JSON.stringify({
+        me.socials.googStateUpdate(1, pico.strTools.strCodec(parseInt(me.socials.fbUserId()), JSON.stringify({
                 currentLevel: me.currentLevel,
                 prevLevel: me.prevLevel,
                 nextLevel: me.nextLevel,
@@ -64,7 +66,7 @@ pico.def('game', 'pigSqrMap', function(){
                 heaven: me.heaven,
                 mortal: me.mortal,
                 mortalLoc: me.hero.getPosition()
-            }));
+            })));
     },
     createLevel = function(level){
         me.prevLevel = level ? me.currentLevel : 0;
@@ -349,8 +351,8 @@ pico.def('game', 'pigSqrMap', function(){
     me.realNPCs = [];
 
     // call in pageLogin onLoad
-    me.load = function(){
-        loadGame();
+    me.load = function(gameSaved){
+        loadGame(gameSaved);
         return me.heaven ? me.heaven[1] : undefined;
     };
 
@@ -371,7 +373,7 @@ pico.def('game', 'pigSqrMap', function(){
         me.mortal = me.hero.exit.call(me);
         me.heaven = me.god.exit.call(me);
 
-        //saveGame();
+        saveGame();
     };
 
     me.step = function(elapsed, steps, entities){
@@ -427,7 +429,7 @@ pico.def('game', 'pigSqrMap', function(){
 
             me.socials.getNPCs(function(friends){
                 loadNPC(friends, me.realNPCs, function(){
-                    prepareTutorial(0);
+                    prepareTutorial(me.currentLevel);
                     cb();
                 });
             });
@@ -653,6 +655,7 @@ pico.def('game', 'pigSqrMap', function(){
         hero.init.call(me, level);
         ai.init.call(me);
 
+        me.exit(); // HACK: save all objects
         //me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);
         me.go('forceRefresh');
         return entities;
@@ -684,8 +687,10 @@ pico.def('game', 'pigSqrMap', function(){
 
         me.hero.init.call(me, 0);
 
+        if ('init' === evt) return; // canvas not ready yet, dun redraw
+
         //me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);
-        me.go('forceRefresh');
+        //me.go('forceRefresh');
         return entities;
     };
 

@@ -115,8 +115,8 @@ this.use('game');
 
 var
 me = this,
-LAST_SAVED = 'Last Saved: VER',
-playBtn, fbBtn, googBtn, nameTextbox, audioSwitch, mapBtn, medalBtn, shopBtn, LastSaved, state,
+STORAGE = 'Storage: LOC',
+playBtn, fbBtn, googBtn, nameTextbox, audioSwitch, mapBtn, medalBtn, shopBtn, storageLoc,
 onPlay = function(){
     me.piHTMLAudio.preload();
     me.piHTMLAudio.volume(audioSwitch.checked ? 0 : 1);
@@ -128,11 +128,15 @@ onLogin = function(evt){
     me.socials.fbLogin({scope:'publish_actions'});
 },
 onStateLoaded = function(err, result){
-    if (err) {
-        LastSaved.textContent = LAST_SAVED.replace('VER', result);
+    if (err || (result && result.status && 2002 !== result.status)) {
+        storageLoc.textContent = STORAGE.replace('LOC', 'Error: '+result.status);
     }else{
-        state = result;
-        LastSaved.textContent = LAST_SAVED.replace('VER', Date.now());
+console.log('onStateLoaded: '+result.data);
+        var name = me.game.load(result.data);
+        if (name){
+          nameTextbox.value = name;
+        }
+        storageLoc.textContent = STORAGE.replace('LOC', 'Google Play');
     }
     playBtn.removeEventListener('click', onPlay);
     playBtn.className = 'fantasyBtn';
@@ -224,7 +228,7 @@ onLoad = function(){
     
     frame = document.querySelector('div#cloudSave');
     googBtn = frame.children[1].children[0];
-    LastSaved = frame.children[2];
+    storageLoc = frame.children[2];
 
     frame = document.querySelector('div#encyclopedia');
     btn = frame.children[1].children[0];
@@ -235,11 +239,6 @@ onLoad = function(){
     btn.addEventListener('click', onShowSkills, false);
     btn = frame.children[4].children[0];
     btn.addEventListener('click', onShowEffects, false);
-
-    var name = me.game.load();
-    if (name){
-      nameTextbox.value = name;
-    }
 
     me.piHTMLAudio.create('dat/fantasy-sfx.json', function(err, audioSprite){
         me.socials.fbInit(

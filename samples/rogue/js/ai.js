@@ -135,6 +135,7 @@ pico.def('ai', function(){
     };
 
     me.exit = function(){
+        return this.objects;
     };
 
     me.step = function(steps){

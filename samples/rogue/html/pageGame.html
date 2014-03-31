@@ -244,6 +244,8 @@ onLoad = function(){
         uiWinEnt = uiWinEnts[6];
         uiWinEnt.attach(uiWindow, {content:god.moduleName, resizable:false, box:rect.moduleName, background:'rgba(32,70,49,0.9)', theme: G_THEME.THEME8});
         uiWinEnt.attach(god, {win:uiWindow.moduleName, box:rect.moduleName, meshUI:'altar',fontBig:'bold 12pt alagard', fontSmall:'10pt Helvetica', fontColor:G_COLOR_TONE[1]});
+            
+        game.go('reborn', 'init');
 
         resize(window.innerWidth, window.innerHeight);
         canvas.slot(canvas.FINGER_DOWN, onFingerDown);
@@ -253,9 +255,9 @@ onLoad = function(){
         window.addEventListener('resize', onResize, false);
         window.addEventListener('unload', game.exit, false);
 
-//        if (game.mortal)
+/*        if (game.mortal)
             game.go('reborn');
-/*        else {
+        else {
             game.go('showDialog', {
                 info: [
                     'Welcome to Dungeon Chronicles!',
