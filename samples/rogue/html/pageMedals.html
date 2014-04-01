@@ -66,31 +66,31 @@ onLoad = function(){
     var 
     socials = me.socials,
     god = me.god,
-    id = window.location.hash.substring(1),
+    userId = window.location.hash.substring(1),
     backBtn = document.querySelector('div.pageHead a'),
-    medalCont = document.querySelector('div#medals'),
+    list = document.querySelector('div#medals'),
     templ = document.querySelector('script#medalTempl').textContent,
-    medalId,medalEle,medalLevel;
+    id,ele,level;
 
     backBtn.addEventListener('click', onBack);
 
-    medalCont.innerHTML = '';
+    list.innerHTML = '';
 
-    socials.readMedals(id ? id : 'me', function(medals){
+    socials.readMedals(userId ? userId : 'me', function(medals){
         for(var i=0,l=medalList.length; i<l; i++){
-            medalId = medalList[i];
-            medalLevel = medals[medalId] || 0;
-            medalEle = document.createElement('div');
-            medalEle.className = 'medal';
-            medalEle.innerHTML = templ
-                                    .replace('FNAME', medalId+'-'+medalLevel)
-                                    .replace('UNLOCK', medalLevel)
-                                    .replace('NAME', G_MEDAL_GRADE[medalLevel] + G_MEDAL_NAME[medalId])
-                                    .replace('DESC', G_MEDAL_DESC[medalId])
-                                    .replace('CURR', god.getProgress(medalId))
-                                    .replace('TOTAL', socials.getMedalTarget(medalId, medalLevel))
-                                    .replace('REWARD', socials.getMedalReward(medalId, medalLevel)+' Piety points');
-            medalCont.appendChild(medalEle);
+            id = medalList[i];
+            level = medals[id] || 0;
+            ele = document.createElement('div');
+            ele.className = 'medal';
+            ele.innerHTML = templ
+                                    .replace('FNAME', id+'-'+level)
+                                    .replace('UNLOCK', level)
+                                    .replace('NAME', G_MEDAL_GRADE[level] + G_MEDAL_NAME[id])
+                                    .replace('DESC', G_MEDAL_DESC[id])
+                                    .replace('CURR', god.getProgress(id))
+                                    .replace('TOTAL', socials.getMedalTarget(id, level))
+                                    .replace('REWARD', socials.getMedalReward(id, level)+' Piety points');
+            list.appendChild(ele);
         }
     });
 };
