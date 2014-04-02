@@ -6,18 +6,23 @@
     background:#204631;
     border-top:#527f39 5px solid;
 }
-.hero img{
+.hero span{
+    background-image: url(dat/img/fantasy-tileset-combined.png);
+    background-size: 832px;
     display:inline-block;
-    padding:5px;
+    margin:5px;
     vertical-align:top;
-    min-width:32px;
-    max-width:64px;
-    width:20%;
+    width:64px;
+    height:64px;
 }
-.hero img.c144{
-    left:0px;
-    top:-576px;
-}
+.hero span.c144{background-position: 0px -1152px;}
+.hero span.c145{background-position: -64px -1152px;}
+.hero span.c146{background-position: -128px -1152px;}
+.hero span.c147{background-position: -192px -1152px;}
+.hero span.c148{background-position: -256px -1152px;}
+.hero span.c149{background-position: -320px -1152px;}
+.hero span.c150{background-position: -384px -1152px;}
+.hero span.c151{background-position: -448px -1152px;}
 .hero div{
     display:inline-block;
     padding:5px;
@@ -39,7 +44,7 @@
 </div>
 
 <script id=heroTempl type=text/templ>
-<img class=CLASS src="dat/img/fantasy-tileset-combined.png" width=SIZE>
+<span class=CLASS></span>
 <div>
 <h4>NAME</h4>
 <p>DESC</p>
