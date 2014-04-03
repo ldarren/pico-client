@@ -1,3 +1,47 @@
+<style>
+#effects{
+    background:#527f39;
+}
+.effect{
+    background:#204631;
+    border-top:#527f39 5px solid;
+}
+.effect span{
+    background-image: url(dat/img/fantasy-spells.png);
+    background-size: 384px;
+    display:inline-block;
+    margin:5px;
+    vertical-align:top;
+    width:64px;
+    height:64px;
+    image-rendering:-moz-crisp-edges;
+    image-rendering: -o-crisp-edges;
+    image-rendering:-webkit-optimize-contrast;
+    -ms-interpolation-mode:nearest-neighbor;
+}
+.effect span.e589{background-position: 0px -4288px;}
+.effect span.e590{background-position: -64px -4288px;}
+.effect span.e591{background-position: -128px -4288px;}
+.effect span.e592{background-position: -192px -4288px;}
+.effect span.e593{background-position: -256px -4288px;}
+.effect span.e594{background-position: -320px -4288px;}
+.effect span.e595{background-position: -384px -4288px;}
+.effect span.e596{background-position: -448px -4288px;}
+.effect span.e597{background-position: -512px -4288px;}
+.effect span.e598{background-position: -576px -4288px;}
+.effect span.e599{background-position: -640px -4288px;}
+.effect div{
+    display:inline-block;
+    padding:5px;
+    vertical-align:top;
+    width:70%;
+}
+.effect h4{
+}
+.effect p{
+    padding: 5px 0;
+}
+</style>
 <div class=pageHead>
 <a href=#>&lt;&lt;</a>
 <span>Status Effects</span>
@@ -7,18 +51,17 @@
 </div>
 
 <script id=effectTempl type=text/templ>
-<img src="dat/img/effects/ID.png" width=SIZE>
+<span class=CLASS></span>
 <div>
 <h4>NAME</h4>
 <p>DESC</p>
-<span>CURR/TOTAL</span>
-<span>Unlock: REWARD</span>
 </div>
 </script>
 
 <script name=effectsPage>
 var
 me = this,
+effectList = [589,590,591,592,593,594,595,596,597,598,599],
 onBack = function(evt){
     pico.changeFrame(document.body, 'div#page', 'html/pageLogin.html', {opacity:[0,1,'1s']});
 },
@@ -32,9 +75,18 @@ onLoad = function(){
     backBtn.addEventListener('click', onBack);
 
     list.innerHTML = '';
-};
 
-me.use('god');
+    for(var i=0,l=effectList.length; i<l; i++){
+        id = effectList[i];
+        ele = document.createElement('div');
+        ele.className = 'effect';
+        ele.innerHTML = templ
+                                .replace('CLASS', 'e'+id)
+                                .replace('NAME', G_OBJECT_NAME[id])
+                                .replace('DESC', G_OBJECT_DESC[id]);
+        list.appendChild(ele);
+    }
+};
 
 me.slot(pico.LOAD, onLoad);
 </script>
