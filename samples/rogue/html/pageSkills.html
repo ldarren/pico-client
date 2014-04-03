@@ -19,38 +19,30 @@
     image-rendering:-webkit-optimize-contrast;
     -ms-interpolation-mode:nearest-neighbor;
 }
-.skill span.s152{background-position: 0px -1216px;}
-.skill span.s153{background-position: -64px -1216px;}
-.skill span.s154{background-position: -128px -1216px;}
-.skill span.s155{background-position: -192px -1216px;}
-.skill span.s156{background-position: -256px -1216px;}
-.skill span.s157{background-position: -320px -1216px;}
-.skill span.s158{background-position: -384px -1216px;}
-.skill span.s159{background-position: -448px -1216px;}
-.skill span.s160{background-position: 0px -1280px;}
-.skill span.s161{background-position: -64px -1280px;}
-.skill span.s162{background-position: -128px -1280px;}
-.skill span.s163{background-position: -192px -1280px;}
-.skill span.s164{background-position: -256px -1280px;}
-.skill span.s165{background-position: -320px -1280px;}
-.skill span.s166{background-position: -384px -1280px;}
-.skill span.s167{background-position: -448px -1280px;}
-.skill span.s168{background-position: 0px -1344px;}
-.skill span.s169{background-position: -64px -1344px;}
-.skill span.s170{background-position: -128px -1344px;}
-.skill span.s171{background-position: -192px -1344px;}
-.skill span.s172{background-position: -256px -1344px;}
-.skill span.s173{background-position: -320px -1344px;}
-.skill span.s174{background-position: -384px -1344px;}
-.skill span.s175{background-position: -448px -1344px;}
-.skill span.s176{background-position: 0px -1408px;}
-.skill span.s177{background-position: -64px -1408px;}
-.skill span.s178{background-position: -128px -1408px;}
-.skill span.s179{background-position: -192px -1408px;}
-.skill span.s180{background-position: -256px -1408px;}
-.skill span.s181{background-position: -320px -1408px;}
-.skill span.s182{background-position: -384px -1408px;}
-.skill span.s183{background-position: -448px -1408px;}
+.skill span.s196{background-position: -192px -64px;}
+.skill span.s197{background-position: -256px -64px;}
+.skill span.s198{background-position: -320px -64px;}
+.skill span.s226{background-position: -192px -384px;}
+.skill span.s227{background-position: -256px -384px;}
+.skill span.s228{background-position: -320px -384px;}
+.skill span.s256{background-position: -192px -704px;}
+.skill span.s257{background-position: -256px -704px;}
+.skill span.s258{background-position: -320px -704px;}
+.skill span.s295{background-position: 0px -1152px;}
+.skill span.s296{background-position: -64px -1152px;}
+.skill span.s297{background-position: -128px -1152px;}
+.skill span.s562{background-position: -192px -3968px;}
+.skill span.s563{background-position: -256px -3968px;}
+.skill span.s564{background-position: -320px -3968px;}
+.skill span.s565{background-position: 0px -4032px;}
+.skill span.s566{background-position: -64px -4032px;}
+.skill span.s567{background-position: -128px -4032px;}
+.skill span.s568{background-position: -192px -4032px;}
+.skill span.s569{background-position: -256px -4032px;}
+.skill span.s570{background-position: -320px -4032px;}
+.skill span.s571{background-position: 0px -4096px;}
+.skill span.s572{background-position: -64px -4096px;}
+.skill span.s573{background-position: -128px -4096px;}
 .skill div{
     display:inline-block;
     padding:5px;
@@ -82,7 +74,7 @@
 <script name=skillsPage>
 var
 me = this,
-skillList = [152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183],
+skillList = [196,197,198,226,227,228,256,257,258,295,296,297,562,563,564,565,566,567,568,569,570,571,572,573],
 onBack = function(evt){
     pico.changeFrame(document.body, 'div#page', 'html/pageLogin.html', {opacity:[0,1,'1s']});
 },
@@ -103,7 +95,7 @@ onLoad = function(){
         ele.className = 'skill';
         ele.innerHTML = templ
                                 .replace('CLASS', 's'+id)
-                                .replace('NAME', G_OBJECT_NAME[id])
+                                .replace('NAME', G_OBJECT_NAME[id]+'- Level '+(1+(i%3)))
                                 .replace('DESC', G_OBJECT_DESC[id]);
         list.appendChild(ele);
     }
