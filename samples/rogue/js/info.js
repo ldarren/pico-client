@@ -360,7 +360,7 @@ pico.def('info', 'picUIContent', function(){
                 break;
             case 'fight':
                 this.audioSprite.play(2);
-                this.go('attack', hero.battle(targetId));
+                this.go('attack', hero.attack(targetId));
                 break;
             case 'flee':
                 this.go('flee');

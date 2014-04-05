@@ -121,6 +121,10 @@ pico.def('ai', function(){
         }
 
         return drop;
+    },
+    expose = function(creepId){
+    },
+    reveal = function(creepId){
     };
 
     me.init = function(){
@@ -336,23 +340,28 @@ pico.def('ai', function(){
         }
     };
 
-    me.reveal = function(id){
+    // expose or reveal
+    me.explore = function(id){
         var object = objects[id];
 
         if (!object) return;
 
         if (map[id] & G_TILE_TYPE.HIDE){
+            // expose
             map[id] &= G_TILE_TYPE.SHOW;
             if (G_OBJECT_TYPE.CREEP === object[OBJECT_TYPE]) flags[id] = G_UI.FLAG;
+            expose(id);
             return;
         }else if (flags[id]){
+            // reveal
             delete flags[id];
             hero.setEngaged(id);
+            reveal(id);
             return;
         }
     };
 
-    me.battle = function(){
+    me.attack = function(){
         var
         targetIds = hero.getEngaged(),
         creepIds = [],
@@ -376,9 +385,13 @@ pico.def('ai', function(){
                 creepIds.push(targetId);
                 targets.push([pos, OBJECT_HP, -1]);
             }
+            hero.defend(targetId);
         }
 
         return [creepIds, targets];
+    };
+
+    me.defense = function(id){
     };
 
     me.bury = function(id){

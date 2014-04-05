@@ -384,14 +384,14 @@ pico.def('game', 'pigSqrMap', function(){
         hero.step.call(me, steps);
         me.ai.step.call(me, steps);
 
-        this.go('counter', me.ai.battle());
+        this.go('counter', me.ai.attack());
 
         var
         flags = me.flags,
         engagedIds = hero.getEngaged();
         
         for(var i=0,l=engagedIds.length; i<l; i++){
-            delete flags[engagedIds[i]]; // must do it after ai.battle to avoid flag creep attacks
+            delete flags[engagedIds[i]]; // must do it after ai.attack to avoid flag creep attacks
         }
 
         return entities;

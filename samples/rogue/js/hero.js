@@ -331,7 +331,7 @@ pico.def('hero', 'picUIContent', function(){
         restoreStat(OBJECT_WILL, HERO_WILL, steps);
     };
 
-    me.battle = function(id){
+    me.attack = function(id){
         me.setEngaged(id);
 
         var
@@ -342,18 +342,21 @@ pico.def('hero', 'picUIContent', function(){
         def = target[CREEP_PDEF],
         ret = [];
 
-
         if (atk > def) {
             ai.incrHp(id, -1);
             ret.push([id, OBJECT_HP, -1]);
         }else{
             ret.push([id, OBJECT_HP, 0]);
         }
+        ai.defend(id);
 
         me.incrAtk(-def);
         ret.push([position, ranged ? OBJECT_RATK : OBJECT_PATK, -def]);
 
         return ret;
+    };
+
+    me.defend = function(id){
     };
 
     me.flee = function(){
@@ -761,7 +764,7 @@ pico.def('hero', 'picUIContent', function(){
                     targets.push(contactId);
                     break;
                 }
-                ai.reveal(contactId);
+                ai.explore(contactId);
             }
             break;
         case G_SPELL_TYPE.POISON_BLADE:
@@ -795,7 +798,7 @@ pico.def('hero', 'picUIContent', function(){
                 }
             }else{
                 flags[id] = G_UI.FLAG;
-                ai.reveal(id);
+                ai.explore(id);
             }
             break;
         case G_SPELL_TYPE.FIREBALL:
@@ -821,7 +824,7 @@ pico.def('hero', 'picUIContent', function(){
                     break;
                 }
             }
-            ai.reveal(id);
+            ai.explore(id);
             break;
         }
 
