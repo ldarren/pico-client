@@ -190,7 +190,6 @@ pico.def('socials', 'piSocials', function(){
     };
 
     me.getNPCs = function(cb){
-        if (-1 === me.fbUserId()) return cb(fbNPCs);
         if (fbNPCs.length) return cb(fbNPCs);
         me.loadNPCs(cb);
     };

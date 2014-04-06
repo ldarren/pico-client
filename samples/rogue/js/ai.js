@@ -122,9 +122,17 @@ pico.def('ai', function(){
 
         return drop;
     },
-    expose = function(creepId){
+    expose = function(id){
+        var obj = objects[id];
+        console.log(obj[OBJECT_NAME]+' exposed');
+        map[id] &= G_TILE_TYPE.SHOW;
+        if (G_OBJECT_TYPE.CREEP === obj[OBJECT_TYPE]) flags[id] = G_UI.FLAG;
     },
-    reveal = function(creepId){
+    reveal = function(id){
+        var obj = objects[id];
+        console.log(obj[OBJECT_NAME]+' revealed');
+        delete flags[id];
+        hero.setEngaged(id);
     };
 
     me.init = function(){
@@ -340,24 +348,15 @@ pico.def('ai', function(){
         }
     };
 
-    // expose or reveal
+    // explore a dungeon cell, this might expose or reveal a monster
+    // or discover or destroy a chest 
     me.explore = function(id){
-        var object = objects[id];
-
-        if (!object) return;
+        if (!objects[id]) return;
 
         if (map[id] & G_TILE_TYPE.HIDE){
-            // expose
-            map[id] &= G_TILE_TYPE.SHOW;
-            if (G_OBJECT_TYPE.CREEP === object[OBJECT_TYPE]) flags[id] = G_UI.FLAG;
-            expose(id);
-            return;
+            return expose(id);
         }else if (flags[id]){
-            // reveal
-            delete flags[id];
-            hero.setEngaged(id);
-            reveal(id);
-            return;
+            return reveal(id);
         }
     };
 
