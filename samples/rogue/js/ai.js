@@ -390,7 +390,7 @@ pico.def('ai', function(){
         return [creepIds, targets];
     };
 
-    me.defense = function(id){
+    me.defend = function(id){
     };
 
     me.bury = function(id){
