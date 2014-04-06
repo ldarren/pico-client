@@ -137,7 +137,7 @@ onStateLoaded = function(err, result){
         }
         storageLoc.textContent = STORAGE.replace('LOC', 'Google Play');
     }
-    showPlayButton(result && result.data ? 'Continue' : undefined);
+    showPlayBtn(result && result.data ? 'Continue' : undefined);
 },
 onSignedIn = function(err, result){
     var cloudSave = document.querySelector('div#cloudSave');
