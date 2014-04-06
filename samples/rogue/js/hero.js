@@ -689,10 +689,13 @@ pico.def('hero', 'picUIContent', function(){
         var
         object = objects[id],
         objectType = object ? object[OBJECT_TYPE] : undefined;
-                
-        if (object && (G_OBJECT_TYPE.NPC === objectType || 
-            G_OBJECT_TYPE.KEY === objectType || 
-            G_OBJECT_TYPE.ENV === objectType)) return false;
+
+        switch(objectType){
+        case G_OBJECT_TYPE.NPC:
+        case G_OBJECT_TYPE.KEY:
+        case G_OBJECT_TYPE.ENV:
+            return false;
+        }
 
         var cost = spell[SPELL_COST];
 
