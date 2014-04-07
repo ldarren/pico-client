@@ -350,7 +350,7 @@ Object.freeze(G_ICON = {
     ORC: 179,
     CYCLOPS: 180,
     WEREWOLF: 181,
-    WEREBEAR: 182,
+    GOLEM: 182,
     BALROG: 183,
 
     BLACKSMITH: 184,

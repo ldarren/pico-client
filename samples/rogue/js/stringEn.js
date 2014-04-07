@@ -272,7 +272,7 @@ Object.freeze(G_OBJECT_NAME = {
     179: 'Orc',
     180: 'Cyclops',
     181: 'Werewolf',
-    182: 'Werebear',
+    182: 'Golem',
     183: 'Balrog',
     184: 'Blacksmith',
     185: 'Arch-Mage',
@@ -484,7 +484,7 @@ Object.freeze(G_OBJECT_DESC = {
     179: 'String orc that destroy all defense on attack',
     180: 'Cyclops',
     181: 'Werewolf',
-    182: 'Werebear',
+    182: 'Golem',
     183: 'A demonic spirits, lord of evil, sin and treachery, and the enemies of God and the human race',
 
     184: 'Mighty dwarf that can build any item with a reasonable price',
