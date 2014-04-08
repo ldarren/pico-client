@@ -186,7 +186,7 @@ pico.def('tome', 'picUIContent', function(){
         case G_EFFECT_TYPE.CURSED:      efx = G_CREATE_OBJECT(G_ICON.EFX_CURSED);       break;
         case G_EFFECT_TYPE.DISEASED:    efx = G_CREATE_OBJECT(G_ICON.EFX_DISEASED);     break;
         case G_EFFECT_TYPE.FEARED:      efx = G_CREATE_OBJECT(G_ICON.EFX_FEARED);       break;
-        case G_EFFECT_TYPE.FROZEN:      efx = G_CREATE_OBJECT(G_ICON.EFX_FROZEN);       break;
+        case G_EFFECT_TYPE.FROZEN:      efx = G_CREATE_OBJECT(G_ICON.EFX_FROZEN);      break;
         case G_EFFECT_TYPE.POISONED:    efx = G_CREATE_OBJECT(G_ICON.EFX_POISONED);     break;
         case G_EFFECT_TYPE.POISON_BLADE:efx = G_CREATE_OBJECT(G_ICON.EFX_POISON_BLADE); break;
         case G_EFFECT_TYPE.SQUEAL:      efx = G_CREATE_OBJECT(G_ICON.EFX_SQUEAL);       break;

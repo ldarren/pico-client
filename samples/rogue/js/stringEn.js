@@ -303,12 +303,12 @@ Object.freeze(G_OBJECT_NAME = {
     572: 'Squeal',
     573: 'Squeal',
 
-    589: 'Burned', // reduce hp
-    590: 'Cursed', // reduce roll
+    589: 'Burn', // reduce hp
+    590: 'Curse', // reduce roll
     591: 'Plague', // reduce max hp
-    592: 'Feared', // reduce atk and def 
-    593: 'Frozen', // immobilize, cooldown stop
-    594: 'Poisoned', // hp dun heal
+    592: 'Fear', // reduce atk and def 
+    593: 'Chill', // cooldown stop
+    594: 'Poison', // hp dun heal
     595: 'Poison Blade',
     596: 'Squeal',
     597: 'Nocturnal',
@@ -454,22 +454,22 @@ Object.freeze(G_OBJECT_DESC = {
     150: 'An old and stinky sorcerer',
     151: 'A young and intelligent magic user, obcess with rare and forbidden tomes and bent honself to dark sorcery allow him gained powerful art of magic at young age',
 
-    152: 'Deadly rat that spread plague when attacks',
+    152: 'Sneaky creature, on reveal randomly steal a treasure from chest',
     153: 'Poisonous spider that inject poison when attacks',
-    154: 'it burns all surrounding creatures when revealed',
+    154: 'It is a creature that penetrating flames, on reveal it burns all surrounding creatures',
     155: 'When spider king reveal, all spiders gain entangle effect to trap revealer. spider kings are poisonous ',
     156: 'On attack spread plague',
-    157: 'On Attack steal will',
-    158: 'Centipede bite on attack, causes random effects, burn, chill or fear',
-    159: 'Chest protector, every looted chest increase it attack',
-    160: 'When revealing fungi, it grows on unconsume health globes',
+    157: 'On attack it absord one will point from defender',
+    158: 'Centipede bite on attack, causes random burn, chill or fear status effect to defender',
+    159: 'Treasure protector, every looted chest increase it attack',
+    160: 'When revealing fungi, it grows on all unconsume health globes',
     161: 'Born with eye open, can be exposed',
     162: 'Deadly pest that spread plague when attack',
     163: 'All bat gain leech effect. Bat king spread plague',
     164: 'Once bite, hero can\'t escape',
-    165: 'Howl when reveal, all beast gain attack points',
+    165: 'Howl when reveal, all beast gains attack points',
     166: 'On attack remove extra defense',
-    167: 'On attack remove extra defense, gain attack when hurt',
+    167: 'On attack remove attack points, gain attack when hurt',
     168: 'A hybrid of plant and beast, it grow stronger with other plants get exposed or revealed',
     169: 'Every step reveal one slime until all slimes are revealed',
     170: 'On reveal, spread poison',
@@ -481,11 +481,11 @@ Object.freeze(G_OBJECT_DESC = {
     176: 'The rattling goblin reveals all exposed creeps',
     177: 'Slow but resilent zombie, On attack spread plague',
     178: 'Hard and rigid skeleton, immune to normal melee and ranged attacks',
-    179: 'String orc that destroy all defense on attack',
-    180: 'low defense high hp, extra strong agaisnt melee hero',
-    181: 'Can\'t expose, double attack',
-    182: 'High defense, high attack, low health',
-    183: 'A demonic spirits, lord of evil, sin and treachery, and the enemies of God and the human race',
+    179: 'Strong orc that breaks all defenses on attack',
+    180: 'low defense high hp, extra strong agaisnt melee heroes',
+    181: 'Can\'t expose, attack twice',
+    182: 'Solid stone status, it steals cooldown time from heroes\s skills to animate itself. High defense, high attack, low health',
+    183: 'A demonic spirits, lord of evil, sin and treachery, and the enemies of God and the human race, on reveal cost fear, on attack remove attack and defense point',
 
     184: 'Mighty dwarf that can build any item with a reasonable price',
     185: 'The leader of the mages guild, deep knowledge in making potions and enchanting items',
@@ -505,16 +505,16 @@ Object.freeze(G_OBJECT_DESC = {
     297: 'Hurls a fiery mateor to selected cell',
     562: 'Shape shift to a fast and furious dire wolf can spread poison when attack',
     565: 'Shape shift to a tainted bat that spread plague to any object come in contact',
-    568: 'Shape shift to a mighty arctic bear that frozen attack object',
+    568: 'Shape shift to a mighty arctic bear that chilled attack object',
     571: 'Shape shift to ash rat that burn any object come in contact',
 
-    589: 'Reduce HP per turn', // reduce hp
-    590: 'Increase skill casting cost', // reduce roll
-    591: 'Reduce MAX HP per turn', // reduce max hp
-    592: 'Stop attack point regeneration', // reduce atk and def 
-    593: 'Stop cooldown', // immobilize, cooldown stop
-    594: 'Prevent object from healing', // hp dun heal
-    595: 'Poison object when deal damage',
+    589: 'Reduce HP per turn', // burned 
+    590: 'Increase skill casting cost', // cursed 
+    591: 'Half attack and defense points', // plagued 
+    592: 'Prevent creep\'s casting skills or stop hero will point regeneration', // feared 
+    593: 'Immobilize creeps or stop hero skill cooldown', // chilled 
+    594: 'Prevent creature from healing', // poisoned 
+    595: 'Poison creature when deal damage',
     596: 'Weak creature that burn creep when touch',
     597: 'Weak creature that spread plague to contacted creep',
     598: 'Fast and furious creature that spread poison when attack',

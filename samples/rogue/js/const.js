@@ -637,7 +637,7 @@ Object.freeze(G_EFFECT_TYPE = {
     CURSED: 2,
     DISEASED: 3,
     FEARED: 4,
-    FROZEN: 5,
+    CHIILED: 5,
     POISONED: 6,
 
     POISON_BLADE: 7,
