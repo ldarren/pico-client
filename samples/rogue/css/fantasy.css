@@ -88,23 +88,25 @@ div#page{
 }
 
 .fantasyHead{
-    background: #204631 url(caveHead.png) repeat-x scroll -128px 0;
+    background: #204631 url(dunHead.png) repeat-x scroll -128px 0;
     width:100%;
     line-height:64px;
 }
 .fantasyBg{
-    background: #204631 url(caveBg.png) repeat scroll 0 0;
+    background: #204631 url(dunBg.png) repeat scroll 0 0;
     min-height:100%;
 }
 .fantasyRow{
     display:block;
-    background-image: url('caveGrd.png');
+    background-image: url('dunFlr.png');
     background-repeat: repeat-x;
-    background-position: 0 50px;
+    background-position: 0 80px;
     min-height: 146px;
 }
 .fantasyRow h5{
-    padding:15px;
+    color:black;
+    font-size:25px;
+    padding:5px 15px 15px 8px;
 }
 div#loading{
     position: absolute;

@@ -3,7 +3,7 @@ pico.def('camera', 'picBase', function(){
     me = this,
     UNCLEAR = G_FLOOR.UNCLEAR,
     STONE = G_FLOOR.STONE,
-    Floor = Math.floor,Ceil = Math.ceil,
+    Floor=Math.floor,Ceil=Math.ceil,Min=Math.min,Max=Math.max,
     name = me.moduleName,
     screenshotX=0, screenshotY=0,
     camX, camY, camWidth, camHeight,
@@ -20,10 +20,10 @@ pico.def('camera', 'picBase', function(){
                 viewY = camY + (camHeight - mapH)/2;
             }
 
-            viewTop = viewY > camY ? viewY : camY;
-            viewLeft = viewX > camX ? viewX : camX;
-            viewBottom = viewY+mapH < camY+camHeight ? viewY+mapH : camY+camHeight;
-            viewRight = viewX+mapW < camX+camWidth ? viewX+mapW : camX+camWidth;
+            viewTop = Max(viewY, camY);
+            viewLeft = Max(viewX, camX);
+            viewBottom = Min(viewY+mapH, camY+camHeight);
+            viewRight = Min(viewX+mapW, camX+camWidth);
 
             viewTop = Floor((viewTop-viewY)/tileHeight);
             viewLeft = Floor((viewLeft-viewX)/tileWidth);
