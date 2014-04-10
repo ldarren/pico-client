@@ -5,6 +5,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
     this.use('dialogMsg');
     this.use('trade');
     this.use('god');
+    this.use('hero');
 
     var
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
@@ -228,7 +229,7 @@ pico.def('uiWindow', 'picUIWindow', function(){
 
         //this.pause();
         //window.setTimeout(function(game){game.go('forceRefresh');}, 1000, this);
-        this.go('forceRefresh');
+        this.go('resetView', me.hero.getPosition());
         return entities;
     };
 

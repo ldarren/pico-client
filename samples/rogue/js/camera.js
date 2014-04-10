@@ -51,6 +51,24 @@ pico.def('camera', 'picBase', function(){
         return entities;
     };
 
+    me.moveTo = function(elapsed, pos, entities){
+        var tileW=this.tileWidth,tileH=this.tileHeight,mapW=this.mapWidth,mapH=this.mapHeight;
+
+        // center stage
+        viewX=viewY=undefined;
+        calculateView(mapW, mapH, tileW, tileH);
+
+        // center view to target pos
+        // calculate target position from viewXY
+        var vtx = viewX + tileW * (pos%mapW), vty = viewY + tileH * Floor(pos/mapW);
+        // move view target to center of camera
+        viewX += (camWidth/2)-vtx, viewY += (camHeight/2)-vty;
+        calculateView(mapW, mapH, tileW, tileH);
+
+        screenshotX=viewX, screenshotY=viewY;
+        return entities;
+    };
+
     me.checkBound = function(elapsed, evt, entities){
         var
         /*x = evt[0], y = evt[1],

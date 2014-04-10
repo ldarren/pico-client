@@ -657,7 +657,7 @@ pico.def('game', 'pigSqrMap', function(){
 
         me.exit(); // HACK: save all objects
         //me.go('resize', [0, 0, window.innerWidth, window.innerHeight]);
-        me.go('forceRefresh');
+        me.go('resetView', hero.getPosition());
         return entities;
     };
 
