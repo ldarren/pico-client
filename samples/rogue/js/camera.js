@@ -51,14 +51,13 @@ pico.def('camera', 'picBase', function(){
         return entities;
     };
 
+    // center view to target pos
     me.moveTo = function(elapsed, pos, entities){
         var tileW=this.tileWidth,tileH=this.tileHeight,mapW=this.mapWidth,mapH=this.mapHeight;
 
-        // center stage
-        viewX=viewY=undefined;
-        calculateView(mapW, mapH, tileW, tileH);
+        // if not init, center the stage
+        if (undefined === viewX) calculateView(mapW, mapH, tileW, tileH);
 
-        // center view to target pos
         // calculate target position from viewXY
         var vtx = viewX + tileW * (pos%mapW), vty = viewY + tileH * Floor(pos/mapW);
         // move view target to center of camera
