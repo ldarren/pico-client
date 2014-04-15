@@ -193,6 +193,7 @@ pico.def('tome', 'picUIContent', function(){
         case G_EFFECT_TYPE.NOCTURNAL:   efx = G_CREATE_OBJECT(G_ICON.EFX_NOCTURNAL);    break;
         case G_EFFECT_TYPE.LYCAN:       efx = G_CREATE_OBJECT(G_ICON.EFX_LYCAN);        break;
         case G_EFFECT_TYPE.GROWL:       efx = G_CREATE_OBJECT(G_ICON.EFX_GROWL);        break;
+        default: efx = G_CREATE_OBJECT(type); break;
         }
 
         if (icon) efx[OBJECT_ICON] = icon;

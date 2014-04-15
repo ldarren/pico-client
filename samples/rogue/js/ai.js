@@ -39,7 +39,7 @@ pico.def('ai', function(){
         for(i=0,l=templ.length; i<l; i++){
             effects.push(createEffect(templ[i], level, -1));
         }
-
+/*
         effects.push(createEffect(G_EFFECT_TYPE.BURNED, level, -1));
         effects.push(createEffect(G_EFFECT_TYPE.CURSED, level, -1));
         effects.push(createEffect(G_EFFECT_TYPE.DISEASED, level, -1));
@@ -47,7 +47,7 @@ pico.def('ai', function(){
         effects.push(createEffect(G_EFFECT_TYPE.FROZEN, level, -1));
         effects.push(createEffect(G_EFFECT_TYPE.POISONED, level, -1));
         effects.push(createEffect(G_EFFECT_TYPE.POISON_BLADE, level, 10));
-
+*/
         s[CREEP_EFFECT] = effects;
         s[OBJECT_NAME] = G_OBJECT_NAME[creepId];
         s[OBJECT_DESC] = G_OBJECT_DESC[creepId];
@@ -126,7 +126,7 @@ pico.def('ai', function(){
         var obj = objects[id];
         console.log(obj[OBJECT_NAME]+' exposed');
         map[id] &= G_TILE_TYPE.SHOW;
-        if (G_OBJECT_TYPE.CREEP === obj[OBJECT_TYPE]) flags[id] = G_UI.FLAG;
+        if (G_OBJECT_TYPE.CREEP === obj[OBJECT_TYPE]) flags[id] = G_ICON.BANNER;
     },
     reveal = function(id){
         var obj = objects[id];

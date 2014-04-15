@@ -4,7 +4,7 @@ pico.def('hero', 'picUIContent', function(){
     name = me.moduleName,
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random, Max = Math.max,
     objects, flags, ai,
-    position, selectedSpell,
+    position, selectedSpell, isFlagMode=false,
     heroObj, currStats,
     appearance, stats, effects, bag, tome,
     onCustomBound = function(ent, rect, ui, tileScale){
@@ -379,7 +379,7 @@ pico.def('hero', 'picUIContent', function(){
         }
 
         for (i=0,l=targets.length; i<l; i++){
-            flags[targets[i]] = G_UI.FLAG;
+            flags[targets[i]] = G_ICON.BANNER;
         }
         me.clearEngaged();
         return [true, G_MSG.FLEE_WIN];
@@ -800,7 +800,6 @@ pico.def('hero', 'picUIContent', function(){
                     this.recalHints();
                 }
             }else{
-                flags[id] = G_UI.FLAG;
                 ai.explore(id);
             }
             break;
@@ -873,6 +872,9 @@ pico.def('hero', 'picUIContent', function(){
         }
         return false;
     };
+
+    me.isFlagMode = function(){return isFlagMode;};
+    me.toggleFlagMode = function(){isFlagMode = !isFlagMode;};
 
     me.isDead = function(){ return appearance[HERO_HP] < 1; };
     me.incrHp = function(inc){return restoreStat(OBJECT_HP, HERO_HP, inc);};

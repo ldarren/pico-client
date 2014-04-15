@@ -116,6 +116,7 @@ pico.def('camera', 'picBase', function(){
         map = this.map,
         objects = this.objects,
         hero = this.hero,
+        ai = this.ai,
         engaged = hero.getEngaged(),
         hp = hero.getPosition(),
         id = mapW * y + x,
@@ -141,7 +142,11 @@ pico.def('camera', 'picBase', function(){
             if (tileType & G_TILE_TYPE.HIDE){
 
                 if (tileType & G_TILE_TYPE.CREEP){
-                    hero.setEngaged(id);
+                    if (hero.isFlagMode()){
+                        ai.explore(id);
+                    }else{
+                        hero.setEngaged(id);
+                    }
                 }
                 this.go('gameStep', this.fillTiles(id));
             }
@@ -158,9 +163,12 @@ pico.def('camera', 'picBase', function(){
         }else{
             if(object){
                 if (hero.equal(object)){
+                    hero.toggleFlagMode();
+                    /*
                     steps = this.solve(hp);
                     if (!steps) return entities;
                     this.go('gameStep', steps);
+                    */
                 }else{
                     if (isNear && G_OBJECT_TYPE.ENV === object[OBJECT_TYPE] && G_ENV_TYPE.ALTAR === object[OBJECT_SUB_TYPE])
                         this.go('showAltar', {callback: 'forceRefresh'});
@@ -211,6 +219,7 @@ pico.def('camera', 'picBase', function(){
         tileH = this.tileHeight,
         sd = this.smallDevice,
         hero = this.hero,
+        ai = this.ai,
         hw = Floor(tileW/2),
         hh = Floor(tileH/2),
         w = viewStart,
@@ -237,8 +246,8 @@ pico.def('camera', 'picBase', function(){
                     object = objects[w];
                     flag = flags[w];
                     if (flag && object){
-                        tileSet.draw(ctx, object[OBJECT_ICON], x, y, tileW, tileH);
-                        tileSet.draw(ctx, flag, x, y, hw, hh);
+                        //tileSet.draw(ctx, object[OBJECT_ICON], x, y, tileW, tileH);
+                        tileSet.draw(ctx, flag, x, y, tileW, tileH);
                     }else if (object){
                         if (G_OBJECT_TYPE.CHEST === object[OBJECT_TYPE] && object[CHEST_ITEM])
                             tileSet.draw(ctx, object[CHEST_ITEM][OBJECT_ICON], x, y, tileW, tileH);
@@ -272,12 +281,12 @@ pico.def('camera', 'picBase', function(){
             tileSet.draw(ctx, STONE, i, y, tileW, tileH);
         }
 
-        // draw player active skill
-        //if (hero.getSelectedSpell()){
-            //hp = hero.getPosition();
-            //x = viewX + tileW * (hp%mapW), y = viewY + tileH * Floor(hp/mapW);
-            //tileSet.draw(ctx, G_UI.DAMAGE, x, y, hw, hh);
-        //}
+        // draw player plag mode
+        if (hero.isFlagMode()){
+            hp = hero.getPosition();
+            x = viewX + tileW * (hp%mapW), y = viewY + tileH * Floor(hp/mapW);
+            tileSet.draw(ctx, G_UI.FLAG, x, y, hw, hh);
+        }
 
         // draw transparent objects
         //ctx.globalAlpha = 0.6;
