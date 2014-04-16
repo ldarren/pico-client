@@ -142,9 +142,7 @@ pico.def('camera', 'picBase', function(){
             if (tileType & G_TILE_TYPE.HIDE){
 
                 if (tileType & G_TILE_TYPE.CREEP){
-                    if (hero.isFlagMode()){
-                        ai.explore(id);
-                    }else{
+                    if (!hero.setFlag(id)){
                         hero.setEngaged(id);
                     }
                 }
@@ -227,7 +225,7 @@ pico.def('camera', 'picBase', function(){
         fh = sd ? 16 : 32,
         fx = tileW - fw,
         fy = tileH - fh,
-        hp, hint, flag, x, y, i, j, object, tileId;
+        hp, hint, x, y, i, j, object, tileId;
 
         screenshotX = viewX, screenshotY = viewY;
 
@@ -241,14 +239,13 @@ pico.def('camera', 'picBase', function(){
                 x = viewX + tileW * (w%mapW), y = viewY + tileH * Floor(w/mapW);
                 if (tileId & G_TILE_TYPE.HIDE){
                     tileSet.draw(ctx, UNCLEAR, x, y, tileW, tileH);
+                    if (flags[w]){
+                        tileSet.draw(ctx, G_ICON.BANNER, x, y, tileW, tileH);
+                    }
                 }else{
                     tileSet.draw(ctx, terrain[w], x, y, tileW, tileH);
                     object = objects[w];
-                    flag = flags[w];
-                    if (flag && object){
-                        //tileSet.draw(ctx, object[OBJECT_ICON], x, y, tileW, tileH);
-                        tileSet.draw(ctx, flag, x, y, tileW, tileH);
-                    }else if (object){
+                    if (object){
                         if (G_OBJECT_TYPE.CHEST === object[OBJECT_TYPE] && object[CHEST_ITEM])
                             tileSet.draw(ctx, object[CHEST_ITEM][OBJECT_ICON], x, y, tileW, tileH);
                         else if (G_OBJECT_TYPE.NPC === object[OBJECT_TYPE])

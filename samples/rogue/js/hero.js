@@ -3,7 +3,7 @@ pico.def('hero', 'picUIContent', function(){
     me = this,
     name = me.moduleName,
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random, Max = Math.max,
-    objects, flags, ai,
+    map, objects, flags, ai,
     position, selectedSpell, isFlagMode=false,
     heroObj, currStats,
     appearance, stats, effects, bag, tome,
@@ -270,6 +270,7 @@ pico.def('hero', 'picUIContent', function(){
         effects = heroObj.effects;
         bag = heroObj.bag;
         tome = heroObj.tome;
+        map = this.map;
         objects = this.objects;
         flags = this.flags;
         ai = this.ai;
@@ -717,7 +718,6 @@ pico.def('hero', 'picUIContent', function(){
         selectedSpell = undefined;
 
         var
-        map = this.map,
         targets = [],
         damages = [],
         branches = {
@@ -875,6 +875,15 @@ pico.def('hero', 'picUIContent', function(){
 
     me.isFlagMode = function(){return isFlagMode;};
     me.toggleFlagMode = function(){isFlagMode = !isFlagMode;};
+    me.setFlag = function(id){
+        if (!isFlagMode) return false;
+
+        if (!(map[id] & G_TILE_TYPE.HIDE)) return false;
+
+        if (flags[id]) delete flags[id];
+        else flags[id] = 1;
+        return true;
+    };
 
     me.isDead = function(){ return appearance[HERO_HP] < 1; };
     me.incrHp = function(inc){return restoreStat(OBJECT_HP, HERO_HP, inc);};
