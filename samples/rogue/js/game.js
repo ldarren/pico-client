@@ -608,6 +608,44 @@ pico.def('game', 'pigSqrMap', function(){
         return entities;
     };
 
+    me.revealsKO = function(elapsed, evt, entities){
+        /*
+                        switch(object[OBJECT_TYPE]){
+                        case G_OBJECT_TYPE.CREEP:
+                            break;
+                        case G_OBJECT_TYPE.CHEST:
+                            if (G_CHEST_TYPE.CHEST === object[OBJECT_SUB_TYPE]){
+                                damages.push(tid);
+                            }
+                            break;
+                        case G_OBJECT_TYPE.HERO:
+                        case G_OBJECT_TYPE.ENV:
+                        case G_OBJECT_TYPE.KEY:
+                        case G_OBJECT_TYPE.MATERIAL:  // soul stone
+                            break;
+                        default:
+                            damages.push(tid);
+                            break;
+                        }
+                        */
+    };
+
+    me.revealsKO = function(elapsed, evt, entities){
+        /*
+            if (!object){
+                if (this.currentLevel){ // dun spawn creep at town ;)
+                    map[id] |= G_TILE_TYPE.CREEP;
+                    map[id] &= G_TILE_TYPE.SHOW;
+                    objects[id] = ai.spawnCreep(currStats[OBJECT_LEVEL]);
+                    me.setEngaged(id);
+                    this.recalHints();
+                }
+            }else{
+                ai.reveal(id);
+            }
+            */
+    };
+
     me.battleEnd = function(elapsed, evt, entities){
         if (!evt || !evt.length) return;
 
@@ -743,36 +781,6 @@ pico.def('game', 'pigSqrMap', function(){
 
     me.nextTile = function(at, toward){
         return this.getNeighbour(at, toward, isOpen, heuristic);
-    };
-
-    me.getAllTouched = function(at){
-        var
-        objects = this.objects,
-        touched = [],
-        w = me.mapWidth,
-        i;
-
-        i = at-w;
-        if (objects[i]) touched.push(i);
-        i = at+w;
-        if (objects[i]) touched.push(i);
-        if (at%w){
-            i = at-1;
-            if (objects[i]) touched.push(i);
-            i = at-w-1;
-            if (objects[i]) touched.push(i);
-            i = at+w-1;
-            if (objects[i]) touched.push(i);
-        }
-        if ((at+1)%w){
-            i = at+1;
-            if (objects[i]) touched.push(i);
-            i = at-w+1;
-            if (objects[i]) touched.push(i);
-            i = at+w+1;
-            if (objects[i]) touched.push(i);
-        }
-        return touched;
     };
 
     me.findPath = function(from, to){

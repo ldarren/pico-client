@@ -149,7 +149,9 @@ onLoad = function(){
         game.route('counter', [game.counterAnim, socials.counter, uiWindow.update, renderer.draw]);
         game.route('flee', [game.flee, renderer.draw]);
         game.route('battleEnd', [game.battleEnd, renderer.draw]);
-        game.route('castSpell', [game.castSpell, socials.castSpell]);
+        game.route('revealsOK', [game.revealsOK, renderer.draw]);
+        game.route('revealsKO', [game.revealsKO, renderer.draw]);
+        game.route('castSpell', [hero.castSpell, socials.castSpell]);
         game.route('forgetSpell', [tome.forgetSpell, uiWindow.update, renderer.draw]);
         game.route('recycleItem', [bag.recycleItem, uiWindow.update, renderer.draw]);
         game.route('startEffect', [renderer.captureScreenshot, effect.start]);

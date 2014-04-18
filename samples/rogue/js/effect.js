@@ -21,6 +21,28 @@ pico.def('effect', 'picBase', function(){
             key = pk[i];
             tweenOpt[key] = tweenRateOpt[key] = opt[key] = 0;
         }
+    },
+    blinkEfx = function(ctx, targets, color, clip){
+        var
+        objects = this.objects,
+        mapW = this.mapWidth,
+        tileW = this.tileWidth,
+        tileH = this.tileHeight,
+        tileSet = this.tileSet,
+        view = me.camera.viewPos(),
+        pos, x, y;
+
+        ctx.save();
+        for(var i=0,l=targets.length; i<l; i++){
+            pos = targets[i];
+            x = view[0] + tileW * (pos%mapW), y = view[1] + tileH * Floor(pos/mapW);
+            tileSet.draw(ctx, objects[pos][OBJECT_ICON], x, y, tileW, tileH);
+        }
+                        
+        ctx.globalCompositeOperation = 'source-in';
+        ctx.fillStyle = color;
+        ctx.fillRect(clip[0], clip[1], clip[2], clip[3]);
+        ctx.restore();
     };
 
     me.use(TWEENER);
@@ -64,25 +86,10 @@ pico.def('effect', 'picBase', function(){
             }
             break;
         case 'damageEfx':
-            var
-            targets = evt.targets,
-            objects = this.objects,
-            mapW = this.mapWidth,
-            tileW = this.tileWidth,
-            tileH = this.tileHeight,
-            tileSet = this.tileSet,
-            view = me.camera.viewPos(),
-            pos, x, y;
-
-            for(var i=0,l=targets.length; i<l; i++){
-                pos = targets[i];
-                x = view[0] + tileW * (pos%mapW), y = view[1] + tileH * Floor(pos/mapW);
-                tileSet.draw(ctx, objects[pos][OBJECT_ICON], x, y, tileW, tileH);
-            }
-                            
-            ctx.globalCompositeOperation = 'source-in';
-            ctx.fillStyle = G_COLOR_TONE[0];
-            ctx.fillRect(clip[0], clip[1], clip[2], clip[3]);
+            blinkEfx(ctx, evt.targets, G_COLOR_TONE[0], clip);
+            break;
+        case 'mistakeEfx':
+            blinkEfx(ctx, evt.targets, 'red', clip);
             break;
         case 'battleText':
             var
@@ -162,6 +169,11 @@ pico.def('effect', 'picBase', function(){
             tweenOpt.p1 = 0;
             opt.p1 = 200;
             tweenRateOpt.p1 = 1000;
+            break;
+        case 'mistakeEfx':
+            tweenOpt.p1 = 0;
+            opt.p1 = 200;
+            tweenRateOpt.p1 = 800;
             break;
         case 'battleText':
             tweenOpt.p1 = 0;

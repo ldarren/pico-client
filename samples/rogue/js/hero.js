@@ -673,8 +673,6 @@ pico.def('hero', 'picUIContent', function(){
         if (!selectedSpell) return false;
 
         var 
-        hp = me.getPosition(),
-        targets = this.getNeighbours(hp, function(i){return undefined !== flags[i];}), // cast even if no targets
         spell = selectedSpell,
         cost = spell[SPELL_COST];
 
@@ -692,123 +690,81 @@ pico.def('hero', 'picUIContent', function(){
         // return true from here onwards
         spell[SPELL_COOLDOWN] = spell[SPELL_RELOAD]; // set cooldown;
 
-        // deselect spell, major fail still need the spell to be selected
+        // deselect spell
         selectedSpell = undefined;
-        
+
         var
-        damages = [],
-        branches = {
-            type:'castEfx',
-            targets:[id],
-            spells:[spell[OBJECT_ICON]],
-            callback: 'startEffect',
-            event: {
-                type:'battleText',
-                targets:[[hp, spell[SPELL_ATTR], -cost]],
-                callback: undefined,
-                event: undefined
+        hp = me.getPosition(),
+        aoe = spell[SPELL_AOE],
+        castStr = spell[SPELL_DAMAGE],
+        targets = [],
+        revealsOK = [],
+        damagesOK = [],
+        texts = [],
+        revealsKO = [],
+        object,tile;
+
+        if (aoe){
+            var neighbours = this.getNeighbours(hp, function(){return true});
+            for(var i=0,l=neighbours.length,tid=0; i<l; i++){
+                tid = neighbours[i];
+                object = objects[tid];
+                tile = map[tid];
+
+                if (flags[tid]){ 
+                    if(aoe > targets.length){
+                        targets.push(tid); 
+                        revealsOK.push(tid);
+                        if (tile & G_TILE_TYPE.CREEP){
+                            if (castStr > contact[CREEP_MDEF]){
+                                damagesOK.push(tid);
+                                texts.push([tid, OBJECT_HP, -1]);
+                                ai.incrHp(tid, -1);
+                            }
+                        }else if (!object){
+                            objects[id] = ai.spawnCreep(currStats[OBJECT_LEVEL]);
+                            revealsKO.push(tid);
+                        }
+                    }
+                }else if (tile & G_TILE_TYPE.HIDE && object){
+                    revealsKO.push(tid);
+                }
             }
-        },
-        branch = branches.event,
-        castStr = spell[SPELL_DAMAGE];
+        }else{
+            targets.push(hp);
+        }
 
         switch(spell[OBJECT_SUB_TYPE]){
         case G_SPELL_TYPE.WHIRLWIND:
-            var
-            touched = this.getAllTouched(id),
-            contact, contactId;
-
-            for(var i=0,l=touched.length; i<l; i++){
-                contactId = touched[i];
-                contact = objects[contactId];
-                if (!contact) continue;
-                switch(contact[OBJECT_TYPE]){
-                case G_OBJECT_TYPE.CREEP:
-                    if (castStr > contact[CREEP_MDEF]){
-                        targets.push(contactId);
-                        damages.push([contactId, OBJECT_HP, -1]);
-                        ai.incrHp(contactId, -1);
-                    }
-                    break;
-                case G_OBJECT_TYPE.CHEST:
-                    if (G_CHEST_TYPE.CHEST === contact[OBJECT_SUB_TYPE]){
-                        targets.push(contactId);
-                    }
-                    break;
-                case G_OBJECT_TYPE.HERO:
-                case G_OBJECT_TYPE.ENV:
-                case G_OBJECT_TYPE.KEY:
-                case G_OBJECT_TYPE.MATERIAL:  // soul stone
-                    break;
-                default:
-                    targets.push(contactId);
-                    break;
-                }
-                ai.reveal(contactId);
-            }
             break;
         case G_SPELL_TYPE.POISON_BLADE:
             var level = spell[OBJECT_LEVEL];
-            effects.push(createEffect(G_EFFECT_TYPE.POISON_BLADE, spell[OBJECT_LEVEL], 3 * level, spell[OBJECT_ICON]));
+            effects.push(createEffect(G_EFFECT_TYPE.POISON_BLADE, level, 3 * level, spell[OBJECT_ICON]));
             break;
         case G_SPELL_TYPE.SQUEAL:
             var level = spell[OBJECT_LEVEL];
-            effects.push(createEffect(G_EFFECT_TYPE.SQUEAL, spell[OBJECT_LEVEL], 5 * level, spell[OBJECT_ICON]));
+            effects.push(createEffect(G_EFFECT_TYPE.SQUEAL, level, 5 * level, spell[OBJECT_ICON]));
             break;
         case G_SPELL_TYPE.NOCTURNAL:
             var level = spell[OBJECT_LEVEL];
-            effects.push(createEffect(G_EFFECT_TYPE.NOCTURNAL, spell[OBJECT_LEVEL], 5 * level, spell[OBJECT_ICON]));
+            effects.push(createEffect(G_EFFECT_TYPE.NOCTURNAL, level, 5 * level, spell[OBJECT_ICON]));
             break;
         case G_SPELL_TYPE.LYCAN:
             var level = spell[OBJECT_LEVEL];
-            effects.push(createEffect(G_EFFECT_TYPE.LYCAN, spell[OBJECT_LEVEL], 5 * level, spell[OBJECT_ICON]));
+            effects.push(createEffect(G_EFFECT_TYPE.LYCAN, level, 5 * level, spell[OBJECT_ICON]));
             break;
         case G_SPELL_TYPE.GROWL:
             var level = spell[OBJECT_LEVEL];
-            effects.push(createEffect(G_EFFECT_TYPE.GROWL, spell[OBJECT_LEVEL], 5 * level, spell[OBJECT_ICON]));
+            effects.push(createEffect(G_EFFECT_TYPE.GROWL, level, 5 * level, spell[OBJECT_ICON]));
             break;
         case G_SPELL_TYPE.GAZE:
-            if (!object){
-                if (this.currentLevel){ // dun spawn creep at town ;)
-                    map[id] |= G_TILE_TYPE.CREEP;
-                    map[id] &= G_TILE_TYPE.SHOW;
-                    objects[id] = ai.spawnCreep(currStats[OBJECT_LEVEL]);
-                    me.setEngaged(id);
-                    this.recalHints();
-                }
-            }else{
-                ai.reveal(id);
-            }
             break;
         case G_SPELL_TYPE.FIREBALL:
-            if (object){
-                switch(objectType){
-                case G_OBJECT_TYPE.CREEP:
-                    ai.incrHp(id, -1);
-                    targets.push(id);
-                    damages.push([id, OBJECT_HP, -1]);
-                    break;
-                case G_OBJECT_TYPE.HERO:
-                case G_OBJECT_TYPE.ENV:
-                case G_OBJECT_TYPE.KEY:
-                    // ignore
-                    break;
-                case G_OBJECT_TYPE.CHEST:
-                    if (G_CHEST_TYPE.CHEST === object[OBJECT_SUB_TYPE]){
-                        targets.push(id);
-                    }
-                    break;
-                default:
-                    targets.push(id);
-                    break;
-                }
-            }
-            ai.reveal(id);
             break;
         }
 
         me.calcStats.call(this, appearance[HERO_LEVEL]);
-
+        
         if (targets && targets.length){
             branch.callback = 'startEffect',
             branch.event = {
@@ -823,7 +779,41 @@ pico.def('hero', 'picUIContent', function(){
                 }
             };
         }
-        this.go('startEffect', branches);
+        this.go('startEffect', {
+            type:'castEfx',
+            targets:targets,
+            spells:[spell[OBJECT_ICON]],
+            callback: 'startEffect',
+            event: {
+                type:'battleText',
+                targets:[[hp, spell[SPELL_ATTR], -cost]],
+                callback: 'revealsOK',
+                event: {
+                    targets:revealsOK,
+                    callback: 'startEffect',
+                    event: {
+                        type:'damageEfx',
+                        targets:damagesOK.slice(),
+                        callback:'startEffect',
+                        event: {
+                            type:'battleText',
+                            targets:texts,
+                            callback:'revealsKO',
+                            event: {
+                                targets:revealsKO.slice(),
+                                callback:'startEffect',
+                                event:{
+                                    type:'mistakeEfx',
+                                    targets:revealsKO.slice(),
+                                    callback:'battleEnd',
+                                    event:damagesOK
+                                }
+                            }
+                        }
+                    }
+                }
+            }       
+        });
         return true;
     };
 

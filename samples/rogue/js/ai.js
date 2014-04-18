@@ -337,12 +337,22 @@ pico.def('ai', function(){
     };
 
     me.reveal = function(id){
+        map[id] &= G_TILE_TYPE.SHOW;
+        delete flags[id];
+
         var obj = objects[id];
         if (!obj) return;
 
-        map[id] &= G_TILE_TYPE.SHOW;
-        delete flags[id];
-        hero.setEngaged(id);
+        switch(obj[OBJECT_TYPE]){
+        case G_OBJECT_TYPE.CREEP:
+            hero.setEngaged(id);
+            break;
+        case G_OBJECT_TYPE.CHEST:
+            if (G_CHEST_TYPE.CHEST === obj[OBJECT_SUB_TYPE]){
+                objects[objId] = G_CREATE_OBJECT(G_ICON.CHEST_EMPTY);
+            }
+            break;
+        }
     };
 
     me.attack = function(){
