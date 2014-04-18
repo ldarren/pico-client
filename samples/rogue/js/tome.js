@@ -59,7 +59,7 @@ pico.def('tome', 'picUIContent', function(){
         hero.selectSpell(); // disable first
         if (!toggle) hero.selectSpell(spell);
 
-        if (spell){
+        if (hero.getSelectedSpell()){
             this.go('showInfo', {targetId: id, context:G_CONTEXT.TOME});
             return true;
         }else{

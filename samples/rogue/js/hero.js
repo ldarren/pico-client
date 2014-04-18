@@ -665,6 +665,10 @@ pico.def('hero', 'picUIContent', function(){
         selectedSpell = spell;
     };
 
+    me.deselectSpell = function(elapsed, evt, entities){
+        selectedSpell = undefined;
+    };
+
     me.castSpell = function(id){
         var spell = selectedSpell;
         if (!spell || spell[SPELL_COOLDOWN]) return false;
@@ -851,6 +855,7 @@ pico.def('hero', 'picUIContent', function(){
     };
 
     me.affordableSpell = function(spell){
+        if (!spell || spell[SPELL_COOLDOWN]) return false;
         var cost = spell[SPELL_COST];
 
         switch (spell[SPELL_ATTR]){

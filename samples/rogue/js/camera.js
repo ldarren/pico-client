@@ -138,9 +138,7 @@ pico.def('camera', 'picBase', function(){
         isNear = hp === id || this.nearToHero(id);
 
         if (isNear){
-            if (hero.castSpell.call(this, id)) return entities;
             if (tileType & G_TILE_TYPE.HIDE){
-
                 if (hero.setFlag(id)){
                     return entities;
                 }else{
@@ -162,11 +160,6 @@ pico.def('camera', 'picBase', function(){
             if(object){
                 if (hero.equal(object)){
                     hero.toggleFlagMode();
-                    /*
-                    steps = this.solve(hp);
-                    if (!steps) return entities;
-                    this.go('gameStep', steps);
-                    */
                 }else{
                     if (isNear && G_OBJECT_TYPE.ENV === object[OBJECT_TYPE] && G_ENV_TYPE.ALTAR === object[OBJECT_SUB_TYPE])
                         this.go('showAltar', {callback: 'forceRefresh'});

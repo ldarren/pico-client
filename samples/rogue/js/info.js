@@ -138,6 +138,7 @@ pico.def('info', 'picUIContent', function(){
             }
             break;
         case G_CONTEXT.TOME:
+            if (this.hero.affordableSpell(target)) addOption('Cast', 'cast');
             addOption('Recycle', 'recycle');
             break;
         case G_CONTEXT.MERCHANT_BUY:
@@ -344,9 +345,7 @@ pico.def('info', 'picUIContent', function(){
         callback = callbacks[i],
         eventObj = events[i];
 
-        if (undefined !== eventObj){
-            if (callback) this.go(callback, eventObj);
-        }else{
+        if (undefined === eventObj){
             var
             hero = this.hero,
             ai = this.ai;
@@ -561,6 +560,8 @@ pico.def('info', 'picUIContent', function(){
                 this.go('chant', [targetId]);
                 break;
             }
+        }else if (callback) {
+            this.go(callback, eventObj);
         }
 
         return true;
