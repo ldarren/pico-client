@@ -121,18 +121,6 @@ pico.def('ai', function(){
         }
 
         return drop;
-    },
-    expose = function(id){
-        var obj = objects[id];
-        console.log(obj[OBJECT_NAME]+' exposed');
-        map[id] &= G_TILE_TYPE.SHOW;
-        if (G_OBJECT_TYPE.CREEP === obj[OBJECT_TYPE]) flags[id] = G_ICON.BANNER;
-    },
-    reveal = function(id){
-        var obj = objects[id];
-        console.log(obj[OBJECT_NAME]+' revealed');
-        delete flags[id];
-        hero.setEngaged(id);
     };
 
     me.init = function(){
@@ -348,16 +336,13 @@ pico.def('ai', function(){
         }
     };
 
-    // explore a dungeon cell, this might expose or reveal a monster
-    // or discover or destroy a chest 
-    me.explore = function(id){
-        if (!objects[id]) return;
+    me.reveal = function(id){
+        var obj = objects[id];
+        if (!obj) return;
 
-        if (map[id] & G_TILE_TYPE.HIDE){
-            return expose(id);
-        }else if (flags[id]){
-            return reveal(id);
-        }
+        map[id] &= G_TILE_TYPE.SHOW;
+        delete flags[id];
+        hero.setEngaged(id);
     };
 
     me.attack = function(){

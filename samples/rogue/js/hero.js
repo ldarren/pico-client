@@ -767,7 +767,7 @@ pico.def('hero', 'picUIContent', function(){
                     targets.push(contactId);
                     break;
                 }
-                ai.explore(contactId);
+                ai.reveal(contactId);
             }
             break;
         case G_SPELL_TYPE.POISON_BLADE:
@@ -800,7 +800,7 @@ pico.def('hero', 'picUIContent', function(){
                     this.recalHints();
                 }
             }else{
-                ai.explore(id);
+                ai.reveal(id);
             }
             break;
         case G_SPELL_TYPE.FIREBALL:
@@ -826,7 +826,7 @@ pico.def('hero', 'picUIContent', function(){
                     break;
                 }
             }
-            ai.explore(id);
+            ai.reveal(id);
             break;
         }
 

@@ -141,20 +141,20 @@ pico.def('camera', 'picBase', function(){
             if (hero.castSpell.call(this, id)) return entities;
             if (tileType & G_TILE_TYPE.HIDE){
 
-                if (tileType & G_TILE_TYPE.CREEP){
-                    if (!hero.setFlag(id)){
+                if (hero.setFlag(id)){
+                    return entities;
+                }else{
+                    if (tileType & G_TILE_TYPE.CREEP){
                         hero.setEngaged(id);
                     }
+                    this.go('gameStep', this.fillTiles(id));
                 }
-                this.go('gameStep', this.fillTiles(id));
             }
         }
 
         tileType = map[id]; // last action might hv updated tileType
         object = objects[id];
 
-        hero.selectSpell(undefined);
-        
         if ((tileType & G_TILE_TYPE.HIDE)){
             this.audioSprite.play(1);
             this.go('heroMoveTo', [this.nextTile(id, hp)]);
