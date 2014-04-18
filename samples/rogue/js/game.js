@@ -608,7 +608,17 @@ pico.def('game', 'pigSqrMap', function(){
         return entities;
     };
 
-    me.revealsKO = function(elapsed, evt, entities){
+    me.revealsOK = function(elapsed, evt, entities){
+        var targets = evt.targets;
+        for(var i=0,l=targets.length,tid,tile; i<l; i++){
+            tid = targets[i];
+            tile = map[tid];
+
+            map[tid] &= G_TILE_TYPE.SHOW;
+            delete flags[tid];
+        }
+        this.hero.setEngaged(targets);
+        this.go(evt.callback, evt.event);
         /*
                         switch(object[OBJECT_TYPE]){
                         case G_OBJECT_TYPE.CREEP:
@@ -628,22 +638,22 @@ pico.def('game', 'pigSqrMap', function(){
                             break;
                         }
                         */
+        return entities;
     };
 
     me.revealsKO = function(elapsed, evt, entities){
-        /*
-            if (!object){
-                if (this.currentLevel){ // dun spawn creep at town ;)
-                    map[id] |= G_TILE_TYPE.CREEP;
-                    map[id] &= G_TILE_TYPE.SHOW;
-                    objects[id] = ai.spawnCreep(currStats[OBJECT_LEVEL]);
-                    me.setEngaged(id);
-                    this.recalHints();
-                }
-            }else{
-                ai.reveal(id);
-            }
-            */
+        var targets = evt.targets;
+        for(var i=0,l=targets.length,tid,tile; i<l; i++){
+            tid = targets[i];
+            tile = map[tid];
+
+            map[tid] &= G_TILE_TYPE.SHOW;
+            delete flags[tid];
+        }
+        this.hero.setEngaged(targets);
+        this.recalHints();
+        this.go(evt.callback, evt.event);
+        return entities;
     };
 
     me.battleEnd = function(elapsed, evt, entities){

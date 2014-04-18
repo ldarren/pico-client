@@ -560,7 +560,7 @@ pico.def('info', 'picUIContent', function(){
                 this.go('chant', [targetId]);
                 break;
             case 'cast':
-                this.go('castSpell');
+                this.go('castSpell', target);
                 break;
             }
         }else if (callback) {

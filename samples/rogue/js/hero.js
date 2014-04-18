@@ -661,7 +661,7 @@ pico.def('hero', 'picUIContent', function(){
     };
 
     me.selectSpell = function(spell){
-        if (spell && (!me.affordableSpell(spell) || spell[SPELL_COOLDOWN])) return;
+        if (spell && (!me.affordableSpell(spell))) return;
         selectedSpell = spell;
     };
 
@@ -669,12 +669,10 @@ pico.def('hero', 'picUIContent', function(){
         selectedSpell = undefined;
     };
 
-    me.castSpell = function(elapsed, evt, entities){
-        if (!selectedSpell) return false;
+    me.castSpell = function(elapsed, spell, entities){
+        if (!spell) return false;
 
-        var 
-        spell = selectedSpell,
-        cost = spell[SPELL_COST];
+        var cost = spell[SPELL_COST];
 
         switch (me.affordableSpell(spell)){
         case OBJECT_HP: me.incrHp(-cost); break;
@@ -722,6 +720,7 @@ pico.def('hero', 'picUIContent', function(){
                                 ai.incrHp(tid, -1);
                             }
                         }else if (!object){
+                            map[id] |= G_TILE_TYPE.CREEP;
                             objects[id] = ai.spawnCreep(currStats[OBJECT_LEVEL]);
                             revealsKO.push(tid);
                         }
@@ -765,20 +764,6 @@ pico.def('hero', 'picUIContent', function(){
 
         me.calcStats.call(this, appearance[HERO_LEVEL]);
         
-        if (targets && targets.length){
-            branch.callback = 'startEffect',
-            branch.event = {
-                type: 'damageEfx',
-                targets:targets,
-                callback: 'startEffect',
-                event: {
-                    type: 'battleText',
-                    targets: damages,
-                    callback: 'battleEnd',
-                    event: targets.slice()
-                }
-            };
-        }
         this.go('startEffect', {
             type:'castEfx',
             targets:targets,
@@ -949,7 +934,7 @@ pico.def('hero', 'picUIContent', function(){
         validList = [];
 
         if (!targets) targets = [];
-        if (!engaged.length) engaged = [engaged];
+        if (undefined === engaged.length) engaged = [engaged];
         var id, object;
         for(var i=0,l=engaged.length; i<l; i++){
             id = engaged[i];
