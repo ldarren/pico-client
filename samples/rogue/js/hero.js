@@ -669,40 +669,14 @@ pico.def('hero', 'picUIContent', function(){
         selectedSpell = undefined;
     };
 
-    me.castSpell = function(id){
-        var spell = selectedSpell;
-        if (!spell || spell[SPELL_COOLDOWN]) return false;
+    me.castSpell = function(elapsed, evt, entities){
+        if (!selectedSpell) return false;
 
-        var hp = me.getPosition();
-
-        // some spell can only apply to hero
-        switch(spell[OBJECT_SUB_TYPE]){
-        case G_SPELL_TYPE.WHIRLWIND:
-        case G_SPELL_TYPE.POISON_BLADE:
-        case G_SPELL_TYPE.SQUEAL:
-        case G_SPELL_TYPE.NOCTURNAL:
-        case G_SPELL_TYPE.LYCAN:
-        case G_SPELL_TYPE.GROWL:
-            if (hp !== id) id = hp;
-            break;
-        case G_SPELL_TYPE.GAZE:
-        case G_SPELL_TYPE.FIREBALL:
-            if (hp === id) return false;
-            break;
-        }
-
-        var
-        object = objects[id],
-        objectType = object ? object[OBJECT_TYPE] : undefined;
-
-        switch(objectType){
-        case G_OBJECT_TYPE.NPC:
-        case G_OBJECT_TYPE.KEY:
-        case G_OBJECT_TYPE.ENV:
-            return false;
-        }
-
-        var cost = spell[SPELL_COST];
+        var 
+        hp = me.getPosition(),
+        targets = this.getNeighbours(hp, function(i){return undefined !== flags[i];}), // cast even if no targets
+        spell = selectedSpell,
+        cost = spell[SPELL_COST];
 
         switch (me.affordableSpell(spell)){
         case OBJECT_HP: me.incrHp(-cost); break;
@@ -720,9 +694,8 @@ pico.def('hero', 'picUIContent', function(){
 
         // deselect spell, major fail still need the spell to be selected
         selectedSpell = undefined;
-
+        
         var
-        targets = [],
         damages = [],
         branches = {
             type:'castEfx',

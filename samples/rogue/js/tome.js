@@ -95,12 +95,6 @@ pico.def('tome', 'picUIContent', function(){
         }
     };
 
-    me.castSpell = function(elapsed, evt, entities){
-        var hero = this.hero;
-        if (hero.castSpell.call(this, hero.getPosition())) return entities;
-        return; // return nothing
-    };
-
     me.chantScroll = function(elapsed, evt, entities){
         var
         targetId = evt[0],

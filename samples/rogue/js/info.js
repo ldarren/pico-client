@@ -559,6 +559,9 @@ pico.def('info', 'picUIContent', function(){
             case 'chant':
                 this.go('chant', [targetId]);
                 break;
+            case 'cast':
+                this.go('castSpell');
+                break;
             }
         }else if (callback) {
             this.go(callback, eventObj);
