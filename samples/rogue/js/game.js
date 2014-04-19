@@ -50,7 +50,7 @@ pico.def('game', 'pigSqrMap', function(){
         return true;
     },
     saveGame = function(){
-        me.socials.googStateUpdate(1, pico.strTools.strCodec(parseInt(me.socials.fbUserId()), JSON.stringify({
+    /*    me.socials.googStateUpdate(1, pico.strTools.strCodec(parseInt(me.socials.fbUserId()), JSON.stringify({
                 currentLevel: me.currentLevel,
                 prevLevel: me.prevLevel,
                 nextLevel: me.nextLevel,
@@ -66,7 +66,7 @@ pico.def('game', 'pigSqrMap', function(){
                 heaven: me.heaven,
                 mortal: me.mortal,
                 mortalLoc: me.hero.getPosition()
-            })));
+            })));*/
     },
     createLevel = function(level){
         me.prevLevel = level ? me.currentLevel : 0;
@@ -609,7 +609,11 @@ pico.def('game', 'pigSqrMap', function(){
     };
 
     me.revealsOK = function(elapsed, evt, entities){
-        var targets = evt.targets;
+        var
+        targets = evt.targets,
+        map = me.map,
+        flags = me.flags;
+
         for(var i=0,l=targets.length,tid,tile; i<l; i++){
             tid = targets[i];
             tile = map[tid];
@@ -642,7 +646,10 @@ pico.def('game', 'pigSqrMap', function(){
     };
 
     me.revealsKO = function(elapsed, evt, entities){
-        var targets = evt.targets;
+        var
+        targets = evt.targets,
+        map = me.map,
+        flags = me.flags;
         for(var i=0,l=targets.length,tid,tile; i<l; i++){
             tid = targets[i];
             tile = map[tid];

@@ -714,7 +714,7 @@ pico.def('hero', 'picUIContent', function(){
                         targets.push(tid); 
                         revealsOK.push(tid);
                         if (tile & G_TILE_TYPE.CREEP){
-                            if (castStr > contact[CREEP_MDEF]){
+                            if (castStr > object[CREEP_MDEF]){
                                 damagesOK.push(tid);
                                 texts.push([tid, OBJECT_HP, -1]);
                                 ai.incrHp(tid, -1);

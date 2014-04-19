@@ -86,10 +86,10 @@ pico.def('effect', 'picBase', function(){
             }
             break;
         case 'damageEfx':
-            blinkEfx(ctx, evt.targets, G_COLOR_TONE[0], clip);
+            blinkEfx.call(this, ctx, evt.targets, G_COLOR_TONE[0], clip);
             break;
         case 'mistakeEfx':
-            blinkEfx(ctx, evt.targets, 'red', clip);
+            blinkEfx.call(this, ctx, evt.targets, 'red', clip);
             break;
         case 'battleText':
             var
