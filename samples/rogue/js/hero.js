@@ -696,6 +696,7 @@ pico.def('hero', 'picUIContent', function(){
         aoe = spell[SPELL_AOE],
         castStr = spell[SPELL_DAMAGE],
         targets = [],
+        spells = [],
         revealsOK = [],
         damagesOK = [],
         texts = [],
@@ -712,6 +713,7 @@ pico.def('hero', 'picUIContent', function(){
                 if (flags[tid]){ 
                     if(aoe > targets.length){
                         targets.push(tid); 
+                        spells.push(spell[OBJECT_ICON]);
                         revealsOK.push(tid);
                         if (tile & G_TILE_TYPE.CREEP){
                             if (castStr > object[CREEP_MDEF]){
@@ -731,6 +733,7 @@ pico.def('hero', 'picUIContent', function(){
             }
         }else{
             targets.push(hp);
+            spells.push(spell[OBJECT_ICON]);
         }
 
         switch(spell[OBJECT_SUB_TYPE]){
@@ -767,7 +770,7 @@ pico.def('hero', 'picUIContent', function(){
         this.go('startEffect', {
             type:'castEfx',
             targets:targets,
-            spells:[spell[OBJECT_ICON]],
+            spells:spells,
             callback: 'startEffect',
             event: {
                 type:'battleText',
