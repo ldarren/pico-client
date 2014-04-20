@@ -11,7 +11,7 @@ pico.def('ai', function(){
     updateCreepStat = function(creep, level){
         var
         stat = me.getStatByCreepId(creep[OBJECT_ICON]).slice(),
-        bufs = stat[CREEP_EFFECT],
+        bufs = creep[CREEP_EFFECT],
         buf,i,l;
 
         for(i=CREEP_ATK; i<=CREEP_MDEF; i++){
