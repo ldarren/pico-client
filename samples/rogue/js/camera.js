@@ -59,10 +59,17 @@ pico.def('camera', 'picBase', function(){
         if (undefined === viewX) calculateView(mapW, mapH, tileW, tileH);
 
         // calculate target position from viewXY
-        var vtx = viewX + tileW * (pos%mapW), vty = viewY + tileH * Floor(pos/mapW);
+        var vtx = viewX + tileW * (pos%mapW), vty = viewY + tileH * Floor(pos/mapW), moved = false;
         // move view target to center of camera
-        viewX += (camWidth/2)-vtx, viewY += (camHeight/2)-vty;
-        calculateView(mapW, mapH, tileW, tileH);
+        if (vtx < 32 || vtx > camWidth-32) {
+            viewX += (camWidth/2)-vtx;
+            moved = true;
+        }
+        if (vty < 32 || vty > camHeight-32) {
+            viewY += (camHeight/2)-vty;
+            moved = true;
+        }
+        if (moved) calculateView(mapW, mapH, tileW, tileH);
 
         screenshotX=viewX, screenshotY=viewY;
         return entities;
