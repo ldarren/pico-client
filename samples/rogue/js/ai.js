@@ -11,7 +11,7 @@ pico.def('ai', function(){
     updateCreepStat = function(creep, level){
         var
         stat = me.getStatByCreepId(creep[OBJECT_ICON]).slice(),
-        bufs = creep[CREEP_EFFECT],
+        bufs = creep[CREEP_TRAITS],
         buf,i,l;
 
         for(i=CREEP_ATK; i<=CREEP_MDEF; i++){
@@ -21,10 +21,10 @@ pico.def('ai', function(){
         for(i=0,l=bufs.length; i<l; i++){
             buf = bufs[i];
             if (!buf) continue;
-            creep[CREEP_HP] += buf[OBJECT_HP];
-            creep[CREEP_ATK] += buf[OBJECT_PATK]+buf[OBJECT_RATK];
-            creep[CREEP_PDEF] += buf[OBJECT_DEF];
-            creep[CREEP_MDEF] += buf[CHARMED_WILL];
+            creep[CREEP_HP] += buf[CREEP_HP];
+            creep[CREEP_ATK] += buf[CREEP_ATK];
+            creep[CREEP_PDEF] += buf[CREEP_PDEF];
+            creep[CREEP_MDEF] += buf[CREEP_MDEF];
         }
 
         return creep;
@@ -32,23 +32,15 @@ pico.def('ai', function(){
     createCreepStat = function(creepId, level){
         var
         s = me.getStatByCreepId(creepId).slice(),
-        templ = s[CREEP_EFFECT],
+        templ = s[CREEP_TRAITS],
         effects = [],
         i, l;
 
         for(i=0,l=templ.length; i<l; i++){
-            effects.push(createEffect(templ[i], level, -1));
+            effects.push(G_CREATE_OBJECT(templ[i]));
         }
-/*
-        effects.push(createEffect(G_EFFECT_TYPE.BURNED, level, -1));
-        effects.push(createEffect(G_EFFECT_TYPE.CURSED, level, -1));
-        effects.push(createEffect(G_EFFECT_TYPE.DISEASED, level, -1));
-        effects.push(createEffect(G_EFFECT_TYPE.FEARED, level, -1));
-        effects.push(createEffect(G_EFFECT_TYPE.FROZEN, level, -1));
-        effects.push(createEffect(G_EFFECT_TYPE.POISONED, level, -1));
-        effects.push(createEffect(G_EFFECT_TYPE.POISON_BLADE, level, 10));
-*/
-        s[CREEP_EFFECT] = effects;
+
+        s[CREEP_TRAITS] = effects;
         s[OBJECT_NAME] = G_OBJECT_NAME[creepId];
         s[OBJECT_DESC] = G_OBJECT_DESC[creepId];
         s[OBJECT_LEVEL] = level;
@@ -144,7 +136,7 @@ pico.def('ai', function(){
             creep = objects[i];
             if (!creep || G_OBJECT_TYPE.CREEP !== creep[OBJECT_TYPE]) continue;
 
-            bufs = creep[CREEP_EFFECT];
+            bufs = creep[CREEP_TRAITS];
             remain = [];
             for(b=0,bl=bufs.length; b<bl; b++){
                 buf = bufs[b];
@@ -152,7 +144,7 @@ pico.def('ai', function(){
                 if (updateEffect(creep, buf, steps)) remain.push(buf);
             }
             if (bufs.length !== remain.length){
-                creep[CREEP_EFFECT] = remain;
+                creep[CREEP_TRAITS] = remain;
                 updateCreepStat(creep, creep[OBJECT_LEVEL]);
             }
         }

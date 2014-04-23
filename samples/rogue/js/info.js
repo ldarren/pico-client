@@ -147,7 +147,7 @@ pico.def('info', 'picUIContent', function(){
         case G_CONTEXT.MERCHANT_SALE:
             addOption('Sell', 'sell');
             break;
-        case G_CONTEXT.CREEP_EFFECT:
+        case G_CONTEXT.CREEP_TRAIT:
             addOption('Details', 'details');
             break;
         }
@@ -285,7 +285,7 @@ pico.def('info', 'picUIContent', function(){
                         break;
                     case 30:
                         var
-                        buf=target[CREEP_EFFECT],
+                        buf=target[CREEP_TRAITS],
                         l=buf.length;
                         icon = l ? 'Buf:' : 'No buf';
                         for(var i=0; i<l; i++){
