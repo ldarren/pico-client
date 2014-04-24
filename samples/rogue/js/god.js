@@ -260,7 +260,7 @@ pico.def('god', 'picUIContent', function(){
     me.resize = function(ent, width, height){
         var
         com = ent.getComponent(name),
-        comWin = ent.getComponent(com.win);
+        comWin = ent.getComponent(com.win),
         layout = me.createMeshUIFromTemplate(com.meshUI, width, height),
         rows = layout.rows,
         opt = rows[0];

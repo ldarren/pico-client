@@ -482,10 +482,10 @@ pico.def('game', 'pigSqrMap', function(){
     me.openGate = function(elapsed, evt, entities){
         var
         map = this.map,
-        terrain = this.terrain;
-
-        var i = me.exitIndex;
+        terrain = this.terrain,
+        i = me.exitIndex,
         tileType = map[i];
+
         if (!(tileType & G_TILE_TYPE.HIDE) && tileType & G_TILE_TYPE.EXIT){
             terrain[i] = me.prevLevel < me.currentLevel ? G_FLOOR.STAIR_DOWN : G_FLOOR.STAIR_UP;
             delete this.objects[evt];
