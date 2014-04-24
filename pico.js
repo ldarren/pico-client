@@ -9,8 +9,6 @@ pico = function(n){
   }
   return this;
 };
-// shared by all pico objects
-pico.prototype.links = {};
 
 pico.prototype.slot = pico.slot = function(channelName){
     var channel = this.slots[channelName] = this.slots[channelName] || {};
@@ -46,26 +44,36 @@ pico.prototype.signal = pico.signal = function(channelName, events){
     }
     return results;
 };
-// add dependency
-pico.prototype.use = function(name){ this.deps.push(name);};
-// add dependency and link, link = url<parentName, if no parentName link = url
-pico.prototype.link = function(name, url){
-  this.links[name] = url;
-  this.use(name);
+// add dependency, with optional url
+pico.prototype.use = function(name, url){
+    if (url) this.link(name, url);
+    this.deps.push(name);
 };
+// add dependency and link, link = url<parentName, if no parentName link = url
+pico.prototype.link = function(name, url){ pico.links[name] = url; };
 
 pico.def = function(name){
     if (this.modules[name]) console.warn('Replacing module: '+name);
-    var module, ancestor, factory;
+    var module, ancestor, func;
 
     if (3 === arguments.length){
         // with ancestor
         ancestor = this.modules[arguments[1]];
-        factory = arguments[2];
+        func = arguments[2];
     }else{
         // without ancestor
-        factory = arguments[1];
+        func = arguments[1];
     }
+
+    try{
+        func = ('string' === typeof func ? func : func.toString());
+        if ('}' === func.charAt(func.length-1)) func = func.substring(func.indexOf("{") + 1, func.lastIndexOf("}"));
+        var factory = Function('module', '"use strict";'+func);
+    }catch(exp){
+        console.error('Syntax Error at script: '+name);
+        return;
+    }
+
     var properties = {
         moduleName: {value:name, writable:false, configurable:false, enumerable:true},
         base: {value:ancestor, writable:false, configurable:false, enumerable:true},
@@ -99,9 +107,7 @@ pico.loadJS = function(name, parentName, url, cb){
     pico.ajax('get', url, '', null, function(err, xhr){
         if (err) return cb(err);
         if (4 !== xhr.readyState) return;
-        var
-        func = new Function('module', xhr.responseText),
-        module = pico.def(name, parentName, func);
+        var module = pico.def(name, parentName, xhr.responseText);
 
         pico.loadDeps(module, function(){
             module.signal(pico.LOAD);
@@ -131,7 +137,7 @@ pico.loadDeps = function(host, cb){
     });
   }else{
     var
-    arr = host.links[name].split('<'),
+    arr = this.links[name].split('<'),
     link = arr[0],
     parentName = arr[1];
 
@@ -171,14 +177,7 @@ pico.embedJS = function(scripts, cb){
       });
     }
 
-    try{
-        var func = new Function('module', script.textContent || script.innerText); // secure this operation
-    }catch(exp){
-        console.error('Syntax Error at script: '+script.getAttribute('name'));
-        return pico.embedJS(scripts, cb);
-    }
-
-    var module = pico.def(script.getAttribute('name'), script.getAttribute('parent'), func);
+    var module = pico.def(script.getAttribute('name'), script.getAttribute('parent'), script.textContent || script.innerText);
     if (!module) return pico.embedJS(scripts, cb);
 
     pico.loadDeps(module, function(){
@@ -296,7 +295,8 @@ pico.changeHash = function(hash){
     window.location.hash = '#' + hash;
 };
 // query = tag#id
-pico.addFrame = function(holder, query, url){
+pico.addFrame = function(query, url, holder){
+    holder = holder || document.body;
     var frame = holder.querySelector(query);
     if (!frame){
         var tagid = query.split('#');
@@ -307,12 +307,13 @@ pico.addFrame = function(holder, query, url){
     this.embed(frame, url);
 };
 // effects = {opacity:[0,1,'1s'], left:['0%','100%','0.1s'], property:[startVal, endVal,duration,timing-function,delay]}
-pico.changeFrame = function(holder, query, url, effects){
+pico.changeFrame = function(query, url, effects, holder){
+    holder = holder || document.body;
     var
     frame = holder.querySelector(query),
     te = this.states.transitionEnd;
 
-    if (!frame || !te) return this.addFrame(holder, query, url);
+    if (!frame || !te) return this.addFrame(query, url, holder);
 
     var
     style = frame.style,
@@ -361,6 +362,7 @@ LOAD: {value:'load', writable:false, configurable:false, enumerable:true},
 STATE_CHANGE: {value:'stateChange', writable:false, configurable:false, enumerable:true},
 HASH_CHANGE: {value:'hashChange', writable:false, configurable:false, enumerable:true},
 modules: {value:{}, writable:false, configurable:false, enumerable:false},
+links: {value:{}, writable:false, configurable:false, enumerable:false},
 slots: {value:{}, writable:false, configurable:false, enumerable:false},
 states: {value:{}, writable:false, configurable:false, enumerable:false},
 inner: {value:{

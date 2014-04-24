@@ -7,7 +7,7 @@ pico.def('ai', function(){
     team = [],
     currIndex = 0,
     level = 0,
-    god,hero,objects,flags,terrain,
+    god,hero,map,objects,flags,terrain,
     updateCreepStat = function(creep, level){
         var
         stat = me.getStatByCreepId(creep[OBJECT_ICON]).slice(),

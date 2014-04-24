@@ -122,7 +122,7 @@ onPlay = function(){
     me.piHTMLAudio.volume(audioSwitch.checked ? 0 : 1);
     me.rogueMain.showLoading();
     me.game.init(nameTextbox.value || 'Nameless');
-    pico.changeFrame(document.body, 'div#page', 'html/pageGame.html', {opacity:[0,1,'1s']});
+    pico.changeFrame('div#page', 'html/pageGame.html', {opacity:[0,1,'1s']});
 },
 onLogin = function(evt){
     me.socials.fbLogin({scope:'publish_actions'});
@@ -131,6 +131,7 @@ onStateLoaded = function(err, result){
     if (err || (result && result.status && 2002 !== result.status)) {
         storageLoc.textContent = STORAGE.replace('LOC', 'Error: '+result.status);
     }else{
+        debugger;
         var name = me.game.load(result.data);
         if (name){
           nameTextbox.value = name;
@@ -160,14 +161,14 @@ showPlayBtn = function(label){
     playBtn.textContent = label || 'Start';
     playBtn.addEventListener('click', onPlay, false);
 },
-onShowMap = function(evt){ pico.changeFrame(document.body, 'div#page', 'html/pageMap.html', {opacity:[0,1,'1s']}); },
-onShowMedals = function(evt){ pico.changeFrame(document.body, 'div#page', 'html/pageMedals.html', {opacity:[0,1,'1s']}); },
-onShowHeroes = function(evt){ pico.changeFrame(document.body, 'div#page', 'html/pageHeroes.html', {opacity:[0,1,'1s']}); },
-onShowCreeps = function(evt){ pico.changeFrame(document.body, 'div#page', 'html/pageCreeps.html', {opacity:[0,1,'1s']}); },
-onShowSkills = function(evt){ pico.changeFrame(document.body, 'div#page', 'html/pageSkills.html', {opacity:[0,1,'1s']}); },
-onShowEffects = function(evt){ pico.changeFrame(document.body, 'div#page', 'html/pageEffects.html', {opacity:[0,1,'1s']}); },
-onShowShop = function(evt){ pico.changeFrame(document.body, 'div#page', 'html/pageShop.html', {opacity:[0,1,'1s']}); },
-onShowCredits = function(evt){ pico.changeFrame(document.body, 'div#page', 'html/pageCredits.html', {opacity:[0,1,'1s']}); },
+onShowMap = function(evt){ pico.changeFrame('div#page', 'html/pageMap.html', {opacity:[0,1,'1s']}); },
+onShowMedals = function(evt){ pico.changeFrame('div#page', 'html/pageMedals.html', {opacity:[0,1,'1s']}); },
+onShowHeroes = function(evt){ pico.changeFrame('div#page', 'html/pageHeroes.html', {opacity:[0,1,'1s']}); },
+onShowCreeps = function(evt){ pico.changeFrame('div#page', 'html/pageCreeps.html', {opacity:[0,1,'1s']}); },
+onShowSkills = function(evt){ pico.changeFrame('div#page', 'html/pageSkills.html', {opacity:[0,1,'1s']}); },
+onShowEffects = function(evt){ pico.changeFrame('div#page', 'html/pageEffects.html', {opacity:[0,1,'1s']}); },
+onShowShop = function(evt){ pico.changeFrame('div#page', 'html/pageShop.html', {opacity:[0,1,'1s']}); },
+onShowCredits = function(evt){ pico.changeFrame('div#page', 'html/pageCredits.html', {opacity:[0,1,'1s']}); },
 onShopOpen = function(err){
     if (err) return console.error(JSON.stringify(err));
     shopBtn.removeEventListener('click', onShowShop);
