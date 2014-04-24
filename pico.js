@@ -54,11 +54,11 @@ pico.prototype.link = function(name, url){ pico.links[name] = url; };
 
 pico.def = function(name){
     if (this.modules[name]) console.warn('Replacing module: '+name);
-    var module, ancestor, func;
+    var module, parentName, func;
 
     if (3 === arguments.length){
         // with ancestor
-        ancestor = this.modules[arguments[1]];
+        parentName = arguments[1];
         func = arguments[2];
     }else{
         // without ancestor
@@ -67,7 +67,10 @@ pico.def = function(name){
 
     try{
         func = ('string' === typeof func ? func : func.toString());
-        if ('}' === func.charAt(func.length-1)) func = func.substring(func.indexOf("{") + 1, func.lastIndexOf("}"));
+        if (0 === func.indexOf('pico.def')) {
+            return Function('return '+func)();
+        }
+        if (0 === func.indexOf('function')) func = func.substring(func.indexOf("{") + 1, func.lastIndexOf("}"));
         var factory = Function('module', '"use strict";'+func);
     }catch(exp){
         console.error('Syntax Error at script: '+name);
@@ -108,6 +111,7 @@ pico.loadJS = function(name, parentName, url, cb){
         if (err) return cb(err);
         if (4 !== xhr.readyState) return;
         var module = pico.def(name, parentName, xhr.responseText);
+        if (!module) return cb('loadJS: '+name+' failed');
 
         pico.loadDeps(module, function(){
             module.signal(pico.LOAD);
@@ -136,20 +140,24 @@ pico.loadDeps = function(host, cb){
       return pico.loadDeps(host, cb);
     });
   }else{
+      pico.loadLink(name, function(err, module){
+          if (err) console.warn(err);
+          if (module) host[name] = module;
+          return pico.loadDeps(host, cb);
+      });
+  }
+};
+pico.loadLink = function(name, cb){
     var
     arr = this.links[name].split('<'),
     link = arr[0],
     parentName = arr[1];
 
     if(link){
-        pico.loadJS(name, parentName, link, function(err, module){
-            if (!err) host[name] = module;
-            return pico.loadDeps(host, cb);
-        });
+        pico.loadJS(name, parentName, link, cb);
     }else{
-        return pico.loadDeps(host, cb);
+        return cb('no link named: '+name);
     }
-  }
 };
 pico.embed = function(holder, url, cb){
   pico.ajax('get', url, '', null, function(err, xhr){
