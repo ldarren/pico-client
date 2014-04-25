@@ -53,45 +53,69 @@ pico.prototype.use = function(name, url){
 pico.prototype.link = function(name, url){ pico.links[name] = url; };
 
 pico.def = function(name){
-    if (this.modules[name]) console.warn('Replacing module: '+name);
-    var module, parentName, func;
+    var
+    cb = (('undefined' !== typeof callback && callback instanceof Function) ? callback : function(err){if(err) console.warn(err)}),
+    module, parentName, func;
 
-    if (3 === arguments.length){
-        // with ancestor
-        parentName = arguments[1];
-        func = arguments[2];
-    }else{
+    switch(arguments.length){
+    case 2:
         // without ancestor
         func = arguments[1];
-    }
-
-    try{
-        func = ('string' === typeof func ? func : func.toString());
-        if (0 === func.indexOf('pico.def')) {
-            return Function('return '+func)();
+        break;
+    case 3:
+        if (arguments[1] instanceof Function){
+            // with callback 
+            func = arguments[1];
+            cb = arguments[2];
+        }else{
+            // with ancestor
+            parentName = arguments[1];
+            func = arguments[2];
         }
-        if (0 === func.indexOf('function')) func = func.substring(func.indexOf("{") + 1, func.lastIndexOf("}"));
-        var factory = Function('module', '"use strict";'+func);
-    }catch(exp){
-        console.error('Syntax Error at script: '+name);
-        return;
+        break;
+    case 4:
+        parentName = arguments[1];
+        func = arguments[2];
+        cb = arguments[3];
+        break;
+    default:
+        return cb('too many or too few params (2~4) '+JSON.stringify(arguments));
     }
 
-    var properties = {
-        moduleName: {value:name, writable:false, configurable:false, enumerable:true},
-        base: {value:ancestor, writable:false, configurable:false, enumerable:true},
-        slots: {value:{}, writable:false, configurable:false, enumerable:false},
-        deps: {value:[], writable:false, configurable:false, enumerable:false}
-    };
-    if (ancestor){
-        module = Object.create(ancestor, properties);
-    }else{
-        module = Object.create(pico.prototype, properties);
+    if (this.modules[name]){
+        console.warn('Replacing module? '+name);
+        return cb(null, this.modules[name]);
     }
-    // each pico object has their own slots and dependencies
 
-    factory.call(module, module); // this, me
-    return this.modules[name] = module;
+    pico.loadModule(parentName, function(err, ancestor){
+        if (err) return cb(err);
+        try{
+            func = ('string' === typeof func ? func : func.toString());
+            if (0 === func.indexOf('function')) func = func.substring(func.indexOf("{") + 1, func.lastIndexOf("}"));
+            else if (-1 !== func.indexOf('pico.def')) {
+                Function('callback', func)(cb);
+            }
+            var factory = Function('module', '"use strict";'+func);
+        }catch(exp){
+            return cb('Syntax Error at script: '+name);
+        }
+
+        var properties = {
+            moduleName: {value:name, writable:false, configurable:false, enumerable:true},
+            base: {value:ancestor, writable:false, configurable:false, enumerable:true},
+            slots: {value:{}, writable:false, configurable:false, enumerable:false},
+            deps: {value:[], writable:false, configurable:false, enumerable:false}
+        };
+        if (ancestor){
+            module = Object.create(ancestor, properties);
+        }else{
+            module = Object.create(pico.prototype, properties);
+        }
+        // each pico object has their own slots and dependencies
+
+        factory.call(module, module); // this, me
+        cb(null, pico.modules[name] = module);
+    });
 };
 pico.getModule = function(key){
     return this.modules[key];
@@ -110,44 +134,46 @@ pico.loadJS = function(name, parentName, url, cb){
     pico.ajax('get', url, '', null, function(err, xhr){
         if (err) return cb(err);
         if (4 !== xhr.readyState) return;
-        var module = pico.def(name, parentName, xhr.responseText);
-        if (!module) return cb('loadJS: '+name+' failed');
+        pico.def(name, parentName, xhr.responseText, function(err, module){
+            if (err || !module) return cb('loadJS['+name+'] error: '+err);
 
-        pico.loadDeps(module, function(){
-            module.signal(pico.LOAD);
-            return cb(err, module);
+            pico.loadDeps(module, function(){
+                module.signal(pico.LOAD);
+                return cb(null, module);
+            });
         });
     });
 };
 // recurssively load dependencies in a module
 pico.loadDeps = function(host, cb){
-  if (!cb) cb = function(){};
-  var names = host.deps;
-  if (!names || !names.length) return cb();
+    if (!cb) cb = function(){};
+    var names = host.deps;
+    if (!names || !names.length) return cb();
 
-  var
-  name = names.pop(),
-  module = this.modules[name];
+    var name = names.pop();
 
-  if (module){
-    host[name] = module;
-    return pico.loadDeps(module, function(){
-        var mi = pico.states.newModules.indexOf(name);
-        if (-1 !== mi){
-            pico.states.newModules.splice(mi, 1);
-            module.signal(pico.LOAD);
+    pico.loadModule(name, function(err, module){
+        if (err) console.warn(err);
+        if (module) {
+            host[name] = module;
+            return pico.loadDeps(module, function(){
+                var mi = pico.states.newModules.indexOf(name);
+                if (-1 !== mi){
+                    pico.states.newModules.splice(mi, 1);
+                    module.signal(pico.LOAD);
+                }
+                return pico.loadDeps(host, cb);
+            });
+        }else{
+            return pico.loadDeps(host, cb);
         }
-      return pico.loadDeps(host, cb);
     });
-  }else{
-      pico.loadLink(name, function(err, module){
-          if (err) console.warn(err);
-          if (module) host[name] = module;
-          return pico.loadDeps(host, cb);
-      });
-  }
 };
-pico.loadLink = function(name, cb){
+pico.loadModule = function(name, cb){
+    if (!name) return cb();
+    var module = this.modules[name];
+    if (module) return cb(null, module);
+
     var
     arr = this.links[name].split('<'),
     link = arr[0],
@@ -185,12 +211,16 @@ pico.embedJS = function(scripts, cb){
       });
     }
 
-    var module = pico.def(script.getAttribute('name'), script.getAttribute('parent'), script.textContent || script.innerText);
-    if (!module) return pico.embedJS(scripts, cb);
+    pico.def(script.getAttribute('name'), script.getAttribute('parent'), script.textContent || script.innerText, function(err, module){
+        if (err || !module) {
+            console.error(err);
+            return pico.embedJS(scripts, cb);
+        }
 
-    pico.loadDeps(module, function(){
-      module.signal(pico.LOAD);
-      return pico.embedJS(scripts, cb);
+        pico.loadDeps(module, function(){
+          module.signal(pico.LOAD);
+          return pico.embedJS(scripts, cb);
+        });
     });
 };
 // method: get/post
