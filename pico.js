@@ -91,9 +91,9 @@ pico.def = function(name){
         if (err) return cb(err);
         try{
             func = ('string' === typeof func ? func : func.toString());
-            if (0 === func.indexOf('function')) func = func.substring(func.indexOf("{") + 1, func.lastIndexOf("}"));
+            if (0 === func.indexOf('function')) func = func.substring(func.indexOf('{') + 1, func.lastIndexOf('}'));
             else if (-1 !== func.indexOf('pico.def')) {
-                Function('callback', func)(cb);
+                return Function('cb', func.substring(0, func.lastIndexOf('}')+1)+',cb);')(cb);
             }
             var factory = Function('module', '"use strict";'+func);
         }catch(exp){
