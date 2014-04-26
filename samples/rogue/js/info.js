@@ -1,4 +1,4 @@
-pico.def('info', 'picUIContent', function(){
+pico.def('info', 'lib/picUIContent', function(){
 
     var
     me = this,

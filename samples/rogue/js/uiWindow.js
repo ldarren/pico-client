@@ -1,4 +1,4 @@
-pico.def('uiWindow', 'picUIWindow', function(){
+pico.def('uiWindow', 'lib/picUIWindow', function(){
 
     this.use('picRenderer');
     this.use('info');

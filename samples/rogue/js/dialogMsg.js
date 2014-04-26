@@ -1,4 +1,4 @@
-pico.def('dialogMsg', 'picUIContent', function(){
+pico.def('dialogMsg', 'lib/picUIContent', function(){
     var
     me = this,
     Floor = Math.floor, Ceil = Math.ceil, Min = Math.min, Max = Math.max, Round = Math.round, Random = Math.random,

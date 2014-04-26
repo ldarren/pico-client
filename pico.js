@@ -120,6 +120,9 @@ pico.def = function(name){
 pico.getModule = function(key){
     return this.modules[key];
 };
+pico.srcPaths = function(paths){
+    pico.objTools.mergeObj(pico.paths, paths);
+};
 pico.setup = function(names, cb){
     if (!names || !names.length) return cb();
 
@@ -174,16 +177,14 @@ pico.loadModule = function(name, cb){
     var module = this.modules[name];
     if (module) return cb(null, module);
 
-    var
-    arr = this.links[name].split('<'),
-    link = arr[0],
+    var link = this.links[name] || name;
+    arr = link.split('<'),
+    url = arr[0],
     parentName = arr[1];
+    keyPos = link.indexOf('/'),
+    path = pico.paths[link.substring(0, keyPos)] || pico.paths['*'];
 
-    if(link){
-        pico.loadJS(name, parentName, link, cb);
-    }else{
-        return cb('no link named: '+name);
-    }
+    pico.loadJS(name, parentName, path ? path + url.substr(keyPos) : url, cb);
 };
 pico.embed = function(holder, url, cb){
   pico.ajax('get', url, '', null, function(err, xhr){
@@ -401,6 +402,7 @@ STATE_CHANGE: {value:'stateChange', writable:false, configurable:false, enumerab
 HASH_CHANGE: {value:'hashChange', writable:false, configurable:false, enumerable:true},
 modules: {value:{}, writable:false, configurable:false, enumerable:false},
 links: {value:{}, writable:false, configurable:false, enumerable:false},
+paths: {value:{'*':''}, writable:false, configurable:false, enumerable:false},
 slots: {value:{}, writable:false, configurable:false, enumerable:false},
 states: {value:{}, writable:false, configurable:false, enumerable:false},
 inner: {value:{

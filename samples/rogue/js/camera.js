@@ -1,4 +1,4 @@
-pico.def('camera', 'picBase', function(){
+pico.def('camera', 'lib/picBase', function(){
     var
     me = this,
     UNCLEAR = G_FLOOR.UNCLEAR,

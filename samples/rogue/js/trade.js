@@ -1,4 +1,4 @@
-pico.def('trade', 'picUIContent', function(){
+pico.def('trade', 'lib/picUIContent', function(){
     var
     me = this,
     Floor=Math.floor,Ceil=Math.ceil,Round=Math.round,Random=Math.random,Max=Math.max,Min=Math.min,

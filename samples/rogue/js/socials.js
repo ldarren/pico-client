@@ -1,4 +1,4 @@
-pico.def('socials', 'piSocials', function(){
+pico.def('socials', 'lib/piSocials', function(){
     var
     Random=Math.random,Floor=Math.floor,
     me = this,

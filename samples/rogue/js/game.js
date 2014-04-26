@@ -1,4 +1,4 @@
-pico.def('game', 'pigSqrMap', function(){
+pico.def('game', 'lib/pigSqrMap', function(){
     this.use('piAtlas');
     this.use('piHTMLAudio');
     this.use('socials');

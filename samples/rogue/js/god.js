@@ -1,4 +1,4 @@
-pico.def('god', 'picUIContent', function(){
+pico.def('god', 'lib/picUIContent', function(){
     var
     Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round, Max = Math.max,
     me = this,

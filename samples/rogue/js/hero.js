@@ -1,4 +1,4 @@
-pico.def('hero', 'picUIContent', function(){
+pico.def('hero', 'lib/picUIContent', function(){
     var
     me = this,
     name = me.moduleName,

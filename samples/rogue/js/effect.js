@@ -1,4 +1,4 @@
-pico.def('effect', 'picBase', function(){
+pico.def('effect', 'lib/picBase', function(){
     var
     me = this,
     TWEENER = 'picTween',
