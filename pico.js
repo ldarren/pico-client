@@ -46,16 +46,13 @@ pico.prototype.signal = pico.signal = function(channelName, events){
 };
 // add dependency, with optional url
 pico.prototype.use = function(name, url){
-    if (url) this.link(name, url);
-    this.deps.push(name);
+    this.deps[name] = url || name;
 };
-// add dependency and link, link = url<parentName, if no parentName link = url
-pico.prototype.link = function(name, url){ pico.links[name] = url; };
 
 pico.def = function(name){
     var
     cb = (('undefined' !== typeof callback && callback instanceof Function) ? callback : function(err){if(err) console.warn(err)}),
-    module, parentName, func;
+    module, parentURL, func;
 
     switch(arguments.length){
     case 2:
@@ -69,12 +66,12 @@ pico.def = function(name){
             cb = arguments[2];
         }else{
             // with ancestor
-            parentName = arguments[1];
+            parentURL = arguments[1];
             func = arguments[2];
         }
         break;
     case 4:
-        parentName = arguments[1];
+        parentURL = arguments[1];
         func = arguments[2];
         cb = arguments[3];
         break;
@@ -87,7 +84,7 @@ pico.def = function(name){
         return cb(null, this.modules[name]);
     }
 
-    pico.loadModule(parentName, function(err, ancestor){
+    pico.loadModule(parentURL, function(err, ancestor){
         if (err) return cb(err);
         try{
             func = ('string' === typeof func ? func : func.toString());
@@ -104,7 +101,7 @@ pico.def = function(name){
             moduleName: {value:name, writable:false, configurable:false, enumerable:true},
             base: {value:ancestor, writable:false, configurable:false, enumerable:true},
             slots: {value:{}, writable:false, configurable:false, enumerable:false},
-            deps: {value:[], writable:false, configurable:false, enumerable:false}
+            deps: {value:{}, writable:false, configurable:false, enumerable:false}
         };
         if (ancestor){
             module = Object.create(ancestor, properties);
@@ -133,11 +130,11 @@ pico.setup = function(names, cb){
         pico.setup(names, cb);
     });
 };
-pico.loadJS = function(name, parentName, url, cb){
+pico.loadJS = function(name, parentURL, url, cb){
     pico.ajax('get', url, '', null, function(err, xhr){
         if (err) return cb(err);
         if (4 !== xhr.readyState) return;
-        pico.def(name, parentName, xhr.responseText, function(err, module){
+        pico.def(name, parentURL, xhr.responseText, function(err, module){
             if (err || !module) return cb('loadJS['+name+'] error: '+err);
 
             pico.loadDeps(module, function(){
@@ -150,12 +147,17 @@ pico.loadJS = function(name, parentName, url, cb){
 // recurssively load dependencies in a module
 pico.loadDeps = function(host, cb){
     if (!cb) cb = function(){};
-    var names = host.deps;
+    var
+    deps = host.deps,
+    names = Object.keys(deps);
     if (!names || !names.length) return cb();
 
-    var name = names.pop();
+    var 
+    name = names.pop(),
+    url = deps[name];
+    delete deps[name];
 
-    pico.loadModule(name, function(err, module){
+    pico.loadModule(name, url, function(err, module){
         if (err) console.warn(err);
         if (module) {
             host[name] = module;
@@ -172,19 +174,15 @@ pico.loadDeps = function(host, cb){
         }
     });
 };
-pico.loadModule = function(name, cb){
-    if (!name) return cb();
-    var module = this.modules[name];
+pico.loadModule = function(name, url, cb){
+    if (!url) return cb();
+    var module = this.modules[url];
     if (module) return cb(null, module);
 
-    var link = this.links[name] || name;
-    arr = link.split('<'),
-    url = arr[0],
-    parentName = arr[1];
-    keyPos = link.indexOf('/'),
-    path = pico.paths[link.substring(0, keyPos)] || pico.paths['*'];
+    keyPos = url.indexOf('/'),
+    path = pico.paths[url.substring(0, keyPos)] || pico.paths['*'];
 
-    pico.loadJS(name, parentName, path ? path + url.substr(keyPos) : url, cb);
+    pico.loadJS(name, null, path ? path + url.substr(keyPos) : url, cb);
 };
 pico.embed = function(holder, url, cb){
   pico.ajax('get', url, '', null, function(err, xhr){
@@ -192,10 +190,7 @@ pico.embed = function(holder, url, cb){
     if (4 !== xhr.readyState) return;
     holder.innerHTML = xhr.responseText;
 
-    // <ie10 doesn't support Array.prototype.slice.call on NodeList
-    for (var scriptNodes=holder.getElementsByTagName('script'),scripts=[],i=0,l=scriptNodes.length; i<l; i++){ scripts.push(scriptNodes[i]); }
-
-    pico.embedJS(scripts, function(){
+    pico.embedJS(Array.prototype.slice.call(holder.getElementsByTagName('script')), function(){
         if (cb) return cb();
     });
   });
@@ -207,20 +202,20 @@ pico.embedJS = function(scripts, cb){
 
     if (script.type && -1 === script.type.indexOf('javascript')) return pico.embedJS(scripts, cb); // template node, ignore
     if (script.src){
-      return pico.loadJS([script.getAttribute('name')], script.getAttribute('parent'), script.src, function(err, module){
-          return pico.embedJS(scripts, cb);
-      });
+        return pico.loadJS([script.getAttribute('name')], script.getAttribute('parent'), script.src, function(err, module){
+            return pico.embedJS(scripts, cb);
+        });
     }
 
     pico.def(script.getAttribute('name'), script.getAttribute('parent'), script.textContent || script.innerText, function(err, module){
         if (err || !module) {
-            console.error(err);
+            console.error('embedJS['+name+'] error: '+err);
             return pico.embedJS(scripts, cb);
         }
 
         pico.loadDeps(module, function(){
-          module.signal(pico.LOAD);
-          return pico.embedJS(scripts, cb);
+            module.signal(pico.LOAD);
+            return pico.embedJS(scripts, cb);
         });
     });
 };
