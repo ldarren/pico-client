@@ -1,13 +1,12 @@
-pico.def('game', 'lib/pigSqrMap', function(){
-    this.use('piAtlas');
-    this.use('piHTMLAudio');
-    this.use('socials');
-    this.use('god');
-    this.use('hero');
-    this.use('ai');
+pico.def('pico/pigSqrMap', function(){
+    me.use('piAtlas', 'pico/piAtlas');
+    me.use('piHTMLAudio', 'pico/piHTMLAudio');
+    me.use('socials');
+    me.use('god');
+    me.use('hero');
+    me.use('ai');
 
     var
-    me = this,
     fingerStack = [],
     Max=Math.max,Abs=Math.abs,Floor=Math.floor,Random=Math.random,Pow=Math.pow,Sqrt=Math.sqrt,
     pathElapsed = 0,

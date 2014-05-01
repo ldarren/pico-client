@@ -1,8 +1,7 @@
-pico.def('ai', function(){
-    this.use('tome');
+pico.def(function(){
+    me.use('tome');
 
     var
-    me = this,
     Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round,
     team = [],
     currIndex = 0,

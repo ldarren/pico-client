@@ -1,6 +1,5 @@
-pico.def('tome', 'lib/picUIContent', function(){
+pico.def('pico/picUIContent', function(){
     var
-    me = this,
     Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round, Max = Math.max,
     CAP = 8, SKU = G_FEATURE_SHOP[1],
     purchasable = false,

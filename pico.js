@@ -10,78 +10,110 @@ pico = function(n){
   return this;
 };
 
-pico.prototype.slot = pico.slot = function(channelName){
-    var channel = this.slots[channelName] = this.slots[channelName] || {};
-    if (3 === arguments.length){
-        channel[arguments[1].moduleName] = arguments[2];
-    }else{
-        // function only no object
-        var func = arguments[1];
-        channel[pico.hash(func.toString())] = func;
-    }
-};
-pico.prototype.unslot = pico.unslot = function(channelName, identity){
-    var channel = this.slots[channelName] = this.slots[channelName] || {};
-    if (identity.moduleName){
-        delete channel[identity.moduleName];
-    }else{
-        // function only no object
-        delete channel[pico.hash(identity.toString())];
-    }
-};
-pico.prototype.signal = pico.signal = function(channelName, events){
-    var
-    channel = this.slots[channelName],
-    results = [],
-    mod,func;
-    if (!channel) return results;
-    
-    events = events || [];
+pico.prototype = {
+    slot: function(channelName){
+        var channel = this.slots[channelName] = this.slots[channelName] || {};
+        if (3 === arguments.length){
+            channel[arguments[1].moduleName] = arguments[2];
+        }else{
+            // function only no object
+            var func = arguments[1];
+            channel[pico.hash(func.toString())] = func;
+        }
+    },
+    unslot: function(channelName, identity){
+        var channel = this.slots[channelName] = this.slots[channelName] || {};
+        if (identity.moduleName){
+            delete channel[identity.moduleName];
+        }else{
+            // function only no object
+            delete channel[pico.hash(identity.toString())];
+        }
+    },
+    signal: function(channelName, events){
+        var
+        channel = this.slots[channelName],
+        results = [],
+        mod,func;
+        if (!channel) return results;
+        
+        events = events || [];
 
-    for(var key in channel){
-        mod = pico.modules[key];
-        results.push(channel[key].apply(mod, events));
+        for(var key in channel){
+            mod = pico.modules[key];
+            results.push(channel[key].apply(mod, events));
+        }
+        return results;
+    },
+    // add dependency, with optional url
+    use: function(name, url){
+        this.deps[name] = url || name;
     }
-    return results;
-};
-// add dependency, with optional url
-pico.prototype.use = function(name, url){
-    this.deps[name] = url || name;
 };
 
-pico.def = function(name){
+pico.slot = pico.prototype.slot;
+pico.unslot = pico.prototype.unslot;
+pico.signal = pico.prototype.signal;
+
+pico.start = function(name){
+    var parentURL, paths, func;
+
+    switch(arguments.length){
+    case 3:
+        paths = arguments[1];
+        func = arguments[2];
+        break;
+    case 4:
+        parentURL = arguments[1];
+        paths = arguments[2];
+        func = arguments[3];
+        break;
+    }
+    pico.objTools.mergeObj(pico.paths, paths);
+
+    window.addEventListener('load', function(){
+        var onDeviceReady = function(){
+            pico.def(parentURL, func, function(err, module){
+                pico.modules[name] = module;
+                module.signal(pico.LOAD);
+            });
+        };
+
+        if ('Phonegap' === pico.states.browser){
+            document.addEventListener('deviceready', onDeviceReady, false);
+        }else{
+            onDeviceReady();
+        }
+    });
+};
+pico.def = function(){
     var
     cb = (('undefined' !== typeof callback && callback instanceof Function) ? callback : function(err){if(err) console.warn(err)}),
     module, parentURL, func;
 
     switch(arguments.length){
-    case 2:
+    case 1:
         // without ancestor
-        func = arguments[1];
+        func = arguments[0];
         break;
-    case 3:
-        if (arguments[1] instanceof Function){
+    case 2:
+        if (arguments[0] instanceof Function){
             // with callback 
-            func = arguments[1];
-            cb = arguments[2];
+            func = arguments[0];
+            cb = arguments[1];
         }else{
             // with ancestor
-            parentURL = arguments[1];
-            func = arguments[2];
+            parentURL = arguments[0];
+            func = arguments[1];
         }
         break;
-    case 4:
-        parentURL = arguments[1];
-        func = arguments[2];
-        cb = arguments[3];
+    case 3:
+        parentURL = arguments[0];
+        func = arguments[1];
+        cb = arguments[2];
         break;
     default:
-        return cb('too many or too few params (2~4) '+JSON.stringify(arguments));
-    }
-
-    if (this.modules[name]){
-        console.warn('Replacing module? '+name);
-        return cb(null, this.modules[name]);
+        return cb('too many or too few params (1~3) '+JSON.stringify(arguments));
     }
 
     pico.loadModule(parentURL, function(err, ancestor){
@@ -92,13 +124,14 @@ pico.def = function(name){
             else if (-1 !== func.indexOf('pico.def')) {
                 return Function('cb', func.substring(0, func.lastIndexOf('}')+1)+',cb);')(cb);
             }
-            var factory = Function('module', '"use strict";'+func);
+            var factory = Function('me', '"use strict";'+func);
         }catch(exp){
-            return cb('Syntax Error at script: '+name);
+            return cb('Syntax Error at script: '+func);
         }
 
+        // each pico object has their own slots and dependencies
         var properties = {
-            moduleName: {value:name, writable:false, configurable:false, enumerable:true},
+            moduleName: {value:''+Date.now(), writable:false, configurable:false, enumerable:true},
             base: {value:ancestor, writable:false, configurable:false, enumerable:true},
             slots: {value:{}, writable:false, configurable:false, enumerable:false},
             deps: {value:{}, writable:false, configurable:false, enumerable:false}
@@ -108,35 +141,21 @@ pico.def = function(name){
         }else{
             module = Object.create(pico.prototype, properties);
         }
-        // each pico object has their own slots and dependencies
 
         factory.call(module, module); // this, me
-        cb(null, pico.modules[name] = module);
+        cb(null, module);
     });
 };
 pico.getModule = function(key){
     return this.modules[key];
 };
-pico.srcPaths = function(paths){
-    pico.objTools.mergeObj(pico.paths, paths);
-};
-pico.setup = function(names, cb){
-    if (!names || !names.length) return cb();
-
-    var module = this.modules[names.shift()];
-
-    this.loadDeps(module, function(){
-        module.signal(pico.LOAD);
-        pico.setup(names, cb);
-    });
-};
 pico.loadJS = function(name, parentURL, url, cb){
     pico.ajax('get', url, '', null, function(err, xhr){
         if (err) return cb(err);
         if (4 !== xhr.readyState) return;
-        pico.def(name, parentURL, xhr.responseText, function(err, module){
-            if (err || !module) return cb('loadJS['+name+'] error: '+err);
-
+        pico.def(parentURL, xhr.responseText, function(err, module){
+            if (err || !module) return cb('loadJS['+url+'] error: '+err);
+            pico.modules[name] = module;
             pico.loadDeps(module, function(){
                 module.signal(pico.LOAD);
                 return cb(null, module);
@@ -155,18 +174,15 @@ pico.loadDeps = function(host, cb){
     var 
     name = names.pop(),
     url = deps[name];
+
     delete deps[name];
 
-    pico.loadModule(name, url, function(err, module){
+    pico.loadModule(url, function(err, module){
         if (err) console.warn(err);
         if (module) {
             host[name] = module;
             return pico.loadDeps(module, function(){
-                var mi = pico.states.newModules.indexOf(name);
-                if (-1 !== mi){
-                    pico.states.newModules.splice(mi, 1);
-                    module.signal(pico.LOAD);
-                }
+                module.signal(pico.LOAD);
                 return pico.loadDeps(host, cb);
             });
         }else{
@@ -174,15 +190,25 @@ pico.loadDeps = function(host, cb){
         }
     });
 };
-pico.loadModule = function(name, url, cb){
+pico.loadModule = function(url, cb){
     if (!url) return cb();
     var module = this.modules[url];
     if (module) return cb(null, module);
 
+    var
     keyPos = url.indexOf('/'),
-    path = pico.paths[url.substring(0, keyPos)] || pico.paths['*'];
+    fname, path;
 
-    pico.loadJS(name, null, path ? path + url.substr(keyPos) : url, cb);
+    if (-1 !== keyPos){
+        path = pico.paths[url.substring(0, keyPos)];
+        if (path){
+            fname = path ? url.substr(keyPos+1) : url;
+        }
+    }
+    fname = fname || url;
+    path = path || pico.paths['*'] || '';
+
+    pico.loadJS(url, null, path+fname+'.js', cb);
 };
 pico.embed = function(holder, url, cb){
   pico.ajax('get', url, '', null, function(err, xhr){
@@ -207,12 +233,12 @@ pico.embedJS = function(scripts, cb){
         });
     }
 
-    pico.def(script.getAttribute('name'), script.getAttribute('parent'), script.textContent || script.innerText, function(err, module){
+    pico.def(script.getAttribute('parent'), script.textContent || script.innerText, function(err, module){
         if (err || !module) {
             console.error('embedJS['+name+'] error: '+err);
             return pico.embedJS(scripts, cb);
         }
-
+        pico.modules[script.getAttribute('name')] = module;
         pico.loadDeps(module, function(){
             module.signal(pico.LOAD);
             return pico.embedJS(scripts, cb);
@@ -509,21 +535,6 @@ inner: {value:{
   }, writable:false, configurable:false, enumerable:false}});
 
 //Object.freeze(pico);//for common tools to add functionality
-
-window.addEventListener('load', function(){
-    var onDeviceReady = function(){
-        var newModules = pico.states.newModules = Object.keys(pico.modules); // signal load event, if newModules being called in loadDeps
-        pico.setup(newModules, function(){
-            pico.signal(pico.LOAD);
-        });
-    };
-
-    if ('Phonegap' === pico.states.browser){
-        document.addEventListener('deviceready', onDeviceReady, false);
-    }else{
-        onDeviceReady();
-    }
-});
 
 window.addEventListener('popstate', function(evt){
     // change uri parameter

@@ -1,6 +1,9 @@
-pico.def('trade', 'lib/picUIContent', function(){
+pico.def('pico/picUIContent', function(){
+
+    me.use('god');
+    me.use('hero');
+
     var
-    me = this,
     Floor=Math.floor,Ceil=Math.ceil,Round=Math.round,Random=Math.random,Max=Math.max,Min=Math.min,
     name = me.moduleName,
     TRADE_ROW = 4, TRADE_COL = 4,
@@ -124,9 +127,6 @@ pico.def('trade', 'lib/picUIContent', function(){
         case me.CUSTOM_BUTTON: return onCustomButton.apply(this, arguments); break;
         }
     };
-
-    me.use('god');
-    me.use('hero');
 
     me.sellPrice = function(object, count){
         if (!object) return 0;

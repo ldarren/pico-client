@@ -1,4 +1,4 @@
-<style>
+<style scoped>
 div#gameStage{
     background-color:#527f39;
     position:absolute;
@@ -8,27 +8,26 @@ div#gameStage{
 <div id=gameStage></div>
 
 <script name=gamePage>
-this.use('piCanvas');
-this.use('piReactor');
-this.use('picRect');
-this.use('picTween');
-this.use('picRenderer');
-this.use('rogueMain');
-this.use('game');
-this.use('camera');
-this.use('effect');
-this.use('socials');
-this.use('uiWindow');
-this.use('god');
-this.use('hero');
-this.use('bag');
-this.use('tome');
-this.use('info');
-this.use('dialogMsg');
-this.use('trade');
+me.use('piCanvas', 'pico/piCanvas');
+me.use('piReactor', 'pico/piReactor');
+me.use('picRect', 'pico/picRect');
+me.use('picTween', 'pico/picTween');
+me.use('picRenderer', 'pico/picRenderer');
+me.use('rogueMain');
+me.use('game');
+me.use('camera');
+me.use('effect');
+me.use('socials');
+me.use('uiWindow');
+me.use('god');
+me.use('hero');
+me.use('bag');
+me.use('tome');
+me.use('info');
+me.use('dialogMsg');
+me.use('trade');
 
 var
-me = this,
 gameStage,
 fingerStartPos = [0, 0],
 fingerTracker,

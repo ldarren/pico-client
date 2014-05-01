@@ -1,11 +1,11 @@
-pico.def('uiWindow', 'lib/picUIWindow', function(){
+pico.def('pico/picUIWindow', function(){
 
-    this.use('picRenderer');
-    this.use('info');
-    this.use('dialogMsg');
-    this.use('trade');
-    this.use('god');
-    this.use('hero');
+    me.use('picRenderer');
+    me.use('info');
+    me.use('dialogMsg');
+    me.use('trade');
+    me.use('god');
+    me.use('hero');
 
     var
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
@@ -16,7 +16,6 @@ pico.def('uiWindow', 'lib/picUIWindow', function(){
     dialogMsgId = G_WIN_ID.DIALOG,
     tradeId = G_WIN_ID.TRADE,
     altarId = G_WIN_ID.ALTAR,
-    me = this,
     name = me.moduleName,
     updateContent = function(ent, com){
         var

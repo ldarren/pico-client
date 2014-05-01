@@ -1,4 +1,4 @@
-<style>
+<style scoped>
 .fb-connect {
     background:url(css/fb_white_29.png) no-repeat 5px 5px #3b579d;
     display:block;
@@ -108,13 +108,12 @@
 </div>
 
 <script name=loginPage>
-this.use('rogueMain');
-this.use('piHTMLAudio');
-this.use('socials');
-this.use('game');
+me.use('piHTMLAudio', 'pico/piHTMLAudio');
+me.use('rogueMain');
+me.use('socials');
+me.use('game');
 
 var
-me = this,
 STORAGE = 'Storage: LOC',
 playBtn, fbBtn, googBtn, nameTextbox, audioSwitch, mapBtn, medalBtn, shopBtn, storageLoc,
 onPlay = function(){

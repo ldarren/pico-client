@@ -1,4 +1,4 @@
-<style>
+<style scoped>
 #skills{
     background:#527f39;
 }
@@ -72,8 +72,10 @@
 </script>
 
 <script name=skillsPage>
+
+me.use('god');
+
 var
-me = this,
 skillList = [196,197,198,226,227,228,256,257,258,295,296,297,562,563,564,565,566,567,568,569,570,571,572,573],
 onBack = function(evt){
     pico.changeFrame('div#page', 'html/pageLogin.html', {opacity:[0,1,'1s']});
@@ -100,8 +102,6 @@ onLoad = function(){
         list.appendChild(ele);
     }
 };
-
-me.use('god');
 
 me.slot(pico.LOAD, onLoad);
 </script>

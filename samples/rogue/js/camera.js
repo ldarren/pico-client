@@ -1,6 +1,5 @@
-pico.def('camera', 'lib/picBase', function(){
+pico.def('pico/picBase', function(){
     var
-    me = this,
     UNCLEAR = G_FLOOR.UNCLEAR,
     STONE = G_FLOOR.STONE,
     Floor=Math.floor,Ceil=Math.ceil,Min=Math.min,Max=Math.max,

@@ -1,6 +1,10 @@
-pico.def('hero', 'lib/picUIContent', function(){
+pico.def('pico/picUIContent', function(){
+
+    me.use('tome');
+    me.use('bag');
+    me.use('god');
+
     var
-    me = this,
     name = me.moduleName,
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random, Max = Math.max,
     map, objects, flags, ai,
@@ -250,10 +254,6 @@ pico.def('hero', 'lib/picUIContent', function(){
         }
         heroObj.stats = stats;
     };
-
-    me.use('tome');
-    me.use('bag');
-    me.use('god');
 
     me.create = function(ent, data){
         data = me.base.create.call(this, ent, data);

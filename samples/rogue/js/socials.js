@@ -1,7 +1,9 @@
-pico.def('socials', 'lib/piSocials', function(){
+pico.def('pico/piSocials', function(){
+
+    me.use('god');
+
     var
     Random=Math.random,Floor=Math.floor,
-    me = this,
     MEDAL_URL = 'http://dungeon-chronicles.com/rogue/html/medals/',
     fbAllies = [],
     fbNewbees = [],
@@ -119,8 +121,6 @@ pico.def('socials', 'lib/piSocials', function(){
         labels: ['Ok'],
         events: []});
     };
-
-    me.use('god');
 
     me.loadNPCs = function(cb){
         fbAllies.length = 0;

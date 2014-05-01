@@ -1,6 +1,9 @@
-pico.def('bag', 'lib/picUIContent', function(){
+pico.def('pico/picUIContent', function(){
+
+    me.use('socials');
+    me.use('trade');
+
     var
-    me = this,
     Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round, Max = Math.max,
     CAP = 8, SKU = G_FEATURE_SHOP[0],
     purchasable = false,
@@ -102,9 +105,6 @@ pico.def('bag', 'lib/picUIContent', function(){
         case me.CUSTOM_DROP: return onCustomDrop.apply(this, arguments); break;
         }
     };
-
-    me.use('socials');
-    me.use('trade');
 
     me.useItem = function(elapsed, evt, entities){
         var

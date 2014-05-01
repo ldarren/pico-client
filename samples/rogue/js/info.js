@@ -1,7 +1,8 @@
-pico.def('info', 'lib/picUIContent', function(){
+pico.def('pico/picUIContent', function(){
+
+    me.use('trade');
 
     var
-    me = this,
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
     name = me.moduleName,
     layouts = [],
@@ -578,8 +579,6 @@ pico.def('info', 'lib/picUIContent', function(){
         }
         return false;
     };
-
-    me.use('trade');
 
     me.create = function(ent, data){
         data = me.base.create.call(this, ent, data);

@@ -1,4 +1,4 @@
-<style>
+<style scoped>
 #shop{
     background:#527f39;
 }
@@ -54,7 +54,6 @@ The game is full playable even without any of these features unlocked, but it wi
 
 <script name=shopPage>
 var
-me = this,
 onBack = function(evt){
     pico.changeFrame('div#page', 'html/pageLogin.html', {opacity:[0,1,'1s']});
 },

@@ -1,7 +1,11 @@
-pico.def('god', 'lib/picUIContent', function(){
+pico.def('pico/picUIContent', function(){
+
+    me.use('tome');
+    me.use('ai');
+    me.use('trade');
+
     var
     Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round, Max = Math.max,
-    me = this,
     name = me.moduleName,
     FORGE_COST = 100,
     heroClasses = [
@@ -211,10 +215,6 @@ pico.def('god', 'lib/picUIContent', function(){
     tenth = function(gold){
         return Ceil(gold/10);
     };
-
-    me.use('tome');
-    me.use('ai');
-    me.use('trade');
 
     me.init = function(name){
         var h = this.heaven;

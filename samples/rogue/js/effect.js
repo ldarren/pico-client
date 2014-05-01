@@ -1,6 +1,11 @@
-pico.def('effect', 'lib/picBase', function(){
+pico.def('pico/picBase', function(){
+
+    me.use('picTween', 'pico/picTween');
+    me.use('picUIContent', 'pico/picUIContent');
+    me.use('picRenderer', 'pico/picRenderer');
+    me.use('camera');
+
     var
-    me = this,
     TWEENER = 'picTween',
     Floor = Math.floor,
     name = me.moduleName,
@@ -44,11 +49,6 @@ pico.def('effect', 'lib/picBase', function(){
         ctx.fillRect(clip[0], clip[1], clip[2], clip[3]);
         ctx.restore();
     };
-
-    me.use(TWEENER);
-    me.use('camera');
-    me.use('picUIContent');
-    me.use('picRenderer');
 
     me.draw = function(ctx, ent, clip){
     };

@@ -45,6 +45,8 @@
 <script src=lib/pico/pico.js></script>
 <script src=lib/pico-common/strTools.js></script>
 <script src=lib/pico-common/objTools.js></script>
+<script src=js/const.js></script>
+<script src=js/stringEn.js></script>
 <!--
 <script src=lib/pico/lib/piCanvas.js></script>
 <script src=lib/pico/lib/piReactor.js></script>
@@ -56,8 +58,6 @@
 <script src=lib/pico/lib/picTween.js></script>
 <script src=lib/pico/lib/picRenderer.js></script>
 <script src=lib/pico/lib/pigSqrMap.js></script>
-<script src=js/const.js></script>
-<script src=js/stringEn.js></script>
 <script src=js/game.js></script>
 <script src=js/god.js></script>
 <script src=js/hero.js></script>
@@ -73,9 +73,11 @@
 <script src=js/trade.js></script>
 -->
 <script>
-pico.def('rogueMain', function(){
+pico.start('rogueMain', {
+    '*': 'js/',
+    pico: 'lib/pico/lib/'
+}, function(me){
     var
-    me = this,
     loadPageStyle,
     onLoad = function(){
         loadPageStyle = document.querySelector('div#loading').style;
@@ -89,14 +91,6 @@ pico.def('rogueMain', function(){
     me.hideLoading = function(){
         loadPageStyle.display = 'none';
     };
-
-    pico.srcPaths({
-        '*': 'js/',
-        lib: 'lib/pico/lib/'
-    });
-
-    //me.link('pigSqrMap', 'lib/pico/lib/pigSqrMap.js<picGroup');
-    //me.link('game', 'js/game.js<pigSqrMap');
     me.slot(pico.LOAD, onLoad);
 });
 </script>

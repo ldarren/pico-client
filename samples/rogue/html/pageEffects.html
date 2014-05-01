@@ -1,4 +1,4 @@
-<style>
+<style scoped>
 #effects{
     background:#527f39;
 }
@@ -55,7 +55,6 @@
 
 <script name=effectsPage>
 var
-me = this,
 effectList = [589,590,591,592,593,594],
 onBack = function(evt){
     pico.changeFrame('div#page', 'html/pageLogin.html', {opacity:[0,1,'1s']});

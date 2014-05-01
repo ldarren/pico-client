@@ -1,4 +1,4 @@
-<style>
+<style scoped>
 #medals{
     background:#527f39;
 }
@@ -51,8 +51,11 @@
 </script>
 
 <script name=medalPage>
+
+me.use('socials');
+me.use('god');
+
 var
-me = this,
 medalList = [
 'won', 'die', 'gold', 'piety', 'fame', 'plant','chest', 'common', 'charm', 'enchant', 'legendary', 'drink', 'learn', 
 'insect', 'beast', 'undead', 'demon', 'def', 'patk', 'ratk', 'will', 'cast', 
@@ -94,9 +97,6 @@ onLoad = function(){
         }
     });
 };
-
-me.use('socials');
-me.use('god');
 
 me.slot(pico.LOAD, onLoad);
 </script>
