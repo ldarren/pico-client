@@ -1,4 +1,4 @@
-pico.def('lib/picUIContent', function(){
+pico.def('pico/picUIContent', function(){
     var
     Floor = Math.floor, Ceil = Math.ceil, Min = Math.min, Max = Math.max, Round = Math.round, Random = Math.random,
     name = me.moduleName,

@@ -1,6 +1,5 @@
 pico.def('pico/picUIWindow', function(){
 
-    me.use('picRenderer');
     me.use('info');
     me.use('dialogMsg');
     me.use('trade');
