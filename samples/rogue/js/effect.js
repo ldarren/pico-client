@@ -6,7 +6,7 @@ pico.def('pico/picBase', function(){
     me.use('camera');
 
     var
-    TWEENER = 'picTween',
+    TWEENER = 'pico/picTween',
     Floor = Math.floor,
     name = me.moduleName,
     effectEnd = function(game, ent, evt, targetName){
@@ -199,7 +199,7 @@ pico.def('pico/picBase', function(){
             
         me.picRenderer.setBG('efxPane', 'transparent', this.clearNone);
 
-        me[TWEENER].slot('stop', effectEnd);
+        me.picTween.slot('stop', effectEnd);
         this.startLoop('doEffect', evt);
 
         return entities;

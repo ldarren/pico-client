@@ -130,7 +130,6 @@ onStateLoaded = function(err, result){
     if (err || (result && result.status && 2002 !== result.status)) {
         storageLoc.textContent = STORAGE.replace('LOC', 'Error: '+result.status);
     }else{
-        debugger;
         var name = me.game.load(result.data);
         if (name){
           nameTextbox.value = name;
