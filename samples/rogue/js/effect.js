@@ -58,6 +58,7 @@ pico.def('pico/picBase', function(){
 
         ctx.save();
         switch(evt.type){
+        case 'traitEfx':
         case 'castEfx':
             var
             ratio = tweenOpt.p1, alpha = tweenOpt.p2,
@@ -183,6 +184,11 @@ pico.def('pico/picBase', function(){
         case 'castEfx':
             tweenOpt.p1 = 1,tweenOpt.p2 = 1;
             opt.p1 = 2,opt.p2 = 0;
+            tweenRateOpt.p1 = 1,tweenRateOpt.p2 = 1;
+            break;
+        case 'traitEfx':
+            tweenOpt.p1 = 2,tweenOpt.p2 = 1;
+            opt.p1 = 1,opt.p2 = 0;
             tweenRateOpt.p1 = 1,tweenRateOpt.p2 = 1;
             break;
         case 'boltEfx':
