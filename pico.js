@@ -73,7 +73,7 @@ pico.start = function(name){
 
     window.addEventListener('load', function(){
         var onDeviceReady = function(){
-            pico.def(parentURL, func, function(err, mod){
+            pico.def(name, parentURL, func, function(err, mod){
                 pico.modules[name] = mod;
                 mod.signal(pico.LOAD);
             });
@@ -86,34 +86,34 @@ pico.start = function(name){
         }
     });
 };
-pico.def = function(){
+pico.def = function(name){
     var
     cb = (('undefined' !== typeof callback && callback instanceof Function) ? callback : function(err){if(err) console.warn(err)}),
     mod, parentURL, func;
 
     switch(arguments.length){
-    case 1:
-        // without ancestor
-        func = arguments[0];
-        break;
     case 2:
-        if ('string' === typeof arguments[0] && -1 === arguments[0].indexOf('{')){
-            // with callback 
-            parentURL = arguments[0];
-            func = arguments[1];
-        }else{
-            // with ancestor
-            func = arguments[0];
-            cb = arguments[1];
-        }
+        // without ancestor
+        func = arguments[1];
         break;
     case 3:
-        parentURL = arguments[0];
-        func = arguments[1];
-        cb = arguments[2];
+        // with ancestor
+        parentURL = arguments[1];
+        func = arguments[2];
+        if ('string' !== typeof parentURL || -1 !== parentURL.indexOf('{')){
+            // with callback 
+            func = arguments[1];
+            cb = arguments[2];
+            parentURL = undefined;
+        }
+        break;
+    case 4:
+        parentURL = arguments[1];
+        func = arguments[2];
+        cb = arguments[3];
         break;
     default:
-        return cb('too many or too few params (1~3) '+JSON.stringify(arguments));
+        return cb('too many or too few params (2~4) '+JSON.stringify(arguments));
     }
 
     pico.loadModuleFromURL(parentURL, function(err, ancestor){
@@ -122,7 +122,8 @@ pico.def = function(){
             func = ('string' === typeof func ? func : func.toString());
             if (0 === func.indexOf('function')) func = func.substring(func.indexOf('{') + 1, func.lastIndexOf('}'));
             else if (-1 !== func.indexOf('pico.def')) {
-                return Function('cb', func.substring(0, func.lastIndexOf('}')+1)+',cb);')(cb);
+                var bracket1 = func.indexOf('(')+1;
+                return Function('cb', func.substring(0, bracket1)+'"'+name+'",'+func.substring(bracket1, func.lastIndexOf('}')+1)+',cb);')(cb);
             }
             var factory = Function('me', '"use strict";'+func);
         }catch(exp){
@@ -131,7 +132,7 @@ pico.def = function(){
 
         // each pico object has their own slots and dependencies
         var properties = {
-            moduleName: {value:''+Date.now(), writable:false, configurable:false, enumerable:true},
+            moduleName: {value:name, writable:false, configurable:false, enumerable:true},
             base: {value:ancestor, writable:false, configurable:false, enumerable:true},
             slots: {value:{}, writable:false, configurable:false, enumerable:false},
             deps: {value:{}, writable:false, configurable:false, enumerable:false}
@@ -199,7 +200,7 @@ pico.loadModuleFromURL = function(url, cb){
     pico.ajax('get', path+fname+'.js', '', null, function(err, xhr){
         if (err) return cb(err);
         if (4 !== xhr.readyState) return;
-        pico.def(xhr.responseText, function(err, mod){
+        pico.def(url, xhr.responseText, function(err, mod){
             if (err || !mod) return cb('loadModuleFromURL['+url+'] error: '+err);
             pico.modules[url] = mod;
             pico.loadDeps(mod, function(){
@@ -213,7 +214,7 @@ pico.loadModuleFromScript = function(name, parentURL, script, cb){
     var mod = this.modules[name];
     if (mod) return cb(null, mod, false);
 
-    pico.def(parentURL, script, function(err, mod){
+    pico.def(name, parentURL, script, function(err, mod){
         if (err || !mod) {
             return cb('loadModuleFromScript['+name+'] error: '+err);
         }
