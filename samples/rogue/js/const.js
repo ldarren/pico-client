@@ -1858,7 +1858,8 @@ Object.freeze(G_UI = {
     STR: 668,
     WILL: 670,
     DAMAGE: 671,
-    SELECTED: 713
+    SELECTED: 713,
+    FOCUS: 714,
 });
 
 Object.freeze(G_STAT_ICON = [

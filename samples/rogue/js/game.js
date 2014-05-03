@@ -457,8 +457,8 @@ pico.def('pico/pigSqrMap', function(){
 
     me.openChest = function(elapsed, evt, entities){
         var
-        hero = this.hero,
-        object = this.objects[evt],
+        hero = me.hero,
+        object = me.objects[evt],
         loot = object[CHEST_ITEM];
 
         if (!loot) {
@@ -496,7 +496,7 @@ pico.def('pico/pigSqrMap', function(){
     };
 
     me.attackAnim = function(elapsed, targets, entities){
-        var hero = this.hero;
+        var hero = me.hero;
 
         if (!targets || !targets.length){
             me.go('gameStep', 1);
@@ -609,18 +609,12 @@ pico.def('pico/pigSqrMap', function(){
 
     me.revealsOK = function(elapsed, evt, entities){
         var
-        targets = evt.targets,
-        map = me.map,
-        flags = me.flags;
+        ai = this.ai,
+        targets = evt.targets;
 
-        for(var i=0,l=targets.length,tid,tile; i<l; i++){
-            tid = targets[i];
-            tile = map[tid];
-
-            map[tid] &= G_TILE_TYPE.SHOW;
-            delete flags[tid];
+        for(var i=0,l=targets.length; i<l; i++){
+            ai.reveal(targets[i]);
         }
-        this.hero.setEngaged(targets);
         this.go(evt.callback, evt.event);
         /*
                         switch(object[OBJECT_TYPE]){
@@ -646,17 +640,12 @@ pico.def('pico/pigSqrMap', function(){
 
     me.revealsKO = function(elapsed, evt, entities){
         var
-        targets = evt.targets,
-        map = me.map,
-        flags = me.flags;
-        for(var i=0,l=targets.length,tid,tile; i<l; i++){
-            tid = targets[i];
-            tile = map[tid];
+        ai = this.ai,
+        targets = evt.targets
 
-            map[tid] &= G_TILE_TYPE.SHOW;
-            delete flags[tid];
+        for(var i=0,l=targets.length; i<l; i++){
+            ai.reveal(targets[i]);
         }
-        this.hero.setEngaged(targets);
         this.recalHints();
         this.go(evt.callback, evt.event);
         return entities;
@@ -842,7 +831,7 @@ pico.def('pico/pigSqrMap', function(){
     me.heroMoveTo = function(elapsed, evt, entities){
         var target = evt[0];
         if (undefined === target) return;
-        var h = this.findPath(this.hero.getPosition(), target);
+        var h = this.findPath(me.hero.getPosition(), target);
         if (h.length && h[0] === target){
             this.stopLoop('heroMove');
             this.startLoop('heroMove', h);

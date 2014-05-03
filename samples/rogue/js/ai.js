@@ -336,6 +336,7 @@ pico.def(function(){
 
         switch(obj[OBJECT_TYPE]){
         case G_OBJECT_TYPE.CREEP:
+console.log('on reveal: '+id);
             hero.setEngaged(id);
             break;
         case G_OBJECT_TYPE.CHEST:
@@ -366,6 +367,7 @@ pico.def(function(){
             }
 
             if (atk > def) {
+console.log('on attack: '+targetId);
                 hp = hero.incrHp(-1);
                 creepIds.push(targetId);
                 targets.push([pos, OBJECT_HP, -1]);
@@ -377,6 +379,7 @@ pico.def(function(){
     };
 
     me.defend = function(id){
+console.log('on defend: '+id);
     };
 
     me.bury = function(id){
@@ -390,6 +393,7 @@ pico.def(function(){
         }else{
             creep = G_CREATE_OBJECT(G_ICON.HEALTH_GLOBE);
         }
+console.log('on bury: '+id);
         hero.removeEngaged(id);
         delete flags[id];
         god.incrPiety(1);

@@ -1,4 +1,5 @@
 pico.def('pico/picBase', function(){
+    debugger;
     var
     UNCLEAR = G_FLOOR.UNCLEAR,
     STONE = G_FLOOR.STONE,
@@ -160,14 +161,17 @@ pico.def('pico/picBase', function(){
             this.audioSprite.play(1);
             this.go('heroMoveTo', [this.nextTile(id, hp)]);
         }else{
+            hero.setFocusTile();
             if(object){
                 if (hero.equal(object)){
                     hero.toggleFlagMode();
                 }else{
-                    if (isNear && G_OBJECT_TYPE.ENV === object[OBJECT_TYPE] && G_ENV_TYPE.ALTAR === object[OBJECT_SUB_TYPE])
+                    if (isNear && G_OBJECT_TYPE.ENV === object[OBJECT_TYPE] && G_ENV_TYPE.ALTAR === object[OBJECT_SUB_TYPE]){
                         this.go('showAltar', {callback: 'forceRefresh'});
-                    else
+                    }else{
+                        hero.setFocusTile(id);
                         this.go('showInfo', { targetId: id, context: G_CONTEXT.WORLD });
+                    }
                 }
             }else{
                 this.go('hideInfo');
@@ -221,7 +225,7 @@ pico.def('pico/picBase', function(){
         fh = sd ? 16 : 32,
         fx = tileW - fw,
         fy = tileH - fh,
-        hp, hint, x, y, i, j, object, tileId;
+        hp, hint, x, y, i, j, object, tileId, engaged;
 
         screenshotX = viewX, screenshotY = viewY;
 
@@ -240,6 +244,9 @@ pico.def('pico/picBase', function(){
                     }
                 }else{
                     tileSet.draw(ctx, terrain[w], x, y, tileW, tileH);
+                    if (w === hero.getFocusTile()){
+                        tileSet.draw(ctx, G_UI.FOCUS, x, y, tileW, tileH);
+                    }
                     object = objects[w];
                     if (object){
                         if (G_OBJECT_TYPE.CHEST === object[OBJECT_TYPE] && object[CHEST_ITEM])
@@ -274,8 +281,19 @@ pico.def('pico/picBase', function(){
             tileSet.draw(ctx, STONE, i, y, tileW, tileH);
         }
 
-        // draw player plag mode
-        if (hero.isFlagMode()){
+        engaged = hero.getEngaged();
+        if (engaged.length){
+            // draw combat icon
+            hp = hero.getPosition();
+            x = viewX + tileW * (hp%mapW), y = viewY + tileH * Floor(hp/mapW);
+            tileSet.draw(ctx, G_UI.PATK, x, y, hw, hh);
+            for(i=0,j=engaged.length; i<j; i++){
+                hp = engaged[i];
+                x = viewX + tileW * (hp%mapW), y = viewY + tileH * Floor(hp/mapW);
+                tileSet.draw(ctx, G_UI.PATK, x, y, hw, hh);
+            }
+        }else if (hero.isFlagMode()){
+            // draw flag icon
             hp = hero.getPosition();
             x = viewX + tileW * (hp%mapW), y = viewY + tileH * Floor(hp/mapW);
             tileSet.draw(ctx, G_UI.FLAG, x, y, hw, hh);
