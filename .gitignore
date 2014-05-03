@@ -13,6 +13,9 @@ build/
 pids
 logs
 results
+.DS_Store
+.svn
+.cvs
 
 node_modules
 npm-debug.log
