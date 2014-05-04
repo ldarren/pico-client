@@ -371,7 +371,6 @@ pico.def('pico/picUIContent', function(){
                 delete this.objects[targetId];
                 hero.incrHp(1);
                 ai.incrHpAll(1);
-                this.go('heroMoveTo', [targetId]);
                 break;
             case 'read':
                 this.go('showDialog', {info: [target[OBJECT_DESC]]});

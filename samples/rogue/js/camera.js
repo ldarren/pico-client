@@ -1,4 +1,5 @@
 pico.def('pico/picBase', function(){
+    debugger;
     var
     UNCLEAR = G_FLOOR.UNCLEAR,
     STONE = G_FLOOR.STONE,
@@ -124,6 +125,8 @@ pico.def('pico/picBase', function(){
         hp = hero.getPosition(),
         id = mapW * y + x,
         tileType, object, steps, isNear;
+                        
+        hero.setFocusTile(id === hp ? undefined : id);
 
         if (engaged && engaged.length && !hero.isEngaged(id)){
             this.go('showDialog', {
@@ -146,6 +149,7 @@ pico.def('pico/picBase', function(){
                     return entities;
                 }else{
                     if (tileType & G_TILE_TYPE.CREEP){
+                        delete this.flags[id];
                         hero.setEngaged(id);
                     }
                     this.go('gameStep', this.fillTiles(id));
@@ -164,10 +168,11 @@ pico.def('pico/picBase', function(){
                 if (hero.equal(object)){
                     hero.toggleFlagMode();
                 }else{
-                    if (isNear && G_OBJECT_TYPE.ENV === object[OBJECT_TYPE] && G_ENV_TYPE.ALTAR === object[OBJECT_SUB_TYPE])
+                    if (isNear && G_OBJECT_TYPE.ENV === object[OBJECT_TYPE] && G_ENV_TYPE.ALTAR === object[OBJECT_SUB_TYPE]){
                         this.go('showAltar', {callback: 'forceRefresh'});
-                    else
+                    }else{
                         this.go('showInfo', { targetId: id, context: G_CONTEXT.WORLD });
+                    }
                 }
             }else{
                 this.go('hideInfo');
@@ -217,11 +222,9 @@ pico.def('pico/picBase', function(){
         hw = Floor(tileW/2),
         hh = Floor(tileH/2),
         w = viewStart,
-        fw = sd ? 8 : 16,
-        fh = sd ? 16 : 32,
-        fx = tileW - fw,
-        fy = tileH - fh,
-        hp, hint, x, y, i, j, object, tileId;
+        fw = sd ? 8 : 16, fh = sd ? 16 : 32, fx = tileW - fw, fy = tileH - fh, cfx = Floor(fx/2), cfy = Floor(fy/2),
+        focusId = hero.getFocusTile(),
+        hp, hint, x, y, i, j, object, tileId, engaged;
 
         screenshotX = viewX, screenshotY = viewY;
 
@@ -253,8 +256,14 @@ pico.def('pico/picBase', function(){
                     if (hint > 9){
                         //ctx.fillStyle = G_HINT_COLOR[Floor((hint & 0x0f)*0.5)];
                         //ctx.fillText(Floor(hint/16), x+hw, y+hh, tileW);
-                        tileSet.draw(ctx, G_NUMERIC.LARGE_LIGHT + Floor(hint/16), x+fx, y+fy, fw, fh);
+                        if (object)
+                            tileSet.draw(ctx, G_NUMERIC.LARGE_LIGHT + Floor(hint/16), x+fx, y+fy, fw, fh);
+                        else
+                            tileSet.draw(ctx, G_NUMERIC.LARGE_LIGHT + Floor(hint/16), x+cfx, y+cfy, fw, fh);
                     }
+                }
+                if (w === focusId){
+                    tileSet.draw(ctx, G_UI.FINGER, x+hw, y+hh, hw, hh);
                 }
             }
             w += viewWrap;
@@ -274,8 +283,19 @@ pico.def('pico/picBase', function(){
             tileSet.draw(ctx, STONE, i, y, tileW, tileH);
         }
 
-        // draw player plag mode
-        if (hero.isFlagMode()){
+        engaged = hero.getEngaged();
+        if (engaged.length){
+            // draw combat icon
+            hp = hero.getPosition();
+            x = viewX + tileW * (hp%mapW), y = viewY + tileH * Floor(hp/mapW);
+            tileSet.draw(ctx, G_UI.PATK, x, y, hw, hh);
+            for(i=0,j=engaged.length; i<j; i++){
+                hp = engaged[i];
+                x = viewX + tileW * (hp%mapW), y = viewY + tileH * Floor(hp/mapW);
+                tileSet.draw(ctx, G_UI.PATK, x, y, hw, hh);
+            }
+        }else if (hero.isFlagMode()){
+            // draw flag icon
             hp = hero.getPosition();
             x = viewX + tileW * (hp%mapW), y = viewY + tileH * Floor(hp/mapW);
             tileSet.draw(ctx, G_UI.FLAG, x, y, hw, hh);

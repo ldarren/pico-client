@@ -8,7 +8,7 @@ pico.def('pico/picUIContent', function(){
     name = me.moduleName,
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random, Max = Math.max,
     map, objects, flags, ai,
-    position, selectedSpell, isFlagMode=false,
+    position, selectedSpell, isFlagMode=false, focusTile,
     heroObj, currStats,
     appearance, stats, effects, bag, tome,
     onCustomBound = function(ent, rect, ui, tileScale){
@@ -283,6 +283,7 @@ pico.def('pico/picUIContent', function(){
         currStats = []; // level up will update currStats
         me.calcStats.call(this, level, true);
         me.move(this.mortalLoc);
+        focusTile = undefined;
 
         return heroObj;
     };
@@ -390,6 +391,7 @@ pico.def('pico/picUIContent', function(){
         delete objects[position];
         position = pos;
         objects[pos] = currStats;
+        if (pos === focusTile) focusTile = undefined;
     };
 
     me.recoverBody = function(body){
@@ -947,6 +949,9 @@ pico.def('pico/picUIContent', function(){
 
         if (validList.length) appearance[HERO_ENEMIES] = targets.concat(validList);
     };
+
+    me.setFocusTile = function(id){focusTile = id;};
+    me.getFocusTile = function(id){ return focusTile;};
 
     me.resize = function(ent, width, height){
         var
