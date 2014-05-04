@@ -125,6 +125,8 @@ pico.def('pico/picBase', function(){
         hp = hero.getPosition(),
         id = mapW * y + x,
         tileType, object, steps, isNear;
+                        
+        hero.setFocusTile(id === hp ? undefined : id);
 
         if (engaged && engaged.length && !hero.isEngaged(id)){
             this.go('showDialog', {
@@ -161,7 +163,6 @@ pico.def('pico/picBase', function(){
             this.audioSprite.play(1);
             this.go('heroMoveTo', [this.nextTile(id, hp)]);
         }else{
-            hero.setFocusTile();
             if(object){
                 if (hero.equal(object)){
                     hero.toggleFlagMode();
@@ -169,7 +170,6 @@ pico.def('pico/picBase', function(){
                     if (isNear && G_OBJECT_TYPE.ENV === object[OBJECT_TYPE] && G_ENV_TYPE.ALTAR === object[OBJECT_SUB_TYPE]){
                         this.go('showAltar', {callback: 'forceRefresh'});
                     }else{
-                        hero.setFocusTile(id);
                         this.go('showInfo', { targetId: id, context: G_CONTEXT.WORLD });
                     }
                 }
@@ -221,10 +221,8 @@ pico.def('pico/picBase', function(){
         hw = Floor(tileW/2),
         hh = Floor(tileH/2),
         w = viewStart,
-        fw = sd ? 8 : 16,
-        fh = sd ? 16 : 32,
-        fx = tileW - fw,
-        fy = tileH - fh,
+        fw = sd ? 8 : 16, fh = sd ? 16 : 32, fx = tileW - fw, fy = tileH - fh, cfx = Floor(fx/2), cfy = Floor(fy/2),
+        focusId = hero.getFocusTile(),
         hp, hint, x, y, i, j, object, tileId, engaged;
 
         screenshotX = viewX, screenshotY = viewY;
@@ -244,9 +242,6 @@ pico.def('pico/picBase', function(){
                     }
                 }else{
                     tileSet.draw(ctx, terrain[w], x, y, tileW, tileH);
-                    if (w === hero.getFocusTile()){
-                        tileSet.draw(ctx, G_UI.FOCUS, x, y, tileW, tileH);
-                    }
                     object = objects[w];
                     if (object){
                         if (G_OBJECT_TYPE.CHEST === object[OBJECT_TYPE] && object[CHEST_ITEM])
@@ -260,8 +255,14 @@ pico.def('pico/picBase', function(){
                     if (hint > 9){
                         //ctx.fillStyle = G_HINT_COLOR[Floor((hint & 0x0f)*0.5)];
                         //ctx.fillText(Floor(hint/16), x+hw, y+hh, tileW);
-                        tileSet.draw(ctx, G_NUMERIC.LARGE_LIGHT + Floor(hint/16), x+fx, y+fy, fw, fh);
+                        if (object)
+                            tileSet.draw(ctx, G_NUMERIC.LARGE_LIGHT + Floor(hint/16), x+fx, y+fy, fw, fh);
+                        else
+                            tileSet.draw(ctx, G_NUMERIC.LARGE_LIGHT + Floor(hint/16), x+cfx, y+cfy, fw, fh);
                     }
+                }
+                if (w === focusId){
+                    tileSet.draw(ctx, G_UI.FINGER, x+hw, y+hh, hw, hh);
                 }
             }
             w += viewWrap;

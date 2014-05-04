@@ -1833,6 +1833,7 @@ Object.freeze(G_COLOR_TONE = ['#d7e894','#aec440','#527f39','#204631']);
 
 Object.freeze(G_UI = {
     SLOT: 15,
+    FINGER: 184,
     PATK: 190,
     MDEF: 191,
     PDEF: 192,

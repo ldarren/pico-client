@@ -1,4 +1,5 @@
 pico.def('pico/pigSqrMap', function(){
+    debugger;
     me.use('piAtlas', 'pico/piAtlas');
     me.use('piHTMLAudio', 'pico/piHTMLAudio');
     me.use('socials');
@@ -691,6 +692,7 @@ pico.def('pico/pigSqrMap', function(){
         ai.changeTheme.call(me);
 
         hero.move(undefined); // prevent hero.move deletes object at old map hero pos
+        hero.setFocusTile();
         hero.clearEngaged();
 
         createLevel(level);
@@ -859,9 +861,24 @@ pico.def('pico/pigSqrMap', function(){
             return;
         }
 
-        var p = evt.pop();
+        // creep ambush test
+        var
+        p = evt.pop(),
+        hero = me.hero,
+        map = me.map,
+        neighbours = (p === hero.getPosition()) ? [] : me.getNeighbours(p, function(id){
+            var tile = map[id];
+            return !(tile & G_TILE_TYPE.HIDE) && (tile & G_TILE_TYPE.CREEP)
+        });
 
-        me.hero.move(p);
+        hero.move(p);
+
+        if (neighbours && neighbours.length){
+            hero.setEngaged(neighbours);
+            this.stopLoop('heroMove');
+            this.go('gameStep', 1);
+        }
+
 
         return [e];
     };

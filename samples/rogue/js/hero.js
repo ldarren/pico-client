@@ -283,6 +283,7 @@ pico.def('pico/picUIContent', function(){
         currStats = []; // level up will update currStats
         me.calcStats.call(this, level, true);
         me.move(this.mortalLoc);
+        focusTile = undefined;
 
         return heroObj;
     };
@@ -390,6 +391,7 @@ pico.def('pico/picUIContent', function(){
         delete objects[position];
         position = pos;
         objects[pos] = currStats;
+        if (pos === focusTile) focusTile = undefined;
     };
 
     me.recoverBody = function(body){
