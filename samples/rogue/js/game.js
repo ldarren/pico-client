@@ -1,5 +1,4 @@
 pico.def('pico/pigSqrMap', function(){
-    debugger;
     me.use('piAtlas', 'pico/piAtlas');
     me.use('piHTMLAudio', 'pico/piHTMLAudio');
     me.use('socials');

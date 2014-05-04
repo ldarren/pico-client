@@ -1,4 +1,5 @@
 pico.def(function(){
+    debugger;
     me.use('tome');
 
     var
@@ -31,12 +32,17 @@ pico.def(function(){
     createCreepStat = function(creepId, level){
         var
         s = me.getStatByCreepId(creepId).slice(),
-        templ = s[CREEP_TRAITS],
+        templ = s[CREEP_TRAITS] || [],
         effects = [],
+        trait,
         i, l;
 
         for(i=0,l=templ.length; i<l; i++){
             effects.push(G_CREATE_OBJECT(templ[i]));
+        }
+        for(i=CREEP_ON_REVEAL; i<CREEP_TRAITS; i++){
+            trait = s[i];
+            if (trait) effects.push(G_CREATE_OBJECT(trait));
         }
 
         s[CREEP_TRAITS] = effects;

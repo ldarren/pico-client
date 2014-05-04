@@ -1,5 +1,4 @@
 pico.def('pico/picBase', function(){
-    debugger;
     var
     UNCLEAR = G_FLOOR.UNCLEAR,
     STONE = G_FLOOR.STONE,
