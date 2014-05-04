@@ -149,6 +149,7 @@ pico.def('pico/picBase', function(){
                     return entities;
                 }else{
                     if (tileType & G_TILE_TYPE.CREEP){
+                        delete this.flags[id];
                         hero.setEngaged(id);
                     }
                     this.go('gameStep', this.fillTiles(id));
