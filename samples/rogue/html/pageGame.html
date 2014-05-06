@@ -8,24 +8,24 @@ div#gameStage{
 <div id=gameStage></div>
 
 <script name=gamePage>
-me.use('piCanvas', 'pico/piCanvas');
-me.use('piReactor', 'pico/piReactor');
-me.use('picRect', 'pico/picRect');
-me.use('picTween', 'pico/picTween');
-me.use('picRenderer', 'pico/picRenderer');
-me.use('rogueMain');
-me.use('game');
-me.use('camera');
-me.use('effect');
-me.use('socials');
-me.use('uiWindow');
-me.use('god');
-me.use('hero');
-me.use('bag');
-me.use('tome');
-me.use('info');
-me.use('dialogMsg');
-me.use('trade');
+var piCanvas = require('pico/piCanvas');
+var piReactor = require('pico/piReactor');
+var picRect = require('pico/picRect');
+var picTween = require('pico/picTween');
+var picRenderer = require('pico/picRenderer');
+var rogueMain = require('rogueMain');
+var game = require('game');
+var camera = require('camera');
+var effect = require('effect');
+var socials = require('socials');
+var uiWindow = require('uiWindow');
+var god = require('god');
+var hero = require('hero');
+var bag = require('bag');
+var tome = require('tome');
+var info = require('info');
+var dialogMsg = require('dialogMsg');
+var trade = require('trade');
 
 var
 gameStage,
@@ -73,11 +73,11 @@ resize = function(iw, ih){
     style.height = h + 'px';
     style.margin = '0 0 0 '+Math.floor(-w/2)+'px';
 
-    me.piCanvas.resize();
-    me.picRenderer.resizeContext('viewPane', 0, 0, w, h);
-    me.picRenderer.resizeContext('efxPane', 0, 0, w, h);
-    me.picRenderer.resizeContext('uiPane', 0, 0, w, h);
-    me.game.go('resize', [0,0,w,h]);
+    piCanvas.resize();
+    picRenderer.resizeContext('viewPane', 0, 0, w, h);
+    picRenderer.resizeContext('efxPane', 0, 0, w, h);
+    picRenderer.resizeContext('uiPane', 0, 0, w, h);
+    game.go('resize', [0,0,w,h]);
 },
 onResize = function(){
     resize(this.innerWidth, this.innerHeight);
@@ -85,46 +85,28 @@ onResize = function(){
 onLoad = function(){
     gameStage = document.querySelector('div#gameStage');
 
-    var
-    reactor = me.piReactor,
-    rect = me.picRect,
-    tween = me.picTween,
-    renderer = me.picRenderer,
-    game = me.game,
-    camera = me.camera,
-    effect = me.effect,
-    socials = me.socials,
-    uiWindow = me.uiWindow,
-    bag = me.bag,
-    tome = me.tome,
-    info = me.info,
-    god = me.god,
-    hero = me.hero,
-    dialogMsg = me.dialogMsg,
-    trade = me.trade,
-    canvas = me.piCanvas,
-    smallDevice = window.innerWidth > 800 || window.innerHeight > 800 ? false : true;
+    var smallDevice = window.innerWidth > 800 || window.innerHeight > 800 ? false : true;
 
-    canvas.init(gameStage);
+    piCanvas.init(gameStage);
 
     var
-    gameLayer = canvas.addLayer('game'),
-    efxLayer = canvas.addLayer('efx'),
-    uiLayer = canvas.addLayer('ui');
+    gameLayer = piCanvas.addLayer('game'),
+    efxLayer = piCanvas.addLayer('efx'),
+    uiLayer = piCanvas.addLayer('ui');
 
-    renderer.registerContext('viewPane', gameLayer.getContext());
-    renderer.registerContext('efxPane', efxLayer.getContext());
-    renderer.registerContext('uiPane', uiLayer.getContext());
+    picRenderer.registerContext('viewPane', gameLayer.getContext());
+    picRenderer.registerContext('efxPane', efxLayer.getContext());
+    picRenderer.registerContext('uiPane', uiLayer.getContext());
     if ('Chrome' !== pico.states.browser){
         // stock android browser shows ghost image if refresh with clearRect, which is the best way
         // curse u whoever created this bug and refuse to solve it over so many android versions
         console.log('set clearHack');
-        renderer.setBG('viewPane', 'transparent', game.clearHack);
-        renderer.setBG('efxPane', 'transparent', game.clearHack);
-        renderer.setBG('uiPane', 'transparent', game.clearHack);
+        picRenderer.setBG('viewPane', 'transparent', game.clearHack);
+        picRenderer.setBG('efxPane', 'transparent', game.clearHack);
+        picRenderer.setBG('uiPane', 'transparent', game.clearHack);
     }
 
-    reactor.addGroup(game);
+    piReactor.addGroup(game);
 
     game.style(smallDevice, function(){
     game.checkIAB(G_FEATURE_SHOP, function(err, iab){
@@ -132,47 +114,47 @@ onLoad = function(){
         game.route('fingerUp', [game.useSelected,uiWindow.click,camera.click,game.branchFingerOut]);
         game.route('fingerMove', [game.useSelected, game.branchFingerMove]);
         game.route('fingerOut', [game.useSelected, game.branchFingerOut]);
-        game.route('scrollWinStart', [game.useSelected, uiWindow.startSwipe, renderer.draw]);
-        game.route('scrollWin', [game.useSelected, uiWindow.swipe, renderer.draw]);
-        game.route('scrollWinEnd', [game.useSelected, game.releaseSelected, uiWindow.endSwipe, renderer.draw]);
-        game.route('moveCameraStart', [game.useSelected, renderer.captureScreenshot]);
-        game.route('moveCamera', [game.useSelected, camera.swipe, renderer.drawScreenshot]);
-        game.route('moveCameraEnd', [game.releaseSelected, renderer.releaseScreenshot, renderer.draw]);
-        game.route('makeIAB', [game.makeIAB, uiWindow.update, renderer.draw]);
-        game.route('useItem', [bag.useItem, socials.useItem, renderer.draw]);
-        game.route('openGate', [game.openGate, renderer.draw]);
-        game.route('openChest', [game.openChest, renderer.draw]);
-        game.route('loot', [bag.lootItem, socials.lootItem, uiWindow.update, renderer.draw]);
-        game.route('chant', [tome.chantScroll, socials.chantScroll, uiWindow.update, renderer.draw]);
-        game.route('attack', [game.attackAnim, socials.attack, renderer.draw]);
-        game.route('counter', [game.counterAnim, socials.counter, uiWindow.update, renderer.draw]);
-        game.route('flee', [game.flee, renderer.draw]);
-        game.route('battleEnd', [game.battleEnd, renderer.draw]);
-        game.route('revealsOK', [game.revealsOK, renderer.draw]);
-        game.route('revealsKO', [game.revealsKO, renderer.draw]);
+        game.route('scrollWinStart', [game.useSelected, uiWindow.startSwipe, picRenderer.draw]);
+        game.route('scrollWin', [game.useSelected, uiWindow.swipe, picRenderer.draw]);
+        game.route('scrollWinEnd', [game.useSelected, game.releaseSelected, uiWindow.endSwipe, picRenderer.draw]);
+        game.route('moveCameraStart', [game.useSelected, picRenderer.captureScreenshot]);
+        game.route('moveCamera', [game.useSelected, camera.swipe, picRenderer.drawScreenshot]);
+        game.route('moveCameraEnd', [game.releaseSelected, picRenderer.releaseScreenshot, picRenderer.draw]);
+        game.route('makeIAB', [game.makeIAB, uiWindow.update, picRenderer.draw]);
+        game.route('useItem', [bag.useItem, socials.useItem, picRenderer.draw]);
+        game.route('openGate', [game.openGate, picRenderer.draw]);
+        game.route('openChest', [game.openChest, picRenderer.draw]);
+        game.route('loot', [bag.lootItem, socials.lootItem, uiWindow.update, picRenderer.draw]);
+        game.route('chant', [tome.chantScroll, socials.chantScroll, uiWindow.update, picRenderer.draw]);
+        game.route('attack', [game.attackAnim, socials.attack, picRenderer.draw]);
+        game.route('counter', [game.counterAnim, socials.counter, uiWindow.update, picRenderer.draw]);
+        game.route('flee', [game.flee, picRenderer.draw]);
+        game.route('battleEnd', [game.battleEnd, picRenderer.draw]);
+        game.route('revealsOK', [game.revealsOK, picRenderer.draw]);
+        game.route('revealsKO', [game.revealsKO, picRenderer.draw]);
         game.route('castSpell', [hero.castSpell, socials.castSpell]);
-        game.route('forgetSpell', [tome.forgetSpell, uiWindow.update, renderer.draw]);
-        game.route('recycleItem', [bag.recycleItem, uiWindow.update, renderer.draw]);
-        game.route('startEffect', [renderer.captureScreenshot, effect.start]);
-        game.route('doEffect', [tween.update, renderer.drawScreenshot]);
-        game.route('clearEffect', [effect.clear, uiWindow.hideAll, renderer.clear, uiWindow.showAll, effect.stop]);
-        game.route('stopEffect', [renderer.releaseScreenshot, renderer.draw]);
-        game.route('gameStep', [game.step, renderer.draw]);
-        game.route('forceRefresh', [uiWindow.update, renderer.draw]);
-        game.route('resetView', [camera.moveTo, uiWindow.update, renderer.draw]);
+        game.route('forgetSpell', [tome.forgetSpell, uiWindow.update, picRenderer.draw]);
+        game.route('recycleItem', [bag.recycleItem, uiWindow.update, picRenderer.draw]);
+        game.route('startEffect', [picRenderer.captureScreenshot, effect.start]);
+        game.route('doEffect', [picTween.update, picRenderer.drawScreenshot]);
+        game.route('clearEffect', [effect.clear, uiWindow.hideAll, picRenderer.clear, uiWindow.showAll, effect.stop]);
+        game.route('stopEffect', [picRenderer.releaseScreenshot, picRenderer.draw]);
+        game.route('gameStep', [game.step, picRenderer.draw]);
+        game.route('forceRefresh', [uiWindow.update, picRenderer.draw]);
+        game.route('resetView', [camera.moveTo, uiWindow.update, picRenderer.draw]);
         game.route('resize', [camera.resize, uiWindow.resize]);
         game.route('heroMoveTo', [game.heroMoveTo]);
-        game.route('heroMove', [game.heroMove, renderer.draw]);
-        game.route('heroStop', [game.heroStop, renderer.draw]);
-        game.route('gotoLevel', [game.gotoLevel, renderer.draw]);
-        game.route('teleport', [game.teleport, renderer.draw]);
-        game.route('resetWorld', [game.resetWorld, socials.resetWorld, renderer.draw]);
-        game.route('reborn', [game.reborn, renderer.draw]);
-        game.route('recover', [game.recover, uiWindow.update, renderer.draw]);
-        game.route('offerring', [bag.offerItem, uiWindow.update, renderer.draw]);
-        game.route('sell', [bag.sellItem, socials.sellItem, uiWindow.update, renderer.draw]);
-        game.route('buy', [bag.buyItem, uiWindow.update, renderer.draw]);
-        game.route('accept', [bag.acceptGift, uiWindow.update, renderer.draw]);
+        game.route('heroMove', [game.heroMove, picRenderer.draw]);
+        game.route('heroStop', [game.heroStop, picRenderer.draw]);
+        game.route('gotoLevel', [game.gotoLevel, picRenderer.draw]);
+        game.route('teleport', [game.teleport, picRenderer.draw]);
+        game.route('resetWorld', [game.resetWorld, socials.resetWorld, picRenderer.draw]);
+        game.route('reborn', [game.reborn, picRenderer.draw]);
+        game.route('recover', [game.recover, uiWindow.update, picRenderer.draw]);
+        game.route('offerring', [bag.offerItem, uiWindow.update, picRenderer.draw]);
+        game.route('sell', [bag.sellItem, socials.sellItem, uiWindow.update, picRenderer.draw]);
+        game.route('buy', [bag.buyItem, uiWindow.update, picRenderer.draw]);
+        game.route('accept', [bag.acceptGift, uiWindow.update, picRenderer.draw]);
         game.route('gifting', [socials.sendGift]);
         game.route('giftSent', [bag.giftItem]);
         game.route('bet', [bag.betItem]);
@@ -181,14 +163,14 @@ onLoad = function(){
         game.route('tenthing', [god.tenthing]);
         game.route('changeJob', [god.changeJob]);
         game.route('holyForge', [god.holyForge]);
-        game.route('showInfo', [uiWindow.showInfo, renderer.draw]);
-        game.route('hideInfo', [uiWindow.hideInfo, bag.deselectItem, hero.deselectSpell, uiWindow.update, renderer.draw]);
-        game.route('showDialog', [uiWindow.hideAll, uiWindow.showDialog, renderer.draw]);
-        game.route('hideDialog', [uiWindow.hideDialog, uiWindow.showAll, uiWindow.update, renderer.draw]);
-        game.route('showTrade', [uiWindow.hideAll, uiWindow.showTrade, uiWindow.update, renderer.draw]);
-        game.route('hideTrade', [uiWindow.hideTrade, uiWindow.showAll, uiWindow.update, renderer.draw]);
-        game.route('showAltar', [uiWindow.hideAll, uiWindow.showAltar, uiWindow.update, renderer.draw]);
-        game.route('hideAltar', [uiWindow.hideAltar, uiWindow.showAll, uiWindow.update, renderer.draw]);
+        game.route('showInfo', [uiWindow.showInfo, picRenderer.draw]);
+        game.route('hideInfo', [uiWindow.hideInfo, bag.deselectItem, hero.deselectSpell, uiWindow.update, picRenderer.draw]);
+        game.route('showDialog', [uiWindow.hideAll, uiWindow.showDialog, picRenderer.draw]);
+        game.route('hideDialog', [uiWindow.hideDialog, uiWindow.showAll, uiWindow.update, picRenderer.draw]);
+        game.route('showTrade', [uiWindow.hideAll, uiWindow.showTrade, uiWindow.update, picRenderer.draw]);
+        game.route('hideTrade', [uiWindow.hideTrade, uiWindow.showAll, uiWindow.update, picRenderer.draw]);
+        game.route('showAltar', [uiWindow.hideAll, uiWindow.showAltar, uiWindow.update, picRenderer.draw]);
+        game.route('hideAltar', [uiWindow.hideAltar, uiWindow.showAll, uiWindow.update, picRenderer.draw]);
 
         var
         cameraEnt = game.addEntity('camera'),
@@ -196,13 +178,13 @@ onLoad = function(){
         uiWinEnts = [],
         uiWinEnt;
 
-        cameraEnt.attach(rect, {x:0, y:0, width:100, height:100});
+        cameraEnt.attach(picRect, {x:0, y:0, width:100, height:100});
         cameraEnt.attach(camera, {});
-        cameraEnt.attach(renderer, {viewPane:[camera.moduleName]});
+        cameraEnt.attach(picRenderer, {viewPane:[camera.moduleName]});
 
         effectEnt.attach(effect, {p0:0,p1:0,p2:0,p3:0,p4:0,p5:0,p6:0,p7:0,p8:0,p9:0});
-        effectEnt.attach(tween, {effect:{p0:0,p1:0,p2:0,p3:0,p4:0,p5:0,p6:0,p7:0,p8:0,p9:0}});
-        effectEnt.attach(renderer, {efxPane:[effect.moduleName]});
+        effectEnt.attach(picTween, {effect:{p0:0,p1:0,p2:0,p3:0,p4:0,p5:0,p6:0,p7:0,p8:0,p9:0}});
+        effectEnt.attach(picRenderer, {efxPane:[effect.moduleName]});
         game.hideEntity('effects');
 
         uiWinEnts[0] = game.addEntity(G_WIN_ID.PLAYER);
@@ -215,45 +197,45 @@ onLoad = function(){
 
         for(var i=0, l=uiWinEnts.length; i<l; i++){
             uiWinEnt = uiWinEnts[i];
-            uiWinEnt.attach(rect, {x:0, y:0, width:0, height:0});
-            uiWinEnt.attach(renderer, {uiPane:[uiWindow.moduleName]});
+            uiWinEnt.attach(picRect, {x:0, y:0, width:0, height:0});
+            uiWinEnt.attach(picRenderer, {uiPane:[uiWindow.moduleName]});
         }
         
         uiWinEnt = uiWinEnts[0];
-        uiWinEnt.attach(uiWindow, {content:hero.moduleName, resizable:true, box:rect.moduleName, background:'rgba(32,70,49,0.9)', theme: G_THEME.THEME8});
-        uiWinEnt.attach(hero, {win:uiWindow.moduleName, box:rect.moduleName, maxMeshUI:'heroDetails', minMeshUI:'heroBrief',fontBig:'bold 12pt alagard', fontSmall:'10pt Helvetica', fontColor:G_COLOR_TONE[1]});
+        uiWinEnt.attach(uiWindow, {content:hero.moduleName, resizable:true, box:picRect.moduleName, background:'rgba(32,70,49,0.9)', theme: G_THEME.THEME8});
+        uiWinEnt.attach(hero, {win:uiWindow.moduleName, box:picRect.moduleName, maxMeshUI:'heroDetails', minMeshUI:'heroBrief',fontBig:'bold 12pt alagard', fontSmall:'10pt Helvetica', fontColor:G_COLOR_TONE[1]});
             
         uiWinEnt = uiWinEnts[1];
-        uiWinEnt.attach(uiWindow, {content:tome.moduleName, resizable:true, box:rect.moduleName, background:'rgba(32,70,49,0.9)', theme: G_THEME.THEME8});
-        uiWinEnt.attach(tome, {name:'Tome', win:uiWindow.moduleName, box:rect.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt Helvetica', fontColor:G_COLOR_TONE[1], iab:iab});
+        uiWinEnt.attach(uiWindow, {content:tome.moduleName, resizable:true, box:picRect.moduleName, background:'rgba(32,70,49,0.9)', theme: G_THEME.THEME8});
+        uiWinEnt.attach(tome, {name:'Tome', win:uiWindow.moduleName, box:picRect.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt Helvetica', fontColor:G_COLOR_TONE[1], iab:iab});
         
         uiWinEnt = uiWinEnts[2];
-        uiWinEnt.attach(uiWindow, {content:bag.moduleName, resizable:true, box:rect.moduleName, background:'rgba(32,70,49,0.9)', theme: G_THEME.THEME8});
-        uiWinEnt.attach(bag, {name:'Bag', win:uiWindow.moduleName, box:rect.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt Helvetica', fontColor:G_COLOR_TONE[1], iab:iab});
+        uiWinEnt.attach(uiWindow, {content:bag.moduleName, resizable:true, box:picRect.moduleName, background:'rgba(32,70,49,0.9)', theme: G_THEME.THEME8});
+        uiWinEnt.attach(bag, {name:'Bag', win:uiWindow.moduleName, box:picRect.moduleName, fontBig:'bold 12pt alagard', fontSmall:'8pt Helvetica', fontColor:G_COLOR_TONE[1], iab:iab});
 
         uiWinEnt = uiWinEnts[3];
-        uiWinEnt.attach(uiWindow, {content:info.moduleName, resizable:false, box:rect.moduleName, background:'rgba(32,70,49,0.8)'});
-        uiWinEnt.attach(info, {win:uiWindow.moduleName, box:rect.moduleName, fontBig:'bold 12pt alagard', fontSmall:'10pt Helvetica', fontColor:G_COLOR_TONE[1]});
+        uiWinEnt.attach(uiWindow, {content:info.moduleName, resizable:false, box:picRect.moduleName, background:'rgba(32,70,49,0.8)'});
+        uiWinEnt.attach(info, {win:uiWindow.moduleName, box:picRect.moduleName, fontBig:'bold 12pt alagard', fontSmall:'10pt Helvetica', fontColor:G_COLOR_TONE[1]});
 
         uiWinEnt = uiWinEnts[4];
-        uiWinEnt.attach(uiWindow, {content:dialogMsg.moduleName, resizable:false, box:rect.moduleName, background:'rgba(32,70,49,0.8)'});
-        uiWinEnt.attach(dialogMsg, {win:uiWindow.moduleName, box:rect.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt Helvetica', fontColor:G_COLOR_TONE[1]});
+        uiWinEnt.attach(uiWindow, {content:dialogMsg.moduleName, resizable:false, box:picRect.moduleName, background:'rgba(32,70,49,0.8)'});
+        uiWinEnt.attach(dialogMsg, {win:uiWindow.moduleName, box:picRect.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt Helvetica', fontColor:G_COLOR_TONE[1]});
 
         uiWinEnt = uiWinEnts[5];
-        uiWinEnt.attach(uiWindow, {content:trade.moduleName, resizable:false, box:rect.moduleName, background: 'rgba(32,70,49,0.8)'});
-        uiWinEnt.attach(trade, {name:'Trade', win:uiWindow.moduleName, box:rect.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt Helvetica', fontColor:G_COLOR_TONE[1]});
+        uiWinEnt.attach(uiWindow, {content:trade.moduleName, resizable:false, box:picRect.moduleName, background: 'rgba(32,70,49,0.8)'});
+        uiWinEnt.attach(trade, {name:'Trade', win:uiWindow.moduleName, box:picRect.moduleName, fontBig:'bold 14pt alagard', fontSmall:'10pt Helvetica', fontColor:G_COLOR_TONE[1]});
         
         uiWinEnt = uiWinEnts[6];
-        uiWinEnt.attach(uiWindow, {content:god.moduleName, resizable:false, box:rect.moduleName, background:'rgba(32,70,49,0.9)', theme: G_THEME.THEME8});
-        uiWinEnt.attach(god, {win:uiWindow.moduleName, box:rect.moduleName, meshUI:'altar',fontBig:'bold 12pt alagard', fontSmall:'10pt Helvetica', fontColor:G_COLOR_TONE[1]});
+        uiWinEnt.attach(uiWindow, {content:god.moduleName, resizable:false, box:picRect.moduleName, background:'rgba(32,70,49,0.9)', theme: G_THEME.THEME8});
+        uiWinEnt.attach(god, {win:uiWindow.moduleName, box:picRect.moduleName, meshUI:'altar',fontBig:'bold 12pt alagard', fontSmall:'10pt Helvetica', fontColor:G_COLOR_TONE[1]});
             
         game.go('reborn', 'init');
 
         resize(window.innerWidth, window.innerHeight);
-        canvas.slot(canvas.FINGER_DOWN, onFingerDown);
-        canvas.slot(canvas.FINGER_MOVE, onFingerMove);
-        canvas.slot(canvas.FINGER_UP, onFingerUp);
-        canvas.slot(canvas.FINGER_OUT, onFingerOut);
+        piCanvas.slot(piCanvas.FINGER_DOWN, onFingerDown);
+        piCanvas.slot(piCanvas.FINGER_MOVE, onFingerMove);
+        piCanvas.slot(piCanvas.FINGER_UP, onFingerUp);
+        piCanvas.slot(piCanvas.FINGER_OUT, onFingerOut);
         window.addEventListener('resize', onResize, false);
         window.addEventListener('unload', game.exit, false);
 

@@ -108,29 +108,29 @@
 </div>
 
 <script name=loginPage>
-me.use('piHTMLAudio', 'pico/piHTMLAudio');
-me.use('rogueMain');
-me.use('socials');
-me.use('game');
+var piHTMLAudio = require('pico/piHTMLAudio');
+var rogueMain = require('rogueMain');
+var socials = require('socials');
+var game = require('game');
 
 var
 STORAGE = 'Storage: LOC',
 playBtn, fbBtn, googBtn, nameTextbox, audioSwitch, mapBtn, medalBtn, shopBtn, storageLoc,
 onPlay = function(){
-    me.piHTMLAudio.preload();
-    me.piHTMLAudio.volume(audioSwitch.checked ? 0 : 1);
-    me.rogueMain.showLoading();
-    me.game.init(nameTextbox.value || 'Nameless');
+    piHTMLAudio.preload();
+    piHTMLAudio.volume(audioSwitch.checked ? 0 : 1);
+    rogueMain.showLoading();
+    game.init(nameTextbox.value || 'Nameless');
     pico.changeFrame('div#page', 'html/pageGame.html', {opacity:[0,1,'1s']});
 },
 onLogin = function(evt){
-    me.socials.fbLogin({scope:'publish_actions'});
+    socials.fbLogin({scope:'publish_actions'});
 },
 onStateLoaded = function(err, result){
     if (err || (result && result.status && 2002 !== result.status)) {
         storageLoc.textContent = STORAGE.replace('LOC', 'Error: '+result.status);
     }else{
-        var name = me.game.load(result.data);
+        var name = game.load(result.data);
         if (name){
           nameTextbox.value = name;
         }
@@ -147,11 +147,11 @@ onSignedIn = function(err, result){
         googBtn.addEventListener('click', onSignin, false);
     }else{
         googBtn.className = 'hidden';
-        me.socials.googStateLoad(1, onStateLoaded);
+        socials.googStateLoad(1, onStateLoaded);
     }
 },
 onSignin = function(evt){
-    me.socials.googLogin(onSignedIn);
+    socials.googLogin(onSignedIn);
 },
 showPlayBtn = function(label){
     playBtn.removeEventListener('click', onPlay);
@@ -174,8 +174,6 @@ onShopOpen = function(err){
     shopBtn.addEventListener('click', onShowShop, false);
 },
 fbUpdate = function(){
-    var socials = me.socials;
-
     mapBtn.removeEventListener('click', onShowMap);
     medalBtn.removeEventListener('click', onShowMedals);
 
@@ -202,10 +200,10 @@ onFacebookUpdate = function(userId){
         nameTextbox.removeAttribute('class');
         if (GOOG){
             GOOG.iab.open('', onShopOpen);
-            me.socials.googInit(GOOG.gms.CLIENT_APPSTATE);
-            me.socials.googLogin(onSignedIn);
+            socials.googInit(GOOG.gms.CLIENT_APPSTATE);
+            socials.googLogin(onSignedIn);
         }else{
-            me.socials.googStateLoad(1, onStateLoaded);
+            socials.googStateLoad(1, onStateLoaded);
         }
         fbUpdate();
     }else{
@@ -243,12 +241,12 @@ onLoad = function(){
     btn = frame.children[4].children[0];
     btn.addEventListener('click', onShowEffects, false);
 
-    me.piHTMLAudio.create('dat/fantasy-sfx.json', function(err, audioSprite){
-        me.socials.fbInit(
+    piHTMLAudio.create('dat/fantasy-sfx.json', function(err, audioSprite){
+        socials.fbInit(
             '515256841901768', 
             'Phonegap' === pico.states.browser ? CDV.FB : '//dungeon-chronicles.com/rogue/html/fbChannel.html',
             onFacebookUpdate);
-        /* if no network */ me.rogueMain.hideLoading();
+        /* if no network */ rogueMain.hideLoading();
     });
 };
 
