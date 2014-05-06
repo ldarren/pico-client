@@ -1,4 +1,4 @@
-prototype('pico/pigSqrMap');
+inherit('pico/pigSqrMap');
 var piAtlas = require('pico/piAtlas');
 var piHTMLAudio = require('pico/piHTMLAudio');
 var socials = require('socials');

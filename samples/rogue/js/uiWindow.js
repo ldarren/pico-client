@@ -1,10 +1,10 @@
 pico.def('pico/picUIWindow', function(){
+    inherit('pico/picUIWindow');
 
-    me.use('info');
-    me.use('dialogMsg');
-    me.use('trade');
-    me.use('god');
-    me.use('hero');
+    var info = require('info');
+    var dialogMsg = require('dialogMsg');
+    var trade = require('trade');
+    var god = require('god');
 
     var
     Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
@@ -212,10 +212,10 @@ pico.def('pico/picUIWindow', function(){
                 layouts.push(me.fitIntoGrid([evt[0]+1, evt[1]+1, evt[2]-2, evt[3]-2], gs, gs, true));
         }
 
-        if (!me.info.isValid()) this.hideEntity(infoId);
-        if (!me.dialogMsg.isValid()) this.hideEntity(dialogMsgId);
-        if (!me.trade.isValid()) this.hideEntity(tradeId);
-        if (!me.god.isValid()) this.hideEntity(altarId);
+        if (!info.isValid()) this.hideEntity(infoId);
+        if (!dialogMsg.isValid()) this.hideEntity(dialogMsgId);
+        if (!trade.isValid()) this.hideEntity(tradeId);
+        if (!god.isValid()) this.hideEntity(altarId);
 
         for(i=0, l=entities.length; i<l; i++){
             ent = entities[i];
@@ -227,20 +227,20 @@ pico.def('pico/picUIWindow', function(){
 
         //this.pause();
         //window.setTimeout(function(game){game.go('forceRefresh');}, 1000, this);
-        this.go('resetView', me.hero.getPosition());
+        this.go('resetView', this.hero.getPosition());
         return entities;
     };
 
     me.showAll = function(elapsed, evt, entities){
-        if (me.dialogMsg.isValid()){
+        if (dialogMsg.isValid()){
             this.showEntity(dialogMsgId);
             return entities;
         }
-        if (me.trade.isValid()){
+        if (trade.isValid()){
             this.showEntity(tradeId);
             return entities;
         }
-        if (me.god.isValid()){
+        if (god.isValid()){
             this.showEntity(altarId);
             return entities;
         }
@@ -249,7 +249,7 @@ pico.def('pico/picUIWindow', function(){
         this.showEntity(tomeId);
         this.showEntity(bagId);
 
-        if (me.info.isValid()) this.showEntity(infoId);
+        if (info.isValid()) this.showEntity(infoId);
 
         return entities;
     };
