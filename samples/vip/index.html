@@ -7,23 +7,22 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <link rel=stylesheet href=lib/ratchet-v2.0.2/css/ratchet.min.css>
 <link rel=stylesheet href=css/main.css>
+<script src="lib/ratchet-v2.0.2/js/ratchet.js"></script>
 <title>.: VIP :.</title>
 </head>
 <body>
 
-<header class="bar bar-nav">
-    <a class="icon icon-left-nav pull-left"></a>
-    <h1 class="title">VIP</h1>
-    <a href=#optionMenu class="icon icon-more-vertical pull-right"></a>
+<div class="bar bar-nav">
+    <a href="#optionMenu"><h1 class="title">VIP<span class="icon icon-caret"></span></h1></a>
     <a class="icon icon-search pull-right"></a>
-</header>
+</div>
 
 <div class="content">
 
 <div id="optionMenu" class="popover">
-<header class="bar bar-nav">
+<div class="bar bar-nav">
 <h1 class="title">Options</h1>
-</header>
+</div>
 <ul class="table-view">
 <li class="table-view-cell">Add Card</li>
 <li class="table-view-cell">Share</li>
@@ -34,23 +33,28 @@
 <div class="card">
 <ul class="table-view">
 <li class="table-view-cell media">
+<a class="navigate-right" href="detail.html" data-transition="slide-in">
 <img class="media-object pull-left" src="dat/img/VDL.jpg">
-<div class="media-body">VDL</div>
-<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore. Lorem ipsum dolor sit amet.</p>
+<div class="media-body">VDL
+<p>Fashion.Trend</p>
 <span class="badge">4</span>
-</li>
-<li class="table-view-cell media">
-<a class="navigate-right">
-<img class="media-object pull-left" src="dat/img/belif.jpg">
-<div class="media-body">Belif</div>
-<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore. Lorem ipsum dolor sit amet.</p>
+</div>
 </a>
 </li>
 <li class="table-view-cell media">
-<a class="navigate-right">
+<a class="navigate-right" href="detail.html" data-transition="slide-in">
+<img class="media-object pull-left" src="dat/img/belif.jpg">
+<div class="media-body">Belif
+<p>Education</p>
+</div>
+</a>
+</li>
+<li class="table-view-cell media">
+<a class="navigate-right" href="detail.html" data-transition="slide-in">
 <img class="media-object pull-left" src="dat/img/in2Kids.jpg">
-<div class="media-body">In2Kids</div>
-<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore. Lorem ipsum dolor sit amet.</p>
+<div class="media-body">In2Kids
+<p>Kid Fashion</p>
+</div>
 </a>
 </li>
 </ul>
@@ -58,6 +62,5 @@
 </div>
 
 <script data-main="js/app" src="lib/require.2.1.11.min.js"></script>
-<script src="lib/ratchet-v2.0.2/js/ratchet.min.js"></script>
 </body>
 </html>
