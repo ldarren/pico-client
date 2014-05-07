@@ -1,91 +1,123 @@
-pico = function(n){
-  if (n){
-    return Object.create(pico.inner,
-      {
-        _s: {writable:false, configurable:false, enumerable:false, value:[]},   // stack
-        _n: {writable:false, configurable:false, enumerable:false, value:       // node list
-        (n instanceof Element) ? [n] : Array.prototype.slice.call(document.querySelectorAll(n))}
-      });
-  }
-  return this;
-};
+(function(exports){
+    'use strict';
 
-pico.prototype = {
-    slot: function(channelName){
-        var channel = this.slots[channelName] = this.slots[channelName] || {};
-        if (3 === arguments.length){
-            channel[arguments[1].moduleName] = arguments[2];
-        }else{
-            // function only no object
-            var func = arguments[1];
-            channel[pico.hash(func.toString())] = func;
-        }
-    },
-    unslot: function(channelName, identity){
-        var channel = this.slots[channelName] = this.slots[channelName] || {};
-        if (identity.moduleName){
-            delete channel[identity.moduleName];
-        }else{
-            // function only no object
-            delete channel[pico.hash(identity.toString())];
-        }
-    },
-    signal: function(channelName, events){
-        var
-        channel = this.slots[channelName],
-        results = [],
-        mod,func;
-        if (!channel) return results;
-        
-        events = events || [];
-
-        for(var key in channel){
-            mod = pico.modules[key];
-            results.push(channel[key].apply(mod, events));
-        }
-        return results;
-    },
-    // add dependency, with optional url
-    use: function(name, url){
-        this.deps[name] = url || name;
-    }
-};
-
-pico.slot = pico.prototype.slot;
-pico.unslot = pico.prototype.unslot;
-pico.signal = pico.prototype.signal;
-
-pico.start = function(name){
-    var parentURL, paths, func;
-
-    switch(arguments.length){
-    case 3:
-        paths = arguments[1];
-        func = arguments[2];
-        break;
-    case 4:
-        parentURL = arguments[1];
-        paths = arguments[2];
-        func = arguments[3];
-        break;
-    }
-    pico.objTools.mergeObj(pico.paths, paths);
-
-    window.addEventListener('load', function(){
-        var onDeviceReady = function(){
-            pico.def(name, parentURL, func, function(err, mod){
-                pico.modules[name] = mod;
-                mod.signal(pico.LOAD);
-            });
+    var
+    pico,
+    create = function(name, ancestor){
+        var properties = {
+            moduleId: {value:name, writable:false, configurable:false, enumerable:true},
+            base: {value:ancestor, writable:false, configurable:false, enumerable:true},
+            slots: {value:{}, writable:false, configurable:false, enumerable:false},
         };
-
-        if ('Phonegap' === pico.states.browser){
-            document.addEventListener('deviceready', onDeviceReady, false);
-        }else{
-            onDeviceReady();
+        if (ancestor){
+            return Object.create(ancestor, properties);
         }
+        return Object.create(pico.prototype, properties);
+    },
+    loadDeps = function(deps, cb){
+    },
+    loadAncestor = function(link, cb){
+    };
+
+    exports.pico = pico = {
+        start: function(options, cb){
+            var
+            name = options.name,
+            script = cb.toString(),
+            onDeviceReady = function(){
+                pico.vm(name, script, function(err, mod){
+                    script = undefined;
+                    options = undefined;
+                });
+            };
+            script = script.substring(script.indexOf('{') + 1, script.lastIndexOf('}'));
+
+            pico.objTools.mergeObj(pico.paths, options.paths);
+
+            window.addEventListener('load', function(){
+                if ('Phonegap' === pico.states.browser){
+                    document.addEventListener('deviceready', onDeviceReady, false);
+                }else{
+                    onDeviceReady();
+                }
+            });
+        },
+        vm: function(name, script, cb){
+            var
+            mod = {exports:{}},
+            me = mod.exports,
+            deps = [],
+            ancestorLink,
+            require = function(link){ deps.push(link) },
+            inherit = function(link){ ancestorLink = link };
+
+            try{
+                Function('exports', 'require', 'module', 'inherit', 'me', script).call(me, me, require, mod, inherit, me);
+            }catch(exp){
+                console.error(exp.stack);
+                cb('script['+name+'] error: '+exp.message);
+            }
+
+            loadDeps(deps, function(err){
+                if (err) return cb(err);
+                loadAncestor(ancestorLink, function(err, ancestor){
+                    if (err) return cb(err);
+                })
+            })
+
+            modules[name] = mod;
+
+            mod.signal(pico.LOAD);
+        }
+    };
+
+    Object.defineProperties(pico, {
+        LOAD:           {value:'load',          writable:false, configurable:false, enumerable:true},
+        STATE_CHANGE:   {value:'stateChange',   writable:false, configurable:false, enumerable:true},
+        HASH_CHANGE:    {value:'hashChange',    writable:false, configurable:false, enumerable:true},
+        modules:        {value:{},              writable:false, configurable:false, enumerable:false},
+        paths:          {value:{'*':''},        writable:false, configurable:false, enumerable:false},
+        states:         {value:{},              writable:false, configurable:false, enumerable:false}
     });
-};
+
+    pico.prototype = {
+        slot: function(channelName){
+            var channel = this.slots[channelName] = this.slots[channelName] || {};
+            if (3 === arguments.length){
+                channel[arguments[1].moduleName] = arguments[2];
+            }else{
+                // function only no object
+                var func = arguments[1];
+                channel[pico.hash(func.toString())] = func;
+            }
+        },
+        unslot: function(channelName, identity){
+            var channel = this.slots[channelName] = this.slots[channelName] || {};
+            if (identity.moduleName){
+                delete channel[identity.moduleName];
+            }else{
+                // function only no object
+                delete channel[pico.hash(identity.toString())];
+            }
+        },
+        signal: function(channelName, events){
+            var
+            channel = this.slots[channelName],
+            results = [],
+            mod,func;
+            if (!channel) return results;
+            
+            events = events || [];
+
+            for(var key in channel){
+                mod = pico.modules[key];
+                results.push(channel[key].apply(mod, events));
+            }
+            return results;
+        }
+    };
+})(window);
+
 pico.def = function(name){
     var
     cb = (('undefined' !== typeof callback && callback instanceof Function) ? callback : function(err){if(err) console.warn(err)}),
@@ -430,123 +462,6 @@ pico.changeFrame = function(query, url, effects, holder){
     if (tfuncs.length) style['-webkit-transition-timing-function'] = style['transition-timing-function'] = tfuncs.join(' ');
     if (delays.length) style['-webkit-transition-delay'] = style['transition-delay'] = delays.join(' ');
 };
-
-Object.defineProperties(pico, {
-LOAD: {value:'load', writable:false, configurable:false, enumerable:true},
-STATE_CHANGE: {value:'stateChange', writable:false, configurable:false, enumerable:true},
-HASH_CHANGE: {value:'hashChange', writable:false, configurable:false, enumerable:true},
-modules: {value:{}, writable:false, configurable:false, enumerable:false},
-links: {value:{}, writable:false, configurable:false, enumerable:false},
-paths: {value:{'*':''}, writable:false, configurable:false, enumerable:false},
-slots: {value:{}, writable:false, configurable:false, enumerable:false},
-states: {value:{}, writable:false, configurable:false, enumerable:false},
-inner: {value:{
-  nn: function(i){
-    if (!this._n.length) throw new Error('Nodes not set');
-    if (arguments.length) return this._n[i];
-    return this._n;
-  },
-  ii: function(err, obj, Type){ // input to stack
-    if (err){
-      if (err instanceof Error) throw obj;
-      throw new Error(err);
-    }
-    if (Type && !(obj instanceof Type)) throw new Error('push type mismatch');
-    this._s.push(obj);
-  },
-  oo: function(Type){ // output from stack
-    if (!this._s.length) throw new Error('Pop a empty stack');
-    var obj = this._s.pop();
-    if (Type && !(obj instanceof Type)) throw new Error('pop type mismatch');
-    return obj;
-  },
-  pushArray: function(){ this.ii(null, []); return this; },
-  pushAttr: function(attr){ this.ii(null, this.nn(0)[attr]); return this; },
-  popAttr: function(attr){
-    var
-    o = this.oo(),
-    nodes = this.nn(),
-    node,
-    l = nodes.length;
-    for(var i=0;i<l;i++) nodes[i][attr] = o;
-    return this;
-  },
-  pushStyle: function(){
-    var
-    n = this.nn(),
-    l = n.length,
-    styles = [];
-    for(var i=0; i<l; i++) styles.push(n[i].style);
-    this.ii(null, styles);
-    this.ii(null, CSSStyleDeclaration.prototype.setProperty);
-    return this;
-  },
-  set: function(key, value){
-    var
-    func = this.oo(Function),
-    csss = this.oo(),
-    l = csss.length;
-    for(var i=0; i<l; i++) func.call(csss[i], key, value);
-    return this;
-  },
-  split: function(delimiter){
-    var str = this.oo();
-    this.ii(null, str.split(delimiter));
-    return this;
-  },
-  join: function(delimiter){
-    var arr = this.oo(Array);
-    this.ii(null, arr.join(delimiter));
-    return this;
-  },
-  push: function(obj){
-    var list = this.oo(Array);
-    if (list.indexOf(obj) < 0) list.push(obj);
-    this.ii(null, list);
-    return this;
-  },
-  pop: function(obj){
-    var
-    list = this.oo(Array),
-    i = list.indexOf(obj);
-    if (i > 0) list.splice(i, 1);
-    this.ii(null, list);
-    return this;
-  },
-  toggle: function(obj){
-    var
-    list = this.oo(Array), 
-    i = list.indexOf(obj);
-    if (i < 0) list.push(obj);
-    else list.splice(i, 1);
-    this.ii(null, list);
-    return this;
-  },
-  toObj: function(){
-      var
-      obj = {},
-      element = this.nn(0);
-      switch(element.tagName.toLowerCase()){
-          case 'form':
-            var objfy = function(fields){
-                var field, key, type;
-
-                for(var i=0,l=fields.length; i<l; i++){
-                    field = fields[i];
-                    key = field.getAttribute('name');
-                    if (!key) break;
-                    type = field.getAttribute('type');
-                    obj[key] = 'number' === type ? parseInt(field.value) : field.value;
-                }
-            };
-            objfy(element.querySelectorAll('input'));
-            objfy(element.querySelectorAll('textarea'));
-            objfy(element.querySelectorAll('select'));
-            break;
-      }
-      return obj;
-  }
-  }, writable:false, configurable:false, enumerable:false}});
 
 //Object.freeze(pico);//for common tools to add functionality
 
