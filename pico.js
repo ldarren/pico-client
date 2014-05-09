@@ -5,7 +5,7 @@
     pico,
     modules = {},
     paths = {'*':''},
-    states = {},
+    envs = {},
     createMod = function(link, obj, ancestor){
         Object.defineProperties(obj, {
             moduleId: {value:link, writable:false, configurable:false, enumerable:true},
@@ -17,7 +17,13 @@
         }
         return modules[link] = Object.create(pico.prototype, obj);
     },
-    getModule = function(link){ return modules[link] },
+    getModule = function(link, cb){
+        var mod = modules[link];
+        if (mod) return mod;
+        if (cb instanceof Function){
+            pico.loadLink(link, cb);
+        }
+    },
     parseFunc = function(require, inherit, script, cb){
         var
         mod = {exports:{}},
@@ -30,30 +36,6 @@
             console.error(exp.message);
             console.error(exp.stack);
         }
-    },
-    // always fire LOAD event when script is embed, due to dom have been reloaded
-    embedJS = function(scripts, cb){
-        if (!scripts || !scripts.length) return cb();
-
-        var script = scripts.pop();
-
-        if (script.type && -1 === script.type.indexOf('javascript')) return pico.embedJS(scripts, cb); // template node, ignore
-        if (script.src){
-            loadLink(script.src, function(err, mod){
-                if (err) return pico.embedJS(scirpts, cb);
-                pico.loadModuleFromURL(script.getAttribute('parent'), function(er, mod){
-                    if (mod){
-                        mod.signal(pico.LOAD);
-                    }
-                    return pico.embedJS(scripts, cb);
-                });
-            });
-        }
-
-        pico.loadModuleFromScript(script.getAttribute('name'), script.getAttribute('parent'), script.textContent || script.innerText, function(err, mod){
-            if (mod) mod.signal(pico.LOAD);
-            return pico.embedJS(scripts, cb);
-        });
     },
     loadLink = function(link, cb){
         if (!link) return cb();
@@ -87,6 +69,30 @@
             if (err) return cb(err);
             return loadDeps(deps, cb);
         });
+    },
+    // always fire LOAD event when script is embed, due to dom have been reloaded
+    embedJS = function(scripts, cb){
+        if (!scripts || !scripts.length) return cb();
+
+        var script = scripts.pop();
+
+        if (script.type && -1 === script.type.indexOf('javascript')) return embedJS(scripts, cb); // template node, ignore
+
+        var
+        link = script.getAttribute('link'),
+        content = script.textContent || script.innerText;
+
+        if (content){
+            pico.vm(link, content, function(err){
+                if (err) console.error('embedJS ['+link+'] with content error: '+err);
+                return embedJS(scripts, cb);
+            });
+        }else{
+            loadLink(link, function(err){
+                if (err) console.error('embedJS['+link+'] without content error: '+err);
+                return embedJS(scripts, cb);
+            });
+        }
     };
 
     exports.pico = pico = {
@@ -108,7 +114,7 @@
             pico.objTools.mergeObj(paths, options.paths);
 
             window.addEventListener('load', function(){
-                if ('Phonegap' === states.browser){
+                if ('Phonegap' === envs.browser){
                     document.addEventListener('deviceready', onDeviceReady, false);
                 }else{
                     onDeviceReady();
@@ -134,7 +140,7 @@
                 })
             })
         },
-        getEnv: function(key){ return states[key] },
+        getEnv: function(key){ return envs[key] },
 
         embed: function(holder, url, cb){
           pico.ajax('get', url, '', null, function(err, xhr){
@@ -171,7 +177,7 @@
             }
             // remove last & symbol
             history.pushState(userData, desc, search.substr(0, search.length-1));
-            if (!this.states.isWebKit){
+            if (!this.envs.isWebKit){
                 this.onStateChange({});
             }
         },
@@ -215,7 +221,7 @@
             holder = holder || document.body;
             var
             frame = holder.querySelector(query),
-            te = this.states.transitionEnd;
+            te = this.envs.transitionEnd;
 
             if (!frame || !te) return this.addFrame(query, url, holder);
 
@@ -272,7 +278,7 @@
             url = encodeURI(url);
 
             if (!post){
-                url += '?appVer='+pico.states.appVer;
+                url += '?appVer='+pico.envs.appVer;
                 if (params){
                     url += '&';
                     if (paramIsString) url += +encodeURIComponent(params);
@@ -305,15 +311,7 @@
                 xhr.send();
             }
         },
-    };
 
-    Object.defineProperties(pico, {
-        LOAD:           {value:'load',          writable:false, configurable:false, enumerable:true},
-        STATE_CHANGE:   {value:'stateChange',   writable:false, configurable:false, enumerable:true},
-        HASH_CHANGE:    {value:'hashChange',    writable:false, configurable:false, enumerable:true},
-    });
-
-    pico.prototype = {
         slot: function(channelName){
             var channel = this.slots[channelName] = this.slots[channelName] || {};
             if (3 === arguments.length){
@@ -350,131 +348,66 @@
         }
     };
 
+    Object.defineProperties(pico, {
+        LOAD:           {value:'load',          writable:false, configurable:false, enumerable:true},
+        STATE_CHANGE:   {value:'stateChange',   writable:false, configurable:false, enumerable:true},
+        HASH_CHANGE:    {value:'hashChange',    writable:false, configurable:false, enumerable:true},
+        slots:          {value:'hashChange',    writable:false, configurable:false, enumerable:false},
+    });
+
+    pico.prototype = {
+        slot: pico.slot,
+        unslot: pico.unslot,
+        signal: pico.signal
+    };
+
     !function(){
         var
         te = 'transitionend',
         wkte = 'webkittransitionend',
         appVerTag = document.querySelector('meta[name=app-version]');
 
-        states.transitionEnd = pico.detectEvent(te) ? te : pico.detectEvent(wkte) ? 'webkitTransitionEnd' : undefined;
+        envs.transitionEnd = pico.detectEvent(te) ? te : pico.detectEvent(wkte) ? 'webkitTransitionEnd' : undefined;
 
-        states.appVer = appVerTag ? appVerTag.getAttribute('content') : '0';
+        envs.appVer = appVerTag ? appVerTag.getAttribute('content') : '0';
 
         if (document.URL.indexOf( 'http://' ) === -1 &&
-        document.URL.indexOf( 'https://' ) === -1 &&
-        navigator &&
-        navigator.userAgent &&
-        navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/)){
-        states.browser = 'Phonegap';
-        states.isWebKit = true;
+            document.URL.indexOf( 'https://' ) === -1 &&
+            navigator &&
+            navigator.userAgent &&
+            navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/)){
+            envs.browser = 'Phonegap';
+            envs.isWebKit = true;
         }else{
-        var
-        // http://www.quirksmode.org/js/detect.html
-        vendorKeys = [
-        { string: navigator.userAgent,  subString: "Chrome",    identity: "Chrome"},
-        { string: navigator.userAgent,  subString: "OmniWeb",   identity: "OmniWeb"},
-        { string: navigator.vendor,     subString: "Apple",     identity: "Safari"},
-        { string: navigator.userAgent,  subString: "Opera",     identity: "Opera"},
-        { string: navigator.vendor,     subString: "iCab",      identity: "iCab"},
-        { string: navigator.vendor,     subString: "KDE",       identity: "Konqueror"},
-        { string: navigator.userAgent,  subString: "Firefox",   identity: "Firefox"},
-        { string: navigator.vendor,     subString: "Camino",    identity: "Camino"},
-        { string: navigator.userAgent,  subString: "Netscape",  identity: "Netscape"},
-        { string: navigator.userAgent,  subString: "MSIE",      identity: "Explorer"},
-        { string: navigator.userAgent,  subString: "Gecko",     identity: "Mozilla"},
-        { string: navigator.userAgent,  subString: "Mozilla",   identity: "Netscape"}],
-        key;
+            var
+            // http://www.quirksmode.org/js/detect.html
+            vendorKeys = [
+            { string: navigator.userAgent,  subString: "Chrome",    identity: "Chrome"},
+            { string: navigator.userAgent,  subString: "OmniWeb",   identity: "OmniWeb"},
+            { string: navigator.vendor,     subString: "Apple",     identity: "Safari"},
+            { string: navigator.userAgent,  subString: "Opera",     identity: "Opera"},
+            { string: navigator.vendor,     subString: "iCab",      identity: "iCab"},
+            { string: navigator.vendor,     subString: "KDE",       identity: "Konqueror"},
+            { string: navigator.userAgent,  subString: "Firefox",   identity: "Firefox"},
+            { string: navigator.vendor,     subString: "Camino",    identity: "Camino"},
+            { string: navigator.userAgent,  subString: "Netscape",  identity: "Netscape"},
+            { string: navigator.userAgent,  subString: "MSIE",      identity: "Explorer"},
+            { string: navigator.userAgent,  subString: "Gecko",     identity: "Mozilla"},
+            { string: navigator.userAgent,  subString: "Mozilla",   identity: "Netscape"}],
+            key;
 
-        states.browser = 'Unknown';
-        states.isWebKit = false;
+            envs.browser = 'Unknown';
+            envs.isWebKit = false;
 
-        for (var i=0, l=vendorKeys.length; i<l; i++){
-          key = vendorKeys[i];
-          if (key.string && -1 !== key.string.indexOf(key.subString)){
-              states.browser = key.identity;
-              states.isWebKit = -1 !== key.string.indexOf('WebKit');
-              break;
-          }
+            for (var i=0, l=vendorKeys.length; i<l; i++){
+              key = vendorKeys[i];
+              if (key.string && -1 !== key.string.indexOf(key.subString)){
+                  envs.browser = key.identity;
+                  envs.isWebKit = -1 !== key.string.indexOf('WebKit');
+                  break;
+              }
+            }
         }
-        }
-        console.log('pico states: '+JSON.stringify(states));
+        console.log('pico envs: '+JSON.stringify(envs));
     }();
 }(window);
-
-pico.def = function(name){
-    var
-    cb = (('undefined' !== typeof callback && callback instanceof Function) ? callback : function(err){if(err) console.warn(err)}),
-    mod, parentURL, func;
-
-    switch(arguments.length){
-    case 2:
-        // without ancestor
-        func = arguments[1];
-        break;
-    case 3:
-        // with ancestor
-        parentURL = arguments[1];
-        func = arguments[2];
-        if ('string' !== typeof parentURL || -1 !== parentURL.indexOf('{')){
-            // with callback 
-            func = arguments[1];
-            cb = arguments[2];
-            parentURL = undefined;
-        }
-        break;
-    case 4:
-        parentURL = arguments[1];
-        func = arguments[2];
-        cb = arguments[3];
-        break;
-    default:
-        return cb('too many or too few params (2~4) '+JSON.stringify(arguments));
-    }
-
-    pico.loadModuleFromURL(parentURL, function(err, ancestor){
-        if (err) return cb(err);
-        try{
-            func = ('string' === typeof func ? func : func.toString());
-            if (0 === func.indexOf('function')) func = func.substring(func.indexOf('{') + 1, func.lastIndexOf('}'));
-            else if (-1 !== func.indexOf('pico.def')) {
-                var bracket1 = func.indexOf('(')+1;
-                return Function('cb', func.substring(0, bracket1)+'"'+name+'",'+func.substring(bracket1, func.lastIndexOf('}')+1)+',cb);')(cb);
-            }
-            var factory = Function('me', '"use strict";'+func);
-        }catch(exp){
-            return cb('Syntax Error at script: '+func);
-        }
-
-        // each pico object has their own slots and dependencies
-        var properties = {
-            moduleName: {value:name, writable:false, configurable:false, enumerable:true},
-            base: {value:ancestor, writable:false, configurable:false, enumerable:true},
-            slots: {value:{}, writable:false, configurable:false, enumerable:false},
-            deps: {value:{}, writable:false, configurable:false, enumerable:false}
-        };
-        if (ancestor){
-            mod = Object.create(ancestor, properties);
-        }else{
-            mod = Object.create(pico.prototype, properties);
-        }
-
-        factory.call(mod, mod); // this, me
-        cb(null, mod);
-    });
-};
-pico.loadModuleFromScript = function(name, parentURL, script, cb){
-    if (!name) return cb();
-    var mod = this.modules[name];
-    if (mod) return cb(null, mod, false);
-
-    pico.def(name, parentURL, script, function(err, mod){
-        if (err || !mod) {
-            return cb('loadModuleFromScript['+name+'] error: '+err);
-        }
-        pico.modules[name] = mod;
-        pico.loadDeps(mod, function(){
-            return cb(null, mod, true);
-        });
-    });
-};
-
