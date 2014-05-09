@@ -39,9 +39,9 @@ div.fbProfile span{
 <span>NAME</span>
 </script>
 
-<script name=mapPage>
+<script link=mapPage>
 
-me.use('socials');
+var socials = require('socials');
 
 var
 onBack = function(evt){
@@ -53,7 +53,6 @@ onShowMedals = function(evt){
 },
 onLoad = function(){
     var 
-    socials = me.socials,
     list = document.querySelector('content.fbProfileList'),
     backBtn = document.querySelector('div.fantasyHead a');
 

@@ -7,7 +7,7 @@ div#gameStage{
 </style>
 <div id=gameStage></div>
 
-<script name=gamePage>
+<script link=gamePage>
 var piCanvas = require('pico/piCanvas');
 var piReactor = require('pico/piReactor');
 var picRect = require('pico/picRect');
@@ -32,17 +32,17 @@ gameStage,
 fingerStartPos = [0, 0],
 fingerTracker,
 cancelTracking = function(x, y){
-    me.game.go('fingerOut', [x, y]);
+    game.go('fingerOut', [x, y]);
     fingerTracker = undefined;
 },
 onFingerDown = function(evt, x, y){
     fingerStartPos[0] = x;
     fingerStartPos[1] = y;
-    me.game.go('fingerDown', [x, y]);
+    game.go('fingerDown', [x, y]);
 },
 onFingerUp = function(evt, x, y){
     if (fingerTracker) fingerTracker = undefined;
-    me.game.go('fingerUp', [x, y]);
+    game.go('fingerUp', [x, y]);
 },
 onFingerMove = function(evt, x, y){
     if (!fingerTracker){
@@ -50,7 +50,7 @@ onFingerMove = function(evt, x, y){
     }else{
         fingerTracker[0] = x;
         fingerTracker[1] = y;
-        me.game.go('fingerMove', fingerTracker);
+        game.go('fingerMove', fingerTracker);
     }
 },
 onFingerOut = function(evt, x, y){

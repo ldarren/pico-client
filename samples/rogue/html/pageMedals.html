@@ -50,10 +50,10 @@
 </div>
 </script>
 
-<script name=medalPage>
+<script link=medalPage>
 
-me.use('socials');
-me.use('god');
+var socials = require('socials');
+var god = require('god');
 
 var
 medalList = [
@@ -67,8 +67,6 @@ onBack = function(evt){
 },
 onLoad = function(){
     var 
-    socials = me.socials,
-    god = me.god,
     userId = window.location.hash.substring(1),
     backBtn = document.querySelector('div.pageHead a'),
     list = document.querySelector('div#medals'),

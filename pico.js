@@ -17,7 +17,7 @@
         }
         return modules[link] = Object.create(pico.prototype, obj);
     },
-    getModule = function(link, cb){
+    getMod = function(link, cb){
         var mod = modules[link];
         if (mod) return mod;
         if (cb instanceof Function){
@@ -26,7 +26,7 @@
     },
     parseFunc = function(require, inherit, script, cb){
         var
-        mod = {exports:{}},
+        mod = {exports:createMod('', {})},
         me = mod.exports;
 
         try{
@@ -63,7 +63,7 @@
         if (!cb) cb = function(){};
         if (!deps || !deps.length) return cb();
 
-        var link = deps.pop(),
+        var link = deps.pop();
 
         loadLink(link, function(err){
             if (err) return cb(err);
@@ -126,16 +126,15 @@
             deps = [],
             ancestorLink;
             
-            if (!parseFunc(function(link){ deps.push(link) }, function(link){ ancestorLink = link }, script)){
-                cb('error parsing '+scriptLink);
-            }
+            if (!parseFunc(function(link){ deps.push(link) }, function(link){ ancestorLink = link }, script))
+                return cb('error parsing '+scriptLink);
 
             loadLink(ancestorLink, function(err, ancestor){
                 if (err) return cb(err);
 
-                var mod = createMod(link, parseFunc(getModule, function(){}, 'use strict;\n'+script), ancestor);
-                loadDeps(deps, function(err, dep){
+                loadDeps(deps, function(err){
                     if (err) return cb(err);
+                    var mod = createMod(scriptLink, parseFunc(getMod, function(){}, 'use strict;\n'+script), ancestor);
                     mod.signal(pico.LOAD);
                 })
             })

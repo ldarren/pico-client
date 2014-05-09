@@ -48,9 +48,12 @@
 <script src=js/const.js></script>
 <script src=js/stringEn.js></script>
 <script>
-pico.start('rogueMain', {
-    '*': 'js/',
-    pico: 'lib/pico/lib/'
+pico.start({
+    name: 'rogueMain',
+    paths: {
+        '*': 'js/',
+        pico: 'lib/pico/lib/'
+    }
 }, function(){
     var
     loadPageStyle,
