@@ -1,5 +1,8 @@
 inherit('pico/picBase');
 
+var hero = require('hero');
+var ai = require('ai');
+
 var
 UNCLEAR = G_FLOOR.UNCLEAR,
 STONE = G_FLOOR.STONE,
@@ -119,8 +122,6 @@ me.click = function(elapsed, evt, entities){
     var
     map = this.map,
     objects = this.objects,
-    hero = this.hero,
-    ai = this.ai,
     engaged = hero.getEngaged(),
     hp = hero.getPosition(),
     id = mapW * y + x,
@@ -217,8 +218,6 @@ me.draw = function(ctx, ent, clip){
     tileW = this.tileWidth,
     tileH = this.tileHeight,
     sd = this.smallDevice,
-    hero = this.hero,
-    ai = this.ai,
     hw = Floor(tileW/2),
     hh = Floor(tileH/2),
     w = viewStart,

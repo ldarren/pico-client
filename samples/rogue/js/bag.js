@@ -1,4 +1,7 @@
 inherit('pico/picUIContent');
+var god = require('god');
+var hero = require('hero');
+var ai = require('ai');
 var socials = require('socials');
 var trade = require('trade');
 
@@ -23,7 +26,7 @@ onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
     com = ent.getComponent(name),
     ts = tss[0],
     x=rect[0], y=rect[1], w=rect[2], h=rect[3],
-    slots = this.hero.getBag(),
+    slots = hero.getBag(),
     slot, item, count;
 
     slot = slots[i];
@@ -63,7 +66,7 @@ onCustomClick = function(ent, ui){
     }
     var
     id = ui.userData.id,
-    slot = this.hero.getBag()[id];
+    slot = hero.getBag()[id];
 
     if (slot){
         com.activated = id;
@@ -80,7 +83,7 @@ onCustomClick = function(ent, ui){
 onCustomDrop = function(ent, ui, cell){
     var
     sourceId = ui.userData.id,
-    slots = this.hero.getBag(),
+    slots = hero.getBag(),
     slot1, slot2, targetId;
 
     slot1 = slots[sourceId];
@@ -112,7 +115,7 @@ me.useItem = function(elapsed, evt, entities){
 
     if (!e) return;
 
-    var slots = this.hero.getBag();
+    var slots = hero.getBag();
     if (slots[evt.index]){
         return [e];
     }
@@ -120,7 +123,6 @@ me.useItem = function(elapsed, evt, entities){
 
 me.lootItem = function(elapsed, evt, entities){
     var
-    hero = this.hero,
     object = this.objects[evt],
     loot = object[CHEST_ITEM];
 
@@ -140,7 +142,6 @@ me.lootItem = function(elapsed, evt, entities){
 
 me.acceptGift = function(elapsed, evt, entities){
     var
-    hero = this.hero,
     npcId = evt.npcId,
     npc = this.realNPCs[npcId],
     selected = evt.selected,
@@ -179,14 +180,13 @@ me.acceptGift = function(elapsed, evt, entities){
 
 me.offerItem = function(elapsed, evt, entities){
     var
-    hero = this.hero,
     bag = hero.getBag(),
     selected = evt.selected,
     slot = bag[selected];
 
     if (!slot) return;
 
-    this.god.incrPiety(trade.sellPrice(slot[0], 1));
+    god.incrPiety(trade.sellPrice(slot[0], 1));
 
     hero.removeFromBag(selected);
 
@@ -195,13 +195,12 @@ me.offerItem = function(elapsed, evt, entities){
 
 me.buyItem = function(elapsed, evt, entities){
     var
-    hero = this.hero,
     shop = trade.getShop(),
     selected = evt.selected,
     slot = shop[selected],
     templ = slot[0],
     count = slot[1],
-    item = this.ai.spawnItem(templ[OBJECT_ICON], null, G_GRADE.COMMON, hero.getLevel());
+    item = ai.spawnItem(templ[OBJECT_ICON], null, G_GRADE.COMMON, hero.getLevel());
 
     if (!item) return;
 
@@ -215,7 +214,6 @@ me.buyItem = function(elapsed, evt, entities){
 
 me.sellItem = function(elapsed, evt, entities){
     var
-    hero = this.hero,
     bag = hero.getBag(),
     selected = evt.selected,
     slot = bag[selected];
@@ -231,7 +229,6 @@ me.sellItem = function(elapsed, evt, entities){
 
 me.giftItem = function(elapsed, evt, entities){
     var
-    hero = this.hero,
     bag = hero.getBag(),
     selected = evt.selected,
     slot = bag[selected];
@@ -246,7 +243,6 @@ me.giftItem = function(elapsed, evt, entities){
 
 me.recycleItem = function(elapsed, evt, entities){
     var
-    hero = this.hero,
     bag = hero.getBag(),
     selected = evt.selected,
     slot = bag[selected];
@@ -279,7 +275,6 @@ me.recycleItem = function(elapsed, evt, entities){
 // bag capacity already verified
 me.betItem = function(elapsed, evt, entities){
     var
-    hero = this.hero,
     level = hero.getLevel(),
     minLvl = level - 3,
     lvl = minLvl + Round(Random()*6),
@@ -287,7 +282,7 @@ me.betItem = function(elapsed, evt, entities){
     selected = evt.selected,
     slot = shop[selected],
     templ = slot[0],
-    item = this.ai.gamble(templ[OBJECT_ICON], hero.getStat(OBJECT_LUCK), lvl);
+    item = ai.gamble(templ[OBJECT_ICON], hero.getStat(OBJECT_LUCK), lvl);
 
     if (!item) return;
 
@@ -302,12 +297,11 @@ me.betItem = function(elapsed, evt, entities){
 // item level already verified
 me.upgradeItem = function(elapsed, evt, entities){
     var
-    hero = this.hero,
     shop = trade.getShop(),
     selected = evt.selected,
     slot = shop[selected],
     templ = slot[0],
-    item = this.ai.spawnItem(templ[OBJECT_ICON], null, G_GRADE.COMMON, templ[OBJECT_LEVEL]+1),
+    item = ai.spawnItem(templ[OBJECT_ICON], null, G_GRADE.COMMON, templ[OBJECT_LEVEL]+1),
     info = ['Congrats, Item Level Up!'],
     diff;
 
@@ -329,12 +323,11 @@ me.upgradeItem = function(elapsed, evt, entities){
 
 me.imbueItem = function(elapsed, evt, entities){
     var
-    hero = this.hero,
     shop = trade.getShop(),
     selected = evt.selected,
     slot = shop[selected],
     templ = slot[0],
-    item = this.ai.gamble(templ[OBJECT_ICON], hero.getStat(OBJECT_LUCK)+99, templ[OBJECT_LEVEL]),
+    item = ai.gamble(templ[OBJECT_ICON], hero.getStat(OBJECT_LUCK)+99, templ[OBJECT_LEVEL]),
     info = [],
     diff;
 

@@ -1,5 +1,8 @@
 inherit('pico/picUIContent');
 
+var hero = require('hero');
+var god = require('god');
+
 var
 Floor=Math.floor,Ceil=Math.ceil,Round=Math.round,Random=Math.random,Max=Math.max,Min=Math.min,
 name = me.moduleName,
@@ -60,9 +63,9 @@ onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
             me.fillIconText(ctx, tss, info[id.charAt(4)], rect, scale);
         }
         if ('piety' === id){
-            me.fillIconText(ctx, tss, this.god.getPiety(), rect, scale);
+            me.fillIconText(ctx, tss, god.getPiety(), rect, scale);
         }else if ('gold' === id){
-            me.fillIconText(ctx, tss, this.hero.getGold(), rect, scale);
+            me.fillIconText(ctx, tss, hero.getGold(), rect, scale);
         }else if ('desc' === id){
             if (-1 !== com.activated){
                 slot = content[com.activated];

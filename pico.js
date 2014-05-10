@@ -19,7 +19,7 @@
         ancestor = ancestor || pico.prototype;
 
         obj.__proto__ = Object.create(ancestor, {
-            moduleId: {value:link, writable:false, configurable:false, enumerable:true},
+            moduleName: {value:link, writable:false, configurable:false, enumerable:true},
             base: {value:ancestor, writable:false, configurable:false, enumerable:true},
             slots: {value:{}, writable:false, configurable:false, enumerable:false},
         });

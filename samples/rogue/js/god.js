@@ -1,8 +1,9 @@
 inherit('pico/picUIContent');
 
-var tome = require('tome');
+var hero = require('hero');
 var ai = require('ai');
 var trade = require('trade');
+var tome = require('tome');
 
 var
 Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round, Max = Math.max,
@@ -33,7 +34,6 @@ onCustomBound = function(ent, rect, ui, scale){
 },
 onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
     var
-    hero = this.hero,
     mortal = this.mortal,
     appearance = mortal.appearance,
     stats = mortal.stats,
@@ -77,7 +77,6 @@ onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
 },
 onCustomButton = function(ent, ctx, rect, ui, tss, scale){
     var
-    hero = this.hero,
     mortal = this.mortal,
     appearance = mortal.appearance,
     stats = mortal.stats,
@@ -122,7 +121,6 @@ onCustomClick = function(ent, ui){
         return false;
     }
     var
-    hero = this.hero,
     mortal = this.mortal,
     appearance = mortal.appearance,
     stats = mortal.stats,
@@ -347,9 +345,7 @@ me.toHeaven = function(appearance, stats){
 };
 
 me.tenthing = function(elapsed, evt, entities){
-    var
-    hero = this.hero,
-    donation = tenth(hero.getGold());
+    var donation = tenth(hero.getGold());
 
     hero.incrGold(-donation);
     me.incrPiety(donation);
@@ -373,7 +369,6 @@ me.changeJob = function(elapsed, evt, entities){
 
 me.holyForge = function(elapsed, equipId, entities){
     var
-    hero = this.hero,
     mortal = this.mortal,
     appearance = mortal.appearance,
     stats = mortal.stats,

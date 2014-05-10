@@ -457,7 +457,7 @@ me.openChest = function(elapsed, evt, entities){
     loot = object[CHEST_ITEM];
 
     if (!loot) {
-        loot = object[CHEST_ITEM] = this.ai.openChest(hero.getStat(OBJECT_LUCK), this.currentLevel);
+        loot = object[CHEST_ITEM] = ai.openChest(hero.getStat(OBJECT_LUCK), this.currentLevel);
     }
 
     me.go('showDialog', {
@@ -588,7 +588,7 @@ me.counterAnim = function(elapsed, evt, entities){
 };
 
 me.flee = function(elapsed, evt, entities){
-    var ret = this.hero.flee();
+    var ret = hero.flee();
     if (!ret) return;
 
     if (!ret[0]){
@@ -600,9 +600,7 @@ me.flee = function(elapsed, evt, entities){
 };
 
 me.revealsOK = function(elapsed, evt, entities){
-    var
-    ai = this.ai,
-    targets = evt.targets;
+    var targets = evt.targets;
 
     for(var i=0,l=targets.length; i<l; i++){
         ai.reveal(targets[i]);
@@ -632,7 +630,6 @@ me.revealsOK = function(elapsed, evt, entities){
 
 me.revealsKO = function(elapsed, evt, entities){
     var
-    ai = this.ai,
     targets = evt.targets
 
     for(var i=0,l=targets.length; i<l; i++){
@@ -648,7 +645,6 @@ me.battleEnd = function(elapsed, evt, entities){
 
     var
     objects = this.objects,
-    ai = this.ai,
     obj, objId;
 
     for(var i=0,l=evt.length; i<l; i++){

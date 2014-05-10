@@ -1,3 +1,5 @@
+var god = require('god');
+var hero = require('hero');
 var tome = require('tome');
 
 var
@@ -5,7 +7,7 @@ Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round,
 team = [],
 currIndex = 0,
 level = 0,
-god,hero,map,objects,flags,terrain,
+map,objects,flags,terrain,
 updateCreepStat = function(creep, level){
     var
     stat = me.getStatByCreepId(creep[OBJECT_ICON]).slice(),
@@ -119,8 +121,6 @@ pick = function(list, luck, grade){
 };
 
 me.init = function(){
-    god = this.god;
-    hero = this.hero;
     map = this.map;
     objects = this.objects;
     flags = this.flags;

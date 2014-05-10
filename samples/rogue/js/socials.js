@@ -1,6 +1,7 @@
 inherit('pico/piSocials');
 
 var god = require('god');
+var hero = require('hero');
 
 var
 Random=Math.random,Floor=Math.floor,
@@ -197,7 +198,6 @@ me.getNPCs = function(cb){
 me.sendGift = function(elapsed, evt, entities){
     var
     game = this,
-    hero = this.hero,
     bag = hero.getBag(),
     selected = evt.selected,
     slot = bag[selected],

@@ -1,6 +1,8 @@
 inherit('pico/picUIContent');
 
 var trade = require('trade');
+var hero = require('hero');
+var ai = require('ai');
 
 var
 Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
@@ -26,7 +28,7 @@ addButtons = function(){
             switch(target[OBJECT_TYPE]){
             case G_OBJECT_TYPE.CREEP:
                 addOption('Fight', 'fight');
-                if (this.hero.isEngaged(targetId)){
+                if (hero.isEngaged(targetId)){
                     addOption('Flee', 'flee');
                 }
                 break;
@@ -118,7 +120,7 @@ addButtons = function(){
         case G_OBJECT_TYPE.AMMO:
         case G_OBJECT_TYPE.ARMOR:
         case G_OBJECT_TYPE.JEWEL:
-            if (this.hero.isItemEquipped(target)){
+            if (hero.isItemEquipped(target)){
                 addOption('Unequip', 'unequip');
             }else{
                 addOption('Equip', 'equip');
@@ -139,7 +141,7 @@ addButtons = function(){
         }
         break;
     case G_CONTEXT.TOME:
-        if (this.hero.affordableSpell(target)) addOption('Cast', 'cast');
+        if (hero.affordableSpell(target)) addOption('Cast', 'cast');
         addOption('Recycle', 'recycle');
         break;
     case G_CONTEXT.MERCHANT_BUY:
@@ -197,7 +199,6 @@ onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
 
     var 
     com = ent.getComponent(name),
-    hero = this.hero,
     ts = tss[0],
     tw = this.tileWidth,
     th = this.tileHeight, 
@@ -273,7 +274,7 @@ onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
                     me.fillIconText(ctx, tss, 'Level `0'+G_UI.LEVEL+' '+target[OBJECT_LEVEL], rect, scale);
                     break;
                 case 12:
-                    me.fillIconText(ctx, tss, 'HP `0'+G_UI.HP+' '+target[CREEP_HP]+'/'+this.ai.getStatByObject(target)[CREEP_HP], rect, scale);
+                    me.fillIconText(ctx, tss, 'HP `0'+G_UI.HP+' '+target[CREEP_HP]+'/'+ai.getStatByObject(target)[CREEP_HP], rect, scale);
                     break;
                 case 20:
                     me.fillIconText(ctx, tss, 'Atk `0'+G_UI.PATK+' '+target[CREEP_ATK], rect, scale);
@@ -347,10 +348,6 @@ onCustomClick = function(ent, ui){
     eventObj = events[i];
 
     if (undefined === eventObj){
-        var
-        hero = this.hero,
-        ai = this.ai;
-
         switch(callback){
         case 'equip':
             hero.equipItem.call(this, target);
@@ -480,7 +477,7 @@ onCustomClick = function(ent, ui){
             if (!npc) return;
             this.go('showTrade', {
                 info:['Choose an item to trade with '+npc[NPC_NAME], npc[NPC_NAME]+' might return something useful to you'],
-                content: this.hero.getBag(),
+                content: hero.getBag(),
                 labels: ['Trade', 'Close'],
                 callbacks:['gifting'],
                 events: [{npc: npc}],
@@ -610,10 +607,10 @@ me.show = function(ent, com, evt){
         targetId = evt.targetId;
         switch(context){
         case G_CONTEXT.BAG:
-            target = this.hero.getBag()[targetId];
+            target = hero.getBag()[targetId];
             break;
         case G_CONTEXT.TOME:
-            target = this.hero.getTome()[targetId];
+            target = hero.getTome()[targetId];
             break;
         case G_CONTEXT.WORLD:
             target = this.objects[targetId];

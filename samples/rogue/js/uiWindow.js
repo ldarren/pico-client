@@ -4,6 +4,7 @@ var info = require('info');
 var dialogMsg = require('dialogMsg');
 var trade = require('trade');
 var god = require('god');
+var hero = require('hero');
 
 var
 Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random,
@@ -226,7 +227,7 @@ me.resize = function(elapsed, evt, entities){
 
     //this.pause();
     //window.setTimeout(function(game){game.go('forceRefresh');}, 1000, this);
-    this.go('resetView', this.hero.getPosition());
+    this.go('resetView', hero.getPosition());
     return entities;
 };
 

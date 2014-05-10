@@ -1,12 +1,14 @@
 inherit('pico/picUIContent');
 
-var tome = require('tome');
-var bag = require('bag');
+var god = require('god');
+var ai = require('ai');
+var tomeCom = require('tome');
+var bagCom = require('bag');
 
 var
 name = me.moduleName,
 Floor = Math.floor, Ceil = Math.ceil, Round = Math.round, Random = Math.random, Max = Math.max,
-map, objects, flags, ai,
+map, objects, flags,
 position, selectedSpell, isFlagMode=false, focusTile,
 heroObj, currStats,
 appearance, stats, effects, bag, tome,
@@ -78,7 +80,7 @@ onCustomDraw = function(ent, ctx, rect, ui, tss, tileScale){
         me.fillIconText(ctx, tss, ''+appearance[HERO_GOLD], rect, tileScale);
         break;
     case 'piety':
-        me.fillIconText(ctx, tss, ''+this.god.getPiety(), rect, tileScale);
+        me.fillIconText(ctx, tss, ''+god.getPiety(), rect, tileScale);
         break;
     case 'patk':
         me.fillIconText(ctx, tss, ''+appearance[HERO_PATK]+'/'+currStats[OBJECT_PATK], rect, tileScale);
@@ -214,7 +216,7 @@ createEffect = function(type, level, period, icon){
         break;
     }
     heroObj.stats = stats;
-    return tome.createEffect(type, level, period, icon);
+    return tomeCom.createEffect(type, level, period, icon);
 },
 updateEffect = function(effect, steps){
     effect[EFFECT_PERIOD] -= steps;
@@ -272,7 +274,6 @@ me.init = function(level){
     map = this.map;
     objects = this.objects;
     flags = this.flags;
-    ai = this.ai;
     
     var targets = appearance[HERO_ENEMIES];
 
@@ -546,7 +547,7 @@ me.getEquippedItem = function(id){
 
 me.putIntoBag = function(item){
     var
-    cap = bag.getCap(),
+    cap = bagCom.getCap(),
     count = 1,
     stack, stat, i, l;
 
@@ -609,7 +610,7 @@ me.putIntoTome = function(spellId){
         //spellId === G_ICON
         spellId = spellInfo[DROP_ID];
     }
-    return tome.push(tome.createSpell(spellId, currStats[OBJECT_SUB_TYPE]));
+    return tome.push(tomeCom.createSpell(spellId, currStats[OBJECT_SUB_TYPE]));
 };
 
 me.bury = function(god){
@@ -654,7 +655,7 @@ me.calcStats = function(lvl, isInit){
     restoreStat(OBJECT_DEF, HERO_DEF, 0);
     restoreStat(OBJECT_WILL, HERO_WILL, 0);
 
-    tome.upgradeSpell.call(this, me.getTome(), currStats[OBJECT_FIRE], currStats[OBJECT_AIR], currStats[OBJECT_WATER], currStats[OBJECT_EARTH], isInit);
+    tomeCom.upgradeSpell.call(this, me.getTome(), currStats[OBJECT_FIRE], currStats[OBJECT_AIR], currStats[OBJECT_WATER], currStats[OBJECT_EARTH], isInit);
 
     objects[position] = currStats;
 
@@ -872,7 +873,7 @@ me.getBag = function(){ return bag; };
 me.isBagFull = function(count){ 
     if (!bag) return true; 
     count = count || 1;
-    for(var i=0,l=bag.getCap(); i<l; i++){ 
+    for(var i=0,l=bagCom.getCap(); i<l; i++){ 
         if (!bag[i]){
             count--;
             if (!count) return false;
@@ -885,7 +886,7 @@ me.getTome = function(){ return tome; };
 me.isTomeFull = function(count){ 
     if (!tome) return true; 
     count = count || 1;
-    for(var i=0,l=tome.getCap(); i<l; i++){ 
+    for(var i=0,l=tomeCom.getCap(); i<l; i++){ 
         if (!tome[i]){
             count--;
             if (!count) return false;
@@ -943,7 +944,7 @@ me.setEngaged = function(engaged){
     for(var i=0,l=engaged.length; i<l; i++){
         id = engaged[i];
         object = objects[id];
-        if (G_OBJECT_TYPE.CREEP === object[OBJECT_TYPE] && -1 === targets.indexOf(id)) validList.push(id);
+        if (object && G_OBJECT_TYPE.CREEP === object[OBJECT_TYPE] && -1 === targets.indexOf(id)) validList.push(id);
     }
 
     if (validList.length) appearance[HERO_ENEMIES] = targets.concat(validList);

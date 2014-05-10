@@ -1,5 +1,7 @@
 inherit('pico/picUIContent');
 
+var hero = require('hero');
+
 var
 Floor = Math.floor, Ceil = Math.ceil, Random = Math.random, Round = Math.round, Max = Math.max,
 CAP = 8, SKU = G_FEATURE_SHOP[1],
@@ -21,7 +23,6 @@ onCustomDraw = function(ent, ctx, rect, ui, tss, scale){
     var
     ts = tss[0],
     ss = tss[1],
-    hero = this.hero,
     items = hero.getTome(),
     x=rect[0],y=rect[1],w=rect[2],h=rect[3],
     crop = scale * 4,
@@ -52,7 +53,6 @@ onCustomClick = function(ent, ui){
 
     var
     id = ui.userData.id,
-    hero = this.hero,
     spell = hero.getTome()[id],
     toggle = hero.getSelectedSpell() === spell;
 
@@ -73,7 +73,7 @@ onCustomClick = function(ent, ui){
 onCustomDrop = function(ent, ui, cell){
     var
     sourceId = ui.userData.id,
-    items = this.hero.getTome(),
+    items = hero.getTome(),
     item, targetId;
 
     item = items[sourceId];
@@ -98,7 +98,6 @@ onCustomUI = function(){
 me.chantScroll = function(elapsed, evt, entities){
     var
     targetId = evt[0],
-    hero = this.hero,
     stat = hero.removeFromBag(targetId);
 
     switch(stat[OBJECT_SUB_TYPE]){
@@ -123,7 +122,6 @@ me.chantScroll = function(elapsed, evt, entities){
 
 me.forgetSpell = function(elapsed, evt, entities){
     var
-    hero = this.hero,
     tome = hero.getTome(),
     spell = tome[evt];
 
@@ -222,7 +220,7 @@ me.checkExt = function(err, iab){
     }
 };
 
-me.getCap = function(){return CAP;};
+me.getCap = function(){return CAP};
 
 me.resize = function(ent, width, height){
     var
