@@ -244,7 +244,7 @@ onLoad = function(){
     piHTMLAudio.create('dat/fantasy-sfx.json', function(err, audioSprite){
         socials.fbInit(
             '515256841901768', 
-            'Phonegap' === pico.states.browser ? CDV.FB : '//dungeon-chronicles.com/rogue/html/fbChannel.html',
+            'Phonegap' === pico.getEnv('browser') ? CDV.FB : '//dungeon-chronicles.com/rogue/html/fbChannel.html',
             onFacebookUpdate);
         /* if no network */ rogueMain.hideLoading();
     });

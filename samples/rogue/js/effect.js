@@ -1,8 +1,8 @@
 inherit('pico/picBase');
 
-var picTween = require('picTween', 'pico/picTween');
-var picUIContent = require('picUIContent', 'pico/picUIContent');
-var picRenderer = require('picRenderer', 'pico/picRenderer');
+var picTween = require('pico/picTween');
+var picUIContent = require('pico/picUIContent');
+var picRenderer = require('pico/picRenderer');
 var camera = require('camera');
 
 var
@@ -212,7 +212,7 @@ me.start = function(elpased, evt, entities){
 };
 
 me.clear = function(elapsed, evt, entities){
-    if ('Chrome' === pico.states.browser) picRenderer.setBG('efxPane');
+    if ('Chrome' === pico.getEnv('browser')) picRenderer.setBG('efxPane');
     else picRenderer.setBG('efxPane', 'transparent', this.clearHack);
     return entities;
 };
@@ -227,4 +227,3 @@ me.stop = function(elapsed, evt, entities){
     this.go('stopEffect', evt);
     return;
 };
-});

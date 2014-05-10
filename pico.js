@@ -6,41 +6,44 @@
     modules = {},
     paths = {'*':''},
     envs = {},
+    hash = function(str){
+        var hash = 0;
+
+        for (var i = 0, l=str.length; i < l; i++) {
+            hash = ((hash<<5)-hash)+str.charCodeAt(i);
+            hash = hash & hash; // Convert to 32bit integer
+        }
+        return hash;
+    },
     createMod = function(link, obj, ancestor){
-        Object.defineProperties(obj, {
+        ancestor = ancestor || pico.prototype;
+
+        obj.__proto__ = Object.create(ancestor, {
             moduleId: {value:link, writable:false, configurable:false, enumerable:true},
             base: {value:ancestor, writable:false, configurable:false, enumerable:true},
             slots: {value:{}, writable:false, configurable:false, enumerable:false},
         });
-        if (ancestor){
-            return modules[link] = Object.create(ancestor, obj);
-        }
-        return modules[link] = Object.create(pico.prototype, obj);
+        return obj;
     },
-    getMod = function(link, cb){
+    allocMod = function(link){
         var mod = modules[link];
         if (mod) return mod;
-        if (cb instanceof Function){
-            pico.loadLink(link, cb);
-        }
+        mod = {};
+        modules[link] = mod;
+        return mod;
     },
-    parseFunc = function(require, inherit, script, cb){
-        var
-        mod = {exports:createMod('', {})},
-        me = mod.exports;
-
+    parseFunc = function(me, require, inherit, script){
         try{
-            Function('exports', 'require', 'module', 'inherit', 'me', script).call(me, me, require, mod, inherit, me);
-            return mod.exports;
+            Function('me', 'require', 'inherit', script).call(me, me, require, inherit);
+            return me;
         }catch(exp){
-            console.error(exp.message);
             console.error(exp.stack);
         }
     },
     loadLink = function(link, cb){
         if (!link) return cb();
         var mod = modules[link];
-        if (mod) return cb(null, mod);
+        if (mod && Object.keys(mod).length) return cb(null, mod);
 
         var
         keyPos = link.indexOf('/'),
@@ -74,13 +77,12 @@
     embedJS = function(scripts, cb){
         if (!scripts || !scripts.length) return cb();
 
-        var script = scripts.pop();
-
-        if (script.type && -1 === script.type.indexOf('javascript')) return embedJS(scripts, cb); // template node, ignore
-
         var
+        script = scripts.pop(),
         link = script.getAttribute('link'),
         content = script.textContent || script.innerText;
+
+        if (!link) return embedJS(scripts, cb); // non pico script tag, ignore
 
         if (content){
             pico.vm(link, content, function(err){
@@ -93,9 +95,20 @@
                 return embedJS(scripts, cb);
             });
         }
+    },
+    onStateChange = function(evt){
+        pico.signal(pico.STATE_CHANGE, [pico.getState(), evt.state]);
+    },
+    onHashChange = function(evt){
+        var newHash='', oldHash='';
+        if (evt.oldURL) oldHash = evt.oldURL.substring(1) || '';
+        if (evt.newURL) newHash = evt.newURL.substring(1) || '';
+        else newHash = window.location.hash.substring(1) || '';
+
+        pico.signal(pico.HASH_CHANGE, [oldHash, newHash]);
     };
 
-    exports.pico = pico = {
+    pico = exports.pico = {
         start: function(options, cb){
             var
             name = options.name,
@@ -126,16 +139,18 @@
             deps = [],
             ancestorLink;
             
-            if (!parseFunc(function(link){ deps.push(link) }, function(link){ ancestorLink = link }, script))
+            if (!parseFunc(createMod(scriptLink, {}), function(link){ deps.push(link) }, function(link){ ancestorLink = link }, script))
                 return cb('error parsing '+scriptLink);
 
             loadLink(ancestorLink, function(err, ancestor){
                 if (err) return cb(err);
 
+                var mod = parseFunc(createMod(scriptLink, allocMod(scriptLink), ancestor), allocMod, function(){}, '"use strict";\n'+script);
+                modules[scriptLink] = mod;
                 loadDeps(deps, function(err){
                     if (err) return cb(err);
-                    var mod = createMod(scriptLink, parseFunc(getMod, function(){}, 'use strict;\n'+script), ancestor);
                     mod.signal(pico.LOAD);
+                    cb(null, mod);
                 })
             })
         },
@@ -147,7 +162,7 @@
             if (4 !== xhr.readyState) return;
             holder.innerHTML = xhr.responseText;
 
-            pico.embedJS(Array.prototype.slice.call(holder.getElementsByTagName('script')), function(){
+            embedJS(Array.prototype.slice.call(holder.getElementsByTagName('script')), function(){
                 if (cb) return cb();
             });
           });
@@ -164,9 +179,6 @@
             }
             el = undefined;
             return isSupported;
-        },
-        onStateChange: function(evt){
-            pico.signal(pico.STATE_CHANGE, [pico.getState(), evt.state]);
         },
         changeState: function(uri, desc, userData){
             var search = '?';
@@ -192,14 +204,6 @@
             }
             return obj;
         },
-        onHashChange: function(evt){
-            var newHash='', oldHash='';
-            if (evt.oldURL) oldHash = evt.oldURL.substring(1) || '';
-            if (evt.newURL) newHash = evt.newURL.substring(1) || '';
-            else newHash = window.location.hash.substring(1) || '';
-
-            pico.signal(pico.HASH_CHANGE, [oldHash, newHash]);
-        },
         changeHash: function(hash){
             window.location.hash = '#' + hash;
         },
@@ -220,7 +224,7 @@
             holder = holder || document.body;
             var
             frame = holder.querySelector(query),
-            te = this.envs.transitionEnd;
+            te = envs.transitionEnd;
 
             if (!frame || !te) return this.addFrame(query, url, holder);
 
@@ -277,7 +281,7 @@
             url = encodeURI(url);
 
             if (!post){
-                url += '?appVer='+pico.envs.appVer;
+                url += '?appVer='+envs.appVer;
                 if (params){
                     url += '&';
                     if (paramIsString) url += +encodeURIComponent(params);
@@ -318,7 +322,7 @@
             }else{
                 // function only no object
                 var func = arguments[1];
-                channel[pico.hash(func.toString())] = func;
+                channel[hash(func.toString())] = func;
             }
         },
         unslot: function(channelName, identity){
@@ -327,7 +331,7 @@
                 delete channel[identity.moduleName];
             }else{
                 // function only no object
-                delete channel[pico.hash(identity.toString())];
+                delete channel[hash(identity.toString())];
             }
         },
         signal: function(channelName, events){
@@ -340,7 +344,7 @@
             events = events || [];
 
             for(var key in channel){
-                mod = pico.modules[key];
+                mod = modules[key];
                 results.push(channel[key].apply(mod, events));
             }
             return results;

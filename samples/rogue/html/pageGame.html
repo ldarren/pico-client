@@ -97,7 +97,7 @@ onLoad = function(){
     picRenderer.registerContext('viewPane', gameLayer.getContext());
     picRenderer.registerContext('efxPane', efxLayer.getContext());
     picRenderer.registerContext('uiPane', uiLayer.getContext());
-    if ('Chrome' !== pico.states.browser){
+    if ('Chrome' !== pico.getEnv('browser')){
         // stock android browser shows ghost image if refresh with clearRect, which is the best way
         // curse u whoever created this bug and refuse to solve it over so many android versions
         console.log('set clearHack');
