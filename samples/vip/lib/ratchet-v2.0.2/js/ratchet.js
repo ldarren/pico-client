@@ -594,6 +594,9 @@
       head           = body = document.createElement('div');
       head.innerHTML = responseText;
     }
+    
+    if (window.pico)
+        pico.embedJS(Array.prototype.slice.call(body.getElementsByTagName('script')));
 
     data.title = head.querySelector('title');
     var text = 'innerText' in data.title ? 'innerText' : 'textContent';

@@ -40,25 +40,47 @@
             console.error(exp.stack);
         }
     },
+    vm = function(scriptLink, script, cb){
+        var
+        deps = [],
+        ancestorLink;
+        
+        if (!parseFunc(createMod(scriptLink, {}), function(link){ deps.push(link) }, function(link){ ancestorLink = link }, script))
+            return cb('error parsing '+scriptLink);
+
+        loadLink(ancestorLink, function(err, ancestor){
+            if (err) return cb(err);
+
+            var mod = parseFunc(createMod(scriptLink, allocMod(scriptLink), ancestor), allocMod, function(){}, '"use strict";\n'+script);
+            modules[scriptLink] = mod;
+            loadDeps(deps, function(err){
+                if (err) return cb(err);
+                mod.signal(pico.LOAD);
+                cb(null, mod);
+            })
+        })
+    },
     loadLink = function(link, cb){
         if (!link) return cb();
         var mod = modules[link];
         if (mod && Object.keys(mod).length) return cb(null, mod);
 
-        var
-        keyPos = link.indexOf('/'),
-        fname, path;
+        var fname = paths[link], path = '';
 
-        if (-1 !== keyPos){
-            path = paths[link.substring(0, keyPos)];
+        if (!fname){
+            var keyPos = link.indexOf('/');
+
+            if (-1 !== keyPos){
+                path = paths[link.substring(0, keyPos)];
+            }
+            fname = link.substr(keyPos+1);
+            path = path || paths['*'] || '';
         }
-        fname = path ? link.substr(keyPos+1) : link;
-        path = path || paths['*'] || '';
 
         pico.ajax('get', path+fname+'.js', '', null, function(err, xhr){
             if (err) return cb(err);
             if (4 !== xhr.readyState) return;
-            pico.vm(link, xhr.responseText, cb);
+            vm(link, xhr.responseText, cb);
         });
     },
     // recurssively load dependencies in a module
@@ -66,35 +88,12 @@
         if (!cb) cb = function(){};
         if (!deps || !deps.length) return cb();
 
-        var link = deps.pop();
+        var link = deps.shift();
 
         loadLink(link, function(err){
             if (err) return cb(err);
             return loadDeps(deps, cb);
         });
-    },
-    // always fire LOAD event when script is embed, due to dom have been reloaded
-    embedJS = function(scripts, cb){
-        if (!scripts || !scripts.length) return cb();
-
-        var
-        script = scripts.pop(),
-        link = script.getAttribute('link'),
-        content = script.textContent || script.innerText;
-
-        if (!link) return embedJS(scripts, cb); // non pico script tag, ignore
-
-        if (content){
-            pico.vm(link, content, function(err){
-                if (err) console.error('embedJS ['+link+'] with content error: '+err);
-                return embedJS(scripts, cb);
-            });
-        }else{
-            loadLink(link, function(err){
-                if (err) console.error('embedJS['+link+'] without content error: '+err);
-                return embedJS(scripts, cb);
-            });
-        }
     },
     onStateChange = function(evt){
         pico.signal(pico.STATE_CHANGE, [pico.getState(), evt.state]);
@@ -114,7 +113,7 @@
             name = options.name,
             script = cb.toString(),
             onDeviceReady = function(){
-                pico.vm(name, script, function(err, mod){
+                vm(name, script, function(err, mod){
                     script = undefined;
                     options = undefined;
 
@@ -134,38 +133,39 @@
                 }
             });
         },
-        vm: function(scriptLink, script, cb){
-            var
-            deps = [],
-            ancestorLink;
-            
-            if (!parseFunc(createMod(scriptLink, {}), function(link){ deps.push(link) }, function(link){ ancestorLink = link }, script))
-                return cb('error parsing '+scriptLink);
-
-            loadLink(ancestorLink, function(err, ancestor){
-                if (err) return cb(err);
-
-                var mod = parseFunc(createMod(scriptLink, allocMod(scriptLink), ancestor), allocMod, function(){}, '"use strict";\n'+script);
-                modules[scriptLink] = mod;
-                loadDeps(deps, function(err){
-                    if (err) return cb(err);
-                    mod.signal(pico.LOAD);
-                    cb(null, mod);
-                })
-            })
-        },
         getEnv: function(key){ return envs[key] },
 
         embed: function(holder, url, cb){
-          pico.ajax('get', url, '', null, function(err, xhr){
-            if (err) return cb(err);
-            if (4 !== xhr.readyState) return;
-            holder.innerHTML = xhr.responseText;
+            pico.ajax('get', url, '', null, function(err, xhr){
+                if (err) return cb(err);
+                if (4 !== xhr.readyState) return;
+                holder.innerHTML = xhr.responseText;
 
-            embedJS(Array.prototype.slice.call(holder.getElementsByTagName('script')), function(){
-                if (cb) return cb();
+                pico.embedJS(Array.prototype.slice.call(holder.getElementsByTagName('script')), cb);
             });
-          });
+        },
+        // always fire LOAD event when script is embed, due to dom have been reloaded
+        embedJS: function(scripts, cb){
+            if (!scripts || !scripts.length) return cb && cb();
+
+            var
+            script = scripts.shift(),
+            link = script.getAttribute('link'),
+            content = script.textContent || script.innerText;
+
+            if (!link) return pico.embedJS(scripts, cb); // non pico script tag, ignore
+
+            if (content){
+                vm(link, content, function(err){
+                    if (err) console.error('embedJS ['+link+'] with content error: '+err);
+                    return pico.embedJS(scripts, cb);
+                });
+            }else{
+                loadLink(link, function(err){
+                    if (err) console.error('embedJS['+link+'] without content error: '+err);
+                    return pico.embedJS(scripts, cb);
+                });
+            }
         },
 
         // http://perfectionkills.com/detecting-event-support-without-browser-sniffing/
