@@ -25,7 +25,7 @@
         });
         return obj;
     },
-    allocMod = function(link){
+    getMod = function(link){
         var mod = modules[link];
         if (mod) return mod;
         mod = {};
@@ -44,30 +44,39 @@
         var
         deps = [],
         ancestorLink,
-        mod = parseFunc(createMod(scriptLink, {}), function(link){ deps.push(link) }, function(link){ ancestorLink = link }, '"use strict";\n'+script);
+        addDeps = function(link){
+            var d = modules[link];
+            if (d) return d;
+            deps.push(link);
+        },
+        mod = parseFunc(createMod(scriptLink, getMod(scriptLink)), function(l){var d = modules[l];if (d) return d;deps.push(l);},function(l){ ancestorLink = l }, '"use strict";\n'+script);
        
         if (!mod) return cb('error parsing '+scriptLink);
         if (!ancestorLink && !deps.length){ // no inherit and no require
             modules[scriptLink] = mod;
-            return cb(null, mod);
+            mod.signal(pico.LOAD);
+            cb(null, mod);
+            mod = undefined;
+            return;
         }
 
         loadLink(ancestorLink, function(err, ancestor){
             if (err) return cb(err);
 
-            var mod = parseFunc(createMod(scriptLink, allocMod(scriptLink), ancestor), allocMod, function(){}, '"use strict";\n'+script);
+            var mod = parseFunc(createMod(scriptLink, getMod(scriptLink), ancestor), getMod, function(){}, '"use strict";\n'+script);
             modules[scriptLink] = mod;
             loadDeps(deps, function(err){
                 if (err) return cb(err);
                 mod.signal(pico.LOAD);
                 cb(null, mod);
+                ancestor = mod = undefined;
             })
         })
     },
     loadLink = function(link, cb){
         if (!link) return cb();
         var mod = modules[link];
-        if (mod && mod instanceof pico) return cb(null, mod);
+        if (mod && mod.moduleName) return cb(null, mod);
 
         var fname = paths[link], path = '';
 
