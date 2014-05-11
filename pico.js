@@ -34,7 +34,7 @@
     },
     parseFunc = function(me, require, inherit, script){
         try{
-            Function('me', 'require', 'inherit', script).call(me, me, require, inherit);
+            Function('me', 'require', 'inherit', script).call(window, me, require, inherit);
             return me;
         }catch(exp){
             console.error(exp.stack);
@@ -43,10 +43,14 @@
     vm = function(scriptLink, script, cb){
         var
         deps = [],
-        ancestorLink;
-        
-        if (!parseFunc(createMod(scriptLink, {}), function(link){ deps.push(link) }, function(link){ ancestorLink = link }, script))
-            return cb('error parsing '+scriptLink);
+        ancestorLink,
+        mod = parseFunc(createMod(scriptLink, {}), function(link){ deps.push(link) }, function(link){ ancestorLink = link }, '"use strict";\n'+script);
+       
+        if (!mod) return cb('error parsing '+scriptLink);
+        if (!ancestorLink && !deps.length){ // no inherit and no require
+            modules[scriptLink] = mod;
+            return cb(null, mod);
+        }
 
         loadLink(ancestorLink, function(err, ancestor){
             if (err) return cb(err);
@@ -63,7 +67,7 @@
     loadLink = function(link, cb){
         if (!link) return cb();
         var mod = modules[link];
-        if (mod && Object.keys(mod).length) return cb(null, mod);
+        if (mod && mod instanceof pico) return cb(null, mod);
 
         var fname = paths[link], path = '';
 
