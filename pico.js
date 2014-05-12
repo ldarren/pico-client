@@ -136,7 +136,7 @@
                 });
             };
 
-            envs.production = options.production || true;
+            if (undefined !== options.production) envs.production = options.production;
             script = script.substring(script.indexOf('{') + 1, script.lastIndexOf('}'));
 
             pico.objTools.mergeObj(paths, options.paths);
