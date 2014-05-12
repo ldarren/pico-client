@@ -1,32 +1,27 @@
 <body>
 <header class="bar bar-nav">
-    <a href="#optionMenu"><h1 class="title">VIP<span class="icon icon-caret"></span></h1></a>
+    <a href="#popover/options"><h1 class="title">VIP<span class="icon icon-caret"></span></h1></a>
     <a class="icon icon-search pull-right"></a>
 </header>
 
 <div class="content">
 
-<div id="optionMenu" class="popover">
-<div class="bar bar-nav">
-<h1 class="title">Options</h1>
+<script id=shopTempl type=text/templ>
+<li class="table-view-cell media">
+<a class="navigate-right" href="<%= link %>" data-transition="slide-in">
+<img class="media-object pull-left" src="<%= profile %>">
+<div class="media-body"><%= title %>
+<p><%= tags.join('.') %></p>
 </div>
+</a>
+</li>
+</script>
+
+<div class="card">
 <ul class="table-view">
-<li class="table-view-cell">Add Card</li>
-<li class="table-view-cell">Share</li>
-<li class="table-view-cell">Settings</li>
 </ul>
 </div>
 
-<div class="card">
 </div>
-</div>
-
-<script link=shops>
-var onLoad = function(){
-    alert('hooray!');
-};
-
-me.slot(pico.LOAD, onLoad);
-</script>
 
 </body>

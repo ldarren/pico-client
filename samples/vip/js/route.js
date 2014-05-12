@@ -1,8 +1,10 @@
-debugger;
 me.route = new (Backbone.Router.extend({
     routes: {
+        'popover/:type': 'showPopover',
         'shops/:id': 'showShop',
         '*actions': 'defaultRoute' // matches http://example.com/#anything-here
+    },
+    showPopover: function(type){
     },
     showShop: function(id){
         PUSH({url:'html/shops.html', transition:'slideIn'});

@@ -11,14 +11,24 @@
 </head>
 <body>
 
+<script id=optionTempl type=text/templ>
+<li class="table-view-cell"><%= name %></li>
+</script>
+
 <header class="bar bar-nav">
-    <h1 class="title">VIP<span class="icon icon-caret"></span></h1>
+    <a href="#popover/options"><h1 class="title">VIP<span class="icon icon-caret"></span></h1></a>
     <a class="icon icon-search pull-right"></a>
 </header>
 
 <div class="content">
+<div id="popover/options" class="popover">
+<header class="bar bar-nav">
+<h1 class="title">Options</h1>
+</header>
+<ul class="table-view">
+</ul>
 </div>
-
+</div>
 
 <script src=lib/pico/pico.js></script>
 <script src=lib/pico-common/strTools.js></script>
