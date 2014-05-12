@@ -5,7 +5,7 @@
     pico,
     modules = {},
     paths = {'*':''},
-    envs = {},
+    envs = {production:true},
     hash = function(str){
         var hash = 0;
 
@@ -41,6 +41,7 @@
         }
     },
     vm = function(scriptLink, script, cb){
+        script = '"use strict";\n'+script+(envs.production ? '' : '\n//# sourceURL='+scriptLink);
         var
         deps = [],
         ancestorLink,
@@ -49,27 +50,27 @@
             if (d) return d;
             deps.push(link);
         },
-        mod = parseFunc(createMod(scriptLink, getMod(scriptLink)), function(l){var d = modules[l];if (d) return d;deps.push(l);},function(l){ ancestorLink = l }, '"use strict";\n'+script);
+        mod = parseFunc(createMod(scriptLink, getMod(scriptLink)), function(l){var d = modules[l];if (d) return d;deps.push(l);},function(l){ ancestorLink = l }, script);
        
         if (!mod) return cb('error parsing '+scriptLink);
         if (!ancestorLink && !deps.length){ // no inherit and no require
             modules[scriptLink] = mod;
             mod.signal(pico.LOAD);
             cb(null, mod);
-            mod = undefined;
+            script = mod = undefined;
             return;
         }
 
         loadLink(ancestorLink, function(err, ancestor){
             if (err) return cb(err);
 
-            var mod = parseFunc(createMod(scriptLink, getMod(scriptLink), ancestor), getMod, function(){}, '"use strict";\n'+script);
+            var mod = parseFunc(createMod(scriptLink, getMod(scriptLink), ancestor), getMod, function(){}, script);
             modules[scriptLink] = mod;
             loadDeps(deps, function(err){
                 if (err) return cb(err);
                 mod.signal(pico.LOAD);
                 cb(null, mod);
-                ancestor = mod = undefined;
+                ancestor = script = mod = undefined;
             })
         })
     },
@@ -134,6 +135,8 @@
                     window.addEventListener('hashchange', onHashChange, false);
                 });
             };
+
+            envs.production = options.production || true;
             script = script.substring(script.indexOf('{') + 1, script.lastIndexOf('}'));
 
             pico.objTools.mergeObj(paths, options.paths);

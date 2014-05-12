@@ -1,5 +1,6 @@
 pico.start({
     name: 'VIP',
+    production: false,
     paths:{
         '*': 'js/',
         pico: 'lib/pico/lib/',
