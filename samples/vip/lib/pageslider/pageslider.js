@@ -3,7 +3,7 @@
  * - jQuery dependency for now. This could also be easily removed.
  */
 
-function PageSlider(container) {
+me.Class = function(container) {
 
     var container = container,
         currentPage,
@@ -58,7 +58,3 @@ function PageSlider(container) {
     };
 
 }
-
-me.create = function(container){
-    return new PageSlider(container);
-};

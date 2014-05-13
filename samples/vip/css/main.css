@@ -1,3 +1,6 @@
+.hidden{
+    display:none;
+}
 img.media-object{
     height:64px;
     width:auto;
