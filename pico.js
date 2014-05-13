@@ -18,7 +18,10 @@
     createMod = function(link, obj, ancestor){
         ancestor = ancestor || pico.prototype;
 
-        obj.__proto__ = Object.create(ancestor, {
+        var lastObj = obj;
+        while(lastObj.__proto__.__proto__ && lastObj.__proto__.__proto__ !== pico.prototype){ lastObj = lastObj.__proto__ }
+
+        lastObj.__proto__ = Object.create(ancestor, {
             moduleName: {value:link, writable:false, configurable:false, enumerable:true},
             base: {value:ancestor, writable:false, configurable:false, enumerable:true},
             slots: {value:{}, writable:false, configurable:false, enumerable:false},

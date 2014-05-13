@@ -1,21 +1,26 @@
 var
 Router = require('router'),
-Slider = require('pageslider'),
+PageSlider = require('pageslider'),
 Home = require('views/home'),
-Shop = require('views/shop');
+Shop = require('views/shop'),
+slider, container;
 
 var frame = new (Backbone.View.extend({
     el: 'body',
     initialize: function(){
         var self = this;
-        this.slider = Slider.create(this.$('.container'));
+        slider = PageSlider.create(this.$('.content'));
         var router = Router.get();
-        router.on('route:home', function(){
-            self.container = Home.create();
+        router.on('route:home', function(action){
+            container = Home.create();
+            self.render();
+        });
+        router.on('route:shop', function(id){
+            container = Shop.create(id);
             self.render();
         });
     },
     render: function(){
-
+        slider.slidePage(container.render().$el);
     }
 }));

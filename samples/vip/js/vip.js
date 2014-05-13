@@ -3,8 +3,8 @@ pico.start({
     production: false,
     paths:{
         '*': 'js/',
-        views: 'js/views',
-        models: 'js/models',
+        views: 'js/views/',
+        models: 'js/models/',
         pico: 'lib/pico/lib/',
         ratchet: 'lib/ratchet-v2.0.2/js/ratchet',
         pageslider: 'lib/pageslider/pageslider',
@@ -22,6 +22,8 @@ pico.start({
     require('route');
     require('views/frame');
 
-    // Start Backbone history a necessary step for bookmarkable URL's
-    Backbone.history.start();
+    me.slot(pico.LOAD, function(){
+        // Start Backbone history a necessary step for bookmarkable URL's
+        Backbone.history.start();
+    });
 });
