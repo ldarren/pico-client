@@ -6,14 +6,14 @@ pico.start({
         views: 'js/views/',
         models: 'js/models/',
         pico: 'lib/pico/lib/',
-//        ratchet: 'lib/ratchet-v2.0.2/js/ratchet',
+        ratchet: 'lib/ratchet-v2.0.2/js/ratchet.less',
         pageslider: 'lib/pageslider/pageslider',
         zepto: 'lib/zepto-1.1.3.min',
         lodash: 'lib/lodash.mobile-2.4.1.min',
         backbone: 'lib/backbone-1.1.2.min'
     }
 },function(){
- //   require('ratchet');
+    require('ratchet');
     require('pageslider');
     require('zepto');
     require('lodash');
