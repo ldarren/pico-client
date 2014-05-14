@@ -2,38 +2,43 @@ var
 PageSlider = require('pageslider'),
 Home = require('views/home'),
 Shop = require('views/shop'),
-currHistory = window.history.length,
-collections, router, slider, container;
+spawnPoint = window.history.length,
+collections, router, slider,
+topBar, backBtn, title, searchBtn;
 
 me.Class = Backbone.View.extend({
     el: 'body',
 
     initialize: function(options){
-        var self = this;
-
         collections = options.collections;
         router = options.router;
         slider = new PageSlider.Class(this.$('.content'));
 
-        router.on('route:home', function(action){
-            container = new Home.Class(); 
-            self.render();
-        });
-        router.on('route:shop', function(id){
-            container = new Shop.Class({model: collections.get(id)});
-            self.render();
-        });
-        router.on('route', function(route){
-            if ('home' === route){
-                self.$('header .pull-left').addClass('hidden');
-            }else{
-                self.$('header .pull-left').removeClass('hidden');
-            }
-        });
+        topBar = this.$('header.bar');
+        backBtn = this.$('header .pull-left');
+        title = this.$('header h1.title');
+        searchBtn = this.$('header .pull-right');
+        
+        router.on('route', this.changePage);
     },
 
-    render: function(){
-        slider.slidePage(container.render().$el);
+    changePage: function(route, params){
+        var page;
+        backBtn.removeClass('hidden');
+
+        switch(route){
+        case 'shop':
+            var model = collections.get(params[0]);
+            page = new Shop.Class({model: model});
+            title.contents().first().text(model.get('name'));
+            break;
+        default:
+            page = new Home.Class(); 
+            backBtn.addClass('hidden');
+            title.contents().first().text('VIP');
+            break;
+        }
+        slider.slidePage(page.render().$el);
     },
 
     events: {
@@ -41,7 +46,7 @@ me.Class = Backbone.View.extend({
     },
 
     back: function(e){
-        if (window.history.length > currHistory){
+        if (window.history.length > spawnPoint){
             window.history.back();
         }else{
             router.navigate('', {trigger: true});

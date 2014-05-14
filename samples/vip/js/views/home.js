@@ -9,7 +9,15 @@ me.Class = Backbone.View.extend({
         '</ul>' +
     '</div>'),
 
+    tagName: 'div',
+    attributes: function(){
+        return {
+            class: 'card'
+        }
+    },
+
     render: function(){
+        console.log(this.$el.text());
         this.$el.html(this.template({}));
         return this;
     }
