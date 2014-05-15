@@ -18,6 +18,7 @@ pico.start({
     require('zepto');
     require('lodash');
     require('backbone');
+    require('network');
 
     var
     Route = require('route'),
