@@ -1,15 +1,20 @@
 var
 Net = require('pico/piDataNetModel'),
 client,
-onReceive = function(err, res){
-},
 onSend = function(req){
+    client.request(req.url, req.data || {}, function(err, data){
+        if (err) return req.error(err);
+        return req.success(data, 'success');
+    })
 },
 onLoad = function(){
-    client = Net.create({
+    Net.create({
         url: 'http://107.20.154.29:4888/channel',
+    }, function(err, netClient){
+        if (err) return console.error(err);
+        client = netClient;
+        Backbone.ajax = onSend;
     });
-    Backbone.ajax = bbAjax;
 };
 
 me.slot(pico.LOAD, onLoad);
