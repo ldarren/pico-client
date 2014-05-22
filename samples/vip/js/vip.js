@@ -18,17 +18,37 @@ pico.start({
     require('zepto');
     require('lodash');
     require('backbone');
-    require('network');
+    var network = require('network');
 
     var
     Route = require('route'),
     ModelShop = require('models/shop'),
     ModelShops = require('models/shops'),
     ViewFrame = require('views/frame'),
-    frame;
+    shops, frame;
 
     me.slot(pico.LOAD, function(){
+        shops = new ModelShops.Class();
+        network.onConnected(function(){
+            shops.fetch({
+                url: 'vip/shop/list',
+                success: function(){
+                    debugger;
+                    frame = new ViewFrame.Class({
+                        collections: shops,
+                        router: new Route.Class
+                    });
+                },
+                error: function(){
+                    debugger;
+                }
+            });
+        });
         // Start Backbone history a necessary step for bookmarkable URL's
+        Backbone.history.start();
+    });
+});
+/*
         var shopList = [];
         shopList.push(new ModelShop.Class({
             id: 1,
@@ -49,20 +69,4 @@ pico.start({
             description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
         }));
         var shops = new ModelShops.Class(shopList);
-
-        shops.fetch({
-            url: 'vip/shop/list',
-            success: function(){
-                debugger;
-            },
-            error: function(){
-                debugger;
-            }
-        });
-        frame = new ViewFrame.Class({
-            collections: shops,
-            router: new Route.Class
-        });
-        Backbone.history.start();
-    });
-});
+*/
