@@ -321,8 +321,8 @@
                 }
             }
             xhr.onerror=function(evt){if (cb) return cb(evt, xhr, userData);}
-            
-            if (post && params && !paramIsString) xhr.setRequestHeader('Content-type', 'application/json');
+            // never set Content-Type, it will trigger preflight options and chrome 35 has problem with json type
+            //if (post && params && !paramIsString) xhr.setRequestHeader('Content-Type', 'application/json');
             for (var key in headers){
                 xhr.setRequestHeader(key, headers[key]);
             }
