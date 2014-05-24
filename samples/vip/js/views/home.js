@@ -1,24 +1,44 @@
-me.Class = Backbone.View.extend({
-    template:  _.template(
-    '<div class="header"><h1>Page Slider</h1></div>' +
-    '<div class="scroller">' +
-        '<ul class="list">' +
-        '<li><a href="#shop/1"><strong>Build Bot</strong></a></li>' +
-        '<li><a href="#shop/2"><strong>Medi Bot</strong></a></li>' +
-        '<li><a href="#shop/3"><strong>Ripple Bot</strong></a></li>' +
-        '</ul>' +
-    '</div>'),
+var ShopBriefView = Backbone.View.extend({
+    template: _.template(
+    '<a class="navigate-right" href="<%= url %>">'+
+    '<img class="media-object pull-left" src="<%= img %>">'+
+    '<div class="media-body"><%= name %><p><%= tags %></p>'+
+    '<% if (news) { %>'+
+    '<span class="badge"><%= news %></span>'+
+    '<% } %>'+
+    '</div></a>'),
+    model: null,
+    tagName: 'li',
+    className: 'table-view-cell media',
+    initialize: function(options){
+        this.model = options.model;
+    },
+    render: function(){
+        var model = this.model;
+        this.$el.html(this.template(_.extend({url:'#shop/'+model.id, img:'dat/img/VDL.jpg', tags:'fashion', news:3},this.model.attributes)));
+        return this;
+    }
+});
 
-    tagName: 'div',
-    attributes: function(){
-        return {
-            class: 'card'
-        }
+me.Class = Backbone.View.extend({
+    template: _.template('<div class="card"><ul class="table-view"></ul></div>'),
+    collection: null,
+    initialize: function(collection){
+        this.collection = collection;
     },
 
     render: function(){
-        console.log(this.$el.text());
-        this.$el.html(this.template({}));
+        var
+        $el = this.$el,
+        models = this.collection.models,
+        view;
+
+        $el.html(this.template({}));
+
+        for(var i=0, l=models.length; i<l; i++){
+            view = new ShopBriefView({model: models[i]});
+            $el.find('ul').append(view.render().el);
+        }
         return this;
     }
 });

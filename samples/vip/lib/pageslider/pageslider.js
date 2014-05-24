@@ -36,13 +36,13 @@ me.Class = function(container) {
         container.append(page);
 
         if (!currentPage || !from) {
-            page.attr("class", "page center");
+            page.attr("class", "content center");
             currentPage = page;
             return;
         }
 
         // Position the page at the starting position of the animation
-        page.attr("class", "page " + from);
+        page.attr("class", "content " + from);
 
         currentPage.one('webkitTransitionEnd', function(e) {
             $(e.target).remove();
@@ -52,8 +52,8 @@ me.Class = function(container) {
         container[0].offsetWidth;
 
         // Position the new page and the current page at the ending position of their animation with a transition class indicating the duration of the animation
-        page.attr("class", "page transition center");
-        currentPage.attr("class", "page transition " + (from === "left" ? "right" : "left"));
+        page.attr("class", "content transition center");
+        currentPage.attr("class", "content transition " + (from === "left" ? "right" : "left"));
         currentPage = page;
     };
 

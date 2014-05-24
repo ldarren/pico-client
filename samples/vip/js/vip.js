@@ -33,19 +33,15 @@ pico.start({
             shops.fetch({
                 url: 'vip/shop/list',
                 success: function(){
-                    debugger;
                     frame = new ViewFrame.Class({
-                        collections: shops,
+                        collection: shops,
                         router: new Route.Class
                     });
                 },
                 error: function(){
-                    debugger;
                 }
             });
         });
-        // Start Backbone history a necessary step for bookmarkable URL's
-        Backbone.history.start();
     });
 });
 /*

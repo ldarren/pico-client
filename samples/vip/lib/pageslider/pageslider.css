@@ -5,7 +5,7 @@
     overflow: hidden;
 }
 
-.page {
+.content {
     position: absolute;
     top: 0;
     left: 0;
@@ -15,22 +15,22 @@
     transform: translate3d(0, 0, 0);
 }
 
-.page.left {
+.content.left {
     -webkit-transform: translate3d(-100%, 0, 0);
     transform: translate3d(-100%, 0, 0);
 }
 
-.page.center {
+.content.center {
     -webkit-transform: translate3d(0, 0, 0);
     transform: translate3d(0, 0, 0);
 }
 
-.page.right {
+.content.right {
     -webkit-transform: translate3d(100%, 0, 0);
     transform: translate3d(100%, 0, 0);
 }
 
-.page.transition {
+.content.transition {
     -webkit-transition-duration: .25s;
     transition-duration: .25s;
 }

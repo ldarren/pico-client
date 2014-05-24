@@ -2,24 +2,18 @@ var model;
 
 me.Class = Backbone.View.extend({
     template: _.template(
-    '<div class="scroller">' +
-        '<div class="robot">' + 
-        '<img src="<%= img %>"/>' +
-        '<h2><%= name %></h2>' +
-        '<p><%= description %></p>' +
-        '</div>' +
-    '</div>'),
-
-    tagName: 'div',
+        '<div class="card">'+
+        '<ul class="table-view">'+
+        '<li class="table-view-cell table-view-divider">Divider</li>'+
+        '<li class="table-view-cell">Item 1</li>'+
+        '<li class="table-view-cell">Item 2</li>'+
+        '<li class="table-view-cell">Item 3</li>'+
+        '<li class="table-view-cell">Item 4</li>'+
+        '</ul>'+
+        '</div>'),
 
     initialize: function(options){
         model = options.model;
-    },
-
-    attributes: function(){
-        return {
-            class: 'card'
-        }
     },
 
     render: function(){

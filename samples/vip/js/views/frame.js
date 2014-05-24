@@ -3,16 +3,23 @@ PageSlider = require('pageslider'),
 Home = require('views/home'),
 Shop = require('views/shop'),
 spawnPoint = window.history.length,
-collections, router, slider,
+collection, router, slider,
 topBar, backBtn, title, searchBtn;
 
 me.Class = Backbone.View.extend({
     el: 'body',
 
     initialize: function(options){
-        collections = options.collections;
+        var self = this;
+        collection = options.collection;
         router = options.router;
-        slider = new PageSlider.Class(this.$('.content'));
+        pico.embed(this.el, 'html/frame.html', function(){
+            self.render();
+        });
+    },
+
+    render: function(){
+        slider = new PageSlider.Class(this.$el);
 
         topBar = this.$('header.bar');
         backBtn = this.$('header .pull-left');
@@ -20,6 +27,9 @@ me.Class = Backbone.View.extend({
         searchBtn = this.$('header .pull-right');
         
         router.on('route', this.changePage);
+
+        // Start Backbone history a necessary step for bookmarkable URL's
+        Backbone.history.start();
     },
 
     changePage: function(route, params){
@@ -28,12 +38,12 @@ me.Class = Backbone.View.extend({
 
         switch(route){
         case 'shop':
-            var model = collections.get(params[0]);
+            var model = collection.get(params[0]);
             page = new Shop.Class({model: model});
             title.contents().first().text(model.get('name'));
             break;
         default:
-            page = new Home.Class(); 
+            page = new Home.Class(collection); 
             backBtn.addClass('hidden');
             title.contents().first().text('VIP');
             break;
