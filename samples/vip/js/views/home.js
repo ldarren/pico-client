@@ -20,6 +20,12 @@ var ShopBriefView = Backbone.View.extend({
     }
 });
 
+var createButton =
+'<li class="table-view-cell media">'+
+'<a class="navigate-right">'+
+'<span class="media-object pull-left icon icon-plus"></span>'+
+'<div class="media-body">Create</div></a></li>';
+
 me.Class = Backbone.View.extend({
     template: _.template('<div class="card"><ul class="table-view"></ul></div>'),
     collection: null,
@@ -34,11 +40,13 @@ me.Class = Backbone.View.extend({
         view;
 
         $el.html(this.template({}));
+        var $ul = $el.find('ul');
 
         for(var i=0, l=models.length; i<l; i++){
             view = new ShopBriefView({model: models[i]});
-            $el.find('ul').append(view.render().el);
+            $ul.append(view.render().el);
         }
+        $ul.append($(createButton));
         return this;
     }
 });

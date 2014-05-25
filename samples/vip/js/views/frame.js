@@ -2,9 +2,20 @@ var
 PageSlider = require('pageslider'),
 Home = require('views/home'),
 Shop = require('views/shop'),
+appName = 'Kards',
 spawnPoint = window.history.length,
 collection, router, slider,
-topBar, backBtn, title, searchBtn;
+topBar, search, backBtn, title, searchBtn,
+restoreHeader = function(){
+    if (title.contents().first().text() === appName){
+        backBtn.addClass('hidden');
+    }else{
+        backBtn.removeClass('hidden');
+    }
+    title.removeClass('hidden');
+    searchBtn.removeClass('hidden');
+    search.addClass('hidden');
+};
 
 me.Class = Backbone.View.extend({
     el: 'body',
@@ -22,9 +33,10 @@ me.Class = Backbone.View.extend({
         slider = new PageSlider.Class(this.$el);
 
         topBar = this.$('header.bar');
-        backBtn = this.$('header .pull-left');
-        title = this.$('header h1.title');
-        searchBtn = this.$('header .pull-right');
+        search = this.$('input[type=search]', topBar);
+        backBtn = this.$('.pull-left', topBar);
+        title = this.$('h1.title', topBar);
+        searchBtn = this.$('.pull-right', topBar);
         
         router.on('route', this.changePage);
 
@@ -34,9 +46,12 @@ me.Class = Backbone.View.extend({
 
     changePage: function(route, params){
         var page;
-        backBtn.removeClass('hidden');
 
         switch(route){
+        case 'newShop':
+            page = new NewShop.Class();
+            title.contents().first().text('New Shop');
+            break;
         case 'shop':
             var model = collection.get(params[0]);
             page = new Shop.Class({model: model});
@@ -44,15 +59,18 @@ me.Class = Backbone.View.extend({
             break;
         default:
             page = new Home.Class(collection); 
-            backBtn.addClass('hidden');
-            title.contents().first().text('VIP');
+            title.contents().first().text(appName);
             break;
         }
+
+        restoreHeader();
         slider.slidePage(page.render().$el);
     },
 
     events: {
-        'click header .pull-left': 'back'
+        'click header .pull-left': 'back',
+        'click header .pull-right': 'showFind',
+        'keydown header input[type=search]': 'find'
     },
 
     back: function(e){
@@ -61,5 +79,19 @@ me.Class = Backbone.View.extend({
         }else{
             router.navigate('', {trigger: true});
         }
-    }
+    },
+
+    showFind: function(e){
+        backBtn.addClass('hidden');
+        title.addClass('hidden');
+        searchBtn.addClass('hidden');
+        search.removeClass('hidden').focus();
+    },
+
+    find: function(e){
+        if (13 !== e.keyCode) return;
+        var text = search.val();
+        search.val('');
+        restoreHeader();
+    },
 });
