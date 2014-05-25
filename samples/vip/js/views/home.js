@@ -22,7 +22,7 @@ var ShopBriefView = Backbone.View.extend({
 
 var createButton =
 '<li class="table-view-cell media">'+
-'<a class="navigate-right">'+
+'<a class="navigate-right" href=#newShop>'+
 '<span class="media-object pull-left icon icon-plus"></span>'+
 '<div class="media-body">Create</div></a></li>';
 

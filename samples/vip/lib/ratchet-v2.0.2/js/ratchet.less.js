@@ -56,16 +56,19 @@
     popover.removeEventListener('webkitTransitionEnd', onPopoverHidden);
   };
 
+    // HACK to hide programatically
+  var hide = function(){
+      popover.addEventListener('webkitTransitionEnd', onPopoverHidden);
+      popover.classList.remove('visible');
+      popover.parentNode.removeChild(backdrop);
+  };
+
   var backdrop = (function () {
     var element = document.createElement('div');
 
     element.classList.add('backdrop');
 
-    element.addEventListener('touchend', function () {
-      popover.addEventListener('webkitTransitionEnd', onPopoverHidden);
-      popover.classList.remove('visible');
-      popover.parentNode.removeChild(backdrop);
-    });
+    element.addEventListener('touchend', hide);
 
     return element;
   }());
@@ -99,6 +102,9 @@
     var popover = getPopover(e);
 
     if (!popover) {
+        // HACK, click anyway to close existing popover
+        popover = document.querySelector('.popover.visible');
+        if (popover) hide();
       return;
     }
 

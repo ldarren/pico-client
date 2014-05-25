@@ -2,6 +2,8 @@ var
 PageSlider = require('pageslider'),
 Home = require('views/home'),
 Shop = require('views/shop'),
+NewShop = require('views/newShop'),
+UserProfile = require('views/user'),
 appName = 'Kards',
 spawnPoint = window.history.length,
 collection, router, slider,
@@ -15,6 +17,7 @@ restoreHeader = function(){
     title.removeClass('hidden');
     searchBtn.removeClass('hidden');
     search.addClass('hidden');
+    console.log(Backbone.history.fragment, router[Backbone.history.fragment]);
 };
 
 me.Class = Backbone.View.extend({
@@ -33,13 +36,13 @@ me.Class = Backbone.View.extend({
         slider = new PageSlider.Class(this.$el);
 
         var popover = this.$('#popOptions ul.table-view');
-        popover.append($('<li class="table-view-cell">Settings</li>'));
+        popover.append($('<li class="table-view-cell">User Profile</li>'));
 
         topBar = this.$('header.bar');
-        search = this.$('input[type=search]', topBar);
-        backBtn = this.$('.pull-left', topBar);
-        title = this.$('h1.title', topBar);
-        searchBtn = this.$('.pull-right', topBar);
+        search = topBar.find('input[type=search]');
+        backBtn = topBar.find('.pull-left');
+        title = topBar.find('h1.title');
+        searchBtn = topBar.find('.pull-right');
         
         router.on('route', this.changePage);
 
@@ -51,6 +54,10 @@ me.Class = Backbone.View.extend({
         var page;
 
         switch(route){
+        case 'userProfile':
+            page = new UserProfile.Class();
+            title.contents().first().text('User Profile');
+            break;
         case 'newShop':
             page = new NewShop.Class();
             title.contents().first().text('New Shop');
@@ -61,7 +68,7 @@ me.Class = Backbone.View.extend({
             title.contents().first().text(model.get('name'));
             break;
         default:
-            page = new Home.Class(collection); 
+            page = new Home.Class(collection);
             title.contents().first().text(appName);
             break;
         }
@@ -73,6 +80,7 @@ me.Class = Backbone.View.extend({
     events: {
         'click header .pull-left': 'back',
         'click header .pull-right': 'showFind',
+        'click #popOptions li:nth-child(1)': function(e){router.navigate('user', {trigger:true})},
         'keydown header input[type=search]': 'find'
     },
 
