@@ -32,6 +32,9 @@ me.Class = Backbone.View.extend({
     render: function(){
         slider = new PageSlider.Class(this.$el);
 
+        var popover = this.$('#popOptions ul.table-view');
+        popover.append($('<li class="table-view-cell">Settings</li>'));
+
         topBar = this.$('header.bar');
         search = this.$('input[type=search]', topBar);
         backBtn = this.$('.pull-left', topBar);
