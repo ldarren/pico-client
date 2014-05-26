@@ -17,6 +17,12 @@ body{
 .hidden{
     display:none;
 }
+.access-left{
+    padding-left:10px;
+}
+.access-right{
+    padding-right:10px;
+}
 img.media-object{
     height:64px;
     width:auto;

@@ -78,9 +78,11 @@ me.Class = Backbone.View.extend({
     },
 
     events: {
-        'click header .pull-left': 'back',
-        'click header .pull-right': 'showFind',
-        'click #popOptions li:nth-child(1)': function(e){router.navigate('user', {trigger:true})},
+        'touchstart header .pull-left': 'back',
+        'touchstart header .pull-right': 'showFind',
+        'touchstart #popOptions li:nth-child(1)': function(e){
+            router.navigate('user', {trigger:true})
+        },
         'keydown header input[type=search]': 'find'
     },
 

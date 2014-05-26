@@ -40,6 +40,7 @@
             Function('me', 'require', 'inherit', script).call(window, me, require, inherit);
             return me;
         }catch(exp){
+            //console.error(exp.fileName+' ('+exp.lineNumber+':'+exp.columnNumber+')');
             console.error(exp.stack);
         }
     },
