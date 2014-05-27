@@ -60,5 +60,11 @@ me.Class = Backbone.View.extend({
         }
         $ul.append($(captureTpl));
         return this;
+    },
+
+    events: {
+        'find': function(e){
+            console.log(e._args);
+        }
     }
 });

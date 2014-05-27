@@ -128,7 +128,7 @@ me.Class = Backbone.View.extend({
             back();
             break;
         default:
-            page.trigger(id);
+            page.$el.trigger(id);
         }
     },
 
@@ -139,7 +139,7 @@ me.Class = Backbone.View.extend({
             drawHeader();
             break;
         default:
-            page.trigger(id);
+            page.$el.trigger(id);
         }
     },
 
@@ -148,6 +148,6 @@ me.Class = Backbone.View.extend({
         var text = search.val();
         search.val('');
         drawHeader(page.getHeader());
-        page.trigger('find', text);
+        page.$el.trigger('find', [text,1,2,3,4,5]);
     },
 });

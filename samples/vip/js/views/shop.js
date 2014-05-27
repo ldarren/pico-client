@@ -16,6 +16,16 @@ me.Class = Backbone.View.extend({
         model = options.model;
     },
 
+    getHeader: function(){
+        return {
+            left: 'left-nav',
+            right: 'search',
+            options: {
+                Scan: 'OCR Scanner'
+            }
+        }
+    },
+
     render: function(){
         this.$el.html(this.template(model.attributes));
         return this;
