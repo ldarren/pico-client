@@ -4,20 +4,61 @@ Home = require('views/home'),
 Shop = require('views/shop'),
 NewShop = require('views/newShop'),
 UserProfile = require('views/user'),
-appName = 'Kards',
+OPTION_TPL = '<li id=KEY class=table-view-cell>VALUE</li>',
 spawnPoint = window.history.length,
-collection, router, slider,
-topBar, search, backBtn, title, searchBtn,
-restoreHeader = function(){
-    if (title.contents().first().text() === appName){
-        backBtn.addClass('hidden');
-    }else{
-        backBtn.removeClass('hidden');
+collection, router, slider, page, popover,
+topBar, search, leftBtn, titleOptions, title, rightBtn,
+drawHeader = function(bar){
+    if (!bar){
+        title.addClass('hidden');
+        titleOptions.addClass('hidden');
+        leftBtn.addClass('hidden');
+        rightBtn.addClass('hidden');
+        search.removeClass('hidden').focus();
+        return;
     }
-    title.removeClass('hidden');
-    searchBtn.removeClass('hidden');
-    search.addClass('hidden');
-    console.log(Backbone.history.fragment, router[Backbone.history.fragment]);
+    search.addClass('hidden').blur();
+    var optionKeys = Object.keys(bar.options || {});
+    if (optionKeys.length){
+        titleOptions.contents().first().text(bar.title);
+        title.addClass('hidden');
+        titleOptions.removeClass('hidden');
+        popover.empty();
+        _.each(bar.options, function(value, key){
+            popover.append($(OPTION_TPL.replace('KEY', key).replace('VALUE', value)));
+        });
+    }else{
+        title.text(bar.title);
+        title.removeClass('hidden');
+        titleOptions.addClass('hidden');
+    }
+    if (bar.left){
+        leftBtn.attr('id', bar.left);
+        leftBtn.removeClass('hidden');
+        leftBtn.removeClass (function (index, css) {
+            return (css.match (/(^|\s)icon-\S+/g) || []).join(' ');
+        });
+        leftBtn.addClass('icon-'+bar.left);
+    }else{
+        leftBtn.addClass('hidden');
+    }
+    if (bar.right){
+        rightBtn.attr('id', bar.right);
+        rightBtn.removeClass('hidden');
+        rightBtn.removeClass (function (index, css) {
+            return (css.match (/(^|\s)icon-\S+/g) || []).join(' ');
+        });
+        rightBtn.addClass('icon-'+bar.right);
+    }else{
+        rightBtn.addClass('hidden');
+    }
+},
+back = function(e){
+    if (window.history.length > spawnPoint){
+        window.history.back();
+    }else{
+        router.navigate('', {trigger: true});
+    }
 };
 
 me.Class = Backbone.View.extend({
@@ -35,14 +76,14 @@ me.Class = Backbone.View.extend({
     render: function(){
         slider = new PageSlider.Class(this.$el);
 
-        var popover = this.$('#popOptions ul.table-view');
-        popover.append($('<li class="table-view-cell">User Profile</li>'));
+        popover = this.$('#popOptions ul.table-view');
 
         topBar = this.$('header.bar');
         search = topBar.find('input[type=search]');
-        backBtn = topBar.find('.pull-left');
-        title = topBar.find('h1.title');
-        searchBtn = topBar.find('.pull-right');
+        leftBtn = topBar.find('.pull-left');
+        titleOptions = topBar.find('h1#options.title');
+        title = topBar.find('h1#simple.title');
+        rightBtn = topBar.find('.pull-right');
         
         router.on('route', this.changePage);
 
@@ -51,60 +92,62 @@ me.Class = Backbone.View.extend({
     },
 
     changePage: function(route, params){
-        var page;
-
         switch(route){
         case 'userProfile':
             page = new UserProfile.Class();
-            title.contents().first().text('User Profile');
             break;
         case 'newShop':
             page = new NewShop.Class();
-            title.contents().first().text('New Shop');
             break;
         case 'shop':
             var model = collection.get(params[0]);
             page = new Shop.Class({model: model});
-            title.contents().first().text(model.get('name'));
             break;
         default:
             page = new Home.Class(collection);
-            title.contents().first().text(appName);
             break;
         }
 
-        restoreHeader();
+        drawHeader(page.getHeader());
         slider.slidePage(page.render().$el);
     },
 
     events: {
-        'touchstart header .pull-left': 'back',
-        'touchstart header .pull-right': 'showFind',
-        'touchstart #popOptions li:nth-child(1)': function(e){
-            router.navigate('user', {trigger:true})
+        'touchstart header .pull-left': 'onLeftBtn',
+        'touchstart header .pull-right': 'onRightBtn',
+        'touchstart #popOptions li': function(e){
+            router.navigate(e.srcElement.id, {trigger:true})
         },
         'keydown header input[type=search]': 'find'
     },
 
-    back: function(e){
-        if (window.history.length > spawnPoint){
-            window.history.back();
-        }else{
-            router.navigate('', {trigger: true});
+    onLeftBtn: function(e){
+        var id = e.srcElement.id;
+        switch(id){
+        case 'left-nav':
+            back();
+            break;
+        default:
+            page.trigger(id);
         }
     },
 
-    showFind: function(e){
-        backBtn.addClass('hidden');
-        title.addClass('hidden');
-        searchBtn.addClass('hidden');
-        search.removeClass('hidden').focus();
+    onRightBtn: function(e){
+        var id = e.srcElement.id;
+        switch(id){
+        case 'search':
+            drawHeader();
+            break;
+        default:
+            page.trigger(id);
+        }
     },
 
     find: function(e){
         if (13 !== e.keyCode) return;
         var text = search.val();
         search.val('');
-        restoreHeader();
+        drawHeader(page.getHeader());
+        page.trigger('find', text);
     },
 });

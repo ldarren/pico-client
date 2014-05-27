@@ -20,17 +20,29 @@ var ShopBriefView = Backbone.View.extend({
     }
 });
 
-var createButton =
+var captureTpl =
 '<li class="table-view-cell media">'+
-'<a class="navigate-right" href=#newShop>'+
+'<a class="navigate-right" href=#captureShop>'+
 '<span class="media-object pull-left icon icon-plus"></span>'+
-'<div class="media-body">Create</div></a></li>';
+'<div class="media-body">Capture</div></a></li>';
 
 me.Class = Backbone.View.extend({
     template: _.template('<div class="card"><ul class="table-view"></ul></div>'),
     collection: null,
     initialize: function(collection){
         this.collection = collection;
+    },
+
+    getHeader: function(){
+        return{
+            left: null,
+            title: 'Kards',
+            right: 'search',
+            options:{
+                user: 'User Profile',
+                newShop: 'Create a shop'
+            }
+        }
     },
 
     render: function(){
@@ -46,7 +58,7 @@ me.Class = Backbone.View.extend({
             view = new ShopBriefView({model: models[i]});
             $ul.append(view.render().el);
         }
-        $ul.append($(createButton));
+        $ul.append($(captureTpl));
         return this;
     }
 });
