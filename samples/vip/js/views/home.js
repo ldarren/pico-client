@@ -20,11 +20,13 @@ var ShopBriefView = Backbone.View.extend({
     }
 });
 
-var captureTpl =
+var
+captureTpl =
 '<li class="table-view-cell media">'+
 '<a class="navigate-right" href=#captureShop>'+
 '<span class="media-object pull-left icon icon-plus"></span>'+
-'<div class="media-body">Capture</div></a></li>';
+'<div class="media-body">Capture</div></a></li>',
+searchPhase = '';
 
 me.Class = Backbone.View.extend({
     template: _.template('<div class="card"><ul class="table-view"></ul></div>'),
@@ -36,7 +38,7 @@ me.Class = Backbone.View.extend({
     getHeader: function(){
         return{
             left: null,
-            title: 'Kards',
+            title: searchPhase || 'All Organizations',
             right: 'search',
             options:{
                 user: 'User Profile',
@@ -48,8 +50,16 @@ me.Class = Backbone.View.extend({
     render: function(){
         var
         $el = this.$el,
-        models = this.collection.models,
-        view;
+        models,view;
+
+        if (searchPhase){
+            var s = searchPhase.toLowerCase();
+            models = this.collection.filter(function(m){
+                return -1 !== m.get('name').toLowerCase().indexOf(s)
+            });
+        }else{
+            models = this.collection.models;
+        }
 
         $el.html(this.template({}));
         var $ul = $el.find('ul');
@@ -64,7 +74,8 @@ me.Class = Backbone.View.extend({
 
     events: {
         'find': function(e){
-            console.log(e._args);
+            searchPhase = e._args[0];
+            this.render();
         }
     }
 });

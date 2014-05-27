@@ -65,11 +65,11 @@ me.Class = Backbone.View.extend({
     el: 'body',
 
     initialize: function(options){
-        var self = this;
+        var me = this;
         collection = options.collection;
         router = options.router;
         pico.embed(this.el, 'html/frame.html', function(){
-            self.render();
+            me.render();
         });
     },
 
@@ -96,6 +96,9 @@ me.Class = Backbone.View.extend({
         case 'userProfile':
             page = new UserProfile.Class();
             break;
+        case 'captureShop':
+            page = new NewShop.Class();
+            break;
         case 'newShop':
             page = new NewShop.Class();
             break;
@@ -118,7 +121,7 @@ me.Class = Backbone.View.extend({
         'touchstart #popOptions li': function(e){
             router.navigate(e.srcElement.id, {trigger:true})
         },
-        'keydown header input[type=search]': 'find'
+        'keyup header input[type=search]': 'find'
     },
 
     onLeftBtn: function(e){
@@ -144,10 +147,10 @@ me.Class = Backbone.View.extend({
     },
 
     find: function(e){
-        if (13 !== e.keyCode) return;
-        var text = search.val();
-        search.val('');
-        drawHeader(page.getHeader());
-        page.$el.trigger('find', [text,1,2,3,4,5]);
+        page.$el.trigger('find', [search.val()]);
+        if (13 === e.keyCode){
+            search.val('');
+            drawHeader(page.getHeader());
+        }
     },
 });
