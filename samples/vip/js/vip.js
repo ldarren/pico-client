@@ -28,6 +28,22 @@ pico.start({
     shops, frame;
 
     me.slot(pico.LOAD, function(){
+        $.fn.serializeObject = function() {
+            var o = {};
+            var a = this.serializeArray();
+            $.each(a, function() {
+                if (!this.name) return;
+                if (o[this.name] !== undefined) {
+                    if (!o[this.name].push) {
+                        o[this.name] = [o[this.name]];
+                    }
+                    o[this.name].push(this.value || '');
+                } else {
+                    o[this.name] = this.value || '';
+                }
+            });
+            return o;
+        };
         shops = new ModelShops.Class();
         network.onConnected(function(){
             shops.fetch({

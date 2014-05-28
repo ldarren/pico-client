@@ -23,9 +23,9 @@ var ShopBriefView = Backbone.View.extend({
 var
 captureTpl =
 '<li class="table-view-cell media">'+
-'<a class="navigate-right" href=#captureShop>'+
+'<a href=#shop/capture>'+
 '<span class="media-object pull-left icon icon-plus"></span>'+
-'<div class="media-body">Capture</div></a></li>',
+'<div class="media-body">Add</div></a></li>',
 searchPhase = '';
 
 me.Class = Backbone.View.extend({
@@ -42,7 +42,7 @@ me.Class = Backbone.View.extend({
             right: 'search',
             options:{
                 user: 'User Profile',
-                newShop: 'Create a shop'
+                'shop/create': 'Create a new shop'
             }
         }
     },

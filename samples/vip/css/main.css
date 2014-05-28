@@ -23,6 +23,10 @@ body{
 .access-right{
     padding-right:10px;
 }
+input[type=file]{
+    height:0px;
+    overflow:hidden
+}
 img.media-object{
     height:64px;
     width:auto;
