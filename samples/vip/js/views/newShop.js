@@ -23,6 +23,13 @@ me.Class = Backbone.View.extend({
     events: {
         'touchstart input#logoProxy': function(){this.$('input#logo').click()},
         'change input#logo': function(){this.$('input#logoProxy').val(this.$('input#logo').val().split(/(\\|\/)/g).pop())},
+        'touchstart input#tagsProxy': function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            var tags = this.$('select#tags');
+            tags.trigger('mousedown')
+        },
+        'change select#tags': function(){this.$('input#tagsProxy').val(this.$('select#tags').val())},
         'check': 'submit'
     },
 
