@@ -1,6 +1,6 @@
 var ShopBriefView = Backbone.View.extend({
     template: _.template(
-    '<a class="navigate-right" href="<%= url %>">'+
+    '<a class="glyph glyph-right icon-right-nav" href="<%= url %>">'+
     '<img class="media-object pull-left" src="<%= img %>">'+
     '<div class="media-body"><%= name %><p><%= tags %></p>'+
     '<% if (news) { %>'+
@@ -23,8 +23,7 @@ var ShopBriefView = Backbone.View.extend({
 var
 captureTpl =
 '<li class="table-view-cell media">'+
-'<a href=#shop/capture>'+
-'<span class="media-object pull-left icon icon-plus"></span>'+
+'<a class="glyph glyph-right icon-plus" href=#shop/capture>'+
 '<div class="media-body">Add</div></a></li>',
 searchPhase = '';
 

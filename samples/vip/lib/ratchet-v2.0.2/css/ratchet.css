@@ -790,30 +790,12 @@ input[type="button"] {
       -ms-transform: translateY(-50%);
           transform: translateY(-50%);
 }
-.table-view-cell .navigate-left > .btn,
-.table-view-cell .navigate-left > .badge,
-.table-view-cell .navigate-left > .toggle,
-.table-view-cell .navigate-right > .btn,
-.table-view-cell .navigate-right > .badge,
-.table-view-cell .navigate-right > .toggle,
-.table-view-cell .push-left > .btn,
-.table-view-cell .push-left > .badge,
-.table-view-cell .push-left > .toggle,
-.table-view-cell .push-right > .btn,
-.table-view-cell .push-right > .badge,
-.table-view-cell .push-right > .toggle,
-.table-view-cell > a .navigate-left > .btn,
-.table-view-cell > a .navigate-left > .badge,
-.table-view-cell > a .navigate-left > .toggle,
-.table-view-cell > a .navigate-right > .btn,
-.table-view-cell > a .navigate-right > .badge,
-.table-view-cell > a .navigate-right > .toggle,
-.table-view-cell > a .push-left > .btn,
-.table-view-cell > a .push-left > .badge,
-.table-view-cell > a .push-left > .toggle,
-.table-view-cell > a .push-right > .btn,
-.table-view-cell > a .push-right > .badge,
-.table-view-cell > a .push-right > .toggle {
+.table-view-cell .glyph > .btn,
+.table-view-cell .glyph > .badge,
+.table-view-cell .glyph > .toggle,
+.table-view-cell > a .glyph > .btn,
+.table-view-cell > a .glyph > .badge,
+.table-view-cell > a .glyph > .toggle {
   right: 35px;
 }
 
@@ -1224,10 +1206,7 @@ select {
           transform: translate3d(100%, 0, 0);
 }
 
-.navigate-left:after,
-.navigate-right:after,
-.push-left:after,
-.push-right:after {
+.glyph:before{
   position: absolute;
   top: 50%;
   display: inline-block;
@@ -1243,16 +1222,12 @@ select {
   -webkit-font-smoothing: antialiased;
 }
 
-.navigate-left:after,
-.push-left:after {
-  left: 15px;
-  content: '\e822';
+.glyph-left:before{
+  left: 15px
 }
 
-.navigate-right:after,
-.push-right:after {
-  right: 15px;
-  content: '\e826';
+.glyph-right:before{
+  right: 15px
 }
 
 @font-face {
