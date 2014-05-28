@@ -23,7 +23,7 @@ body{
 .access-right{
     padding-right:10px;
 }
-form input[type=file], form select{
+form input[type=file]{
     height:0px;
     overflow:hidden
 }

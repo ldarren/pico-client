@@ -96,9 +96,6 @@ me.Class = Backbone.View.extend({
         case 'userProfile':
             page = new UserProfile.Class();
             break;
-        case 'captureShop':
-            page = new NewShop.Class();
-            break;
         case 'newShop':
             page = new NewShop.Class();
             break;

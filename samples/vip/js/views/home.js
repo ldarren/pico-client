@@ -23,7 +23,7 @@ var ShopBriefView = Backbone.View.extend({
 var
 captureTpl =
 '<li class="table-view-cell media">'+
-'<a class="glyph glyph-right icon-plus" href=#shop/capture>'+
+'<a class="glyph glyph-right icon-plus">'+
 '<div class="media-body">Add</div></a></li>',
 searchPhase = '';
 
@@ -75,6 +75,22 @@ me.Class = Backbone.View.extend({
         'find': function(e){
             searchPhase = e._args[0];
             this.render();
+        },
+        'touchstart a.icon-plus':function(e){
+            e.preventDefault();
+            e.stopPropagation();
+            if (window.plugins){
+                window.plugins.barcodeScanner.scan(
+                function (result) {
+                    alert("We got a barcode\n" +
+                    "Result: " + result.text + "\n" +
+                    "Format: " + result.format + "\n" +
+                    "Cancelled: " + result.cancelled);
+                }, 
+                function (error) {
+                    alert("Scanning failed: " + error);
+                });
+            }
         }
     }
 });

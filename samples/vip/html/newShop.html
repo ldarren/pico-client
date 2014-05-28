@@ -9,16 +9,24 @@
 </div>
 <div class="input-row">
     <label>Tags</label>
-    <input id=tagsProxy type="text" name=tags readonly>
+    <select name=tags>
+    <option value="" selected="selected" disabled>Select a tag</option>
+    <option value="1">Fashion</option>
+    <option value="2">Books</option>
+    <option value="3">Arts</option>
+    <option value="4">Departmental</option>
+    <option value="5">IT</option>
+    <option value="6">F&amp;B</option>
+    <option value="7">Groceries</option>
+    <option value="8">Wellness</option>
+    <option value="9">Leisure</option>
+    <option value="10">Optical</option>
+    <option value="11">Sports</option>
+    </select>
 </div>
 <div class="input-row">
     <label>Logo</label>
     <input id=logo type="file" name=logo>
     <input id=logoProxy type="text" placeholder="choose an image" readonly>
 </div>
-    <select id=tags>
-    <option value="" selected="selected" disabled>Select a tag</option>
-    <option value="1">One</option>
-    <option value="2">Two</option>
-    </select>
 </form>
