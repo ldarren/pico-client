@@ -69,26 +69,27 @@ me.Class = Backbone.View.extend({
         collection = options.collection;
         router = options.router;
         pico.embed(this.el, 'html/frame.html', function(){
-            me.render();
+            slider = new PageSlider.Class(me.$el);
+
+            popover = me.$('#popOptions ul.table-view');
+
+            topBar = me.$('header.bar');
+            search = topBar.find('input[type=search]');
+            leftBtn = topBar.find('.pull-left');
+            titleOptions = topBar.find('h1#options.title');
+            title = topBar.find('h1#simple.title');
+            rightBtn = topBar.find('.pull-right');
+            
+            router.on('route', me.changePage, me);
+
+            // Start Backbone history a necessary step for bookmarkable URL's
+            Backbone.history.start();
         });
     },
 
     render: function(){
-        slider = new PageSlider.Class(this.$el);
-
-        popover = this.$('#popOptions ul.table-view');
-
-        topBar = this.$('header.bar');
-        search = topBar.find('input[type=search]');
-        leftBtn = topBar.find('.pull-left');
-        titleOptions = topBar.find('h1#options.title');
-        title = topBar.find('h1#simple.title');
-        rightBtn = topBar.find('.pull-right');
-        
-        router.on('route', this.changePage);
-
-        // Start Backbone history a necessary step for bookmarkable URL's
-        Backbone.history.start();
+        drawHeader(page.getHeader());
+        slider.slidePage(page.render().$el);
     },
 
     changePage: function(route, params){
@@ -108,8 +109,7 @@ me.Class = Backbone.View.extend({
             break;
         }
 
-        drawHeader(page.getHeader());
-        slider.slidePage(page.render().$el);
+        this.render();
     },
 
     events: {

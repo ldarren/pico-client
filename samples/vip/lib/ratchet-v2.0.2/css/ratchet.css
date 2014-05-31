@@ -486,8 +486,8 @@ input[type="button"] {
 
 .bar {
   position: absolute;
-  right: 0;
   left: 0;
+  width:100%;
   z-index: 10;
   height: 44px;
   padding-right: 10px;
