@@ -6,7 +6,7 @@ me.Class = Backbone.View.extend({
         '<ul class="table-view">'+
         '<li class="table-view-cell table-view-divider">Divider</li>'+
         '<li class="table-view-cell"><canvas id=barcode></canvas></li>'+
-        '<li class="table-view-cell">Item 2</li>'+
+        '<li class="table-view-cell"><canvas id=qrcode></canvas></li>'+
         '<li class="table-view-cell">Item 3</li>'+
         '<li class="table-view-cell">Item 4</li>'+
         '</ul>'+
@@ -49,7 +49,7 @@ me.Class = Backbone.View.extend({
         bw.push(opts);
 
         // Invoke the encoder and render the barcode
-        bw.call('code128');
+        bw.call('qrcode');
         setTimeout(function(){
         bw.bitmap().show('barcode', 'N'); //R, L, N, I
         }, 1000);
