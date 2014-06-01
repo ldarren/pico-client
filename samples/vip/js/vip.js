@@ -22,39 +22,37 @@ pico.start({
 
     var
     Route = require('route'),
-    ModelShop = require('models/shop'),
-    ModelShops = require('models/shops'),
+    ModelUser = require('models/user'),
     ViewFrame = require('views/frame'),
-    shops, frame;
+    user, frame;
 
     me.slot(pico.LOAD, function(){
         $.fn.serializeObject = function() {
-            var o = {};
-            var a = this.serializeArray();
-            $.each(a, function() {
-                if (!this.name) return;
-                if (o[this.name] !== undefined) {
-                    if (!o[this.name].push) {
-                        o[this.name] = [o[this.name]];
-                    }
-                    o[this.name].push(this.value || '');
+            var o = {}, k; 
+            $.each(this.serializeArray(), function() {
+                k = this.name;
+                if (!k) return;
+                if (undefined === o[k]) {
+                    o[k] = this.value || '';
                 } else {
-                    o[this.name] = this.value || '';
+                    if (!o[k].push) o[k] = [o[k]];
+                    o[k].push(this.value || '');
                 }
             });
             return o;
         };
-        shops = new ModelShops.Class();
         network.onConnected(function(){
-            shops.fetch({
-                url: 'vip/shop/list',
+            user = new ModelUser.Class();
+            user.fetch({
+                url: 'vip/user/get',
                 success: function(){
                     frame = new ViewFrame.Class({
-                        collection: shops,
+                        user: user,
                         router: new Route.Class
                     });
                 },
                 error: function(){
+                    debugger;
                 }
             });
         });

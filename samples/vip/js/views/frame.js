@@ -4,9 +4,10 @@ Home = require('views/home'),
 Shop = require('views/shop'),
 NewShop = require('views/newShop'),
 UserProfile = require('views/user'),
+ModelShops = require('models/shops'),
 OPTION_TPL = '<li id=KEY class=table-view-cell>VALUE</li>',
 spawnPoint = window.history.length,
-collection, router, slider, page, popover,
+user, collection, router, slider, page, popover,
 topBar, search, leftBtn, titleOptions, title, rightBtn,
 drawHeader = function(bar){
     if (!bar){
@@ -66,24 +67,36 @@ me.Class = Backbone.View.extend({
 
     initialize: function(options){
         var me = this;
-        collection = options.collection;
+        user = options.user;
         router = options.router;
-        pico.embed(this.el, 'html/frame.html', function(){
-            slider = new PageSlider.Class(me.$el);
+        collection = new ModelShops.Class();
+        collection.fetch({
+            url: 'vip/shops/get',
+            data:{
+                list: user.follows
+            },
+            success: function(){
+                pico.embed(this.el, 'html/frame.html', function(){
+                    slider = new PageSlider.Class(me.$el);
 
-            popover = me.$('#popOptions ul.table-view');
+                    popover = me.$('#popOptions ul.table-view');
 
-            topBar = me.$('header.bar');
-            search = topBar.find('input[type=search]');
-            leftBtn = topBar.find('.pull-left');
-            titleOptions = topBar.find('h1#options.title');
-            title = topBar.find('h1#simple.title');
-            rightBtn = topBar.find('.pull-right');
-            
-            router.on('route', me.changePage, me);
+                    topBar = me.$('header.bar');
+                    search = topBar.find('input[type=search]');
+                    leftBtn = topBar.find('.pull-left');
+                    titleOptions = topBar.find('h1#options.title');
+                    title = topBar.find('h1#simple.title');
+                    rightBtn = topBar.find('.pull-right');
+                    
+                    router.on('route', me.changePage, me);
 
-            // Start Backbone history a necessary step for bookmarkable URL's
-            Backbone.history.start();
+                    // Start Backbone history a necessary step for bookmarkable URL's
+                    Backbone.history.start();
+                });
+            },
+            error: function(){
+                debugger;
+            }
         });
     },
 
