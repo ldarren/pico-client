@@ -281,6 +281,9 @@ Object.freeze(G_OBJECT_NAME = {
     196: 'Whirl Wind',
     197: 'Whirl Wind',
     198: 'Whirl Wind',
+    223: 'Alert',
+    224: 'Twilight',
+    225: 'Tremor',
     226: 'Poison Blade',
     227: 'Poison Blade',
     228: 'Poison Blade',
@@ -350,6 +353,9 @@ Object.freeze(G_OBJECT_NAME = {
     571: 'Squeal',
     572: 'Squeal',
     573: 'Squeal',
+    583: 'Condemn',
+    584: 'Hatred',
+    585: 'Vengeance',
 
     589: 'Burn', // reduce hp
     590: 'Curse', // reduce roll
@@ -542,6 +548,9 @@ Object.freeze(G_OBJECT_DESC = {
     196: 'Spin attack all nearby objects',
     197: 'Spin attack all nearby objects',
     198: 'Spin attack all nearby objects',
+    223: 'When reveal all expose beasts reveal itself',
+    224: 'When reveal all expose undeads reveal itself',
+    225: 'When reveal all expose creeps reveal itself',
     226: 'Coats weapon with poisons',
     227: 'Coats weapon with poisons',
     228: 'Coats weapon with poisons',
