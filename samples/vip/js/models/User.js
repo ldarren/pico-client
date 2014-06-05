@@ -2,7 +2,7 @@ var
 KEY = 'vipUser',
 defaults = {
     id: undefined,
-    following:[]
+    follows:[]
 };
 
 me.Class = Backbone.Model.extend({

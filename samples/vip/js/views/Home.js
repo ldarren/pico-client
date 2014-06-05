@@ -1,4 +1,4 @@
-var ShopBriefView = Backbone.View.extend({
+var CompanySummary = Backbone.View.extend({
     template: _.template(
     '<a class="glyph glyph-right icon-right-nav" href="<%= url %>">'+
     '<img class="media-object pull-left" src="<%= img %>">'+
@@ -15,7 +15,7 @@ var ShopBriefView = Backbone.View.extend({
     },
     render: function(){
         var model = this.model;
-        this.$el.html(this.template(_.extend({url:'#shop/'+model.id, img:'dat/img/VDL.jpg', tags:'fashion', news:3},this.model.attributes)));
+        this.$el.html(this.template(_.extend({url:'#company/'+model.id, img:'dat/img/VDL.jpg', tags:'fashion', news:3},this.model.attributes)));
         return this;
     }
 });
@@ -37,11 +37,11 @@ me.Class = Backbone.View.extend({
     getHeader: function(){
         return{
             left: null,
-            title: searchPhase || 'All Organizations',
+            title: searchPhase || 'All',
             right: 'search',
             options:{
                 user: 'User Profile',
-                'shop/create': 'Create a new shop'
+                'company/create': 'New company'
             }
         }
     },
@@ -64,7 +64,7 @@ me.Class = Backbone.View.extend({
         var $ul = $el.find('ul');
 
         for(var i=0, l=models.length; i<l; i++){
-            view = new ShopBriefView({model: models[i]});
+            view = new CompanySummary({model: models[i]});
             $ul.append(view.render().el);
         }
         $ul.append($(captureTpl));

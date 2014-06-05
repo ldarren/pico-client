@@ -1,8 +1,8 @@
 me.Class = Backbone.Router.extend({
     routes: {
-        'user': 'userProfile',
-        'shop/create': 'newShop',
-        'shop/:id': 'shop',
+        'user': 'profile',
+        'company/create': 'startup',
+        'company/:id': 'company',
         '*actions': 'home' // matches http://example.com/#anything-here
     }
 });

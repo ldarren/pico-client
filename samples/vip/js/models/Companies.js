@@ -1,10 +1,10 @@
-var ModelShop = require('models/shop');
+var Company = require('models/Company');
 
 me.slot(pico.LOAD, function(){
     me.Class = Backbone.Collection.extend({
-        model: ModelShop.Class,
+        model: Company.Class,
         parse: function(res){
-            return res.all;
+            return res.list;
         }
     });
 });

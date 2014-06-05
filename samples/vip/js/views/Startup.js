@@ -1,7 +1,7 @@
 me.Class = Backbone.View.extend({
     initialize: function(){
         var self = this;
-        pico.embed(self.el, 'html/newShop.html', function(){
+        pico.embed(self.el, 'html/startup.html', function(){
         })
     },
 

@@ -14,16 +14,15 @@ pico.start({
     }
 },function(){
     require('ratchet');
-    require('pageslider');
     require('zepto');
     require('lodash');
     require('backbone');
-    var network = require('network');
 
     var
-    Route = require('route'),
-    ModelUser = require('models/user'),
-    ViewFrame = require('views/frame'),
+    network = require('network'),
+    Route = require('Route'),
+    ModelUser = require('models/User'),
+    ViewFrame = require('views/Frame'),
     user, frame;
 
     me.slot(pico.LOAD, function(){
@@ -44,7 +43,7 @@ pico.start({
         network.onConnected(function(){
             user = new ModelUser.Class();
             user.fetch({
-                url: 'vip/user/get',
+                url: 'vip/user/read',
                 success: function(){
                     frame = new ViewFrame.Class({
                         user: user,
@@ -58,25 +57,3 @@ pico.start({
         });
     });
 });
-/*
-        var shopList = [];
-        shopList.push(new ModelShop.Class({
-            id: 1,
-            img: "http://dungeon-chronicles.com/pageslider/images/buildbot.jpg",
-            name: "Build Bot",
-            description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
-        }));
-        shopList.push(new ModelShop.Class({
-            id: 2,
-            img: "http://dungeon-chronicles.com/pageslider/images/medibot.jpg",
-            name: "Medic Bot",
-            description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
-        }));
-        shopList.push(new ModelShop.Class({
-            id: 3,
-            img: "http://dungeon-chronicles.com/pageslider/images/ripplebot.jpg",
-            name: "Ripple Bot",
-            description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur."
-        }));
-        var shops = new ModelShops.Class(shopList);
-*/

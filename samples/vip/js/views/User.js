@@ -3,6 +3,17 @@ me.Class = Backbone.View.extend({
     initialize: function(){
     },
 
+    getHeader: function(){
+        return {
+            left: 'left-nav',
+            right: 'check',
+            title: 'Profile',
+            options: {
+                Scan: 'OCR Scanner'
+            }
+        }
+    },
+
     render: function(){
         var
         $el = this.$el,

@@ -1,14 +1,33 @@
 var
 PageSlider = require('pageslider'),
-Home = require('views/home'),
-Shop = require('views/shop'),
-NewShop = require('views/newShop'),
-UserProfile = require('views/user'),
-ModelShops = require('models/shops'),
+Home = require('views/Home'),
+Company = require('views/Company'),
+Startup = require('views/Startup'),
+UserProfile = require('views/User'),
+ModelCompanies = require('models/Companies'),
 OPTION_TPL = '<li id=KEY class=table-view-cell>VALUE</li>',
 spawnPoint = window.history.length,
 user, collection, router, slider, page, popover,
 topBar, search, leftBtn, titleOptions, title, rightBtn,
+start = function(frame){
+    pico.embed(frame.el, 'html/frame.html', function(){
+        slider = new PageSlider.Class(frame.$el);
+
+        popover = frame.$('#popOptions ul.table-view');
+
+        topBar = frame.$('header.bar');
+        search = topBar.find('input[type=search]');
+        leftBtn = topBar.find('.pull-left');
+        titleOptions = topBar.find('h1#options.title');
+        title = topBar.find('h1#simple.title');
+        rightBtn = topBar.find('.pull-right');
+        
+        router.on('route', frame.changePage, frame);
+
+        // Start Backbone history a necessary step for bookmarkable URL's
+        Backbone.history.start();
+    });
+},
 drawHeader = function(bar){
     if (!bar){
         title.addClass('hidden');
@@ -66,33 +85,23 @@ me.Class = Backbone.View.extend({
     el: 'body',
 
     initialize: function(options){
-        var me = this;
         user = options.user;
         router = options.router;
-        collection = new ModelShops.Class();
+        collection = new ModelCompanies.Class();
+
+        var
+        me = this,
+        follows = user.get('follows');
+
+        if (!follows.length) return start(this);
+
         collection.fetch({
-            url: 'vip/shops/get',
+            url: 'vip/company/read',
             data:{
-                list: user.follows
+                list: follows
             },
             success: function(){
-                pico.embed(this.el, 'html/frame.html', function(){
-                    slider = new PageSlider.Class(me.$el);
-
-                    popover = me.$('#popOptions ul.table-view');
-
-                    topBar = me.$('header.bar');
-                    search = topBar.find('input[type=search]');
-                    leftBtn = topBar.find('.pull-left');
-                    titleOptions = topBar.find('h1#options.title');
-                    title = topBar.find('h1#simple.title');
-                    rightBtn = topBar.find('.pull-right');
-                    
-                    router.on('route', me.changePage, me);
-
-                    // Start Backbone history a necessary step for bookmarkable URL's
-                    Backbone.history.start();
-                });
+                start(me);
             },
             error: function(){
                 debugger;
@@ -107,15 +116,15 @@ me.Class = Backbone.View.extend({
 
     changePage: function(route, params){
         switch(route){
-        case 'userProfile':
+        case 'profile':
             page = new UserProfile.Class();
             break;
-        case 'newShop':
-            page = new NewShop.Class();
+        case 'startup':
+            page = new Startup.Class();
             break;
-        case 'shop':
+        case 'company':
             var model = collection.get(params[0]);
-            page = new Shop.Class({model: model});
+            page = new Company.Class({model: model});
             break;
         default:
             page = new Home.Class(collection);
