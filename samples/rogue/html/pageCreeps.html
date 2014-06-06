@@ -62,6 +62,83 @@
 .creep p{
     padding: 5px 0;
 }
+.trait{
+    background:#204631;
+}
+.trait span{
+    background-image: url(dat/img/fantasy-spells.png);
+    background-size: 192px;
+    display:inline-block;
+    margin:18px;
+    border: 3px solid #527f39;
+    vertical-align:top;
+    width:32px;
+    height:32px;
+    image-rendering:-moz-crisp-edges;
+    image-rendering: -o-crisp-edges;
+    image-rendering:-webkit-optimize-contrast;
+    -ms-interpolation-mode:nearest-neighbor;
+}
+.trait span.t223{background-position: 0px -192px;}
+.trait span.t224{background-position: -32px -192px;}
+.trait span.t225{background-position: -64px -192px;}
+.trait span.t253{background-position: 0px -352px;}
+.trait span.t254{background-position: -32px -352px;}
+.trait span.t255{background-position: -64px -352px;}
+.trait span.t271{background-position: 0px -416px;}
+.trait span.t272{background-position: -32px -416px;}
+.trait span.t273{background-position: -64px -416px;}
+.trait span.t301{background-position: 0px -608px;}
+.trait span.t302{background-position: -32px -608px;}
+.trait span.t303{background-position: -64px -608px;}
+.trait span.t304{background-position: -96px -608px;}
+.trait span.t305{background-position: -128px -608px;}
+.trait span.t306{background-position: -160px -608px;}
+.trait span.t328{background-position: -96px -736px;}
+.trait span.t329{background-position: -128px -736px;}
+.trait span.t330{background-position: -160px -736px;}
+.trait span.t343{background-position: -0px -832px;}
+.trait span.t344{background-position: -32px -832px;}
+.trait span.t345{background-position: -64px -832px;}
+.trait span.t346{background-position: -96px -832px;}
+.trait span.t347{background-position: -128px -832px;}
+.trait span.t348{background-position: -160px -832px;}
+.trait span.t349{background-position: -0px -864px;}
+.trait span.t350{background-position: -32px -864px;}
+.trait span.t351{background-position: -64px -864px;}
+.trait span.t400{background-position: 0px -1152px;}
+.trait span.t401{background-position: -32px -1152px;}
+.trait span.t402{background-position: -64px -1152px;}
+.trait span.t406{background-position: -96px -1152px;}
+.trait span.t407{background-position: -128px -1152px;}
+.trait span.t408{background-position: -160px -1152px;}
+.trait span.t448{background-position: -96px -1376px;}
+.trait span.t449{background-position: -128px -1376px;}
+.trait span.t450{background-position: -160px -1376px;}
+.trait span.t457{background-position: 0px -1440px;}
+.trait span.t458{background-position: -32px -1440px;}
+.trait span.t459{background-position: -64px -1440px;}
+.trait span.t484{background-position: -96px -1568px;}
+.trait span.t485{background-position: -128px -1568px;}
+.trait span.t486{background-position: -160px -1568px;}
+.trait span.t496{background-position: -96px -1632px;}
+.trait span.t497{background-position: -128px -1632px;}
+.trait span.t498{background-position: -160px -1632px;}
+.trait span.t535{background-position: 0px -1856px;}
+.trait span.t536{background-position: -32px -1856px;}
+.trait span.t537{background-position: -64px -1856px;}
+.trait span.t544{background-position: -96px -1888px;}
+.trait span.t545{background-position: -128px -1888px;}
+.trait span.t546{background-position: -160px -1888px;}
+.trait span.t583{background-position: 0px -2112px;}
+.trait span.t584{background-position: -32px -2112px;}
+.trait span.t585{background-position: -64px -2112px;}
+.trait div{
+    display:inline-block;
+    padding:5px;
+    vertical-align:top;
+    width:70%;
+}
 </style>
 <div class=pageHead>
 <a href=#>&lt;&lt;</a>
@@ -93,7 +170,7 @@ onLoad = function(){
     backBtn = document.querySelector('div.pageHead a'),
     list = document.querySelector('div#creeps'),
     templ = document.querySelector('script#creepTempl').textContent,
-    id,ele;
+    id,ele,obj,j,tid;
 
     backBtn.addEventListener('click', onBack);
 
@@ -108,6 +185,19 @@ onLoad = function(){
                                 .replace('NAME', G_OBJECT_NAME[id])
                                 .replace('DESC', G_OBJECT_DESC[id]);
         list.appendChild(ele);
+
+        obj = G_OBJECT[id];
+        for(j=CREEP_ON_REVEAL;j<=CREEP_ON_BURY;j++){
+            tid = obj[j];
+            if (!tid) continue;
+            ele = document.createElement('div');
+            ele.className = 'trait';
+            ele.innerHTML = templ
+                                    .replace('CLASS', 't'+tid)
+                                    .replace('NAME', G_OBJECT_NAME[tid])
+                                    .replace('DESC', G_OBJECT_DESC[tid]);
+            list.appendChild(ele);
+        }
     }
 };
 

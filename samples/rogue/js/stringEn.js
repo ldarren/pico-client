@@ -337,7 +337,7 @@ Object.freeze(G_OBJECT_NAME = {
     498: 'Crush',
     535: 'Howl',
     536: 'Shriek',
-    537: 'Full moon',
+    537: 'Bad moon',
     544: 'Growth',
     545: 'Multiply',
     546: 'Conjure',
