@@ -1,3 +1,5 @@
+var network = require('network');
+
 me.Class = Backbone.View.extend({
     initialize: function(){
         var self = this;
@@ -27,6 +29,9 @@ me.Class = Backbone.View.extend({
     },
 
     submit: function(){
-        console.log(this.$('form').serializeObject());
+        network.submit(this.$('form')[0], function(err, data){
+            if (err) return alert('Failed to submit: '+err);
+            alert('upload success: '+data);
+        });
     }
 });

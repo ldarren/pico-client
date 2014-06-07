@@ -26,20 +26,6 @@ pico.start({
     user, frame;
 
     me.slot(pico.LOAD, function(){
-        $.fn.serializeObject = function() {
-            var o = {}, k; 
-            $.each(this.serializeArray(), function() {
-                k = this.name;
-                if (!k) return;
-                if (undefined === o[k]) {
-                    o[k] = this.value || '';
-                } else {
-                    if (!o[k].push) o[k] = [o[k]];
-                    o[k].push(this.value || '');
-                }
-            });
-            return o;
-        };
         network.onConnected(function(){
             user = new ModelUser.Class();
             user.fetch({

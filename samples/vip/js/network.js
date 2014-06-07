@@ -22,7 +22,12 @@ onLoad = function(){
 
 me.slot(pico.LOAD, onLoad);
 
+// HACK: should use pico.step
 me.onConnected = function(cb){
     if (connected) return cb();
     me.slot('connected', cb);
+};
+
+me.submit = function(url, form, cb){
+    client.submit(url, form, cb);
 };
