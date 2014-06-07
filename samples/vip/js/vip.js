@@ -20,7 +20,6 @@ pico.start({
 
     var
     network = require('network'),
-    Route = require('Route'),
     ModelUser = require('models/User'),
     ViewFrame = require('views/Frame'),
     user, frame;
@@ -32,14 +31,13 @@ pico.start({
                 url: 'vip/user/read',
                 success: function(){
                     frame = new ViewFrame.Class({
-                        user: user,
-                        router: new Route.Class
-                    });
+                        user: user
+                    })
                 },
                 error: function(){
                     debugger;
                 }
-            });
-        });
-    });
-});
+            })
+        })
+    })
+})

@@ -1,4 +1,6 @@
-var network = require('network');
+var
+network = require('network'),
+route = require('route');
 
 me.Class = Backbone.View.extend({
     initialize: function(){
@@ -19,7 +21,7 @@ me.Class = Backbone.View.extend({
     },
 
     render: function(){
-        return this;
+        return this
     },
 
     events: {
@@ -30,8 +32,9 @@ me.Class = Backbone.View.extend({
 
     submit: function(){
         network.submit(this.$('form')[0], function(err, data){
-            if (err) return alert('Failed to submit: '+err);
-            alert('upload success: '+data);
-        });
+            if (err) return alert('Form submit error: '+err);
+            alert('New company created');
+            route.instance.navigate('', {trigger:true});
+        })
     }
-});
+})

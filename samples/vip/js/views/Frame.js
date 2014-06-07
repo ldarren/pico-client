@@ -1,5 +1,6 @@
 var
 PageSlider = require('pageslider'),
+route = require('route'),
 Home = require('views/Home'),
 Company = require('views/Company'),
 Startup = require('views/Startup'),
@@ -86,8 +87,9 @@ me.Class = Backbone.View.extend({
 
     initialize: function(options){
         user = options.user;
-        router = options.router;
         collection = new ModelCompanies.Class();
+
+        router = route.instance;
 
         var
         me = this,
