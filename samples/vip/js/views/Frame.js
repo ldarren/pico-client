@@ -119,7 +119,7 @@ me.Class = Backbone.View.extend({
     changePage: function(route, params){
         switch(route){
         case 'profile':
-            page = new UserProfile.Class();
+            page = new UserProfile.Class({user:user});
             break;
         case 'startup':
             page = new Startup.Class();

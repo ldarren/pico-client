@@ -17,7 +17,7 @@ onLoad = function(){
         Backbone.ajax = onSend;
         connected = true;
         me.signal('connected');
-    });
+    })
 };
 
 me.slot(pico.LOAD, onLoad);

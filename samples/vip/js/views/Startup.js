@@ -13,7 +13,7 @@ me.Class = Backbone.View.extend({
         return {
             left: 'left-nav',
             right: 'check',
-            title: 'New Organization',
+            title: 'New Company',
             options:{
                 user: 'UserProfile'
             }
