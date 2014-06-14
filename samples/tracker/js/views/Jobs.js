@@ -1,30 +1,24 @@
-var CompanySummary = Backbone.View.extend({
+var JobSummary = Backbone.View.extend({
     template: _.template(
-    '<a class="glyph glyph-right icon-right-nav" href="<%= url %>">'+
-    '<img class="media-object pull-left" src="<%= img %>">'+
-    '<div class="media-body"><%= name %><p><%= tags %></p>'+
-    '<% if (news) { %>'+
-    '<span class="badge"><%= news %></span>'+
-    '<% } %>'+
-    '</div></a>'),
+    '<div><span><%=time%></span><span>$<%=charges%></span></div>'+
+    '<div><span><%=pickup%></span><span><%=dropoff%></span></div>'+
+    ),
     model: null,
     tagName: 'li',
-    className: 'table-view-cell media',
+    className: 'table-view-cell',
     initialize: function(options){
         this.model = options.model;
     },
     render: function(){
         var model = this.model;
-        this.$el.html(this.template(_.extend({url:'#company/'+model.id, img:'dat/img/VDL.jpg', tags:'fashion', news:3},this.model.attributes)));
+        this.$el.html(this.template(this.model.attributes));
         return this;
     }
 });
 
 var
-captureTpl =
-'<li class="table-view-cell media">'+
-'<a class="glyph glyph-right icon-plus">'+
-'<div class="media-body">Add</div></a></li>',
+jobTpl = '<li class="table-view-cell"><a class="glyph glyph-right icon-right-plus" href="#job/create">Add</a></li>',
+dayTpl = '<div class="card"><ul class="table-view"><li class="table-view-cell table-view-divider">DATE</li></ul></div>',
 searchPhase = '';
 
 me.Class = Backbone.View.extend({
@@ -39,10 +33,9 @@ me.Class = Backbone.View.extend({
             title: searchPhase || 'All',
             left: 'left-nav',
             right: 'search',
-            options:{
-                user: 'User Profile',
-                'company/create': 'New company'
-            }
+            options:[
+                'job/create'
+            ]
         }
     },
 
@@ -54,7 +47,7 @@ me.Class = Backbone.View.extend({
         if (searchPhase){
             var s = searchPhase.toLowerCase();
             models = this.collection.filter(function(m){
-                return -1 !== m.get('name').toLowerCase().indexOf(s)
+                return -1 !== m.get('pickup').toLowerCase().indexOf(s) || -1 !== m.get('dropoff').toLowerCase().indexOf(s)
             });
         }else{
             models = this.collection.models;
@@ -64,10 +57,10 @@ me.Class = Backbone.View.extend({
         var $ul = $el.find('ul');
 
         for(var i=0, l=models.length; i<l; i++){
-            view = new CompanySummary({model: models[i]});
+            view = new JobSummary({model: models[i]});
             $ul.append(view.render().el);
         }
-        $ul.append($(captureTpl));
+        $ul.append($(jobTpl));
         return this;
     },
 
