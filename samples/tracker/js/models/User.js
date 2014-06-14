@@ -11,7 +11,7 @@ me.Class = Backbone.Model.extend({
 
     initialize: function(){
         this.on('change', function(model, changed){
-            window.localStorage[KEY] = JSON.stringify(model.attributes);
+            window.localStorage[KEY] = model.attributes;
         });
     },
 

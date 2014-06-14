@@ -1,0 +1,32 @@
+<form action=vip/company/create class="input-group">
+<div class="input-row">
+    <label>Name</label>
+    <input type="text" name=name placeholder="Company name">
+</div>
+<div class="input-row">
+    <label>About</label>
+    <input type="text" name=about placeholder="about me">
+</div>
+<div class="input-row">
+    <label>Tags</label>
+    <select name=tags>
+    <option value="" selected="selected" disabled>Select a tag</option>
+    <option value="Fashion">Fashion</option>
+    <option value="Books">Books</option>
+    <option value="Arts">Arts</option>
+    <option value="Departmental">Departmental</option>
+    <option value="IT">IT</option>
+    <option value="F&amp;B">F&amp;B</option>
+    <option value="Groceries">Groceries</option>
+    <option value="Wellness">Wellness</option>
+    <option value="Leisure">Leisure</option>
+    <option value="Optical">Optical</option>
+    <option value="Sports">Sports</option>
+    </select>
+</div>
+<div class="input-row">
+    <label>Logo</label>
+    <input id=logo type="file" name=logo>
+    <input id=logoProxy type="text" placeholder="choose an image" readonly>
+</div>
+</form>
