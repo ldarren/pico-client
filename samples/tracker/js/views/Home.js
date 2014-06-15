@@ -1,4 +1,4 @@
-var item = '<li class="table-view-cell"><a class="glyph glyph-right icon-right-nav" href="<%= url %>">NAME</a></li>';
+var item = '<li class="table-view-cell"><a class="glyph glyph-right icon-right-nav" href="#URL">NAME</a></li>';
 me.Class = Backbone.View.extend({
     template: _.template('<div class="card"><ul class="table-view"></ul></div>'),
 

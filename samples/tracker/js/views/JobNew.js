@@ -5,18 +5,15 @@ route = require('route');
 me.Class = Backbone.View.extend({
     initialize: function(){
         var self = this;
-        pico.embed(self.el, 'html/startup.html', function(){
+        pico.embed(self.el, 'html/jobNew.html', function(){
         })
     },
 
     getHeader: function(){
         return {
+            title: 'New Job',
             left: 'left-nav',
             right: 'check',
-            title: 'New Company',
-            options:{
-                user: 'UserProfile'
-            }
         }
     },
 
@@ -25,15 +22,13 @@ me.Class = Backbone.View.extend({
     },
 
     events: {
-        'touchstart input#logoProxy': function(){this.$('input#logo').click()},
-        'change input#logo': function(){this.$('input#logoProxy').val(this.$('input#logo').val().split(/(\\|\/)/g).pop())},
         'check': 'submit'
     },
 
     submit: function(){
         network.submit(this.$('form')[0], function(err, data){
-            if (err) return alert('Form submit error: '+err);
-            alert('New company created');
+            if (err) return alert('Form submission error: '+err);
+            alert('New job created');
             route.instance.navigate('', {trigger:true});
         })
     }

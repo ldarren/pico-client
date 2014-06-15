@@ -1,7 +1,7 @@
 var JobSummary = Backbone.View.extend({
     template: _.template(
     '<div><span><%=time%></span><span>$<%=charges%></span></div>'+
-    '<div><span><%=pickup%></span><span><%=dropoff%></span></div>'+
+    '<div><span><%=pickup%></span><span><%=dropoff%></span></div>'
     ),
     model: null,
     tagName: 'li',
@@ -17,7 +17,7 @@ var JobSummary = Backbone.View.extend({
 });
 
 var
-jobTpl = '<li class="table-view-cell"><a class="glyph glyph-right icon-right-plus" href="#job/create">Add</a></li>',
+jobTpl = '<li class="table-view-cell"><a class="glyph glyph-right icon-right-plus" href="#job/create">Add a new job</a></li>',
 dayTpl = '<div class="card"><ul class="table-view"><li class="table-view-cell table-view-divider">DATE</li></ul></div>',
 searchPhase = '';
 

@@ -2,7 +2,7 @@ var
 PageSlider = require('pageslider'),
 route = require('route'),
 Home = require('views/Home'),
-Job = require('views/Job'),
+Jobs = require('views/Jobs'),
 JobNew = require('views/JobNew'),
 Report = require('views/Report'),
 Invoice = require('views/Invoice'),
@@ -41,7 +41,7 @@ drawHeader = function(bar){
     }
     search.addClass('hidden').blur();
     var optionKeys = bar.options;
-    if (optionKeys || optionKeys.length){
+    if (optionKeys && optionKeys.length){
         titleOptions.contents().first().text(bar.title);
         title.addClass('hidden');
         titleOptions.removeClass('hidden');
