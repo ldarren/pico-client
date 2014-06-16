@@ -1,11 +1,16 @@
-var
-network = require('network'),
-route = require('route');
+var route = require('route');
 
 me.Class = Backbone.View.extend({
-    initialize: function(){
+    collection: null,
+    initialize: function(options){
         var self = this;
+        self.collection = options.collection;
         pico.embed(self.el, 'html/jobNew.html', function(){
+            var now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            var str = now.toISOString();
+            self.$('input[type=date]').val(str.slice(0, 10));
+            self.$('input[type=time]').val(str.slice(11, 19));
         })
     },
 
@@ -26,10 +31,11 @@ me.Class = Backbone.View.extend({
     },
 
     submit: function(){
-        network.submit(this.$('form')[0], function(err, data){
-            if (err) return alert('Form submission error: '+err);
-            alert('New job created');
-            route.instance.navigate('', {trigger:true});
+        this.collection.create(null, {
+            data: this.el.querySelector('form'),
+            success: function(model, data){
+                route.instance.navigate('', {trigger:true});
+            }
         })
     }
 })

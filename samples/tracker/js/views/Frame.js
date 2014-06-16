@@ -2,10 +2,12 @@ var
 PageSlider = require('pageslider'),
 route = require('route'),
 Home = require('views/Home'),
+Job = require('views/Job'),
 Jobs = require('views/Jobs'),
 JobNew = require('views/JobNew'),
 Report = require('views/Report'),
 Invoice = require('views/Invoice'),
+Download = require('views/Download'),
 ModelJobs = require('models/Jobs'),
 OPTION_TPL = '<li id=KEY class=table-view-cell>VALUE</li>',
 spawnPoint = window.history.length,
@@ -95,7 +97,7 @@ me.Class = Backbone.View.extend({
         var me = this;
 
         collection.fetch({
-            url: 'vip/company/read',
+            url: 'tracker/job/read',
             data:{
                 list: []
             },
@@ -115,10 +117,12 @@ me.Class = Backbone.View.extend({
 
     changePage: function(route, params){
         switch(route){
+        case 'job':         page = new Job.Class(collection.get(params[0])); break;
         case 'jobs':        page = new Jobs.Class(collection); break;
-        case 'jobNew':      page = new JobNew.Class(); break;
+        case 'jobNew':      page = new JobNew.Class({collection: collection}); break;
         case 'report':      page = new Report.Class(); break;
-        case 'invoice':     page = new Invoice.Class(); break;
+        case 'invoice':     page = new Invoice.Class({collection: new ModelJobs.Class(), start:params[0], end:params[1]}); break;
+        case 'download':    page = new Download.Class({start:params[0], end:params[1]}); break;
         default:            page = new Home.Class(); break;
         }
 

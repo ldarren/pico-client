@@ -1,7 +1,8 @@
 var JobSummary = Backbone.View.extend({
     template: _.template(
-    '<div><span><%=time%></span><span>$<%=charges%></span></div>'+
-    '<div><span><%=pickup%></span><span><%=dropoff%></span></div>'
+    '<a class="glyph glyph-right icon-right-nav" href="#job/details/<%= id %>">'+
+    '<div><span><%=time%></span><span>$<%=charge%></span></div>'+
+    '<div><span><%=pickup%></span><span><%=dropoff%></span></div></a>'
     ),
     model: null,
     tagName: 'li',
@@ -68,22 +69,6 @@ me.Class = Backbone.View.extend({
         'find': function(e){
             searchPhase = e._args[0];
             this.render();
-        },
-        'touchstart a.icon-plus':function(e){
-            e.preventDefault();
-            e.stopPropagation();
-            if (window.plugins){
-                window.plugins.barcodeScanner.scan(
-                function (result) {
-                    alert("We got a barcode\n" +
-                    "Result: " + result.text + "\n" +
-                    "Format: " + result.format + "\n" +
-                    "Cancelled: " + result.cancelled);
-                }, 
-                function (error) {
-                    alert("Scanning failed: " + error);
-                });
-            }
         }
     }
 });

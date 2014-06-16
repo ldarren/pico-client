@@ -1,27 +1,61 @@
+var Transaction = Backbone.View.extend({
+    template: _.template(
+    '<div><span><%=time%></span><span>$<%=charge%></span></div>'+
+    '<div><span><%=pickup%></span><span><%=dropoff%></span></div>'
+    ),
+    model: null,
+    tagName: 'li',
+    className: 'table-view-cell',
+    initialize: function(options){
+        this.model = options.model;
+    },
+    render: function(){
+        var model = this.model;
+        this.$el.html(this.template(this.model.attributes));
+        return this;
+    }
+});
+
 var
-network = require('network'),
-route = require('route');
+route = require('route'),
+dayTpl = '<div class="card"><ul class="table-view"><li class="table-view-cell table-view-divider">DATE</li></ul></div>',
+searchPhase = '';
 
 me.Class = Backbone.View.extend({
-    model: null,
+    template: _.template('<div class="card"><ul class="table-view"></ul></div>'),
+    startDate: null,
+    endDate: null,
     initialize: function(options){
-        var model = this.model = options.user;
-        if (model && model.id){
-            pico.embed(this.el, 'html/updateUser.html', function(){})
-        }else{
-            pico.embed(this.el, 'html/createUser.html', function(){})
-        }
+        var self = this;
+        self.startDate = options.start;
+        self.endDate = options.end;
+        options.collection.fetch({
+            data:{
+                start: options.start,
+                end: options.end,
+            },
+            success: function(collections, data){
+                var
+                $el = self.$el,
+                models = collections.models,
+                view;
+
+                $el.html(self.template({}));
+                var $ul = $el.find('ul');
+
+                for(var i=0, l=models.length; i<l; i++){
+                    view = new Transaction({model: models[i]});
+                    $ul.append(view.render().el);
+                }
+            }
+        })
     },
 
     getHeader: function(){
-        var title = this.model && this.model.id ? 'Update Profile' : 'Create Profile';
         return {
+            title: 'Invoice',
             left: 'left-nav',
-            right: 'check',
-            title: title,
-            options:{
-                'company/create': 'New company'
-            }
+            options:['#download']
         }
     },
 
@@ -30,19 +64,8 @@ me.Class = Backbone.View.extend({
     },
 
     events: {
-        'check': 'submit'
-    },
-
-    submit: function(){
-        this.model.save(null, {
-            data: this.$('form')[0],
-            success: function(model, res){
-                alert('Profile updated');
-                route.instance.navigate('', {trigger:true});
-            },
-            error: function(err){
-                alert('Form submit error: '+err);
-            }
-        })
+        'download': function(e){
+            route.instance.navigate('report/invoice/download/'+startDate+'/'+endDate, {trigger:true});
+        }
     }
 })

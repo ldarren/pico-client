@@ -1,10 +1,11 @@
-var item = '<li class="table-view-cell"><a class="glyph glyph-right icon-right-nav" href="#URL">NAME</a></li>';
+var item = '<li class="table-view-cell"><a class="glyph glyph-right icon-download" href="URL">Download invoice</a></li>';
 me.Class = Backbone.View.extend({
     template: _.template('<div class="card"><ul class="table-view"></ul></div>'),
 
     getHeader: function(){
         return{
-            title: 'Main'
+            title: 'Download',
+            left: 'left-nav'
         }
     },
 
@@ -13,8 +14,7 @@ me.Class = Backbone.View.extend({
 
         $el.html(this.template({}));
         var $ul = $el.find('ul');
-        $ul.append(item.replace('URL', 'job/list').replace('NAME', 'Jobs'));
-        $ul.append(item.replace('URL', 'report/index').replace('NAME', 'Invoice'));
+        $ul.append(item.replace('URL', 'dat/invoice.xlsx'));
 
         return this;
     }

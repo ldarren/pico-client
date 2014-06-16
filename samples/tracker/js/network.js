@@ -3,10 +3,22 @@ Net = require('pico/piDataNetModel'),
 client,
 connected = false,
 onSend = function(req){
-    client.request(req.url, req.data || {}, function(err, data){
+    if (!req || !req.data) return;
+    var
+    reqData = req.data,
+    onReceive = function(err, data){
         if (err) return req.error(err);
         return req.success(data, 'success');
-    })
+    }
+    if (reqData instanceof HTMLFormElement){
+        if (req.hasFile){
+            client.submit(reqData, onReceive);
+        }else{
+            client.request(null, reqData, onReceive);
+        }
+    }else{
+        client.request(req.url, reqData || {}, onReceive);
+    }
 },
 onLoad = function(){
     Net.create({
@@ -26,8 +38,4 @@ me.slot(pico.LOAD, onLoad);
 me.onConnected = function(cb){
     if (connected) return cb();
     me.slot('connected', cb);
-};
-
-me.submit = function(url, form, cb){
-    client.submit(url, form, cb);
 };
