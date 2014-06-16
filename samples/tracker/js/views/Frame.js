@@ -107,7 +107,7 @@ me.Class = Backbone.View.extend({
             error: function(){
                 debugger;
             }
-        });
+        })
     },
 
     render: function(){
@@ -117,7 +117,7 @@ me.Class = Backbone.View.extend({
 
     changePage: function(route, params){
         switch(route){
-        case 'job':         page = new Job.Class(collection.get(params[0])); break;
+        case 'job':         page = new Job.Class({model: collection.get(params[0])}); break;
         case 'jobs':        page = new Jobs.Class(collection); break;
         case 'jobNew':      page = new JobNew.Class({collection: collection}); break;
         case 'report':      page = new Report.Class(); break;

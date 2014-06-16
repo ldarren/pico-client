@@ -65,7 +65,7 @@ me.Class = Backbone.View.extend({
 
     events: {
         'download': function(e){
-            route.instance.navigate('report/invoice/download/'+startDate+'/'+endDate, {trigger:true});
+            route.instance.navigate('report/invoice/download/'+this.startDate+'/'+this.endDate, {trigger:true});
         }
     }
 })
