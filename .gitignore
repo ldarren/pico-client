@@ -6,6 +6,8 @@
 *.out
 *.pid
 *.gz
+*.docx
+*.xlsx
 *~
 
 lib-cov

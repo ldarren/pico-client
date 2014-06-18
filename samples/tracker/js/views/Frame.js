@@ -122,7 +122,7 @@ me.Class = Backbone.View.extend({
         case 'jobNew':      page = new JobNew.Class({collection: collection}); break;
         case 'report':      page = new Report.Class(); break;
         case 'invoice':     page = new Invoice.Class({collection: new ModelJobs.Class(), start:params[0], end:params[1]}); break;
-        case 'download':    page = new Download.Class({start:params[0], end:params[1]}); break;
+        case 'download':    page = new Download.Class({model:new ModelJobs.Class(), start:params[0], end:params[1]}); break;
         default:            page = new Home.Class(); break;
         }
 

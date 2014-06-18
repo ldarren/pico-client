@@ -3,9 +3,9 @@ Net = require('pico/piDataNetModel'),
 client,
 connected = false,
 onSend = function(req){
-    if (!req || !req.data) return;
+    if (!req) return;
     var
-    reqData = req.data,
+    reqData = req.data || {},
     onReceive = function(err, data){
         if (err) return req.error(err);
         return req.success(data, 'success');
