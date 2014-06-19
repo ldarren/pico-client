@@ -23,6 +23,7 @@ onSend = function(req){
 onLoad = function(){
     Net.create({
         url: 'http://107.20.154.29:4888/channel',
+        beatRate: 500,
     }, function(err, netClient){
         if (err) return console.error(err);
         client = netClient;

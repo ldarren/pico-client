@@ -31,3 +31,11 @@ img.media-object{
     height:64px;
     width:auto;
 }
+div.pickup,div.dropoff{
+    color:#428bca;
+    font-weight:normal;
+    font-size:17px
+}
+div.right{
+    float:right;
+}

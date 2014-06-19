@@ -57,7 +57,8 @@
   };
 
     // HACK to hide programatically
-  var hide = function(){
+  var hide = function(e){
+      e.preventDefault()
       popover.addEventListener('webkitTransitionEnd', onPopoverHidden);
       popover.classList.remove('visible');
       popover.parentNode.removeChild(backdrop);
@@ -68,7 +69,7 @@
 
     element.classList.add('backdrop');
 
-    element.addEventListener('touchend', hide);
+    element.addEventListener('touchend', hide, false);
 
     return element;
   }());
@@ -104,7 +105,7 @@
     if (!popover) {
         // HACK, click anyway to close existing popover
         popover = document.querySelector('.popover.visible');
-        if (popover) hide();
+        if (popover) hide(e);
       return;
     }
 

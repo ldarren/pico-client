@@ -13,8 +13,8 @@ me.Class = Backbone.View.extend({
         model.fetch({
             url: 'tracker/invoice/download',
             data:{
-                startDate: options.start,
-                endDate: options.end,
+                start: options.start,
+                end: options.end,
             },
             success: function(model, data){
                 $ul.append(item.replace('URL', data.url))

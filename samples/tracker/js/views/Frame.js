@@ -15,86 +15,86 @@ user, collection, router, slider, page, popover,
 topBar, search, leftBtn, titleOptions, title, rightBtn,
 start = function(frame){
     pico.embed(frame.el, 'html/frame.html', function(){
-        slider = new PageSlider.Class(frame.$el);
+        slider = new PageSlider.Class(frame.$el)
 
-        popover = frame.$('#popOptions ul.table-view');
+        popover = frame.$('#popOptions ul.table-view')
 
-        topBar = frame.$('header.bar');
-        search = topBar.find('input[type=search]');
-        leftBtn = topBar.find('.pull-left');
-        titleOptions = topBar.find('h1#options.title');
-        title = topBar.find('h1#simple.title');
-        rightBtn = topBar.find('.pull-right');
+        topBar = frame.$('header.bar')
+        search = topBar.find('input[type=search]')
+        leftBtn = topBar.find('.pull-left')
+        titleOptions = topBar.find('h1#options.title')
+        title = topBar.find('h1#simple.title')
+        rightBtn = topBar.find('.pull-right')
         
-        router.on('route', frame.changePage, frame);
+        router.on('route', frame.changePage, frame)
 
         // Start Backbone history a necessary step for bookmarkable URL's
-        Backbone.history.start();
-    });
+        Backbone.history.start()
+    })
 },
 drawHeader = function(bar){
     if (!bar){
-        title.addClass('hidden');
-        titleOptions.addClass('hidden');
-        leftBtn.addClass('hidden');
-        rightBtn.addClass('hidden');
-        search.removeClass('hidden').focus();
-        return;
+        title.addClass('hidden')
+        titleOptions.addClass('hidden')
+        leftBtn.addClass('hidden')
+        rightBtn.addClass('hidden')
+        search.removeClass('hidden').focus()
+        return
     }
-    search.addClass('hidden').blur();
-    var optionKeys = bar.options;
+    search.addClass('hidden').blur()
+    var optionKeys = bar.options
     if (optionKeys && optionKeys.length){
-        titleOptions.contents().first().text(bar.title);
-        title.addClass('hidden');
-        titleOptions.removeClass('hidden');
-        popover.empty();
+        titleOptions.contents().first().text(bar.title)
+        title.addClass('hidden')
+        titleOptions.removeClass('hidden')
+        popover.empty()
         _.each(optionKeys, function(key){
-            popover.append($(OPTION_TPL.replace('KEY', key).replace('VALUE', router.links[key])));
-        });
+            popover.append($(OPTION_TPL.replace('KEY', key).replace('VALUE', router.links[key])))
+        })
     }else{
-        title.text(bar.title);
-        title.removeClass('hidden');
-        titleOptions.addClass('hidden');
+        title.text(bar.title)
+        title.removeClass('hidden')
+        titleOptions.addClass('hidden')
     }
     if (bar.left){
-        leftBtn.attr('id', bar.left);
-        leftBtn.removeClass('hidden');
+        leftBtn.attr('id', bar.left)
+        leftBtn.removeClass('hidden')
         leftBtn.removeClass (function (index, css) {
-            return (css.match (/(^|\s)icon-\S+/g) || []).join(' ');
-        });
-        leftBtn.addClass('icon-'+bar.left);
+            return (css.match (/(^|\s)icon-\S+/g) || []).join(' ')
+        })
+        leftBtn.addClass('icon-'+bar.left)
     }else{
-        leftBtn.addClass('hidden');
+        leftBtn.addClass('hidden')
     }
     if (bar.right){
-        rightBtn.attr('id', bar.right);
-        rightBtn.removeClass('hidden');
+        rightBtn.attr('id', bar.right)
+        rightBtn.removeClass('hidden')
         rightBtn.removeClass (function (index, css) {
-            return (css.match (/(^|\s)icon-\S+/g) || []).join(' ');
-        });
-        rightBtn.addClass('icon-'+bar.right);
+            return (css.match (/(^|\s)icon-\S+/g) || []).join(' ')
+        })
+        rightBtn.addClass('icon-'+bar.right)
     }else{
-        rightBtn.addClass('hidden');
+        rightBtn.addClass('hidden')
     }
 },
 back = function(e){
     if (window.history.length > spawnPoint){
-        window.history.back();
+        window.history.back()
     }else{
-        router.navigate('', {trigger: true});
+        router.navigate('', {trigger: true})
     }
-};
+}
 
 me.Class = Backbone.View.extend({
     el: 'body',
 
     initialize: function(options){
-        user = options.user;
-        collection = new ModelJobs.Class();
+        user = options.user
+        collection = new ModelJobs.Class()
 
-        router = route.instance;
+        router = route.instance
 
-        var me = this;
+        var me = this
 
         collection.fetch({
             url: 'tracker/job/read',
@@ -102,31 +102,31 @@ me.Class = Backbone.View.extend({
                 list: []
             },
             success: function(){
-                start(me);
+                start(me)
             },
             error: function(){
-                debugger;
+                debugger
             }
         })
     },
 
     render: function(){
-        drawHeader(page.getHeader());
-        slider.slidePage(page.render().$el);
+        drawHeader(page.getHeader())
+        slider.slidePage(page.render().$el)
     },
 
     changePage: function(route, params){
         switch(route){
-        case 'job':         page = new Job.Class({model: collection.get(params[0])}); break;
-        case 'jobs':        page = new Jobs.Class(collection); break;
-        case 'jobNew':      page = new JobNew.Class({collection: collection}); break;
-        case 'report':      page = new Report.Class(); break;
-        case 'invoice':     page = new Invoice.Class({collection: new ModelJobs.Class(), start:params[0], end:params[1]}); break;
-        case 'download':    page = new Download.Class({model:new ModelJobs.Class(), start:params[0], end:params[1]}); break;
-        default:            page = new Home.Class(); break;
+        case 'job':         page = new Job.Class({model: collection.get(params[0])}); break
+        case 'jobs':        page = new Jobs.Class(collection); break
+        case 'jobNew':      page = new JobNew.Class({collection: collection}); break
+        case 'report':      page = new Report.Class(); break
+        case 'invoice':     page = new Invoice.Class({collection: new ModelJobs.Class(), start:params[0], end:params[1]}); break
+        case 'download':    page = new Download.Class({model:new ModelJobs.Class(), start:params[0], end:params[1]}); break
+        default:            page = new Home.Class(); break
         }
 
-        this.render();
+        this.render()
     },
 
     events: {
@@ -137,32 +137,41 @@ me.Class = Backbone.View.extend({
     },
 
     onLeftBtn: function(e){
-        var id = e.srcElement.id;
+        var
+        ele = e.srcElement,
+        id = ele.id
+
         switch(id){
-        case 'left-nav': back(); break;
-        default: page.$el.trigger(id);
+        case 'left-nav': back(); break
+        default: page.$el.trigger(id)
         }
+
+        ele.classList.add('hide')
     },
 
     onRightBtn: function(e){
-        var id = e.srcElement.id;
+        var
+        ele = e.srcElement,
+        id = ele.id
+
         switch(id){
-        case 'search': drawHeader(); break;
-        default: page.$el.trigger(id);
+        case 'search': drawHeader(); break
+        default: page.$el.trigger(id)
         }
+        ele.classList.add('hide')
     },
 
     onFind: function(e){
-        page.$el.trigger('find', [search.val()]);
+        page.$el.trigger('find', [search.val()])
         if (13 === e.keyCode){
-            search.val('');
-            drawHeader(page.getHeader());
+            search.val('')
+            drawHeader(page.getHeader())
         }
     },
 
     onMenu: function(e){
-        var id = e.srcElement.id;
-        if ('#' === id.charAt(0)) return page.$el.trigger(id.substr(1));
+        var id = e.srcElement.id
+        if ('#' === id.charAt(0)) return page.$el.trigger(id.substr(1))
         router.navigate(e.srcElement.id, {trigger:true})
     }
 })

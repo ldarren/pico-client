@@ -1,8 +1,13 @@
-var JobSummary = Backbone.View.extend({
+var
+CONST = require('const'),
+JobSummary = Backbone.View.extend({
     template: _.template(
     '<a class="glyph glyph-right icon-right-nav" href="#job/details/<%= id %>">'+
-    '<div><span><%=time%></span><span>$<%=charge%></span></div>'+
-    '<div><span><%=pickup%></span><span><%=dropoff%></span></div></a>'
+    '#<%=id%><div class=right><%=(new Date(date)).toLocaleDateString()%> <%=time%></div>'+
+    '<p><%=DRIVERS[driver]%> (<%=VEHICLES[vehicle]%>)<br>'+
+    '<%=caller%>: <%=mobile%></p>'+
+    '<div class=pickup><%=pickup%></div>'+
+    '<div class=dropoff><%=dropoff%></div>'
     ),
     model: null,
     tagName: 'li',
@@ -12,18 +17,15 @@ var JobSummary = Backbone.View.extend({
     },
     render: function(){
         var model = this.model;
-        this.$el.html(this.template(this.model.attributes));
+        this.$el.html(this.template(_.extend(_.clone(CONST), this.model.attributes)));
         return this;
     }
-});
-
-var
+}),
 jobTpl = '<li class="table-view-cell"><a class="glyph glyph-right icon-right-plus" href="#job/create">Add a new job</a></li>',
-dayTpl = '<div class="card"><ul class="table-view"><li class="table-view-cell table-view-divider">DATE</li></ul></div>',
-searchPhase = '';
+searchPhase = ''
 
 me.Class = Backbone.View.extend({
-    template: _.template('<div class="card"><ul class="table-view"></ul></div>'),
+    template: _.template('<ul class="table-view"></ul>'),
     collection: null,
     initialize: function(collection){
         this.collection = collection;

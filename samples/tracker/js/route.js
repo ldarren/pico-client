@@ -10,6 +10,6 @@ me.instance = new (Backbone.Router.extend({
     },
     links: {
         'job/create': 'New Job',
-        '#download': 'Export to xls'
+        '#download': 'Download Invoice'
     }
 }))
