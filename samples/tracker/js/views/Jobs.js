@@ -3,7 +3,7 @@ CONST = require('const'),
 JobSummary = Backbone.View.extend({
     template: _.template(
     '<a class="glyph glyph-right icon-right-nav" href="#job/details/<%= id %>">'+
-    '#<%=id%><div class=right><%=(new Date(date)).toLocaleDateString()%> <%=time%></div>'+
+    '<div><%=(new Date(date)).toLocaleDateString()%> <%=time%></div>'+
     '<p><%=DRIVERS[driver]%> (<%=VEHICLES[vehicle]%>)<br>'+
     '<%=caller%>: <%=mobile%></p>'+
     '<div class=pickup><%=pickup%></div>'+
