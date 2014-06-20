@@ -39,3 +39,6 @@ div.pickup,div.dropoff{
 div.right{
     float:right;
 }
+ul.zebra > li:nth-child(odd){
+    background-color:#FFF8DC;
+}

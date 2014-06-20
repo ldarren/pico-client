@@ -26,11 +26,13 @@ me.JOB_TYPES = [
 'Departure',
 'Disposal',
 'Events',
-'Fit',
+'Chauffeur',
 'Group Tour',
 'Transfer',
 'Wedding',
 'World Holiday',
+'Arrival+Departure',
+'Arrival+Departure+Disposal',
 'Others',
 ]
 me.PAYMENT_TYPES= [

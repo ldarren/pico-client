@@ -25,7 +25,7 @@ jobTpl = '<li class="table-view-cell"><a class="glyph glyph-right icon-right-plu
 searchPhase = ''
 
 me.Class = Backbone.View.extend({
-    template: _.template('<ul class="table-view"></ul>'),
+    template: _.template('<ul class="table-view zebra"></ul>'),
     collection: null,
     initialize: function(collection){
         this.collection = collection;
@@ -51,7 +51,7 @@ me.Class = Backbone.View.extend({
             var s = searchPhase.toLowerCase();
             models = this.collection.filter(function(m){
                 return -1 !== m.get('pickup').toLowerCase().indexOf(s) || -1 !== m.get('dropoff').toLowerCase().indexOf(s)
-            });
+            })
         }else{
             models = this.collection.models;
         }
@@ -73,4 +73,4 @@ me.Class = Backbone.View.extend({
             this.render();
         }
     }
-});
+})
