@@ -29,6 +29,15 @@ me.Class = Backbone.View.extend({
     collection: null,
     initialize: function(collection){
         this.collection = collection;
+
+        this.listenTo(collection, 'add', this.render);
+
+        collection.fetch({
+            url: 'tracker/job/read',
+            data:{
+                list: []
+            }
+        })
     },
 
     getHeader: function(){

@@ -59,6 +59,7 @@
     // HACK to hide programatically
   var hide = function(e){
       e.preventDefault()
+      e.stopPropagation()
       popover.addEventListener('webkitTransitionEnd', onPopoverHidden);
       popover.classList.remove('visible');
       popover.parentNode.removeChild(backdrop);
@@ -69,7 +70,7 @@
 
     element.classList.add('backdrop');
 
-    element.addEventListener('touchend', hide, false);
+    element.addEventListener('touchstart', hide, false);
 
     return element;
   }());
@@ -83,8 +84,7 @@
 
     try {
       popover = document.querySelector(anchor.hash);
-    }
-    catch (error) {
+    } catch (error) {
       popover = null;
     }
 
@@ -102,7 +102,10 @@
   var showHidePopover = function (e) {
     var popover = getPopover(e);
 
-    if (!popover) {
+    if (popover) {
+        e.preventDefault()
+        e.stopPropagation()
+    }else{
         // HACK, click anyway to close existing popover
         popover = document.querySelector('.popover.visible');
         if (popover) hide(e);
@@ -116,7 +119,7 @@
     popover.parentNode.appendChild(backdrop);
   };
 
-  window.addEventListener('touchend', showHidePopover);
+  window.addEventListener('touchstart', showHidePopover);
 
 }());
 // segmented-controllers

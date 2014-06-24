@@ -31,6 +31,32 @@ start = function(frame){
         // Start Backbone history a necessary step for bookmarkable URL's
         Backbone.history.start()
     })
+
+    if (!pico.detectEvent('touchstart')){
+        document.addEventListener('mousedown', function(e){
+            var touches = []
+
+            touches[0] = {}
+            touches[0].pageX = e.pageX
+            touches[0].pageY = e.pageY
+            touches[0].target = e.target
+
+            var evt = new Event('touchstart', {
+                bubbles: true,
+                cancelable: true,
+                details:{
+                    target: e.target,
+                    srcElement: e.srcElement,
+                    touches: touches,
+                    changedTouches: touches,
+                    targetTouches: touches,
+                    mouseToTouch: true
+                }   
+            }) 
+
+            e.target.dispatchEvent(evt)
+        }, true)
+    }
 },
 drawHeader = function(bar){
     if (!bar){
@@ -44,7 +70,7 @@ drawHeader = function(bar){
     search.addClass('hidden').blur()
     var optionKeys = bar.options
     if (optionKeys && optionKeys.length){
-        titleOptions.contents().first().text(bar.title)
+        titleOptions[0].firstChild.firstChild.textContent = bar.title
         title.addClass('hidden')
         titleOptions.removeClass('hidden')
         popover.empty()
@@ -93,21 +119,8 @@ me.Class = Backbone.View.extend({
         collection = new ModelJobs.Class()
 
         router = route.instance
-
-        var me = this
-
-        collection.fetch({
-            url: 'tracker/job/read',
-            data:{
-                list: []
-            },
-            success: function(){
-                start(me)
-            },
-            error: function(){
-                debugger
-            }
-        })
+        
+        start(this)
     },
 
     render: function(){
@@ -123,7 +136,7 @@ me.Class = Backbone.View.extend({
         case 'report':      page = new Report.Class(); break
         case 'invoice':     page = new Invoice.Class({collection: new ModelJobs.Class(), start:params[0], end:params[1]}); break
         case 'download':    page = new Download.Class({model:new ModelJobs.Class(), start:params[0], end:params[1]}); break
-        default:            page = new Home.Class(); break
+        default:            if (page && 'popOptions' === params[0]) return; page = new Home.Class(); break
         }
 
         this.render()

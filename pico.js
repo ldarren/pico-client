@@ -326,6 +326,7 @@
             xhr.onerror=function(evt){cb(evt, xhr, userData)}
             // never set Content-Type, it will trigger preflight options and chrome 35 has problem with json type
             //if (post && params && 2 === dataType) xhr.setRequestHeader('Content-Type', 'application/json')
+            xhr.setRequestHeader('Content-Type', 'text/plain')
             for (var key in headers) xhr.setRequestHeader(key, headers[key])
 
             switch(dataType){
