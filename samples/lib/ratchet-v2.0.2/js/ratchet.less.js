@@ -101,10 +101,10 @@
 
   var showHidePopover = function (e) {
     var popover = getPopover(e);
-    // if clicked fast enough, function hide may not call at all
-    popover.removeEventListener('webkitTransitionEnd', onPopoverHidden);
 
     if (popover) {
+        // if clicked fast enough, function hide may not call at all
+        popover.removeEventListener('webkitTransitionEnd', onPopoverHidden);
         e.preventDefault()
         e.stopPropagation()
     }else{
