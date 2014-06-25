@@ -13,10 +13,10 @@ pico.start({
         backbone: 'lib/backbone-1.1.2.min'
     }
 },function(){
-    require('ratchet');
-    require('zepto');
-    require('lodash');
-    require('backbone');
+    require('zepto')
+    require('ratchet')
+    require('lodash')
+    require('backbone')
 
     var
     network = require('network'),

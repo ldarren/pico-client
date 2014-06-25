@@ -70,7 +70,7 @@
 
     element.classList.add('backdrop');
 
-    element.addEventListener('touchstart', hide, false);
+    element.addEventListener('click', hide, false);
 
     return element;
   }());
@@ -101,6 +101,8 @@
 
   var showHidePopover = function (e) {
     var popover = getPopover(e);
+    // if clicked fast enough, function hide may not call at all
+    popover.removeEventListener('webkitTransitionEnd', onPopoverHidden);
 
     if (popover) {
         e.preventDefault()
@@ -119,7 +121,7 @@
     popover.parentNode.appendChild(backdrop);
   };
 
-  window.addEventListener('touchstart', showHidePopover);
+  window.addEventListener('click', showHidePopover);
 
 }());
 // segmented-controllers
