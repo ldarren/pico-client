@@ -21,8 +21,9 @@ pico.start({
     var
     network = require('network'),
     ModelUser = require('models/User'),
+    ModelDefaults = require('models/Defaults'),
     ViewFrame = require('views/Frame'),
-    user, frame;
+    user, defaults, frame;
 
     me.slot(pico.LOAD, function(){
         network.onConnected(function(){
@@ -30,8 +31,15 @@ pico.start({
             user.fetch({
                 url: 'vip/user/read',
                 success: function(){
-                    frame = new ViewFrame.Class({
-                        user: user
+                    defaults = new ModelDefaults.Class()
+                    defaults.fetch({
+                        url: 'tracker/defaults/read',
+                        success: function(){
+                            frame = new ViewFrame.Class({
+                                user: user,
+                                defaults: defaults
+                            })
+                        }
                     })
                 },
                 error: function(){

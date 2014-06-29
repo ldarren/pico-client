@@ -34,7 +34,7 @@ me.Class = Backbone.View.extend({
         this.collection.create(null, {
             data: this.el.querySelector('form'),
             success: function(model, data){
-                route.instance.navigate('', {trigger:true});
+                route.instance.navigate('job/list', {trigger:true});
             }
         })
     }

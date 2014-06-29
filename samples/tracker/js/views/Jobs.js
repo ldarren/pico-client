@@ -30,7 +30,7 @@ me.Class = Backbone.View.extend({
     initialize: function(collection){
         this.collection = collection;
 
-        this.listenTo(collection, 'add', this.render);
+        this.listenTo(collection, 'sync', this.render);
 
         collection.fetch({
             url: 'tracker/job/read',

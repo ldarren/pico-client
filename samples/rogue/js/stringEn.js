@@ -640,7 +640,7 @@ Object.freeze(G_OBJECT_DESC = {
     682: 'It holds items for your friends',
 
     701: "Welcome to Loki's Trial, God has created this town to guard the dungeon named Loki's Trail, to test the strength and purity of our soul. travel down to the deepest level and retrieve a soul stone to complete the test",
-    702: "Your goal is to unlock the exit gate `012 of each level and travel down to next level. Key `036 is required to unlock gate, go near to the key `036 tap on it and choose 'Unlock Gate'",
+    702: "Find a key `036 to move on to next level by unlocking the exit `012",
     703: 'The key to down stair is concealed in dungeon, tab on hidden cell `08 to reveal it, but hidden cell may contains dangerous creep, the digit on cell indicates the number of adjacent cells which contains creeps. You can use this information to deduce creep-free cell, reveal creep-free cells to discover the key. Warning! a revealed creep may attack you immediately. if you get killed your soul will join Valhala and God Wodinaz will reincarnate you, so don\'t be afraid to try',
     704: 'The key to next level is keep by one of the hidden creeps, to get the key creeps must be defeated. Use the digit on the floor to deduce the creep location and use skill from tome to expose creep. exposed creeps has a `0202 icon on them and they don\'t attack you by exposing them. to attack creep, tab on creep and choose fight.',
     705: 'Beside getting key, defeating creep also reward you a health globe `0135 and a piety point `0196 . consume a health globe restore one hit point 663 for you and all exposed creeps. Piety point can be used to get rewards from God Wodinaz Altar at town',
