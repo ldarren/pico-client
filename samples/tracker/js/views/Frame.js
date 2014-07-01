@@ -11,20 +11,20 @@ Download = require('views/Download'),
 ModelJobs = require('models/Jobs'),
 OPTION_TPL = '<li id=KEY class=table-view-cell>VALUE</li>',
 spawnPoint = window.history.length,
-user, collection, router, slider, page, popover,
-topBar, search, leftBtn, titleOptions, title, rightBtn,
+user, collection, router, slider, page, $popover,
+$topBar, $search, $leftBar, $titleOptions, $title, $rightBar,
 start = function(frame){
     pico.embed(frame.el, 'html/frame.html', function(){
         slider = new PageSlider.Class(frame.$el)
 
-        popover = frame.$('#popOptions ul.table-view')
+        $popover = frame.$('#popOptions ul.table-view')
 
-        topBar = frame.$('header.bar')
-        search = topBar.find('input[type=search]')
-        leftBtn = topBar.find('.pull-left')
-        titleOptions = topBar.find('h1#options.title')
-        title = topBar.find('h1#simple.title')
-        rightBtn = topBar.find('.pull-right')
+        $topBar = frame.$('header.bar')
+        $search = $topBar.find('input[type=search]')
+        $leftBar = $topBar.find('.pull-left')
+        $titleOptions = $topBar.find('h1#options.title')
+        $title = $topBar.find('h1#simple.title')
+        $rightBar = $topBar.find('.pull-right')
         
         router.on('route', frame.changePage, frame)
 
@@ -58,49 +58,46 @@ start = function(frame){
         }, true)
     }
 },
+addToolbar = function($bar, icons){
+    var icon, a
+    for(var i=0,l=icons.length;i<l;i++){
+        icon = icons[i]
+
+        a = document.createElement('a')
+        a.id = icon
+        a.className = 'icon icon-'+icon
+        $bar.append(a)
+    }
+},
 drawHeader = function(bar){
+    $leftBar.empty()
+    $rightBar.empty()
     if (!bar){
-        title.addClass('hidden')
-        titleOptions.addClass('hidden')
-        leftBtn.addClass('hidden')
-        rightBtn.addClass('hidden')
-        search.removeClass('hidden').focus()
+        $title.addClass('hidden')
+        $titleOptions.addClass('hidden')
+        $search.removeClass('hidden').focus()
         return
     }
-    search.addClass('hidden').blur()
+    $search.addClass('hidden').blur()
     var optionKeys = bar.options
     if (optionKeys && optionKeys.length){
-        titleOptions[0].firstChild.firstChild.textContent = bar.title
-        title.addClass('hidden')
-        titleOptions.removeClass('hidden')
-        popover.empty()
+        $titleOptions[0].firstChild.firstChild.textContent = bar.title
+        $title.addClass('hidden')
+        $titleOptions.removeClass('hidden')
+        $popover.empty()
         _.each(optionKeys, function(key){
-            popover.append($(OPTION_TPL.replace('KEY', key).replace('VALUE', router.links[key])))
+            $popover.append($(OPTION_TPL.replace('KEY', key).replace('VALUE', router.links[key])))
         })
     }else{
-        title.text(bar.title)
-        title.removeClass('hidden')
-        titleOptions.addClass('hidden')
+        $title.text(bar.title)
+        $title.removeClass('hidden')
+        $titleOptions.addClass('hidden')
     }
     if (bar.left){
-        leftBtn.attr('id', bar.left)
-        leftBtn.removeClass('hidden')
-        leftBtn.removeClass (function (index, css) {
-            return (css.match (/(^|\s)icon-\S+/g) || []).join(' ')
-        })
-        leftBtn.addClass('icon-'+bar.left)
-    }else{
-        leftBtn.addClass('hidden')
+        addToolbar($leftBar, bar.left)
     }
     if (bar.right){
-        rightBtn.attr('id', bar.right)
-        rightBtn.removeClass('hidden')
-        rightBtn.removeClass (function (index, css) {
-            return (css.match (/(^|\s)icon-\S+/g) || []).join(' ')
-        })
-        rightBtn.addClass('icon-'+bar.right)
-    }else{
-        rightBtn.addClass('hidden')
+        addToolbar($rightBar, bar.right)
     }
 },
 back = function(e){
@@ -143,41 +140,30 @@ me.Class = Backbone.View.extend({
     },
 
     events: {
-        'touchstart header .pull-left': 'onLeftBtn',
-        'touchstart header .pull-right': 'onRightBtn',
+        'touchstart header .pull-left a': 'onToolbar',
+        'touchstart header .pull-right a': 'onToolbar',
         'touchstart #popOptions li': 'onMenu',
         'keyup header input[type=search]': 'onFind'
     },
 
-    onLeftBtn: function(e){
+    onToolbar: function(e){
         var
         ele = e.srcElement,
         id = ele.id
 
         switch(id){
         case 'left-nav': back(); break
-        default: page.$el.trigger(id)
-        }
-
-        ele.classList.add('hide')
-    },
-
-    onRightBtn: function(e){
-        var
-        ele = e.srcElement,
-        id = ele.id
-
-        switch(id){
         case 'search': drawHeader(); break
         default: page.$el.trigger(id)
         }
+
         ele.classList.add('hide')
     },
 
     onFind: function(e){
-        page.$el.trigger('find', [search.val()])
+        page.$el.trigger('find', [$search.val()])
         if (13 === e.keyCode){
-            search.val('')
+            $search.val('')
             drawHeader(page.getHeader())
         }
     },

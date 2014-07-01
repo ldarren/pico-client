@@ -17,10 +17,10 @@ body{
 .hidden{
     display:none;
 }
-.access-left{
+.access-left a{
     padding-left:10px;
 }
-.access-right{
+.access-right a{
     padding-right:10px;
 }
 form input[type=file]{

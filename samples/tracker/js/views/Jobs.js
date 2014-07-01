@@ -43,8 +43,8 @@ me.Class = Backbone.View.extend({
     getHeader: function(){
         return{
             title: searchPhase || 'All',
-            left: 'left-nav',
-            right: 'search',
+            left: ['left-nav','gear'],
+            right: ['search','right-nav'],
             options:[
                 'job/create'
             ]
