@@ -157,8 +157,12 @@
                 }
             })
         },
+        // for future file concatenating
+        def: function(scriptLink, script){
+            vm(srciptLink, script, dummyCB)
+        },
         getEnv: function(key){ return envs[key] },
-
+        // use require('html') insteads?
         embed: function(holder, url, cb){
             pico.ajax('get', url, '', null, function(err, xhr){
                 if (err) return cb(err)
