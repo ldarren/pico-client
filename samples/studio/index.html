@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>pico:Studio</title>
+<style type="text/css" media="screen">
+#widgets{
+    position: absolute;
+    top: 0;
+    right: 20%;
+    bottom: 0;
+    left: 0;
+}
+#widget div{
+    padding: 5px;
+    cursor: pointer;
+}
+#editor { 
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 20%;
+}
+</style>
+</head>
+<body>
+
+<script id=script1 type=templ/javascript>function foo(items) {
+    var x = "All this is syntax highlighted";
+    return x;
+}</script>
+<script id=script2 type=templ/json>{
+    "array": [1,2,"3"],
+    "object": {
+        "key1": "value1",
+        "key2": "value2"
+    },
+    "number": 1,
+    "string": "Hello World"
+}</script>
+
+<div id=widgets>
+<div class=widget>#script1</div>
+<div class=widget>#script2</div>
+</div>
+<div id=editor>
+</div>
+
+<script src="lib/ace-builds-master/src-min/ace.js"></script>
+<script>
+var
+editor = ace.edit('editor')
+
+editor.setTheme('ace/theme/monokai')
+
+var widgets = document.querySelector('#widgets')
+widgets.addEventListener('click', function(e){
+    var target = e.target
+    if ('widget' === target.className){
+        alert(editor.getSession().toString())
+        var widget = document.querySelector(target.textContent)
+        editor.setSession(ace.createEditSession(widget.textContent, 'ace/mode/'+widget.getAttribute('type').substr(6)))
+    }
+}, false);
+</script>
+</body>
+</html>
