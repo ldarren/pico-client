@@ -4,6 +4,7 @@ pico.start({
     paths:{
         '*': 'js/',
         views: 'js/views/',
+        html: 'html/',
         models: 'js/models/',
         pico: 'lib/pico/lib/',
         ratchet: 'lib/ratchet-v2.0.2/js/ratchet.less',

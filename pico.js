@@ -6,7 +6,8 @@
     modules = {},
     paths = {'*':''},
     envs = {production:true},
-    dummyCB = function(){console.log(arguments)},
+    dummyCB = function(){},
+    consoleCB = function(){console.log(arguments)},
     hash = function(str){
         var hash = 0
 
@@ -32,9 +33,7 @@
     getMod = function(link){
         var mod = modules[link]
         if (mod) return mod
-        mod = {}
-        modules[link] = mod
-        return mod
+        return modules[link] = mod = {}
     },
     parseFunc = function(me, require, inherit, script){
         try{
@@ -50,12 +49,7 @@
         var
         deps = [],
         ancestorLink,
-        addDeps = function(link){
-            var d = modules[link]
-            if (d) return d
-            deps.push(link)
-        },
-        mod = parseFunc(createMod(scriptLink, getMod(scriptLink)), function(l){var d = modules[l];if (d) return d;deps.push(l);},function(l){ ancestorLink = l }, script)
+        mod = parseFunc(createMod(scriptLink, getMod(scriptLink)), function(l){var d=modules[l];if(d)return d;deps.push(l);},function(l){ ancestorLink=l }, script)
        
         if (!mod) return cb('error parsing '+scriptLink)
         if (!ancestorLink && !deps.length){ // no inherit and no require
@@ -69,7 +63,7 @@
         loadLink(ancestorLink, function(err, ancestor){
             if (err) return cb(err)
 
-            var mod = parseFunc(createMod(scriptLink, getMod(scriptLink), ancestor), getMod, function(){}, script)
+            var mod = parseFunc(createMod(scriptLink, getMod(scriptLink), ancestor), getMod, dummyCB, script)
             modules[scriptLink] = mod
             loadDeps(deps, function(err){
                 if (err) return cb(err)
@@ -96,11 +90,20 @@
             path = path || paths['*'] || ''
         }
 
-        pico.ajax('get', path+fname+'.js', '', null, function(err, xhr){
-            if (err) return cb(err)
-            if (4 !== xhr.readyState) return
-            vm(link, xhr.responseText, cb)
-        })
+        if ('.html' === fname.substr(-5)){
+            pico.ajax('get', path+fname, '', null, function(err, xhr){
+                if (err) return cb(err)
+                if (4 !== xhr.readyState) return
+                mod.text = xhr.responseText
+                cb(null, mod)
+            })
+        }else{
+            pico.ajax('get', path+fname+'.js', '', null, function(err, xhr){
+                if (err) return cb(err)
+                if (4 !== xhr.readyState) return
+                vm(link, xhr.responseText, cb)
+            })
+        }
     },
     // recurssively load dependencies in a module
     loadDeps = function(deps, cb){
