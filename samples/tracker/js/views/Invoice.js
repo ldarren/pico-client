@@ -65,10 +65,10 @@ me.Class = Backbone.View.extend({
         })
     },
 
-    getHeader: function(){
+    header: function(){
         return {
             title: 'Invoice',
-            left: 'left-nav',
+            left: ['left-nav'],
             options:['#download']
         }
     },

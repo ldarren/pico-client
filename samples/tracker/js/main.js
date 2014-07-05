@@ -24,11 +24,11 @@ pico.start({
     ModelUser = require('models/User'),
     ModelDefaults = require('models/Defaults'),
     ViewFrame = require('views/Frame'),
-    user, defaults, frame;
+    user, defaults, frame
 
     me.slot(pico.LOAD, function(){
-        network.onConnected(function(){
-            user = new ModelUser.Class();
+        network.slot('connected', function(){
+            user = new ModelUser.Class()
             user.fetch({
                 url: 'vip/user/read',
                 success: function(){
@@ -44,7 +44,7 @@ pico.start({
                     })
                 },
                 error: function(){
-                    debugger;
+                    debugger
                 }
             })
         })

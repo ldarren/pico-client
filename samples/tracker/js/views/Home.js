@@ -2,7 +2,7 @@ var item = '<li class="table-view-cell"><a class="glyph glyph-right icon-right-n
 me.Class = Backbone.View.extend({
     template: _.template('<div class="card"><ul class="table-view"></ul></div>'),
 
-    getHeader: function(){
+    header: function(){
         return{
             title: 'Main'
         }

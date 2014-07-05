@@ -1,7 +1,6 @@
 var
 Net = require('pico/piDataNetModel'),
 client,
-connected = false,
 onSend = function(req){
     if (!req) return;
     var
@@ -29,15 +28,8 @@ onLoad = function(){
         if (err) return console.error(err);
         client = netClient;
         Backbone.ajax = onSend;
-        connected = true;
-        me.signal('connected');
+        me.step('connected', client)
     })
 };
 
 me.slot(pico.LOAD, onLoad);
-
-// HACK: should use pico.step
-me.onConnected = function(cb){
-    if (connected) return cb();
-    me.slot('connected', cb);
-};

@@ -17,8 +17,8 @@ me.Class = Backbone.View.extend({
     getHeader: function(){
         return {
             title: 'New Job',
-            left: 'left-nav',
-            right: 'check',
+            left: ['left-nav'],
+            right: ['check'],
         }
     },
 

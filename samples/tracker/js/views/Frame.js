@@ -121,7 +121,7 @@ me.Class = Backbone.View.extend({
     },
 
     render: function(){
-        drawHeader(page.getHeader())
+        drawHeader(page.header())
         slider.slidePage(page.render().$el)
     },
 
@@ -164,7 +164,7 @@ me.Class = Backbone.View.extend({
         page.$el.trigger('find', [$search.val()])
         if (13 === e.keyCode){
             $search.val('')
-            drawHeader(page.getHeader())
+            drawHeader(page.header())
         }
     },
 

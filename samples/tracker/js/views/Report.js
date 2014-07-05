@@ -14,11 +14,11 @@ me.Class = Backbone.View.extend({
         })
     },
 
-    getHeader: function(){
+    header: function(){
         return {
             title: 'Report',
-            left: 'left-nav',
-            right: 'check'
+            left: ['left-nav'],
+            right: ['check']
         }
     },
 

@@ -24,9 +24,10 @@
         while(lastObj.__proto__.__proto__ && lastObj.__proto__.__proto__ !== pico.prototype){ lastObj = lastObj.__proto__ }
 
         lastObj.__proto__ = Object.create(ancestor, {
-            moduleName: {value:link, writable:false, configurable:false, enumerable:true},
-            base: {value:ancestor, writable:false, configurable:false, enumerable:true},
-            slots: {value:{}, writable:false, configurable:false, enumerable:false},
+            moduleName: {value:link,    writable:false, configurable:false, enumerable:true},
+            base:       {value:ancestor,writable:false, configurable:false, enumerable:true},
+            slots:      {value:{},      writable:false, configurable:false, enumerable:false},
+            signals:    {value:{},      writable:false, configurable:false, enumerable:false},
         })
         return obj
     },
@@ -78,32 +79,28 @@
         var mod = modules[link]
         if (mod && mod.moduleName) return cb(null, mod)
 
-        var fname = paths[link], path = ''
+        var
+        raw = '@' === link[0],
+        symbol = raw ? link.substr(1) : link,
+        fname = paths[symbol],
+        path = ''
 
         if (!fname){
-            var keyPos = link.indexOf('/')
+            var keyPos = symbol.indexOf('/')
 
             if (-1 !== keyPos){
-                path = paths[link.substring(0, keyPos)]
+                path = paths[symbol.substr(0, keyPos)]
             }
-            fname = link.substr(keyPos+1)
+            fname = symbol.substr(keyPos+1)
             path = path || paths['*'] || ''
         }
+        fname = raw ? fname : fname+'.js'
 
-        if ('.html' === fname.substr(-5)){
-            pico.ajax('get', path+fname, '', null, function(err, xhr){
-                if (err) return cb(err)
-                if (4 !== xhr.readyState) return
-                mod.text = xhr.responseText
-                cb(null, mod)
-            })
-        }else{
-            pico.ajax('get', path+fname+'.js', '', null, function(err, xhr){
-                if (err) return cb(err)
-                if (4 !== xhr.readyState) return
-                vm(link, xhr.responseText, cb)
-            })
-        }
+        pico.ajax('get', path+fname, '', null, function(err, xhr){
+            if (err) return cb(err)
+            if (4 !== xhr.readyState) return
+            return raw ?  cb(null, (mod.text = xhr.responseText)) : vm(link, xhr.responseText, cb)
+        })
     },
     // recurssively load dependencies in a module
     loadDeps = function(deps, cb){
@@ -343,39 +340,46 @@
             }
         },
 
-        slot: function(channelName){
-            var channel = this.slots[channelName] = this.slots[channelName] || {}
-            if (3 === arguments.length){
-                channel[arguments[1].moduleName] = arguments[2]
+        slot: function(channelName, func, context){
+            var
+            channel = this.slots[channelName] = this.slots[channelName] || {},
+            evt = this.signals[channelName]
+
+            if (context){
+                channel[context.moduleName] = func
             }else{
                 // function only no object
-                var func = arguments[1]
                 channel[hash(func.toString())] = func
             }
+            if (evt) func.apply(context, evt)
         },
-        unslot: function(channelName, identity){
+        unslot: function(channelName, context){
             var channel = this.slots[channelName] = this.slots[channelName] || {}
-            if (identity.moduleName){
-                delete channel[identity.moduleName]
+            if (context.moduleName){
+                delete channel[context.moduleName]
             }else{
                 // function only no object
-                delete channel[hash(identity.toString())]
+                delete channel[hash(context.toString())]
             }
         },
-        signal: function(channelName, events){
+        signal: function(channelName, evt){
             var
             channel = this.slots[channelName],
             results = [],
-            mod,func
+            mod
+
             if (!channel) return results
-            
-            events = events || []
+            evt = evt || []
 
             for(var key in channel){
                 mod = modules[key]
-                results.push(channel[key].apply(mod, events))
+                results.push(channel[key].apply(mod, evt))
             }
             return results
+        },
+        step: function(channelName, evt){
+            this.signals[channelName] = evt
+            this.signal(channelName, evt)
         }
     }
 
@@ -383,13 +387,15 @@
         LOAD:           {value:'load',          writable:false, configurable:false, enumerable:true},
         STATE_CHANGE:   {value:'stateChange',   writable:false, configurable:false, enumerable:true},
         HASH_CHANGE:    {value:'hashChange',    writable:false, configurable:false, enumerable:true},
-        slots:          {value:'hashChange',    writable:false, configurable:false, enumerable:false},
+        slots:          {value:{},              writable:false, configurable:false, enumerable:false},
+        signals:        {value:{},              writable:false, configurable:false, enumerable:false},
     })
 
     pico.prototype = {
         slot: pico.slot,
         unslot: pico.unslot,
-        signal: pico.signal
+        signal: pico.signal,
+        step: pico.step,
     }
 
     !function(){

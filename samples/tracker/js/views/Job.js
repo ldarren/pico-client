@@ -1,6 +1,6 @@
 var
 CONST = require('const'),
-tpl = require('html/job.html')
+tpl = require('@html/job.html')
 
 me.Class = Backbone.View.extend({
     model: null,
@@ -8,10 +8,10 @@ me.Class = Backbone.View.extend({
         this.model = options.model
     },
 
-    getHeader: function(){
+    header: function(){
         return {
             title: 'Job',
-            left: 'left-nav',
+            left: ['left-nav'],
         }
     },
 
