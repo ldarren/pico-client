@@ -46,11 +46,12 @@
         }
     },
     vm = function(scriptLink, script, cb){
-        script = '"use strict";\n'+script+(envs.production ? '' : '\n//# sourceURL='+scriptLink)
+        // some external libraries dun play nice with use strict
+        script = script+(envs.production ? '' : '\n//# sourceURL='+scriptLink)
         var
         deps = [],
         ancestorLink,
-        mod = parseFunc(createMod(scriptLink, getMod(scriptLink)), function(l){var d=modules[l];if(d)return d;deps.push(l);},function(l){ ancestorLink=l }, script)
+        mod = parseFunc(createMod(scriptLink, getMod(scriptLink)), function(l){var d=modules[l];if(d)return d;deps.push(l)},function(l){ancestorLink=l}, script)
        
         if (!mod) return cb('error parsing '+scriptLink)
         if (!ancestorLink && !deps.length){ // no inherit and no require
@@ -64,7 +65,7 @@
         loadLink(ancestorLink, function(err, ancestor){
             if (err) return cb(err)
 
-            var mod = parseFunc(createMod(scriptLink, getMod(scriptLink), ancestor), getMod, dummyCB, script)
+            var mod = parseFunc(createMod(scriptLink, getMod(scriptLink), ancestor), getMod, dummyCB, '"use strict";\n'+script)
             modules[scriptLink] = mod
             loadDeps(deps, function(err){
                 if (err) return cb(err)
