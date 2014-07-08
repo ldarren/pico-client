@@ -7,6 +7,14 @@
     paths = {'*':''},
     envs = {production:true},
     dummyCB = function(){},
+    dummyObj = {},
+    dummyGlobal = function(g){
+        var o = {}
+        for(var k in g)
+            if (g[k] instanceof Function) o[k] = dummyCB
+            else o[k] = dummyObj
+        return o
+    }(window || global),
     consoleCB = function(){console.log(arguments)},
     hash = function(str){
         var hash = 0
@@ -36,9 +44,9 @@
         if (mod) return mod
         return modules[link] = mod = {}
     },
-    parseFunc = function(me, require, inherit, script){
+    parseFunc = function(global, me, require, inherit, script){
         try{
-            Function('me', 'require', 'inherit', script).call(window, me, require, inherit)
+            Function('me', 'require', 'inherit', 'window', script).call(global, me, require, inherit, global)
             return me
         }catch(exp){
             //console.error(exp.fileName+' ('+exp.lineNumber+':'+exp.columnNumber+')')
@@ -46,32 +54,22 @@
         }
     },
     vm = function(scriptLink, script, cb){
-        // some external libraries dun play nice with use strict
-        script = script+(envs.production ? '' : '\n//# sourceURL='+scriptLink)
+        // 2 evaluation passes, 1st is a dry run to get deps, after loading deps, do the actual run
         var
-        deps = [],
+        deps=[],
         ancestorLink,
-        mod = parseFunc(createMod(scriptLink, getMod(scriptLink)), function(l){var d=modules[l];if(d)return d;deps.push(l)},function(l){ancestorLink=l}, script)
-       
-        if (!mod) return cb('error parsing '+scriptLink)
-        if (!ancestorLink && !deps.length){ // no inherit and no require
-            modules[scriptLink] = mod
-            mod.signal(pico.LOAD)
-            cb(null, mod)
-            script = mod = undefined
-            return
-        }
+        mod = parseFunc(dummyGlobal, createMod(scriptLink, getMod(scriptLink)), function(l){var d=modules[l];if(d)return d;deps.push(l)},function(l){ancestorLink=l}, script)
 
         loadLink(ancestorLink, function(err, ancestor){
             if (err) return cb(err)
 
-            var mod = parseFunc(createMod(scriptLink, getMod(scriptLink), ancestor), getMod, dummyCB, '"use strict";\n'+script)
+            mod = parseFunc(window, createMod(scriptLink, getMod(scriptLink), ancestor), getMod, dummyCB, '"use strict"\n'+script+(envs.production ? '' : '//# sourceURL='+scriptLink))
             modules[scriptLink] = mod
             loadDeps(deps, function(err){
                 if (err) return cb(err)
                 mod.signal(pico.LOAD)
                 cb(null, mod)
-                ancestor = script = mod = undefined
+                deps = ancestorLink = ancestor = script = mod = undefined
             })
         })
     },
