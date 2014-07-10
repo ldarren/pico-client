@@ -3,7 +3,6 @@ route = require('route'),
 tpl = require('@html/frame.html'),
 ModelProjects = require('models/Projects'),
 ModelWidgets = require('models/Widgets'),
-ModelPage = require('models/Page'),
 ModelFields = require('models/Fields'),
 ViewEditor = require('views/Editor'),
 ViewProjects = require('views/Projects'),
@@ -16,7 +15,6 @@ me.Class = Backbone.View.extend({
     el: 'body',
     projects: null,
     widgets: null,
-    page: null,
     fields: null,
     panelTop: null,
     panelBtm: null,
@@ -24,7 +22,6 @@ me.Class = Backbone.View.extend({
     initialize: function(options){
         this.projects = new ModelProjects.Class
         this.widgets = new ModelWidgets.Class
-        this.page = new ModelPage.Class
         this.fields = new ModelFields.Class
 
         this.el.innerHTML = tpl.text
@@ -41,6 +38,9 @@ me.Class = Backbone.View.extend({
             return
         }
 
+        delete this.panelTop
+        delete this.panelBtm
+
         switch(path){
         case 'widget':
             this.panelTop = new ViewWidget.Class({el:'#panelTop', model:this.widgets.get(params[0]), editor:this.editor})
@@ -55,6 +55,11 @@ me.Class = Backbone.View.extend({
             this.panelBtm = new ViewWidgets.Class({el:'#panelBtm', collection:this.widgets, editor:this.editor})
             break
         }
+
+        console.log(this.panelTop instanceof ViewWidget.Class)
+        console.log(this.panelTop instanceof ViewProject.Class)
+        console.log(this.panelTop instanceof ViewWidgets.Class)
+        console.log(this.panelTop instanceof ViewProjects.Class)
 
         this.render()
     },

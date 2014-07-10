@@ -3,7 +3,7 @@ route = require('route'),
 tpl = require('@html/projects.html'),
 Project = Backbone.View.extend({
     tagName: 'div',
-    className: 'project',
+    className: 'item',
     attributes: function(){
         return { id: 'p'+this.model.id }
     },
@@ -28,7 +28,7 @@ me.Class = Backbone.View.extend({
         this.editor = options.editor
     },
     events:{
-        'click .project': 'openProject'
+        'click .item': 'openProject'
     },
     render: function(){
         this.el.innerHTML = tpl.text
@@ -39,9 +39,7 @@ me.Class = Backbone.View.extend({
     },
     openProject: function(e){
         var id = e.target.id
-        if (id){
-            route.instance.navigate('project/'+id.substr(1), {trigger:true})
-        }else{
+        if ('createProject' === id){
             this.collection.create(null,{
                 data:{
                     name: this.editor.read(),
@@ -51,6 +49,8 @@ me.Class = Backbone.View.extend({
                     route.instance.navigate('project/'+data.id, {trigger:true})
                 }
             })
+        }else{
+            route.instance.navigate('project/'+id.substr(1), {trigger:true})
         }
     }
 })

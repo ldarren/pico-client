@@ -3,7 +3,7 @@ route = require('route'),
 tpl = require('@html/widgets.html'),
 Widget = Backbone.View.extend({
     tagName: 'div',
-    className: 'widget',
+    className: 'item',
     attributes: function(){
         return { id: 'w'+this.model.id }
     },
@@ -28,7 +28,7 @@ me.Class = Backbone.View.extend({
         this.editor = options.editor
     },
     events:{
-        'click .widget': 'openWidget'
+        'click .item': 'openWidget'
     },
     render: function(){
         this.el.innerHTML = tpl.text

@@ -23,11 +23,30 @@ body{
 .access-right{
     padding-right:10px;
 }
-form input[type=file]{
-    height:0px;
-    overflow:hidden
+
+.row{
+    border-bottom: 1px solid #eee;
 }
-img.media-object{
-    height:64px;
-    width:auto;
+.row:hover{
+    background-color:#ddd;
+}
+.item{
+    cursor: pointer;
+    padding: 2px 0;
+}
+.control{
+    display:block;
+    text-align:center;
+}
+.subItem{
+    display:block;
+    text-align:right;
+}
+.icon{
+    float: right;
+    font-size:14px;
+    line-height:16px;
+    width:16px;
+    text-align:center;
+    cursor: pointer;
 }
