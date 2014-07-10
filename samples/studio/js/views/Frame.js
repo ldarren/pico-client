@@ -5,6 +5,7 @@ ModelProjects = require('models/Projects'),
 ModelWidgets = require('models/Widgets'),
 ModelConstants = require('models/Constants'),
 ViewEditor = require('views/Editor'),
+ViewDevice = require('views/Device'),
 ViewProjects = require('views/Projects'),
 ViewProject = require('views/Project'),
 ViewWidgets = require('views/Widgets'),
@@ -19,6 +20,7 @@ me.Class = Backbone.View.extend({
     panelTop: null,
     panelBtm: null,
     editor: null,
+    device: null,
     initialize: function(options){
         this.projects = new ModelProjects.Class
         this.widgets = new ModelWidgets.Class
@@ -26,6 +28,8 @@ me.Class = Backbone.View.extend({
 
         this.el.innerHTML = tpl.text
         this.editor = new ViewEditor.Class({id:'editor', theme:'ace/theme/monokai'})
+        this.device = new ViewDevice.Class()
+        this.device.render()
 
         var r = route.instance
         r.on('route', this.changePanel, this)
