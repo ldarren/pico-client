@@ -9,6 +9,8 @@ pico.start({
         pico: 'lib/pico/lib/',
     }
 },function(){
+    require('views/Panel')
+
     var
     network = require('network'),
     ViewFrame = require('views/Frame')

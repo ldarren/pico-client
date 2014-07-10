@@ -1,8 +1,8 @@
 me.Class = Backbone.View.extend({
     editor: null,
-    initialize: function(options){
-        var editor = ace.edit(options.id)
-        editor.setTheme(options.theme || 'ace/theme/monokai')
+    initialize: function(args){
+        var editor = ace.edit(args.id)
+        editor.setTheme(args.theme || 'ace/theme/monokai')
         this.editor = editor
     },
 
@@ -12,5 +12,10 @@ me.Class = Backbone.View.extend({
 
     read: function(){
         return this.editor.getSession().toString()
+    },
+
+    insert: function(text){
+        var e = this.editor
+        e.getSession().insert(e.getCursorPosition(), text)
     }
 })

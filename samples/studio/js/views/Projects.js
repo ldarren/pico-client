@@ -1,4 +1,5 @@
 var
+Panel = require('views/Panel'),
 route = require('route'),
 tpl = require('@html/projects.html'),
 Project = Backbone.View.extend({
@@ -13,19 +14,18 @@ Project = Backbone.View.extend({
     }
 })
 
-me.Class = Backbone.View.extend({
-    editor: null,
-    initialize: function(options){
+me.Class = Panel.Class.extend({
+    initialize: function(args){
+        Panel.Class.prototype.initialize(args)
+
         var
         self = this,
-        c = options.collection
+        c = this.collection
 
         if (c.length) c.each(function(m){self.addProject(m, c)})
         else c.fetch()
 
         this.listenTo(c, 'add', this.addProject)
-
-        this.editor = options.editor
     },
     events:{
         'click .item': 'openProject'
@@ -39,18 +39,25 @@ me.Class = Backbone.View.extend({
     },
     openProject: function(e){
         var id = e.target.id
-        if ('createProject' === id){
+
+        switch(id){
+        case 'createProject':
+            var name = this.editor.read()
+            if (!name) return alert('Please enter a name')
             this.collection.create(null,{
+                wait: true,
                 data:{
-                    name: this.editor.read(),
+                    name: name,
                     json: {}
                 },
                 success: function(collection, data){
                     route.instance.navigate('project/'+data.id, {trigger:true})
                 }
             })
-        }else{
+            break
+        default:
             route.instance.navigate('project/'+id.substr(1), {trigger:true})
+            break
         }
     }
 })

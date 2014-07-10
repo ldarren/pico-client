@@ -1,4 +1,5 @@
 var
+Panel = require('views/Panel'),
 route = require('route'),
 tpl = require('@html/widgets.html'),
 Widget = Backbone.View.extend({
@@ -13,19 +14,17 @@ Widget = Backbone.View.extend({
     }
 })
 
-me.Class = Backbone.View.extend({
-    editor: null,
-    initialize: function(options){
+me.Class = Panel.Class.extend({
+    initialize: function(args){
+        Panel.Class.prototype.initialize(args)
         var
         self = this,
-        c = options.collection
+        c = args.collection
 
         if (c.length) c.each(function(m){self.addWidget(m, c)})
         else c.fetch()
 
         this.listenTo(c, 'add', this.addWidget)
-
-        this.editor = options.editor
     },
     events:{
         'click .item': 'openWidget'
@@ -35,22 +34,29 @@ me.Class = Backbone.View.extend({
         return this.el
     },
     addWidget: function(model, collection){
-        this.$el.append((new Widget.Class({model:model})).render())
+        this.$el.append((new Widget({model:model})).render())
     },
     openWidget: function(e){
         var id = e.target.id
-        if (id){
-            route.instance.navigate('widget/'+id.substr(1), {trigger:true})
-        }else{
+
+        switch(id){
+        case 'createWidget':
+            var name = this.editor.read()
+            if (!name) return alert('Please enter a name')
             this.collection.create(null,{
+                wait: true,
                 data:{
-                    name: this.editor.read(),
+                    name: name,
                     json: {}
                 },
                 success: function(collection, data){
                     route.instance.navigate('widget/'+data.id, {trigger:true})
                 }
             })
+            break
+        default:
+            route.instance.navigate('widget/'+id.substr(1), {trigger:true})
+            break
         }
     }
 })

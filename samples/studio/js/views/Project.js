@@ -1,4 +1,5 @@
 var
+Panel = require('views/Panel'),
 tplModule = require('@html/module.html'),
 tplProject = require('@html/project.html'),
 Page = Backbone.View.extend({
@@ -25,11 +26,11 @@ Page = Backbone.View.extend({
     }
 })
 
-me.Class = Backbone.View.extend({
-    editor: null,
+me.Class = Panel.Class.extend({
     project: null,
     pages: {},
     initialize: function(args){
+        Panel.Class.prototype.initialize(args)
         var
         self = this,
         m = this.model
@@ -46,8 +47,6 @@ me.Class = Backbone.View.extend({
                 }
             })
         }
-
-        this.editor = args.editor
     },
     render: function(){
         return this.el

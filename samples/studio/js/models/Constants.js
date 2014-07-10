@@ -14,5 +14,5 @@ var Field = Backbone.Model.extend({
 
 me.Class = Backbone.Collection.extend({
     model: Field,
-    url: 'pico/field/list'
+    url: 'pico/constant/list'
 })

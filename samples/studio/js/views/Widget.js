@@ -1,8 +1,10 @@
-var tpl = require('@html/widget.html')
+var
+Panel = require('views/Panel'),
+tpl = require('@html/widget.html')
 
-me.Class = Backbone.View.extend({
-    editor: null,
+me.Class = Panel.Class.extend({
     initialize: function(args){
+        Panel.Class.prototype.initialize(args)
         var
         self = this,
         m = this.model
@@ -19,8 +21,6 @@ me.Class = Backbone.View.extend({
                 }
             })
         }
-
-        this.editor = args.editor
     },
     events: {
         'click #saveWidget': 'saveWidget'
@@ -29,9 +29,7 @@ me.Class = Backbone.View.extend({
         return this.el
     },
     showWidget: function(){
-        var w = JSON.parse(this.model.get('json'))
-        
-        this.editor.load(w, 'json')
+        this.editor.load(this.model.get('json'), 'json')
     },
     saveWidget: function(){
         var m = this.model
