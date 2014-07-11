@@ -42,6 +42,8 @@ me.Class = Backbone.View.extend({
             return
         }
 
+        this.editor.clear()
+
         var
         t = this.panelTop,
         b = this.panelBtm,
@@ -87,7 +89,6 @@ me.Class = Backbone.View.extend({
     },
 
     render: function(views){
-        this.editor.clear()
         var $el = this.$el
         views.forEach(function(view){
             $el.append(view.render())

@@ -37,26 +37,25 @@ me.Class = Panel.Class.extend({
         return this.el
     },
     showWidget: function(){
-        this.editor.load(this.model.get('json'), 'json')
+        this.editor.load(JSON.stringify(this.model.get('json'), null, 4), 'json')
     },
     saveWidget: function(){
-        var m = this.model
-        m.save(null, {
-            data:{
-                id: m.id,
-                json: this.editor.read()
-            },
+        var
+        m = this.model,
+        data = {
+            id: m.id,
+            json: JSON.parse(this.editor.read())
+        }
+
+        m.save(data, {
+            data:data,
             success:function(){
                 alert(m.get('name')+' saved')
             }
         })
     },
     closeWidget: function(){
-        var
-        e = this.editor,
-        m = this.model
-
-        if (m.get('json') === e.read() || confirm('Are you sure?')){
+        if (confirm('Are you sure?')){
             route.instance.navigate('#', {trigger: true})
         }
     }

@@ -39,12 +39,13 @@ me.Class = Panel.Class.extend({
         case 'createWidget':
             var name = this.editor.read()
             if (!name) return alert('Please enter a name')
-            this.collection.create(null,{
+            var data = {
+                name: name,
+                json: {fields:[]}
+            }
+            this.collection.create(data,{
                 wait: true,
-                data:{
-                    name: name,
-                    json: {}
-                },
+                data:data,
                 success: function(collection, data){
                     route.instance.navigate('widget/'+data.id, {trigger:true})
                 }

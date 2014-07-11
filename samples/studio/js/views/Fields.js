@@ -25,6 +25,8 @@ me.Class = Panel.Class.extend({
         this.$el.append(_.template(tplItem.text, model.attributes))
     },
     insertField: function(e){
-        this.editor.insert('hello')
+        var m = this.collection.get(e.target.id.substr(1))
+
+        this.editor.insert(JSON.stringify(m.get('json'), null, 4))
     }
 })

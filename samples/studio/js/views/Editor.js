@@ -7,7 +7,13 @@ me.Class = Backbone.View.extend({
     },
 
     load: function(text, type){
-        this.editor.setSession(ace.createEditSession(text, 'ace/mode/'+type))
+        //this.editor.setSession(ace.createEditSession(text, 'ace/mode/'+type))
+        var
+        e = this.editor,
+        s = e.getSession()
+
+        s.setMode('ace/mode/'+type)
+        s.setValue(text)
     },
 
     read: function(){
@@ -20,6 +26,12 @@ me.Class = Backbone.View.extend({
     },
 
     clear: function(){
-        this.editor.setSession(ace.createEditSession('', 'ace/mode/text'))
+//        this.editor.setSession(ace.createEditSession('', 'ace/mode/text'))
+        var
+        e = this.editor,
+        s = e.getSession()
+
+        s.setMode('ace/mode/text')
+        s.setValue('')
     }
 })
