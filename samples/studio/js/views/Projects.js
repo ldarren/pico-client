@@ -1,20 +1,13 @@
 var
 Panel = require('views/Panel'),
 route = require('route'),
-tpl = require('@html/projects.html'),
-Project = Backbone.View.extend({
-    tagName: 'div',
-    className: 'item',
-    attributes: function(){
-        return { id: 'p'+this.model.id }
-    },
-    render: function(){
-        this.el.textContent = this.model.get('name')
-        return this.el
-    }
-})
+tplItem = require('@html/item.html'),
+tplControl = require('@html/control.html')
 
 me.Class = Panel.Class.extend({
+    controls: [
+        {id:'createProject', name:'[Create Project]'}
+    ],
     initialize: function(args){
         Panel.Class.prototype.initialize(args)
 
@@ -31,11 +24,14 @@ me.Class = Panel.Class.extend({
         'click .item': 'openProject'
     },
     render: function(){
-        this.el.innerHTML = tpl.text
+        var $el = this.$el
+        this.controls.forEach(function(control){
+            $el.prepend(_.template(tplControl.text, control))
+        })
         return this.el
     },
     addProject: function(model, collection){
-        this.$el.append((new Project({model:model})).render())
+        this.$el.append(_.template(tplItem.text, model.attributes))
     },
     openProject: function(e){
         var id = e.target.id

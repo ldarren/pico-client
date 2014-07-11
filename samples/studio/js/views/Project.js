@@ -1,7 +1,8 @@
 var
+route = require('route'),
 Panel = require('views/Panel'),
-tplModule = require('@html/module.html'),
-tplProject = require('@html/project.html'),
+tplSubitem = require('@html/subItem.html'),
+tplControl = require('@html/control.html'),
 Page = Backbone.View.extend({
     tagName:'div',
     title: null,
@@ -20,13 +21,18 @@ Page = Backbone.View.extend({
 
         for(var i=0,l=modules.length; i<l; i++){
             id = modules[i].id
-            $div.append(_.template(tplModule, {id:id, name:c.get(id).get('name')}))
+            $div.append(_.template(tplSubitem, {id:id, name:c.get(id).get('name')}))
         }
         return el
     }
 })
 
 me.Class = Panel.Class.extend({
+    controls: [
+        {id:'createPage', name:'[Create Page]'},
+        {id:'closeProject', name:'[Close Project]'},
+        {id:'saveProject', name:'[Save Project]'},
+    ],
     project: null,
     pages: {},
     initialize: function(args){
@@ -34,8 +40,6 @@ me.Class = Panel.Class.extend({
         var
         self = this,
         m = this.model
-
-        this.el.innerHTML = tplProject.text
 
         if (m.get('json')){
             this.showPage()
@@ -49,7 +53,16 @@ me.Class = Panel.Class.extend({
         }
     },
     render: function(){
+        var $el = this.$el
+        this.controls.forEach(function(control){
+            $el.prepend(_.template(tplControl.text, control))
+        })
         return this.el
+    },
+    events: {
+        'click #saveProject': 'saveProject',
+        'click #closeProject': 'closeProject',
+        'click #createPage': 'createPage'
     },
     showPage: function(){
         var
@@ -67,5 +80,26 @@ me.Class = Panel.Class.extend({
         }
 
         this.project = p
+    },
+    saveProject: function(){
+        var m = this.model
+        m.save(null, {
+            data:{
+                id: m.id,
+                json: this.editor.read()
+            },
+            success:function(){
+                alert(m.get('name')+' saved')
+            }
+        })
+    },
+    closeProject: function(){
+        var e = this.editor
+
+        if (confirm('Are you sure?')){
+            route.instance.navigate('#', {trigger: true})
+        }
+    },
+    createPage: function(){
     }
 })

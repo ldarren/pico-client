@@ -1,15 +1,18 @@
 var
+route = require('route'),
 Panel = require('views/Panel'),
-tpl = require('@html/widget.html')
+tplControl = require('@html/control.html')
 
 me.Class = Panel.Class.extend({
+    controls: [
+        {id:'closeWidget', name:'[Close Widget]'},
+        {id:'saveWidget', name:'[Save Widget]'},
+    ],
     initialize: function(args){
         Panel.Class.prototype.initialize(args)
         var
         self = this,
         m = this.model
-
-        this.el.innerHTML = tpl.text
 
         if (m.get('json')){
             this.showWidget()
@@ -23,9 +26,14 @@ me.Class = Panel.Class.extend({
         }
     },
     events: {
-        'click #saveWidget': 'saveWidget'
+        'click #saveWidget': 'saveWidget',
+        'click #closeWidget': 'closeWidget'
     },
     render: function(){
+        var $el = this.$el
+        this.controls.forEach(function(control){
+            $el.prepend(_.template(tplControl.text, control))
+        })
         return this.el
     },
     showWidget: function(){
@@ -42,5 +50,14 @@ me.Class = Panel.Class.extend({
                 alert(m.get('name')+' saved')
             }
         })
+    },
+    closeWidget: function(){
+        var
+        e = this.editor,
+        m = this.model
+
+        if (m.get('json') === e.read() || confirm('Are you sure?')){
+            route.instance.navigate('#', {trigger: true})
+        }
     }
 })

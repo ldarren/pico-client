@@ -17,5 +17,9 @@ me.Class = Backbone.View.extend({
     insert: function(text){
         var e = this.editor
         e.getSession().insert(e.getCursorPosition(), text)
+    },
+
+    clear: function(){
+        this.editor.setSession(ace.createEditSession('', 'ace/mode/text'))
     }
 })

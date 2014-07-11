@@ -45,6 +45,7 @@ me.Class = Backbone.View.extend({
         var
         t = this.panelTop,
         b = this.panelBtm,
+        changes = [],
         tc,bc,ta,ba
 
         switch(path){
@@ -71,21 +72,25 @@ me.Class = Backbone.View.extend({
         if (!(t instanceof tc)){
             if (t) t.remove()
             t = new tc(ta)
+            changes.push(t)
         }
         if (!(b instanceof bc)){
             if (b) b.remove()
             b = new bc(ba)
+            changes.push(b)
         }
 
         this.panelTop = t
         this.panelBtm = b
 
-        this.render()
+        this.render(changes)
     },
 
-    render: function(){
+    render: function(views){
+        this.editor.clear()
         var $el = this.$el
-        $el.append(this.panelTop.render())
-        $el.append(this.panelBtm.render())
+        views.forEach(function(view){
+            $el.append(view.render())
+        })
     }
 })

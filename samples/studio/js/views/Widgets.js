@@ -1,20 +1,13 @@
 var
 Panel = require('views/Panel'),
 route = require('route'),
-tpl = require('@html/widgets.html'),
-Widget = Backbone.View.extend({
-    tagName: 'div',
-    className: 'item',
-    attributes: function(){
-        return { id: 'w'+this.model.id }
-    },
-    render: function(){
-        this.el.textContent = this.model.get('name')
-        return this.el
-    }
-})
+tplItem = require('@html/item.html'),
+tplControl = require('@html/control.html')
 
 me.Class = Panel.Class.extend({
+    controls: [
+        {id:'createWidget', name:'[Create Widget]'}
+    ],
     initialize: function(args){
         Panel.Class.prototype.initialize(args)
         var
@@ -30,11 +23,14 @@ me.Class = Panel.Class.extend({
         'click .item': 'openWidget'
     },
     render: function(){
-        this.el.innerHTML = tpl.text
+        var $el = this.$el
+        this.controls.forEach(function(control){
+            $el.prepend(_.template(tplControl.text, control))
+        })
         return this.el
     },
     addWidget: function(model, collection){
-        this.$el.append((new Widget({model:model})).render())
+        this.$el.append(_.template(tplItem.text, model.attributes))
     },
     openWidget: function(e){
         var id = e.target.id
