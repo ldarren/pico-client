@@ -6,7 +6,7 @@ me.Class = Backbone.View.extend({
         this.editor = editor
     },
 
-    load: function(text, type){
+    write: function(text, type){
         //this.editor.setSession(ace.createEditSession(text, 'ace/mode/'+type))
         var
         e = this.editor,

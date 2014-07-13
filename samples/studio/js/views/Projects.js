@@ -40,12 +40,17 @@ me.Class = Panel.Class.extend({
         case 'createProject':
             var name = this.editor.read()
             if (!name) return alert('Please enter a name')
-            this.collection.create(null,{
+            var data = {
+                name: name,
+                json: {
+                    routes:{},
+                    models:{},
+                    pages:{}
+                }
+            }
+            this.collection.create(data,{
                 wait: true,
-                data:{
-                    name: name,
-                    json: {}
-                },
+                data:data,
                 success: function(collection, data){
                     route.instance.navigate('project/'+data.id, {trigger:true})
                 }

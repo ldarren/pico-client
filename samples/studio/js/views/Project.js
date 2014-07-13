@@ -2,28 +2,26 @@ var
 route = require('route'),
 Panel = require('views/Panel'),
 tplSubitem = require('@html/subItem.html'),
+tplItem = require('@html/item.html'),
 tplControl = require('@html/control.html'),
 Page = Backbone.View.extend({
-    tagName:'div',
     title: null,
+    page:null,
     initialize: function(args){
         this.title = args.title
+        this.page = args.page
     },
-    render: function(){
-        var el = this.el
-        el.textContent = this.title
+    render: function($container){
+        $container.append(_.template(tplItem.text, {id:this.title, name:this.title}))
 
         var 
-        div = document.createElement('div')
-        $div = $(div),
-        modules = model.module,
+        modules = this.page.modules,
         id
 
         for(var i=0,l=modules.length; i<l; i++){
             id = modules[i].id
-            $div.append(_.template(tplSubitem, {id:id, name:c.get(id).get('name')}))
+            $container.append(_.template(tplSubitem.text, {id:id, name:c.get(id).get('name')}))
         }
-        return el
     }
 })
 
@@ -33,21 +31,24 @@ me.Class = Panel.Class.extend({
         {id:'closeProject', name:'[Close Project]'},
         {id:'saveProject', name:'[Save Project]'},
     ],
-    project: null,
-    pages: {},
+    pageList:{},
+    pages: null,
+    routes: null,
+    models: null,
+    selectedItem: null,
     initialize: function(args){
         Panel.Class.prototype.initialize(args)
-        var
-        self = this,
-        m = this.model
+
+        var m = this.model
 
         if (m.get('json')){
-            this.showPage()
+            this.showProject()
         }else{
+            var self = this
             m.fetch({
                 data:{ id: m.id },
                 success:function(){
-                    self.showPage()
+                    self.showProject()
                 }
             })
         }
@@ -60,38 +61,90 @@ me.Class = Panel.Class.extend({
         return this.el
     },
     events: {
-        'click #saveProject': 'saveProject',
-        'click #closeProject': 'closeProject',
-        'click #createPage': 'createPage'
+        'click .item': 'selectItem'
     },
-    showPage: function(){
+    selectItem: function(e){
+        this.saveItem()
         var
-        c = this.collection,
-        pages = this.pages,
-        $el = this.$el,
-        p = JSON.parse(this.model.get('json')),
-        pageIds = Object.keys(p),
-        pageId
+        item = e.target.id,
+        id = item.substr(1)
 
-        for(var i=0,l=pageIds.length; i<l; i++){
-            pageId = pageIds[i]
-            pages[pageId] = new Page({title:pageId,model:p[pageId],collection:c})
-            $el.append(pages[pageId].render())
+        if (this.selectedItem === id){
+            this.selectedItem = null
+            this.editor.clear()
+            return
         }
 
-        this.project = p
+        switch(item){
+        case 'saveProject': this.saveProject(); break
+        case 'closeProject': this.closeProject(); break
+        case 'createPage': this.createPage(); break
+        case 'iroutes': this.showRoutes(); break
+        case 'imodels': this.showModels(); break
+        default: this.showPage(id); break
+        }
+    },
+    showProject: function(){
+        var
+        c = this.collection,
+        $el = this.$el,
+        p = this.model.get('json')
+
+        this.routes = p.routes
+        this.models = p.models
+
+        var
+        pageList = {},
+        pages = p.pages,
+        pageIds = Object.keys(pages),
+        pageId
+            
+        $el.append(_.template(tplItem.text, {id:'routes', name:'Routes'}))
+        $el.append(_.template(tplItem.text, {id:'models', name:'Models'}))
+
+        
+        for(var i=0,l=pageIds.length; i<l; i++){
+            pageId = pageIds[i]
+            pageList[pageId] = new Page({title:pageId,page:pages[pageId],collection:c})
+            pageList[pageId].render($el)
+        }
+
+        this.pages = pages
+        this.pageList = pageList
     },
     saveProject: function(){
-        var m = this.model
-        m.save(null, {
-            data:{
-                id: m.id,
-                json: this.editor.read()
-            },
+        var
+        m = this.model,
+        data = {
+            id: m.id,
+            json: {
+                models: this.models,
+                routes: this.routes,
+                pages: this.pages
+            }
+        }
+        m.save(data, {
+            data:data,
             success:function(){
                 alert(m.get('name')+' saved')
             }
         })
+    },
+    saveItem: function(){
+        var item = this.selectedItem
+        if (!item) return
+
+        try{
+            var changes = JSON.parse(this.editor.read())
+        }catch(exp){
+            return
+        }
+
+        switch(item){
+        case 'routes': this.routes = changes; break
+        case 'models': this.models = changes; break
+        default: this.pages[item] = changes; break
+        }
     },
     closeProject: function(){
         var e = this.editor
@@ -101,5 +154,27 @@ me.Class = Panel.Class.extend({
         }
     },
     createPage: function(){
+        var
+        pages = this.pages,
+        pageList = this.pageList,
+        pageId = this.editor.read()
+
+        if (!pageId) alert('please enter a name')
+        pages[pageId] = {modules:[]}
+        pageList[pageId] = new Page({title:pageId,page:pages[pageId],collection:this.collection})
+        pageList[pageId].render(this.$el)
+        this.showPage(pageId)
+    },
+    showRoutes: function(){
+        this.selectedItem = 'routes'
+        this.editor.write(JSON.stringify(this.routes, null, 4), 'json')
+    },
+    showModels: function(){
+        this.selectedItem = 'models'
+        this.editor.write(JSON.stringify(this.models, null, 4), 'json')
+    },
+    showPage: function(id){
+        this.selectedItem = id
+        this.editor.write(JSON.stringify(this.pages[id], null, 4), 'json')
     }
 })
