@@ -42,7 +42,7 @@
     getMod = function(link){
         var mod = modules[link]
         if (mod) return mod
-        return modules[link] = mod = {}
+        return modules[link] = {}
     },
     parseFunc = function(global, me, require, inherit, script){
         try{
@@ -57,13 +57,14 @@
         // 2 evaluation passes, 1st is a dry run to get deps, after loading deps, do the actual run
         var
         deps=[],
-        ancestorLink,
-        mod = parseFunc(dummyGlobal, createMod(scriptLink, getMod(scriptLink)), function(l){var d=modules[l];if(d)return d;deps.push(l)},function(l){ancestorLink=l}, script)
+        ancestorLink
+
+        parseFunc(dummyGlobal, createMod(scriptLink, getMod(scriptLink)), function(l){var d=modules[l];if(d)return d;deps.push(l)},function(l){ancestorLink=l}, script)
 
         loadLink(ancestorLink, function(err, ancestor){
             if (err) return cb(err)
 
-            mod = parseFunc(window, createMod(scriptLink, getMod(scriptLink), ancestor), getMod, dummyCB, '"use strict"\n'+script+(envs.production ? '' : '//# sourceURL='+scriptLink))
+            var mod = parseFunc(window, createMod(scriptLink, getMod(scriptLink), ancestor), getMod, dummyCB, '"use strict"\n'+script+(envs.production ? '' : '//# sourceURL='+scriptLink))
             modules[scriptLink] = mod
             loadDeps(deps, function(err){
                 if (err) return cb(err)
