@@ -40,11 +40,16 @@ me.Class = Panel.Class.extend({
         this.editor.write(JSON.stringify(this.model.get('json'), null, 4), 'json')
     },
     saveWidget: function(){
-        var
-        m = this.model,
-        data = {
-            id: m.id,
-            json: JSON.parse(this.editor.read())
+        try{
+            var
+            m = this.model,
+            data = {
+                id: m.id,
+                json: JSON.parse(this.editor.read())
+            }
+        }catch(ex){
+            alert('invalid json: '+ex.message)
+            return
         }
 
         m.save(data, {

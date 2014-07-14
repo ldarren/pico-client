@@ -28,7 +28,11 @@ me.Class = Backbone.View.extend({
         s.insert(e.getCursorPosition(), text)
 
         if ('json' === type){
-            var json = JSON.parse(this.read())
+            try{
+                var json = JSON.parse(this.read())
+            }catch(ex){
+                return
+            }
             e.selectAll()
             e.removeLines()
             s.insert(e.getCursorPosition(), JSON.stringify(json, null, 4))
