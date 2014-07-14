@@ -20,9 +20,19 @@ me.Class = Backbone.View.extend({
         return this.editor.getSession().toString()
     },
 
-    insert: function(text){
-        var e = this.editor
-        e.getSession().insert(e.getCursorPosition(), text)
+    insert: function(text, type){
+        var
+        e = this.editor,
+        s = e.getSession()
+
+        s.insert(e.getCursorPosition(), text)
+
+        if ('json' === type){
+            var json = JSON.parse(this.read())
+            e.selectAll()
+            e.removeLines()
+            s.insert(e.getCursorPosition(), JSON.stringify(json, null, 4))
+        }
     },
 
     clear: function(){

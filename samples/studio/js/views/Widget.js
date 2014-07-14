@@ -37,7 +37,7 @@ me.Class = Panel.Class.extend({
         return this.el
     },
     showWidget: function(){
-        this.editor.load(JSON.stringify(this.model.get('json'), null, 4), 'json')
+        this.editor.write(JSON.stringify(this.model.get('json'), null, 4), 'json')
     },
     saveWidget: function(){
         var

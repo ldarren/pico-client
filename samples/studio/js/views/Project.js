@@ -12,18 +12,38 @@ Page = Backbone.View.extend({
         this.page = args.page
     },
     render: function($container){
-        $container.append(_.template(tplItem.text, {id:this.title, name:this.title}))
-
         var 
+        t = this.title,
         modules = this.page.modules,
-        id
+        module
+
+        $container.append(_.template(tplItem.text, {id:t, name:t}))
 
         for(var i=0,l=modules.length; i<l; i++){
-            id = modules[i].id
-            $container.append(_.template(tplSubitem.text, {id:id, name:c.get(id).get('name')}))
+            module = modules[i]
+            $container.append(_.template(tplSubitem.text, {id:t+'.'+module.id, name:module.name}))
         }
     }
-})
+}),
+indexOfModule = function(id, pages){
+    var
+    pm = id.split('.'),
+    pageId = pm[0],
+    moduleId = parseInt(pm[1]),
+    modules = pages[pageId].modules,
+    index = -1,
+    module
+
+    modules.every(function(mod, i){
+        if (mod.id === moduleId) {
+            index = i 
+            module = mod
+            return false
+        }
+        return true
+    })
+    return [module, pageId, moduleId, index]
+}
 
 me.Class = Panel.Class.extend({
     controls: [
@@ -81,7 +101,10 @@ me.Class = Panel.Class.extend({
         case 'createPage': this.createPage(); break
         case 'iroutes': this.showRoutes(); break
         case 'imodels': this.showModels(); break
-        default: this.showPage(id); break
+        default:
+            if (e.target.classList.contains('subItem')) this.showModule(id)
+            else this.showPage(id)
+            break
         }
     },
     showProject: function(){
@@ -143,7 +166,15 @@ me.Class = Panel.Class.extend({
         switch(item){
         case 'routes': this.routes = changes; break
         case 'models': this.models = changes; break
-        default: this.pages[item] = changes; break
+        default:
+            if (-1 === item.indexOf('.')){
+                this.pages[item] = changes
+            } else {
+                var result = indexOfModule(item, this.pages)
+                if (!result[0]) return
+                this.pages[result[1]].modules.splice(result[3], 1, changes)
+            }
+            break
         }
     },
     closeProject: function(){
@@ -176,5 +207,13 @@ me.Class = Panel.Class.extend({
     showPage: function(id){
         this.selectedItem = id
         this.editor.write(JSON.stringify(this.pages[id], null, 4), 'json')
+    },
+    showModule: function(id){
+        this.selectedItem = id
+
+        var result = indexOfModule(id, this.pages)
+        if (!result[0]) return
+
+        this.editor.write(JSON.stringify(result[0], null, 4), 'json')
     }
 })

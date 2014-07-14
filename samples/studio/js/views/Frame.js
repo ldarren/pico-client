@@ -61,13 +61,13 @@ me.Class = Backbone.View.extend({
             tc = ViewProject.Class
             ta = {id:'panelTop', model:this.projects.get(params[0]), collection:this.widgets, editor:this.editor}
             bc = ViewWidgets.Class
-            ba = {id:'panelBtm', collection:this.widgets, editor:this.editor}
+            ba = {id:'panelBtm', collection:this.widgets, editor:this.editor, mode:'use'}
             break
         default:
             tc = ViewProjects.Class
             ta = {id:'panelTop', collection:this.projects, editor:this.editor}
             bc = ViewWidgets.Class
-            ba = {id:'panelBtm', collection:this.widgets, editor:this.editor}
+            ba = {id:'panelBtm', collection:this.widgets, editor:this.editor, mode:'edit'}
             break
         }
 
@@ -75,11 +75,15 @@ me.Class = Backbone.View.extend({
             if (t) t.remove()
             t = new tc(ta)
             changes.push(t)
+        }else{
+            t.$el.trigger('reinit', ta)
         }
         if (!(b instanceof bc)){
             if (b) b.remove()
             b = new bc(ba)
             changes.push(b)
+        }else{
+            b.$el.trigger('reinit', ba)
         }
 
         this.panelTop = t

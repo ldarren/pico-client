@@ -5,34 +5,46 @@ tplItem = require('@html/item.html'),
 tplControl = require('@html/control.html')
 
 me.Class = Panel.Class.extend({
+    editMode: true,
     controls: [
         {id:'createWidget', name:'[Create Widget]'}
     ],
     initialize: function(args){
+        this.reinit(null, args)
+
+        this.listenTo(this.collection, 'add', this.addWidget)
+    },
+    events:{
+        'click .item': 'selectWidget',
+        'reinit': 'reinit'
+    },
+    reinit: function(evt, args){
         Panel.Class.prototype.initialize(args)
+        this.editMode = 'edit' === args.mode
+
         var
         self = this,
-        c = args.collection
+        c = this.collection = args.collection,
+        $el = this.$el
+
+        $el.empty()
+
+        if (this.editMode){
+            this.controls.forEach(function(control){
+                $el.prepend(_.template(tplControl.text, control))
+            })
+        }
 
         if (c.length) c.each(function(m){self.addWidget(m, c)})
         else c.fetch()
-
-        this.listenTo(c, 'add', this.addWidget)
-    },
-    events:{
-        'click .item': 'openWidget'
     },
     render: function(){
-        var $el = this.$el
-        this.controls.forEach(function(control){
-            $el.prepend(_.template(tplControl.text, control))
-        })
         return this.el
     },
     addWidget: function(model, collection){
         this.$el.append(_.template(tplItem.text, model.attributes))
     },
-    openWidget: function(e){
+    selectWidget: function(e){
         var id = e.target.id
 
         switch(id){
@@ -46,13 +58,18 @@ me.Class = Panel.Class.extend({
             this.collection.create(data,{
                 wait: true,
                 data:data,
-                success: function(collection, data){
-                    route.instance.navigate('widget/'+data.id, {trigger:true})
+                success: function(collection, res){
+                    route.instance.navigate('widget/'+res.id, {trigger:true})
                 }
             })
             break
         default:
-            route.instance.navigate('widget/'+id.substr(1), {trigger:true})
+            if (this.editMode){
+                route.instance.navigate('widget/'+id.substr(1), {trigger:true})
+            }else{
+                var m = this.collection.get(id.substr(1)).attributes
+                this.editor.insert(JSON.stringify({id:m.id, name:m.name, fields:m.json.fields}), 'json')
+            }
             break
         }
     }

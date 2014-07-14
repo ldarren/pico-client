@@ -27,6 +27,6 @@ me.Class = Panel.Class.extend({
     insertField: function(e){
         var m = this.collection.get(e.target.id.substr(1))
 
-        this.editor.insert(JSON.stringify(m.get('json'), null, 4))
+        this.editor.insert(JSON.stringify(m.get('json')), 'json')
     }
 })
