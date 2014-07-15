@@ -44,6 +44,9 @@
         if (mod) return mod
         return modules[link] = {}
     },
+    getModAsync = function(link, cb){
+        return cb ? loadLink(link, cb) : getMod(link)
+    },
     parseFunc = function(global, me, require, inherit, script){
         try{
             Function('me', 'require', 'inherit', 'window', script).call(global, me, require, inherit, global)
@@ -64,7 +67,7 @@
         loadLink(ancestorLink, function(err, ancestor){
             if (err) return cb(err)
 
-            var mod = parseFunc(window, createMod(scriptLink, getMod(scriptLink), ancestor), getMod, dummyCB, '"use strict"\n'+script+(envs.production ? '' : '//# sourceURL='+scriptLink))
+            var mod = parseFunc(window, createMod(scriptLink, getMod(scriptLink), ancestor), getModAsync, dummyCB, '"use strict"\n'+script+(envs.production ? '' : '//# sourceURL='+scriptLink))
             modules[scriptLink] = mod
             loadDeps(deps, function(err){
                 if (err) return cb(err)

@@ -22,7 +22,7 @@ onSend = function(req){
 
 me.slot(pico.LOAD, function(){
     Net.create({
-        url: 'SERVER_URL',
+        url: 'API_URL',
         delimiter: ['&'],
         beatRate: 500,
     }, function(err, netClient){

@@ -3,19 +3,19 @@ pico.start({
     production: false,
     paths:{
         '*': 'js/',
-        views: 'js/views/',
         html: 'html/',
-        models: 'js/models/',
+        modules: 'js/modules/',
         pico: 'lib/pico/lib/',
+        pageslider: 'lib/pageslider/pageslider',
     }
 },function(){
     var
     network = require('network'),
-    ViewFrame = require('views/Frame')
+    Frame = require('Frame')
 
     me.slot(pico.LOAD, function(){
         network.slot('connected', function(project){
-            new ViewFrame.Class({project: project})
+            new Frame.Class({project: project})
         })
     })
 })
