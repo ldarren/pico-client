@@ -191,7 +191,8 @@ me.Class = Panel.Class.extend({
         pageId = this.editor.read()
 
         if (!pageId) alert('please enter a name')
-        pages[pageId] = {modules:[]}
+
+        pages[pageId] = {init:[],modules:[]}
         pageList[pageId] = new Page({title:pageId,page:pages[pageId],collection:this.collection})
         pageList[pageId].render(this.$el)
         this.showPage(pageId)
