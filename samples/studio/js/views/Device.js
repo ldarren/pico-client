@@ -1,8 +1,11 @@
 var
-tpl = require('@html/device.html')
+tpl = require('@html/device.html'),
+home = '<div class=deviceContent><input type=url name=url></input></div>',
+iframe = '<iframe src=URL class=deviceContent width=321 height=569 frameBorder=0 seamless=seamless></iframe>'
 
 me.Class = Backbone.View.extend({
     el: '#device',
+    url: null,
     initialize:function(args){
     },
     render:function(){
@@ -10,12 +13,22 @@ me.Class = Backbone.View.extend({
         return this.el
     },
     events:{
-        'keyup .deviceContent > input': 'changeView'
+        'keyup .deviceContent > input': 'changeView',
+        'click .button.back': 'back',
+        'click .button.reload': 'reload'
     },
     changeView: function(e){
         if (13 === e.keyCode){
-            var url = e.target.value
-            this.$el.html('<iframe src='+url+' class=deviceContent width=321 height=569 frameBorder=0 seamless=seamless></iframe>')
+            var url = this.url = e.target.value
+            this.$('.deviceContent').replaceWith(iframe.replace('URL', url))
+            this.$('.button').removeClass('hidden')
         }
+    },
+    back: function(e){
+        this.$('.deviceContent').replaceWith(home)
+        this.$('.button').addClass('hidden')
+    },
+    reload: function(e){
+        this.$('.deviceContent').replaceWith(iframe.replace('URL', this.url))
     }
 })
