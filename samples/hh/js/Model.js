@@ -1,7 +1,7 @@
 me.Class = Backbone.Collection.extend({
     initialize: function(models, path){
         this.url = path.list
-        this.model = new (Backbone.Model.extend({
+        this.model = Backbone.Model.extend({
             sync: function(method, model, options){
                 var url = path[method]
                 if (url){
@@ -10,6 +10,6 @@ me.Class = Backbone.Collection.extend({
                 }
                 return options.success()
             }
-        }))
+        })
     }
 })

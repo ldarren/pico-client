@@ -1,11 +1,11 @@
 me.Class = Backbone.View.extend({
     name: '',
     host: null,
-    options: null,
+    fields: null,
     initialize: function(options){
-        this.name = options.name
+        this.name = options.name.toString()
         this.host = options.host
-        this.options = options
+        this.fields = options.fields.slice()
         return options.fields
     },
     getOptions: function(fields){

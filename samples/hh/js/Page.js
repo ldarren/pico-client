@@ -10,10 +10,11 @@ loadModules = function(srcList, destList, pageOptions, cb){
         if (err) return cb(err)
         var
         options = {},
-        fields = {}
+        fields = []
 
         src.fields.forEach(function(field){
-            fields[field.name] = ('@' === field.value[0]) ? pageOptions[field.value.substr(1)] : field.value
+            field.value = ('@' === field.value[0]) ? pageOptions[field.value.substr(1)] : field.value
+            fields.push(field)
         })
         options['name'] = name
         options['host'] = self 

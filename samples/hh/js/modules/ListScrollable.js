@@ -7,8 +7,9 @@ me.Class = Module.Class.extend({
     initialize: function(options){
         var
         self = this,
-        fields = Module.Class.prototype.initialize(options),
-        index, indexKey, sub, models, doctorId, url
+        fields = Module.Class.prototype.initialize.call(this, options),
+        models = {},
+        index, indexKey, sub, doctorId, url
 
         for(var f,i=0,l=fields.length; i<l; i++){
             f = fields[i]
@@ -44,16 +45,16 @@ me.Class = Module.Class.extend({
                     self.addRow(model)
                 })
             }else{
-                (new (Backbone.Model.extend())).fetch({
+                (new (Backbone.Model)).fetch({
                     url: url,
                     data:{ doctorId: doctorId },
                     success:function(model, raw){
-                        var model
+                        var coll 
                         for(var key in raw){
                             if (key === indexKey) continue
-                            model = models[key]
-                            if (!model) continue
-                            model.add(raw[key])
+                            coll = models[key]
+                            if (!coll) continue
+                            coll.add(raw[key])
                         }
                         index.add(raw[indexKey])
                     }
@@ -67,7 +68,8 @@ me.Class = Module.Class.extend({
     },
 
     addRow: function(model){
-        var $ul = this.$('ul')
+        var
+        $ul = this.$('ul'),
         view = new this.subModule.Class(this.getOptions([{name:'item', type:'model', value:model, extra:'item'}]))
         $ul.append(view.render())
     }

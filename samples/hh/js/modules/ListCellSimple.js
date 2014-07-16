@@ -9,13 +9,13 @@ me.Class = Module.Class.extend({
     result:null,
     initialize: function(options){
         var
-        fields = Module.Class.prototype.initialize(options),
+        fields = Module.Class.prototype.initialize.call(this, options),
         patients, issues
 
         for(var f,i=0,l=fields.length; i<l; i++){
             f = fields[i]
             switch(f.type){
-            case 'type':
+            case 'model':
                 if ('item' === f.extra) {
                     this.result = f.value
                     continue
@@ -35,7 +35,7 @@ me.Class = Module.Class.extend({
         var p=this.patient, r=this.result
         this.$el.html(_.template(tpl.text, {
             url: 'crr/' + r.id,
-            title: p.name+' ('+p.get('ic')+')',
+            title: p.get('name')+' ('+p.get('ic')+')',
             desc: r.get('desc')
         }))
         return this.el
