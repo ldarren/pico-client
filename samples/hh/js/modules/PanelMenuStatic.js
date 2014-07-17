@@ -16,8 +16,9 @@ me.Class = Module.Class.extend({
 
         $el.html(this.template({}))
         var $ul = $el.find('ul')
-        for(var name in fields){
-            $ul.append(tpl.text.replace('URL', fields[name]).replace('NAME', name))
+        for(var f,i=0,l=fields.length; i<l; i++){
+            f = fields[i]
+            $ul.append(tpl.text.replace('URL', f.value).replace('NAME', f.name))
         }
 
         return this.$el
