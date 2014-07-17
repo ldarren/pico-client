@@ -11,5 +11,6 @@ me.Class = Backbone.Collection.extend({
                 return options.success()
             }
         })
+        if (path.preload) this.fetch()
     }
 })

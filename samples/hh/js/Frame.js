@@ -12,12 +12,17 @@ changeRoute = function(path, params){
     if (!pageConfig.data){
         var
         data = {},
-        k,v
+        d,k,v
 
         for(var init=pageConfig.init,i=0,l=init.length; i<l; i++){
             k = init[i]
             v = k.value
-            data[k.name] = ('@' === v[0]) ? (k.param ? this.models[v.substr(1)].get(params[k.param]) : this.models[v.substr(1)]) : v
+            d = ('@' === v[0]) ? (k.param > -1 ? this.models[v.substr(1)].get(params[k.param]) : this.models[v.substr(1)]) : v
+            if (!d){
+                console.warn(path+' missing: '+k.name)
+                return Router.instance.navigate('', {trigger: true})
+            }
+            data[k.name] = d
         }
         pageConfig.data = data
     }

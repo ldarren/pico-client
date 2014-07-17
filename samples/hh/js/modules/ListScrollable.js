@@ -70,7 +70,7 @@ me.Class = Module.Class.extend({
     addRow: function(model){
         var
         $ul = this.$('ul'),
-        view = new this.subModule.Class(this.getOptions([{name:'item', type:'model', value:model, extra:'item'}]))
+        view = new this.subModule.Class(this.addOptions([{name:'item', type:'model', value:model, extra:'item'}]))
         $ul.append(view.render())
     }
 })

@@ -8,11 +8,18 @@ me.Class = Backbone.View.extend({
         this.fields = options.fields.slice()
         return options.fields
     },
-    getOptions: function(fields){
+    addOptions: function(fields){
         return {
             name: this.name.toString(),
             host: this.host,
             fields: (fields || []).concat(this.fields.slice())
+        }
+    },
+    createOptions: function(fields){
+        return {
+            name: this.name.toString(),
+            host: this.host,
+            fields: (fields || [])
         }
     },
     invalidate: function(){

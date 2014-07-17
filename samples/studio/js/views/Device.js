@@ -1,11 +1,11 @@
 var
 tpl = require('@html/device.html'),
-home = '<div class=deviceContent><input type=url name=url></input></div>',
+home = '<div class=deviceContent><input type=url name=url value=URL></input></div>',
 iframe = '<iframe src=URL class=deviceContent width=321 height=569 frameBorder=0 seamless=seamless></iframe>'
 
 me.Class = Backbone.View.extend({
     el: '#device',
-    url: null,
+    url: '',
     initialize:function(args){
     },
     render:function(){
@@ -25,7 +25,7 @@ me.Class = Backbone.View.extend({
         }
     },
     back: function(e){
-        this.$('.deviceContent').replaceWith(home)
+        this.$('.deviceContent').replaceWith(home.replace('URL', this.url))
         this.$('.button').addClass('hidden')
     },
     reload: function(e){
