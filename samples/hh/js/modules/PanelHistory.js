@@ -35,7 +35,7 @@ me.Class = Module.Class.extend({
             patientHistory = history.where({patientId:patientId})
             
             if (patientHistory.length){
-                self.addRows(patientHistory)
+                self.addRows(mod, patientHistory)
             }else{
                 (new Backbone.Collection).fetch({
                     url: 'hh/history/list',
@@ -44,7 +44,7 @@ me.Class = Module.Class.extend({
                         results.add(raw.result)
                         issues.add(raw.issue)
                         history.add(raw.history)
-                        self.addRows(history.where({patientId:patientId}))
+                        self.addRows(mod, history.where({patientId:patientId}))
                     }
                 })
             }
@@ -55,7 +55,7 @@ me.Class = Module.Class.extend({
         return this.$el
     },
 
-    addRows: function(history){
+    addRows: function(mod, history){
         var
         self = this,
         $el = self.$el,
@@ -65,7 +65,7 @@ me.Class = Module.Class.extend({
             options.push({
                 name: 'desc',
                 type:'text',
-                value: self.issues.get(model.get('issueId'))+': '+self.results.get(model.get('resultId'))
+                value: self.issues.get(model.get('issueId')).get('desc')+': '+self.results.get(model.get('resultId')).get('desc')
             })
         })
         

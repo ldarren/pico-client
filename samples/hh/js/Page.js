@@ -13,8 +13,7 @@ loadModules = function(srcList, destList, pageOptions, cb){
         fields = []
 
         src.fields.forEach(function(field){
-            field.value = ('@' === field.value[0]) ? pageOptions[field.value.substr(1)] : field.value
-            fields.push(field)
+            fields.push({name:field.name, type:field.type, value:('@' === field.value[0]) ? pageOptions[field.value.substr(1)] : field.value, extra:field.extra})
         })
         options['name'] = name
         options['host'] = self 
@@ -35,11 +34,17 @@ me.Class = Backbone.View.extend({
             $el.append('<div class=module id=mod'+mod.name+'></div>')
         })
 
-        loadModules.call(this, options.modules, {}, options.data, function(err, modList){
+        loadModules.call(this, options.modules.slice(), {}, options.data, function(err, modList){
             if (err) return console.error(err)
             self.modules = modList
             self.render()
         })
+    },
+    header: function(){
+        return {
+            title: 'HH',
+            left:['left-nav']
+        }
     },
     render: function(){
         for(var k in this.modules){

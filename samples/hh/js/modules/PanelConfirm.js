@@ -9,6 +9,8 @@ me.Class = Module.Class.extend({
         var
         fields = Module.Class.prototype.initialize.call(this, options)
 
+        this.options.length = 0
+
         for(var f,i=0,l=fields.length; i<l; i++){
             f = fields[i]
             switch(f.type){

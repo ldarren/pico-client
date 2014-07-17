@@ -34,17 +34,17 @@ me.Class = Module.Class.extend({
         }
 
         this.$el.html(this.template())
-        this.listenTo(index, 'add', this.addRow)
+        //this.listenTo(index, 'add', this.addRow)
 
         require('modules/'+sub, function(err, mod){
             if (err) return console.error(err)
             self.subModule = mod
-
+/*
             if (index.length){
                 index.forEach(function(model){
                     self.addRow(model)
                 })
-            }else{
+            }else*/{
                 (new (Backbone.Model)).fetch({
                     url: url,
                     data:{ doctorId: doctorId },
@@ -56,7 +56,10 @@ me.Class = Module.Class.extend({
                             if (!coll) continue
                             coll.add(raw[key])
                         }
-                        index.add(raw[indexKey])
+                        index.add(raw[indexKey], {silence:true})
+                        index.forEach(function(model){
+                            self.addRow(model)
+                        })
                     }
                 })
             }
