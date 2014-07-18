@@ -9,7 +9,7 @@ me.Class = Panel.Class.extend({
         {id:'createProject', name:'[Create Project]'}
     ],
     initialize: function(args){
-        Panel.Class.prototype.initialize(args)
+        Panel.Class.prototype.initialize.call(this, args)
 
         var
         self = this,
@@ -44,7 +44,7 @@ me.Class = Panel.Class.extend({
                 name: name,
                 json: {
                     routes:{},
-                    models:{},
+                    spec:[],
                     pages:{}
                 }
             }

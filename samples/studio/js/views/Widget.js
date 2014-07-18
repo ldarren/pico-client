@@ -9,7 +9,7 @@ me.Class = Panel.Class.extend({
         {id:'saveWidget', name:'[Save Widget]'},
     ],
     initialize: function(args){
-        Panel.Class.prototype.initialize(args)
+        Panel.Class.prototype.initialize.call(this, args)
         var
         self = this,
         m = this.model
@@ -61,7 +61,7 @@ me.Class = Panel.Class.extend({
     },
     closeWidget: function(){
         if (confirm('Are you sure?')){
-            route.instance.navigate('#', {trigger: true})
+            route.instance.navigate('', {trigger: true})
         }
     }
 })

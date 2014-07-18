@@ -5,22 +5,11 @@ tplItem = require('@html/item.html'),
 tplControl = require('@html/control.html')
 
 me.Class = Panel.Class.extend({
-    editMode: true,
     controls: [
         {id:'createWidget', name:'[Create Widget]'}
     ],
     initialize: function(args){
-        this.reinit(null, args)
-
-        this.listenTo(this.collection, 'add', this.addWidget)
-    },
-    events:{
-        'click .item': 'selectWidget',
-        'reinit': 'reinit'
-    },
-    reinit: function(evt, args){
-        Panel.Class.prototype.initialize(args)
-        this.editMode = 'edit' === args.mode
+        Panel.Class.prototype.initialize.call(this, args)
 
         var
         self = this,
@@ -29,14 +18,19 @@ me.Class = Panel.Class.extend({
 
         $el.empty()
 
-        if (this.editMode){
-            this.controls.forEach(function(control){
-                $el.prepend(_.template(tplControl.text, control))
-            })
-        }
+        this.controls.forEach(function(control){
+            $el.prepend(_.template(tplControl.text, control))
+        })
+
+        this.listenTo(this.collection, 'add', this.addWidget)
 
         if (c.length) c.each(function(m){self.addWidget(m, c)})
         else c.fetch()
+    },
+    events:{
+        'click .item': 'selectWidget',
+    },
+    reinit: function(evt, args){
     },
     render: function(){
         return this.el
@@ -53,7 +47,7 @@ me.Class = Panel.Class.extend({
             if (!name) return alert('Please enter a name')
             var data = {
                 name: name,
-                json: {fields:[]}
+                json: []
             }
             this.collection.create(data,{
                 wait: true,
@@ -64,12 +58,7 @@ me.Class = Panel.Class.extend({
             })
             break
         default:
-            if (this.editMode){
-                route.instance.navigate('widget/'+id.substr(1), {trigger:true})
-            }else{
-                var m = this.collection.get(id.substr(1)).attributes
-                this.editor.insert(JSON.stringify({id:m.id, name:m.name, fields:m.json.fields}), 'json')
-            }
+            route.instance.navigate('widget/'+id.substr(1), {trigger:true})
             break
         }
     }

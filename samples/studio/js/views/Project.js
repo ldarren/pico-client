@@ -57,7 +57,7 @@ me.Class = Panel.Class.extend({
     models: null,
     selectedItem: null,
     initialize: function(args){
-        Panel.Class.prototype.initialize(args)
+        Panel.Class.prototype.initialize.call(this, args)
 
         var m = this.model
 
@@ -192,7 +192,7 @@ me.Class = Panel.Class.extend({
 
         if (!pageId) alert('please enter a name')
 
-        pages[pageId] = {init:[],modules:[]}
+        pages[pageId] = []
         pageList[pageId] = new Page({title:pageId,page:pages[pageId],collection:this.collection})
         pageList[pageId].render(this.$el)
         this.showPage(pageId)
