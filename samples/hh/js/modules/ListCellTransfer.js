@@ -5,9 +5,6 @@ tpl = require('@html/listCell.html')
 me.Class = Module.Class.extend({
     tagName: 'li',
     className: 'table-view-cell',
-    patient:null,
-    ward:null,
-    transfer:null,
     initialize: function(options){
         var
         fields = Module.Class.prototype.initialize.call(this, options),

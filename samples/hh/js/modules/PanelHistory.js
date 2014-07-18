@@ -1,8 +1,6 @@
 var Module = require('Module')
 
 me.Class = Module.Class.extend({
-    issues: null,
-    results: null,
     initialize: function(options){
         var
         self = this,

@@ -44,16 +44,6 @@ changeRoute = function(path, params){
 
 me.Class = Backbone.View.extend({
     el: 'body',
-    slider: null,
-    pages: null,
-    models: null,
-    currPage: null,
-    $popover: null,
-    $search: null,
-    $leftBar: null,
-    $titleOptions: null,
-    $title: null,
-    $rightBar: null,
     initialize: function(args){
         this.el.innerHTML = tpl.text
         this.slider = new PageSlider.Class(this.$el)

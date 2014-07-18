@@ -2,24 +2,21 @@ var
 Module = require('Module')
 
 me.Class = Module.Class.extend({
-    info:[],
     initialize: function(options){
         var
         fields = Module.Class.prototype.initialize.call(this, options),
+        info = [],
         title
 
-        this.info.length = 0
-
-        for(var f,i=0,l=fields.length; i<l; i++){
-            f = fields[i]
+        for(var f,i=0,l=fields.length; i<l,f=fields[i]; i++){
             switch(f.type){
             case 'text':
                 if ('title' === f.name) title = f.value
-                else this.info.push(f)
+                else info.push(f)
                 break
             }
         }
-
+        this.info = info
         this.$el.html('<h5 class=content-padded>'+title+'</h5><div class=card><ul class=table-view></ul></div>')
     },
     render: function(){

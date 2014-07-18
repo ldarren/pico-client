@@ -24,7 +24,6 @@ loadModules = function(srcList, destList, pageOptions, cb){
 }
 
 me.Class = Backbone.View.extend({
-    modules: {},
     initialize: function(options){
         var
         self = this,
