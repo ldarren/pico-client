@@ -4,47 +4,6 @@ Router = require('Router'),
 Page = require('Page'),
 Model = require('Model'),
 tpl = require('@html/frame.html'),
-spawnPoint = window.history.length,
-$popover,$topBar, $search, $leftBar, $titleOptions, $title, $rightBar,
-initHeader = function(frame){
-    $popover = frame.$('#popOptions ul.table-view')
-
-    $topBar = frame.$('header.bar')
-    $search = $topBar.find('input[type=search]')
-    $leftBar = $topBar.find('.pull-left')
-    $titleOptions = $topBar.find('h1#options.title')
-    $title = $topBar.find('h1#simple.title')
-    $rightBar = $topBar.find('.pull-right')
-
-    if (!pico.detectEvent('touchstart')){
-        document.addEventListener('mousedown', function(e){
-            var touches = []
-
-            touches[0] = {}
-            touches[0].pageX = e.pageX
-            touches[0].pageY = e.pageY
-            touches[0].target = e.target
-
-            var evt = new Event('touchstart', {
-                bubbles: true,
-                cancelable: true,
-                details:{
-                    target: e.target,
-                    srcElement: e.srcElement,
-                    touches: touches,
-                    changedTouches: touches,
-                    targetTouches: touches,
-                    mouseToTouch: true
-                }   
-            }) 
-
-            e.target.dispatchEvent(evt)
-        }, true)
-    }
-    
-    // Start Backbone history a necessary step for bookmarkable URL's
-    Backbone.history.start()
-},
 addToolbar = function($bar, icons){
     var icon, a
     for(var i=0,l=icons.length;i<l;i++){
@@ -54,44 +13,6 @@ addToolbar = function($bar, icons){
         a.id = icon
         a.className = 'icon icon-'+icon
         $bar.append(a)
-    }
-},
-drawHeader = function(bar){
-    $leftBar.empty()
-    $rightBar.empty()
-    if (!bar){
-        $title.addClass('hidden')
-        $titleOptions.addClass('hidden')
-        $search.removeClass('hidden').focus()
-        return
-    }
-    $search.addClass('hidden').blur()
-    var optionKeys = bar.options
-    if (optionKeys && optionKeys.length){
-        $titleOptions[0].firstChild.firstChild.textContent = bar.title
-        $title.addClass('hidden')
-        $titleOptions.removeClass('hidden')
-        $popover.empty()
-        _.each(optionKeys, function(key){
-            $popover.append($(OPTION_TPL.replace('KEY', key).replace('VALUE', router.links[key])))
-        })
-    }else{
-        $title.text(bar.title)
-        $title.removeClass('hidden')
-        $titleOptions.addClass('hidden')
-    }
-    if (bar.left){
-        addToolbar($leftBar, bar.left)
-    }
-    if (bar.right){
-        addToolbar($rightBar, bar.right)
-    }
-},
-back = function(e){
-    if (window.history.length > spawnPoint){
-        window.history.back()
-    }else{
-        Router.instance.navigate('', {trigger: true})
     }
 },
 changeRoute = function(path, params){
@@ -127,6 +48,12 @@ me.Class = Backbone.View.extend({
     pages: null,
     models: null,
     currPage: null,
+    $popover: null,
+    $search: null,
+    $leftBar: null,
+    $titleOptions: null,
+    $title: null,
+    $rightBar: null,
     initialize: function(args){
         this.el.innerHTML = tpl.text
         this.slider = new PageSlider.Class(this.$el)
@@ -143,11 +70,11 @@ me.Class = Backbone.View.extend({
         for (var m in ms){ 
             models[m] = new Model.Class(null, ms[m])
         }
-        initHeader(this)
+        this.initHeader()
     },
 
     render: function(){
-        drawHeader(this.currPage.header())
+        this.drawHeader(this.currPage.header())
         this.slider.slidePage(this.currPage.render())
     },
 
@@ -164,8 +91,8 @@ me.Class = Backbone.View.extend({
         id = ele.id
 
         switch(id){
-        case 'left-nav': back(); break
-        case 'search': drawHeader(); break
+        case 'left-nav': window.history.back(); break
+        case 'search': this.drawHeader(); break
         default: this.currPage.$el.trigger(id)
         }
 
@@ -173,10 +100,10 @@ me.Class = Backbone.View.extend({
     },
 
     onFind: function(e){
-        this.currPage.$el.trigger('find', [$search.val()])
+        this.currPage.$el.trigger('find', [this.$search.val()])
         if (13 === e.keyCode){
-            $search.val('')
-            drawHeader(this.currPage.header())
+            this.$search.val('')
+            this.drawHeader(this.currPage.header())
         }
     },
 
@@ -184,5 +111,83 @@ me.Class = Backbone.View.extend({
         var id = e.srcElement.id
         if ('#' === id.charAt(0)) return this.currPage.$el.trigger(id.substr(1))
         Router.instance.navigate(e.srcElement.id, {trigger:true})
+    },
+    initHeader: function(){
+        this.$popover = this.$('#popOptions ul.table-view')
+
+        var $topBar = this.$('header.bar')
+        this.$search = $topBar.find('input[type=search]')
+        this.$leftBar = $topBar.find('.pull-left')
+        this.$rightBar = $topBar.find('.pull-right')
+        this.$titleOptions = $topBar.find('h1#options.title')
+        this.$title = $topBar.find('h1#simple.title')
+
+        if (!pico.detectEvent('touchstart')){
+            document.addEventListener('mousedown', function(e){
+                var touches = []
+
+                touches[0] = {}
+                touches[0].pageX = e.pageX
+                touches[0].pageY = e.pageY
+                touches[0].target = e.target
+
+                var evt = new Event('touchstart', {
+                    bubbles: true,
+                    cancelable: true,
+                    details:{
+                        target: e.target,
+                        srcElement: e.srcElement,
+                        touches: touches,
+                        changedTouches: touches,
+                        targetTouches: touches,
+                        mouseToTouch: true
+                    }   
+                }) 
+
+                e.target.dispatchEvent(evt)
+            }, true)
+        }
+        
+        // Start Backbone history a necessary step for bookmarkable URL's
+        Backbone.history.start()
+    },
+    drawHeader: function(bar){
+        var
+        $popover = this.$popover,
+        $search = this.$search,
+        $leftBar = this.$leftBar,
+        $rightBar = this.$rightBar,
+        $titleOptions = this.$titleOptions,
+        $title = this.$title
+
+        $leftBar.empty()
+        $rightBar.empty()
+        if (!bar){
+            $title.addClass('hidden')
+            $titleOptions.addClass('hidden')
+            $search.removeClass('hidden').focus()
+            return
+        }
+        $search.addClass('hidden').blur()
+        var optionKeys = bar.options
+        if (optionKeys && optionKeys.length){
+            $titleOptions[0].firstChild.firstChild.textContent = bar.title
+            $title.addClass('hidden')
+            $titleOptions.removeClass('hidden')
+            $popover.empty()
+            _.each(optionKeys, function(key){
+                $popover.append($(OPTION_TPL.replace('KEY', key).replace('VALUE', router.links[key])))
+            })
+        }else{
+            $title.text(bar.title)
+            $title.removeClass('hidden')
+            $titleOptions.addClass('hidden')
+        }
+        if (bar.left){
+            addToolbar($leftBar, bar.left)
+        }
+        if (bar.right){
+            addToolbar($rightBar, bar.right)
+        }
     }
 })
