@@ -8,17 +8,12 @@ loadModules = function(srcList, destList, pageOptions, cb){
 
     require('modules/'+name, function(err, mod){
         if (err) return cb(err)
-        var
-        options = {},
-        fields = []
+        var fields = []
 
         src.fields.forEach(function(field){
             fields.push({name:field.name, type:field.type, value:('@' === field.value[0]) ? pageOptions[field.value.substr(1)] : field.value, extra:field.extra})
         })
-        options['name'] = name
-        options['host'] = self 
-        options['fields'] = fields
-        destList[name] = new mod.Class(options)
+        destList[name] = new mod.Class({name:name, host:self, fields:fields})
         loadModules.call(self, srcList, destList, pageOptions, cb)
     })
 }

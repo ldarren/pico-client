@@ -202,8 +202,10 @@
             eventName = 'on' + eventName
             var isSupported = (eventName in el) || (eventName in window)
             if (!isSupported) {
-                el.setAttribute(eventName, 'return')
+                el.setAttribute(eventName, '')
                 isSupported = 'function' === typeof el[eventName]
+                el[eventName] = undefined
+                el.removeAttribute(eventName)
             }
             el = undefined
             return isSupported

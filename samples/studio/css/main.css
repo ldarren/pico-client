@@ -40,7 +40,9 @@ body{
 }
 .subItem{
     display:block;
-    text-align:right;
+}
+.subItem:before{
+    content:' - '
 }
 .icon{
     float: right;

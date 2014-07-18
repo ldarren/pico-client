@@ -55,8 +55,7 @@ me.Class = Module.Class.extend({
                             if (!coll) continue
                             coll.add(raw[key])
                         }
-                        index.add(raw[indexKey], {silence:true})
-                        index.forEach(function(model){
+                        index.add(raw[indexKey]).forEach(function(model){
                             self.addRow(model)
                         })
                     }
