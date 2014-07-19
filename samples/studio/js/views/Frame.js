@@ -43,10 +43,11 @@ me.Class = Backbone.View.extend({
 
         switch(path){
         case 'widget':
+            var m = this.widgets.get(params[0])
             tc = ViewWidget.Class
-            ta = {id:'panelTop', model:this.widgets.get(params[0]), editor:this.editor}
+            ta = {id:'panelTop', model:m, editor:this.editor}
             bc = ViewSpec.Class
-            ba = {id:'panelBtm', collection:this.widgets, editor:this.editor}
+            ba = {id:'panelBtm', collection:this.widgets, model:m, editor:this.editor}
             break
         case 'project':
             tc = ViewProject.Class

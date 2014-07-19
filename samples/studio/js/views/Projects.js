@@ -44,6 +44,7 @@ me.Class = Panel.Class.extend({
                 name: name,
                 json: {
                     routes:{},
+                    theme:{},
                     spec:[],
                     pages:{}
                 }
