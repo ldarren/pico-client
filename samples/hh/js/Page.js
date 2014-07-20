@@ -1,14 +1,18 @@
 me.Class = Backbone.View.extend({
     initialize: function(options){
-        var $el = this.$el
-
         this.spec = options.spec
         this.header = options.header
         this.modules = {}
 
+        var
+        self = this,
+        $el = this.$el
+
         this.spec.forEach(function(s){
-            self.modules[s.name] = new s.value.Class(s)
-            if ('module' === s.type) $el.append('<div class=module id=mod'+s.name+'></div>')
+            if ('module' === s.type) {
+                self.modules[s.name] = new s.Class(s)
+                $el.append('<div class=module id=mod'+s.name+'></div>')
+            }
         })
         this.render()
     },

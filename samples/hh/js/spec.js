@@ -1,10 +1,11 @@
 var
 Model = require('Model'),
 find = function(name, list){ for(var i=0,l=list.length,o; i<l,o=list[i]; i++){ if (name === o.name) return o } },
-load = function(context, params, spec, deps, cb){
+load = function(host, params, spec, deps, cb){
     if (!spec.length) return cb(null, deps)
 
     var
+    context = host ? host.spec : [],
     s = spec.pop(),
     t = s.type,
     f
@@ -24,10 +25,10 @@ load = function(context, params, spec, deps, cb){
     case 'module':
         require('modules/'+s.name, function(err, mod){
             if (err) return cb(err)
-            deps.push({name:s.name, type:t, value: mod, spec:s.value})
-            load(context, params, spec, deps, cb)
+            deps.push({name:s.name, type:t, value:s.value, Class:mod.Class, host:host})
+            load(host, params, spec, deps, cb)
         })
-        break
+        return
     case 'param':
         deps.push({name:s.name, type:t, value:params[s.value]})
         break
@@ -35,9 +36,9 @@ load = function(context, params, spec, deps, cb){
         deps.push(s)
         break
     }
-    if ('module' !== t) load(context, params, spec, deps, cb)
+    load(host, params, spec, deps, cb)
 }
 
-me.load = function(context, params, spec, cb){
-    load(context, params, spec.slice(), [], cb)
+me.load = function(host, params, spec, cb){
+    load(host, params, spec.slice(), [], cb)
 }

@@ -24,7 +24,7 @@ changeRoute = function(path, params){
     if (!pageConfig) return
 
     if (this.currPage) this.currPage.remove()
-    spec.load(this.spec, params, pageConfig.spec, function(err, s){
+    spec.load(this.currPage, params, pageConfig.spec, function(err, s){
         if (err) return console.error(err)
         self.currPage = new Page.Class({header: pageConfig.header, spec: s})
         self.render()
@@ -44,7 +44,7 @@ me.Class = Backbone.View.extend({
 
         r.on('route', changeRoute, this)
         this.pages = p.pages
-        spec.load([], [], p.spec, function(err, s){
+        spec.load(null, [], p.spec, function(err, s){
             if (err) return console.error(err)
             self.spec = s
             self.initHeader()
