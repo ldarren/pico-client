@@ -1,5 +1,6 @@
 var
 PageSlider = require('pageslider'),
+spec = require('spec'),
 Router = require('Router'),
 Page = require('Page'),
 Model = require('Model'),
@@ -16,30 +17,18 @@ addToolbar = function($bar, icons){
     }
 },
 changeRoute = function(path, params){
-    var pageConfig = this.pages[path]
+    var
+    self = this,
+    pageConfig = this.pages[path]
 
     if (!pageConfig) return
 
-    var
-    data = {},
-    d,k,v
-
-    for(var init=pageConfig.init,i=0,l=init.length; i<l; i++){
-        k = init[i]
-        v = k.value
-        d = ('@' === v[0]) ? (k.param > -1 ? this.models[v.substr(1)].get(params[k.param]) : this.models[v.substr(1)]) : v
-        if (!d){
-            console.warn(path+' missing: '+k.name)
-            return Router.instance.navigate('', {trigger: true})
-        }
-        data[k.name] = d
-    }
-    pageConfig.data = data
-
     if (this.currPage) this.currPage.remove()
-    this.currPage = new Page.Class(pageConfig)
-
-    this.render()
+    spec.load(this.spec, params, pageConfig.spec, function(err, s){
+        if (err) return console.error(err)
+        self.currPage = new Page.Class({header: pageConfig.header, spec: s})
+        self.render()
+    })
 }
 
 me.Class = Backbone.View.extend({
@@ -49,22 +38,21 @@ me.Class = Backbone.View.extend({
         this.slider = new PageSlider.Class(this.$el)
 
         var 
+        self = this,
         p = args.project,
-        ms = p.models,
-        models = this.models = {},
         r = Router.instance = new Router.Class({routes: p.routes})
 
         r.on('route', changeRoute, this)
         this.pages = p.pages
-
-        for (var m in ms){ 
-            models[m] = new Model.Class(null, ms[m])
-        }
-        this.initHeader()
+        spec.load([], [], p.spec, function(err, s){
+            if (err) return console.error(err)
+            self.spec = s
+            self.initHeader()
+        })
     },
 
     render: function(){
-        this.drawHeader(this.currPage.header())
+        this.drawHeader(this.currPage.header)
         this.slider.slidePage(this.currPage.render())
     },
 
@@ -93,7 +81,7 @@ me.Class = Backbone.View.extend({
         this.currPage.$el.trigger('find', [this.$search.val()])
         if (13 === e.keyCode){
             this.$search.val('')
-            this.drawHeader(this.currPage.header())
+            this.drawHeader(this.currPage.header)
         }
     },
 

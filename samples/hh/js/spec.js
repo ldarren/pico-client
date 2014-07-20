@@ -19,12 +19,12 @@ load = function(context, params, spec, deps, cb){
         deps.push({name:s.name, type:t, value:f.value.get(params[s.param])})
         break
     case 'models':
-        deps.push({name:s.name, type:t, value:new Model.Class(s.value)})
+        deps.push({name:s.name, type:t, value:new Model.Class(null, s.value)})
         break
     case 'module':
-        require('modules/'+s.value, function(err, mod){
+        require('modules/'+s.name, function(err, mod){
             if (err) return cb(err)
-            deps.push({name:s.name, type:t, value: mod})
+            deps.push({name:s.name, type:t, value: mod, spec:s.value})
             load(context, params, spec, deps, cb)
         })
         break

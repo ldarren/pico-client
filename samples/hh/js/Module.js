@@ -2,24 +2,24 @@ me.Class = Backbone.View.extend({
     initialize: function(options){
         this.name = options.name.toString()
         this.host = options.host
-        this.fields = options.fields.slice()
-        return options.fields
+        this.spec= options.spec.slice()
+        return options.sepc
     },
-    addOptions: function(fields){
+    addOptions: function(spec){
         return {
             name: this.name.toString(),
             host: this.host,
-            fields: (fields || []).concat(this.fields.slice())
+            spec: (spec || []).concat(this.spec.slice())
         }
     },
-    createOptions: function(fields){
+    createOptions: function(spec){
         return {
             name: this.name.toString(),
             host: this.host,
-            fields: fields || []
+            spec: spec || []
         }
     },
     invalidate: function(){
-        this.host.$el.trigger('invalidate', this.name)
+        this.host.$el.trigger('invalidate', this.name, this)
     }
 })

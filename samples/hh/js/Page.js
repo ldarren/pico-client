@@ -1,58 +1,29 @@
-var
-loadModules = function(srcList, destList, pageOptions, cb){
-    if (!srcList.length) return cb(null, destList)
-    var
-    self = this,
-    src = srcList.pop(),
-    name = src.name
-
-    require('modules/'+name, function(err, mod){
-        if (err) return cb(err)
-        var fields = []
-
-        src.fields.forEach(function(field){
-            fields.push({name:field.name, type:field.type, value:('@' === field.value[0]) ? pageOptions[field.value.substr(1)] : field.value, extra:field.extra})
-        })
-        destList[name] = new mod.Class({name:name, host:self, fields:fields})
-        loadModules.call(self, srcList, destList, pageOptions, cb)
-    })
-}
-
 me.Class = Backbone.View.extend({
     initialize: function(options){
-        var
-        self = this,
-        $el = this.$el
+        var $el = this.$el
 
-        options.modules.forEach(function(mod){
-            $el.append('<div class=module id=mod'+mod.name+'></div>')
-        })
+        this.spec = options.spec
+        this.header = options.header
+        this.modules = {}
 
-        loadModules.call(this, options.modules.slice(), {}, options.data, function(err, modList){
-            if (err) return console.error(err)
-            self.modules = modList
-            self.render()
+        this.spec.forEach(function(s){
+            self.modules[s.name] = new s.value.Class(s)
+            if ('module' === s.type) $el.append('<div class=module id=mod'+s.name+'></div>')
         })
-    },
-    header: function(){
-        return {
-            title: 'HH',
-            left:['left-nav']
-        }
+        this.render()
     },
     render: function(){
-        for(var k in this.modules){
-            this.invalidate(null, k)
-        }
+        var self = this
+        this.spec.forEach(function(s){
+            if ('module' === s.type) self.drawModule(null, s.name, self.modules[s.name])
+        })
         return this.$el
     },
     events: {
-        'invalidate': 'invalidate'
+        'invalidate': 'drawModule'
     },
-    invalidate: function(evt, modName){
-        var
-        $mod = this.$('#mod'+modName),
-        mod = this.modules[modName]
+    drawModule: function(evt, modName, mod){
+        var $mod = this.$('#mod'+modName)
         if (!mod || !$mod.length) return
 
         $mod.html(mod.render())
