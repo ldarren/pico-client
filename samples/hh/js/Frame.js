@@ -21,11 +21,14 @@ changeRoute = function(path, params){
     self = this,
     pageConfig = this.pages[path]
 
-    if (!pageConfig) return
+    if (!pageConfig) return Router.instance.navigate('', {trigger: true})
 
     if (this.currPage) this.currPage.remove()
     spec.load(this, params, pageConfig.spec, function(err, s){
-        if (err) return console.error(err)
+        if (err) {
+            console.warn(err)
+            return Router.instance.navigate('', {trigger: true})
+        }
         self.currPage = new Page.Class({header: pageConfig.header, spec: s})
         self.render()
     })

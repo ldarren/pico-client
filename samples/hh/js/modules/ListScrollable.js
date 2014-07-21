@@ -6,6 +6,7 @@ me.Class = Module.Class.extend({
     className: 'table-view',
     initialize: function(options){
         var self = this
+        this.on('invalidate', this.drawModule)
 
         Module.Class.prototype.initialize.call(this, options, function(err, spec){
             var
@@ -43,10 +44,6 @@ me.Class = Module.Class.extend({
         })
     },
 
-    events:{
-        invalidate: 'drawModule'
-    },
-
     render: function(){
         return this.$el
     },
@@ -56,7 +53,7 @@ me.Class = Module.Class.extend({
         new cell.Class({name:cell.name, host:this, spec:cell.spec, params:[model.id]})
     },
 
-    drawModule: function(evt, mod){
+    drawModule: function(mod){
         this.$el.append(mod.render())
     }
 })

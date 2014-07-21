@@ -13,21 +13,25 @@ load = function(host, params, spec, deps, cb){
 
     var
     context = host ? host.spec : [],
-    s = spec.pop(),
+    s = spec.shift(),
     t = s.type,
     f
 
     switch(t){
     case 'ref':
         f = find(s.value, context)
+        if (!f) return cb('ref of '+s.value+' not found')
         deps.push({name:s.name, type:f.type, value:f.value})
         break
     case 'refs':
-        Array.prototype.push.apply(deps, findAll(s.type, context))
+        Array.prototype.push.apply(deps, findAll(s.value, context))
         break
     case 'model':
         f = find(s.value, context)
-        deps.push({name:s.name, type:t, value:f.value.get(params[s.param])})
+        if (!f) return cb('model of '+s.value+' not found')
+        var m = f.value.get(params[s.param])
+        if (!m) return cb('record '+s.param+' of model of '+s.value+' not found')
+        deps.push({name:s.name, type:t, value:m})
         break
     case 'models':
         deps.push({name:s.name, type:t, value:new Model.Class(null, s.value)})

@@ -22,6 +22,6 @@ me.Class = Backbone.View.extend({
         }
     },
     invalidate: function(){
-        this.host.$el.trigger('invalidate', this)
+        this.host.trigger('invalidate', this)
     }
-})
+}, Backbone.Events)

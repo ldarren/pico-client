@@ -6,30 +6,29 @@ me.Class = Module.Class.extend({
     tagName: 'li',
     className: 'table-view-cell',
     initialize: function(options){
-        var
-        fields = Module.Class.prototype.initialize.call(this, options),
-        transfer, patients, issues, wards
+        var self = this
 
-        for(var f,i=0,l=fields.length; i<l; i++){
-            f = fields[i]
-            switch(f.type){
-            case 'model':
-                if ('item' === f.extra) {
-                    transfer = this.transfer = f.value
-                    continue
+        Module.Class.prototype.initialize.call(this, options, function(err, spec){
+            var
+            transfer, patients, issues, wards
+            for(var s,i=0,l=spec.length; i<l,s=spec[i]; i++){
+                switch(s.type){
+                case 'model': transfer = s.value; break
+                case 'models':
+                    switch (s.name){
+                    case 'patient': patients = s.value; break
+                    case 'issue': issues = s.value; break
+                    case 'ward': wards = s.value; break
+                    }
+                    break
                 }
-                switch (f.name){
-                case 'patient': patients = f.value; break
-                case 'issue': issues = f.value; break
-                case 'ward': wards = f.value; break
-                }
-                break
             }
-        }
-        if (!transfer || !patients || !issues || !wards) return console.error('missing field for ListItemTransfer')
-        this.patient = patients.get(issues.get(transfer.get('issueId')).get('patientId'))
-        this.ward = wards.get(this.patient.get('wardId'))
-        
+            if (!transfer || !patients || !issues || !wards) return console.error('missing field for ListItemTransfer')
+            self.patient = patients.get(issues.get(transfer.get('issueId')).get('patientId'))
+            self.ward = wards.get(self.patient.get('wardId'))
+            self.transfer = transfer
+            self.invalidate()
+        })
     },
     render: function(){
         var p=this.patient, w=this.ward

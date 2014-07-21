@@ -2,44 +2,47 @@ var Module = require('Module')
 
 me.Class = Module.Class.extend({
     initialize: function(options){
-        var
-        self = this,
-        fields = Module.Class.prototype.initialize.call(this, options),
-        item, sub, issues, patients
+        this.on('invalidate', this.drawModule)
+        var self = this
 
-        for(var f,i=0,l=fields.length; i<l; i++){
-            f = fields[i]
-            switch(f.type){
-            case 'model':
-                if ('item' === f.extra){
-                    item = f.value
+        Module.Class.prototype.initialize.call(this, options, function(err, spec){
+            var item, sub, issues, patients
+
+            for(var s,i=0,l=spec.length; i<l,s=spec[i]; i++){
+                switch(s.type){
+                case 'model':
+                    item = s.value
+                    break
+                case 'models':
+                    switch(s.name){
+                    case 'issue': issues = s.value; break
+                    case 'patient': patients = s.value; break
+                    }
+                    break
+                case 'module':
+                    sub = s
+                    break
                 }
-                switch(f.name){
-                case 'issue': issues = f.value; break
-                case 'patient': patients = f.value; break
-                }
-                break
-            case 'module':
-                sub = f.value
-                break
             }
-        }
-
-        require('modules/'+sub, function(err, mod){
-            if (err) return console.error(err)
             var
             p = patients.get(issues.get(item.get('issueId'))),
-            $el = self.$el,
-            view = new mod.Class(self.createOptions([
-                {name: 'title', type:'text', value: 'Patient Info'},
-                {name: 'Name', type:'text', value: p.get('name')},
-                {name: 'IC', type:'text', value: p.get('ic')}
-            ]))
-            $el.append(view.render())
+            f = sub.spec[0],
+            value = f.value
+
+            f.name = 'Patient Info'
+            value.length = 0
+            value.push({name: 'Name', value: p.get('name')})
+            value.push({name: 'IC', value: p.get('ic')})
+            new sub.Class({name:sub.name, host:self, spec:sub.spec})
         })
     },
 
     render: function(){
-        return this.$el
+        return this.panelInfo.render()
+    },
+
+    drawModule: function(mod){
+        this.panelInfo = mod
+        this.invalidate()
     }
 })

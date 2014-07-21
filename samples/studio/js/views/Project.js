@@ -17,7 +17,7 @@ Page = Backbone.View.extend({
         $container.append(_.template(tplItem.text, {id:t, name:t}))
 
         for(var i=0,l=spec.length,s; i<l,s=spec[i]; i++){
-            $container.append(_.template(tplSubitem.text, {id:t+'.'+0, name:s.name}))
+            $container.append(_.template(tplSubitem.text, {id:t+'.'+s.name, name:s.name}))
         }
     }
 }),
@@ -25,11 +25,13 @@ indexOfSpec = function(id, pages){
     var
     pm = id.split('.'),
     pageId = pm[0],
-    index = parseInt(pm[1]),
-    spec = pages[pageId].spec,
-    s = spec[index] 
+    name = pm[1],
+    spec = pages[pageId].spec
 
-    return [s, pageId, index]
+    for(var i=0,l=spec.length,s; i<l,s=spec[i]; i++){
+        if (s.name === name) return [s, pageId, i]
+    }
+    return []
 }
 
 me.Class = Panel.Class.extend({

@@ -13,6 +13,7 @@ me.Class = Module.Class.extend({
             for(var f,i=0,l=spec.length; i<l,f=spec[i]; i++){
                 $ul.append(tpl.text.replace('URL', f.value).replace('NAME', f.name))
             }
+            self.invalidate()
         })
     },
 

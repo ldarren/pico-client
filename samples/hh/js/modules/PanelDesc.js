@@ -1,32 +1,27 @@
-var
-Module = require('Module')
+var Module = require('Module')
 
 me.Class = Module.Class.extend({
     initialize: function(options){
-        var
-        fields = Module.Class.prototype.initialize.call(this, options),
-        info = [],
-        title
+        var self = this
 
-        for(var f,i=0,l=fields.length; i<l,f=fields[i]; i++){
-            switch(f.type){
-            case 'text':
-                if ('title' === f.name) title = f.value
-                else info.push(f)
-                break
+        Module.Class.prototype.initialize.call(this, options, function(err, spec){
+            for(var s,i=0,l=spec.length; i<l,s=spec[i]; i++){
+                switch(s.type){
+                case 'select': self.select = s; break
+                }
             }
-        }
-        this.info = info
-        this.$el.html('<h5 class=content-padded>'+title+'</h5><div class=card><ul class=table-view></ul></div>')
+            self.$el.html('<h5 class=content-padded>'+self.select.name+'</h5><div class=card><ul class=table-view></ul></div>')
+            self.invalidate()
+        })
     },
     render: function(){
         var
         $ul = this.$('ul'),
-        info = this.info
+        info = this.select.value
 
         $ul.empty()
         for(var o,i=0,l=info.length; i<l,o=info[i]; i++){
-            $ul.append('<li class=table-view-cell>'+o.value+'</li>')
+            $ul.append('<li class=table-view-cell>'+o+'</li>')
         }
         return this.el
     }

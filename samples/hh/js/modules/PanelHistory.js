@@ -2,47 +2,45 @@ var Module = require('Module')
 
 me.Class = Module.Class.extend({
     initialize: function(options){
-        var
-        self = this,
-        fields = Module.Class.prototype.initialize.call(this, options),
-        item, sub, issues, history, results
+        var self = this
 
-        for(var f,i=0,l=fields.length; i<l; i++){
-            f = fields[i]
-            switch(f.type){
-            case 'model':
-                if ('item' === f.extra){
-                    item = f.value
+        Module.Class.prototype.initialize.call(this, options, function(err, spec){
+            var item, sub, issues, history, results, list
+
+            for(var s,i=0,l=spec.length; i<l, s=spec[i]; i++){
+                switch(s.type){
+                case 'model':
+                    item = s.value
+                    break
+                case 'models':
+                    switch(s.name){
+                    case 'issue': issues = this.issues = s.value; break
+                    case 'result': results = this.results = s.value; break
+                    case 'history': history = s.value; break
+                    case 'list': list = s.value; break
+                    }
+                    break
+                case 'module':
+                    sub = s.value
+                    break
                 }
-                switch(f.name){
-                case 'issue': issues = this.issues = f.value; break
-                case 'result': results = this.results = f.value; break
-                case 'history': history = f.value; break
-                }
-                break
-            case 'module':
-                sub = f.value
-                break
             }
-        }
 
-        require('modules/'+sub, function(err, mod){
-            if (err) return console.error(err)
             var
             patientId = issues.get(item.get('issueId')).get('patientId'),
             patientHistory = history.where({patientId:patientId})
             
             if (patientHistory.length){
-                self.addRows(mod, patientHistory)
+                self.addRows(sub, patientHistory)
             }else{
-                (new Backbone.Collection).fetch({
+                list.fetch({
                     url: 'hh/history/list',
                     data:{patientId:patientId},
                     success: function(coll, raw){
                         results.add(raw.result)
                         issues.add(raw.issue)
                         history.add(raw.history)
-                        self.addRows(mod, history.where({patientId:patientId}))
+                        self.addRows(sub, history.where({patientId:patientId}))
                     }
                 })
             }
