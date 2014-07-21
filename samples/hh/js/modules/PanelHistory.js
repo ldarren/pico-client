@@ -2,6 +2,7 @@ var Module = require('Module')
 
 me.Class = Module.Class.extend({
     initialize: function(options){
+        this.on('invalidate', this.drawModule)
         var self = this
 
         Module.Class.prototype.initialize.call(this, options, function(err, spec){
@@ -14,8 +15,8 @@ me.Class = Module.Class.extend({
                     break
                 case 'models':
                     switch(s.name){
-                    case 'issue': issues = this.issues = s.value; break
-                    case 'result': results = this.results = s.value; break
+                    case 'issue': issues = self.issues = s.value; break
+                    case 'result': results = self.results = s.value; break
                     case 'history': history = s.value; break
                     case 'list': list = s.value; break
                     }
@@ -34,7 +35,6 @@ me.Class = Module.Class.extend({
                 self.addRows(sub, patientHistory)
             }else{
                 list.fetch({
-                    url: 'hh/history/list',
                     data:{patientId:patientId},
                     success: function(coll, raw){
                         results.add(raw.result)
@@ -48,24 +48,27 @@ me.Class = Module.Class.extend({
     },
 
     render: function(){
-        return this.$el
+        return this.panelDesc.render()
     },
 
     addRows: function(mod, history){
         var
         self = this,
-        $el = self.$el,
-        options = [{name: 'title', type:'text', value: 'Relevant History'}]
+        s = mod.spec[0],
+        value = s.value
+
+        value.length = 0
+        s.name = 'Relevant History'
 
         history.forEach(function(model){
-            options.push({
-                name: 'desc',
-                type:'text',
-                value: self.issues.get(model.get('issueId')).get('desc')+': '+self.results.get(model.get('resultId')).get('desc')
-            })
+            value.push(self.issues.get(model.get('issueId')).get('desc')+': '+self.results.get(model.get('resultId')).get('desc'))
         })
         
-        var view = new mod.Class(self.createOptions(options))
-        $el.append(view.render())
+        new mod.Class({name: mod.name, host:this, spec:mod.spec})
+    },
+
+    drawModule: function(mod){
+        this.panelDesc = mod
+        this.invalidate()
     }
 })

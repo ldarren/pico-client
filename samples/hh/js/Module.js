@@ -1,4 +1,6 @@
-var spec = require('spec')
+var
+spec = require('spec'),
+Router = require('Router')
 
 me.Class = Backbone.View.extend({
     initialize: function(options, cb){
@@ -6,8 +8,13 @@ me.Class = Backbone.View.extend({
         this.host = options.host
         var self = this
         spec.load(this.host, options.params || [], options.spec, function(err, s){
+            if (err){
+                console.warn(err)
+                return Router.instance.navigate('', {trigger: true})
+            }
             self.spec = s
-            if (cb) cb(err, err ? null : s.slice())
+            if (!cb) return
+            cb(err, s)
         })
     },
     addSpec: function(spec){

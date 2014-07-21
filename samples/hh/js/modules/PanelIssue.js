@@ -2,42 +2,37 @@ var Module = require('Module')
 
 me.Class = Module.Class.extend({
     initialize: function(options){
-        var
-        self = this,
-        fields = Module.Class.prototype.initialize.call(this, options),
-        item, sub, issues
-
-        for(var f,i=0,l=fields.length; i<l; i++){
-            f = fields[i]
-            switch(f.type){
-            case 'model':
-                if ('item' === f.extra){
-                    item = f.value
-                }
-                if ('issue' === f.name){
-                    issues = f.value
-                }
-                break
-            case 'module':
-                sub = f.value
-                break
+        this.on('invalidate', this.drawModule)
+        var self = this
+        
+        Module.Class.prototype.initialize.call(this, options, function(err, spec){
+            var item, sub, issues
+            for(var s,i=0,l=spec.length; i<l,s=spec[i]; i++){
+            switch(s.type){
+            case 'model': item = s.value; break
+            case 'models': issues = s.value; break
+            case 'module': sub = s.value; break
             }
-        }
 
-        require('modules/'+sub, function(err, mod){
-            if (err) return console.error(err)
             var
             issue = issues.get(item.get('issueId')),
-            $el = self.$el,
-            view = new mod.Class(self.createOptions([
-                {name: 'title', type:'text', value: 'Current Issue'},
-                {name: 'desc', type:'text', value: issue.get('desc')}
-            ]))
-            $el.append(view.render())
+            spec = sub.spec[0],
+            value = spec.value
+
+            value.length = 0
+            spec.title = 'Current Issue'
+            value.push(issue.get('desc'))
+
+            new sub.Class({name:sub.name, host:this.host, spec:sub.spec})
         })
     },
 
     render: function(){
-        return this.$el
+        return this.panelDesc.render()
+    },
+
+    drawModule: function(mod){
+        this.panelDesc = mod
+        this.invalidate()
     }
 })

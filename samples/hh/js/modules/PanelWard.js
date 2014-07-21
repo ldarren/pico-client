@@ -2,46 +2,45 @@ var Module = require('Module')
 
 me.Class = Module.Class.extend({
     initialize: function(options){
-        var
-        self = this,
-        fields = Module.Class.prototype.initialize.call(this, options),
-        item, sub, wards, issues, patients
+        this.on('invalidate', this.drawModule)
+        var self = this
 
-        for(var f,i=0,l=fields.length; i<l; i++){
-            f = fields[i]
-            switch(f.type){
-            case 'model':
-                if ('item' === f.extra){
-                    item = f.value
+        Module.Class.prototype.initialize.call(this, options, function(err, spec){
+            var item, sub, wards, issues, patients
+            for(var s,i=0,l=spec.length; i<l,s=spec[i]; i++){
+                switch(s.type){
+                case 'model': item = s.value; break
+                case 'models':
+                    switch(s.name){
+                    case 'ward': wards = s.value; break
+                    case 'issue': issues = s.value; break
+                    case 'patient': patients = s.value; break
+                    }
+                    break
+                case 'module': sub = s.value; break
                 }
-                switch(f.name){
-                case 'ward': wards = f.value; break
-                case 'issue': issues = f.value; break
-                case 'patient': patients = f.value; break
-                }
-                break
-            case 'module':
-                sub = f.value
-                break
             }
-        }
-
-        require('modules/'+sub, function(err, mod){
-            if (err) return console.error(err)
             var
             w = wards.get(patients.get(issues.get(item.get('issueId')).get('patientId')).get('wardId')),
-            $el = self.$el,
-            view = new mod.Class(self.createOptions([
-                {name: 'title', type:'text', value: 'Location'},
-                {name: 'Specialty', type:'text', value: w.get('specialty')},
-                {name: 'Subspecialty', type:'text', value: w.get('subSpecialty')},
-                {name: 'Ward', type:'text', value: w.get('name')}
-            ]))
-            $el.append(view.render())
+            spec = sub.spec[0],
+            value = spec.value
+
+            value.length = 0
+            spec.title = 'Location'
+            value.push({name: 'Specialty', value:w.get('specialty')})
+            value.push({name: 'Subspecialty', value:w.get('subSpecialty')})
+            value.push({name: 'Ward', value:w.get('name')})
+
+            new sub.Class({name:sub.name, host:this.host, spec:sub.spec})
         })
     },
 
     render: function(){
-        return this.$el
+        return this.panelInfo.render()
+    },
+
+    drawModule: function(mod){
+        this.panelInfo = mod
+        this.invalidate()
     }
 })
