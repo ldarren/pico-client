@@ -1,25 +1,27 @@
+var spec = require('spec')
+
 me.Class = Backbone.View.extend({
-    initialize: function(options){
+    initialize: function(options, cb){
         this.name = options.name.toString()
         this.host = options.host
-        this.spec = options.value.slice()
-        return options.value 
+        var self = this
+        spec.load(this.host, options.params || [], options.spec, function(err, s){
+            self.spec = s
+            if (cb) cb(err, err ? null : s.slice())
+        })
     },
-    addOptions: function(spec){
-        return {
-            name: this.name.toString(),
-            host: this,
-            value: (spec || []).concat(this.spec.slice())
-        }
+    addSpec: function(spec){
+        this.spec = (spec || []).concat(this.spec)
+        return this.spec.slice()
     },
     createOptions: function(spec){
         return {
             name: this.name.toString(),
             host: this,
-            value: spec || []
+            spec: spec || []
         }
     },
     invalidate: function(){
-        this.host.$el.trigger('invalidate', this.name, this)
+        this.host.$el.trigger('invalidate', this)
     }
 })

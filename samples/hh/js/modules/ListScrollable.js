@@ -2,66 +2,49 @@ var
 Module = require('Module')
 
 me.Class = Module.Class.extend({
-    template: _.template('<ul class=table-view></ul>'),
+    tagName: 'ul',
+    className: 'table-view',
     initialize: function(options){
-        var
-        self = this,
-        fields = Module.Class.prototype.initialize.call(this, options),
-        models = {},
-        index, indexKey, sub, doctorId, url
+        var self = this
 
-        for(var f,i=0,l=fields.length; i<l; i++){
-            f = fields[i]
-            switch(f.type){
-            case 'model':
-                if ('index' === f.extra){
-                    indexKey = f.name
-                    index = f.value
+        Module.Class.prototype.initialize.call(this, options, function(err, spec){
+            var
+            models = {},
+            index, indexKey, doctorId, list 
+
+            for(var i=0,l=spec.length,s; i<l,s=spec[i]; i++){
+                switch(s.type){
+                case 'models':
+                    if ('list' === s.name) list = s.value
+                    else models[s.name] = s.value
+                    break
+                case 'module': self.cell = s; break
+                case 'number': doctorId = s.value; break
+                case 'text': indexKey = s.value; break
                 }
-                models[f.name] = f.value
-                break
-            case 'module':
-                sub = f.value
-                break
-            case 'number':
-                doctorId = f.value
-                break
-            case 'url':
-                url = f.value
-                break
             }
-        }
 
-        this.$el.html(this.template())
-        //this.listenTo(index, 'add', this.addRow)
-
-        require('modules/'+sub, function(err, mod){
-            if (err) return console.error(err)
-            self.subModule = mod
-/*
-            if (index.length){
-                index.forEach(function(model){
-                    self.addRow(model)
-                })
-            }else*/{
-                (new (Backbone.Model)).fetch({
-                    url: url,
-                    data:{ doctorId: doctorId },
-                    success:function(model, raw){
-                        var coll 
-                        for(var key in raw){
-                            if (key === indexKey) continue
-                            coll = models[key]
-                            if (!coll) continue
-                            coll.add(raw[key])
-                        }
-                        index.add(raw[indexKey]).forEach(function(model){
-                            self.addRow(model)
-                        })
+            list.fetch({
+                data: {doctorId:doctorId},
+                success:function(model, raw){
+                    var coll 
+                    for(var key in raw){
+                        if (key === indexKey) continue
+                        coll = models[key]
+                        if (!coll) continue
+                        coll.add(raw[key])
                     }
-                })
-            }
+                    models[indexKey].add(raw[indexKey]).forEach(function(model){
+                        self.addRow(model)
+                    })
+                }
+            })
+            self.invalidate()
         })
+    },
+
+    events:{
+        invalidate: 'drawModule'
     },
 
     render: function(){
@@ -69,9 +52,11 @@ me.Class = Module.Class.extend({
     },
 
     addRow: function(model){
-        var
-        $ul = this.$('ul'),
-        view = new this.subModule.Class(this.addOptions([{name:'item', type:'model', value:model, extra:'item'}]))
-        $ul.append(view.render())
+        var cell = this.cell
+        new cell.Class({name:cell.name, host:this, spec:cell.spec, params:[model.id]})
+    },
+
+    drawModule: function(evt, mod){
+        this.$el.append(mod.render())
     }
 })

@@ -10,24 +10,19 @@ me.Class = Backbone.View.extend({
 
         this.spec.forEach(function(s){
             if ('module' === s.type) {
-                self.modules[s.name] = new s.Class(s)
+                var mod = self.modules[s.name] = new s.Class({name:s.name, host:self, spec:s.spec})
                 $el.append('<div class=module id=mod'+s.name+'></div>')
             }
         })
-        this.render()
     },
     render: function(){
-        var self = this
-        this.spec.forEach(function(s){
-            if ('module' === s.type) self.drawModule(null, s.name, self.modules[s.name])
-        })
         return this.$el
     },
     events: {
         'invalidate': 'drawModule'
     },
-    drawModule: function(evt, modName, mod){
-        var $mod = this.$('#mod'+modName)
+    drawModule: function(evt, mod){
+        var $mod = this.$('#mod'+mod.name)
         if (!mod || !$mod.length) return
 
         $mod.html(mod.render())

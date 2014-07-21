@@ -1,6 +1,13 @@
 var
 Model = require('Model'),
 find = function(name, list){ for(var i=0,l=list.length,o; i<l,o=list[i]; i++){ if (name === o.name) return o } },
+findAll = function(type, list){
+    var arr = []
+    for(var i=0,l=list.length,o; i<l,o=list[i]; i++){
+        if (type === o.type) arr.push(o)
+    }
+    return arr
+},
 load = function(host, params, spec, deps, cb){
     if (!spec.length) return cb(null, deps)
 
@@ -15,6 +22,9 @@ load = function(host, params, spec, deps, cb){
         f = find(s.value, context)
         deps.push({name:s.name, type:f.type, value:f.value})
         break
+    case 'refs':
+        Array.prototype.push.apply(deps, findAll(s.type, context))
+        break
     case 'model':
         f = find(s.value, context)
         deps.push({name:s.name, type:t, value:f.value.get(params[s.param])})
@@ -25,7 +35,7 @@ load = function(host, params, spec, deps, cb){
     case 'module':
         require('modules/'+s.name, function(err, mod){
             if (err) return cb(err)
-            deps.push({name:s.name, type:t, value:s.value, Class:mod.Class, host:host})
+            deps.push({name:s.name, type:t, Class:mod.Class, spec:s.value})
             load(host, params, spec, deps, cb)
         })
         return

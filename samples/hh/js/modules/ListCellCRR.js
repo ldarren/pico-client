@@ -6,27 +6,26 @@ me.Class = Module.Class.extend({
     tagName: 'li',
     className: 'table-view-cell',
     initialize: function(options){
-        var
-        fields = Module.Class.prototype.initialize.call(this, options),
-        patients, issues
+        var self = this
 
-        for(var f,i=0,l=fields.length; i<l; i++){
-            f = fields[i]
-            switch(f.type){
-            case 'model':
-                if ('item' === f.extra) {
-                    this.result = f.value
-                    continue
+        Module.Class.prototype.initialize.call(this, options, function(err, spec){
+            var
+            patients, issues
+            for(var s,i=0,l=spec.length; i<l,s=spec[i]; i++){
+                switch(s.type){
+                case 'model': self.result = s.value; break
+                case 'models':
+                    switch (s.name){
+                    case 'patient': patients = s.value; break
+                    case 'issue': issues = s.value; break
+                    }
+                    break
                 }
-                switch (f.name){
-                case 'patient': patients = f.value; break
-                case 'issue': issues = f.value; break
-                }
-                break
             }
-        }
-        if (!this.result || !patients || !issues) return console.error('missing field for ListItemCRR')
-        this.patient = patients.get(issues.get(this.result.get('issueId')).get('patientId'))
+            if (!self.result || !patients || !issues) return console.error('missing field for ListItemCRR')
+            self.patient = patients.get(issues.get(self.result.get('issueId')).get('patientId'))
+            self.invalidate()
+        })
     },
     render: function(){
         var p=this.patient, r=this.result

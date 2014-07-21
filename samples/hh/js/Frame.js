@@ -24,7 +24,7 @@ changeRoute = function(path, params){
     if (!pageConfig) return
 
     if (this.currPage) this.currPage.remove()
-    spec.load(this.currPage, params, pageConfig.spec, function(err, s){
+    spec.load(this, params, pageConfig.spec, function(err, s){
         if (err) return console.error(err)
         self.currPage = new Page.Class({header: pageConfig.header, spec: s})
         self.render()
