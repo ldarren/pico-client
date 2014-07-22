@@ -8,10 +8,11 @@ me.Class = Module.Class.extend({
         Module.Class.prototype.initialize.call(this, options, function(err, spec){
             var item, sub, issues
             for(var s,i=0,l=spec.length; i<l,s=spec[i]; i++){
-            switch(s.type){
-            case 'model': item = s.value; break
-            case 'models': issues = s.value; break
-            case 'module': sub = s.value; break
+                switch(s.type){
+                case 'model': item = s.value; break
+                case 'models': issues = s.value; break
+                case 'module': sub = s; break
+                }
             }
 
             var
@@ -23,7 +24,7 @@ me.Class = Module.Class.extend({
             spec.title = 'Current Issue'
             value.push(issue.get('desc'))
 
-            new sub.Class({name:sub.name, host:this.host, spec:sub.spec})
+            new sub.Class({name:sub.name, host:self.host, spec:sub.spec})
         })
     },
 

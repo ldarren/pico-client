@@ -17,7 +17,7 @@ me.Class = Module.Class.extend({
                     case 'patient': patients = s.value; break
                     }
                     break
-                case 'module': sub = s.value; break
+                case 'module': sub = s; break
                 }
             }
             var
@@ -31,7 +31,7 @@ me.Class = Module.Class.extend({
             value.push({name: 'Subspecialty', value:w.get('subSpecialty')})
             value.push({name: 'Ward', value:w.get('name')})
 
-            new sub.Class({name:sub.name, host:this.host, spec:sub.spec})
+            new sub.Class({name:sub.name, host:self.host, spec:sub.spec})
         })
     },
 

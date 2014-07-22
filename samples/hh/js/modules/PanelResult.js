@@ -10,7 +10,7 @@ me.Class = Module.Class.extend({
             for(var s,i=0,l=spec.length; i<l, s=spec[i]; i++){
                 switch(s.type){
                 case 'model': item = s.value; break
-                case 'module': sub = s.value; break
+                case 'module': sub = s; break
                 }
             }
 
@@ -23,7 +23,7 @@ me.Class = Module.Class.extend({
             value.push((new Date(item.get('createdAt'))).toLocaleString())
             value.push(item.get('desc'))
 
-            new sub.Class({name:sub.name, host:this.host, spec:sub.spec})
+            new sub.Class({name:sub.name, host:self.host, spec:sub.spec})
         })
     },
 

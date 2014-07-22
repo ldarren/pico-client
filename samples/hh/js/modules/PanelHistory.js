@@ -22,7 +22,7 @@ me.Class = Module.Class.extend({
                     }
                     break
                 case 'module':
-                    sub = s.value
+                    sub = s
                     break
                 }
             }
