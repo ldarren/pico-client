@@ -2,10 +2,9 @@ var Module = require('Module')
 
 me.Class = Module.Class.extend({
     initialize: function(options){
-        this.on('invalidate', this.drawModule)
         var self = this
 
-        Module.Class.prototype.initialize.call(this, options, function(err, spec){
+        this.init(options, function(err, spec){
             var item, sub, issues, history, results, list
 
             for(var s,i=0,l=spec.length; i<l, s=spec[i]; i++){
@@ -64,7 +63,7 @@ me.Class = Module.Class.extend({
             value.push(self.issues.get(model.get('issueId')).get('desc')+': '+self.results.get(model.get('resultId')).get('desc'))
         })
         
-        new mod.Class({name: mod.name, host:this, spec:mod.spec})
+        this.createSubModule(mod)
     },
 
     drawModule: function(mod){

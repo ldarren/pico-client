@@ -7,7 +7,7 @@ me.Class = Module.Class.extend({
     initialize: function(options){
         this.$el.html('<ul class="table-view"></ul>')
         var self = this
-        Module.Class.prototype.initialize.call(this,options, function(err, spec){
+        this.init(options, function(err, spec){
             var $ul = self.$el.find('ul')
 
             for(var f,i=0,l=spec.length; i<l,f=spec[i]; i++){

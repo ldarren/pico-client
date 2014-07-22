@@ -8,7 +8,7 @@ me.Class = Module.Class.extend({
     initialize: function(options){
         var self = this
 
-        Module.Class.prototype.initialize.call(this, options, function(err, spec){
+        this.init(options, function(err, spec){
             var
             transfer, patients, issues, wards
             for(var s,i=0,l=spec.length; i<l,s=spec[i]; i++){

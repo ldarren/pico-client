@@ -4,7 +4,7 @@ me.Class = Module.Class.extend({
     initialize: function(options){
         var self = this
 
-        Module.Class.prototype.initialize.call(this, options, function(err, spec){
+        this.init(options, function(err, spec){
             for(var s,i=0,l=spec.length; i<l,s=spec[i]; i++){
                 switch(s.type){
                 case 'select': self.select = s; break

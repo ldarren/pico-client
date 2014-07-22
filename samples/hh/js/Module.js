@@ -1,32 +1,27 @@
 var
 spec = require('spec'),
-Router = require('Router')
+Router = require('Router'),
+id=0
 
 me.Class = Backbone.View.extend({
-    initialize: function(options, cb){
-        this.name = options.name.toString()
+    init: function(options, cb){
+        this.on('invalidate', this.drawModule)
+        this.id = id++
+        this.name = options.name
         this.host = options.host
         var self = this
         spec.load(this.host, options.params || [], options.spec, function(err, s){
-            if (err){
-                console.warn(err)
-                return Router.instance.navigate('', {trigger: true})
-            }
             self.spec = s
-            if (!cb) return
-            cb(err, s)
+            if (cb) cb(err, s)
         })
+    },
+    createSubModule: function(spec, params){
+        if ('module' !== spec.type) return console.error('create a sub module with none module spec')
+        return new spec.Class({name:spec.name, host:this, spec:spec.spec, params:params})
     },
     addSpec: function(spec){
         this.spec = (spec || []).concat(this.spec)
         return this.spec.slice()
-    },
-    createOptions: function(spec){
-        return {
-            name: this.name.toString(),
-            host: this,
-            spec: spec || []
-        }
     },
     invalidate: function(){
         this.host.trigger('invalidate', this)

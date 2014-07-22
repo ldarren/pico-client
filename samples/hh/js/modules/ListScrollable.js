@@ -6,9 +6,8 @@ me.Class = Module.Class.extend({
     className: 'table-view',
     initialize: function(options){
         var self = this
-        this.on('invalidate', this.drawModule)
 
-        Module.Class.prototype.initialize.call(this, options, function(err, spec){
+        this.init(options, function(err, spec){
             var
             models = {},
             index, indexKey, doctorId, list 
@@ -50,7 +49,7 @@ me.Class = Module.Class.extend({
 
     addRow: function(model){
         var cell = this.cell
-        new cell.Class({name:cell.name, host:this, spec:cell.spec, params:[model.id]})
+        this.createSubModule(cell, [model.id])
     },
 
     drawModule: function(mod){
