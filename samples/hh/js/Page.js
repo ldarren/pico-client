@@ -4,6 +4,7 @@ me.Class = Backbone.View.extend({
 
         this.spec = options.spec
         this.header = options.header
+        this.theme = restyle(options.theme, ['webkit'])
         this.modules = {}
 
         var
@@ -14,7 +15,7 @@ me.Class = Backbone.View.extend({
 
         this.spec.forEach(function(s){
             if ('module' === s.type) {
-                modName = s.name + index++
+                modName = s.name +'-'+ index++
                 $el.append('<div class=module id=mod'+modName+'></div>')
                 self.modules[modName] = new s.Class({name:modName, host:self, spec:s.spec})
             }
@@ -22,6 +23,10 @@ me.Class = Backbone.View.extend({
     },
     render: function(){
         return this.$el
+    },
+    remove: function(){
+        this.theme.remove()
+        Backbone.View.prototype.remove.apply(this, arguments)
     },
     drawModule: function(mod){
         var $mod = this.$('#mod'+mod.name)

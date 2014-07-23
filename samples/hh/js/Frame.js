@@ -21,15 +21,15 @@ changeRoute = function(path, params){
     self = this,
     pageConfig = this.pages[path]
 
-    if (!pageConfig) return Router.instance.navigate('', {trigger: true})
+    if (!pageConfig) return Router.instance.home()
 
     if (this.currPage) this.currPage.remove()
     spec.load(this, params, pageConfig.spec, function(err, s){
         if (err) {
             console.warn(err)
-            return Router.instance.navigate('', {trigger: true})
+            return Router.instance.home()
         }
-        self.currPage = new Page.Class({header: pageConfig.header, spec: s})
+        self.currPage = new Page.Class({header: pageConfig.header, spec: s, theme: pageConfig.theme})
         self.render()
     })
 }
@@ -47,6 +47,9 @@ me.Class = Backbone.View.extend({
 
         r.on('route', changeRoute, this)
         this.pages = p.pages
+
+        this.theme = restyle(p.theme, ['webikit'])
+
         spec.load(null, [], p.spec, function(err, s){
             if (err) return console.error(err)
             self.spec = s
@@ -91,7 +94,7 @@ me.Class = Backbone.View.extend({
     onMenu: function(e){
         var id = e.srcElement.id
         if ('#' === id.charAt(0)) return this.currPage.$el.trigger(id.substr(1))
-        Router.instance.navigate(e.srcElement.id, {trigger:true})
+        Router.instance.nav(e.srcElement.id)
     },
     initHeader: function(){
         this.$popover = this.$('#popOptions ul.table-view')
