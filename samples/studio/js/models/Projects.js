@@ -5,7 +5,7 @@ var Project = Backbone.Model.extend({
             case 'create': options.url = 'pico/project/create'; break
             case 'read': options.url = 'pico/project/read'; break
             case 'update': options.url = 'pico/project/update'; break
-            case 'delete': options.url = 'pico/project/delete'; break
+            case 'delete': options.url = 'pico/project/remove'; break
             }
         }
         Backbone.sync(method, model, options)

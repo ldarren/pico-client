@@ -5,7 +5,7 @@ var Widget = Backbone.Model.extend({
             case 'create': options.url = 'pico/widget/create'; break
             case 'read': options.url = 'pico/widget/read'; break
             case 'update': options.url = 'pico/widget/update'; break
-            case 'delete': options.url = 'pico/widget/delete'; break
+            case 'delete': options.url = 'pico/widget/remove'; break
             }
         }
         Backbone.sync(method, model, options)

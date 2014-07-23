@@ -5,9 +5,8 @@ ModelProjects = require('models/Projects'),
 ModelWidgets = require('models/Widgets'),
 ViewEditor = require('views/Editor'),
 ViewDevice = require('views/Device'),
-ViewProjects = require('views/Projects'),
+ViewList = require('views/List'),
 ViewProject = require('views/Project'),
-ViewWidgets = require('views/Widgets'),
 ViewWidget = require('views/Widget'),
 ViewSpec = require('views/Spec')
 
@@ -56,10 +55,10 @@ me.Class = Backbone.View.extend({
             ba = {id:'panelBtm', collection:this.widgets, editor:this.editor}
             break
         default:
-            tc = ViewProjects.Class
-            ta = {id:'panelTop', collection:this.projects, editor:this.editor}
-            bc = ViewWidgets.Class
-            ba = {id:'panelBtm', collection:this.widgets, editor:this.editor}
+            tc = ViewList.Class
+            ta = {id:'panelTop', itemType:'project', collection:this.projects, editor:this.editor}
+            bc = ViewList.Class
+            ba = {id:'panelBtm', itemType:'widget', collection:this.widgets, editor:this.editor}
             break
         }
 
