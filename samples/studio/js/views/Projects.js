@@ -44,9 +44,10 @@ me.Class = Panel.Class.extend({
                 name: name,
                 json: {
                     routes:{},
-                    theme:{},
                     spec:[],
-                    pages:{}
+                    pages:{},
+                    deps:[],
+                    styles:[]
                 }
             }
             this.collection.create(data,{

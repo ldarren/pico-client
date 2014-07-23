@@ -14,7 +14,7 @@
             if (g[k] instanceof Function) o[k] = dummyCB
             else o[k] = dummyObj
         return o
-    }(window || global),
+    }(exports),
     consoleCB = function(){console.log(arguments)},
     hash = function(str){
         var hash = 0
@@ -67,7 +67,7 @@
         loadLink(ancestorLink, function(err, ancestor){
             if (err) return cb(err)
 
-            var mod = parseFunc(window, createMod(scriptLink, getMod(scriptLink), ancestor), getModAsync, dummyCB, '"use strict"\n'+script+(envs.production ? '' : '//# sourceURL='+scriptLink))
+            var mod = parseFunc(exports, createMod(scriptLink, getMod(scriptLink), ancestor), getModAsync, dummyCB, '"use strict"\n'+script+(envs.production ? '' : '//# sourceURL='+scriptLink))
             modules[scriptLink] = mod
             loadDeps(deps, function(err){
                 if (err) return cb(err)
@@ -124,7 +124,7 @@
         var newHash='', oldHash=''
         if (evt.oldURL) oldHash = evt.oldURL.substring(1) || ''
         if (evt.newURL) newHash = evt.newURL.substring(1) || ''
-        else newHash = window.location.hash.substring(1) || ''
+        else newHash = exports.location.hash.substring(1) || ''
 
         pico.signal(pico.HASH_CHANGE, [oldHash, newHash])
     }
@@ -139,8 +139,8 @@
                     script = undefined
                     options = undefined
 
-                    window.addEventListener('popstate', onStateChange, false)
-                    window.addEventListener('hashchange', onHashChange, false)
+                    exports.addEventListener('popstate', onStateChange, false)
+                    exports.addEventListener('hashchange', onHashChange, false)
                 })
             }
 
@@ -149,7 +149,7 @@
 
             pico.objTools.mergeObj(paths, options.paths)
 
-            window.addEventListener('load', function(){
+            exports.addEventListener('load', function(){
                 if ('Phonegap' === envs.browser){
                     document.addEventListener('deviceready', onDeviceReady, false)
                 }else{
@@ -196,11 +196,51 @@
             }
         },
 
+        // http://www.javascriptkit.com/javatutors/loadjavascriptcss.shtml
+        attachFile: function(url, type, cb){
+            var ref
+            switch(type){
+            case 'js':
+                ref=document.createElement('script')
+                ref.setAttribute('src', url)
+            case 'css':
+                ref=document.createElement('link')
+                ref.setAttribute('rel', 'stylesheet')
+                ref.setAttribute('href', url)
+            }
+            if (ref){
+                ref.onload = cb
+                ref.onerror = cb
+                var h = document.getElementsByTagName("head")[0]
+                h.insertBefore(ref, h.lastChild)
+            }else if (cb) cb('')
+        },
+        detachFile: function(url, type){
+            var attr, suspects
+            switch(type){
+            case 'js':
+                suspects = document.getElementsByTagName('script')
+                attr = 'src'
+                break
+            case 'css':
+                suspects = document.getElementsByTagName('link')
+                attr = 'href'
+                break
+            default:
+                suspects = []
+                break
+            }
+            for (var s,i=suspects.length; i>=0,s=suspects[i]; i--){ //search backwards within nodelist for matching elements to remove
+                if (s && s.getAttribute(attr)!=null && s.getAttribute(attr).indexOf(url)!=-1)
+                s.parentNode.removeChild(s) //remove element by calling parentNode.removeChild()
+            }
+        },
+
         // http://perfectionkills.com/detecting-event-support-without-browser-sniffing/
         detectEvent: function(eventName, tagName){
             var el = document.createElement(tagName || 'div')
             eventName = 'on' + eventName
-            var isSupported = (eventName in el) || (eventName in window)
+            var isSupported = (eventName in el) || (eventName in exports)
             if (!isSupported) {
                 el.setAttribute(eventName, '')
                 isSupported = 'function' === typeof el[eventName]
@@ -235,7 +275,7 @@
             return obj
         },
         changeHash: function(hash){
-            window.location.hash = '#' + hash
+            exports.location.hash = '#' + hash
         },
         // query = tag#id
         addFrame: function(query, url, holder){
@@ -305,7 +345,7 @@
             cb = cb || dummyCB
             if (!url) return cb(new Error('url not defined'))
             var
-            xhr = window.XMLHttpRequest ? new window.XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP'),
+            xhr = exports.XMLHttpRequest ? new exports.XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP'),
             post = 'POST' === (method = method.toUpperCase()),
             dataType = ('string' === typeof params ? 1 : (params instanceof FormData ? 3 : 2))
 
@@ -452,4 +492,4 @@
         }
         console.log('pico envs: '+JSON.stringify(envs))
     }()
-}(window)
+}('undefined' === typeof window ? global : window)

@@ -85,7 +85,8 @@ me.Class = Panel.Class.extend({
         case 'createPage': this.createPage(); break
         case 'iroutes': this.showRoutes(); break
         case 'ispec': this.showSpec(); break
-        case 'itheme': this.showTheme(); break
+        case 'ideps': this.showDeps(); break
+        case 'istyles': this.showStyles(); break
         default:
             if (e.target.classList.contains('subItem')) this.showModule(id)
             else this.showPage(id)
@@ -100,7 +101,8 @@ me.Class = Panel.Class.extend({
 
         this.routes = p.routes
         this.spec = p.spec
-        this.theme = p.theme
+        this.deps = p.deps
+        this.styles = p.styles
 
         var
         pageList = {},
@@ -110,7 +112,8 @@ me.Class = Panel.Class.extend({
             
         $el.append(_.template(tplItem.text, {id:'routes', name:'Routes'}))
         $el.append(_.template(tplItem.text, {id:'spec', name:'Spec'}))
-        $el.append(_.template(tplItem.text, {id:'theme', name:'Theme'}))
+        $el.append(_.template(tplItem.text, {id:'deps', name:'Dependencies'}))
+        $el.append(_.template(tplItem.text, {id:'styles', name:'Styles'}))
 
         
         for(var i=0,l=pageIds.length; i<l; i++){
@@ -130,7 +133,8 @@ me.Class = Panel.Class.extend({
             json: {
                 spec: this.spec,
                 routes: this.routes,
-                theme: this.theme,
+                deps: this.deps,
+                styles: this.styles,
                 pages: this.pages
             }
         }
@@ -154,7 +158,8 @@ me.Class = Panel.Class.extend({
         switch(item){
         case 'routes': this.routes = changes; break
         case 'spec': this.spec = changes; break
-        case 'theme': this.theme = changes; break
+        case 'deps': this.deps = changes; break
+        case 'styles': this.styles = changes; break
         default:
             if (-1 === item.indexOf('.')){
                 this.pages[item] = changes
@@ -181,7 +186,7 @@ me.Class = Panel.Class.extend({
 
         if (!pageId) alert('please enter a name')
 
-        pages[pageId] = {header:{},spec:[]}
+        pages[pageId] = {header:{},spec:[],styles:[]}
         pageList[pageId] = new Page({title:pageId,page:pages[pageId],collection:this.collection})
         pageList[pageId].render(this.$el)
         this.showPage(pageId)
@@ -194,9 +199,13 @@ me.Class = Panel.Class.extend({
         this.selectedItem = 'spec'
         this.editor.write(JSON.stringify(this.spec, null, 4), 'json')
     },
-    showTheme: function(){
-        this.selectedItem = 'theme'
-        this.editor.write(JSON.stringify(this.theme, null, 4), 'json')
+    showDeps: function(){
+        this.selectedItem = 'deps'
+        this.editor.write(JSON.stringify(this.deps, null, 4), 'json')
+    },
+    showStyles: function(){
+        this.selectedItem = 'styles'
+        this.editor.write(JSON.stringify(this.styles, null, 4), 'json')
     },
     showPage: function(id){
         this.selectedItem = id
