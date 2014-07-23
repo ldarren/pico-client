@@ -1,5 +1,5 @@
 pico.start({
-    name: 'PROJECT_NAME',
+    name: 'PROJECT_ID',
     production: false,
     paths:{
         '*': 'js/',
@@ -9,6 +9,7 @@ pico.start({
         pageslider: 'lib/pageslider/pageslider',
     }
 },function(){
+    require('Module')//preload
     var
     network = require('network'),
     Frame = require('Frame')

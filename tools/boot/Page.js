@@ -1,45 +1,37 @@
-var
-loadModules = function(srcList, destList, pageOptions, cb){
-    if (!srcList.length) return cb(null, destList)
-    var
-    src = srcList.pop(),
-    name = src.name
-
-    require('modules/'+name, function(err, mod){
-        if (err) return cb(err)
-        var options = {}
-
-        src.fields.forEach(function(field){
-            options[field.name] = ('@' === field.value[0]) ? pageOptions[field.value.substr(1)] : field.value
-        })
-        options['name'] = name
-        desList[name] = new mod.Class(options)
-        loadModules(srcList, destList, pageOptions, cb)
-    })
-}
-
 me.Class = Backbone.View.extend({
-    modules: null,
     initialize: function(options){
+        this.on('invalidate', this.drawModule)
+
+        this.spec = options.spec
+        this.header = options.header
+        this.theme = restyle(options.theme, ['webkit'])
+        this.modules = {}
+
         var
         self = this,
-        $el = this.$el
+        $el = this.$el,
+        index = 0,
+        modName
 
-        options.modules.forEach(function(mod){
-            $el.append('<div class=module id=mod'+mod.name+'></div>')
-        })
-        loadModules(options.modules, {}, options.data, function(err, modList){
-            if (err) return console.error(err)
-            self.modules = modList
+        this.spec.forEach(function(s){
+            if ('module' === s.type) {
+                modName = s.name +'-'+ index++
+                $el.append('<div class=module id=mod'+modName+'></div>')
+                self.modules[modName] = new s.Class({name:modName, host:self, spec:s.spec})
+            }
         })
     },
     render: function(){
         return this.$el
     },
-    events: {
-        'invalidate': 'invalidate'
+    remove: function(){
+        this.theme.remove()
+        Backbone.View.prototype.remove.apply(this, arguments)
     },
-    invalidate: function(evt, modName){
-        this.$('#mod'+modName).html(this.modules[modName].render())
+    drawModule: function(mod){
+        var $mod = this.$('#mod'+mod.name)
+        if (!mod || !$mod.length) return
+
+        $mod.html(mod.render())
     }
-})
+}, Backbone.Events)

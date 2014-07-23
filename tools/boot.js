@@ -21,7 +21,18 @@ fs.mkdir(projectName, 0777, function(){
             dest = projectName + path.sep + files.shift() + path.sep + fname
             fs.createReadStream(templDir+fname).pipe(fs.createWriteStream(dest))
             arguments.callee(files, cb)
-        })(['index.html','','main.js','js','network.js','js','Router.js','js','Page.js','js','Model.js','js','Frame.js','js','frame.html','html','main.css','css'], function(){
+        })([
+            'index.html','',
+            'main.js','js',
+            'network.js','js',
+            'Router.js','js',
+            'Frame.js','js',
+            'Page.js','js',
+            'Module.js','js',
+            'spec.js','js',
+            'Model.js','js',
+            'frame.html','html'
+            ], function(){
             console.log('done')
         })
     })

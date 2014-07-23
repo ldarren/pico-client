@@ -22,7 +22,7 @@ onSend = function(req){
 
 me.slot(pico.LOAD, function(){
     Net.create({
-        url: 'API_URL',
+        url: 'PROJECT_SERVER',
         delimiter: ['&'],
         beatRate: 500,
     }, function(err, netClient){
@@ -30,7 +30,7 @@ me.slot(pico.LOAD, function(){
         client = netClient
         Backbone.ajax = onSend
 
-        client.request('pico/project/read', {name:'PROJECT_NAME'}, function(err, project){
+        client.request('pico/project/read', {name:'PROJECT_ID'}, function(err, project){
             if (err) return console.error(err)
             if (!project) return console.error('empty project file')
             me.step('connected', [project.json])
