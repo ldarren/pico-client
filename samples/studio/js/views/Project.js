@@ -73,11 +73,15 @@ me.Class = Panel.Class.extend({
         item = e.target.id,
         id = item.substr(1)
 
+        this.$('.row').removeClass('selected')
+
         if (this.selectedItem === id){
             this.selectedItem = null
             this.editor.clear()
             return
         }
+
+        e.target.parentNode.classList.add('selected')
 
         switch(item){
         case 'saveProject': this.saveProject(); break

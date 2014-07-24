@@ -17,12 +17,6 @@ body{
 .hidden{
     display:none;
 }
-.access-left{
-    padding-left:10px;
-}
-.access-right{
-    padding-right:10px;
-}
 
 .row{
     border-bottom: 1px solid #eee;
@@ -43,6 +37,10 @@ body{
 }
 .subItem:before{
     content:' - '
+}
+.selected{
+    background-color:#555;
+    color:#eee;
 }
 .icon{
     float: right;
