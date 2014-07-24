@@ -25,7 +25,7 @@ me.Class = Panel.Class.extend({
     },
     events:{
         'click .item': 'openItem',
-        'click .iconBar .icon': 'doOptions'
+        'click .rightBar .icon': 'doOptions'
     },
     render: function(){
         var $el = this.$el
@@ -36,9 +36,7 @@ me.Class = Panel.Class.extend({
     },
     addItem: function(model, collection){
         this.$el.append(_.template(tplItem.text, model.attributes))
-        var iconBar = this.$('.iconBar').eq(-1)
-        iconBar.append(_.template(tplIcon.text, {icon:'edit'}))
-        iconBar.append(_.template(tplIcon.text, {icon:'minus'}))
+        this.$el.children().last().find('.rightBar').append(_.template(tplIcon.text, {icon:'edit'})).append(_.template(tplIcon.text, {icon:'minus'}))
     },
     renameItem: function(model){
         this.$('#i'+model.id).text(model.get('name'))

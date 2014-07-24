@@ -28,6 +28,9 @@ body{
     cursor: pointer;
     padding: 2px 0;
 }
+.page:before{
+    content:'\00a0'
+}
 .control{
     display:block;
     text-align:center;
@@ -42,6 +45,8 @@ body{
     background-color:#555;
     color:#eee;
 }
+.leftBar{float:left}
+.rightBar{float:right}
 .icon{
     float: right;
     font-size:14px;

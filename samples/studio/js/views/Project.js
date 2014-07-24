@@ -4,6 +4,7 @@ Panel = require('views/Panel'),
 tplSubitem = require('@html/subItem.html'),
 tplItem = require('@html/item.html'),
 tplControl = require('@html/control.html'),
+tplIcon = require('@html/icon.html'),
 Page = Backbone.View.extend({
     initialize: function(args){
         this.title = args.title
@@ -14,7 +15,8 @@ Page = Backbone.View.extend({
         t = this.title,
         spec = this.page.spec
 
-        $container.append(_.template(tplItem.text, {id:t, name:t}))
+        $container.append(_.template(tplItem.text, {id:t, name:t, className:'page'}))
+        $container.children().last().find('.leftBar').append(_.template(tplIcon.text, {icon:'folder'}))
 
         for(var i=0,l=spec.length,s; i<l,s=spec[i]; i++){
             $container.append(_.template(tplSubitem.text, {id:t+'.'+s.name, name:s.name}))
@@ -213,6 +215,15 @@ me.Class = Panel.Class.extend({
     },
     showPage: function(id){
         this.selectedItem = id
+        this.$('.icon-folder-open').removeClass('icon-folder-open').addClass('icon-folder')
+        var $item = this.$('.page#i'+id)
+        $item.prev().find('.icon-folder').removeClass('icon-folder').addClass('icon-folder-open')
+        this.$('.subItem').parent().addClass('hidden')
+        var $nextRow = $item.parent().next()
+        while($nextRow.children().first().hasClass('subItem')){
+            $nextRow.removeClass('hidden')
+            $nextRow = $nextRow.next()
+        }
         this.editor.write(JSON.stringify(this.pages[id], null, 4), 'json')
     },
     showModule: function(id){
