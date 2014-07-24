@@ -4,7 +4,7 @@ me.Class = Backbone.View.extend({
 
         this.spec = options.spec
         this.header = options.header
-        this.theme = restyle(options.theme, ['webkit'])
+        this.style = restyle(options.styles, ['webkit'])
         this.modules = {}
 
         var
@@ -25,7 +25,7 @@ me.Class = Backbone.View.extend({
         return this.$el
     },
     remove: function(){
-        this.theme.remove()
+        this.style.remove()
         Backbone.View.prototype.remove.apply(this, arguments)
     },
     drawModule: function(mod){

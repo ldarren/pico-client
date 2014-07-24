@@ -43,7 +43,7 @@ changeRoute = function(path, params){
             console.warn(err)
             return Router.instance.home()
         }
-        self.currPage = new Page.Class({header: pageConfig.header, spec: s, theme: pageConfig.theme})
+        self.currPage = new Page.Class({header: pageConfig.header, spec: s, styles: pageConfig.styles})
         self.render()
     })
 }
