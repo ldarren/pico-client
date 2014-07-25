@@ -3,7 +3,7 @@ tpl = require('@html/device.html'),
 home = '<div class=deviceContent><input type=url name=url value=URL></input></div>',
 iframe = '<iframe src=URL class=deviceContent width=321 height=569 frameBorder=0 seamless=seamless></iframe>'
 
-me.Class = Backbone.View.extend({
+exports.Class = Backbone.View.extend({
     el: '#device',
     url: '',
     initialize:function(args){

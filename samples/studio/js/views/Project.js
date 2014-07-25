@@ -36,7 +36,7 @@ indexOfSpec = function(id, pages){
     return []
 }
 
-me.Class = Panel.Class.extend({
+exports.Class = Panel.Class.extend({
     controls: [
         {id:'createPage', name:'[Create Page]'},
         {id:'closeProject', name:'[Close Project]'},

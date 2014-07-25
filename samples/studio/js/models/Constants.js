@@ -12,7 +12,7 @@ var Spec = Backbone.Model.extend({
     }
 })
 
-me.instance = new (Backbone.Collection.extend({
+exports.instance = new (Backbone.Collection.extend({
     model: Spec,
     url: 'pico/constant/list',
     initialize: function(){

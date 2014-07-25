@@ -12,7 +12,7 @@ var Widget = Backbone.Model.extend({
     }
 })
 
-me.Class = Backbone.Collection.extend({
+exports.Class = Backbone.Collection.extend({
     model: Widget,
     url: 'pico/widget/list'
 })

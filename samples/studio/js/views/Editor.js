@@ -1,4 +1,4 @@
-me.Class = Backbone.View.extend({
+exports.Class = Backbone.View.extend({
     editor: null,
     initialize: function(args){
         var editor = ace.edit(args.id)

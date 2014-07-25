@@ -1,7 +1,7 @@
 var
 Module = require('Module')
 
-me.Class = Module.Class.extend({
+exports.Class = Module.Class.extend({
     tagName: 'ul',
     className: 'table-view',
     initialize: function(options){

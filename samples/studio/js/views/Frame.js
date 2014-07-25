@@ -10,7 +10,7 @@ ViewProject = require('views/Project'),
 ViewWidget = require('views/Widget'),
 ViewSpec = require('views/Spec')
 
-me.Class = Backbone.View.extend({
+exports.Class = Backbone.View.extend({
     el: 'body',
     initialize: function(options){
         this.projects = new ModelProjects.Class

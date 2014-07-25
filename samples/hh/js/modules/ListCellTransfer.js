@@ -2,7 +2,7 @@ var
 Module = require('Module'),
 tpl = require('@html/listCell.html')
 
-me.Class = Module.Class.extend({
+exports.Class = Module.Class.extend({
     tagName: 'li',
     className: 'table-view-cell',
     initialize: function(options){

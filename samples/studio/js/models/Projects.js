@@ -12,7 +12,7 @@ var Project = Backbone.Model.extend({
     }
 })
 
-me.Class = Backbone.Collection.extend({
+exports.Class = Backbone.Collection.extend({
     model: Project,
     url: 'pico/project/list'
 })

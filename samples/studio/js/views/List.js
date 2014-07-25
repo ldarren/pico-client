@@ -5,7 +5,7 @@ tplItem = require('@html/item.html'),
 tplIcon = require('@html/icon.html'),
 tplControl = require('@html/control.html')
 
-me.Class = Panel.Class.extend({
+exports.Class = Panel.Class.extend({
     initialize: function(args){
         Panel.Class.prototype.initialize.call(this, args)
 

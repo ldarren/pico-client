@@ -53,6 +53,6 @@ load = function(host, params, spec, deps, cb){
     load(host, params, spec, deps, cb)
 }
 
-me.load = function(host, params, spec, cb){
+exports.load = function(host, params, spec, cb){
     load(host, params, spec.slice(), [], cb)
 }

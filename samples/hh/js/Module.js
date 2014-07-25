@@ -3,7 +3,7 @@ spec = require('spec'),
 Router = require('Router'),
 id=0
 
-me.Class = Backbone.View.extend({
+exports.Class = Backbone.View.extend({
     init: function(options, cb){
         this.on('invalidate', this.drawModule)
         this.id = id++

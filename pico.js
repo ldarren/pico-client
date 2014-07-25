@@ -49,7 +49,7 @@
     },
     parseFunc = function(global, me, require, inherit, script){
         try{
-            Function('me', 'require', 'inherit', 'window', script).call(global, me, require, inherit, global)
+            Function('exports', 'require', 'inherit', 'me', 'window', script).call(global, me, require, inherit, me, global)
             return me
         }catch(exp){
             //console.error(exp.fileName+' ('+exp.lineNumber+':'+exp.columnNumber+')')

@@ -1,4 +1,4 @@
-me.Class = Backbone.View.extend({
+exports.Class = Backbone.View.extend({
     initialize: function(options){
         this.on('invalidate', this.drawModule)
 

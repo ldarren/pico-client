@@ -3,7 +3,7 @@ ModelConstants = require('models/Constants'),
 tplItem = require('@html/item.html'),
 Panel = require('views/Panel')
 
-me.Class = Panel.Class.extend({
+exports.Class = Panel.Class.extend({
     initialize: function(args){
         Panel.Class.prototype.initialize.call(this, args)
 

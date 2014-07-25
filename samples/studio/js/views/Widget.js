@@ -3,7 +3,7 @@ route = require('route'),
 Panel = require('views/Panel'),
 tplControl = require('@html/control.html')
 
-me.Class = Panel.Class.extend({
+exports.Class = Panel.Class.extend({
     controls: [
         {id:'closeWidget', name:'[Close Widget]'},
         {id:'saveWidget', name:'[Save Widget]'},

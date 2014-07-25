@@ -15,7 +15,7 @@ pico.start({
     network = require('network'),
     ViewFrame = require('views/Frame')
 
-    me.slot(pico.LOAD, function(){
+    exports.slot(pico.LOAD, function(){
         network.slot('connected', function(){
             new ViewFrame.Class
         })

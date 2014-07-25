@@ -1,7 +1,7 @@
 var
 Module = require('Module')
 
-me.Class = Module.Class.extend({
+exports.Class = Module.Class.extend({
     className: 'card',
     initialize: function(options){
         this.$el.html('<ul class="table-view"></ul>')
