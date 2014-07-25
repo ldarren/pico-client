@@ -33,7 +33,7 @@ me.slot(pico.LOAD, function(){
         client.request('pico/project/read', {name:'hh'}, function(err, project){
             if (err) return console.error(err)
             if (!project) return console.error('empty project file')
-            me.step('connected', [project.json])
+            me.signalStep('connected', [project.json])
         })
     })
 })

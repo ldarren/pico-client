@@ -35,13 +35,13 @@ changeRoute = function(path, params){
     self = this,
     pageConfig = this.pages[path]
 
-    if (!pageConfig) return Router.instance.home()
+    if (!pageConfig) return Router.instance().home()
 
     if (this.currPage) this.currPage.remove()
     spec.load(this, params, pageConfig.spec, function(err, s){
         if (err) {
             console.warn(err)
-            return Router.instance.home()
+            return Router.instance().home()
         }
         self.currPage = new Page.Class({header: pageConfig.header, spec: s, styles: pageConfig.styles})
         self.render()
@@ -54,7 +54,7 @@ exports.Class = Backbone.View.extend({
         var 
         self = this,
         p = args.project,
-        r = Router.instance = new Router.Class({routes: p.routes})
+        r = new Router.Class({routes: p.routes})
 
         r.on('route', changeRoute, this)
         this.pages = p.pages
@@ -109,7 +109,7 @@ exports.Class = Backbone.View.extend({
     onMenu: function(e){
         var id = e.srcElement.id
         if ('#' === id.charAt(0)) return this.currPage.$el.trigger(id.substr(1))
-        Router.instance.nav(e.srcElement.id)
+        Router.instance().nav(e.srcElement.id)
     },
     initHeader: function(){
         this.$popover = this.$('#popOptions ul.table-view')

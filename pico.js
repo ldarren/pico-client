@@ -28,10 +28,7 @@
     createMod = function(link, obj, ancestor){
         ancestor = ancestor || pico.prototype
 
-        var lastObj = obj
-        while(lastObj.__proto__.__proto__ && lastObj.__proto__.__proto__ !== pico.prototype){ lastObj = lastObj.__proto__ }
-
-        lastObj.__proto__ = Object.create(ancestor, {
+        obj.__proto__ = Object.create(ancestor, {
             moduleName: {value:link,    writable:false, configurable:false, enumerable:true},
             base:       {value:ancestor,writable:false, configurable:false, enumerable:true},
             slots:      {value:{},      writable:false, configurable:false, enumerable:false},
@@ -62,16 +59,15 @@
         deps=[],
         ancestorLink
 
-        parseFunc(dummyGlobal, createMod(scriptLink, getMod(scriptLink)), function(l){var d=modules[l];if(d)return d;deps.push(l)},function(l){ancestorLink=l}, script)
+        parseFunc(dummyGlobal, createMod(scriptLink, {}), function(l){var d=modules[l];if(d)return d;deps.push(l)},function(l){ancestorLink=l}, script)
 
         loadLink(ancestorLink, function(err, ancestor){
             if (err) return cb(err)
 
             var mod = parseFunc(exports, createMod(scriptLink, getMod(scriptLink), ancestor), getModAsync, dummyCB, '"use strict"\n'+script+(envs.production ? '' : '//# sourceURL='+scriptLink))
-            modules[scriptLink] = mod
             loadDeps(deps, function(err){
                 if (err) return cb(err)
-                mod.signal(pico.LOAD)
+                mod.signalStep(pico.LOAD, [])
                 cb(null, mod)
                 deps = ancestorLink = ancestor = script = mod = undefined
             })
@@ -422,7 +418,7 @@
             }
             return results
         },
-        step: function(channelName, evt){
+        signalStep: function(channelName, evt){
             this.signals[channelName] = evt
             this.signal(channelName, evt)
         }
@@ -440,7 +436,7 @@
         slot: pico.slot,
         unslot: pico.unslot,
         signal: pico.signal,
-        step: pico.step,
+        signalStep: pico.signalStep,
     }
 
     !function(){

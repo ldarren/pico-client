@@ -28,7 +28,7 @@ onLoad = function(){
         if (err) return console.error(err);
         client = netClient;
         Backbone.ajax = onSend;
-        me.step('connected', client)
+        me.signalStep('connected', [client])
     })
 };
 

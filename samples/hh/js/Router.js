@@ -1,5 +1,11 @@
-var trigger = {trigger:true}
+var
+trigger = {trigger:true},
+inst
+
 exports.Class = Backbone.Router.extend({
+    initialize: function(){
+        inst = this
+    },
     nav: function(url){
         this.navigate(url, trigger)
     },
@@ -7,4 +13,5 @@ exports.Class = Backbone.Router.extend({
         this.navigate('', trigger)
     }
 })
-exports.instance = null
+exports.instance = function(){return inst}
+Object.freeze(exports)
