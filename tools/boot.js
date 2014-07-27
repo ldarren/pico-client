@@ -10,27 +10,29 @@ projDir = process.argv[2],
 projId = process.argv[3],
 projName = process.argv[4],
 projURL = process.argv[5],
-projLib = process.argv[6]
+projLib = process.argv[6],
+replace = []
 
-if (!projDir || !projId || !projName || !projSvr || !projLib)
-    return console.log('USAGE: '+process.argv[1]+' dir_name projId projName lib_path')
+if (!projDir || !projId || !projName || !projURL || !projLib)
+    return console.log('USAGE: '+process.argv[1]+' dir_name projId projName url lib_path')
 
 function ReplaceTransform(options){
     if (!(this instanceof ReplaceTransform)) return new ReplaceTransform(options)
 
-    this.replace = {
-        PROJ_NAME: projName,
-        PROJ_ID: projId,
-        PROJ_URL: projURL
-    }
+    replace.push(/PROJ_NAME/g, projName)
+    replace.push(/PROJ_ID/g, projId)
+    replace.push(/PROJ_URL/g, projURL)
 
     Transform.call(this, options)
 }
 util.inherits(ReplaceTransform, Transform)
 
 ReplaceTransform.prototype._transform = function(chunk, encoding, cb) {
-    console.log('chunk: '+chunk.length)
-    this.push(chunk, encoding)
+    var str = chunk.toString()
+    for(var i=0,l=replace.length; i<l; i+=2){
+        str = str.replace(replace[i], replace[i+1])
+    }
+    this.push(new Buffer(str), encoding)
     cb(null)
 }
 

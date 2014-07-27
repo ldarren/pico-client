@@ -1,5 +1,5 @@
 pico.start({
-    name: 'PROJECT_NAME',
+    name: 'PROJ_NAME',
     production: false,
     paths:{
         '*': 'js/',
