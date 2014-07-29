@@ -9,8 +9,11 @@
     dummyCB = function(){},
     dummyObj = {},
     dummyGlobal = function(g){
-        var o = {}
+        var
+        notAllows = ['frameElement'],
+        o = {}
         for(var k in g)
+            if (-1 !== k.indexOf('webkit') || -1 !== notAllows.indexOf(k)) continue
             if (g[k] instanceof Function) o[k] = dummyCB
             else o[k] = dummyObj
         return o
@@ -488,4 +491,4 @@
         }
         console.log('pico envs: '+JSON.stringify(envs))
     }()
-}('undefined' === typeof window ? global : window)
+}('undefined' === typeof window? global : window)
