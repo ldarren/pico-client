@@ -3,7 +3,9 @@ Panel = require('views/Panel'),
 route = require('route'),
 tplItem = require('@html/item.html'),
 tplIcon = require('@html/icon.html'),
-tplControl = require('@html/control.html')
+tplControl = require('@html/control.html'),
+projectJSON = JSON.stringify({routes:{},spec:[],pages:{},deps:[],styles:[]}),
+widgetJSON = JSON.stringify([])
 
 exports.Class = Panel.Class.extend({
     initialize: function(args){
@@ -55,13 +57,7 @@ exports.Class = Panel.Class.extend({
             if (!name) return alert('Please enter a name')
             var data = {
                 name: name,
-                json: {
-                    routes:{},
-                    spec:[],
-                    pages:{},
-                    deps:[],
-                    styles:[]
-                }
+                json: 'project' === self.itemType ? JSON.parse(projectJSON) : JSON.parse(widgetJSON)
             }
             this.collection.create(data,{
                 wait: true,
@@ -78,7 +74,7 @@ exports.Class = Panel.Class.extend({
     },
     doOptions: function(e){
         var
-        itemId = e.target.parentNode.parentNode.firstChild.textContent,
+        itemId = e.target.parentNode.parentNode.getElementsByTagName('span')[1].textContent,
         list = e.target.classList,
         model = this.collection.findWhere({name:itemId})
 

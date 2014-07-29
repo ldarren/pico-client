@@ -1,4 +1,4 @@
-*.swp
+.*.sw?
 *.seed
 *.log
 *.csv
@@ -20,4 +20,3 @@ results
 .cvs
 
 node_modules
-npm-debug.log
