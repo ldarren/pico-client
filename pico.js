@@ -12,10 +12,11 @@
         var
         notAllows = ['frameElement'],
         o = {}
-        for(var k in g)
+        for(var k in g){
             if (-1 !== k.indexOf('webkit') || -1 !== notAllows.indexOf(k)) continue
             if (g[k] instanceof Function) o[k] = dummyCB
             else o[k] = dummyObj
+        }
         return o
     }(exports),
     consoleCB = function(){console.log(arguments)},
