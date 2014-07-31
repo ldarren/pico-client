@@ -4,7 +4,7 @@ projClient,
 onSend = function(req){
     if (!req) return
     var
-    reqData = req.data || {},
+    reqData = req.data,
     onReceive = function(err, data){
         if (err) return req.error(err)
         return req.success(data, 'success')
@@ -16,7 +16,7 @@ onSend = function(req){
             projClient.request(null, reqData, onReceive)
         }
     }else{
-        projClient.request(req.url, reqData || {}, onReceive)
+        projClient.request(req.url, reqData, onReceive)
     }
 }
 
@@ -53,5 +53,5 @@ me.create = function(url, forProj, cb){
 
 me.reconnect = function(url, cb){
     if (!projClient) return this.create(url, true, cb)
-    projClient.reconnect(url, cb)
+    projClient.reconnect({url:url}, cb)
 }
