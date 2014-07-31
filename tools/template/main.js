@@ -12,11 +12,15 @@ pico.start({
     require('Module')//preload
     var
     network = require('network'),
+    spec = require('spec'),
     Frame = require('Frame')
 
     me.slot(pico.LOAD, function(){
         network.slot('connected', function(project){
-            new Frame.Class({project: project})
+            network.create(spec.find('projURL', project.spec).value, true, function(err){
+                if (err) return console.error(err)
+                new Frame.Class({project: project})
+            })
         })
     })
 })

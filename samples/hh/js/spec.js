@@ -53,6 +53,8 @@ load = function(host, params, spec, deps, cb){
     load(host, params, spec, deps, cb)
 }
 
-exports.load = function(host, params, spec, cb){
+me.load = function(host, params, spec, cb){
     load(host, params, spec.slice(), [], cb)
 }
+me.find = find
+me.findAll = findAll
