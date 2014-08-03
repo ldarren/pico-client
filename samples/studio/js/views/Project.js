@@ -103,7 +103,7 @@ exports.Class = Panel.Class.extend({
         var
         c = this.collection,
         $el = this.$el,
-        p = this.model.get('json')
+        p = JSON.parse(this.model.get('json'))
 
         this.routes = p.routes
         this.spec = p.spec
@@ -136,13 +136,13 @@ exports.Class = Panel.Class.extend({
         m = this.model,
         data = {
             id: m.id,
-            json: {
+            json: JSON.stringify({
                 spec: this.spec,
                 routes: this.routes,
                 deps: this.deps,
                 styles: this.styles,
                 pages: this.pages
-            }
+            })
         }
         m.save(data, {
             data:data,
