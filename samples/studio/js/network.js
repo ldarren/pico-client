@@ -4,7 +4,7 @@ client,
 onSend = function(req){
     if (!req) return;
     var
-    reqData = req.data || {},
+    reqData = req.data,
     onReceive = function(err, data){
         if (err) return req.error(err);
         return req.success(data, 'success');
@@ -16,7 +16,7 @@ onSend = function(req){
             client.request(null, reqData, onReceive);
         }
     }else{
-        client.request(req.url, reqData || {}, onReceive);
+        client.request(req.url, reqData, onReceive);
     }
 },
 onLoad = function(){
