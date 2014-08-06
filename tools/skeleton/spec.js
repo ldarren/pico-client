@@ -51,10 +51,26 @@ load = function(host, params, spec, deps, cb){
         break
     }
     load(host, params, spec, deps, cb)
+},
+unload = function(spec){
+    if (!spec.length) return
+    var
+    s = spec.pop(),
+    t = s.type,
+    m
+
+    switch(t){
+    case 'models':
+        m = s.value
+        m.reset()
+        delete s.value
+        break
+    }
 }
 
 me.load = function(host, params, spec, cb){
     load(host, params, spec.slice(), [], cb)
 }
+me.unload = unload
 me.find = find
 me.findAll = findAll

@@ -48,7 +48,7 @@ changeRoute = function(path, params){
     })
 }
 
-exports.Class = Backbone.View.extend({
+me.Class = Backbone.View.extend({
     el: 'body',
     initialize: function(args){
         var 
