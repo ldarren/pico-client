@@ -12,12 +12,13 @@ me.Class = Backbone.View.extend({
         var self = this
         spec.load(this.host, options.params || [], options.spec, function(err, s){
             self.spec = s
+            if (err) console.error(err)
             if (cb) cb(err, s)
         })
     },
-    createSubModule: function(spec, params){
-        if ('module' !== spec.type) return console.error('create a sub module with none module spec')
-        return new spec.Class({name:spec.name, host:this, spec:spec.spec, params:params})
+    derive: function(mod, params){
+        if ('module' !== mod.type) return console.error('Wrong type!')
+        return new mod.Class({name:mod.name, host:this, spec:mod.spec, params:params})
     },
     addSpec: function(spec){
         this.spec = (spec || []).concat(this.spec)

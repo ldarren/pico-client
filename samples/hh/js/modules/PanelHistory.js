@@ -63,7 +63,7 @@ exports.Class = Module.Class.extend({
             value.push(self.issues.get(model.get('issueId')).get('desc')+': '+self.results.get(model.get('resultId')).get('desc'))
         })
         
-        this.createSubModule(mod)
+        this.derive(mod)
     },
 
     drawModule: function(mod){

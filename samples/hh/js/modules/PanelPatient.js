@@ -33,7 +33,7 @@ exports.Class = Module.Class.extend({
             value.push({name: 'Name', value: p.get('name')})
             value.push({name: 'IC', value: p.get('ic')})
 
-            self.createSubModule(sub)
+            self.derive(sub)
         })
     },
 

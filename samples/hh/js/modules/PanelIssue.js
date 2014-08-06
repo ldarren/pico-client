@@ -23,7 +23,7 @@ exports.Class = Module.Class.extend({
             spec.name = 'Current Issue'
             value.push(issue.get('desc'))
 
-            self.createSubModule(sub)
+            self.derive(sub)
         })
     },
 

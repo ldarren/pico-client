@@ -29,7 +29,7 @@ exports.Class = Module.Class.extend({
             value.push({name: 'Specialty', value:w.get('specialty')})
             value.push({name: 'Subspecialty', value:w.get('subSpecialty')})
             value.push({name: 'Ward', value:w.get('name')})
-            self.createSubModule(sub)
+            self.derive(sub)
         })
     },
 

@@ -18,7 +18,7 @@ exports.Class = Module.Class.extend({
                     if ('list' === s.name) list = s.value
                     else models[s.name] = s.value
                     break
-                case 'module': self.cell = s; break
+                case 'module': self.Cell = s; break
                 case 'number': doctorId = s.value; break
                 case 'text': indexKey = s.value; break
                 }
@@ -48,8 +48,7 @@ exports.Class = Module.Class.extend({
     },
 
     addRow: function(model){
-        var cell = this.cell
-        this.createSubModule(cell, [model.id])
+        this.derive(this.Cell, [model.id])
     },
 
     drawModule: function(mod){

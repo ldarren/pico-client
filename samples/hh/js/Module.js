@@ -15,7 +15,7 @@ exports.Class = Backbone.View.extend({
             if (cb) cb(err, s)
         })
     },
-    createSubModule: function(spec, params){
+    derive: function(spec, params){
         if ('module' !== spec.type) return console.error('create a sub module with none module spec')
         return new spec.Class({name:spec.name, host:this, spec:spec.spec, params:params})
     },
