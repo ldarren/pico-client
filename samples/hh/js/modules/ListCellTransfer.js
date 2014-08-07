@@ -27,7 +27,7 @@ exports.Class = Module.Class.extend({
             self.patient = patients.get(issues.get(transfer.get('issueId')).get('patientId'))
             self.ward = wards.get(self.patient.get('wardId'))
             self.transfer = transfer
-            self.invalidate()
+            self.triggerHost('invalidate')
         })
     },
     render: function(){

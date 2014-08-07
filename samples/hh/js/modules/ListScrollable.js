@@ -39,7 +39,7 @@ exports.Class = Module.Class.extend({
                     })
                 }
             })
-            self.invalidate()
+            self.triggerHost('invalidate')
         })
     },
 
@@ -51,7 +51,9 @@ exports.Class = Module.Class.extend({
         this.derive(this.Cell, [model.id])
     },
 
-    drawModule: function(mod){
-        this.$el.append(mod.render())
+    moduleEvents: function(evt, sender){
+        switch(evt){
+        case 'invalidate': this.$el.append(sender.render()); break
+        }
     }
 })

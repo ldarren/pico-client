@@ -15,7 +15,7 @@ exports.Class = Module.Class.extend({
                     break
                 }
             }
-            self.invalidate()
+            self.triggerHost('invalidate')
         })
     },
     render: function(){

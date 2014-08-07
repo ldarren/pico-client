@@ -46,10 +46,6 @@ exports.Class = Module.Class.extend({
         })
     },
 
-    render: function(){
-        return this.panelDesc.render()
-    },
-
     addRows: function(mod, history){
         var
         self = this,
@@ -64,10 +60,5 @@ exports.Class = Module.Class.extend({
         })
         
         this.derive(mod)
-    },
-
-    drawModule: function(mod){
-        this.panelDesc = mod
-        this.invalidate()
     }
 })

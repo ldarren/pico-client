@@ -31,14 +31,5 @@ exports.Class = Module.Class.extend({
             value.push({name: 'Ward', value:w.get('name')})
             self.derive(sub)
         })
-    },
-
-    render: function(){
-        return this.panelInfo.render()
-    },
-
-    drawModule: function(mod){
-        this.panelInfo = mod
-        this.invalidate()
     }
 })

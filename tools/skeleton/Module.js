@@ -4,11 +4,13 @@ id=0
 
 me.Class = Backbone.View.extend({
     init: function(options, cb){
-        this.on('invalidate', this.drawModule)
         this.id = id++
         this.name = options.name
         this.host = options.host
         this.modules = []
+
+        this.on('all', this.moduleEvents, this)
+
         var self = this
         spec.load(this.host, options.params || [], options.spec, function(err, s){
             self.spec = s
@@ -36,7 +38,42 @@ me.Class = Backbone.View.extend({
         this.spec = (spec || []).concat(this.spec)
         return this.spec.slice()
     },
-    invalidate: function(){
-        this.host.trigger('invalidate', this)
+    render: function(){
+        var ms = this.modules
+        switch(ms.length){
+        case 0: return this.el
+        case 1: return ms[0].render()
+        default:
+            var $el = this.$el
+            for(var i=0,l=ms.length; i<l; i++){
+                $el.append(ms[i].render())
+            }
+            return this.el
+        }
+    },
+    moduleEvents: function(evt, sender){
+        var params = Array.prototype.slice.call(arguments)
+        params.splice(1, 1)
+        if (sender === this.host){
+            this.triggerModules.apply(this, params)
+        }else{
+            this.triggerHost.apply(this, params)
+        }
+    },
+    triggerHost: function(){
+        setTimeout(function(context, params){
+            params.splice(1, 0, context)
+            Backbone.Events.trigger.apply(context.host, params)
+        }, 0, this, Array.prototype.slice.call(arguments))
+    },
+    triggerModules: function(){
+        setTimeout(function(context, params){
+            var trigger = Backbone.Events.trigger
+
+            params.splice(1, 0, context)
+            for(var ms=context.modules,i=0,l=ms.length; i<l; i++){
+                trigger.apply(ms[i], params)
+            }
+        }, 0, this, Array.prototype.slice.call(arguments))
     }
 }, Backbone.Events)

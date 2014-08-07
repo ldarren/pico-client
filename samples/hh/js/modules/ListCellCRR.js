@@ -24,7 +24,7 @@ exports.Class = Module.Class.extend({
             }
             if (!self.result || !patients || !issues) return console.error('missing field for ListItemCRR')
             self.patient = patients.get(issues.get(self.result.get('issueId')).get('patientId'))
-            self.invalidate()
+            self.triggerHost('invalidate')
         })
     },
     render: function(){

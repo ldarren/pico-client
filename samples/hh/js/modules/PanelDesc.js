@@ -11,7 +11,7 @@ exports.Class = Module.Class.extend({
                 }
             }
             self.$el.html('<h5 class=content-padded>'+self.select.name+'</h5><div class=card><ul class=table-view></ul></div>')
-            self.invalidate()
+            self.triggerHost('invalidate')
         })
     },
     render: function(){

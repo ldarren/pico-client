@@ -25,14 +25,5 @@ exports.Class = Module.Class.extend({
 
             self.derive(sub)
         })
-    },
-
-    render: function(){
-        return this.panelDesc.render()
-    },
-
-    drawModule: function(mod){
-        this.panelDesc = mod
-        this.invalidate()
     }
 })

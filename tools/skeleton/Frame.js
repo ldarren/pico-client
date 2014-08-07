@@ -91,6 +91,7 @@ me.Class = Backbone.View.extend({
 
         switch(id){
         case 'left-nav': window.history.back(); break
+        case 'menu': break
         case 'search': this.drawHeader(); break
         default: this.currPage.$el.trigger(id)
         }
@@ -171,16 +172,14 @@ me.Class = Backbone.View.extend({
         var optionKeys = bar.options
         if (optionKeys && optionKeys.length){
             $titleOptions[0].firstChild.firstChild.textContent = bar.title
-            $title.addClass('hidden')
             $titleOptions.removeClass('hidden')
             $popover.empty()
             _.each(optionKeys, function(key){
                 $popover.append($(OPTION_TPL.replace('KEY', key).replace('VALUE', router.links[key])))
             })
-        }else{
+        }else if (bar.title){
             $title.text(bar.title)
             $title.removeClass('hidden')
-            $titleOptions.addClass('hidden')
         }
         if (bar.left){
             addToolbar($leftBar, bar.left)
