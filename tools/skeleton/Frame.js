@@ -5,6 +5,7 @@ Router = require('Router'),
 Page = require('Page'),
 Model = require('Model'),
 tpl = require('@html/frame.html'),
+snapper,
 attachDeps = function(deps, cb){
     if (!deps || !deps.length) return cb()
     pico.attachFile(deps.shift(), 'js', function(){ attachDeps(deps, cb) })
@@ -46,6 +47,21 @@ changeRoute = function(path, params){
         self.currPage = new Page.Class({header: pageConfig.header, spec: s, styles: pageConfig.styles})
         self.render()
     })
+},
+UpdateDrawers = function(){
+    var
+    $ = function(id){return document.getElementById(id)},
+    state = snapper.state(),
+    towards = state.info.towards,
+    opening = state.info.opening;
+
+    if(opening=='right' && towards=='left'){
+        $('right-drawer').classList.add('active-drawer');
+        $('left-drawer').classList.remove('active-drawer');
+    } else if(opening=='left' && towards=='right') {
+        $('right-drawer').classList.remove('active-drawer');
+        $('left-drawer').classList.add('active-drawer');
+    }
 }
 
 me.Class = Backbone.View.extend({
@@ -61,7 +77,12 @@ me.Class = Backbone.View.extend({
 
         attachStyles(p.styles, function(){
             self.el.innerHTML = tpl.text
-            self.slider = new PageSlider.Class(self.$el)
+            var $content = self.$('#content')
+            self.slider = new PageSlider.Class($content)
+            snapper = new Snap({element: $content[0]})
+            snapper.on('drag', UpdateDrawers);
+            snapper.on('animate', UpdateDrawers);
+            snapper.on('animated', UpdateDrawers);
             attachDeps(p.deps, function(){
                 spec.load(null, [], p.spec, function(err, s){
                     if (err) return console.error(err)
@@ -78,20 +99,20 @@ me.Class = Backbone.View.extend({
     },
 
     events: {
-        'touchstart header .pull-left a': 'onToolbar',
-        'touchstart header .pull-right a': 'onToolbar',
+        'touchstart header .pull-left a': function(e){this.onToolbar(e, true)},
+        'touchstart header .pull-right a': function(e){this.onToolbar(e, false)},
         'touchstart #popOptions li': 'onMenu',
         'keyup header input[type=search]': 'onFind'
     },
 
-    onToolbar: function(e){
+    onToolbar: function(e, isLeft){
         var
         ele = e.srcElement,
         id = ele.id
 
         switch(id){
         case 'left-nav': window.history.back(); break
-        case 'menu': break
+        case 'menu': snapper.open(isLeft ? 'left' : 'right'); break
         case 'search': this.drawHeader(); break
         default: this.currPage.$el.trigger(id)
         }
