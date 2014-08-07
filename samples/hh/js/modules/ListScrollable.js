@@ -48,7 +48,7 @@ exports.Class = Module.Class.extend({
     },
 
     addRow: function(model){
-        this.derive(this.Cell, [model.id])
+        this.proxy(this.Cell, [model.id])
     },
 
     moduleEvents: function(evt, sender){

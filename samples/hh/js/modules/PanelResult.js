@@ -23,7 +23,7 @@ exports.Class = Module.Class.extend({
             value.push((new Date(item.get('createdAt'))).toLocaleString())
             value.push(item.get('desc'))
 
-            self.derive(sub)
+            self.proxy(sub)
         })
     }
 })

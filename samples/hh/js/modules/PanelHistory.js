@@ -59,6 +59,6 @@ exports.Class = Module.Class.extend({
             value.push(self.issues.get(model.get('issueId')).get('desc')+': '+self.results.get(model.get('resultId')).get('desc'))
         })
         
-        this.derive(mod)
+        this.proxy(mod)
     }
 })

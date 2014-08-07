@@ -28,7 +28,7 @@ me.Class = Backbone.View.extend({
         ms.length = 0
         spec.unload(this.spec)
     },
-    derive: function(mod, params){
+    proxy: function(mod, params){
         if ('module' !== mod.type) return console.error('Wrong type!')
         var m = new mod.Class({name:mod.name, host:this, spec:mod.spec, params:params})
         this.modules.push(m)
