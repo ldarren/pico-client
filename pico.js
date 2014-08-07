@@ -198,22 +198,25 @@
 
         // http://www.javascriptkit.com/javatutors/loadjavascriptcss.shtml
         attachFile: function(url, type, cb){
-            var ref
+            var
+            h = document.getElementsByTagName("head")[0],
+            ref
             switch(type){
             case 'js':
                 ref=document.createElement('script')
                 ref.setAttribute('src', url)
+                ref.onload = cb
+                ref.onerror = cb
+                h.insertBefore(ref, h.lastChild)
+                return 
             case 'css':
                 ref=document.createElement('link')
                 ref.setAttribute('rel', 'stylesheet')
                 ref.setAttribute('href', url)
-            }
-            if (ref){
-                ref.onload = cb
-                ref.onerror = cb
-                var h = document.getElementsByTagName("head")[0]
                 h.insertBefore(ref, h.lastChild)
-            }else if (cb) cb('')
+                return setTimeout(cb, 500)
+            default: return cb()
+            }
         },
         detachFile: function(url, type){
             var attr, suspects

@@ -74,16 +74,15 @@ me.Class = Backbone.View.extend({
 
         r.on('route', changeRoute, this)
         this.pages = p.pages
-
         attachStyles(p.styles, function(){
             self.el.innerHTML = tpl.text
-            var $content = self.$('#content')
-            self.slider = new PageSlider.Class($content)
-            snapper = new Snap({element: $content[0]})
-            snapper.on('drag', UpdateDrawers);
-            snapper.on('animate', UpdateDrawers);
-            snapper.on('animated', UpdateDrawers);
             attachDeps(p.deps, function(){
+                var $content = self.$('#content')
+                self.slider = new PageSlider.Class($content)
+                snapper = new Snap({element: $content[0]})
+                snapper.on('drag', UpdateDrawers);
+                snapper.on('animate', UpdateDrawers);
+                snapper.on('animated', UpdateDrawers);
                 spec.load(null, [], p.spec, function(err, s){
                     if (err) return console.error(err)
                     self.spec = s
