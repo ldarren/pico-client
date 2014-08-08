@@ -54,11 +54,7 @@ me.Class = Backbone.View.extend({
     moduleEvents: function(evt, sender){
         var params = Array.prototype.slice.call(arguments)
         params.splice(1, 1)
-        if (sender === this.host){
-            this.triggerModules.apply(this, params)
-        }else{
-            this.triggerHost.apply(this, params)
-        }
+        this.triggerAll(params, [sender])
     },
     triggerHost: function(){
         setTimeout(function(context, params){
@@ -75,5 +71,15 @@ me.Class = Backbone.View.extend({
                 trigger.apply(ms[i], params)
             }
         }, 0, this, Array.prototype.slice.call(arguments))
-    }
+    },
+    triggerAll: function(params, excludes){
+        setTimeout(function(context){
+            var trigger = Backbone.Events.trigger
+            params.splice(1, 0, context)
+            if (-1 === excludes.indexOf(context.host)) trigger.apply(context.host, params)
+            for(var m,ms=context.modules,i=0,l=ms.length,m=ms[i]; i<l; i++){
+                if (-1 === excludes.indexOf(m)) trigger.apply(m, params)
+            }
+        }, 0, this)
+    },
 }, Backbone.Events)

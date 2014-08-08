@@ -16,7 +16,9 @@ Page = Backbone.View.extend({
         spec = this.page.spec
 
         $container.append(_.template(tplItem.text, {id:t, name:t, className:'page'}))
-        $container.children().last().find('.leftBar').append(_.template(tplIcon.text, {icon:'folder'}))
+        var $currRow = $container.children().last()
+        $currRow.find('.leftBar').append(_.template(tplIcon.text, {icon:'folder'}))
+        $currRow.find('.rightBar').prepend(_.template(tplIcon.text, {icon:'minus'})).prepend(_.template(tplIcon.text, {icon:'edit'}))
 
         for(var i=0,l=spec.length,s; i<l,s=spec[i]; i++){
             $container.append(_.template(tplSubitem.text, {id:t+'.'+s.name, name:s.name}))
@@ -67,7 +69,8 @@ exports.Class = Panel.Class.extend({
         return this.el
     },
     events: {
-        'click .item': 'selectItem'
+        'click .item': 'selectItem',
+        'click .rightBar .icon': 'doOptions'
     },
     selectItem: function(e){
         this.saveItem()
@@ -75,15 +78,17 @@ exports.Class = Panel.Class.extend({
         item = e.target.id,
         id = item.substr(1)
 
-        this.$('.row').removeClass('selected')
+        if (!e.target.classList.contains('control')){
+            this.$('.row').removeClass('selected')
 
-        if (this.selectedItem === id){
-            this.selectedItem = null
-            this.editor.clear()
-            return
+            if (this.selectedItem === id){
+                this.selectedItem = null
+                this.editor.clear()
+                return
+            }
+
+            e.target.parentNode.classList.add('selected')
         }
-
-        e.target.parentNode.classList.add('selected')
 
         switch(item){
         case 'saveProject': this.saveProject(); break
@@ -101,7 +106,6 @@ exports.Class = Panel.Class.extend({
     },
     showProject: function(){
         var
-        c = this.collection,
         $el = this.$el,
         p = JSON.parse(this.model.get('json'))
 
@@ -124,7 +128,7 @@ exports.Class = Panel.Class.extend({
         
         for(var i=0,l=pageIds.length; i<l; i++){
             pageId = pageIds[i]
-            pageList[pageId] = new Page({title:pageId,page:pages[pageId],collection:c})
+            pageList[pageId] = new Page({title:pageId,page:pages[pageId]})
             pageList[pageId].render($el)
         }
 
@@ -193,7 +197,7 @@ exports.Class = Panel.Class.extend({
         if (!pageId) alert('please enter a name')
 
         pages[pageId] = {header:{},spec:[],styles:[]}
-        pageList[pageId] = new Page({title:pageId,page:pages[pageId],collection:this.collection})
+        pageList[pageId] = new Page({title:pageId,page:pages[pageId]})
         pageList[pageId].render(this.$el)
         this.showPage(pageId)
     },
@@ -233,5 +237,32 @@ exports.Class = Panel.Class.extend({
         if (!result[0]) return
 
         this.editor.write(JSON.stringify(result[0], null, 4), 'json')
+    },
+    doOptions: function(e){
+        var
+        pageId = e.target.parentNode.parentNode.getElementsByTagName('span')[1].textContent,
+        list = e.target.classList,
+        pages = this.pages,
+        pageList = this.pageList,
+        page = pages[pageId]
+
+        if (!page) return
+
+        if (list.contains('icon-edit')){
+            var name = prompt('Enter a new name', pageId)
+            if (!name || name === pageId) return
+            pages[name] = page
+            delete pages[pageId]
+            pageList[name] = pageList[pageId] 
+            delete pageList[pageId]
+            this.$('#i'+pageId).text(name)
+        }else if (list.contains('icon-minus')){
+            if (confirm('Remove page "'+pageId+'"?')){
+                delete pages[pageId]
+                delete pageList[pageId]
+                this.$('#i'+pageId).parent().remove()
+                if (this.selectedItem === pageId) this.editor.clear()
+            }
+        }
     }
 })

@@ -6,20 +6,6 @@ Page = require('Page'),
 Model = require('Model'),
 tpl = require('@html/frame.html'),
 snapper,
-attachDeps = function(deps, cb){
-    if (!deps || !deps.length) return cb()
-    pico.attachFile(deps.shift(), 'js', function(){ attachDeps(deps, cb) })
-},
-attachStyles = function(styles, cb){
-    if (!styles || !styles.length) return cb()
-    var s = styles.shift()
-    if ('string' === typeof s) {
-        pico.attachFile(s, 'css', function(){ attachStyles(styles, cb) })
-    }else{
-        restyle(s, ['webkit'])
-        attachStyles(styles, cb)
-    }
-},
 addToolbar = function($bar, icons){
     var icon, a
     for(var i=0,l=icons.length;i<l;i++){
@@ -75,21 +61,18 @@ me.Class = Backbone.View.extend({
         r.on('route', changeRoute, this)
         this.pages = p.pages
 
-        attachStyles(p.styles, function(){
-            self.el.innerHTML = tpl.text
-            var $content = self.$('#content')
-            self.slider = new PageSlider.Class($content)
-            snapper = new Snap({element: $content[0]})
-            snapper.on('drag', UpdateDrawers);
-            snapper.on('animate', UpdateDrawers);
-            snapper.on('animated', UpdateDrawers);
-            attachDeps(p.deps, function(){
-                spec.load(null, [], p.spec, function(err, s){
-                    if (err) return console.error(err)
-                    self.spec = s
-                    self.initHeader()
-                })
-            })
+        self.el.innerHTML = tpl.text
+        var $content = self.$('#content')
+        self.slider = new PageSlider.Class($content)
+        snapper = new Snap({element: $content[0]})
+        snapper.on('drag', UpdateDrawers);
+        snapper.on('animate', UpdateDrawers);
+        snapper.on('animated', UpdateDrawers);
+
+        spec.load(null, [], p.spec, function(err, s){
+            if (err) return console.error(err)
+            self.spec = s
+            self.initHeader()
         })
     },
 
