@@ -7,20 +7,15 @@ me.Class = Backbone.View.extend({
         this.header = options.header
         this.style = restyle(options.styles, ['webkit'])
         this.modules = []
+        this.readiness = []
 
         this.on('all', this.pageEvents, this)
 
-        var
-        self = this,
-        $el = this.$el,
-        index = 0,
-        modName
+        var self = this
 
         this.spec.forEach(function(s){
             if ('module' === s.type) {
-                modName = s.name +'-'+ index++
-                $el.append('<div class=module id=mod'+modName+'></div>')
-                self.modules.push(new s.Class({name:modName, host:self, spec:s.spec}))
+                self.modules.push(new s.Class({name:s.name, host:self, spec:s.spec}))
             }
         })
     },
@@ -62,9 +57,29 @@ me.Class = Backbone.View.extend({
     },
     drawModule: function(mod){
         if (!mod) return
-        var $mod = this.$('#mod'+mod.name)
-        if (!$mod.length) return
 
-        $mod.html(mod.render())
+        var 
+        $el = this.$el,
+        r = this.readiness,
+        ms = this.modules,
+        index = ms.indexOf(mod),
+        i,l
+
+        r[index] = 1
+        // all previous modules readied?
+        for(i=0,l=index+1; i<l; i++){
+            if (undefined === r[i]) return
+        }
+        // render all readied modules in seq
+        for(i=0,l=r.length; i<l; i++){
+            switch(r[i]){
+            case 0: break
+            case 1:
+                r[i] = 0
+                $el.append(ms[i].render())
+                break
+            default: return
+            }
+        }
     }
 }, Backbone.Events)

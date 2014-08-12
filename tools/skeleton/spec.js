@@ -52,6 +52,7 @@ load = function(host, params, spec, deps, cb){
     }
     load(host, params, spec, deps, cb)
 },
+// need to get original spec, the one before spec.load, no way to diff ref and models
 unload = function(spec){
     if (!spec.length) return
     var
@@ -62,7 +63,7 @@ unload = function(spec){
     switch(t){
     case 'models':
         m = s.value
-        m.reset()
+        //m.reset()
         delete s.value
         break
     }
