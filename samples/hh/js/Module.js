@@ -8,6 +8,7 @@ exports.Class = Backbone.View.extend({
         this.name = options.name
         this.host = options.host
         this.modules = []
+        this.readiness = []
 
         this.on('all', this.moduleEvents, this)
 
@@ -39,19 +40,26 @@ exports.Class = Backbone.View.extend({
         return this.spec.slice()
     },
     render: function(){
-        var ms = this.modules
-        switch(ms.length){
-        case 0: return this.el
-        case 1: return ms[0].render()
-        default:
-            var $el = this.$el
-            for(var i=0,l=ms.length; i<l; i++){
+        var
+        ms = this.modules,
+        r = this.readiness,
+        $el = this.$el
+        for(var i=0,l=ms.length; i<l; i++){
+            switch(r[i]){
+            case 0: break
+            case 1:
+                r[i] = 0
                 $el.append(ms[i].render())
+                break
+            default: return this.el
             }
-            return this.el
         }
+        return this.el
     },
     moduleEvents: function(evt, sender){
+        switch(evt){
+        case 'invalidate': this.readiness[this.modules.indexOf(sender)] = 1; break
+        }
         var params = Array.prototype.slice.call(arguments)
         params.splice(1, 1)
         this.triggerAll(params, [sender])
