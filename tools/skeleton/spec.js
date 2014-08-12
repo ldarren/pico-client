@@ -69,9 +69,9 @@ unload = function(spec){
     }
 }
 
-me.load = function(host, params, spec, cb){
+exports.load = function(host, params, spec, cb){
     load(host, params, spec.slice(), [], cb)
 }
-me.unload = unload
-me.find = find
-me.findAll = findAll
+exports.unload = unload
+exports.find = find
+exports.findAll = findAll

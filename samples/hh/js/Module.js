@@ -2,7 +2,7 @@ var
 spec = require('spec'),
 id=0
 
-me.Class = Backbone.View.extend({
+exports.Class = Backbone.View.extend({
     init: function(options, cb){
         this.id = id++
         this.name = options.name

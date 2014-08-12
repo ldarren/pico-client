@@ -1,9 +1,10 @@
-me.Class = Backbone.Collection.extend({
-    initialize: function(models, path){
-        this.url = path.list
+exports.Class = Backbone.Collection.extend({
+    initialize: function(models, config){
+        this.url = config.list
         this.model = Backbone.Model.extend({
+            idAttribute: config.idAttributei || 'id',
             sync: function(method, model, options){
-                var url = path[method]
+                var url = config[method]
                 if (url){
                     options.url = url
                     return Backbone.sync(method, model, options)
@@ -11,6 +12,6 @@ me.Class = Backbone.Collection.extend({
                 return options.success()
             }
         })
-        if (path.preload) this.fetch()
+        if (config.preload) this.fetch()
     }
 })

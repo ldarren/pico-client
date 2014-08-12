@@ -1,6 +1,6 @@
 var spec = require('spec')
 
-me.Class = Backbone.View.extend({
+exports.Class = Backbone.View.extend({
     initialize: function(options){
 
         this.spec = options.spec

@@ -40,7 +40,7 @@ me.slot(pico.LOAD, function(){
     })
 })
 
-me.create = function(url, forProj, cb){
+exports.create = function(url, forProj, cb){
     Net.create({
         url: url,
         delimiter: ['&'],
@@ -55,7 +55,7 @@ me.create = function(url, forProj, cb){
     })
 }
 
-me.reconnect = function(url, cb){
+exports.reconnect = function(url, cb){
     if (!projClient) return this.create(url, true, cb)
-    projClient.reconnect(url, cb)
+    projClient.reconnect({url:url}, cb)
 }
