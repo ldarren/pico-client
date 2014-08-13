@@ -1,5 +1,5 @@
 var
-spec = require('spec'),
+specMgr = require('specMgr'),
 id=0
 
 exports.Class = Backbone.View.extend({
@@ -13,7 +13,7 @@ exports.Class = Backbone.View.extend({
         this.on('all', this.moduleEvents, this)
 
         var self = this
-        spec.load(this.host, options.params || [], options.spec, function(err, s){
+        specMgr.load(this.host, options.params || [], options.spec, function(err, s){
             self.spec = s
             if (err) console.error(err)
             if (cb) cb(err, s)
@@ -27,7 +27,7 @@ exports.Class = Backbone.View.extend({
             ms[i].remove()
         }
         ms.length = 0
-        spec.unload(this.spec)
+        specMgr.unload(this.spec)
     },
     proxy: function(mod, params){
         if ('module' !== mod.type) return console.error('Wrong type!')

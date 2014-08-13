@@ -1,6 +1,6 @@
 var
 PageSlider = require('pageslider'),
-spec = require('spec'),
+specMgr = require('specMgr'),
 Router = require('Router'),
 Page = require('Page'),
 Model = require('Model'),
@@ -25,7 +25,7 @@ changeRoute = function(path, params){
     if (!pageConfig) return Router.instance().home()
 
     if (this.currPage) this.currPage.remove()
-    spec.load(this, params, pageConfig.spec, function(err, s){
+    specMgr.load(this, params, pageConfig.spec, function(err, s){
         if (err) {
             console.warn(err)
             return Router.instance().home()
@@ -59,7 +59,10 @@ exports.Class = Backbone.View.extend({
         r = new Router.Class({routes: p.routes})
 
         r.on('route', changeRoute, this)
-        this.pages = p.pages
+        this.on('all', this.frameEvents, this)
+
+        self.pages = p.pages
+        self.modules = []
 
         self.el.innerHTML = tpl.text
         var $content = self.$('#content')
@@ -69,10 +72,15 @@ exports.Class = Backbone.View.extend({
         snapper.on('animate', UpdateDrawers);
         snapper.on('animated', UpdateDrawers);
 
-        spec.load(null, [], p.spec, function(err, s){
+        specMgr.load(null, [], p.spec, function(err, spec){
             if (err) return console.error(err)
-            self.spec = s
+            self.spec = spec
             self.initHeader()
+            spec.forEach(function(s){
+                if ('module' === s.type) {
+                    self.modules.push(new s.Class({name:s.name, host:self, spec:s.spec}))
+                }
+            })
         })
     },
 
@@ -86,6 +94,10 @@ exports.Class = Backbone.View.extend({
         'touchstart header .pull-right a': function(e){this.onToolbar(e, false)},
         'touchstart #popOptions li': 'onMenu',
         'keyup header input[type=search]': 'onFind'
+    },
+
+    frameEvents: function(){
+        console.log(arguments)
     },
 
     onToolbar: function(e, isLeft){
@@ -125,6 +137,7 @@ exports.Class = Backbone.View.extend({
         this.$rightBar = $topBar.find('.pull-right')
         this.$titleOptions = $topBar.find('h1#options.title')
         this.$title = $topBar.find('h1#simple.title')
+        this.$topBar = $topBar
 
         if (!pico.detectEvent('touchstart')){
             document.addEventListener('mousedown', function(e){
@@ -155,6 +168,7 @@ exports.Class = Backbone.View.extend({
         // Start Backbone history a necessary step for bookmarkable URL's
         Backbone.history.start()
     },
+    // search === invalid bar
     drawHeader: function(bar){
         var
         $popover = this.$popover,
@@ -167,12 +181,20 @@ exports.Class = Backbone.View.extend({
         $leftBar.empty()
         $rightBar.empty()
         if (!bar){
+            this.$topBar.removeClass('hidden')
             $title.addClass('hidden')
             $titleOptions.addClass('hidden')
             $search.removeClass('hidden').focus()
             return
         }
         $search.addClass('hidden').blur()
+
+        if (!Object.keys(bar).length){
+            this.$topBar.addClass('hidden')
+            return
+        }
+        this.$topBar.removeClass('hidden')
+
         var optionKeys = bar.options
         if (optionKeys && optionKeys.length){
             $titleOptions[0].firstChild.firstChild.textContent = bar.title
@@ -192,4 +214,4 @@ exports.Class = Backbone.View.extend({
             addToolbar($rightBar, bar.right)
         }
     }
-})
+}, Backbone.Events)

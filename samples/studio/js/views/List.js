@@ -57,7 +57,7 @@ exports.Class = Panel.Class.extend({
             if (!name) return alert('Please enter a name')
             var data = {
                 name: name,
-                json: 'project' === self.itemType ? JSON.parse(projectJSON) : JSON.parse(widgetJSON)
+                json: 'project' === self.itemType ? projectJSON : widgetJSON
             }
             this.collection.create(data,{
                 wait: true,

@@ -1,4 +1,4 @@
-var spec = require('spec')
+var specMgr = require('specMgr')
 
 exports.Class = Backbone.View.extend({
     initialize: function(options){
@@ -31,7 +31,7 @@ exports.Class = Backbone.View.extend({
             ms[i].remove()
         }
         ms.length = 0
-        spec.unload(this.spec)
+        specMgr.unload(this.spec)
     },
     pageEvents: function(){
         var params = Array.prototype.slice.call(arguments)
