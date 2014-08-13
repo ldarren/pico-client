@@ -1,8 +1,9 @@
 var
 specMgr = require('specMgr'),
-Router = require('Router')
+Router = require('Router'),
+Module = require('Module')
 
-exports.Class = Backbone.View.extend({
+exports.Class = Backbone.View.extend(_.extend({
     initialize: function(options, params, host){
 
         this.header = options.header
@@ -52,18 +53,6 @@ exports.Class = Backbone.View.extend({
                 break
         }
     },
-    triggerModules: function(){
-        setTimeout(function(context, params){
-            var
-            trigger = Backbone.Events.trigger,
-            sender = params.splice(1, 0, this)[0]
-
-            for(var m,ms=this.modules,i=0,l=ms.length; i<l,m=ms[i]; i++){
-                if (sender === m) continue
-                trigger.apply(m, params)
-            }
-        }, 0, this, Array.prototype.slice.call(arguments))
-    },
     drawModule: function(mod){
         if (!mod) return
 
@@ -91,4 +80,4 @@ exports.Class = Backbone.View.extend({
             }
         }
     }
-}, Backbone.Events)
+}, Module.Events))

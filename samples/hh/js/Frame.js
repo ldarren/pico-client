@@ -4,6 +4,7 @@ specMgr = require('specMgr'),
 Router = require('Router'),
 Page = require('Page'),
 Model = require('Model'),
+Module = require('Module'),
 tpl = require('@html/frame.html'),
 snapper,
 addToolbar = function($bar, icons){
@@ -44,7 +45,7 @@ UpdateDrawers = function(){
     }
 }
 
-exports.Class = Backbone.View.extend({
+exports.Class = Backbone.View.extend(_.extend({
     el: 'body',
     initialize: function(args){
         var 
@@ -208,4 +209,4 @@ exports.Class = Backbone.View.extend({
             addToolbar($rightBar, bar.right)
         }
     }
-}, Backbone.Events)
+}, Module.Events))

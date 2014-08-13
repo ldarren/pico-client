@@ -1,8 +1,39 @@
 var
 specMgr = require('specMgr'),
-id=0
+id=0,
+ModuleEvents = {
+    triggerHost: function(){
+        if (!this.host) return
+        setTimeout(function(context, params){
+            params.splice(1, 0, context)
+            Backbone.Events.trigger.apply(context.host, params)
+        }, 0, this, Array.prototype.slice.call(arguments))
+    },
+    triggerModules: function(){
+        setTimeout(function(context, params){
+            var trigger = Backbone.Events.trigger
 
-exports.Class = Backbone.View.extend({
+            params.splice(1, 0, context)
+            for(var ms=context.modules,i=0,l=ms.length; i<l; i++){
+                trigger.apply(ms[i], params)
+            }
+        }, 0, this, Array.prototype.slice.call(arguments))
+    },
+    triggerAll: function(params, excludes){
+        setTimeout(function(context){
+            var trigger = Backbone.Events.trigger
+            params.splice(1, 0, context)
+            if (context.host && -1 === excludes.indexOf(context.host)) trigger.apply(context.host, params)
+            for(var m,ms=context.modules,i=0,l=ms.length,m=ms[i]; i<l; i++){
+                if (-1 === excludes.indexOf(m)) trigger.apply(m, params)
+            }
+        }, 0, this)
+    }
+}
+
+exports.Events = _.extend(ModuleEvents, Backbone.Events)
+
+exports.Class = Backbone.View.extend(_.extend({
     init: function(options, cb){
         this.id = id++
         this.name = options.name
@@ -63,31 +94,5 @@ exports.Class = Backbone.View.extend({
         var params = Array.prototype.slice.call(arguments)
         params.splice(1, 1)
         this.triggerAll(params, [sender])
-    },
-    triggerHost: function(){
-        setTimeout(function(context, params){
-            params.splice(1, 0, context)
-            Backbone.Events.trigger.apply(context.host, params)
-        }, 0, this, Array.prototype.slice.call(arguments))
-    },
-    triggerModules: function(){
-        setTimeout(function(context, params){
-            var trigger = Backbone.Events.trigger
-
-            params.splice(1, 0, context)
-            for(var ms=context.modules,i=0,l=ms.length; i<l; i++){
-                trigger.apply(ms[i], params)
-            }
-        }, 0, this, Array.prototype.slice.call(arguments))
-    },
-    triggerAll: function(params, excludes){
-        setTimeout(function(context){
-            var trigger = Backbone.Events.trigger
-            params.splice(1, 0, context)
-            if (-1 === excludes.indexOf(context.host)) trigger.apply(context.host, params)
-            for(var m,ms=context.modules,i=0,l=ms.length,m=ms[i]; i<l; i++){
-                if (-1 === excludes.indexOf(m)) trigger.apply(m, params)
-            }
-        }, 0, this)
-    },
-}, Backbone.Events)
+    }
+},ModuleEvents))
