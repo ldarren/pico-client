@@ -7,10 +7,12 @@ exports.Class = Backbone.Router.extend({
         inst = this
     },
     nav: function(url){
-        this.navigate(url, trigger)
+        setTimeout(function(context){
+            context.navigate(url, trigger)
+        }, 0, this)
     },
     home: function(){
-        this.navigate('', trigger)
+        this.nav('')
     }
 })
 exports.instance = function(){return inst}

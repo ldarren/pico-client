@@ -1,9 +1,10 @@
-var specMgr = require('specMgr')
+var
+specMgr = require('specMgr'),
+Router = require('Router')
 
 exports.Class = Backbone.View.extend({
-    initialize: function(options){
+    initialize: function(options, params, host){
 
-        this.spec = options.spec
         this.header = options.header
         this.style = restyle(options.styles, ['webkit'])
         this.modules = []
@@ -13,10 +14,18 @@ exports.Class = Backbone.View.extend({
 
         var self = this
 
-        this.spec.forEach(function(s){
-            if ('module' === s.type) {
-                self.modules.push(new s.Class({name:s.name, host:self, spec:s.spec}))
+        specMgr.load(host, params, options.spec, function(err, spec){
+            if (err){
+                console.warn(err)
+                return Router.instance().home()
             }
+            self.spec = spec
+
+            spec.forEach(function(s){
+                if ('module' === s.type) {
+                    self.modules.push(new s.Class({name:s.name, host:self, spec:s.spec, params:params}))
+                }
+            })
         })
     },
     render: function(){

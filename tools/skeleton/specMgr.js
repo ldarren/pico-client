@@ -54,7 +54,7 @@ load = function(host, params, spec, deps, cb){
 },
 // need to get original spec, the one before spec.load, no way to diff ref and models
 unload = function(spec){
-    if (!spec.length) return
+    if (!spec || !spec.length) return
     var
     s = spec.pop(),
     t = s.type,

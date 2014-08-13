@@ -25,14 +25,8 @@ changeRoute = function(path, params){
     if (!pageConfig) return Router.instance().home()
 
     if (this.currPage) this.currPage.remove()
-    specMgr.load(this, params, pageConfig.spec, function(err, s){
-        if (err) {
-            console.warn(err)
-            return Router.instance().home()
-        }
-        self.currPage = new Page.Class({header: pageConfig.header, spec: s, styles: pageConfig.styles})
-        self.render()
-    })
+    self.currPage = new Page.Class(pageConfig, params, this)
+    self.render()
 },
 UpdateDrawers = function(){
     var
