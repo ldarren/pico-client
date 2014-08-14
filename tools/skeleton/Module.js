@@ -24,7 +24,7 @@ ModuleEvents = {
             var trigger = Backbone.Events.trigger
             params.splice(1, 0, context)
             if (context.host && -1 === excludes.indexOf(context.host)) trigger.apply(context.host, params)
-            for(var m,ms=context.modules,i=0,l=ms.length,m=ms[i]; i<l; i++){
+            for(var m,ms=context.modules,i=0; m=ms[i]; i++){
                 if (-1 === excludes.indexOf(m)) trigger.apply(m, params)
             }
         }, 0, this)

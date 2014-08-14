@@ -1,11 +1,9 @@
 var
 Model = require('Model'),
-find = function(name, list){ for(var i=0,l=list.length,o; i<l,o=list[i]; i++){ if (name === o.name) return o } },
+find = function(name, list){ for(var i=0,o; o=list[i]; i++){ if (name === o.name) return o } },
 findAll = function(type, list){
     var arr = []
-    for(var i=0,l=list.length,o; i<l,o=list[i]; i++){
-        if (type === o.type) arr.push(o)
-    }
+    for(var i=0,o; o=list[i]; i++){ if (type === o.type) arr.push(o) }
     return arr
 },
 load = function(host, params, spec, deps, cb){
