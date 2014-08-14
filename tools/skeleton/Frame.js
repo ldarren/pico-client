@@ -19,15 +19,14 @@ addToolbar = function($bar, icons){
     }
 },
 changeRoute = function(path, params){
-    var
-    self = this,
-    pageConfig = this.pages[path]
+    var pageConfig = this.pages[path]
 
     if (!pageConfig) return Router.instance().home()
 
     if (this.currPage) this.currPage.remove()
-    self.currPage = new Page.Class(pageConfig, params, this)
-    self.render()
+    this.currPage = new Page.Class(pageConfig, params, this)
+    this.render()
+    this.triggerModules('changeRoute', path, params)
 },
 UpdateDrawers = function(){
     var
