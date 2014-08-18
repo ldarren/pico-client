@@ -7,7 +7,7 @@ exports.Class = Module.Class.extend({
         this.init(options, function(err, spec){
             var item, sub, issues, patients
 
-            for(var s,i=0,l=spec.length; i<l,s=spec[i]; i++){
+            for(var s,i=0; s=spec[i]; i++){
                 switch(s.type){
                 case 'model':
                     item = s.value

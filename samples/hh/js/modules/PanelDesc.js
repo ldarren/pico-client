@@ -5,7 +5,7 @@ exports.Class = Module.Class.extend({
         var self = this
 
         this.init(options, function(err, spec){
-            for(var s,i=0,l=spec.length; i<l,s=spec[i]; i++){
+            for(var s,i=0; s=spec[i]; i++){
                 switch(s.type){
                 case 'select': self.select = s; break
                 }
@@ -20,7 +20,7 @@ exports.Class = Module.Class.extend({
         info = this.select.value
 
         $ul.empty()
-        for(var o,i=0,l=info.length; i<l,o=info[i]; i++){
+        for(var o,i=0; o=info[i]; i++){
             $ul.append('<li class=table-view-cell>'+o+'</li>')
         }
         return this.el

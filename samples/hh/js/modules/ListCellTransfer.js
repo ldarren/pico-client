@@ -11,7 +11,7 @@ exports.Class = Module.Class.extend({
         this.init(options, function(err, spec){
             var
             transfer, patients, issues, wards
-            for(var s,i=0,l=spec.length; i<l,s=spec[i]; i++){
+            for(var s,i=0; s=spec[i]; i++){
                 switch(s.type){
                 case 'model': transfer = s.value; break
                 case 'models':

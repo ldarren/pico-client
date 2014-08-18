@@ -8,7 +8,7 @@ exports.Class = Module.Class.extend({
         var self = this
 
         this.init(options, function(err, spec){
-            for(var s,i=0,l=spec.length; i<l,s=spec[i]; i++){
+            for(var s,i=0; s=spec[i]; i++){
                 switch(s.type){
                 case 'select':
                     self.select = s
@@ -26,7 +26,7 @@ exports.Class = Module.Class.extend({
 
         $ul.empty()
         $ul.append('<li class=table-view-divider>'+s.name+'</li>')
-        for(var o,i=0,l=options.length; i<l,o=options[i]; i++){
+        for(var o,i=0; o=options[i]; i++){
             $ul.append('<li class=table-view-cell>'+o.value+'<button class="btn btn-'+o.type+'">Select</button></li>')
         }
         return this.el

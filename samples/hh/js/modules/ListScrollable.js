@@ -12,7 +12,7 @@ exports.Class = Module.Class.extend({
             models = {},
             index, indexKey, doctorId, list 
 
-            for(var i=0,l=spec.length,s; i<l,s=spec[i]; i++){
+            for(var i=0,s; s=spec[i]; i++){
                 switch(s.type){
                 case 'models':
                     if ('list' === s.name) list = s.value

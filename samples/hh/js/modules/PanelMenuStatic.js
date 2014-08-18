@@ -10,7 +10,7 @@ exports.Class = Module.Class.extend({
         this.init(options, function(err, spec){
             var $ul = self.$el.find('ul')
 
-            for(var f,i=0,l=spec.length; i<l,f=spec[i]; i++){
+            for(var f,i=0; f=spec[i]; i++){
                 $ul.append(tpl.text.replace('URL', f.value).replace('NAME', f.name))
             }
             self.triggerHost('invalidate')
