@@ -5,7 +5,7 @@ Router = require('Router'),
 Page = require('Page'),
 Model = require('Model'),
 Module = require('Module'),
-tpl = require('@html/frame.html'),
+tpl = '<div class="snap-drawers"></div><div id="content" class="snap-content"></div>',
 changeRoute = function(path, params){
     var pageConfig = this.pages[path]
 
@@ -13,6 +13,11 @@ changeRoute = function(path, params){
 
     if (this.currPage) this.currPage.remove()
     this.currPage = new Page.Class(pageConfig, params, this)
+    var options = pageConfig.options
+    for(var i=0,keys=Object.keys(options),k,m; k=keys[i]; i++){
+        m = this.moduleMap[k]
+        if (m) m.reinit(options[k])
+    }
     this.render()
     this.triggerModules('changeRoute', path, params)
 }
@@ -30,10 +35,10 @@ exports.Class = Backbone.View.extend(_.extend({
 
         self.pages = p.pages
         self.modules = []
+        self.moduleMap = {}
 
-        self.el.innerHTML = tpl.text
-        var $content = self.$('#content')
-        self.slider = new PageSlider.Class($content)
+        self.el.innerHTML = tpl
+        self.slider = new PageSlider.Class(self.$('#content'))
 
         specMgr.load(null, [], p.spec, function(err, spec){
             if (err) return console.error(err)
@@ -41,18 +46,30 @@ exports.Class = Backbone.View.extend(_.extend({
             self.initHeader()
             spec.forEach(function(s){
                 if ('module' === s.type) {
-                    self.modules.push(new s.Class({name:s.name, host:self, spec:s.spec}))
+                    self.modules.push(self.moduleMap[s.name] = new s.Class({name:s.name, host:self, spec:s.spec}))
                 }
             })
         })
     },
 
     render: function(){
-        this.drawHeader(this.currPage.header)
         this.slider.slidePage(this.currPage.render())
     },
 
     frameEvents: function(){
-        console.log(arguments)
+        var params = Array.prototype.slice.call(arguments)
+
+        switch(params[0]){
+            case 'invalidate': this.drawModule.apply(this, params.slice(1)); break
+            default:
+                this.triggerAll(params, [params[1]])
+                break
+        }
+    },
+    drawModule: function(mod, cont){
+        if (!mod) return
+
+        var $el = (cont && 'drawer' === cont) ? this.$('.drawers') : this.$('#content')
+        $el.append(mod.render())
     }
 }, Module.Events))
