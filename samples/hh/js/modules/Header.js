@@ -1,4 +1,8 @@
-var Module = require('Module')
+var
+Module = require('Module'),
+Router = require('Router'),
+tpl = require('@html/header.html')
+
 addToolbar = function($bar, icons){
     var icon, a
     for(var i=0,l=icons.length;i<l;i++){
@@ -12,48 +16,22 @@ addToolbar = function($bar, icons){
 },
 
 exports.Class = Module.extend({
+    tagName: 'header',
+    className: 'hidden bar bar-nav',
     initialize: function(){
+        this.$el.html(tpl)
         this.$popover = this.$('#popOptions ul.table-view')
 
-        var $topBar = this.$('header.bar')
-        this.$search = $topBar.find('input[type=search]')
-        this.$leftBar = $topBar.find('.pull-left')
-        this.$rightBar = $topBar.find('.pull-right')
-        this.$titleOptions = $topBar.find('h1#options.title')
-        this.$title = $topBar.find('h1#simple.title')
-        this.$topBar = $topBar
+        this.$search = this.$('input[type=search]')
+        this.$leftBar = this.$('.pull-left')
+        this.$rightBar = this.$('.pull-right')
+        this.$titleOptions = this.$('h1#options.title')
+        this.$title = this.$('h1#simple.title')
 
-        if (!pico.detectEvent('touchstart')){
-            document.addEventListener('mousedown', function(e){
-                var touches = []
-
-                touches[0] = {}
-                touches[0].pageX = e.pageX
-                touches[0].pageY = e.pageY
-                touches[0].target = e.target
-
-                var evt = new Event('touchstart', {
-                    bubbles: true,
-                    cancelable: true,
-                    details:{
-                        target: e.target,
-                        srcElement: e.srcElement,
-                        touches: touches,
-                        changedTouches: touches,
-                        targetTouches: touches,
-                        mouseToTouch: true
-                    }   
-                }) 
-
-                e.target.dispatchEvent(evt)
-            }, true)
-        }
-        
-        // Start Backbone history a necessary step for bookmarkable URL's
-        Backbone.history.start()
+        this.currOptions = null
     },
     // search === invalid bar
-    render: function(bar){
+    reinit: function(options){
         var
         $popover = this.$popover,
         $search = this.$search,
@@ -64,38 +42,39 @@ exports.Class = Module.extend({
 
         $leftBar.empty()
         $rightBar.empty()
-        if (!bar){
-            this.$topBar.removeClass('hidden')
+        if (!options){
+            this.$el.removeClass('hidden')
             $title.addClass('hidden')
             $titleOptions.addClass('hidden')
             $search.removeClass('hidden').focus()
             return
         }
+        this.currOptions = options
         $search.addClass('hidden').blur()
 
-        if (!Object.keys(bar).length){
-            this.$topBar.addClass('hidden')
+        if (!Object.keys(options).length){
+            this.$el.addClass('hidden')
             return
         }
-        this.$topBar.removeClass('hidden')
+        this.$el.removeClass('hidden')
 
-        var optionKeys = bar.options
+        var optionKeys = options.options
         if (optionKeys && optionKeys.length){
-            $titleOptions[0].firstChild.firstChild.textContent = bar.title
+            $titleOptions[0].firstChild.firstChild.textContent = options.title
             $titleOptions.removeClass('hidden')
             $popover.empty()
             _.each(optionKeys, function(key){
                 $popover.append($(OPTION_TPL.replace('KEY', key).replace('VALUE', router.links[key])))
             })
-        }else if (bar.title){
-            $title.text(bar.title)
+        }else if (options.title){
+            $title.text(options.title)
             $title.removeClass('hidden')
         }
-        if (bar.left){
-            addToolbar($leftBar, bar.left)
+        if (options.left){
+            addToolbar($leftBar, options.left)
         }
-        if (bar.right){
-            addToolbar($rightBar, bar.right)
+        if (options.right){
+            addToolbar($rightBar, options.right)
         }
     },
 
@@ -114,24 +93,24 @@ exports.Class = Module.extend({
         switch(id){
         case 'left-nav': window.history.back(); break
         case 'menu': snapper.open(isLeft ? 'left' : 'right'); break
-        case 'search': this.drawHeader(); break
-        default: this.currPage.$el.trigger(id)
+        case 'search': this.reinit(); break
+        default: this.triggerHost(id)
         }
 
-        ele.classList.add('hide')
+        ele.classList.add('hidden')
     },
 
     onFind: function(e){
-        this.currPage.$el.trigger('find', [this.$search.val()])
+        this.triggerHost('find', [this.$search.val()])
         if (13 === e.keyCode){
             this.$search.val('')
-            this.drawHeader(this.currPage.header)
+            this.reinit(this.currOptions)
         }
     },
 
     onMenu: function(e){
         var id = e.srcElement.id
-        if ('#' === id.charAt(0)) return this.currPage.$el.trigger(id.substr(1))
+        if ('#' === id.charAt(0)) return this.triggerHost(id.substr(1))
         Router.instance().nav(e.srcElement.id)
     }
 })

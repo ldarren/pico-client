@@ -47,10 +47,10 @@ exports.Class = Backbone.View.extend(_.extend({
         var params = Array.prototype.slice.call(arguments)
 
         switch(params[0]){
-            case 'invalidate': this.drawModule.apply(this, params.slice(1)); break
-            default:
-                this.triggerModules.apply(this, params)
-                break
+        case 'invalidate': this.drawModule.apply(this, params.slice(1)); break
+        default:
+            this.triggerModules.apply(this, params)
+            break
         }
     },
     drawModule: function(mod){

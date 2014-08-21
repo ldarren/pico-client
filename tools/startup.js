@@ -64,7 +64,6 @@ fs.readlink(process.argv[1], function(err, realPath){
                 'Module.js','js',
                 'spec.js','js',
                 'Model.js','js',
-                'frame.html','html'
                 ], function(){
                 fs.symlink(projLib, projId+'/lib', function(){
                     console.log('done')
