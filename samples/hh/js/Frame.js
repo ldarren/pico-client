@@ -5,44 +5,51 @@ Router = require('Router'),
 Page = require('Page'),
 Model = require('Model'),
 Module = require('Module'),
-tpl = require('@html/frame.html'),
-snapper,
-addToolbar = function($bar, icons){
-    var icon, a
-    for(var i=0,l=icons.length;i<l;i++){
-        icon = icons[i]
+tpl = '<div class="snap-drawers"></div><div id="content" class="snap-content"></div>',
+start = function(){
+    if (!pico.detectEvent('touchstart')){
+        document.addEventListener('mousedown', function(e){
+            var touches = []
 
-        a = document.createElement('a')
-        a.id = icon
-        a.className = 'icon icon-'+icon
-        $bar.append(a)
+            touches[0] = {}
+            touches[0].pageX = e.pageX
+            touches[0].pageY = e.pageY
+            touches[0].target = e.target
+
+            var evt = new Event('touchstart', {
+                bubbles: true,
+                cancelable: true,
+                details:{
+                    target: e.target,
+                    srcElement: e.srcElement,
+                    touches: touches,
+                    changedTouches: touches,
+                    targetTouches: touches,
+                    mouseToTouch: true
+                }   
+            }) 
+
+            e.target.dispatchEvent(evt)
+        }, true)
     }
+    
+    // Start Backbone history a necessary step for bookmarkable URL's
+    Backbone.history.start()
 },
 changeRoute = function(path, params){
-    var
-    self = this,
-    pageConfig = this.pages[path]
+    var pageConfig = this.pages[path]
 
     if (!pageConfig) return Router.instance().home()
 
     if (this.currPage) this.currPage.remove()
-    self.currPage = new Page.Class(pageConfig, params, this)
-    self.render()
-},
-UpdateDrawers = function(){
-    var
-    $ = function(id){return document.getElementById(id)},
-    state = snapper.state(),
-    towards = state.info.towards,
-    opening = state.info.opening;
-
-    if(opening=='right' && towards=='left'){
-        $('right-drawer').classList.add('active-drawer');
-        $('left-drawer').classList.remove('active-drawer');
-    } else if(opening=='left' && towards=='right') {
-        $('right-drawer').classList.remove('active-drawer');
-        $('left-drawer').classList.add('active-drawer');
+    var reinits = pageConfig.reinits
+    for(var i=0,keys=Object.keys(reinits),k,m; k=keys[i]; i++){
+        m = this.moduleMap[k]
+        if (m) m.reinit(reinits[k])
     }
+    this.currPage = new Page.Class(pageConfig, params, this)
+    this.render()
+    this.triggerModules('changeRoute', path, params)
 }
 
 exports.Class = Backbone.View.extend(_.extend({
@@ -56,157 +63,43 @@ exports.Class = Backbone.View.extend(_.extend({
         r.on('route', changeRoute, this)
         this.on('all', this.frameEvents, this)
 
-        self.pages = p.pages
-        self.modules = []
+        this.pages = p.pages
+        this.modules = []
+        this.moduleMap = {}
 
-        self.el.innerHTML = tpl.text
-        var $content = self.$('#content')
-        self.slider = new PageSlider.Class($content)
-        snapper = new Snap({element: $content[0]})
-        snapper.on('drag', UpdateDrawers);
-        snapper.on('animate', UpdateDrawers);
-        snapper.on('animated', UpdateDrawers);
+        this.el.innerHTML = tpl
+        this.slider = new PageSlider.Class(this.$('#content'))
 
         specMgr.load(null, [], p.spec, function(err, spec){
             if (err) return console.error(err)
             self.spec = spec
-            self.initHeader()
             spec.forEach(function(s){
                 if ('module' === s.type) {
-                    self.modules.push(new s.Class({name:s.name, host:self, spec:s.spec}))
+                    self.modules.push(self.moduleMap[s.name] = new s.Class({name:s.name, host:self, spec:s.spec}))
                 }
             })
+            start()
         })
     },
 
     render: function(){
-        this.drawHeader(this.currPage.header)
         this.slider.slidePage(this.currPage.render())
     },
 
-    events: {
-        'touchstart header .pull-left a': function(e){this.onToolbar(e, true)},
-        'touchstart header .pull-right a': function(e){this.onToolbar(e, false)},
-        'touchstart #popOptions li': 'onMenu',
-        'keyup header input[type=search]': 'onFind'
-    },
-
     frameEvents: function(){
-        console.log(arguments)
-    },
+        var params = Array.prototype.slice.call(arguments)
 
-    onToolbar: function(e, isLeft){
-        var
-        ele = e.srcElement,
-        id = ele.id
-
-        switch(id){
-        case 'left-nav': window.history.back(); break
-        case 'menu': snapper.open(isLeft ? 'left' : 'right'); break
-        case 'search': this.drawHeader(); break
-        default: this.currPage.$el.trigger(id)
-        }
-
-        ele.classList.add('hide')
-    },
-
-    onFind: function(e){
-        this.currPage.$el.trigger('find', [this.$search.val()])
-        if (13 === e.keyCode){
-            this.$search.val('')
-            this.drawHeader(this.currPage.header)
+        switch(params[0]){
+        case 'invalidate': this.drawModule.apply(this, params.slice(1)); break
+        default:
+            this.triggerAll(params, [params[1]])
+            break
         }
     },
+    drawModule: function(mod, cont){
+        if (!mod) return
 
-    onMenu: function(e){
-        var id = e.srcElement.id
-        if ('#' === id.charAt(0)) return this.currPage.$el.trigger(id.substr(1))
-        Router.instance().nav(e.srcElement.id)
-    },
-    initHeader: function(){
-        this.$popover = this.$('#popOptions ul.table-view')
-
-        var $topBar = this.$('header.bar')
-        this.$search = $topBar.find('input[type=search]')
-        this.$leftBar = $topBar.find('.pull-left')
-        this.$rightBar = $topBar.find('.pull-right')
-        this.$titleOptions = $topBar.find('h1#options.title')
-        this.$title = $topBar.find('h1#simple.title')
-        this.$topBar = $topBar
-
-        if (!pico.detectEvent('touchstart')){
-            document.addEventListener('mousedown', function(e){
-                var touches = []
-
-                touches[0] = {}
-                touches[0].pageX = e.pageX
-                touches[0].pageY = e.pageY
-                touches[0].target = e.target
-
-                var evt = new Event('touchstart', {
-                    bubbles: true,
-                    cancelable: true,
-                    details:{
-                        target: e.target,
-                        srcElement: e.srcElement,
-                        touches: touches,
-                        changedTouches: touches,
-                        targetTouches: touches,
-                        mouseToTouch: true
-                    }   
-                }) 
-
-                e.target.dispatchEvent(evt)
-            }, true)
-        }
-        
-        // Start Backbone history a necessary step for bookmarkable URL's
-        Backbone.history.start()
-    },
-    // search === invalid bar
-    drawHeader: function(bar){
-        var
-        $popover = this.$popover,
-        $search = this.$search,
-        $leftBar = this.$leftBar,
-        $rightBar = this.$rightBar,
-        $titleOptions = this.$titleOptions,
-        $title = this.$title
-
-        $leftBar.empty()
-        $rightBar.empty()
-        if (!bar){
-            this.$topBar.removeClass('hidden')
-            $title.addClass('hidden')
-            $titleOptions.addClass('hidden')
-            $search.removeClass('hidden').focus()
-            return
-        }
-        $search.addClass('hidden').blur()
-
-        if (!Object.keys(bar).length){
-            this.$topBar.addClass('hidden')
-            return
-        }
-        this.$topBar.removeClass('hidden')
-
-        var optionKeys = bar.options
-        if (optionKeys && optionKeys.length){
-            $titleOptions[0].firstChild.firstChild.textContent = bar.title
-            $titleOptions.removeClass('hidden')
-            $popover.empty()
-            _.each(optionKeys, function(key){
-                $popover.append($(OPTION_TPL.replace('KEY', key).replace('VALUE', router.links[key])))
-            })
-        }else if (bar.title){
-            $title.text(bar.title)
-            $title.removeClass('hidden')
-        }
-        if (bar.left){
-            addToolbar($leftBar, bar.left)
-        }
-        if (bar.right){
-            addToolbar($rightBar, bar.right)
-        }
+        var $el = (cont && 'drawer' === cont) ? this.$('.drawers') : this.$('#content')
+        $el.prepend(mod.render())
     }
 }, Module.Events))

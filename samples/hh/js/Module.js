@@ -9,13 +9,24 @@ ModuleEvents = {
             Backbone.Events.trigger.apply(context.host, params)
         }, 0, this, Array.prototype.slice.call(arguments))
     },
+    triggerPages: function(){
+        if (!this.pages) return
+        setTimeout(function(context, params){
+            var trigger = Backbone.Events.trigger
+
+            params.splice(1, 0, context)
+            for(var ps=context.pages,i=0,p; p=ps[i]; i++){
+                trigger.apply(p, params)
+            }
+        }, 0, this, Array.prototype.slice.call(arguments))
+    },
     triggerModules: function(){
         setTimeout(function(context, params){
             var trigger = Backbone.Events.trigger
 
             params.splice(1, 0, context)
-            for(var ms=context.modules,i=0,l=ms.length; i<l; i++){
-                trigger.apply(ms[i], params)
+            for(var ms=context.modules,i=0,m; m=ms[i]; i++){
+                trigger.apply(m, params)
             }
         }, 0, this, Array.prototype.slice.call(arguments))
     },
@@ -24,8 +35,15 @@ ModuleEvents = {
             var trigger = Backbone.Events.trigger
             params.splice(1, 0, context)
             if (context.host && -1 === excludes.indexOf(context.host)) trigger.apply(context.host, params)
-            for(var m,ms=context.modules,i=0; m=ms[i]; i++){
-                if (-1 === excludes.indexOf(m)) trigger.apply(m, params)
+            if (context.modules){
+                for(var ms=context.modules,i=0,m; m=ms[i]; i++){
+                    if (-1 === excludes.indexOf(m)) trigger.apply(m, params)
+                }
+            }
+            if (context.pages){
+                for(var ps=context.pages,i=0,p; p=ps[i]; i++){
+                    if (-1 === excludes.indexOf(p)) trigger.apply(p, params)
+                }
             }
         }, 0, this)
     }
@@ -49,6 +67,8 @@ exports.Class = Backbone.View.extend(_.extend({
             if (err) console.error(err)
             if (cb) cb(err, s)
         })
+    },
+    reinit: function(options){
     },
     remove: function(){
         this.off()

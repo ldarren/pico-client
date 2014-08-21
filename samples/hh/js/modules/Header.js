@@ -1,8 +1,7 @@
 var
 Module = require('Module'),
 Router = require('Router'),
-tpl = require('@html/header.html')
-
+tpl = require('@html/header.html'),
 addToolbar = function($bar, icons){
     var icon, a
     for(var i=0,l=icons.length;i<l;i++){
@@ -13,13 +12,13 @@ addToolbar = function($bar, icons){
         a.className = 'icon icon-'+icon
         $bar.append(a)
     }
-},
+}
 
-exports.Class = Module.extend({
+exports.Class = Module.Class.extend({
     tagName: 'header',
     className: 'hidden bar bar-nav',
-    initialize: function(){
-        this.$el.html(tpl)
+    initialize: function(options){
+        this.$el.html(tpl.text)
         this.$popover = this.$('#popOptions ul.table-view')
 
         this.$search = this.$('input[type=search]')
@@ -29,6 +28,11 @@ exports.Class = Module.extend({
         this.$title = this.$('h1#simple.title')
 
         this.currOptions = null
+
+        var self = this
+        this.init(options, function(err, spec){
+            self.triggerHost('invalidate', 'content')
+        })
     },
     // search === invalid bar
     reinit: function(options){

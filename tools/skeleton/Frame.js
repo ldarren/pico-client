@@ -42,12 +42,12 @@ changeRoute = function(path, params){
     if (!pageConfig) return Router.instance().home()
 
     if (this.currPage) this.currPage.remove()
-    this.currPage = new Page.Class(pageConfig, params, this)
-    var options = pageConfig.options
-    for(var i=0,keys=Object.keys(options),k,m; k=keys[i]; i++){
+    var reinits = pageConfig.reinits
+    for(var i=0,keys=Object.keys(reinits),k,m; k=keys[i]; i++){
         m = this.moduleMap[k]
-        if (m) m.reinit(options[k])
+        if (m) m.reinit(reinits[k])
     }
+    this.currPage = new Page.Class(pageConfig, params, this)
     this.render()
     this.triggerModules('changeRoute', path, params)
 }
@@ -100,6 +100,6 @@ exports.Class = Backbone.View.extend(_.extend({
         if (!mod) return
 
         var $el = (cont && 'drawer' === cont) ? this.$('.drawers') : this.$('#content')
-        $el.append(mod.render())
+        $el.prepend(mod.render()) // hack, how to make sure frame module draw before page?
     }
 }, Module.Events))
