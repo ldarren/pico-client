@@ -34,9 +34,9 @@ pico.start({
         network.slot('connected', function(project){
             network.create(specMgr.find('projURL', project.spec).value, true, function(err){
                 if (err) return console.error(err)
-                attachDeps(project.deps, function(){
-                    attachStyles(project.styles, function(){
-                        document.getElementsByTagName('body')[0].innerHTML = '<div class=snap-drawers></div><div id=content class=snap-content></div>'
+                attachStyles(project.styles, function(){
+                    document.getElementsByTagName('body')[0].innerHTML = '<div class=snap-drawers></div><div id=content class=snap-content></div>'
+                    attachDeps(project.deps, function(){
                         new Frame.Class({project: project})
                     })
                 })

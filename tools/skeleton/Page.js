@@ -30,7 +30,7 @@ exports.Class = Backbone.View.extend(_.extend({
         })
     },
     render: function(){
-        return this.$el
+        return this.el
     },
     remove: function(){
         this.off()

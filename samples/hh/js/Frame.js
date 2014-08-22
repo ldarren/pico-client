@@ -62,6 +62,8 @@ exports.Class = Backbone.View.extend(_.extend({
         r.on('route', changeRoute, this)
         this.on('all', this.frameEvents, this)
 
+        this.$content = this.$('#content')
+        this.$drawers = this.$('.snap-drawers')
         this.pages = p.pages
         this.modules = []
 
@@ -78,7 +80,7 @@ exports.Class = Backbone.View.extend(_.extend({
     },
 
     render: function(){
-        this.$el.trigger('slide', this.currPage.render())
+        this.$content.trigger('slide', [this.currPage.render()])
     },
 
     frameEvents: function(){
