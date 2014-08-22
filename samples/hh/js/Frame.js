@@ -42,10 +42,11 @@ changeRoute = function(path, params){
     if (!pageConfig) return Router.instance().home()
 
     if (this.currPage) this.currPage.remove()
-    var reinits = pageConfig.reinits
-    for(var i=0,keys=Object.keys(reinits),k,m; k=keys[i]; i++){
-        m = this.moduleMap[k]
-        if (m) m.reinit(reinits[k])
+    var
+    reinits = pageConfig.reinits,
+    modules = this.modules
+    for(var i=0,m; m=modules[i]; i++){
+        if (m) m.reinit(reinits[m.name])
     }
     this.currPage = new Page.Class(pageConfig, params, this)
     this.render()
@@ -65,7 +66,6 @@ exports.Class = Backbone.View.extend(_.extend({
 
         this.pages = p.pages
         this.modules = []
-        this.moduleMap = {}
 
         this.el.innerHTML = tpl
         this.slider = new PageSlider.Class(this.$('#content'))
@@ -75,7 +75,7 @@ exports.Class = Backbone.View.extend(_.extend({
             self.spec = spec
             spec.forEach(function(s){
                 if ('module' === s.type) {
-                    self.modules.push(self.moduleMap[s.name] = new s.Class({name:s.name, host:self, spec:s.spec}))
+                    self.modules.push(new s.Class({name:s.name, host:self, spec:s.spec}))
                 }
             })
             start()
@@ -100,6 +100,6 @@ exports.Class = Backbone.View.extend(_.extend({
         if (!mod) return
 
         var $el = (cont && 'drawer' === cont) ? this.$('.drawers') : this.$('#content')
-        $el.prepend(mod.render())
+        $el.prepend(mod.render()) // hack, how to make sure frame module draw before page?
     }
 }, Module.Events))

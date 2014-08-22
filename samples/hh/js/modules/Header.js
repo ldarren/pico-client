@@ -27,7 +27,7 @@ exports.Class = Module.Class.extend({
         this.$titleOptions = this.$('h1#options.title')
         this.$title = this.$('h1#simple.title')
 
-        this.currOptions = null
+        this.lastConfig = null
 
         var self = this
         this.init(options, function(err, spec){
@@ -35,7 +35,7 @@ exports.Class = Module.Class.extend({
         })
     },
     // search === invalid bar
-    reinit: function(options){
+    reinit: function(config){
         var
         $popover = this.$popover,
         $search = this.$search,
@@ -46,39 +46,37 @@ exports.Class = Module.Class.extend({
 
         $leftBar.empty()
         $rightBar.empty()
-        if (!options){
-            this.$el.removeClass('hidden')
-            $title.addClass('hidden')
-            $titleOptions.addClass('hidden')
-            $search.removeClass('hidden').focus()
-            return
-        }
-        this.currOptions = options
-        $search.addClass('hidden').blur()
+        this.lastConfig = config
 
-        if (!Object.keys(options).length){
+        if (!config || !Object.keys(config).length){
             this.$el.addClass('hidden')
             return
         }
         this.$el.removeClass('hidden')
 
-        var optionKeys = options.options
+        if (config.search){
+            this.showSearch()
+            return
+        }
+        $search.addClass('hidden').blur()
+
+        var optionKeys = config.options
         if (optionKeys && optionKeys.length){
-            $titleOptions[0].firstChild.firstChild.textContent = options.title
+            $titleOptions[0].firstChild.firstChild.textContent = config.title
             $titleOptions.removeClass('hidden')
             $popover.empty()
             _.each(optionKeys, function(key){
                 $popover.append($(OPTION_TPL.replace('KEY', key).replace('VALUE', router.links[key])))
             })
-        }else if (options.title){
-            $title.text(options.title)
+        }else if (config.title){
+            $title.text(config.title)
             $title.removeClass('hidden')
         }
-        if (options.left){
-            addToolbar($leftBar, options.left)
+        if (config.left){
+            addToolbar($leftBar, config.left)
         }
-        if (options.right){
-            addToolbar($rightBar, options.right)
+        if (config.right){
+            addToolbar($rightBar, config.right)
         }
     },
 
@@ -89,6 +87,15 @@ exports.Class = Module.Class.extend({
         'keyup header input[type=search]': 'onFind'
     },
 
+    showSearch: function(){
+        this.$el.removeClass('hidden')
+        this.$leftBar.empty()
+        this.$rightBar.empty()
+        this.$title.addClass('hidden')
+        this.$titleOptions.addClass('hidden')
+        this.$search.removeClass('hidden').focus()
+    },
+
     onToolbar: function(e, isLeft){
         var
         ele = e.srcElement,
@@ -97,7 +104,7 @@ exports.Class = Module.Class.extend({
         switch(id){
         case 'left-nav': window.history.back(); break
         case 'menu': snapper.open(isLeft ? 'left' : 'right'); break
-        case 'search': this.reinit(); break
+        case 'search': this.showSearch(); break
         default: this.triggerHost(id)
         }
 
@@ -108,7 +115,7 @@ exports.Class = Module.Class.extend({
         this.triggerHost('find', [this.$search.val()])
         if (13 === e.keyCode){
             this.$search.val('')
-            this.reinit(this.currOptions)
+            this.reinit(this.lastConfig)
         }
     },
 

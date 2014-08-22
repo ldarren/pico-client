@@ -68,7 +68,7 @@ exports.Class = Backbone.View.extend(_.extend({
             if (cb) cb(err, s)
         })
     },
-    reinit: function(options){
+    reinit: function(config){
     },
     remove: function(){
         this.off()
