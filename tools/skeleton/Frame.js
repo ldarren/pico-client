@@ -1,11 +1,9 @@
 var
-PageSlider = require('pageslider'),
 specMgr = require('specMgr'),
 Router = require('Router'),
 Page = require('Page'),
 Model = require('Model'),
 Module = require('Module'),
-tpl = '<div class="snap-drawers"></div><div id="content" class="snap-content"></div>',
 start = function(){
     if (!pico.detectEvent('touchstart')){
         document.addEventListener('mousedown', function(e){
@@ -67,9 +65,6 @@ exports.Class = Backbone.View.extend(_.extend({
         this.pages = p.pages
         this.modules = []
 
-        this.el.innerHTML = tpl
-        this.slider = new PageSlider.Class(this.$('#content'))
-
         specMgr.load(null, [], p.spec, function(err, spec){
             if (err) return console.error(err)
             self.spec = spec
@@ -83,7 +78,7 @@ exports.Class = Backbone.View.extend(_.extend({
     },
 
     render: function(){
-        this.slider.slidePage(this.currPage.render())
+        this.$el.trigger('slide', this.currPage.render())
     },
 
     frameEvents: function(){

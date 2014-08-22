@@ -21,8 +21,7 @@ pico.start({
         '*': 'js/',
         html: 'html/',
         modules: 'js/modules/',
-        pico: 'lib/pico/lib/',
-        pageslider: 'lib/pageslider/pageslider',
+        pico: 'lib/pico/lib/'
     }
 },function(){
     require('Module')//preload
@@ -37,6 +36,7 @@ pico.start({
                 if (err) return console.error(err)
                 attachDeps(project.deps, function(){
                     attachStyles(project.styles, function(){
+                        document.getElementsByTagName('body')[0].innerHTML = '<div class=snap-drawers></div><div id=content class=snap-content></div>'
                         new Frame.Class({project: project})
                     })
                 })
