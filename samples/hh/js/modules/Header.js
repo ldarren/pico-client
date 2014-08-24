@@ -98,7 +98,7 @@ exports.Class = Module.Class.extend({
 
     onToolbar: function(e, isLeft){
         var
-        ele = e.srcElement,
+        ele = e.target,
         id = ele.id
 
         switch(id){
@@ -120,8 +120,8 @@ exports.Class = Module.Class.extend({
     },
 
     onMenu: function(e){
-        var id = e.srcElement.id
+        var id = e.target.id
         if ('#' === id.charAt(0)) return this.triggerHost(id.substr(1))
-        Router.instance().nav(e.srcElement.id)
+        Router.instance().nav(id)
     }
 })
