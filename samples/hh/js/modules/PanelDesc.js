@@ -1,18 +1,10 @@
 var Module = require('Module')
 
 exports.Class = Module.Class.extend({
-    initialize: function(options){
-        var self = this
-
-        this.init(options, function(err, spec){
-            for(var s,i=0; s=spec[i]; i++){
-                switch(s.type){
-                case 'select': self.select = s; break
-                }
-            }
-            self.$el.html('<h5 class=content-padded>'+self.select.name+'</h5><div class=card><ul class=table-view></ul></div>')
-            self.triggerHost('invalidate')
-        })
+    create: function(spec){
+        this.select = this.requireType('select')
+        this.$el.html('<h5 class=content-padded>'+this.select.name+'</h5><div class=card><ul class=table-view></ul></div>')
+        this.triggerHost('invalidate')
     },
     render: function(){
         var

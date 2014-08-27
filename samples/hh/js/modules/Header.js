@@ -17,7 +17,7 @@ addToolbar = function($bar, icons){
 exports.Class = Module.Class.extend({
     tagName: 'header',
     className: 'hidden bar bar-nav',
-    initialize: function(options){
+    create: function(spec){
         this.$el.html(tpl.text)
         this.$popover = this.$('#popOptions ul.table-view')
 
@@ -29,10 +29,7 @@ exports.Class = Module.Class.extend({
 
         this.lastConfig = null
 
-        var self = this
-        this.init(options, function(err, spec){
-            self.triggerHost('invalidate', 'content')
-        })
+        this.triggerHost('invalidate', 'content')
     },
     // search === invalid bar
     reinit: function(config){

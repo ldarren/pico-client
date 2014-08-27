@@ -1,49 +1,45 @@
 var Module = require('Module')
 
 exports.Class = Module.Class.extend({
-    initialize: function(options){
-        var self = this
+    create: function(spec){
+        var item, sub, issues, history, results, list
 
-        this.init(options, function(err, spec){
-            var item, sub, issues, history, results, list
-
-            for(var s,i=0; s=spec[i]; i++){
-                switch(s.type){
-                case 'model':
-                    item = s.value
-                    break
-                case 'models':
-                    switch(s.name){
-                    case 'issue': issues = self.issues = s.value; break
-                    case 'result': results = self.results = s.value; break
-                    case 'history': history = s.value; break
-                    case 'list': list = s.value; break
-                    }
-                    break
-                case 'module':
-                    sub = s
-                    break
+        for(var s,i=0; s=spec[i]; i++){
+            switch(s.type){
+            case 'model':
+                item = s.value
+                break
+            case 'models':
+                switch(s.name){
+                case 'issue': issues = this.issues = s.value; break
+                case 'result': results = this.results = s.value; break
+                case 'history': history = s.value; break
+                case 'list': list = s.value; break
                 }
+                break
+            case 'module':
+                sub = s
+                break
             }
+        }
 
-            var
-            patientId = issues.get(item.get('issueId')).get('patientId'),
-            patientHistory = history.where({patientId:patientId})
-            
-            if (patientHistory.length){
-                self.addRows(sub, patientHistory)
-            }else{
-                list.fetch({
-                    data:{patientId:patientId},
-                    success: function(coll, raw){
-                        results.add(raw.result)
-                        issues.add(raw.issue)
-                        history.add(raw.history)
-                        self.addRows(sub, history.where({patientId:patientId}))
-                    }
-                })
-            }
-        })
+        var
+        patientId = issues.get(item.get('issueId')).get('patientId'),
+        patientHistory = history.where({patientId:patientId})
+        
+        if (patientHistory.length){
+            this.addRows(sub, patientHistory)
+        }else{
+            list.fetch({
+                data:{patientId:patientId},
+                success: function(coll, raw){
+                    results.add(raw.result)
+                    issues.add(raw.issue)
+                    history.add(raw.history)
+                    this.addRows(sub, history.where({patientId:patientId}))
+                }
+            })
+        }
     },
 
     addRows: function(mod, history){

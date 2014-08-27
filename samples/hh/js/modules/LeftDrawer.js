@@ -18,7 +18,7 @@ UpdateDrawers = function(){
 snapper
 
 exports.Class = Module.Class.extend({
-    initialization: function(){
+    create: function(spec){
         snapper = new Snap({element: $content[0]})
         snapper.on('drag', UpdateDrawers);
         snapper.on('animate', UpdateDrawers);

@@ -3,20 +3,10 @@ Module = require('Module')
 
 exports.Class = Module.Class.extend({
     className: 'card',
-    initialize: function(options){
+    create: function(spec){
         this.$el.html('<ul class="table-view"></ul>')
-        var self = this
-
-        this.init(options, function(err, spec){
-            for(var s,i=0; s=spec[i]; i++){
-                switch(s.type){
-                case 'select':
-                    self.select = s
-                    break
-                }
-            }
-            self.triggerHost('invalidate')
-        })
+        this.select = this.requireType('select')
+        this.triggerHost('invalidate')
     },
     render: function(){
         var
