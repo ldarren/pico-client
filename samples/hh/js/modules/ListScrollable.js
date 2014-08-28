@@ -1,16 +1,18 @@
-var
-Module = require('Module')
+var Module = require('Module')
 
 exports.Class = Module.Class.extend({
     tagName: 'ul',
     className: 'table-view',
     create: function(spec){
         var
+        self = this,
         models = this.requireAllType('models'),
-        indexKey = this.requireType('text'),
-        doctorId = this.requireType('number'),
-        list = this.require('list'),
+        indexKey = this.requireType('text').value,
+        doctorId = this.requireType('number').value,
+        list = this.require('list').value,
         index
+
+        this.Cell = this.requireType('module')
 
         list.fetch({
             data: {doctorId:doctorId},
@@ -18,29 +20,25 @@ exports.Class = Module.Class.extend({
                 var coll 
                 for(var key in raw){
                     if (key === indexKey) continue
-                    coll = models[key]
+                    coll = models[key].value
                     if (!coll) continue
                     coll.add(raw[key])
                 }
-                models[indexKey].add(raw[indexKey]).forEach(function(model){
+                models[indexKey].value.add(raw[indexKey]).forEach(function(model){
                     self.addRow(model)
                 })
             }
         })
-        self.triggerHost('invalidate')
-    },
-
-    render: function(){
-        return this.$el
-    },
-
-    addRow: function(model){
-        this.proxy(this.Cell, [model.id])
+        this.triggerHost('invalidate')
     },
 
     moduleEvents: function(evt, sender){
         switch(evt){
         case 'invalidate': this.$el.append(sender.render()); break
         }
+    },
+
+    addRow: function(model){
+        this.proxy(this.Cell, [model.id])
     }
 })

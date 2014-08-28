@@ -7,10 +7,11 @@ exports.Class = Module.Class.extend({
     className: 'table-view-cell',
     create: function(spec){
         var
-        patients = this.require('patients'),
-        issues = this.require('issues')
+        patients = this.require('patient').value,
+        issues = this.require('issue').value
         
-        this.result = this.requireByType('model')
+        this.result = this.requireType('model').value
+
         if (!this.result || !patients || !issues) return console.error('missing field!')
         this.patient = patients.get(issues.get(this.result.get('issueId')).get('patientId'))
         this.triggerHost('invalidate')

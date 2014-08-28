@@ -52,7 +52,7 @@ ModuleEvents = {
 exports.Events = _.extend(ModuleEvents, Backbone.Events)
 
 exports.Class = Backbone.View.extend(_.extend({
-    init: function(options, cb){
+    initialize: function(options){
         this.id = id++
         this.name = options.name
         this.host = options.host
@@ -64,11 +64,13 @@ exports.Class = Backbone.View.extend(_.extend({
         var self = this
         specMgr.load(this.host, options.params || [], options.spec, function(err, s){
             self.spec = s
-            if (err) console.error(err)
-            if (cb) cb(err, s)
+            if (err) return console.error(err)
+            self.create(s)
         })
     },
     reinit: function(config){
+    },
+    create: function(spec){
     },
     remove: function(){
         this.off()
@@ -89,6 +91,36 @@ exports.Class = Backbone.View.extend(_.extend({
     addSpec: function(spec){
         this.spec = (spec || []).concat(this.spec)
         return this.spec.slice()
+    },
+    require: function(name){
+        var spec = this.spec
+        for(var i=0,s; s=spec[i]; i++){
+            if (name === s.name) return s
+        }
+    },
+    requireAll: function(name){
+        var
+        arr = [],
+        spec = this.spec
+        for(var i=0,s; s=spec[i]; i++){
+            if (name === s.name) arr.push(s)
+        }
+        return arr
+    },
+    requireType: function(type){
+        var spec = this.spec
+        for(var i=0,s; s=spec[i]; i++){
+            if (type === s.type) return s
+        }
+    },
+    requireAllType: function(type){
+        var
+        obj = {},
+        spec = this.spec
+        for(var i=0,s; s=spec[i]; i++){
+            if (type === s.type) obj[s.name] = s
+        }
+        return obj
     },
     render: function(){
         var

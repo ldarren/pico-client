@@ -7,10 +7,10 @@ exports.Class = Module.Class.extend({
     className: 'table-view-cell',
     create: function(spec){
         var
-        transfer = this.requireByType('model'),
-        patients = this.require('patient'),
-        issues = this.require('issues'),
-        wards = this.require('ward')
+        transfer = this.requireType('model').value,
+        patients = this.require('patient').value,
+        issues = this.require('issue').value,
+        wards = this.require('ward').value
 
         if (!transfer || !patients || !issues || !wards) return console.error('missing field for ListItemTransfer')
         this.patient = patients.get(issues.get(transfer.get('issueId')).get('patientId'))

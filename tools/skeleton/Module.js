@@ -95,13 +95,15 @@ exports.Class = Backbone.View.extend(_.extend({
     require: function(name){
         var spec = this.spec
         for(var i=0,s; s=spec[i]; i++){
-            if (name === s.name) return s.value
+            if (name === s.name) return s
         }
     },
     requireAll: function(name){
-        var arr = []
+        var
+        arr = [],
+        spec = this.spec
         for(var i=0,s; s=spec[i]; i++){
-            if (name === s.name) arr.push(s.value)
+            if (name === s.name) arr.push(s)
         }
         return arr
     },
@@ -112,9 +114,11 @@ exports.Class = Backbone.View.extend(_.extend({
         }
     },
     requireAllType: function(type){
-        var obj = {}
+        var
+        obj = {},
+        spec = this.spec
         for(var i=0,s; s=spec[i]; i++){
-            if (type === s.type) obj[s.name] = s.value
+            if (type === s.type) obj[s.name] = s
         }
         return obj
     },

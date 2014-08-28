@@ -30,13 +30,14 @@ exports.Class = Module.Class.extend({
         if (patientHistory.length){
             this.addRows(sub, patientHistory)
         }else{
+            var self = this
             list.fetch({
                 data:{patientId:patientId},
                 success: function(coll, raw){
                     results.add(raw.result)
                     issues.add(raw.issue)
                     history.add(raw.history)
-                    this.addRows(sub, history.where({patientId:patientId}))
+                    self.addRows(sub, history.where({patientId:patientId}))
                 }
             })
         }
