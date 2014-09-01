@@ -253,6 +253,11 @@
             el = undefined
             return isSupported
         },
+        createEvent: function(name, detail, bubbles, cancelable){
+            var evt = document.createEvent('CustomEvent')
+            evt.initCustomEvent(name, bubbles || false, cancelable || false, detail)
+            return evt
+        },
         changeState: function(uri, desc, userData){
             var search = '?'
             for (var key in uri){

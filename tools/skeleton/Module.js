@@ -9,16 +9,19 @@ ModuleEvents = {
             Backbone.Events.trigger.apply(context.host, params)
         }, 0, this, Array.prototype.slice.call(arguments))
     },
-    triggerPages: function(){
-        if (!this.pages) return
+    triggerPage: function(){
+        if (!this.currPage) return
         setTimeout(function(context, params){
-            var trigger = Backbone.Events.trigger
-
             params.splice(1, 0, context)
-            for(var ps=context.pages,i=0,p; p=ps[i]; i++){
-                trigger.apply(p, params)
-            }
+            Backbone.Events.trigger.apply(context.currPage, params)
         }, 0, this, Array.prototype.slice.call(arguments))
+    },
+    triggerModule: function(mod){
+        if (!mod) return
+        setTimeout(function(context, params){
+            params.splice(1, 0, context)
+            Backbone.Events.trigger.apply(mod, params)
+        }, 0, this, Array.prototype.slice.call(arguments, 1))
     },
     triggerModules: function(){
         setTimeout(function(context, params){
@@ -40,10 +43,8 @@ ModuleEvents = {
                     if (-1 === excludes.indexOf(m)) trigger.apply(m, params)
                 }
             }
-            if (context.pages){
-                for(var ps=context.pages,i=0,p; p=ps[i]; i++){
-                    if (-1 === excludes.indexOf(p)) trigger.apply(p, params)
-                }
+            if (context.currPage){
+                if (-1 === excludes.indexOf(context.currPage)) trigger.apply(context.currPage, params)
             }
         }, 0, this)
     }
