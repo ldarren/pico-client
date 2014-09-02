@@ -76,9 +76,8 @@ exports.Class = Backbone.View.extend(_.extend({
     remove: function(){
         this.off()
         Backbone.View.prototype.remove.apply(this, arguments)
-        var ms = this.modules
-        for(var i=0,l=ms.length; i<l; i++){
-            ms[i].remove()
+        for(var i=0,ms=this.modules,m; m=ms[i]; i++){
+            m.remove()
         }
         ms.length = 0
         specMgr.unload(this.spec)
