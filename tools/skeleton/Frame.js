@@ -26,10 +26,11 @@ exports.Class = Backbone.View.extend(_.extend({
         r.on('route', changeRoute, this)
         this.on('all', this.frameEvents, this)
         
-        this.el.innerHTML = '<div id=content class=lnBook></div><div id=helper'
+        this.el.innerHTML = '<div class=lnBook></div><div></div>'
         document.dispatchEvent(pico.createEvent('lnReset'))
 
-        this.content = this.$('#content')[0]
+        this.content = this.el.firstChild
+        this.$container = $(this.content.nextElementSibling)
         this.pages = p.pages
         this.modules = []
 
@@ -41,7 +42,6 @@ exports.Class = Backbone.View.extend(_.extend({
                     self.modules.push(new s.Class({name:s.name, host:self, spec:s.spec}))
                 }
             })
-            // Start Backbone history a necessary step for bookmarkable URL's
             Backbone.history.start()
         })
     },
@@ -61,6 +61,9 @@ exports.Class = Backbone.View.extend(_.extend({
                 if (m) m.reinit(reinits[m.name])
             }
             break
+        case 'slide':
+            this.content.dispatchEvent(pico.createEvent('transit', {ref:params[1],from:params[2]})
+            break
         default:
             this.triggerAll(params, [params[1]])
             break
@@ -69,7 +72,6 @@ exports.Class = Backbone.View.extend(_.extend({
     drawModule: function(mod, cont){
         if (!mod) return
 
-        var $el = (cont && 'drawer' === cont) ? this.$('.drawers') : this.$('#content')
-        $el.prepend(mod.render()) // hack, how to ensure frame module draw before page?
+        $container.append(mod.render())
     }
 }, Module.Events))
