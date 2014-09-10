@@ -37,14 +37,13 @@ ModuleEvents = {
         setTimeout(function(context){
             var trigger = Backbone.Events.trigger
             params.splice(1, 0, context)
-            if (context.host && -1 === excludes.indexOf(context.host)) trigger.apply(context.host, params)
+            [context.host, context.currPage, context.modal].forEach(function(view){
+                if (view && -1 === excludes.indexOf(view)) trigger.apply(view, params)
+            })
             if (context.modules){
                 for(var ms=context.modules,i=0,m; m=ms[i]; i++){
                     if (-1 === excludes.indexOf(m)) trigger.apply(m, params)
                 }
-            }
-            if (context.currPage){
-                if (-1 === excludes.indexOf(context.currPage)) trigger.apply(context.currPage, params)
             }
         }, 0, this)
     }

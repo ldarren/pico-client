@@ -6,7 +6,6 @@ Module = require('Module')
 exports.Class = Backbone.View.extend(_.extend({
     initialize: function(options, params, host){
 
-        this.header = options.header
         this.style = restyle(options.styles, ['webkit'])
         this.modules = []
         this.readiness = []
@@ -48,7 +47,8 @@ exports.Class = Backbone.View.extend(_.extend({
         switch(params[0]){
         case 'invalidate': this.drawModule.apply(this, params.slice(1)); break
         default:
-            this.triggerModules.apply(this, params)
+            var sender = params.splice(1, 1)
+            this.triggerAll(params, sender)
             break
         }
     },

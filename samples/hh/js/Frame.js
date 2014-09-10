@@ -2,50 +2,13 @@ var
 specMgr = require('specMgr'),
 Router = require('Router'),
 Page = require('Page'),
-Model = require('Model'),
 Module = require('Module'),
-start = function(){
-    if (!pico.detectEvent('touchstart')){
-        document.addEventListener('mousedown', function(e){
-            var touches = []
-
-            touches[0] = {}
-            touches[0].pageX = e.pageX
-            touches[0].pageY = e.pageY
-            touches[0].target = e.target
-
-            var evt = new Event('touchstart', {
-                bubbles: true,
-                cancelable: true,
-                details:{
-                    target: e.target,
-                    srcElement: e.srcElement,
-                    touches: touches,
-                    changedTouches: touches,
-                    targetTouches: touches,
-                    mouseToTouch: true
-                }   
-            }) 
-
-            e.target.dispatchEvent(evt)
-        }, true)
-    }
-    
-    // Start Backbone history a necessary step for bookmarkable URL's
-    Backbone.history.start()
-},
 changeRoute = function(path, params){
     var pageConfig = this.pages[path]
 
     if (!pageConfig) return Router.instance().home()
 
-    if (this.currPage) this.currPage.remove()
-    var
-    reinits = pageConfig.reinits,
-    modules = this.modules
-    for(var i=0,m; m=modules[i]; i++){
-        if (m) m.reinit(reinits[m.name])
-    }
+    if (this.currPage) this.oldPage = this.currPage
     this.currPage = new Page.Class(pageConfig, params, this)
     this.render()
     this.triggerModules('changeRoute', path, params)
@@ -61,11 +24,17 @@ exports.Class = Backbone.View.extend(_.extend({
 
         r.on('route', changeRoute, this)
         this.on('all', this.frameEvents, this)
+        
+        this.el.innerHTML = '<div class=lnBook></div><div></div><div></div>'
+        document.dispatchEvent(pico.createEvent('lnReset'))
 
-        this.$content = this.$('#content')
-        this.$drawers = this.$('.snap-drawers')
+        this.content = this.el.firstChild
+        this.$container = $(this.content.nextElementSibling)
+        this.$modal = this.$container.next()
         this.pages = p.pages
         this.modules = []
+
+        this.content.addEventListener('flipped', this.removeOldPage.bind(this), false)
 
         specMgr.load(null, [], p.spec, function(err, spec){
             if (err) return console.error(err)
@@ -75,12 +44,12 @@ exports.Class = Backbone.View.extend(_.extend({
                     self.modules.push(new s.Class({name:s.name, host:self, spec:s.spec}))
                 }
             })
-            start()
+            Backbone.history.start()
         })
     },
 
     render: function(){
-        this.$content.trigger('slide', [this.currPage.render()])
+        this.content.dispatchEvent(pico.createEvent('flip', {page:this.currPage.render(),from:Router.instance().isBack() ? 'right' : 'left'}))
     },
 
     frameEvents: function(){
@@ -88,15 +57,27 @@ exports.Class = Backbone.View.extend(_.extend({
 
         switch(params[0]){
         case 'invalidate': this.drawModule.apply(this, params.slice(1)); break
+        case 'reinit':
+            var reinits = params[1]
+            for(var i=0,ms=this.modules,m; m=ms[i]; i++){
+                if (m) m.reinit(reinits[m.name])
+            }
+            break
+        case 'slide':
+            this.content.dispatchEvent(pico.createEvent('transit', {ref:params[1],from:params[2]}))
+            break
         default:
             this.triggerAll(params, [params[1]])
             break
         }
     },
-    drawModule: function(mod, cont){
+    drawModule: function(mod){
         if (!mod) return
 
-        var $el = (cont && 'drawer' === cont) ? this.$('.drawers') : this.$('#content')
-        $el.prepend(mod.render()) // hack, how to make sure frame module draw before page?
+        this.$container.append(mod.render())
+    },
+    removeOldPage: function(e){
+        if (this.oldPage) this.oldPage.remove()
+        this.oldPage = undefined
     }
 }, Module.Events))

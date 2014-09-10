@@ -2,14 +2,13 @@ var
 specMgr = require('specMgr'),
 Router = require('Router'),
 Page = require('Page'),
-Model = require('Model'),
 Module = require('Module'),
 changeRoute = function(path, params){
     var pageConfig = this.pages[path]
 
     if (!pageConfig) return Router.instance().home()
 
-    if (this.currPage) this.currPage.remove()
+    if (this.currPage) this.oldPage = this.currPage
     this.currPage = new Page.Class(pageConfig, params, this)
     this.render()
     this.triggerModules('changeRoute', path, params)
@@ -26,13 +25,16 @@ exports.Class = Backbone.View.extend(_.extend({
         r.on('route', changeRoute, this)
         this.on('all', this.frameEvents, this)
         
-        this.el.innerHTML = '<div class=lnBook></div><div></div>'
+        this.el.innerHTML = '<div class=lnBook></div><div></div><div></div>'
         document.dispatchEvent(pico.createEvent('lnReset'))
 
         this.content = this.el.firstChild
         this.$container = $(this.content.nextElementSibling)
+        this.$modal = this.$container.next()
         this.pages = p.pages
         this.modules = []
+
+        this.content.addEventListener('flipped', this.removeOldPage.bind(this), false)
 
         specMgr.load(null, [], p.spec, function(err, spec){
             if (err) return console.error(err)
@@ -47,7 +49,7 @@ exports.Class = Backbone.View.extend(_.extend({
     },
 
     render: function(){
-        this.content.dispatchEvent(pico.createEvent('flip', {ref:this.currPage.render(),from:'left'})
+        this.content.dispatchEvent(pico.createEvent('flip', {page:this.currPage.render(),from:Router.instance().isBack() ? 'right' : 'left'}))
     },
 
     frameEvents: function(){
@@ -62,16 +64,20 @@ exports.Class = Backbone.View.extend(_.extend({
             }
             break
         case 'slide':
-            this.content.dispatchEvent(pico.createEvent('transit', {ref:params[1],from:params[2]})
+            this.content.dispatchEvent(pico.createEvent('transit', {ref:params[1],from:params[2]}))
             break
         default:
             this.triggerAll(params, [params[1]])
             break
         }
     },
-    drawModule: function(mod, cont){
+    drawModule: function(mod){
         if (!mod) return
 
-        $container.append(mod.render())
+        this.$container.append(mod.render())
+    },
+    removeOldPage: function(e){
+        if (this.oldPage) this.oldPage.remove()
+        this.oldPage = undefined
     }
 }, Module.Events))
