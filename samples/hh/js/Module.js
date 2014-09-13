@@ -36,7 +36,7 @@ ModuleEvents = {
     triggerAll: function(params, excludes){
         setTimeout(function(context){
             var trigger = Backbone.Events.trigger
-            params.splice(1, 0, context)
+            params.splice(1, 0, context);
             [context.host, context.currPage, context.modal].forEach(function(view){
                 if (view && -1 === excludes.indexOf(view)) trigger.apply(view, params)
             })
@@ -68,8 +68,6 @@ exports.Class = Backbone.View.extend(_.extend({
             self.create(s)
         })
     },
-    reinit: function(config){
-    },
     create: function(spec){
     },
     remove: function(){
@@ -81,9 +79,9 @@ exports.Class = Backbone.View.extend(_.extend({
         ms.length = 0
         specMgr.unload(this.spec)
     },
-    proxy: function(mod, params){
+    proxy: function(mod, params, spec){
         if ('module' !== mod.type) return console.error('Wrong type!')
-        var m = new mod.Class({name:mod.name, host:this, spec:mod.spec, params:params})
+        var m = new mod.Class({name:mod.name, host:this, spec:spec ? mod.spec.concat(spec) : mod.spec, params:params})
         this.modules.push(m)
         return m
     },

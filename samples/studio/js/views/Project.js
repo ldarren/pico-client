@@ -196,7 +196,7 @@ exports.Class = Panel.Class.extend({
 
         if (!pageId) alert('please enter a name')
 
-        pages[pageId] = {reinits:{},spec:[],styles:[]}
+        pages[pageId] = {style:{},spec:[]}
         pageList[pageId] = new Page({title:pageId,page:pages[pageId]})
         pageList[pageId].render(this.$el)
         this.showPage(pageId)
