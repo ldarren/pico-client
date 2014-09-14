@@ -62,7 +62,8 @@ exports.Class = Backbone.View.extend(_.extend({
             this.content.dispatchEvent(pico.createEvent('transit', {ref:params[1],from:params[2]}))
             break
         default:
-            this.triggerAll(params, [params[1]])
+            var sender = params.splice(1, 1)
+            this.triggerAll(params, sender)
             break
         }
     },

@@ -19,12 +19,10 @@ exports.Class = Module.Class.extend({
     className: 'hidden bar bar-nav',
     create: function(spec){
         this.$el.html(tpl.text)
-        this.$popover = this.$('#popOptions ul.table-view')
 
         this.$search = this.$('input[type=search]')
         this.$leftBar = this.$('.pull-left')
         this.$rightBar = this.$('.pull-right')
-        this.$titleOptions = this.$('h1#options.title')
         this.$title = this.$('h1#simple.title')
 
         this.lastConfig = null
@@ -35,11 +33,9 @@ exports.Class = Module.Class.extend({
     moduleEvents: function(evt, sender, config){
         if ('header' !== evt) return
         var
-        $popover = this.$popover,
         $search = this.$search,
         $leftBar = this.$leftBar,
         $rightBar = this.$rightBar,
-        $titleOptions = this.$titleOptions,
         $title = this.$title
 
         $leftBar.empty()
@@ -58,15 +54,7 @@ exports.Class = Module.Class.extend({
         }
         $search.addClass('hidden').blur()
 
-        var optionKeys = config.options
-        if (optionKeys && optionKeys.length){
-            $titleOptions[0].firstChild.firstChild.textContent = config.title
-            $titleOptions.removeClass('hidden')
-            $popover.empty()
-            _.each(optionKeys, function(key){
-                $popover.append($(OPTION_TPL.replace('KEY', key).replace('VALUE', router.links[key])))
-            })
-        }else if (config.title){
+        if (config.title){
             $title.text(config.title)
             $title.removeClass('hidden')
         }
@@ -90,7 +78,6 @@ exports.Class = Module.Class.extend({
         this.$leftBar.empty()
         this.$rightBar.empty()
         this.$title.addClass('hidden')
-        this.$titleOptions.addClass('hidden')
         this.$search.removeClass('hidden').focus()
     },
 

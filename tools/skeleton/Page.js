@@ -7,6 +7,7 @@ exports.Class = Backbone.View.extend(_.extend({
     initialize: function(options, params, host){
 
         this.style = restyle(options.styles, ['webkit'])
+        this.host = host
         this.modules = []
         this.readiness = []
 
