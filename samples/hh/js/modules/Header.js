@@ -16,7 +16,7 @@ addToolbar = function($bar, icons){
 
 exports.Class = Module.Class.extend({
     tagName: 'header',
-    className: 'hidden bar bar-nav',
+    className: 'hidden lnSlider bar bar-nav',
     create: function(spec){
         this.$el.html(tpl.text)
 
@@ -26,8 +26,12 @@ exports.Class = Module.Class.extend({
         this.$title = this.$('h1#simple.title')
 
         this.lastConfig = null
+        var self = this
+        document.addEventListener('tap', function(e){
+            self.toggle() 
+        }, true)
 
-        this.triggerHost('invalidate', 'content')
+        this.triggerHost('invalidate')
     },
     // search === invalid bar
     moduleEvents: function(evt, sender, config){
@@ -69,8 +73,21 @@ exports.Class = Module.Class.extend({
     events: {
         'touchstart header .pull-left a': function(e){this.onToolbar(e, true)},
         'touchstart header .pull-right a': function(e){this.onToolbar(e, false)},
-        'touchstart #popOptions li': 'onMenu',
         'keyup header input[type=search]': 'onFind'
+    },
+
+    toggle: function(e){
+        var
+        el = this.el,
+        detail
+
+        if (!el.style.cssText){
+            detail={
+                from:'bottom',
+                ref:el
+            }
+        }
+        el.dispatchEvent(pico.createEvent('transit', detail))
     },
 
     showSearch: function(){
@@ -102,11 +119,5 @@ exports.Class = Module.Class.extend({
             this.$search.val('')
             this.reinit(this.lastConfig)
         }
-    },
-
-    onMenu: function(e){
-        var id = e.target.id
-        if ('#' === id.charAt(0)) return this.triggerHost(id.substr(1))
-        Router.instance().nav(id)
     }
 })

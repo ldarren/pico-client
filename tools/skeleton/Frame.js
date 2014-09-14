@@ -27,7 +27,6 @@ exports.Class = Backbone.View.extend(_.extend({
         this.on('all', this.frameEvents, this)
         
         this.el.innerHTML = '<div class=lnBook></div><div></div><div></div>'
-        document.dispatchEvent(pico.createEvent('lnReset'))
 
         this.content = this.el.firstChild
         this.$container = $(this.content.nextElementSibling)
@@ -45,6 +44,7 @@ exports.Class = Backbone.View.extend(_.extend({
                     self.modules.push(new s.Class({name:s.name, host:self, spec:s.spec}))
                 }
             })
+            document.dispatchEvent(pico.createEvent('lnReset'))
             Backbone.history.start()
         })
     },
@@ -68,9 +68,10 @@ exports.Class = Backbone.View.extend(_.extend({
         }
     },
     drawModule: function(mod){
-        if (!mod) return
+        if (!mod || -1 === this.modules.indexOf(mod)) return
 
         this.$container.append(mod.render())
+        document.dispatchEvent(pico.createEvent('lnReset'))
     },
     removeOldPage: function(){
         if (this.oldPage) this.oldPage.remove()
