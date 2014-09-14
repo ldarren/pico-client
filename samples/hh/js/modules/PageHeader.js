@@ -7,6 +7,6 @@ exports.Class = Module.Class.extend({
         left = this.require('left'),
         right = this.require('right')
 
-        //this.triggerHost('reinit', {title:title,left:left,right:right})
+        this.triggerHost('header', {title:title,left:left,right:right})
     }
 })

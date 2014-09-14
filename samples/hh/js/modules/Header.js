@@ -32,7 +32,8 @@ exports.Class = Module.Class.extend({
         this.triggerHost('invalidate', 'content')
     },
     // search === invalid bar
-    reinit: function(config){
+    moduleEvents: function(evt, sender, config){
+        if ('header' !== evt) return
         var
         $popover = this.$popover,
         $search = this.$search,

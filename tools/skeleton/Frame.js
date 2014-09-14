@@ -8,6 +8,7 @@ changeRoute = function(path, params){
 
     if (!pageConfig) return Router.instance().home()
 
+    if (this.oldPage) this.removeOldPage()
     if (this.currPage) this.oldPage = this.currPage
     this.currPage = new Page.Class(pageConfig, params, this)
     this.render()
@@ -57,12 +58,6 @@ exports.Class = Backbone.View.extend(_.extend({
 
         switch(params[0]){
         case 'invalidate': this.drawModule.apply(this, params.slice(1)); break
-        case 'reinit':
-            var reinits = params[1]
-            for(var i=0,ms=this.modules,m; m=ms[i]; i++){
-                if (m) m.reinit(reinits[m.name])
-            }
-            break
         case 'slide':
             this.content.dispatchEvent(pico.createEvent('transit', {ref:params[1],from:params[2]}))
             break
@@ -76,7 +71,7 @@ exports.Class = Backbone.View.extend(_.extend({
 
         this.$container.append(mod.render())
     },
-    removeOldPage: function(e){
+    removeOldPage: function(){
         if (this.oldPage) this.oldPage.remove()
         this.oldPage = undefined
     }
