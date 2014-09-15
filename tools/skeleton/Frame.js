@@ -26,15 +26,15 @@ exports.Class = Backbone.View.extend(_.extend({
         r.on('route', changeRoute, this)
         this.on('all', this.frameEvents, this)
         
-        this.el.innerHTML = '<div class=lnBook></div><div></div><div></div>'
+        this.el.innerHTML = '<div class="lnBook lnSlider"></div><div></div><div></div>'
 
-        this.content = this.el.firstChild
-        this.$container = $(this.content.nextElementSibling)
-        this.$modal = this.$container.next()
+        this.main = this.el.firstChild
+        this.secondary = this.main.nextElementSibling
+        this.modal = this.secondary.nextElementSibling
         this.pages = p.pages
         this.modules = []
 
-        this.content.addEventListener('flipped', this.removeOldPage.bind(this), false)
+        this.main.addEventListener('flipped', this.removeOldPage.bind(this), false)
 
         specMgr.load(null, [], p.spec, function(err, spec){
             if (err) return console.error(err)
@@ -50,7 +50,9 @@ exports.Class = Backbone.View.extend(_.extend({
     },
 
     render: function(){
-        this.content.dispatchEvent(pico.createEvent('flip', {page:this.currPage.render(),from:Router.instance().isBack() ? 'right' : 'left'}))
+        var m = this.main
+        m.style.cssText = ''
+        m.dispatchEvent(pico.createEvent('flip', {page:this.currPage.render(),from:Router.instance().isBack() ? 'right' : 'left'}))
     },
 
     frameEvents: function(){
@@ -59,7 +61,7 @@ exports.Class = Backbone.View.extend(_.extend({
         switch(params[0]){
         case 'invalidate': this.drawModule.apply(this, params.slice(1)); break
         case 'slide':
-            this.content.dispatchEvent(pico.createEvent('transit', {ref:params[1],from:params[2]}))
+            this.main.dispatchEvent(pico.createEvent('transit', this.main.style.cssText ? null : {ref:params[3],from:params[2]}))
             break
         default:
             var sender = params.splice(1, 1)
@@ -67,10 +69,18 @@ exports.Class = Backbone.View.extend(_.extend({
             break
         }
     },
-    drawModule: function(mod){
+    drawModule: function(mod, where){
         if (!mod || -1 === this.modules.indexOf(mod)) return
 
-        this.$container.append(mod.render())
+        switch(where){
+        case 'main': this.main.insertBefore(mod.render(), this.main.firstChild); break
+        case 'modal':
+            this.modal.innerHTML = ''
+            this.modal.appendchild(mod.render())
+            break
+        default: this.secondary.appendChild(mod.render()); break
+        }
+
         document.dispatchEvent(pico.createEvent('lnReset'))
     },
     removeOldPage: function(){

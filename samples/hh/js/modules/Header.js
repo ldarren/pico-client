@@ -27,11 +27,8 @@ exports.Class = Module.Class.extend({
 
         this.lastConfig = null
         var self = this
-        document.addEventListener('tap', function(e){
-            self.toggle() 
-        }, true)
-
-        this.triggerHost('invalidate')
+        document.addEventListener('tap', function(e){ self.toggle(e) }, true)
+        this.triggerHost('invalidate', 'main')
     },
     // search === invalid bar
     moduleEvents: function(evt, sender, config){
@@ -78,15 +75,14 @@ exports.Class = Module.Class.extend({
 
     toggle: function(e){
         var
+        $target = $(e.target),
         el = this.el,
-        detail
+        detail = el.style.cssText ? null : { from:'bottom', ref:el }
 
-        if (!el.style.cssText){
-            detail={
-                from:'bottom',
-                ref:el
-            }
-        }
+        if (!$target.closest('.lnBook').length) return
+        if ($target.closest('a, .bar-nav').length) return
+        if ($target.closest('input, textarea').length && detail) return // disable header when click input
+
         el.dispatchEvent(pico.createEvent('transit', detail))
     },
 
@@ -105,12 +101,11 @@ exports.Class = Module.Class.extend({
 
         switch(id){
         case 'left-nav': window.history.back(); break
-        case 'menu': snapper.open(isLeft ? 'left' : 'right'); break
         case 'search': this.showSearch(); break
-        default: this.triggerHost(id)
+        default: this.triggerHost(id, isLeft)
         }
 
-        ele.classList.add('hidden')
+        //ele.classList.add('hidden')
     },
 
     onFind: function(e){
