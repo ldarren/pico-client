@@ -34,6 +34,12 @@ ModuleEvents = {
         }, 0, this, Array.prototype.slice.call(arguments))
     },
     triggerAll: function(params, excludes){
+        if (!params) return
+        if ('string' === typeof params){
+            params = Array.prototype.slice.call(arguments)
+            excludes = []
+        }
+        excludes = excludes || []
         setTimeout(function(context){
             var trigger = Backbone.Events.trigger
             params.splice(1, 0, context);

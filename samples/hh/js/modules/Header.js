@@ -81,7 +81,7 @@ exports.Class = Module.Class.extend({
 
         if (!$target.closest('.lnBook').length) return
         if ($target.closest('a, .bar-nav').length) return
-        if ($target.closest('input, textarea').length && detail) return // disable header when click input
+        if ($target.closest('input, button, textarea').length && detail) return // disable header when click input
 
         el.dispatchEvent(pico.createEvent('transit', detail))
     },

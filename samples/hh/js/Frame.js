@@ -35,6 +35,7 @@ exports.Class = Backbone.View.extend(_.extend({
         this.modules = []
 
         this.main.addEventListener('flipped', this.removeOldPage.bind(this), false)
+        this.main.addEventListener('transited', this.transited.bind(this), false)
 
         specMgr.load(null, [], p.spec, function(err, spec){
             if (err) return console.error(err)
@@ -61,7 +62,7 @@ exports.Class = Backbone.View.extend(_.extend({
         switch(params[0]){
         case 'invalidate': this.drawModule.apply(this, params.slice(1)); break
         case 'slide':
-            this.main.dispatchEvent(pico.createEvent('transit', this.main.style.cssText ? null : {ref:params[3],from:params[2]}))
+            this.main.dispatchEvent(pico.createEvent('transit', params[2]))
             break
         default:
             var sender = params.splice(1, 1)
@@ -86,5 +87,8 @@ exports.Class = Backbone.View.extend(_.extend({
     removeOldPage: function(){
         if (this.oldPage) this.oldPage.remove()
         this.oldPage = undefined
+    },
+    transited: function(){
+        this.triggerAll('mainTransited', this.main.offsetLeft, this.main.offsetTop)
     }
 }, Module.Events))
