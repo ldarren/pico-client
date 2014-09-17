@@ -15,7 +15,7 @@ attachStyles = function(styles, cb){
 }
 
 pico.start({
-    name: 'PROJ_NAME',
+    name: 'PROJ_ID',
     production: false,
     paths:{
         '*': 'js/',

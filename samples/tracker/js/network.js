@@ -1,35 +1,61 @@
 var
 Net = require('pico/piDataNetModel'),
-client,
+projClient,
 onSend = function(req){
-    if (!req) return;
+    if (!req) return
     var
-    reqData = req.data || {},
+    reqData = req.data,
     onReceive = function(err, data){
-        if (err) return req.error(err);
-        return req.success(data, 'success');
+        if (err) return req.error(err)
+        return req.success(data, 'success')
     }
     if (reqData instanceof HTMLFormElement){
         if (req.hasFile){
-            client.submit(reqData, onReceive);
+            projClient.submit(reqData, onReceive)
         }else{
-            client.request(null, reqData, onReceive);
+            projClient.request(null, reqData, onReceive)
         }
     }else{
-        client.request(req.url, reqData || {}, onReceive);
+        projClient.request(req.url, reqData, onReceive)
     }
-},
-onLoad = function(){
+}
+
+me.slot(pico.LOAD, function(){
     Net.create({
-        url: 'http://107.20.154.29:4888/channel',
+        url: 'http://107.20.154.29:4888',
         delimiter: ['&'],
         beatRate: 500,
-    }, function(err, netClient){
-        if (err) return console.error(err);
-        client = netClient;
-        Backbone.ajax = onSend;
-        me.step('connected', client)
-    })
-};
+    }, function(err, client){
+        if (err) return console.error(err)
 
-me.slot(pico.LOAD, onLoad);
+        client.request('pico/project/read', {name:'tracker'}, function(err, project){
+            if (err) return console.error(err)
+            if (!project) return console.error('empty project file')
+            try{
+                me.signalStep('connected', [JSON.parse(project.json), client])
+            }catch(exp){
+                return console.error('invalid project format: '+project.json)
+            }
+        })
+    })
+})
+
+exports.create = function(url, forProj, cb){
+    Net.create({
+        url: url,
+        delimiter: ['&'],
+        beatRate: 500,
+    }, function(err, client){
+        if (err) return cb(err)
+        if (forProj){
+            projClient = client 
+            Backbone.ajax = onSend
+        }
+        cb(null, client)
+    })
+}
+
+exports.reconnect = function(url, cb){
+    if (!projClient) return this.create(url, true, cb)
+    projClient.reconnect({url:url}, cb)
+}

@@ -62,7 +62,7 @@ fs.readlink(process.argv[1], function(err, realPath){
                 'Frame.js','js',
                 'Page.js','js',
                 'Module.js','js',
-                'spec.js','js',
+                'specMgr.js','js',
                 'Model.js','js',
                 ], function(){
                 fs.symlink(projLib, projId+'/lib', function(){

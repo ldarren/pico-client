@@ -1,51 +1,44 @@
+var
+attachDeps = function(deps, cb){
+    if (!deps || !deps.length) return cb()
+    pico.attachFile(deps.shift(), 'js', function(){ attachDeps(deps, cb) })
+},
+attachStyles = function(styles, cb){
+    if (!styles || !styles.length) return cb()
+    var s = styles.shift()
+    if ('string' === typeof s) {
+        pico.attachFile(s, 'css', function(){ attachStyles(styles, cb) })
+    }else{
+        restyle(s, ['webkit'])
+        attachStyles(styles, cb)
+    }
+}
+
 pico.start({
-    name: 'Tracker',
+    name: 'tracker',
     production: false,
     paths:{
         '*': 'js/',
-        views: 'js/views/',
         html: 'html/',
-        models: 'js/models/',
-        pico: 'lib/pico/lib/',
-        ratchet: 'lib/ratchet-v2.0.2/js/ratchet.less',
-        pageslider: 'lib/pageslider/pageslider',
-        zepto: 'lib/zepto-1.1.3.min',
-        lodash: 'lib/lodash.mobile-2.4.1.min',
-        backbone: 'lib/backbone-1.1.2.min'
+        modules: 'js/modules/',
+        pico: 'lib/pico/lib/'
     }
 },function(){
-    require('zepto')
-    require('ratchet')
-    require('lodash')
-    require('backbone')
-
+    require('Module')//preload
     var
     network = require('network'),
-    ModelUser = require('models/User'),
-    ModelDefaults = require('models/Defaults'),
-    ViewFrame = require('views/Frame'),
-    user, defaults, frame
+    specMgr = require('specMgr'),
+    Frame = require('Frame')
 
     me.slot(pico.LOAD, function(){
-        network.slot('connected', function(){
-            user = new ModelUser.Class()
-            user.fetch({
-                url: 'vip/user/read',
-                success: function(){
-                    defaults = new ModelDefaults.Class()
-                    defaults.fetch({
-                        url: 'tracker/defaults/read',
-                        success: function(){
-                            frame = new ViewFrame.Class({
-                                user: user,
-                                defaults: defaults
-                            })
-                        }
+        network.slot('connected', function(project){
+            network.create(specMgr.find('projURL', project.spec).value, true, function(err){
+                if (err) return console.error(err)
+                attachStyles(project.styles, function(){
+                    attachDeps(project.deps, function(){
+                        new Frame.Class({project: project})
                     })
-                },
-                error: function(){
-                    debugger
-                }
+                })
             })
         })
     })
