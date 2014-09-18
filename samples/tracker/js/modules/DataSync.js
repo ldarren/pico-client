@@ -1,7 +1,8 @@
 var
-Module = require('js/Module'),
-Router = require('js/Router'),
+Module = require('Module'),
+Router = require('Router'),
 storage = window.localStorage,
+status1 = {status:1},status0={status:0},merge1={merge:true},
 poll = function(self){
     if (!self.owner.length) return
     self.pull.fetch({
@@ -11,9 +12,9 @@ poll = function(self){
 
             self.seen = raw.seen
             if (raw.data){
-                var userId = self.owner.models[0].id,
+                var userId = self.owner.models[0].id
 
-                self.data.add(raw.data, {merge: true})
+                addRemove(self.data, raw.data)        
                 self.data.trigger('sync')
                 self.writeSeen(userId)
                 self.writeColl('data', userId)
@@ -24,6 +25,12 @@ poll = function(self){
         }
     })
 },
+addRemove = function(coll, list){
+    if (!list || !list.length) return false
+    coll.add(_.where(list, status1), merge1)
+    coll.remove(_.where(list, status0))
+    return true
+},
 sortDesc = function(m1, m2){
     var s1 = m1.get('updatedAt'), s2 = m2.get('updatedAt')
     return s1 < s2 ? 1 : s1 > s2 ? -1 : 0;
@@ -33,25 +40,20 @@ sortAsc = function(m1, m2){
     return s1 < s2 ? -1 : s1 > s2 ? 1 : 0;
 }
 
-exports.Class = Module.Clas.extend({
-    initialize: function(options){
-        var self = this
-
-        self.pollId = 0
-
-        this.init(options, function(err, spec){
-            for(var i=0,s; s=spec[i]; i++){
-                switch(s.name){
-                case 'owner': self.owner = s.value; break
-                case 'data': self.data = s.value; break
-                case 'pull': self.pull = s.value; break
-                case 'freq': self.freq = s.value; break
-                }
+exports.Class = Module.Class.extend({
+    create: function(spec){
+        for(var i=0,s; s=spec[i]; i++){
+            switch(s.name){
+            case 'owner': this.owner = s.value; break
+            case 'data': this.data = s.value; break
+            case 'pull': this.pull = s.value; break
+            case 'freq': this.freq = s.value; break
             }
-            self.data.comparator = sortDesc
-            self.listenTo(self.owner, 'add', self.start)
-            self.listenTo(self.owner, 'reset', self.stop)
-        })
+        }
+        this.pollId = 0
+        this.data.comparator = sortDesc
+        this.listenTo(this.owner, 'add', this.start)
+        this.listenTo(this.owner, 'reset', this.stop)
     },
 
     start: function(model, coll, option){

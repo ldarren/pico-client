@@ -37,6 +37,7 @@
             base:       {value:ancestor,writable:false, configurable:false, enumerable:true},
             slots:      {value:{},      writable:false, configurable:false, enumerable:false},
             signals:    {value:{},      writable:false, configurable:false, enumerable:false},
+            contexts:   {value:{},      writable:false, configurable:false, enumerable:false},
         })
         return obj
     },
@@ -336,28 +337,43 @@
         slot: function(channelName, func, context){
             var
             channel = this.slots[channelName] = this.slots[channelName] || {},
-            evt = this.signals[channelName]
+            con = this.contexts[channelName] = this.contexts[channelName] || {},
+            evt = this.signals[channelName],
+            h = hash(channelName+func.toString())
 
-            if (context){
-                channel[context.moduleName] = func
-            }else{
-                // function only no object
-                channel[hash(func.toString())] = func
-            }
+            channel[h] = func
+            con[h] = context
             if (evt) func.apply(context, evt)
         },
-        unslot: function(channelName, context){
-            var channel = this.slots[channelName] = this.slots[channelName] || {}
-            if (context.moduleName){
-                delete channel[context.moduleName]
-            }else{
-                // function only no object
-                delete channel[hash(context.toString())]
+        unslot: function(channelName, func){
+            var
+            slots = this.slots,
+            contexts = this.contexts,
+            k, c
+            switch(arguments.length){
+            case 0:
+                for(k in slots) delete slots[k]
+                for(k in contexts) delete contexts[k]
+                break
+            case 1:
+                c = slots[channelName] || {}
+                for(k in c) delete c[k]
+                c = contexts[channelName] || {}
+                for(k in c) delete c[k]
+                break
+            case 2:
+                var h = hash(channelName + func.toString())
+                c = slots[channelName] || {}
+                if (c) delete c[h]
+                c = contexts[channelName] || {}
+                if (c) delete c[h]
+                break
             }
         },
         signal: function(channelName, evt){
             var
             channel = this.slots[channelName],
+            con = this.contexts[channelName],
             results = [],
             mod
 
@@ -365,8 +381,7 @@
             evt = evt || []
 
             for(var key in channel){
-                mod = modules[key]
-                results.push(channel[key].apply(mod, evt))
+                results.push(channel[key].apply(con[key], evt))
             }
             return results
         },
@@ -382,6 +397,7 @@
         HASH_CHANGE:    {value:'hashChange',    writable:false, configurable:false, enumerable:true},
         slots:          {value:{},              writable:false, configurable:false, enumerable:false},
         signals:        {value:{},              writable:false, configurable:false, enumerable:false},
+        contexts:       {value:{},              writable:false, configurable:false, enumerable:false},
     })
 
     pico.prototype = {

@@ -30,7 +30,7 @@ exports.Class = Module.Class.extend({
         network.slot('error', this.onNetworkError, this)
     },
     onNetworkError: function(err){
-        debugger // TODO: detect 401
+        if (401 !== err.code) return
         this.owner.reset()
         Router.instance().nav('signin')
     },

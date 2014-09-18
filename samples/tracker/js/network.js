@@ -1,6 +1,6 @@
 var
 Net = require('pico/piDataNetModel'),
-projClient, addOn,
+projClient, addon,
 onSend = function(req){
     if (!req) return
     var
