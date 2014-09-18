@@ -1,22 +1,32 @@
 var
 Net = require('pico/piDataNetModel'),
-projClient,
+projClient, addOn,
 onSend = function(req){
     if (!req) return
     var
     reqData = req.data,
     onReceive = function(err, data){
-        if (err) return req.error(err)
+        if (err) {
+            me.signal('error', [err])
+            return req.error(err)
+        }
         return req.success(data, 'success')
     }
     if (reqData instanceof HTMLFormElement){
-        if (req.hasFile){
-            projClient.submit(reqData, onReceive)
+        var hasFile = req.hasFile 
+        for(var i=0,es=reqData.elements,e; e=es[i]; i++){
+            if ('FILE' === e.getAttribute('type').toUpperCase()){
+                hasFile = true
+                break
+            }
+        }
+        if (hasFile){
+            projClient.submit(reqData, addon, onReceive)
         }else{
-            projClient.request(null, reqData, onReceive)
+            projClient.request(null, reqData, addon, onReceive)
         }
     }else{
-        projClient.request(req.url, reqData, onReceive)
+        projClient.request(req.url, reqData, addon, onReceive)
     }
 }
 
@@ -39,6 +49,8 @@ me.slot(pico.LOAD, function(){
         })
     })
 })
+
+me.slot('addon', function(){ addon = arguments[0] })
 
 exports.create = function(url, forProj, cb){
     Net.create({
