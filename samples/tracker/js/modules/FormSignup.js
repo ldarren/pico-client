@@ -1,6 +1,6 @@
 var
 Module = require('Module'),
-tpl = require('@html/FormSignin.html'),
+tpl = require('@html/FormSignup.html'),
 hash = function(raw){
     var hash = 2574;
     if (raw.length == 0) return hash;
@@ -23,15 +23,26 @@ exports.Class = Module.Class.extend({
     },
 
     events: {
-        'click button[name=signin]': 'signin'
+        'click button[name=signup]': 'signup'
     },
 
-    signin: function(e){
-        var self = this
+    signup: function(e){
+        var
+        self = this,
+        un = this.$('input[name=username]').val().trim(),
+        passwd = this.$('input[name=password]').val(),
+        mobile = this.$('input[name=mobile]').val().trim(),
+        email = this.$('input[name=email]').val().trim(),
+        name = this.$('input[name=name]').val().trim()
+        if (!passwd || !un || !mobile || !email || !name) return
+        if (passwd !== this.$('input[name=confirm]').val()) return
         this.auth.create(null, {
             data: {
-                un: this.$('input[name=username]').val().trim(),
-                passwd: hash(this.$('input[name=password]').val())
+                un: un,
+                passwd: hash(passwd),
+                mobile: mobile,
+                email: email,
+                name: name
             },
             success:function(coll, raw){
                 self.owner.add(raw)

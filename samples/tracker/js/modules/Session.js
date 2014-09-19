@@ -22,6 +22,7 @@ exports.Class = Module.Class.extend({
         cache = storage.getItem('owner')
 
         this.data = this.require('data').value
+        this.authPages = this.require('authPages').value
 
         owner.reset()
         if(cache)owner.add(cache)
@@ -30,14 +31,14 @@ exports.Class = Module.Class.extend({
         network.slot('error', this.onNetworkError, this)
     },
     onNetworkError: function(err){
-        if (401 !== err.code) return
+        if (403 !== err.code) return
         this.owner.reset()
         Router.instance().nav('signin')
     },
     moduleEvents: function(evt, sender){
         switch(evt){
         case 'changeRoute':
-            if ('signin' !== arguments[2] && !this.owner.length) Router.instance().nav('signin')
+            if (!this.owner.length && -1 === this.authPages.indexOf(arguments[2])) Router.instance().nav('signin')
             break
         }
     }
