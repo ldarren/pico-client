@@ -1,0 +1,7 @@
+<ul class="table-view">
+    <% for(var i=0,m; m=value[i]; i++){%>
+    <li class="table-view-cell media"><a class="icon icon-right-nav" href="#<%=m.url%>">
+        <span class="media-object pull-left icon <%=m.icon%>"></span>
+        <div class="media-body"><%=m.text%></div></a></li>
+    <%}%>
+</ul>
