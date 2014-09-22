@@ -8,7 +8,7 @@ cacheWrite = function(model, coll){
     network.signalStep('addon', [cred]) 
     storage.setItem('owner', JSON.stringify(cred))
     this.data.fetch({
-        data:{id:cred.id},
+        data:{dataIds:[cred.id]},
         success: function(){
             Router.instance().nav('', true)
         }

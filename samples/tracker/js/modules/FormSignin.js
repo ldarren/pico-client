@@ -28,6 +28,7 @@ exports.Class = Module.Class.extend({
 
     signin: function(e){
         var self = this
+        this.owner.reset()
         this.auth.create(null, {
             data: {
                 un: this.$('input[name=username]').val().trim(),

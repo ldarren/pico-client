@@ -36,6 +36,7 @@ exports.Class = Module.Class.extend({
         name = this.$('input[name=name]').val().trim()
         if (!passwd || !un || !mobile || !email || !name) return
         if (passwd !== this.$('input[name=confirm]').val()) return
+        this.owner.reset()
         this.auth.create(null, {
             data: {
                 un: un,
