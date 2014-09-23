@@ -9,7 +9,6 @@ poll = function(self){
         data: {seen:self.seen},
         success: function(models, raw){
             if (self.pollId) self.pollId = setTimeout(poll, self.freq, self)
-
             self.seen = raw.seen
             if (raw.data){
                 var userId = self.owner.models[0].id
