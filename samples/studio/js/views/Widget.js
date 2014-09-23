@@ -37,7 +37,7 @@ exports.Class = Panel.Class.extend({
         return this.el
     },
     showWidget: function(){
-        this.editor.write(JSON.stringify(JSON.parse(this.model.get('json')), null, 4), 'json')
+        this.editor.write(JSON.stringify(this.model.get('json'), null, 4), 'json')
     },
     saveWidget: function(){
         try{
@@ -45,7 +45,7 @@ exports.Class = Panel.Class.extend({
             m = this.model,
             data = {
                 id: m.id,
-                json: this.editor.read()
+                json: JSON.parse(this.editor.read())
             }
         }catch(ex){
             alert('invalid json: '+ex.message)

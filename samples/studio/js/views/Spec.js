@@ -32,7 +32,7 @@ exports.Class = Panel.Class.extend({
         coll = isSpec ? ModelConstants.instance : this.collection,
         m = coll.get(e.target.id.substr(1)).attributes
 
-        if (isSpec) this.editor.insert(m.json, 'json')
-        else this.editor.insert(JSON.stringify({name:m.name, type:'module', value:JSON.parse(m.json)}), 'json')
+        if (isSpec) this.editor.insert(JSON.stringify(m.json), 'json')
+        else this.editor.insert(JSON.stringify({name:m.name, type:'module', value:m.json}), 'json')
     }
 })

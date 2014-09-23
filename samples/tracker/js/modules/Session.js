@@ -7,12 +7,7 @@ cacheWrite = function(model, coll){
     var cred = model.attributes
     network.signalStep('addon', [cred]) 
     storage.setItem('owner', JSON.stringify(cred))
-    this.data.fetch({
-        data:{dataIds:[cred.id]},
-        success: function(){
-            Router.instance().nav('', true)
-        }
-    })
+    Router.instance().home(true)
 }
 
 exports.Class = Module.Class.extend({
@@ -21,7 +16,6 @@ exports.Class = Module.Class.extend({
         owner = this.require('owner').value,
         cache = storage.getItem('owner')
 
-        this.data = this.require('data').value
         this.authPages = this.require('authPages').value
 
         owner.reset()
