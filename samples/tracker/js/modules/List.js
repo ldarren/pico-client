@@ -1,4 +1,18 @@
-var Module = require('Module')
+var
+Module = require('Module'),
+addRow = function(model){
+    if (-1 === this.types.indexOf(model.get('type'))) return
+    var
+    s = model.get('status'),
+    id = model.id
+    if (1 !== s) return
+    this.grid[id] = this.proxy(this.Row, [id])
+},
+removeRow = function(model){
+    var id = model.id
+    this.grid[id].remove()
+    delete this.grid[id]
+}
 
 exports.Class = Module.Class.extend({
     tagName: 'ul',
@@ -6,16 +20,17 @@ exports.Class = Module.Class.extend({
     create: function(spec){
         var
         self = this,
-        index = this.require('index')
+        data = this.require('data').value
 
-        this.Cell = this.requireType('module')
+        this.types = this.require('types').value
+        this.Row = this.requireType('module')
         this.grid = {}
 
-        index.forEach(function(model){
-            self.addRow(model)
+        data.forEach(function(model){
+            addRow.call(self, model)
         })
-        this.listenTo(index, 'add', addRow)
-        this.listenTo(index, 'remove', removeRow)
+        this.listenTo(data, 'add', addRow)
+        this.listenTo(data, 'remove', removeRow)
 
         this.triggerHost('invalidate')
     },
@@ -24,19 +39,5 @@ exports.Class = Module.Class.extend({
         switch(evt){
         case 'invalidate': this.$el.append(sender.render()); break
         }
-    },
-
-    addRow: function(model){
-        var
-        s = model.get('status'),
-        id = model.id
-        if (1 !== s) return
-        this.grid[id] = this.proxy(this.Cell, [id])
-    },
-
-    removeRow: function(model){
-        var id = model.id
-        this.grid[id].remove()
-        delete this.grid[id]
     }
 })

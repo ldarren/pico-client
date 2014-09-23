@@ -6,7 +6,6 @@ Module = require('Module')
 exports.Class = Backbone.View.extend(_.extend({
     initialize: function(options, params, host){
 
-        this.style = restyle(options.styles, ['webkit'])
         this.host = host
         this.modules = []
         this.readiness = []
@@ -27,6 +26,7 @@ exports.Class = Backbone.View.extend(_.extend({
                     self.modules.push(new s.Class({name:s.name, host:self, spec:s.spec, params:params}))
                 }
             })
+            self.style = restyle(options.style, ['webkit'])
         })
     },
     render: function(){

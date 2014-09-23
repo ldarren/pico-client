@@ -4,8 +4,8 @@ route = require('route'),
 tplItem = require('@html/item.html'),
 tplIcon = require('@html/icon.html'),
 tplControl = require('@html/control.html'),
-projectJSON = JSON.stringify({routes:{},pages:{},spec:[{name:'projURL',type:'url',value:''}],deps:[],styles:[]}),
-widgetJSON = JSON.stringify([])
+projectJSON = {routes:{},pages:{},spec:[{name:'projURL',type:'url',value:''}],deps:[],styles:[]},
+widgetJSON = []
 
 exports.Class = Panel.Class.extend({
     initialize: function(args){

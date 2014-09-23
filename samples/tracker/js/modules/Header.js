@@ -12,11 +12,14 @@ addToolbar = function($bar, icons){
         a.className = 'icon icon-'+icon
         $bar.append(a)
     }
+},
+hideHeader = function(e){
+    if (1 > e.target.offsetTop) e.target.classList.add('hidden')
 }
 
 exports.Class = Module.Class.extend({
     tagName: 'header',
-    className: 'hidden lnSlider bar bar-nav',
+    className: 'lnSlider bar bar-nav',
     create: function(spec){
         this.$el.html(tpl.text)
 
@@ -28,6 +31,7 @@ exports.Class = Module.Class.extend({
         this.lastConfig = null
         var self = this
         document.addEventListener('tap', function(e){ self.toggle(e) }, true)
+        this.el.addEventListener('transited', hideHeader, false)
         this.triggerHost('invalidate', 'main')
     },
     // search === invalid bar
@@ -47,7 +51,6 @@ exports.Class = Module.Class.extend({
             this.$el.addClass('hidden')
             return
         }
-        this.$el.removeClass('hidden')
 
         if (config.search){
             this.showSearch()
@@ -83,6 +86,7 @@ exports.Class = Module.Class.extend({
         if ($target.closest('a, .bar-nav').length) return
         if ($target.closest('input, button, textarea').length && detail) return // disable header when click input
 
+        el.classList.remove('hidden')
         el.dispatchEvent(pico.createEvent('transit', detail))
     },
 

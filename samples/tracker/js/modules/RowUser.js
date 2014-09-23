@@ -1,6 +1,7 @@
 var
 Module = require('Module'),
-tpl = require('@html/ListRow.html')
+tpl = require('@html/ListRow.html'),
+common = require('modules/common')
 
 exports.Class = Module.Class.extend({
     tagName: 'li',
@@ -13,21 +14,11 @@ exports.Class = Module.Class.extend({
         this.triggerHost('invalidate')
     },
     render: function(){
-        var
-        m = this.model,
-        type
-        switch(m.get('type')){
-        case '11': type = 'New User'; break
-        case '21': type = 'Customer'; break
-        case '31': type = 'Driver'; break
-        case '41': type = 'Admin'; break
-        case '101': type = 'Super Admin'; break
-        default: type = 'Invalid'; break
-        }
+        var m = this.model
         this.$el.html(_.template(tpl.text, {
-            url: 'users/' + m.id,
-            title: m.get('name'),
-            desc: type
+            url: '#user/' + m.id,
+            title: m.get('json').name,
+            desc: common.getRoleDesc(m.get('user')) 
         }))
         return this.el
     }

@@ -19,10 +19,14 @@ exports.Class = Module.Class.extend({
         this.authPages = this.require('authPages').value
 
         owner.reset()
-        if(cache)owner.add(cache)
         this.owner = owner
         this.listenTo(owner, 'add', cacheWrite)
         network.slot('error', this.onNetworkError, this)
+
+        if(cache){
+            try{ owner.add(JSON.parse(cache)) }
+            catch(exp){ console.error(exp) }
+        }
     },
     onNetworkError: function(err){
         if (403 !== err.code) return
