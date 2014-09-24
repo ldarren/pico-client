@@ -9,12 +9,15 @@ exports.Class = Backbone.View.extend(_.extend({
         this.host = host
         this.modules = []
         this.readiness = []
+        this.rawSpec = options.spec 
+        this.existence = true
 
         this.on('all', this.pageEvents, this)
 
         var self = this
 
         specMgr.load(host, params, options.spec, function(err, spec){
+            if (!self.existence) return self.remove()
             if (err){
                 console.warn(err)
                 return Router.instance().home()
@@ -33,14 +36,15 @@ exports.Class = Backbone.View.extend(_.extend({
         return this.el
     },
     remove: function(){
+        this.existence = false
         this.off()
         Backbone.View.prototype.remove.apply(this, arguments)
-        this.style.remove()
+        if (this.style) this.style.remove()
         for(var i=0,ms=this.modules,m; m=ms[i]; i++){
             m.remove()
         }
         ms.length = 0
-        specMgr.unload(this.spec)
+        specMgr.unload(this.rawSpec, this.spec)
     },
     pageEvents: function(){
         var params = Array.prototype.slice.call(arguments)

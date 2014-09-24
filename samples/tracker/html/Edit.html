@@ -1,0 +1,31 @@
+<input type="hidden" name=dataId value="<%=dataId%>">
+<% for(var i=0,f; f=fields[i]; i++){%>
+<div class="input-row"><label><%=f.label%></label>
+<% if (f.type === 'static'){ %>
+<% if (f.url) {%>
+    <a href="<%=f.url%>"><%=f.value || ''%></a>
+<% }else{ %>
+    <span><%=f.value%></span>
+<% } %>
+<% } else if (f.type === 'text'){ %>
+<input type="text" name="<%=f.name%>" value="<%=f.value || ''%>" placeholder="<%=f.holder || ''%>">
+<% } else if (f.type === 'number'){ %>
+<input type="number" name="<%=f.name%>" value="<%=f.value || ''%>" placeholder="<%=f.holder || ''%>">
+<% } else if (f.type === 'tel'){ %>
+<input type="tel" name="<%=f.name%>" value="<%=f.value || ''%>" placeholder="<%=f.holder || '+6598765432'%>" pattern="[\+]\d{2}[\(]\d{2}[\)]\d{4}[\-]\d{4}">
+<% } else if (f.type === 'email'){ %>
+<input type="email" name="<%=f.name%>" value="<%=f.value || ''%>" placeholder="<%=f.holder || 'name@domain.org'%>" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$">
+<% } else if (f.type === 'date'){ %>
+<input type="date" name="<%=f.name%>" value="<%=f.value || ''%>" placeholder="<%=f.holder || 'date(MM/DD/YYYY)'%>" min="2014-01-01">
+<% } else if (f.type === 'time'){ %>
+<input type="time" name="<%=f.name%>" value="<%=f.value || ''%>" placeholder="<%=f.holder || 'time(HH:MM:SS)'%>">
+<% } else if (f.type === 'select'){ %>
+<select name="<%=f.name%>">
+    <option value="" <%=f.value ? '' : 'selected'%> disabled><%=f.holder || 'Select an option'%></option>
+    <% for(var j=0,os=f.options,keys=Object.keys(os),k,v; k=keys[j]; j++){ v=os[k]%>
+    <option value=<%=k%> <%=k==f.value ? 'selected':''%>><%=v%></option>
+    <% } %>
+</select>
+<% } %>
+</div>
+<%}%>

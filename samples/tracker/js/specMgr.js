@@ -54,20 +54,22 @@ load = function(host, params, spec, deps, cb){
     load(host, params, spec, deps, cb)
 },
 // need to get original spec, the one before spec.load, no way to diff ref and models
-unload = function(spec){
+unload = function(rawSpec, spec){
     if (!spec || !spec.length) return
-    var
-    s = spec.pop(),
-    t = s.type,
-    m
-
-    switch(t){
-    case 'models':
-        m = s.value
-        //m.reset()
-        delete s.value
-        break
+    for(var i=0,r; r=rawSpec[i]; i++){
+        switch(r.type){
+        case 'models':
+        case 'date':
+            for(var j=0,s; s=spec[i]; i++){
+                if (r.name === s.name) {
+                    if ('models' === s.type) s.value.reset()
+                    delete s.value
+                }
+            }
+            break
+        }
     }
+    spec.length = 0
 }
 
 exports.load = function(host, params, spec, cb){

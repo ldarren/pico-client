@@ -1,0 +1,10 @@
+<% for(var i=0,f; f=fields[i]; i++){ %>
+<div class="input-row">
+    <label><%=f.label%></label>
+    <% if (f.url) { %>
+    <a href="<%=f.url%>"><%=f.value%></a>
+    <% }else{ %>
+    <input type="text" value="<%=f.value%>" readonly>
+    <% } %>
+</div>
+<% } %>

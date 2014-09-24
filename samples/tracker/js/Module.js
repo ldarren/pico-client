@@ -64,11 +64,14 @@ exports.Class = Backbone.View.extend(_.extend({
         this.host = options.host
         this.modules = []
         this.readiness = []
+        this.rawSpec = options.spec
+        this.existence = true
 
         this.on('all', this.moduleEvents, this)
 
         var self = this
         specMgr.load(this.host, options.params || [], options.spec, function(err, s){
+            if (!self.existence) return self.remove()
             self.spec = s
             if (err) return console.error(err)
             self.create(s)
@@ -77,13 +80,14 @@ exports.Class = Backbone.View.extend(_.extend({
     create: function(spec){
     },
     remove: function(){
+        this.existence = false
         this.off()
         Backbone.View.prototype.remove.apply(this, arguments)
         for(var i=0,ms=this.modules,m; m=ms[i]; i++){
             m.remove()
         }
         ms.length = 0
-        specMgr.unload(this.spec)
+        specMgr.unload(this.rawSpec, this.spec)
     },
     proxy: function(mod, params, spec){
         if ('module' !== mod.type) return console.error('Wrong type!')

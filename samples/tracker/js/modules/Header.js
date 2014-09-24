@@ -27,6 +27,7 @@ exports.Class = Module.Class.extend({
         this.$leftBar = this.$('.pull-left')
         this.$rightBar = this.$('.pull-right')
         this.$title = this.$('h1#simple.title')
+        this.active = false
 
         this.lastConfig = null
         var self = this
@@ -37,37 +38,7 @@ exports.Class = Module.Class.extend({
     // search === invalid bar
     moduleEvents: function(evt, sender, config){
         if ('header' !== evt) return
-        var
-        $search = this.$search,
-        $leftBar = this.$leftBar,
-        $rightBar = this.$rightBar,
-        $title = this.$title
-
-        $leftBar.empty()
-        $rightBar.empty()
-        this.lastConfig = config
-
-        if (!config || !Object.keys(config).length){
-            this.$el.addClass('hidden')
-            return
-        }
-
-        if (config.search){
-            this.showSearch()
-            return
-        }
-        $search.addClass('hidden').blur()
-
-        if (config.title){
-            $title.text(config.title)
-            $title.removeClass('hidden')
-        }
-        if (config.left){
-            addToolbar($leftBar, config.left)
-        }
-        if (config.right){
-            addToolbar($rightBar, config.right)
-        }
+        this.show(config)
     },
 
     events: {
@@ -77,6 +48,7 @@ exports.Class = Module.Class.extend({
     },
 
     toggle: function(e){
+        if (!this.active) return
         var
         $target = $(e.target),
         el = this.el,
@@ -84,18 +56,50 @@ exports.Class = Module.Class.extend({
 
         if (!$target.closest('.lnBook').length) return
         if ($target.closest('a, .bar-nav').length) return
-        if ($target.closest('input, button, textarea').length && detail) return // disable header when click input
+        if ($target.closest('input, button, textarea, select').length && detail) return // disable header when click input
 
         el.classList.remove('hidden')
         el.dispatchEvent(pico.createEvent('transit', detail))
     },
 
-    showSearch: function(){
+    show: function(c){
+        var
+        $search = this.$search,
+        $leftBar = this.$leftBar,
+        $rightBar = this.$rightBar,
+        $title = this.$title
+
+        $leftBar.empty()
+        $rightBar.empty()
+
+        if (!c || !Object.keys(c).length || (!c.title && (!c.left || !c.left.length) && (!c.right || !c.right.length) && !c.search)){
+            this.$el.addClass('hidden')
+            this.active = false
+            this.lastConfig = c
+            return
+        }
         this.$el.removeClass('hidden')
-        this.$leftBar.empty()
-        this.$rightBar.empty()
-        this.$title.addClass('hidden')
-        this.$search.removeClass('hidden').focus()
+        this.active = true
+
+        if (c.search){
+            this.$el.removeClass('hidden')
+            this.$title.addClass('hidden')
+            this.$search.removeClass('hidden').focus()
+            return
+        }
+        this.lastConfig = c
+        $search.addClass('hidden').blur()
+
+        if (c.title){
+            $title.text(c.title)
+            $title.removeClass('hidden')
+        }
+        if (c.left){
+            addToolbar($leftBar, c.left)
+        }
+        if (c.right){
+            addToolbar($rightBar, c.right)
+        }
     },
 
     onToolbar: function(e, isLeft){
@@ -105,7 +109,7 @@ exports.Class = Module.Class.extend({
 
         switch(id){
         case 'left-nav': window.history.back(); break
-        case 'search': this.showSearch(); break
+        case 'search': this.show({search:true}); break
         default: this.triggerHost(id, isLeft)
         }
 
@@ -113,10 +117,11 @@ exports.Class = Module.Class.extend({
     },
 
     onFind: function(e){
-        this.triggerHost('find', [this.$search.val()])
+        var val = this.$search.val().trim()
+        this.triggerHost('find', [val])
         if (13 === e.keyCode){
-            this.$search.val('')
-            this.reinit(this.lastConfig)
+            this.lastConfig.title = val
+            this.show(this.lastConfig)
         }
     }
 })

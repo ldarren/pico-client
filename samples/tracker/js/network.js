@@ -15,7 +15,7 @@ onSend = function(req){
     if (reqData instanceof HTMLFormElement){
         var hasFile = req.hasFile 
         for(var i=0,es=reqData.elements,e; e=es[i]; i++){
-            if ('FILE' === e.getAttribute('type').toUpperCase()){
+            if (e.hasAttribute('type') && 'FILE' === e.getAttribute('type').toUpperCase()){
                 hasFile = true
                 break
             }
