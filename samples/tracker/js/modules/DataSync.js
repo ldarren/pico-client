@@ -64,6 +64,7 @@ exports.Class = Module.Class.extend({
 
     stop: function(model, coll, option){
         clearTimeout(this.pollId)
+        this.data.reset()
         this.pollId = 0
     },
 
