@@ -1,5 +1,6 @@
 var
 specMgr = require('specMgr'),
+Router = require('Router'),
 id=0,
 ModuleEvents = {
     triggerHost: function(){
@@ -58,10 +59,10 @@ ModuleEvents = {
 exports.Events = _.extend(ModuleEvents, Backbone.Events)
 
 exports.Class = Backbone.View.extend(_.extend({
-    initialize: function(options){
+    initialize: function(options, params, host){
         this.id = id++
         this.name = options.name
-        this.host = options.host
+        this.host = host
         this.modules = []
         this.readiness = []
         this.rawSpec = options.spec
@@ -70,19 +71,24 @@ exports.Class = Backbone.View.extend(_.extend({
         this.on('all', this.moduleEvents, this)
 
         var self = this
-        specMgr.load(this.host, options.params || [], options.spec, function(err, s){
+        specMgr.load(host, params || [], options.spec, function(err, s){
             if (!self.existence) return self.remove()
             self.spec = s
-            if (err) return console.error(err)
-            self.create(s)
+            if (err){
+                console.warn(err)
+                return Router.instance().home()
+            }
+            self.create(s, params)
+            if (options.style) self.style = restyle(options.style, ['webkit'])
         })
     },
-    create: function(spec){
+    create: function(spec, params){
     },
     remove: function(){
         this.existence = false
         this.off()
         Backbone.View.prototype.remove.apply(this, arguments)
+        if (this.style) this.style.remove()
         for(var i=0,ms=this.modules,m; m=ms[i]; i++){
             m.remove()
         }
@@ -91,7 +97,8 @@ exports.Class = Backbone.View.extend(_.extend({
     },
     proxy: function(mod, params, spec){
         if ('module' !== mod.type) return console.error('Wrong type!')
-        var m = new mod.Class({name:mod.name, host:this, spec:spec ? mod.spec.concat(spec) : mod.spec, params:params})
+        mod.spec = spec && spec.length ? mod.spec.concat(spec) : mod.spec
+        var m = new mod.Class(mod, params, this)
         this.modules.push(m)
         return m
     },

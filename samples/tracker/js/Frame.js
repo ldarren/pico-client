@@ -42,7 +42,7 @@ exports.Class = Backbone.View.extend(_.extend({
             self.spec = spec
             spec.forEach(function(s){
                 if ('module' === s.type) {
-                    self.modules.push(new s.Class({name:s.name, host:self, spec:s.spec}))
+                    self.modules.push(new s.Class(s, [], self))
                 }
             })
             document.dispatchEvent(pico.createEvent('lnReset'))

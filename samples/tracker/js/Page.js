@@ -1,52 +1,19 @@
 var
 specMgr = require('specMgr'),
-Router = require('Router'),
 Module = require('Module')
 
-exports.Class = Backbone.View.extend(_.extend({
-    initialize: function(options, params, host){
-
-        this.host = host
-        this.modules = []
-        this.readiness = []
-        this.rawSpec = options.spec 
-        this.existence = true
-
-        this.on('all', this.pageEvents, this)
-
-        var self = this
-
-        specMgr.load(host, params, options.spec, function(err, spec){
-            if (!self.existence) return self.remove()
-            if (err){
-                console.warn(err)
-                return Router.instance().home()
+exports.Class = Module.Class.extend(_.extend({
+    create: function(spec, params){
+        for(var i=0,s; s=spec[i]; i++){
+            if ('module' === s.type) {
+                this.proxy(s, params, this)
             }
-            self.spec = spec
-
-            spec.forEach(function(s){
-                if ('module' === s.type) {
-                    self.modules.push(new s.Class({name:s.name, host:self, spec:s.spec, params:params}))
-                }
-            })
-            self.style = restyle(options.style, ['webkit'])
-        })
+        }
     },
     render: function(){
         return this.el
     },
-    remove: function(){
-        this.existence = false
-        this.off()
-        Backbone.View.prototype.remove.apply(this, arguments)
-        if (this.style) this.style.remove()
-        for(var i=0,ms=this.modules,m; m=ms[i]; i++){
-            m.remove()
-        }
-        ms.length = 0
-        specMgr.unload(this.rawSpec, this.spec)
-    },
-    pageEvents: function(){
+    moduleEvents: function(){
         var params = Array.prototype.slice.call(arguments)
 
         switch(params[0]){
