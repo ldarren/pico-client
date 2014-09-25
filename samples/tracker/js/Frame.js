@@ -87,6 +87,7 @@ exports.Class = Backbone.View.extend(_.extend({
     removeOldPage: function(){
         if (this.oldPage) this.oldPage.remove()
         this.oldPage = undefined
+        this.triggerAll('mainTransited', this.main.offsetLeft, this.main.offsetTop)
     },
     transited: function(){
         this.triggerAll('mainTransited', this.main.offsetLeft, this.main.offsetTop)
