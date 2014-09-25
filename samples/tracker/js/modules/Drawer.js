@@ -1,5 +1,5 @@
 var
-Module = require('Module')
+Module = require('Module'),
 tpl = require('@html/Drawer.html')
 
 exports.Class = Module.Class.extend({
@@ -13,9 +13,17 @@ exports.Class = Module.Class.extend({
         this.triggerHost('invalidate')
         if (this.owner.length) this.login(this.owner.models[0])
         this.listenTo(this.owner, 'add', this.login)
+        this.listenTo(this.data, 'add', this.waitUser)
+    },
+    waitUser: function(model){
+        if (model.id !== this.owner.models[0].id) return
+        this.stopListening(this.data, 'add')
+        if (this.owner.length) this.login(this.owner.models[0])
     },
     login: function(model){
         var user = this.data.get(model.id)
+        if (!user) return
+        this.stopListening(this.data, 'add')
         this.el.innerHTML = ''
         this.$el.html(_.template(tpl.text, {menu:this.menu, user:user.get('json')}))
     },

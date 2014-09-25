@@ -1,5 +1,5 @@
 var
-Module = require('Module')
+Module = require('Module'),
 tpl = require('@html/Void.html')
 
 exports.Class = Module.Class.extend({

@@ -22,6 +22,7 @@ exports.Class = Module.Class.extend({
     className: 'lnSlider bar bar-nav',
     create: function(spec){
         this.$el.html(tpl.text)
+        this.autoHide = this.require('hide').value
 
         this.$search = this.$('input[type=search]')
         this.$leftBar = this.$('.pull-left')
@@ -48,6 +49,7 @@ exports.Class = Module.Class.extend({
     },
 
     toggle: function(e){
+        if (!this.autoHide) return
         if (!this.active) return
         var
         $target = $(e.target),
