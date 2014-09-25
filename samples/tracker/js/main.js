@@ -36,7 +36,7 @@ pico.start({
                 if (err) return console.error(err)
                 attachStyles(project.styles, function(){
                     attachDeps(project.deps, function(){
-                        new Frame.Class({project: project})
+                        new Frame.Class(project)
                     })
                 })
             })

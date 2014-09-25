@@ -1,5 +1,4 @@
 var
-specMgr = require('specMgr'),
 Router = require('Router'),
 Page = require('Page'),
 Module = require('Module'),
@@ -15,16 +14,12 @@ changeRoute = function(path, params){
     this.triggerModules('changeRoute', path, params)
 }
 
-exports.Class = Backbone.View.extend(_.extend({
+exports.Class = Module.Class.extend({
     el: 'body',
-    initialize: function(args){
-        var 
-        self = this,
-        p = args.project,
-        r = new Router.Class({routes: p.routes})
+    initialize: function(p){
+        var r = new Router.Class({routes: p.routes})
 
         r.on('route', changeRoute, this)
-        this.on('all', this.frameEvents, this)
         
         this.el.innerHTML = '<div class="lnBook lnSlider"></div><div></div><div></div>'
 
@@ -32,22 +27,21 @@ exports.Class = Backbone.View.extend(_.extend({
         this.secondary = this.main.nextElementSibling
         this.modal = this.secondary.nextElementSibling
         this.pages = p.pages
-        this.modules = []
 
         this.main.addEventListener('flipped', this.removeOldPage.bind(this), false)
         this.main.addEventListener('transited', this.transited.bind(this), false)
 
-        specMgr.load(null, [], p.spec, function(err, spec){
-            if (err) return console.error(err)
-            self.spec = spec
-            spec.forEach(function(s){
-                if ('module' === s.type) {
-                    self.modules.push(new s.Class(s, [], self))
-                }
-            })
-            document.dispatchEvent(pico.createEvent('lnReset'))
-            Backbone.history.start()
-        })
+        Module.Class.prototype.initialize.call(this, p)
+    },
+
+    create: function(spec){
+        for(var i=0,s; s=spec[i]; i++){
+            if ('module' === s.type) {
+                this.proxy(s)
+            }
+        }
+        document.dispatchEvent(pico.createEvent('lnReset'))
+        Backbone.history.start()
     },
 
     render: function(){
@@ -56,14 +50,12 @@ exports.Class = Backbone.View.extend(_.extend({
         m.dispatchEvent(pico.createEvent('flip', {page:this.currPage.render(),from:Router.instance().isBack() ? 'right' : 'left'}))
     },
 
-    frameEvents: function(){
+    moduleEvents: function(){
         var params = Array.prototype.slice.call(arguments)
 
         switch(params[0]){
         case 'invalidate': this.drawModule.apply(this, params.slice(1)); break
-        case 'slide':
-            this.main.dispatchEvent(pico.createEvent('transit', params[2]))
-            break
+        case 'slide': this.main.dispatchEvent(pico.createEvent('transit', params[2])); break
         default:
             var sender = params.splice(1, 1)
             this.triggerAll(params, sender)
@@ -92,4 +84,4 @@ exports.Class = Backbone.View.extend(_.extend({
     transited: function(){
         this.triggerAll('mainTransited', this.main.offsetLeft, this.main.offsetTop)
     }
-}, Module.Events))
+})

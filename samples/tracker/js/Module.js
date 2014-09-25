@@ -49,7 +49,7 @@ ModuleEvents = {
     }
 }
 
-exports.Events = _.extend(ModuleEvents, Backbone.Events)
+exports.Events = ModuleEvents
 
 exports.Class = Backbone.View.extend(_.extend({
     initialize: function(options, params, host){

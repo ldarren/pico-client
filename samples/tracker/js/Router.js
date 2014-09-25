@@ -1,7 +1,9 @@
 var
 trigger = {trigger:true},
 triggerReplace = {trigger:true, replace:true},
+inst, dirList, lastIndex, index, currPath
 changeRoute = function(path){
+    currPath = path
     lastIndex = index 
     if (path === dirList[index-1]){
         index = index-1
@@ -10,8 +12,7 @@ changeRoute = function(path){
         dirList.push(path)
         index = dirList.length-1
     }
-},
-inst, dirList, lastIndex, index
+}
 
 exports.Class = Backbone.Router.extend({
     initialize: function(){
@@ -28,6 +29,7 @@ exports.Class = Backbone.Router.extend({
     home: function(replace){
         this.nav('', replace)
     },
+    currPath: function(){ return currPath },
     isBack: function(){
        return index < lastIndex 
     }

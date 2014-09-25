@@ -7,7 +7,7 @@ cacheWrite = function(model, coll){
     var cred = model.attributes
     network.signalStep('addon', [cred]) 
     storage.setItem('owner', JSON.stringify(cred))
-    Router.instance().home(true)
+    if (-1 !== this.authPages.indexOf(Router.instance().currPath())) Router.instance().home(true)
 }
 
 exports.Class = Module.Class.extend({

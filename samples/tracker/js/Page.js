@@ -1,8 +1,6 @@
-var
-specMgr = require('specMgr'),
-Module = require('Module')
+var Module = require('Module')
 
-exports.Class = Module.Class.extend(_.extend({
+exports.Class = Module.Class.extend({
     create: function(spec, params){
         for(var i=0,s; s=spec[i]; i++){
             if ('module' === s.type) {
@@ -51,4 +49,4 @@ exports.Class = Module.Class.extend(_.extend({
             }
         }
     }
-}, Module.Events))
+})
