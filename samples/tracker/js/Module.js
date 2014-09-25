@@ -10,13 +10,6 @@ ModuleEvents = {
             Backbone.Events.trigger.apply(context.host, params)
         }, 0, this, Array.prototype.slice.call(arguments))
     },
-    triggerPage: function(){
-        if (!this.currPage) return
-        setTimeout(function(context, params){
-            params.splice(1, 0, context)
-            Backbone.Events.trigger.apply(context.currPage, params)
-        }, 0, this, Array.prototype.slice.call(arguments))
-    },
     triggerModule: function(mod){
         if (!mod) return
         setTimeout(function(context, params){
