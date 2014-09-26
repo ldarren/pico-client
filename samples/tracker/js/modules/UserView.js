@@ -27,7 +27,6 @@ exports.Class = Module.Class.extend({
         if (mi.id === user.id) actions.push({icon:'btn-negative', name:'signout', text:'Sign out'})
 
         this.$el.html(_.template(tpl.text, {fields:fields, actions:actions}))
-        this.triggerHost('invalidate')
     },
     moduleEvents: function(evt, sender){
         switch(evt){

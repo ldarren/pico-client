@@ -31,13 +31,5 @@ exports.Class = Module.Class.extend({
         })
         this.listenTo(data, 'add', addRow)
         this.listenTo(data, 'remove', removeRow)
-
-        this.triggerHost('invalidate')
-    },
-
-    moduleEvents: function(evt, sender){
-        switch(evt){
-        case 'invalidate': this.$el.append(sender.render()); break
-        }
     }
 })

@@ -10,8 +10,6 @@ exports.Class = Module.Class.extend({
         this.model = this.requireType('model').value
 
         this.listenTo(this.model, 'change', this.render)
-
-        this.triggerHost('invalidate')
     },
     render: function(){
         var m = this.model

@@ -91,8 +91,11 @@ exports.Class = Backbone.View.extend(_.extend({
     proxy: function(mod, params, spec){
         if ('module' !== mod.type) return console.error('Wrong type!')
         mod.spec = spec && spec.length ? mod.spec.concat(spec) : mod.spec
-        var m = new mod.Class(mod, params, this)
+        var
+        m = new mod.Class(mod, params, this),
+        el = m.render()
         this.modules.push(m)
+        if (el) this.el.appendChild(el)
         return m
     },
     addSpec: function(spec){
@@ -130,28 +133,11 @@ exports.Class = Backbone.View.extend(_.extend({
         return obj
     },
     render: function(){
-        var
-        ms = this.modules,
-        r = this.readiness,
-        $el = this.$el
-        for(var i=0,l=ms.length; i<l; i++){
-            switch(r[i]){
-            case 0: break
-            case 1:
-                r[i] = 0
-                $el.append(ms[i].render())
-                break
-            default: return this.el
-            }
-        }
         return this.el
     },
-    moduleEvents: function(evt, sender){
-        switch(evt){
-        case 'invalidate': this.readiness[this.modules.indexOf(sender)] = 1; break
-        }
+    moduleEvents: function(){
         var params = Array.prototype.slice.call(arguments)
-        params.splice(1, 1)
-        this.triggerAll(params, [sender])
+
+        this.triggerAll(params, params.splice(1, 1))
     }
 },ModuleEvents))

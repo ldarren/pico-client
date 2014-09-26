@@ -26,7 +26,7 @@ exports.Class = Module.Class.extend({
         owner = this.require('owner').value    
 
         this.myId = owner.models[0].id
-        this.viewableRoles = common.viewableRoles(data.get(this.myId).user)
+        this.viewableRoles = common.viewableRoles(data.get(this.myId).get('user'))
         this.Row = this.requireType('module')
         this.grid = {}
 
@@ -35,13 +35,5 @@ exports.Class = Module.Class.extend({
         })
         this.listenTo(data, 'add', addRow)
         this.listenTo(data, 'remove', removeRow)
-
-        this.triggerHost('invalidate')
-    },
-
-    moduleEvents: function(evt, sender){
-        switch(evt){
-        case 'invalidate': this.$el.append(sender.render()); break
-        }
     }
 })

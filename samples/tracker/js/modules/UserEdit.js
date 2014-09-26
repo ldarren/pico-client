@@ -37,7 +37,6 @@ exports.Class = Module.Class.extend({
 
         this.user = user
         this.$el.html(_.template(tpl.text, {dataId:user.id, fields:fields}))
-        this.triggerHost('invalidate')
     },
     moduleEvents: function(evt, sender){
         switch(evt){

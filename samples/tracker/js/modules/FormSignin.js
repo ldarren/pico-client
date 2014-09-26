@@ -11,7 +11,6 @@ exports.Class = Module.Class.extend({
         this.auth = this.require('auth').value
 
 		this.$el.html(_.template(tpl.text))
-        this.triggerHost('invalidate')
     },
 
     events: {

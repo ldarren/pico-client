@@ -50,6 +50,13 @@ exports.Class = Module.Class.extend({
         m.dispatchEvent(pico.createEvent('flip', {page:this.currPage.render(),from:Router.instance().isBack() ? 'right' : 'left'}))
     },
 
+    proxy: function(mod){
+        if ('module' !== mod.type) return console.error('Wrong type!')
+        var m = new mod.Class(mod, [], this)
+        this.modules.push(m)
+        return m
+    },
+
     moduleEvents: function(){
         var params = Array.prototype.slice.call(arguments)
 
@@ -57,11 +64,11 @@ exports.Class = Module.Class.extend({
         case 'invalidate': this.drawModule.apply(this, params.slice(1)); break
         case 'slide': this.main.dispatchEvent(pico.createEvent('transit', params[2])); break
         default:
-            var sender = params.splice(1, 1)
-            this.triggerAll(params, sender)
+            this.triggerAll(params, params.splice(1, 1))
             break
         }
     },
+
     drawModule: function(mod, where){
         if (!mod || -1 === this.modules.indexOf(mod)) return
 
@@ -76,11 +83,13 @@ exports.Class = Module.Class.extend({
 
         document.dispatchEvent(pico.createEvent('lnReset'))
     },
+
     removeOldPage: function(){
         if (this.oldPage) this.oldPage.remove()
         this.oldPage = undefined
         this.triggerAll('mainTransited', this.main.offsetLeft, this.main.offsetTop)
     },
+
     transited: function(){
         this.triggerAll('mainTransited', this.main.offsetLeft, this.main.offsetTop)
     }
