@@ -22,6 +22,15 @@ exports.getRoleDesc = function(type){
     return role[type] || 'Unknown role'
 }
 exports.getRole = function(){ return role }
+exports.isAdmin = function(role){ return role > 40 }
+exports.viewableRoles = function(role){
+    switch(parseInt(role)){
+    case 31: return [31, 41]
+    case 41: return [11, 21, 31, 41, 101]
+    case 101: return [11, 21, 31, 41, 101]
+    default: return [41]
+    }
+}
 
 exports.getLang = function(){ return 'en-SG' }
 exports.getDateFormat = function(){ return {weekday:'short', year:'numeric', month:'short', day:'numeric'} }

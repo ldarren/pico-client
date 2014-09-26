@@ -5,8 +5,6 @@ tpl = require('@html/View.html'),
 common = require('modules/common')
 
 exports.Class = Module.Class.extend({
-    tagName: 'form',
-    className: 'input-group card',
     create: function(spec){
         var
         user = this.require('user').value.attributes,
@@ -14,17 +12,21 @@ exports.Class = Module.Class.extend({
         data = this.require('data').value,
         mi = data.get(owner.models[0].id),
         detail = user.json,
-        fields = []
+        fields = [], actions = []
 
-        if (mi.id === user.id || mi.get('user') > 39) this.triggerHost('changeHeader', {title:detail.name, right:['edit']})
+        if (mi.id === user.id || (mi.get('user') > 39 && user.user != 101)) this.triggerHost('changeHeader', {title:detail.name, right:['edit']})
 
         this.user = user
+        this.owner = owner
         fields.push({label:'Name', value:detail.name}) 
         fields.push({label:'Phone', value:detail.tel, url:'tel:'+detail.tel}) 
         fields.push({label:'Email', value:detail.email, url:'mailto:'+detail.email}) 
         fields.push({label:'Role', value:common.getRoleDesc(user.user)}) 
         fields.push({label:'Join Date', value:(new Date(user.createdAt)).toLocaleDateString(common.getLang(), common.getDateFormat())})
-        this.$el.html(_.template(tpl.text, {fields:fields}))
+
+        if (mi.id === user.id) actions.push({icon:'btn-negative', name:'signout', text:'Sign out'})
+
+        this.$el.html(_.template(tpl.text, {fields:fields, actions:actions}))
         this.triggerHost('invalidate')
     },
     moduleEvents: function(evt, sender){
@@ -32,5 +34,11 @@ exports.Class = Module.Class.extend({
         case 'edit': Router.instance().nav('user/edit/'+this.user.id); break
         default: Module.Class.prototype.moduleEvents.apply(this, arguments)
         }
+    },
+    events: {
+        'click button[name=signout]': 'signout'
+    },
+    signout: function(e){
+        if (this.user.id === this.owner.models[0].id) this.owner.set([])
     }
 })
