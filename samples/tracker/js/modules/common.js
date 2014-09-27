@@ -26,9 +26,17 @@ exports.isAdmin = function(role){ return role > 40 }
 exports.viewableRoles = function(role){
     switch(parseInt(role)){
     case 31: return [31, 41]
-    case 41: return [11, 21, 31, 41, 101]
+    case 41:
     case 101: return [11, 21, 31, 41, 101]
     default: return [41]
+    }
+}
+exports.viewablePages = function(role){
+    switch(parseInt(role)){
+    case 31: return ['users','jobs','jobHistory','vehicles'] 
+    case 41: 
+    case 101: return ['users','jobs','jobHistory','vehicles','invoice/pick']
+    default: return ['users','jobs','jobHistory']
     }
 }
 

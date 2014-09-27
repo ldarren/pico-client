@@ -80,6 +80,7 @@ exports.Class = Module.Class.extend({
         var coll = this[name]
         if (!userId || !coll) return
         try{
+            console.log(storage.getItem(name+userId))
             coll.add(JSON.parse(storage.getItem(name+userId)))
         }catch(exp){
             return console.error(exp)

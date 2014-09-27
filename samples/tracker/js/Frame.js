@@ -37,7 +37,8 @@ exports.Class = Module.Class.extend({
     create: function(spec){
         for(var i=0,s; s=spec[i]; i++){
             if ('module' === s.type) {
-                this.proxy(s)
+                // not using Module.proxy, because render immediately is not desired
+                this.modules.push(new s.Class(s, [], this))
             }
         }
         document.dispatchEvent(pico.createEvent('lnReset'))
@@ -48,13 +49,6 @@ exports.Class = Module.Class.extend({
         var m = this.main
         m.style.cssText = ''
         m.dispatchEvent(pico.createEvent('flip', {page:this.currPage.render(),from:Router.instance().isBack() ? 'right' : 'left'}))
-    },
-
-    proxy: function(mod){
-        if ('module' !== mod.type) return console.error('Wrong type!')
-        var m = new mod.Class(mod, [], this)
-        this.modules.push(m)
-        return m
     },
 
     moduleEvents: function(){
@@ -74,10 +68,7 @@ exports.Class = Module.Class.extend({
 
         switch(where){
         case 'main': this.main.insertBefore(mod.render(), this.main.firstChild); break
-        case 'modal':
-            this.modal.innerHTML = ''
-            this.modal.appendchild(mod.render())
-            break
+        case 'modal': this.modal.appendChild(mod.render()); break
         default: this.secondary.appendChild(mod.render()); break
         }
 

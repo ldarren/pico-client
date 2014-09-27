@@ -57,7 +57,7 @@ exports.Class = Backbone.View.extend(_.extend({
         this.name = options.name
         this.host = host
         this.modules = []
-        this.readiness = []
+        this.domChildren = []
         this.rawSpec = options.spec
         this.existence = true
 
@@ -93,9 +93,12 @@ exports.Class = Backbone.View.extend(_.extend({
         mod.spec = spec && spec.length ? mod.spec.concat(spec) : mod.spec
         var
         m = new mod.Class(mod, params, this),
+        i = this.modules.push(m)-1,
         el = m.render()
-        this.modules.push(m)
-        if (el) this.el.appendChild(el)
+        if (el) {
+            this.el.appendChild(el)
+            this.domChildren[i] = el
+        }
         return m
     },
     addSpec: function(spec){
@@ -137,7 +140,19 @@ exports.Class = Backbone.View.extend(_.extend({
     },
     moduleEvents: function(){
         var params = Array.prototype.slice.call(arguments)
+        switch(params[0]){
+        case 'invalidate': // seldom use, useful only after BB setElement
+            var
+            s = params[1],
+            i = this.modules.indexOf(s),
+            el = s.render()
+            this.el.replaceChild(el, this.domChildren[i])
+            this.domChildren[i] = el
+            break
+        default:
+            this.triggerAll(params, params.splice(1, 1))
+            break
+        }
 
-        this.triggerAll(params, params.splice(1, 1))
     }
 },ModuleEvents))
