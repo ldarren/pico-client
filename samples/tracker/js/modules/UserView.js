@@ -14,7 +14,7 @@ exports.Class = Module.Class.extend({
         detail = user.json,
         fields = [], actions = []
 
-        if (mi.id === user.id || (mi.get('user') > 39 && user.user != 101)) this.triggerHost('changeHeader', {title:detail.name, right:['edit']})
+        if (mi.id === user.id || (common.isAdminAbove(mi.get('user')) && !common.isSuperAbove(user.user))) this.triggerHost('changeHeader', {title:detail.name, right:['edit']})
 
         this.user = user
         this.owner = owner

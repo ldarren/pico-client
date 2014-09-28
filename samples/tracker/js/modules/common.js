@@ -22,7 +22,9 @@ exports.getRoleDesc = function(type){
     return role[type] || 'Unknown role'
 }
 exports.getRole = function(){ return role }
-exports.isAdmin = function(role){ return role > 40 }
+exports.isAdminAbove = function(role){ return role > 40 }
+exports.isDriverAbove = function(role){ return role > 30 }
+exports.isSuperAbove = function(role){ return role > 101 }
 exports.viewableRoles = function(role){
     switch(parseInt(role)){
     case 31: return [31, 41]

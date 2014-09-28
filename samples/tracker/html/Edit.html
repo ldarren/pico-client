@@ -1,4 +1,6 @@
-<input type="hidden" name=dataId value="<%=dataId%>">
+<% for(var i=0,f; f=hiddens[i]; i++){%>
+<input type="hidden" name="<%=f.name%>" value="<%=f.value%>">
+<%}%>
 <% for(var i=0,f; f=fields[i]; i++){%>
 <div class="input-row"><label><%=f.label%></label>
 <% if (f.type === 'static'){ %>

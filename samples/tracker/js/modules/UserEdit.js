@@ -14,10 +14,12 @@ exports.Class = Module.Class.extend({
         owner = this.require('owner').value,
         data = this.require('data').value,
         mi = data.get(owner.models[0].id),
+        role = me.get('user'),
         detail = user.get('json'),
+        hiddens=[{name:'dataId', value:user.id, type:'hidden'}],
         fields = []
 
-        if(mi.get('user') > 39){
+        if(common.isAdminAbove(role)){
             fields.push({label:'Name', name:'name', value:detail.name, type:'text'}) 
             fields.push({label:'Phone', name:'tel', value:detail.tel, type:'tel'}) 
             fields.push({label:'Email', name:'email', value:detail.email, type:'email'}) 
@@ -30,13 +32,13 @@ exports.Class = Module.Class.extend({
             }else{
                 return Router.instance().home(true)
             }
-            fields.push({label:'Role', name:'user', value:common.getRoleDesc(user.get('user')), type:'static'}) 
+            fields.push({label:'Role', name:'user', value:common.getRoleDesc(role), type:'static'}) 
         }
 
         this.triggerHost('changeHeader', {title:detail.name})
 
         this.user = user
-        this.$el.html(_.template(tpl.text, {dataId:user.id, fields:fields}))
+        this.$el.html(_.template(tpl.text, {hiddens:hiddens, fields:fields}))
     },
     moduleEvents: function(evt, sender){
         switch(evt){
