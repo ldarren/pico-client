@@ -5,6 +5,29 @@ role = {
     31:'Driver',
     41:'Admin',
     //101:'Super Admin'
+},
+jobType = {
+    1: 'Arrival',
+    2: 'Departure',
+    3: 'Disposal',
+    4: 'Events',
+    5: 'Fit',
+    6: 'Group Tour',
+    7: 'Transfer',
+    8: 'Wedding',
+    9: 'World Holiday',
+    10: 'Others',
+},
+jobState = {
+    10: 'open',
+    20: 'schedule',
+    30: 'started',
+    40: 'canceled',
+    50: 'close'
+},
+paymentType = {
+    1: 'Cash',
+    2: 'Credit'
 }
 
 exports.hash = function(raw){
@@ -21,7 +44,10 @@ exports.getRoleDesc = function(type){
     if (101 == type) return 'Super Admin'
     return role[type] || 'Unknown role'
 }
+exports.getJobType = function(){ return jobType }
+exports.getPaymentType = function(){ return paymentType }
 exports.getRole = function(){ return role }
+exports.isCustomer = function(role){ return 21 == role }
 exports.isAdminAbove = function(role){ return role > 40 }
 exports.isDriverAbove = function(role){ return role > 30 }
 exports.isSuperAbove = function(role){ return role > 101 }

@@ -4,19 +4,23 @@ Router = require('Router'),
 storage = window.localStorage,
 status1 = {status:1},status0={status:0},merge1={merge:true},
 poll = function(self){
-    if (!self.owner.length) return
+    var userId = self.myId
+    if (!userId) return
     self.pull.fetch({
         data: {seen:self.seen},
         success: function(models, raw){
             if (self.pollId) self.pollId = setTimeout(poll, self.freq, self)
             self.seen = raw.seen
-            if (raw.data){
-                var userId = self.owner.models[0].id
-
-                addRemove(self.data, raw.data)        
-                self.data.trigger('sync')
-                self.writeSeen(userId)
+            self.writeSeen(userId)
+            var data = raw.data
+            if (data){
+                addRemove(self.data, data) 
                 self.writeColl('data', userId)
+                var dUsers = data.ref
+                if (data.refs){
+                    addRemove(self.dataUsers, data.refs) 
+                    self.writeColl('dataUsers', userId)
+                }
             }
         },
         error: function(){
@@ -45,6 +49,7 @@ exports.Class = Module.Class.extend({
             switch(s.name){
             case 'owner': this.owner = s.value; break
             case 'data': this.data = s.value; break
+            case 'dataUsers': this.dataUsers = s.value; break
             case 'pull': this.pull = s.value; break
             case 'freq': this.freq = s.value; break
             }
@@ -57,8 +62,10 @@ exports.Class = Module.Class.extend({
 
     start: function(model, coll, option){
         var userId = model.id
+        this.myId = userId
         this.readSeen(userId)
         this.readColl('data', userId)
+        this.readColl('dataUsers', userId)
         this.pollId = setTimeout(poll, 0, this)
     },
 
@@ -66,6 +73,7 @@ exports.Class = Module.Class.extend({
         clearTimeout(this.pollId)
         this.data.reset()
         this.pollId = 0
+        this.myId = 0
     },
 
     readSeen: function(userId){

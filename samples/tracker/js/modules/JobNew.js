@@ -13,11 +13,14 @@ exports.Class = Module.Class.extend({
 
         this.data = this.require('data').value,
 
-        fields.push({label:'Plate #', name:'tag', holder:'PA1234A', type:'text'}) 
-        fields.push({label:'Seater', name:'seater', holder:13, type:'number'}) 
-        fields.push({label:'Model', name:'model', holder:'ALPHARD', type:'text'}) 
+        fields.push({label:'Pickup', name:'pickup', holder:'Pickup place', type:'text'}) 
+        fields.push({label:'Date', name:'date', holder:'Pickup date', type:'date'}) 
+        fields.push({label:'Time', name:'date', holder:'Pickup time', type:'time'}) 
+        fields.push({label:'Reason', name:'reason', type:'select', options:common.getJobType()}) 
+        fields.push({label:'Dropoff', name:'dropoff', holder:'Dropoff place', type:'text'}) 
+        fields.push({label:'Payment', name:'payment', type:'select', options:common.getPaymentType()}) 
 
-        this.$el.html(_.template(tpl.text, {hiddens:[{name:'type', value:'vehicle', type:'hidden'}], fields:fields}))
+        this.$el.html(_.template(tpl.text, {hiddens:[{name:'type', value:'job', type:'hidden'}], fields:fields}))
     },
     moduleEvents: function(evt, sender){
         switch(evt){
