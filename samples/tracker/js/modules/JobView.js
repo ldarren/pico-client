@@ -38,13 +38,6 @@ exports.Class = Module.Class.extend({
         'click button[name=delete]': 'del'
     },
     del: function(e){
-        this.vehicle.destroy({
-            data:{
-                dataId:this.vehicle.id
-            },
-            success:function(){
-                window.history.back()
-            }
-        })
+        this.vehicle.destroy()
     }
 })
