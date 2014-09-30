@@ -7,18 +7,24 @@ cacheWrite = function(model, coll){
     var cred = model.attributes
     network.signalStep('addon', [cred]) 
     storage.setItem('owner', JSON.stringify(cred))
+    this.triggerHost('signin', model)
+
     login.call(this, model)
 },
 cacheRemove = function(model, coll){
-    if (-1 === this.authPages.indexOf(Router.instance().currPath())) Router.instance().nav(this.authPages[0])
+    this.triggerHost('signout')
     storage.removeItem('owner')
     network.signalStep('addon', []) 
+
+    // signout
+    this.listenTo(this.data, 'add', userAdded)
+    if (-1 === this.authPages.indexOf(Router.instance().currPath())) Router.instance().nav(this.authPages[0])
 },
 login = function(model){
     var user = this.data.get(model.id)
     if (!user) return
     this.stopListening(this.data, 'add')
-    this.triggerHost('login', user)
+    this.triggerHost('userReady', user)
     if (-1 !== this.authPages.indexOf(Router.instance().currPath())) Router.instance().home(true)
 },
 userAdded = function(model){

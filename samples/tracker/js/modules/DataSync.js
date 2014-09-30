@@ -56,24 +56,27 @@ exports.Class = Module.Class.extend({
         }
         this.pollId = 0
         this.data.comparator = sortDesc
-        this.listenTo(this.owner, 'add', this.start)
-        this.listenTo(this.owner, 'reset', this.stop)
     },
 
-    start: function(model, coll, option){
-        var userId = model.id
-        this.myId = userId
-        this.readSeen(userId)
-        this.readColl('data', userId)
-        this.readColl('dataUsers', userId)
-        this.pollId = setTimeout(poll, 0, this)
-    },
-
-    stop: function(model, coll, option){
-        clearTimeout(this.pollId)
-        this.data.reset()
-        this.pollId = 0
-        this.myId = 0
+    moduleEvents: function(evt, sender){
+        switch(evt){
+        case 'signin':
+            var userId = arguments[2].id
+            this.myId = userId
+            this.readSeen(userId)
+            this.readColl('data', userId)
+            this.readColl('dataUsers', userId)
+            this.pollId = setTimeout(poll, 0, this)
+            break
+        case 'signout':
+            clearTimeout(this.pollId)
+            this.pollId = 0
+            this.dataUsers.reset()
+            this.data.reset()
+            this.seen = 0
+            this.myId = 0
+            break
+        }
     },
 
     readSeen: function(userId){

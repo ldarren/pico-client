@@ -110,6 +110,7 @@ exports.Class = Backbone.View.extend(_.extend({
         for(var i=0,s; s=spec[i]; i++){
             if (name === s.name) return s
         }
+        return {}
     },
     requireAll: function(name){
         var
@@ -125,6 +126,7 @@ exports.Class = Backbone.View.extend(_.extend({
         for(var i=0,s; s=spec[i]; i++){
             if (type === s.type) return s
         }
+        return {}
     },
     requireAllType: function(type){
         var

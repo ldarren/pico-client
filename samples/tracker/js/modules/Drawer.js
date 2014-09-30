@@ -26,7 +26,7 @@ exports.Class = Module.Class.extend({
         case 'mainTransited':
             if (0 === arguments[2]) this.el.classList.add('hidden')
             break
-        case 'login':
+        case 'userReady':
             var user = arguments[2]
             if (!user) return
             this.el.innerHTML = ''

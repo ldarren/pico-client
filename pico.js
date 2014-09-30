@@ -417,8 +417,8 @@
 
         envs.appVer = appVerTag ? appVerTag.getAttribute('content') : '0'
 
-        if (document.URL.indexOf( 'http://' ) === -1 &&
-            document.URL.indexOf( 'https://' ) === -1 &&
+        if (-1 === document.URL.indexOf('http://') &&
+            -1 === document.URL.indexOf('https://') &&
             navigator &&
             navigator.userAgent &&
             navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/)){
