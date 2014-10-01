@@ -9,12 +9,18 @@ addRow = function(model){
     id = model.id
     if (1 !== s) return
 
-    if(this.dataUsers.findWhere({dataId:id, refId:this.myId})) this.grid[id] = this.proxy(this.Row, [id])
+    if(this.dataUsers.findWhere({dataId:this.myId, refId:id})) this.grid[id] = this.proxy(this.Row, [id])
 },
 removeRow = function(model){
     var id = model.id
     this.grid[id].remove()
     delete this.grid[id]
+},
+checkRight = function(mi){
+    if (!mi) return
+    var role = mi.get('user')
+
+    if (common.isCustomer(role) || common.isAdminAbove(role)) this.triggerHost('changeHeader', {right:['plus']})
 }
 
 exports.Class = Module.Class.extend({
@@ -28,12 +34,9 @@ exports.Class = Module.Class.extend({
         this.dataUsers = this.require('dataUsers').value
         this.myId = owner.models[0].id
 
-        var
-        self = this,
-        mi = data.get(this.myId),
-        role = mi.get('user')
+        var self = this
 
-        if (common.isCustomer(role) || common.isAdminAbove(role)) this.triggerHost('changeHeader', {right:['plus']})
+        checkRight.call(this, data.get(this.myId))
 
         this.Row = this.requireType('module')
         this.grid = {}
@@ -48,6 +51,7 @@ exports.Class = Module.Class.extend({
     moduleEvents: function(evt, sender){
         switch(evt){
         case 'plus': Router.instance().nav('job/new'); break 
+        case 'userReady': checkRight.call(this, arguments[2]); break
         default: Module.Class.prototype.moduleEvents.apply(this, arguments); break
         }
     }

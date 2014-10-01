@@ -37,7 +37,7 @@ exports.Class = Module.Class.extend({
     create: function(spec){
         var
         owner = this.require('owner').value,
-        cache = storage.getItem('owner')
+        cached = storage.getItem('owner')
 
         this.data = this.require('data').value,
         this.authPages = this.require('authPages').value
@@ -49,8 +49,8 @@ exports.Class = Module.Class.extend({
         this.listenTo(this.data, 'add', userAdded)
         network.slot('error', this.onNetworkError, this)
 
-        if(cache){
-            try{ owner.add(JSON.parse(cache)) }
+        if(cached){
+            try{ owner.add(JSON.parse(cached)) }
             catch(exp){ console.error(exp) }
         }
     },
