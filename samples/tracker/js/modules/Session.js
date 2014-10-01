@@ -3,15 +3,15 @@ Module = require('Module'),
 Router = require('Router'),
 network = require('network'),
 storage = window.localStorage,
-cacheWrite = function(model, coll){
+cache = function(model, coll){
     var cred = model.attributes
     network.signalStep('addon', [cred]) 
     storage.setItem('owner', JSON.stringify(cred))
     this.triggerHost('signin', model)
 
-    login.call(this, model)
+    userReady.call(this, model)
 },
-cacheRemove = function(model, coll){
+uncache = function(model, coll){
     this.triggerHost('signout')
     storage.removeItem('owner')
     network.signalStep('addon', []) 
@@ -20,7 +20,7 @@ cacheRemove = function(model, coll){
     this.listenTo(this.data, 'add', userAdded)
     if (-1 === this.authPages.indexOf(Router.instance().currPath())) Router.instance().nav(this.authPages[0])
 },
-login = function(model){
+userReady = function(model){
     var user = this.data.get(model.id)
     if (!user) return
     this.stopListening(this.data, 'add')
@@ -30,7 +30,7 @@ login = function(model){
 userAdded = function(model){
     if (model.id !== this.owner.models[0].id) return
     this.stopListening(this.data, 'add')
-    if (this.owner.length) login.call(this, this.owner.models[0])
+    if (this.owner.length) userReady.call(this, this.owner.models[0])
 }
 
 exports.Class = Module.Class.extend({
@@ -44,9 +44,9 @@ exports.Class = Module.Class.extend({
 
         owner.reset()
         this.owner = owner
-        this.listenTo(owner, 'add', cacheWrite)
+        this.listenTo(owner, 'add', cache)
+        this.listenTo(owner, 'remove', uncache)
         this.listenTo(this.data, 'add', userAdded)
-        this.listenTo(owner, 'remove', cacheRemove)
         network.slot('error', this.onNetworkError, this)
 
         if(cache){

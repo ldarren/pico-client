@@ -1,6 +1,12 @@
 var
 Module = require('Module'),
 notifier = 'Phonegap' === pico.getEnv('browser') ? window.plugins.pushNotification : null,
+successHnd = function(result){
+    console.log('ok: '+result)
+},
+errorHnd = function(error){
+    console.error('ko: '+error)
+},
 onGSM = function(self, name){
     window[name] = function(e){
         switch( e.event ) {
@@ -40,14 +46,7 @@ onAPN = function(self, name){
             (new Media(e.sound)).play()
         }
         if ( e.badge ) {
-            notifier.setApplicationIconBadgeNumber(
-                function(result){
-                    console.log('apn:'+result)
-                },
-                function(error){
-                    console.error('apn err:'+error)
-                },
-                e.badge)
+            notifier.setApplicationIconBadgeNumber( successHnd, errorHnd, e.badge)
         }
         console.log('apn payload:'+JSON.stringify(e))
     }
@@ -55,28 +54,30 @@ onAPN = function(self, name){
 
 exports.Class = Module.Class.extend({
     create: function(spec){
-        if (!notifier) return
-        this.register(device.platform.toLowerCase())
     },
-    render(): function(){},
+    render: function(){},
     moduleEvents: function(evt, sender){
         if (!notifier) return
         switch(evt){
         case 'userReady':
+            this.register(device.platform.toLowerCase())
+            break
+        case 'signout':
+            this.unregister()
             break
         }
     },
     register: function(platform){
-        var ecb = this.require('callback').value || 'onNotifier'+this.id
+        var ecb = (this.require('callback').value || 'onNotifier')+this.id
         switch(platform){
         case 'android':
         case 'amazon-fireos':
             onGSM(this, ecb)
             notifier.register(
-                this.successHnd,
-                this.errorHnd,
+                successHnd,
+                errorHnd,
                 {
-                    senderID:this.require('gcmSenderId').value
+                    senderID:this.require('gcmSenderId').value,
                     ecb:ecb
                 }
             )
@@ -84,8 +85,10 @@ exports.Class = Module.Class.extend({
         default:
             onAPN(this, ecb)
             notifier.register(
-                this.tokenHnd,
-                this.errorHnd,
+                function(token){
+                    console.log('token'+token)
+                },
+                errorHnd,
                 {
                     'badge':'true',
                     'sound':'true',
@@ -96,13 +99,7 @@ exports.Class = Module.Class.extend({
             break
         }
     },
-    successHnd = function(result){
-        console.log('notifier ok: '+result)
-    },
-    errorHnd = function(error){
-        console.log('notifier ko: '+error)
-    },
-    tokenHnd = function(token){
-        console.log('apn token: '+token)
+    unregister: function(){
+        notifier.unregister(successHnd, errorHnd)
     }
 })
