@@ -14,8 +14,13 @@ onGSM = function(self, name){
         switch( e.event ) {
         case 'registered':
             if ( e.regid ) {
-                var data = {id:self.user.id,android:e.regid}
-                self.user.save(data, { data: data })
+                self.user.save(null, {
+                    data:{
+                        dataId:self.user.id,
+                        platform:'gcm',
+                        pushToken:e.regid
+                    }
+                })
             }
             break;
         case 'message':
@@ -25,17 +30,19 @@ onGSM = function(self, name){
                 my_media.play();
             } else if ( e.coldstart ) {
                 // coldstart
+                console.error('gcm coldstart')
             } else {
                 // background
+                console.error('gcm background')
             }
 
             console.log('gcm payload:'+JSON.stringify(e.payload))
             break;
         case 'error':
-            console.error('gsm err:'+e.msg)
+            console.error('gcm err:'+e.msg)
             break;
         default:
-            console.error('gsm unknown:'+JSON(e))
+            console.error('gcm unknown:'+JSON(e))
             break;
         }
     }
@@ -72,7 +79,9 @@ exports.Class = Module.Class.extend({
         }
     },
     register: function(platform){
-        var ecb = (this.require('callback').value || 'onNotifier')+this.id
+        var
+        self = this,
+        ecb = (this.require('callback').value || 'onNotifier')+this.id
         switch(platform){
         case 'android':
         case 'amazon-fireos':
@@ -88,11 +97,15 @@ exports.Class = Module.Class.extend({
             break
         default:
             onAPN(this, ecb)
-            var self = this
             notifier.register(
                 function(token){
-                    var data = {id:self.user.id,ios:token}
-                    self.user.save(data, { data: data })
+                    self.user.save(null, {
+                        data:{
+                            dataId:self.user.id,
+                            platform:'apn',
+                            pushToken:token
+                        }
+                    })
                 },
                 errorHnd,
                 {
