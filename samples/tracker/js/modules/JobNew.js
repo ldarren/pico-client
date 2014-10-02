@@ -14,8 +14,8 @@ exports.Class = Module.Class.extend({
         this.data = this.require('data').value,
 
         fields.push({label:'Pickup', name:'pickup', holder:'Pickup place', type:'text', required:true}) 
-        fields.push({label:'Date', name:'date', holder:'Pickup date', type:'date', required: true}) 
-        fields.push({label:'Time', name:'time', holder:'Pickup time', type:'time', required: true}) 
+        fields.push({label:'Date', name:'date', type:'date', required: true}) 
+        fields.push({label:'Time', name:'time', type:'time', required: true}) 
         fields.push({label:'Reason', name:'reason', type:'select', options:common.getJobType(), required: true}) 
         fields.push({label:'Dropoff', name:'dropoff', holder:'Dropoff place', type:'text', required: true}) 
         fields.push({label:'Payment', name:'payment', type:'select', options:common.getPaymentType(), required: true}) 

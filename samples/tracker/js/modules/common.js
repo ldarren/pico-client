@@ -23,7 +23,7 @@ jobState = {
     20: 'schedule',
     30: 'started',
     40: 'canceled',
-    50: 'close'
+    50: 'closed'
 },
 paymentType = {
     1: 'Cash',
@@ -43,6 +43,9 @@ exports.hash = function(raw){
 exports.getRoleDesc = function(type){ 
     if (101 == type) return 'Super Admin'
     return role[type] || 'Unknown role'
+}
+exports.getJobState = function(state, admin, creator, driver){
+    return jobState
 }
 exports.getJobType = function(){ return jobType }
 exports.getPaymentType = function(){ return paymentType }
