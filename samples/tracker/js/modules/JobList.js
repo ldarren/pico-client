@@ -4,12 +4,16 @@ Router = require('Router'),
 common = require('modules/common'),
 addRow = function(model){
     if ('job' !== model.get('type')) return
-    var
-    s = model.get('status'),
-    id = model.id
-    if (1 !== s) return
+    if (1 !== model.get('status')) return
 
-    if(this.dataUsers.findWhere({dataId:this.myId, refId:id})) this.grid[id] = this.proxy(this.Row, [id])
+    var
+    m = model.attributes,
+    id = m.id,
+    d = m.json || {}
+
+    if (-1 === this.filter.indexOf(m.job)) return
+
+    if (-1 !== [m.createdBy, d.driver].indexOf(this.myId) || common.isAdminAbove(this.role)) this.grid[id] = this.proxy(this.Row, [id])
 },
 removeRow = function(model){
     var id = model.id
@@ -17,10 +21,14 @@ removeRow = function(model){
     delete this.grid[id]
 },
 checkRight = function(mi){
-    if (!mi) return
-    var role = mi.get('user')
+    if (!mi || this.role) return
+    var role = this.role = mi.get('user')
 
     if (common.isCustomer(role) || common.isAdminAbove(role)) this.triggerHost('changeHeader', {right:['plus']})
+
+    this.data.forEach(function(model){
+        addRow.call(this, model)
+    }, this)
 }
 
 exports.Class = Module.Class.extend({
@@ -31,19 +39,14 @@ exports.Class = Module.Class.extend({
         data = this.require('data').value,
         owner = this.require('owner').value
         
-        this.dataUsers = this.require('dataUsers').value
         this.myId = owner.models[0].id
-
-        var self = this
+        this.Row = this.requireType('module')
+        this.filter = this.require('filter').value || []
+        this.data = data
+        this.grid = {}
 
         checkRight.call(this, data.get(this.myId))
 
-        this.Row = this.requireType('module')
-        this.grid = {}
-
-        data.forEach(function(model){
-            addRow.call(self, model)
-        })
         this.listenTo(data, 'add', addRow)
         this.listenTo(data, 'remove', removeRow)
     },

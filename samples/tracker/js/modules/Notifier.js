@@ -1,6 +1,8 @@
+// require com.phonegap.plugins.PushPlugin
+// require org.apache.cordova.device
 var
 Module = require('Module'),
-notifier = 'Phonegap' === pico.getEnv('browser') ? window.plugins.pushNotification : null,
+notifier = 'phonegap' === pico.getEnv('browser') ? window.plugins.pushNotification : null,
 successHnd = function(result){
     console.log('ok: '+result)
 },
@@ -11,8 +13,9 @@ onGSM = function(self, name){
     window[name] = function(e){
         switch( e.event ) {
         case 'registered':
-            if ( e.regid.length > 0 ) {
-                console.log("regID = " + e.regid);
+            if ( e.regid ) {
+                var data = {id:self.user.id,android:e.regid}
+                self.user.save(data, { data: data })
             }
             break;
         case 'message':
@@ -60,6 +63,7 @@ exports.Class = Module.Class.extend({
         if (!notifier) return
         switch(evt){
         case 'userReady':
+            this.user = arguments[2]
             this.register(device.platform.toLowerCase())
             break
         case 'signout':
@@ -84,9 +88,11 @@ exports.Class = Module.Class.extend({
             break
         default:
             onAPN(this, ecb)
+            var self = this
             notifier.register(
                 function(token){
-                    console.log('token'+token)
+                    var data = {id:self.user.id,ios:token}
+                    self.user.save(data, { data: data })
                 },
                 errorHnd,
                 {

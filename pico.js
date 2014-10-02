@@ -151,7 +151,7 @@
             pico.objTools.mergeObj(paths, options.paths)
 
             exports.addEventListener('load', function(){
-                if ('Phonegap' === envs.browser){
+                if ('phonegap' === envs.browser){
                     document.addEventListener('deviceready', onDeviceReady, false)
                 }else{
                     onDeviceReady()
@@ -422,27 +422,27 @@
             navigator &&
             navigator.userAgent &&
             navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/)){
-            envs.browser = 'Phonegap'
+            envs.browser = 'phonegap'
             envs.isWebKit = true
         }else{
             var
             // http://www.quirksmode.org/js/detect.html
             vendorKeys = [
-            { string: navigator.userAgent,  subString: "Chrome",    identity: "Chrome"},
-            { string: navigator.userAgent,  subString: "OmniWeb",   identity: "OmniWeb"},
-            { string: navigator.vendor,     subString: "Apple",     identity: "Safari"},
-            { string: navigator.userAgent,  subString: "Opera",     identity: "Opera"},
-            { string: navigator.vendor,     subString: "iCab",      identity: "iCab"},
-            { string: navigator.vendor,     subString: "KDE",       identity: "Konqueror"},
-            { string: navigator.userAgent,  subString: "Firefox",   identity: "Firefox"},
-            { string: navigator.vendor,     subString: "Camino",    identity: "Camino"},
-            { string: navigator.userAgent,  subString: "Netscape",  identity: "Netscape"},
-            { string: navigator.userAgent,  subString: "MSIE",      identity: "Explorer"},
-            { string: navigator.userAgent,  subString: "Gecko",     identity: "Mozilla"},
-            { string: navigator.userAgent,  subString: "Mozilla",   identity: "Netscape"}],
+            { string: navigator.userAgent,  subString: "chrome",    identity: "chrome"},
+            { string: navigator.userAgent,  subString: "omniweb",   identity: "omniweb"},
+            { string: navigator.vendor,     subString: "apple",     identity: "safari"},
+            { string: navigator.userAgent,  subString: "opera",     identity: "opera"},
+            { string: navigator.vendor,     subString: "icab",      identity: "icab"},
+            { string: navigator.vendor,     subString: "kde",       identity: "konqueror"},
+            { string: navigator.userAgent,  subString: "firefox",   identity: "firefox"},
+            { string: navigator.vendor,     subString: "camino",    identity: "camino"},
+            { string: navigator.userAgent,  subString: "netscape",  identity: "netscape"},
+            { string: navigator.userAgent,  subString: "msie",      identity: "explorer"},
+            { string: navigator.userAgent,  subString: "gecko",     identity: "mozilla"},
+            { string: navigator.userAgent,  subString: "mozilla",   identity: "netscape"}],
             key
 
-            envs.browser = 'Unknown'
+            envs.browser = 'unknown'
             envs.isWebKit = false
 
             for (var i=0, l=vendorKeys.length; i<l; i++){

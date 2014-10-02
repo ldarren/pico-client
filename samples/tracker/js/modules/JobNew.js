@@ -13,12 +13,12 @@ exports.Class = Module.Class.extend({
 
         this.data = this.require('data').value,
 
-        fields.push({label:'Pickup', name:'pickup', holder:'Pickup place', type:'text'}) 
-        fields.push({label:'Date', name:'date', holder:'Pickup date', type:'date'}) 
-        fields.push({label:'Time', name:'date', holder:'Pickup time', type:'time'}) 
-        fields.push({label:'Reason', name:'reason', type:'select', options:common.getJobType()}) 
-        fields.push({label:'Dropoff', name:'dropoff', holder:'Dropoff place', type:'text'}) 
-        fields.push({label:'Payment', name:'payment', type:'select', options:common.getPaymentType()}) 
+        fields.push({label:'Pickup', name:'pickup', holder:'Pickup place', type:'text', required:true}) 
+        fields.push({label:'Date', name:'date', holder:'Pickup date', type:'date', required: true}) 
+        fields.push({label:'Time', name:'time', holder:'Pickup time', type:'time', required: true}) 
+        fields.push({label:'Reason', name:'reason', type:'select', options:common.getJobType(), required: true}) 
+        fields.push({label:'Dropoff', name:'dropoff', holder:'Dropoff place', type:'text', required: true}) 
+        fields.push({label:'Payment', name:'payment', type:'select', options:common.getPaymentType(), required: true}) 
 
         this.$el.html(_.template(tpl.text, {hiddens:[{name:'type', value:'job', type:'hidden'}], fields:fields}))
     },
@@ -26,8 +26,10 @@ exports.Class = Module.Class.extend({
         switch(evt){
         case 'cancel': window.history.back(); break
         case 'ok':
+            if (!this.el.checkValidity()) return alert('Missing info')
             this.data.create(null, {
                 data: this.el,
+                wait: true,
                 success: function(model, data){
                     window.history.back();
                 }
