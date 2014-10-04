@@ -33,7 +33,7 @@ exports.Class = Module.Class.extend({
                 return Router.instance().home(true)
             }
             //fields.push({label:'Role', name:'user', value:user.get('user'), type:'select', options:common.getRole()}) 
-            fields.push({label:'Role', name:'user', value:common.getRoleDesc(role), type:'static'}) 
+            fields.push({label:'Role', name:'user', value:common.roleDesc(role), type:'static'}) 
         }
 
         this.triggerHost('changeHeader', {title:detail.name})

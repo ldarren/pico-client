@@ -16,7 +16,7 @@ exports.Class = Module.Class.extend({
         this.$el.html(_.template(tpl.text, {
             url: '#user/' + m.id,
             title: m.get('json').name,
-            desc: common.getRoleDesc(m.get('user')) 
+            desc: common.roleDesc(m.get('user')) 
         }))
         return this.el
     }

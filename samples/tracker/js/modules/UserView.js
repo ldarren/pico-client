@@ -21,7 +21,7 @@ exports.Class = Module.Class.extend({
         fields.push({label:'Name', value:detail.name}) 
         fields.push({label:'Phone', value:detail.tel, url:'tel:'+detail.tel}) 
         fields.push({label:'Email', value:detail.email, url:'mailto:'+detail.email}) 
-        fields.push({label:'Role', value:common.getRoleDesc(user.user)}) 
+        fields.push({label:'Role', value:common.roleDesc(user.user)}) 
         fields.push({label:'Join Date', value:(new Date(user.createdAt)).toLocaleDateString(common.getLang(), common.getDateFormat())})
 
         if (mi.id === user.id) actions.push({icon:'btn-negative', name:'signout', text:'Sign out'})

@@ -19,11 +19,12 @@ jobType = {
     10: 'Others',
 },
 jobState = {
-    10: 'open',
-    20: 'schedule',
-    30: 'started',
-    40: 'canceled',
-    50: 'closed'
+    10: 'Open',
+    20: 'Scheduled',
+    30: 'Started',
+    40: 'Stopped',
+    50: 'Closed',
+    100: 'Canceled',
 },
 paymentType = {
     1: 'Cash',
@@ -40,16 +41,49 @@ exports.hash = function(raw){
     return btoa(hash.toString(36))
 }
 
-exports.getRoleDesc = function(type){ 
+exports.roleDesc = function(type){ 
     if (101 == type) return 'Super Admin'
     return role[type] || 'Unknown role'
 }
-exports.getJobState = function(state, admin, creator, driver){
-    return jobState
+exports.getJobState = function(state, role){
+    switch(parseInt(role)){
+    case 21:
+        switch(state){
+        case 10: return {100:jobState[100]}
+        default: return {}
+        }
+        break
+    case 41:
+    case 101:
+        switch(state){
+        case 10: return {20:jobState[20], 30:jobState[30], 100:jobState[100]}
+        case 20: return {30:jobState[30], 100:jobState[100]}
+        case 30: return {40:jobState[40], 100:jobState[100]}
+        case 40: return {50:jobState[50]}
+        default: return {}
+        }
+        break
+    default: return {}
+    }
 }
+exports.jobStateDesc = function(state){ return jobState[state]}
 exports.getJobType = function(){ return jobType }
 exports.getPaymentType = function(){ return paymentType }
 exports.getRole = function(){ return role }
+exports.getVehicles = function(data){
+    var v = {}
+    data.where({type:'vehicle'}).forEach(function(m){
+        v[m.id] = m.get('json').tag
+    })
+    return v
+}
+exports.getDrivers = function(data){
+    var d = {}
+    data.where({type:'user', user:'31'}).forEach(function(m){
+        d[m.id] = m.get('json').name
+    })
+    return d
+}
 exports.isCustomer = function(role){ return 21 == role }
 exports.isAdminAbove = function(role){ return role > 40 }
 exports.isDriverAbove = function(role){ return role > 30 }
@@ -64,10 +98,11 @@ exports.viewableRoles = function(role){
 }
 exports.viewablePages = function(role){
     switch(parseInt(role)){
+    case 21:
     case 31: return ['users','jobs','jobHistory','vehicles'] 
     case 41: 
     case 101: return ['users','jobs','jobHistory','vehicles','invoice/pick']
-    default: return ['users','jobs','jobHistory']
+    default: return ['users','jobs']
     }
 }
 
