@@ -7,37 +7,34 @@ common = require('modules/common')
 exports.Class = Module.Class.extend({
     create: function(spec){
         var
-        vehicle = this.require('vehicle').value,
-        owner = this.require('owner').value,
+        job = this.require('job').value,
         data = this.require('data').value,
-        mi = data.get(owner.models[0].id),
-        isAdmin = common.isAdminAbove(mi.get('user')),
-        detail = vehicle.get('json'),
+        detail = job.get('json'),
         fields = [], actions = []
 
-        if (isAdmin) this.triggerHost('changeHeader', {title:detail.tag, right:['edit']})
+        this.job = job 
+        this.data = data 
+        fields.push({label:'Pickup', value:detail.pickup}) 
+        fields.push({label:'Date',  value:detail.date}) 
+        fields.push({label:'Time', value:detail.time}) 
+        fields.push({label:'Reason', value:common.jobTypeDesc(detail.reason)}) 
+        fields.push({label:'Dropoff', value:detail.dropoff}) 
+        fields.push({label:'Payment', value:common.paymentTypeDesc(detail.payment)}) 
+        fields.push({label:'Charge', value:detail.charge}) 
+        fields.push({label:'Vehicle', value:common.vehicleDesc(data, detail.vehicle)}) 
+        fields.push({label:'driver', value:common.driverDesc(data,detail.driver)}) 
+        fields.push({label:'Status', value:common.jobStateDesc(job.get('job'))}) 
+        fields.push({label:'Code', value:job.get('code')}) 
 
-        this.vehicle = vehicle
-        this.owner = owner
-        fields.push({label:'Plate #', value:detail.tag}) 
-        fields.push({label:'Seater', value:detail.seater}) 
-        fields.push({label:'Model', value:detail.model}) 
-        fields.push({label:'Join Date', value:(new Date(vehicle.get('createdAt'))).toLocaleDateString(common.getLang(), common.getDateFormat())})
-
-        if (isAdmin) actions.push({icon:'btn-negative', name:'delete', text:'Remove'})
+        actions.push({icon:'btn-negative', name:'forget', text:'Forget'})
 
         this.$el.html(_.template(tpl.text, {fields:fields, actions:actions}))
     },
-    moduleEvents: function(evt, sender){
-        switch(evt){
-        case 'edit': Router.instance().nav('vehicle/edit/'+this.vehicle.id); break
-        default: Module.Class.prototype.moduleEvents.apply(this, arguments)
-        }
-    },
     events: {
-        'click button[name=delete]': 'del'
+        'click button[name=forget]': 'forget'
     },
-    del: function(e){
-        this.vehicle.destroy()
+    forget: function(e){
+        this.data.remove(this.job.id)
+        window.history.back()
     }
 })

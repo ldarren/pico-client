@@ -49,7 +49,18 @@ exports.getJobState = function(state, role){
     switch(parseInt(role)){
     case 21:
         switch(state){
-        case 10: return {100:jobState[100]}
+        case 10: return {10:jobState[10],100:jobState[100]}
+        case 20: return {20:jobState[20]}
+        case 30: return {30:jobState[30]}
+        case 40: return {40:jobState[40]}
+        default: return {}
+        }
+        break
+    case 31:
+        switch(state){
+        case 20: return {20:jobState[20],30:jobState[30]}
+        case 30: return {40:jobState[40],}
+        case 40: return {40:jobState[40]}
         default: return {}
         }
         break
@@ -68,7 +79,9 @@ exports.getJobState = function(state, role){
 }
 exports.jobStateDesc = function(state){ return jobState[state]}
 exports.getJobType = function(){ return jobType }
+exports.jobTypeDesc = function(type){ return jobType[type] }
 exports.getPaymentType = function(){ return paymentType }
+exports.paymentTypeDesc = function(type){ return paymentType[type] }
 exports.getRole = function(){ return role }
 exports.getVehicles = function(data){
     var v = {}
@@ -77,12 +90,22 @@ exports.getVehicles = function(data){
     })
     return v
 }
+exports.vehicleDesc = function(data, id){
+    var m = data.get(id)
+    if (!m) return ''
+    return m.get('json').tag
+}
 exports.getDrivers = function(data){
     var d = {}
     data.where({type:'user', user:'31'}).forEach(function(m){
         d[m.id] = m.get('json').name
     })
     return d
+}
+exports.driverDesc = function(data, id){
+    var d = data.get(id)
+    if (!d) return ''
+    return d.get('json').name
 }
 exports.isCustomer = function(role){ return 21 == role }
 exports.isAdminAbove = function(role){ return role > 40 }

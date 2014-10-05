@@ -20,7 +20,7 @@ exports.Class = Module.Class.extend({
         fields.push({label:'Dropoff', name:'dropoff', holder:'Dropoff place', type:'text', required: true}) 
         fields.push({label:'Payment', name:'payment', type:'select', options:common.getPaymentType(), required: true}) 
 
-        this.$el.html(_.template(tpl.text, {hiddens:[{name:'type', value:'job', type:'hidden'}], fields:fields}))
+        this.$el.html(_.template(tpl.text, {hiddens:[{name:'type', value:'job'}], fields:fields}))
     },
     moduleEvents: function(evt, sender){
         switch(evt){
