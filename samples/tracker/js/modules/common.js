@@ -30,6 +30,11 @@ paymentType = {
     1: 'Cash',
     2: 'Credit'
 }
+invoiceType = {
+    1: 'View Invoice',
+    2: 'Download Invoice',
+    3: 'Download Income'
+}
 
 exports.hash = function(raw){
     var hash = 2574;
@@ -128,6 +133,8 @@ exports.viewablePages = function(role){
     default: return ['users','jobs']
     }
 }
-
+exports.getInvoiceType = function(){
+    return invoiceType
+}
 exports.getLang = function(){ return 'en-SG' }
 exports.getDateFormat = function(){ return {weekday:'short', year:'numeric', month:'short', day:'numeric'} }
