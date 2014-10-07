@@ -1,19 +1,15 @@
 var
 Module = require('Module'),
-tpl = require('@html/ListRow.html'),
-common = require('modules/common')
+common = require('modules/common'),
+tpl = '#<%=id%><div class=right>$<%=info.charge%></div>'+
+    '<div><%=info.time%></div>'+
+    '<div class=pickup><%=info.pickup%></div><div class=dropoff><%=info.dropoff%></div>'
 
 exports.Class = Module.Class.extend({
     tagName: 'li',
     className: 'table-view-cell',
     create: function(spec){
-        var
-        m = this.requireType('model').value.attributes,
-        info = m.json
-        this.$el.html(_.template(tpl.text, {
-            url: '#job/' + m.id,
-            title: info.pickup + ' -> ' + info.dropoff,
-            desc: info.date + ' ' + info.time
-        }))
+        var m = this.requireType('model').value.attributes
+        this.$el.html(_.template(tpl, {id:m.id, info:m.json}))
     }
 })
