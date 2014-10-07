@@ -1,7 +1,7 @@
 var
 trigger = {trigger:true},
 triggerReplace = {trigger:true, replace:true},
-inst, dirList, lastIndex, index, currPath
+context, inst, dirList, lastIndex, index, currPath,
 changeRoute = function(path){
     currPath = path
     lastIndex = index 
@@ -12,27 +12,28 @@ changeRoute = function(path){
         dirList.push(path)
         index = dirList.length-1
     }
+},
+inst = {
+    nav: function(url, replace){
+        setTimeout(function(){
+            context.navigate(url, replace ? triggerReplace : trigger)
+        }, 0)
+    },
+    home: function(replace){ inst.nav('', replace) },
+    currPath: function(){ return currPath },
+    isBack: function(){ return index < lastIndex }
 }
 
+Object.freeze(inst)
+
+// keep this instance clean, any method name used in route will be called
 exports.Class = Backbone.Router.extend({
     initialize: function(){
-        inst = this
+        context = this
         dirList = []
         lastIndex = index = -1
         this.on('route', changeRoute)
-    },
-    nav: function(url, replace){
-        setTimeout(function(context){
-            context.navigate(url, replace ? triggerReplace : trigger)
-        }, 0, this)
-    },
-    home: function(replace){
-        this.nav('', replace)
-    },
-    currPath: function(){ return currPath },
-    isBack: function(){
-       return index < lastIndex 
     }
 })
-exports.instance = function(){return inst}
-Object.freeze(exports)
+
+exports.instance = inst

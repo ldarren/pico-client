@@ -30,7 +30,7 @@ exports.Class = Module.Class.extend({
     },
     moduleEvents: function(evt, sender){
         switch(evt){
-        case 'edit': Router.instance().nav('user/edit/'+this.user.id); break
+        case 'edit': Router.instance.nav('user/edit/'+this.user.id); break
         default: Module.Class.prototype.moduleEvents.apply(this, arguments)
         }
     },

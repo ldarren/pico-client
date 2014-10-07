@@ -137,7 +137,7 @@ exports.Class = Module.Class.extend({
                 break
             }
         }else{
-            return Router.instance().home(true)
+            return Router.instance.home(true)
         }
 
         this.job = job

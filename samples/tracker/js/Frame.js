@@ -5,7 +5,7 @@ Module = require('Module'),
 changeRoute = function(path, params){
     var pageConfig = this.pages[path]
 
-    if (!pageConfig) return Router.instance().home()
+    if (!pageConfig) return Router.instance.home()
 
     if (this.oldPage) this.removeOldPage()
     if (this.currPage) this.oldPage = this.currPage
@@ -48,7 +48,7 @@ exports.Class = Module.Class.extend({
     render: function(){
         var m = this.main
         m.style.cssText = ''
-        m.dispatchEvent(pico.createEvent('flip', {page:this.currPage.render(),from:Router.instance().isBack() ? 'right' : 'left'}))
+        m.dispatchEvent(pico.createEvent('flip', {page:this.currPage.render(),from:Router.instance.isBack() ? 'right' : 'left'}))
     },
 
     moduleEvents: function(){

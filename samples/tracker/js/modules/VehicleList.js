@@ -30,7 +30,7 @@ exports.Class = Module.Class.extend({
         mi = data.get(this.myId),
         role = mi.get('user')
 
-        if (!common.isDriverAbove(role)) return Router.instance().home()
+        if (!common.isDriverAbove(role)) return Router.instance.home()
         if (common.isAdminAbove(role)) this.triggerHost('changeHeader', {right:['plus']})
 
         this.Row = this.requireType('module')
@@ -45,7 +45,7 @@ exports.Class = Module.Class.extend({
 
     moduleEvents: function(evt, sender){
         switch(evt){
-        case 'plus': Router.instance().nav('vehicle/new'); break 
+        case 'plus': Router.instance.nav('vehicle/new'); break 
         default: Module.Class.prototype.moduleEvents.apply(this, arguments); break
         }
     }

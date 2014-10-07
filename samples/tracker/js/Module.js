@@ -69,7 +69,7 @@ exports.Class = Backbone.View.extend(_.extend({
             self.spec = s
             if (err){
                 console.warn(err)
-                return Router.instance().home()
+                return Router.instance.home()
             }
             self.create(s, params)
             if (options.style) self.style = restyle(options.style, ['webkit'])

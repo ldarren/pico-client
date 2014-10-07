@@ -7,14 +7,18 @@ common = require('modules/common')
 exports.Class = Module.Class.extend({
     tagName: 'form',
     className: 'input-group card',
-    attributes:{ 'action': 'tr/invoice/read' },
     create: function(spec){
-        this.invoice = this.require('invoice').value
-        var fields = [], hiddens=[]
+        var
+        fields = [], hiddens=[],
+        yest = new Date(),
+        today = yest.toISOString().slice(0, 10)
 
-        fields.push({label:'From', name:'from', type:'date'}) 
-        fields.push({label:'To', name:'to', type:'date'}) 
-        fields.push({label:'Type', name:'type', type:'select', options:common.getInvoiceType()}) 
+        yest.setDate(1);
+        yest.setMonth(yest.getMonth()-1);
+
+        fields.push({label:'From', value:yest.toISOString().slice(0, 10), name:'from', type:'date', required:true}) 
+        fields.push({label:'To', value:today, name:'to', type:'date', required:true}) 
+        fields.push({label:'Type', name:'type', type:'select', options:common.getInvoiceType(), required:true}) 
 
         this.$el.html(_.template(tpl.text, {hiddens:hiddens, fields:fields}))
     },
@@ -22,12 +26,9 @@ exports.Class = Module.Class.extend({
         switch(evt){
         case 'cancel': window.history.back(); break
         case 'ok':
-            this.invoice.fetch({
-                data: this.el,
-                success: function(model, data){
-                    debugger
-                }
-            })
+            if (!this.el.checkValidity()) return alert('Missing params')
+            var form = this.el.elements
+            Router.instance.nav('invoice/'+(form['type'].value)+'/'+(form['from'].value)+'/'+(form['to'].value))
             break
         default: Module.Class.prototype.moduleEvents.apply(this, arguments)
         }

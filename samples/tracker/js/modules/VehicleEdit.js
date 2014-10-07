@@ -23,7 +23,7 @@ exports.Class = Module.Class.extend({
             fields.push({label:'Seater', name:'seater', value:detail.seater, type:'text'}) 
             fields.push({label:'Model', name:'model', value:detail.model, type:'text'}) 
         }else{
-            return Router.instance().home(true)
+            return Router.instance.home(true)
         }
 
         this.triggerHost('changeHeader', {title:detail.tag})

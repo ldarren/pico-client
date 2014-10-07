@@ -18,14 +18,14 @@ uncache = function(model, coll){
 
     // signout
     this.listenTo(this.data, 'add', userAdded)
-    if (-1 === this.authPages.indexOf(Router.instance().currPath())) Router.instance().nav(this.authPages[0])
+    if (-1 === this.authPages.indexOf(Router.instance.currPath())) Router.instance.nav(this.authPages[0])
 },
 userReady = function(model){
     var user = this.data.get(model.id)
     if (!user) return
     this.stopListening(this.data, 'add')
     this.triggerHost('userReady', user)
-    if (-1 !== this.authPages.indexOf(Router.instance().currPath())) Router.instance().home(true)
+    if (-1 !== this.authPages.indexOf(Router.instance.currPath())) Router.instance.home(true)
 },
 userAdded = function(model){
     if (model.id !== this.owner.models[0].id) return
@@ -57,12 +57,12 @@ exports.Class = Module.Class.extend({
     onNetworkError: function(err){
         if (403 !== err.code) return
         this.owner.reset()
-        Router.instance().nav(this.authPages[0])
+        Router.instance.nav(this.authPages[0])
     },
     moduleEvents: function(evt, sender){
         switch(evt){
         case 'changeRoute':
-            if (!this.owner.length && -1 === this.authPages.indexOf(arguments[2])) Router.instance().nav(this.authPages[0])
+            if (!this.owner.length && -1 === this.authPages.indexOf(arguments[2])) Router.instance.nav(this.authPages[0])
             break
         }
     }
