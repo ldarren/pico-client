@@ -11,7 +11,7 @@ cache = function(model, coll){
 
     userReady.call(this, model)
 },
-uncache = function(model, coll){
+uncache = function(){
     this.triggerHost('signout')
     storage.removeItem('owner')
     network.signalStep('addon', []) 
@@ -57,7 +57,7 @@ exports.Class = Module.Class.extend({
     onNetworkError: function(err){
         if (403 !== err.code) return
         this.owner.reset()
-        Router.instance.nav(this.authPages[0])
+        uncache.call(this)
     },
     moduleEvents: function(evt, sender){
         switch(evt){
