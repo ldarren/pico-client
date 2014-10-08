@@ -41,7 +41,7 @@ div.voidPage > span {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
 }
-.table-view-cell .icon {
+.rightMenu .table-view-cell .icon {
     color:#fffafa
 }
 div.pickup,div.dropoff{
@@ -54,4 +54,10 @@ div.right{
 }
 ul.zebra > li:nth-child(odd){
     background-color:#FFF8DC;
+}
+input:not([readonly]),select:not([readonly]){
+    background:#f0ffff
+}
+input:invalid, select:invalid{
+    background:#ffdfdd
 }

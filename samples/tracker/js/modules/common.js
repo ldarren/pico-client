@@ -33,7 +33,7 @@ paymentType = {
 invoiceType = {
     1: 'View Invoice',
     2: 'Download Invoice',
-    3: 'Download Income'
+    3: 'Download Report'
 }
 
 exports.hash = function(raw){

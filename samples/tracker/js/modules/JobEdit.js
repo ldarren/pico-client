@@ -23,16 +23,16 @@ exports.Class = Module.Class.extend({
         if(common.isAdminAbove(role)){
             switch(state){
             case 10:
-                fields.push({label:'Pickup', name:'pickup', holder:'Pickup place', value:detail.pickup, type:'text'}) 
-                fields.push({label:'Date', name:'date', value:detail.date, type:'date'}) 
-                fields.push({label:'Time', name:'time', value:detail.time, type:'time'}) 
-                fields.push({label:'Reason', name:'reason', value:detail.reason, type:'select', options:common.getJobType()}) 
-                fields.push({label:'Dropoff', name:'dropoff', value:detail.dropoff, holder:'Dropoff place', type:'text'}) 
-                fields.push({label:'Payment', name:'payment', value:detail.payment, type:'select', options:common.getPaymentType()}) 
+                fields.push({label:'Pickup', name:'pickup', holder:'Pickup place', value:detail.pickup, type:'text', required:true}) 
+                fields.push({label:'Date', name:'date', value:detail.date, type:'date', required:true}) 
+                fields.push({label:'Time', name:'time', value:detail.time, type:'time', required:true}) 
+                fields.push({label:'Reason', name:'reason', value:detail.reason, type:'select', options:common.getJobType(), required:true}) 
+                fields.push({label:'Dropoff', name:'dropoff', value:detail.dropoff, holder:'Dropoff place', type:'text', required:true}) 
+                fields.push({label:'Payment', name:'payment', value:detail.payment, type:'select', options:common.getPaymentType(), required:true}) 
                 fields.push({label:'Charge', name:'charge', value:detail.charge, type:'number', required:true}) 
                 fields.push({label:'Vehicle', name:'vehicle', value:detail.vehicle, type:'select', options:common.getVehicles(data), required:true}) 
                 fields.push({label:'driver', name:'driver', value:detail.driver, type:'select', options:common.getDrivers(data), required:true}) 
-                fields.push({label:'Status', name:'job', value:state, type:'select', options:common.getJobState(state, role)}) 
+                fields.push({label:'Status', name:'job', value:state, type:'select', options:common.getJobState(state, role), required:true}) 
                 break
             default:
                 fields.push({label:'Pickup', name:'pickup', holder:'Pickup place', value:detail.pickup, type:'text', readonly:true}) 
@@ -44,7 +44,7 @@ exports.Class = Module.Class.extend({
                 fields.push({label:'Charge', name:'charge', value:detail.charge, type:'number', readonly:true}) 
                 fields.push({label:'Vehicle', name:'vehicle', value:detail.vehicle, type:'select', options:common.getVehicles(data), required:true}) 
                 fields.push({label:'driver', name:'driver', value:detail.driver, type:'select', options:common.getDrivers(data), required:true}) 
-                fields.push({label:'Status', name:'job', value:state, type:'select', options:common.getJobState(state, role)}) 
+                fields.push({label:'Status', name:'job', value:state, type:'select', options:common.getJobState(state, role), required:true}) 
                 hiddens.push({name:'reason', value:detail.reason})
                 hiddens.push({name:'payment', value:detail.payment})
                 break
@@ -52,16 +52,16 @@ exports.Class = Module.Class.extend({
         }else if (job.get('createdBy') === mi.id){
             switch(state){
             case 10:
-                fields.push({label:'Pickup', name:'pickup', holder:'Pickup place', value:detail.pickup, type:'text'}) 
-                fields.push({label:'Date', name:'date', value:detail.date, type:'date'}) 
-                fields.push({label:'Time', name:'time', value:detail.time, type:'time'}) 
-                fields.push({label:'Reason', name:'reason', value:detail.reason, type:'select', options:common.getJobType()}) 
-                fields.push({label:'Dropoff', name:'dropoff', value:detail.dropoff, holder:'Dropoff place', type:'text'}) 
-                fields.push({label:'Payment', name:'payment', value:detail.payment, type:'select', options:common.getPaymentType()}) 
+                fields.push({label:'Pickup', name:'pickup', holder:'Pickup place', value:detail.pickup, type:'text', required:true}) 
+                fields.push({label:'Date', name:'date', value:detail.date, type:'date', required:true}) 
+                fields.push({label:'Time', name:'time', value:detail.time, type:'time', required:true}) 
+                fields.push({label:'Reason', name:'reason', value:detail.reason, type:'select', options:common.getJobType(), required:true}) 
+                fields.push({label:'Dropoff', name:'dropoff', value:detail.dropoff, holder:'Dropoff place', type:'text', required:true}) 
+                fields.push({label:'Payment', name:'payment', value:detail.payment, type:'select', options:common.getPaymentType(), required:true}) 
                 fields.push({label:'Charge', name:'charge', value:detail.charge, type:'static'}) 
                 fields.push({label:'Vehicle', name:'vehicle', value:detail.vehicle, type:'static', url:'#vehicle/'}) 
                 fields.push({label:'driver', name:'driver', value:detail.driver, type:'static', url:'#user/'}) 
-                fields.push({label:'Status', name:'job', value:state, type:'select', options:common.getJobState(state, role)}) 
+                fields.push({label:'Status', name:'job', value:state, type:'select', options:common.getJobState(state, role), required:true}) 
                 break
             default:
                 fields.push({label:'Pickup', name:'pickup', holder:'Pickup place', value:detail.pickup, type:'text', readonly:true}) 
@@ -94,7 +94,7 @@ exports.Class = Module.Class.extend({
                 fields.push({label:'Charge', name:'charge', value:detail.charge, type:'number', readonly:true}) 
                 fields.push({label:'Vehicle', name:'vehicle', value:common.vehicleDesc(data, detail.vehicle), type:'static'}) 
                 fields.push({label:'driver', name:'driver', value:common.driverDesc(data,detail.driver), type:'static'}) 
-                fields.push({label:'Status', name:'job', value:state, type:'select', options:common.getJobState(state, role)}) 
+                fields.push({label:'Status', name:'job', value:state, type:'select', options:common.getJobState(state, role), required:true}) 
                 hiddens.push({name:'reason', value:detail.reason})
                 hiddens.push({name:'payment', value:detail.payment})
                 hiddens.push({name:'vehicle', value:detail.vehicle})
@@ -110,7 +110,7 @@ exports.Class = Module.Class.extend({
                 fields.push({label:'Charge', name:'charge', value:detail.charge, type:'number', readonly:true}) 
                 fields.push({label:'Vehicle', name:'vehicle', value:common.vehicleDesc(data, detail.vehicle), type:'static'}) 
                 fields.push({label:'driver', name:'driver', value:common.driverDesc(data,detail.driver), type:'static'}) 
-                fields.push({label:'Status', name:'job', value:state, type:'select', options:common.getJobState(state, role)}) 
+                fields.push({label:'Status', name:'job', value:state, type:'select', options:common.getJobState(state, role), required:true}) 
                 fields.push({label:'Code', name:'verify', value:'', type:'number', required:true}) 
                 hiddens.push({name:'reason', value:detail.reason})
                 hiddens.push({name:'payment', value:detail.payment})
