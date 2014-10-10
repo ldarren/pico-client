@@ -1,15 +1,24 @@
 var
 Module = require('Module'),
 common = require('modules/common'),
-tpl = '#<%=id%><div class=right>$<%=info.charge%></div>'+
-    '<div><%=info.time%></div>'+
-    '<div class=pickup><%=info.pickup%></div><div class=dropoff><%=info.dropoff%></div>'
+linkTpl =
+'<div class=card><ul class=table-view>'+
+'<li class="table-view-cell media"><a class="navigate-right" href=URL><span class="media-object pull-left icon icon-ICON"></span>'+
+'<div class="media-body">TITLE<p>DESC</p></div></a></li>'+
+'</ul></div>'
 
 exports.Class = Module.Class.extend({
-    tagName: 'li',
-    className: 'table-view-cell',
-    create: function(spec){
-        var m = this.requireType('model').value.attributes
-        this.$el.html(_.template(tpl, {id:m.id, info:m.json}))
+    create: function(spec, params){
+        var self = this
+        this.require('invoice').value.fetch({
+            data:{
+                type: 3,
+                from: params[0],
+                to: params[1]
+            },
+            success: function(coll, raw){
+                self.$el.append(linkTpl.replace('URL', raw).replace('ICON', 'file-excel').replace('TITLE', 'Download report').replace('DESC', 'Save as excel spreadsheet'))
+            }
+        })
     }
 })

@@ -41,8 +41,6 @@ exports.Class = Module.Class.extend({
                 this.modules.push(new s.Class(s, [], this))
             }
         }
-        document.dispatchEvent(pico.createEvent('lnReset'))
-        Backbone.history.start()
     },
 
     render: function(){
@@ -57,6 +55,10 @@ exports.Class = Module.Class.extend({
         switch(params[0]){
         case 'invalidate': this.drawModule.apply(this, params.slice(1)); break
         case 'slide': this.main.dispatchEvent(pico.createEvent('transit', params[2])); break
+        case 'userReady':
+            document.dispatchEvent(pico.createEvent('lnReset'))
+            Backbone.history.start()
+            /* through */
         default:
             this.triggerAll(params, params.splice(1, 1))
             break
