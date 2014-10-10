@@ -55,7 +55,7 @@ exports.getJobState = function(state, role){
     case 21:
         switch(state){
         case 10: return {10:jobState[10],100:jobState[100]}
-        case 20: return {20:jobState[20]}
+        case 20: return {20:jobState[20],100:jobState[100]}
         case 30: return {30:jobState[30]}
         case 40: return {40:jobState[40]}
         default: return {}
@@ -64,7 +64,7 @@ exports.getJobState = function(state, role){
     case 31:
         switch(state){
         case 20: return {20:jobState[20],30:jobState[30]}
-        case 30: return {40:jobState[40],}
+        case 30: return {30:jobState[30],40:jobState[40]}
         case 40: return {40:jobState[40]}
         default: return {}
         }
@@ -72,10 +72,10 @@ exports.getJobState = function(state, role){
     case 41:
     case 101:
         switch(state){
-        case 10: return {20:jobState[20], 30:jobState[30], 100:jobState[100]}
-        case 20: return {30:jobState[30], 100:jobState[100]}
-        case 30: return {40:jobState[40], 100:jobState[100]}
-        case 40: return {50:jobState[50]}
+        case 10: return {10:jobState[10], 20:jobState[20], 100:jobState[100]}
+        case 20: return {20:jobState[20], 30:jobState[30], 100:jobState[100]}
+        case 30: return {30:jobState[30], 40:jobState[40], 100:jobState[100]}
+        case 40: return {40:jobState[40], 50:jobState[50]}
         default: return {}
         }
         break
@@ -127,7 +127,7 @@ exports.viewableRoles = function(role){
 exports.viewablePages = function(role){
     switch(parseInt(role)){
     case 21:
-    case 31: return ['users','jobs','jobHistory','vehicles'] 
+    case 31: return ['users','jobs','jobHistory'] 
     case 41: 
     case 101: return ['users','jobs','jobHistory','vehicles','invoice/pick']
     default: return ['users','jobs']

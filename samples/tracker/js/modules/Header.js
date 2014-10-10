@@ -102,9 +102,13 @@ exports.Class = Module.Class.extend({
         if (c.right){
             addToolbar($rightBar, c.right)
         }
+
+        this.delegateEvents()
     },
 
     onToolbar: function(e, isLeft){
+        this.undelegateEvents()
+        window.setTimeout(function(self){ self.delegateEvents() }, 100, this)
         var
         ele = e.target,
         id = ele.id
@@ -114,8 +118,6 @@ exports.Class = Module.Class.extend({
         case 'search': this.show({search:true}); break
         default: this.triggerHost(id, isLeft)
         }
-
-        //ele.classList.add('hidden')
     },
 
     onFind: function(e){
