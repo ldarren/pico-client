@@ -15,6 +15,7 @@ show = function(data, job, detail){
     if(common.isAdminAbove(role)){
         switch(state){
         case 10:
+        case 20:
             fields.push({label:'Pickup', name:'pickup', holder:'Pickup place', value:detail.pickup, type:'text', required:true}) 
             fields.push({label:'Date', name:'date', value:detail.date, type:'date', required:true}) 
             fields.push({label:'Time', name:'time', value:detail.time, type:'time', required:true}) 
@@ -34,11 +35,13 @@ show = function(data, job, detail){
             fields.push({label:'Dropoff', name:'dropoff', value:detail.dropoff, holder:'Dropoff place', type:'text', readonly:true}) 
             fields.push({label:'Payment', name:'payment', value:common.paymentTypeDesc(detail.payment), type:'static'}) 
             fields.push({label:'Charge', name:'charge', value:detail.charge, type:'number', readonly:true}) 
-            fields.push({label:'Vehicle', name:'vehicle', value:detail.vehicle, type:'select', options:common.getVehicles(data), required:true}) 
-            fields.push({label:'driver', name:'driver', value:detail.driver, type:'select', options:common.getDrivers(data), required:true}) 
+            fields.push({label:'Vehicle', name:'vehicle', value:common.vehicleDesc(data, detail.vehicle), type:'static'}) 
+            fields.push({label:'driver', name:'driver', value:common.driverDesc(data,detail.driver), type:'static'}) 
             fields.push({label:'Status', name:'job', value:state, type:'select', options:common.getJobState(state, role), required:true}) 
             hiddens.push({name:'reason', value:detail.reason})
             hiddens.push({name:'payment', value:detail.payment})
+            hiddens.push({name:'vehicle', value:detail.vehicle})
+            hiddens.push({name:'driver', value:detail.driver})
             break
         }
         left.push('cancel'), right.push('ok')
