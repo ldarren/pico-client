@@ -108,7 +108,7 @@ exports.Class = Module.Class.extend({
 
     onToolbar: function(e, isLeft){
         this.undelegateEvents()
-        window.setTimeout(function(self){ self.delegateEvents() }, 100, this)
+        window.setTimeout(function(self){ self.delegateEvents() }, 10, this)
         var
         ele = e.target,
         id = ele.id

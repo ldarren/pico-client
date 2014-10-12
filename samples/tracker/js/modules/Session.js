@@ -26,6 +26,7 @@ userReady = function(model){
     this.stopListening(this.data, 'add')
     this.triggerHost('userReady', user)
     if (-1 !== this.authPages.indexOf(Router.instance.currPath())) Router.instance.home(true)
+    this.triggerHost('modelReady')
 },
 userAdded = function(model){
     if (model.id !== this.owner.models[0].id) return
@@ -52,6 +53,8 @@ exports.Class = Module.Class.extend({
         if(cached){
             try{ owner.add(JSON.parse(cached)) }
             catch(exp){ console.error(exp) }
+        }else{
+            this.triggerHost('modelReady')
         }
     },
     onNetworkError: function(err){
