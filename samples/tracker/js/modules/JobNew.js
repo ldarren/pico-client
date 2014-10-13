@@ -24,14 +24,14 @@ exports.Class = Module.Class.extend({
     },
     moduleEvents: function(evt, sender){
         switch(evt){
-        case 'cancel': window.history.back(); break
+        case 'cancel': Router.instance.back(); break
         case 'ok':
             if (!this.el.checkValidity()) return alert('Missing info')
             this.data.create(null, {
                 data: this.el,
                 wait: true,
                 success: function(model, data){
-                    window.history.back();
+                    Router.instance.back();
                 }
             })
             break

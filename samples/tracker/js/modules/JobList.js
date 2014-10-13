@@ -53,7 +53,7 @@ exports.Class = Module.Class.extend({
 
     moduleEvents: function(evt, sender){
         switch(evt){
-        case 'plus': Router.instance.nav('job/new'); break 
+        case 'plus': Router.instance.go('job/new'); break 
         default: Module.Class.prototype.moduleEvents.apply(this, arguments); break
         }
     }

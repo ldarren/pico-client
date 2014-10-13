@@ -69,7 +69,6 @@ exports.Class = Module.Class.extend({
 
     drawModule: function(mod, where){
         if (!mod || -1 === this.modules.indexOf(mod)) return
-
         switch(where){
         case 'main': this.main.insertBefore(mod.render(), this.main.firstChild); break
         case 'modal': this.modal.appendChild(mod.render()); break

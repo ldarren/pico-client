@@ -18,7 +18,7 @@ uncache = function(){
 
     // signout
     this.listenTo(this.data, 'add', userAdded)
-    if (-1 === this.authPages.indexOf(Router.instance.currPath())) Router.instance.nav(this.authPages[0])
+    if (-1 === this.authPages.indexOf(Router.instance.currPath())) Router.instance.go(this.authPages[0])
 },
 userReady = function(model){
     var user = this.data.get(model.id)
@@ -46,7 +46,7 @@ exports.Class = Module.Class.extend({
         owner.reset()
         this.owner = owner
         this.listenTo(owner, 'add', cache)
-        this.listenTo(owner, 'remove', uncache)
+        this.listenTo(owner, 'reset', uncache)
         this.listenTo(this.data, 'add', userAdded)
         network.slot('error', this.onNetworkError, this)
 
@@ -65,7 +65,7 @@ exports.Class = Module.Class.extend({
     moduleEvents: function(evt, sender){
         switch(evt){
         case 'changeRoute':
-            if (!this.owner.length && -1 === this.authPages.indexOf(arguments[2])) Router.instance.nav(this.authPages[0])
+            if (!this.owner.length && -1 === this.authPages.indexOf(arguments[2])) Router.instance.go(this.authPages[0])
             break
         }
     }

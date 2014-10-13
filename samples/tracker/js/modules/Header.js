@@ -114,7 +114,7 @@ exports.Class = Module.Class.extend({
         id = ele.id
 
         switch(id){
-        case 'left-nav': window.history.back(); break
+        case 'left-nav': Router.instance.back(); break
         case 'search': this.show({search:true}); break
         default: this.triggerHost(id, isLeft)
         }

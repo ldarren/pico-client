@@ -33,12 +33,12 @@ exports.Class = Module.Class.extend({
     },
     moduleEvents: function(evt, sender){
         switch(evt){
-        case 'cancel': window.history.back(); break
+        case 'cancel': Router.instance.back(); break
         case 'ok':
             this.vehicle.save(null, {
                 data: this.el,
                 success: function(model, data){
-                    window.history.back();
+                    Router.instance.back();
                 }
             })
             break

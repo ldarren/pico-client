@@ -24,11 +24,11 @@ exports.Class = Module.Class.extend({
     },
     moduleEvents: function(evt, sender){
         switch(evt){
-        case 'cancel': window.history.back(); break
+        case 'cancel': Router.instance.back(); break
         case 'ok':
             if (!this.el.checkValidity()) return alert('Missing params')
             var form = this.el.elements
-            Router.instance.nav('invoice/'+(form['type'].value)+'/'+(form['from'].value)+'/'+(form['to'].value))
+            Router.instance.go('invoice/'+(form['type'].value)+'/'+(form['from'].value)+'/'+(form['to'].value))
             break
         default: Module.Class.prototype.moduleEvents.apply(this, arguments)
         }

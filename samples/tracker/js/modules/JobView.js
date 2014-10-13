@@ -35,6 +35,6 @@ exports.Class = Module.Class.extend({
     },
     forget: function(e){
         this.data.remove(this.job.id)
-        window.history.back()
+        Router.instance.back()
     }
 })

@@ -126,7 +126,6 @@
         if (evt.oldURL) oldHash = evt.oldURL.substring(1) || ''
         if (evt.newURL) newHash = evt.newURL.substring(1) || ''
         else newHash = exports.location.hash.substring(1) || ''
-
         pico.signal(pico.HASH_CHANGE, [oldHash, newHash])
     }
 
@@ -258,8 +257,6 @@
             var evt = document.createEvent('CustomEvent')
             evt.initCustomEvent(name, bubbles || false, cancelable || false, detail)
             return evt
-        },
-        vendor: function(name){
         },
         changeState: function(uri, desc, userData){
             var search = '?'

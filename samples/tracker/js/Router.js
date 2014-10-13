@@ -14,12 +14,17 @@ changeRoute = function(path){
     }
 },
 inst = {
-    nav: function(url, replace){
-        setTimeout(function(){
-            context.navigate(url, replace ? triggerReplace : trigger)
+    go: function(url, replace){
+        window.setTimeout(function(){
+            // BUG: android reverse the replace url
+            // http://stackoverflow.com/questions/15193359/does-android-support-window-location-replace-or-any-equivalent
+            context.navigate(url, trigger)//, replace ? triggerReplace : trigger)
         }, 0)
     },
-    home: function(replace){ inst.nav('', replace) },
+    back: function(step){
+        window.history.go(step || -1)
+    },
+    home: function(replace){ inst.go('', replace) },
     currPath: function(){ return currPath },
     isBack: function(){ return index < lastIndex }
 }

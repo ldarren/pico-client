@@ -52,8 +52,8 @@ exports.Class = Module.Class.extend({
     },
     moduleEvents: function(evt, sender){
         switch(evt){
-        case 'ok': return Router.instance.nav('invoice/2/FROM/TO/ID'.replace('FROM', this.params[0]).replace('TO', this.params[1]).replace('ID',this.selectedId), true)
-        case 'cancel': return window.history.back()
+        case 'ok': return Router.instance.go('invoice/2/FROM/TO/ID'.replace('FROM', this.params[0]).replace('TO', this.params[1]).replace('ID',this.selectedId), true)
+        case 'cancel': return Router.instance.back()
         }
     }
 })

@@ -30,7 +30,7 @@ exports.Class = Module.Class.extend({
     },
     moduleEvents: function(evt, sender){
         switch(evt){
-        case 'edit': Router.instance.nav('user/edit/'+this.user.id); break
+        case 'edit': Router.instance.go('user/edit/'+this.user.id); break
         default: Module.Class.prototype.moduleEvents.apply(this, arguments)
         }
     },
@@ -38,6 +38,6 @@ exports.Class = Module.Class.extend({
         'click button[name=signout]': 'signout'
     },
     signout: function(e){
-        if (this.user.id === this.owner.models[0].id) this.owner.set([])
+        if (this.user.id === this.owner.models[0].id) this.owner.reset()
     }
 })
