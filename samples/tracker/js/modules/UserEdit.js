@@ -23,7 +23,11 @@ exports.Class = Module.Class.extend({
             fields.push({label:'Name', name:'name', value:detail.name, type:'text'}) 
             fields.push({label:'Phone', name:'tel', value:detail.tel, type:'tel'}) 
             fields.push({label:'Email', name:'email', value:detail.email, type:'email'}) 
-            fields.push({label:'Role', name:'user', value:user.get('user'), type:'select', options:common.getRole()}) 
+            if (mi.id === user.id){ // no self demoting
+                fields.push({label:'Role', name:'user', value:common.roleDesc(role), type:'static'}) 
+            }else{
+                fields.push({label:'Role', name:'user', value:user.get('user'), type:'select', options:common.getRole()}) 
+            }
         }else{
             if (mi.id === user.id){
                 fields.push({label:'Name', name:'name', value:detail.name, type:'text'}) 

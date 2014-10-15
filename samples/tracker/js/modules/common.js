@@ -115,7 +115,7 @@ exports.driverDesc = function(data, id){
 exports.isCustomer = function(role){ return 21 == role }
 exports.isAdminAbove = function(role){ return role > 40 }
 exports.isDriverAbove = function(role){ return role > 30 }
-exports.isSuperAbove = function(role){ return role > 101 }
+exports.isSuperAbove = function(role){ return role > 100 }
 exports.viewableRoles = function(role){
     switch(parseInt(role)){
     case 31: return [31, 41]
