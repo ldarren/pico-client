@@ -149,13 +149,12 @@
 
             pico.objTools.mergeObj(paths, options.paths)
 
-            exports.addEventListener('load', function(){
-                if ('phonegap' === envs.browser){
-                    document.addEventListener('deviceready', onDeviceReady, false)
-                }else{
-                    onDeviceReady()
-                }
-            })
+			if ('phonegap' === envs.browser){
+				document.addEventListener('deviceready', onDeviceReady, false)
+				pico.attachFile('cordova.js', 'js')
+			}else{
+				exports.addEventListener('load', onDeviceReady, false)
+			}
         },
         // for future file concatenating
         def: function(scriptLink, script){
