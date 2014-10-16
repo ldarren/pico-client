@@ -2,12 +2,34 @@ var
 Router = require('Router'),
 Page = require('Page'),
 Module = require('Module'),
+attachDeps = function(deps, cb){
+    if (!deps || !deps.length) return cb()
+    pico.attachFile(deps.shift(), 'js', function(){ attachDeps(deps, cb) })
+},
+attachStyles = function(styles, cb){
+    if (!styles || !styles.length) return cb()
+    var s = styles.shift()
+    if ('string' === typeof s) {
+        pico.attachFile(s, 'css', function(){ attachStyles(styles, cb) })
+    }else{
+        restyle(s, ['webkit'])
+        attachStyles(styles, cb)
+    }
+},
+removeOldPage = function(){
+    if (this.oldPage) this.oldPage.remove()
+    this.oldPage = undefined
+    this.triggerAll('mainTransited', this.main.offsetLeft, this.main.offsetTop)
+},
+transited = function(){
+    this.triggerAll('mainTransited', this.main.offsetLeft, this.main.offsetTop)
+},
 changeRoute = function(path, params){
     var pageConfig = this.pages[path]
 
     if (!pageConfig) return Router.instance.home()
 
-    if (this.oldPage) this.removeOldPage()
+    if (this.oldPage) removeOldPage.call(this)
     if (this.currPage) this.oldPage = this.currPage
     this.currPage = new Page.Class(pageConfig, params, this)
     this.render()
@@ -17,21 +39,32 @@ changeRoute = function(path, params){
 exports.Class = Module.Class.extend({
     el: 'body',
     initialize: function(p){
-        var r = new Router.Class({routes: p.routes})
+        var
+        self = this,
+        r = new Router.Class({routes: p.routes})
 
         r.on('route', changeRoute, this)
         
-        this.el.innerHTML = '<div class="lnBook lnSlider"></div><div></div><div></div>'
-
-        this.main = this.el.firstChild
-        this.secondary = this.main.nextElementSibling
-        this.modal = this.secondary.nextElementSibling
         this.pages = p.pages
 
-        this.main.addEventListener('flipped', this.removeOldPage.bind(this), false)
-        this.main.addEventListener('transited', this.transited.bind(this), false)
+        attachStyles(p.styles, function(){
+            attachDeps(p.deps, function(){
+                self.el.innerHTML = '<div class="lnBook lnSlider"></div><div></div><div></div>'
 
-        Module.Class.prototype.initialize.call(this, p)
+                var
+                m = self.el.firstChild,
+                s = m.nextElementSibling
+
+                self.modal = s.nextElementSibling
+                self.main = m
+                self.secondary = s
+
+                m.addEventListener('flipped', removeOldPage.bind(self), false)
+                m.addEventListener('transited', transited.bind(self), false)
+
+                Module.Class.prototype.initialize.call(self, p)
+            })
+        })
     },
 
     create: function(spec){
@@ -76,15 +109,5 @@ exports.Class = Module.Class.extend({
         }
 
         document.dispatchEvent(pico.createEvent('lnReset'))
-    },
-
-    removeOldPage: function(){
-        if (this.oldPage) this.oldPage.remove()
-        this.oldPage = undefined
-        this.triggerAll('mainTransited', this.main.offsetLeft, this.main.offsetTop)
-    },
-
-    transited: function(){
-        this.triggerAll('mainTransited', this.main.offsetLeft, this.main.offsetTop)
     }
 })
