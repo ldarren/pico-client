@@ -18,6 +18,18 @@ removeRow = function(model){
     var id = model.id
     this.grid[id].remove()
     delete this.grid[id]
+},
+searchLoc = function(model){
+    var m = model.get('json')
+    return m.name && -1 !== m.name.toLowerCase().indexOf(this)
+},
+reload = function(keywords){
+    this.empty()
+    var models = keywords && keywords.length ? this.data.filter(searchLoc, keywords.toLowerCase()) : this.data.models
+
+    for(var i=0,m; m=models[i]; i++){
+        addRow.call(this, m)
+    }
 }
 
 exports.Class = Module.Class.extend({
@@ -34,11 +46,11 @@ exports.Class = Module.Class.extend({
         this.viewableRoles = common.viewableRoles(data.get(this.myId).get('user'))
         this.Row = this.requireType('module')
         this.whitelist = this.require('whitelist').value,
+        this.data = data
         this.grid = {}
 
-        data.forEach(function(model){
-            addRow.call(self, model)
-        })
+        reload.call(this)
+
         this.listenTo(data, 'add', addRow)
         this.listenTo(data, 'remove', removeRow)
     },
@@ -54,6 +66,7 @@ exports.Class = Module.Class.extend({
         switch(evt){
         case 'ok': return Router.instance.go('invoice/2/FROM/TO/ID'.replace('FROM', this.params[0]).replace('TO', this.params[1]).replace('ID',this.selectedId), true)
         case 'cancel': return Router.instance.back()
+        case 'find': return reload.call(this, arguments[2])
         }
     }
 })

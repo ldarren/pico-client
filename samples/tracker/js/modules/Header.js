@@ -64,7 +64,7 @@ exports.Class = Module.Class.extend({
         el.dispatchEvent(pico.createEvent('transit', detail))
     },
 
-    show: function(c){
+    show: function(c, title){
         var
         $search = this.$search,
         $leftBar = this.$leftBar,
@@ -92,8 +92,8 @@ exports.Class = Module.Class.extend({
         this.lastConfig = c
         $search.addClass('hidden').blur()
 
-        if (c.title){
-            $title.text(c.title)
+        if (title || c.title){
+            $title.text(title || c.title)
             $title.removeClass('hidden')
         }
         if (c.left){
@@ -122,10 +122,9 @@ exports.Class = Module.Class.extend({
 
     onFind: function(e){
         var val = this.$search.val().trim()
-        this.triggerHost('find', [val])
+        this.triggerHost('find', val)
         if (13 === e.keyCode){
-            this.lastConfig.title = val
-            this.show(this.lastConfig)
+            this.show(this.lastConfig, val)
         }
     }
 })

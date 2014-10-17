@@ -127,10 +127,10 @@ exports.viewableRoles = function(role){
 exports.viewablePages = function(role){
     switch(parseInt(role)){
     case 21:
-    case 31: return ['users','jobs','jobHistory'] 
+    case 31: return ['users','jobs','jobHistory', 'settings'] 
     case 41: 
-    case 101: return ['users','jobs','jobHistory','vehicles','invoice/pick']
-    default: return ['users','jobs']
+    case 101: return ['users','jobs','jobHistory','vehicles','invoice/pick', 'settings']
+    default: return ['users','jobs', 'settings']
     }
 }
 exports.getInvoiceType = function(){

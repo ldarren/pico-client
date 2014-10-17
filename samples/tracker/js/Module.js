@@ -82,10 +82,7 @@ exports.Class = Backbone.View.extend(_.extend({
         this.off()
         Backbone.View.prototype.remove.apply(this, arguments)
         if (this.style) this.style.remove()
-        for(var i=0,ms=this.modules,m; m=ms[i]; i++){
-            m.remove()
-        }
-        ms.length = 0
+        this.empty()
         specMgr.unload(this.rawSpec, this.spec)
     },
     proxy: function(mod, params, spec){
@@ -100,6 +97,12 @@ exports.Class = Backbone.View.extend(_.extend({
             this.domChildren[i] = el
         }
         return m
+    },
+    empty:function(){
+        for(var i=0,ms=this.modules,m; m=ms[i]; i++){
+            m.remove()
+        }
+        ms.length = 0
     },
     addSpec: function(spec){
         this.spec = (spec || []).concat(this.spec)

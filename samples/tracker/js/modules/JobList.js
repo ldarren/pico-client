@@ -25,10 +25,18 @@ checkRight = function(mi){
     var role = this.role = mi.get('user')
 
     if (common.isCustomer(role) || common.isAdminAbove(role)) this.triggerHost('changeHeader', {right:['plus']})
+},
+searchLoc = function(model){
+    var m = model.get('json')
+    return (m.pickup && -1 !== m.pickup.toLowerCase().indexOf(this)) || (m.dropoff && -1 !== m.dropoff.toLowerCase().indexOf(this))
+},
+reload = function(keywords){
+    this.empty()
+    var models = keywords && keywords.length ? this.data.filter(searchLoc, keywords.toLowerCase()) : this.data.models
 
-    this.data.forEach(function(model){
-        addRow.call(this, model)
-    }, this)
+    for(var i=0,m; m=models[i]; i++){
+        addRow.call(this, m)
+    }
 }
 
 exports.Class = Module.Class.extend({
@@ -46,6 +54,7 @@ exports.Class = Module.Class.extend({
         this.grid = {}
 
         checkRight.call(this, data.get(this.myId))
+        reload.call(this)
 
         this.listenTo(data, 'add', addRow)
         this.listenTo(data, 'remove', removeRow)
@@ -53,8 +62,9 @@ exports.Class = Module.Class.extend({
 
     moduleEvents: function(evt, sender){
         switch(evt){
-        case 'plus': Router.instance.go('job/new'); break 
-        default: Module.Class.prototype.moduleEvents.apply(this, arguments); break
+        case 'plus': return Router.instance.go('job/new')
+        case 'find': return reload.call(this, arguments[2])
+        default: reutrn Module.Class.prototype.moduleEvents.apply(this, arguments)
         }
     }
 })

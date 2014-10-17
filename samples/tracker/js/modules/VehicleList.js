@@ -14,6 +14,18 @@ removeRow = function(model){
     var id = model.id
     this.grid[id].remove()
     delete this.grid[id]
+},
+searchLoc = function(model){
+    var m = model.get('json')
+    return m.tag && -1 !== m.tag.toLowerCase().indexOf(this)
+},
+reload = function(keywords){
+    this.empty()
+    var models = keywords && keywords.length ? this.data.filter(searchLoc, keywords.toLowerCase()) : this.data.models
+
+    for(var i=0,m; m=models[i]; i++){
+        addRow.call(this, m)
+    }
 }
 
 exports.Class = Module.Class.extend({
@@ -21,11 +33,12 @@ exports.Class = Module.Class.extend({
     className: 'table-view',
     create: function(spec){
         var
-        self = this,
         data = this.require('data').value,
         owner = this.require('owner').value    
 
         this.myId = owner.models[0].id
+        this.data = data
+
         var
         mi = data.get(this.myId),
         role = mi.get('user')
@@ -36,17 +49,17 @@ exports.Class = Module.Class.extend({
         this.Row = this.requireType('module')
         this.grid = {}
 
-        data.forEach(function(model){
-            addRow.call(self, model)
-        })
+        reload.call(this)
+
         this.listenTo(data, 'add', addRow)
         this.listenTo(data, 'remove', removeRow)
     },
 
     moduleEvents: function(evt, sender){
         switch(evt){
-        case 'plus': Router.instance.go('vehicle/new'); break 
-        default: Module.Class.prototype.moduleEvents.apply(this, arguments); break
+        case 'plus': return Router.instance.go('vehicle/new')
+        case 'find': return reload.call(this, arguments[2])
+        default: return Module.Class.prototype.moduleEvents.apply(this, arguments)
         }
     }
 })

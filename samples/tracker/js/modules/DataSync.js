@@ -47,7 +47,6 @@ exports.Class = Module.Class.extend({
     create: function(spec){
         for(var i=0,s; s=spec[i]; i++){
             switch(s.name){
-            case 'owner': this.owner = s.value; break
             case 'data': this.data = s.value; break
             case 'dataUsers': this.dataUsers = s.value; break
             case 'pull': this.pull = s.value; break
@@ -76,6 +75,18 @@ exports.Class = Module.Class.extend({
             this.seen = 0
             this.myId = 0
             break
+        case 'refreshCache':
+            var userId = this.myId
+            clearTimeout(this.pollId)
+            this.pollId = 0
+            this.dataUsers.reset()
+            this.removeColl('dataUsers', userId)
+            this.data.reset()
+            this.removeColl('data', userId)
+            this.removeSeen(userId)
+            this.readSeen(userId)
+            this.pollId = setTimeout(poll, 0, this)
+            break
         }
     },
 
@@ -85,6 +96,10 @@ exports.Class = Module.Class.extend({
 
     writeSeen: function(userId){
         storage.setItem('seen'+userId, this.seen)
+    },
+
+    removeSeen: function(userId){
+        storage.removeItem('seen'+userId)
     },
 
     readColl: function(name, userId){
@@ -102,5 +117,9 @@ exports.Class = Module.Class.extend({
         var coll = this[name]
         if (!userId || !coll || !coll.length) return
         storage.setItem(name+userId, JSON.stringify(coll.toJSON()))
+    },
+
+    removeColl: function(name, userId){
+        storage.removeItem(name+userId)
     }
 })
