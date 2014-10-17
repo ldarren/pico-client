@@ -64,7 +64,7 @@ exports.Class = Module.Class.extend({
         switch(evt){
         case 'plus': return Router.instance.go('job/new')
         case 'find': return reload.call(this, arguments[2])
-        default: reutrn Module.Class.prototype.moduleEvents.apply(this, arguments)
+        default: return Module.Class.prototype.moduleEvents.apply(this, arguments)
         }
     }
 })
