@@ -124,6 +124,7 @@ exports.Class = Module.Class.extend({
         var val = this.$search.val().trim()
         this.triggerHost('find', val)
         if (13 === e.keyCode){
+            this.triggerHost('search', val)
             this.show(this.lastConfig, val)
         }
     }

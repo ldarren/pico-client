@@ -58,8 +58,10 @@ exports.Class = Module.Class.extend({
         }
     },
     onNetworkError: function(err){
-        if (err.code) alert('Server error ['+err.code+'] msg['+err.msg+']')
-        if (403 !== err.code) return
+        if (403 !== err.code){
+            if (err.code) alert('Server error ['+err.code+'] msg['+err.msg+']')
+            return
+        }
         this.owner.reset()
         uncache.call(this)
     },

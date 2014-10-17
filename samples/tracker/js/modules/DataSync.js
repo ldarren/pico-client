@@ -10,16 +10,13 @@ poll = function(self){
         data: {seen:self.seen},
         success: function(models, raw){
             if (self.pollId) self.pollId = setTimeout(poll, self.freq, self)
-            self.seen = raw.seen
-            self.writeSeen(userId)
+            self.writeSeen(userId, raw.seen)
             var data = raw.data
             if (data){
                 addRemove(self.data, data) 
-                self.writeColl('data', userId)
                 var dUsers = data.ref
                 if (data.refs){
                     addRemove(self.dataUsers, data.refs) 
-                    self.writeColl('dataUsers', userId)
                 }
             }
         },
@@ -34,6 +31,8 @@ addRemove = function(coll, list){
     coll.remove(_.where(list, status0))
     return true
 },
+writeData = function(){ this.writeColl('data', this.myId) },
+writeDataUsers = function(){ this.writeColl('dataUsers', this.myId) },
 sortDesc = function(m1, m2){
     var s1 = m1.get('updatedAt'), s2 = m2.get('updatedAt')
     return s1 < s2 ? 1 : s1 > s2 ? -1 : 0;
@@ -55,6 +54,7 @@ exports.Class = Module.Class.extend({
         }
         this.pollId = 0
         this.data.comparator = sortDesc
+
     },
 
     moduleEvents: function(evt, sender){
@@ -66,8 +66,17 @@ exports.Class = Module.Class.extend({
             this.readColl('data', userId)
             this.readColl('dataUsers', userId)
             this.pollId = setTimeout(poll, 0, this)
+
+            var data = this.data, dataUsers = this.dataUsers
+            this.listenTo(data, 'add', writeData)
+            this.listenTo(data, 'remove', writeData)
+            this.listenTo(data, 'change', writeData)
+            this.listenTo(dataUsers, 'add', writeDataUsers)
+            this.listenTo(dataUsers, 'remove', writeDataUsers)
+            this.listenTo(dataUsers, 'change', writeDataUsers)
             break
         case 'signout':
+            this.stopListening()
             clearTimeout(this.pollId)
             this.pollId = 0
             this.dataUsers.reset()
@@ -94,8 +103,8 @@ exports.Class = Module.Class.extend({
         this.seen = storage.getItem('seen'+userId) || (new Date(0)).toISOString()
     },
 
-    writeSeen: function(userId){
-        storage.setItem('seen'+userId, this.seen)
+    writeSeen: function(userId, seen){
+        storage.setItem('seen'+userId, this.seen = seen)
     },
 
     removeSeen: function(userId){
