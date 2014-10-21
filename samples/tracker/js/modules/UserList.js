@@ -12,7 +12,7 @@ addRow = function(model){
     if (this.whitelist && -1 === this.whitelist.indexOf(role)) return
 
     if (1 !== model.get('status')) return
-    this.grid[id] = this.proxy(this.Row, [id])
+    this.grid[id] = this.spawn(this.Row, [id])
 },
 removeRow = function(model){
     var id = model.id

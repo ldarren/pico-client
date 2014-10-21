@@ -60,7 +60,6 @@ fs.readlink(process.argv[1], function(err, realPath){
                 'network.js','js',
                 'Router.js','js',
                 'Frame.js','js',
-                'Page.js','js',
                 'Module.js','js',
                 'specMgr.js','js',
                 'Model.js','js',

@@ -8,7 +8,7 @@ addRow = function(model){
     s = model.get('status'),
     id = model.id
     if (1 !== s) return
-    this.grid[id] = this.proxy(this.Row, [id])
+    this.grid[id] = this.spawn(this.Row, [id])
 },
 removeRow = function(model){
     var id = model.id

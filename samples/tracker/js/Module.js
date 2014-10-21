@@ -76,6 +76,11 @@ exports.Class = Backbone.View.extend(_.extend({
         })
     },
     create: function(spec, params){
+        for(var i=0,s; s=spec[i]; i++){
+            if ('module' === s.type) {
+                this.spawn(s, params, this)
+            }
+        }
     },
     remove: function(){
         this._removed = true 
@@ -85,7 +90,7 @@ exports.Class = Backbone.View.extend(_.extend({
         this.empty()
         specMgr.unload(this._rawSpec, this.spec)
     },
-    proxy: function(mod, params, spec){
+    spawn: function(mod, params, spec){
         if ('module' !== mod.type) return console.error('Wrong type!')
         mod.spec = spec && spec.length ? mod.spec.concat(spec) : mod.spec
         var
@@ -103,10 +108,6 @@ exports.Class = Backbone.View.extend(_.extend({
             m.remove()
         }
         ms.length = 0
-    },
-    addSpec: function(spec){
-        this.spec = (spec || []).concat(this.spec)
-        return this.spec.slice()
     },
     require: function(name){
         var spec = this.spec

@@ -13,7 +13,7 @@ addRow = function(model){
 
     if (-1 === this.filter.indexOf(m.job)) return
 
-    if (-1 !== [m.createdBy, parseInt(d.driver)].indexOf(this.myId) || common.isAdminAbove(this.role)) this.grid[id] = this.proxy(this.Row, [id])
+    if (-1 !== [m.createdBy, parseInt(d.driver)].indexOf(this.myId) || common.isAdminAbove(this.role)) this.grid[id] = this.spawn(this.Row, [id])
 },
 removeRow = function(model){
     var id = model.id

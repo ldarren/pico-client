@@ -1,6 +1,5 @@
 var
 Router = require('Router'),
-Page = require('Page'),
 Module = require('Module'),
 attachDeps = function(deps, cb){
     if (!deps || !deps.length) return cb()
@@ -31,7 +30,7 @@ changeRoute = function(path, params){
 
     if (this.oldPage) removeOldPage.call(this)
     if (this.currPage) this.oldPage = this.currPage
-    this.currPage = new Page.Class(pageConfig, params, this)
+    this.currPage = new Module.Class(pageConfig, params, this)
     this.render()
     this.triggerModules('changeRoute', path, params)
 }
@@ -70,7 +69,7 @@ exports.Class = Module.Class.extend({
     create: function(spec){
         for(var i=0,s; s=spec[i]; i++){
             if ('module' === s.type) {
-                // not using Module.proxy, because render immediately is not desired
+                // not using Module.spawn, because render immediately is not desired
                 this.modules.push(new s.Class(s, [], this))
             }
         }
