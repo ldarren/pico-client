@@ -1,10 +1,10 @@
 pico.start({
-    name: 'PROJ_ID',
+    name: 'strapper',
     production: false,
     paths:{
         '*': 'js/',
         html: 'html/',
-        mod: 'js/mod/',
+        modules: 'js/modules/',
         pico: 'lib/pico/lib/'
     }
 },function(){
