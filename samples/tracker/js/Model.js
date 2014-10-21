@@ -2,7 +2,7 @@ exports.Class = Backbone.Collection.extend({
     initialize: function(models, config){
         this.url = config.list
         this.model = Backbone.Model.extend({
-            idAttribute: config.idAttributei || 'id',
+            idAttribute: config.idAttribute || 'id',
             sync: function(method, model, options){
                 var url = config[method]
                 if (url){

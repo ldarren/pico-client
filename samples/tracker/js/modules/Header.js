@@ -110,7 +110,7 @@ exports.Class = Module.Class.extend({
         this.undelegateEvents()
         window.setTimeout(function(self){ self.delegateEvents() }, 10, this)
         var
-        ele = e.target,
+        ele = e.currentTarget,
         id = ele.id
 
         switch(id){

@@ -4,7 +4,7 @@ role = {
     21:'Customer',
     31:'Driver',
     41:'Admin',
-    //101:'Super Admin'
+//    101:'Super Admin'
 },
 jobType = {
     1: 'Arrival',

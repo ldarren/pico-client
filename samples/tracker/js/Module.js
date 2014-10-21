@@ -53,19 +53,19 @@ exports.Events = ModuleEvents
 
 exports.Class = Backbone.View.extend(_.extend({
     initialize: function(options, params, host){
-        this.id = id++
+        this._id = id++
         this.name = options.name
         this.host = host
         this.modules = []
-        this.domChildren = []
-        this.rawSpec = options.spec
-        this.existence = true
+        this._elements = []
+        this._rawSpec = options.spec
+        this._removed = false 
 
         this.on('all', this.moduleEvents, this)
 
         var self = this
         specMgr.load(host, params || [], options.spec, function(err, s){
-            if (!self.existence) return self.remove()
+            if (self._removed) return self.remove()
             self.spec = s
             if (err){
                 console.warn(err)
@@ -78,12 +78,12 @@ exports.Class = Backbone.View.extend(_.extend({
     create: function(spec, params){
     },
     remove: function(){
-        this.existence = false
+        this._removed = true 
         this.off()
         Backbone.View.prototype.remove.apply(this, arguments)
         if (this.style) this.style.remove()
         this.empty()
-        specMgr.unload(this.rawSpec, this.spec)
+        specMgr.unload(this._rawSpec, this.spec)
     },
     proxy: function(mod, params, spec){
         if ('module' !== mod.type) return console.error('Wrong type!')
@@ -94,7 +94,7 @@ exports.Class = Backbone.View.extend(_.extend({
         el = m.render()
         if (el) {
             this.el.appendChild(el)
-            this.domChildren[i] = el
+            this._elements[i] = el
         }
         return m
     },
@@ -131,7 +131,7 @@ exports.Class = Backbone.View.extend(_.extend({
         }
         return {}
     },
-    requireAllType: function(type){
+    requireTypeAll: function(type){
         var
         obj = {},
         spec = this.spec
@@ -151,8 +151,8 @@ exports.Class = Backbone.View.extend(_.extend({
             s = params[1],
             i = this.modules.indexOf(s),
             el = s.render()
-            this.el.replaceChild(el, this.domChildren[i])
-            this.domChildren[i] = el
+            this.el.replaceChild(el, this._elements[i])
+            this._elements[i] = el
             break
         default:
             this.triggerAll(params, params.splice(1, 1))
