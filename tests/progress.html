@@ -1,0 +1,74 @@
+<style scoped>
+.scrubber{
+    position:relative;
+    width:640px;
+    height:32px;
+    background:white;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+.scrubber p{
+    margin:0;
+    padding:0 7px;
+    font-size:13px;
+    white-space:nowrap;
+    line-height:32px;
+}
+.scrubber > p{
+    color: red;
+}
+.scrubber > div{
+    position:absolute;
+    top:0;
+    bottom:0;
+    width:0;
+    height:32px;
+    background:red;
+    overflow:hidden;
+}
+.scrubber > div > p{
+    color: white;
+}
+</style>
+
+<div class=scrubber></div>
+
+<script>
+var
+scrubbers = document.querySelectorAll('.scrubber'),
+onMouseDown = function(e){
+    var
+    s = e.currentTarget,
+    cancelAll = function(){
+        document.removeEventListener('mouseup', cancelAll, false)
+        s.removeEventListener('mousemove', onMouseUp, true)
+        s.removeEventListener('mouseup', onMouseUp, true)
+    }
+
+    document.addEventListener('mouseup', cancelAll, false)
+    s.addEventListener('mousemove', onMouseUp, true)
+    s.addEventListener('mouseup', onMouseUp, true)
+},
+onMouseUp = function(e){
+    var s = e.currentTarget
+    updateProgress(s, (e.pageX - s.offsetLeft)/s.offsetWidth)
+},
+updateProgress = function(scrubber, ratio){
+    var
+    p = scrubber.querySelector('div'),
+    t = scrubber.querySelector('p'),
+    t2 = p.querySelector('p')
+    percent = Math.round(ratio * 100).toString()+'%'
+    p.style.width = percent
+    t2.textContent = t.textContent = 'Uranium: '+percent
+}
+
+for(var i=0,s; s=scrubbers[i]; i++){
+    s.addEventListener('mousedown', onMouseDown, false)
+    s.innerHTML = '<p></p><div><p></p></div>'
+    updateProgress(s, 0)
+}
+</script>
