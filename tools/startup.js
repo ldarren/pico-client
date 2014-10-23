@@ -7,19 +7,17 @@ Transform = require('stream').Transform,
 util = require('util'),
 projId = process.argv[2],
 projName = process.argv[3],
-projURL = process.argv[4],
-projLib = process.argv[5],
+projLib = process.argv[4],
 replace = []
 
-if (!projId || !projName || !projURL || !projLib)
-    return console.log('USAGE: '+process.argv[1]+' id name url lib')
+if (!projId || !projName || !projLib)
+    return console.log('USAGE: '+process.argv[1]+' id name lib')
 
 function ReplaceTransform(options){
     if (!(this instanceof ReplaceTransform)) return new ReplaceTransform(options)
 
     replace.push(/PROJ_ID/g, projId)
     replace.push(/PROJ_NAME/g, projName)
-    replace.push(/PROJ_URL/g, projURL)
 
     Transform.call(this, options)
 }

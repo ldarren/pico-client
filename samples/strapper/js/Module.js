@@ -2,7 +2,7 @@ var
 specMgr = require('specMgr'),
 Router = require('Router'),
 id=0,
-ModuleEvents = {
+Signal = {
     triggerHost: function(){
         if (!this.host) return
         setTimeout(function(context, params){
@@ -49,7 +49,7 @@ ModuleEvents = {
     }
 }
 
-exports.Events = ModuleEvents
+exports.Signal = Signal
 
 exports.Class = Backbone.View.extend(_.extend({
     initialize: function(options, params, host){
@@ -144,6 +144,12 @@ exports.Class = Backbone.View.extend(_.extend({
     render: function(){
         return this.el
     },
+    signal: function(a){
+        switch(typeof a){
+        case 'object':
+        default:
+        }
+    },
     moduleEvents: function(){
         var params = Array.prototype.slice.call(arguments)
         switch(params[0]){
@@ -161,4 +167,4 @@ exports.Class = Backbone.View.extend(_.extend({
         }
 
     }
-},ModuleEvents))
+},Signal))
