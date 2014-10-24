@@ -1,0 +1,25 @@
+{
+    "deps":[
+    ],
+    "styles":[
+        {"i":"mainChannel", "t":"channel", "v":{"url":"http://107.20.154.29:4888","delimiter":"[\"&\"]","beatRate":500}}
+    ],
+    "spec":[
+    ],
+    "pages":{
+        "actions*":{
+            "style":{
+            },
+            "spec":[
+                {
+                    "i":"ld/wm/Desktop",
+                    "t":"module",
+                    "v":[
+                    {"i":"ld/wm/Window","t":"module","v":[]}
+                    {"i":"ld/wm/MenuBar","t":"module","v":[]}
+                    ]
+                }
+            ]
+        }
+    }
+}
