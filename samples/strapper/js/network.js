@@ -6,7 +6,7 @@ create = function(list, cb){
 
     var
     c = list.pop(),
-    config = c.config
+    config = c.value
 
     Net.create({
         url: config.url,

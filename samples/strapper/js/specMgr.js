@@ -44,6 +44,8 @@ load = function(host, params, spec, deps, cb){
     case 'param':
         deps.push({name:s.name, type:t, value:params[s.value]})
         break
+    case 'time':
+    case 'date':
     case 'datetime':
         deps.push({name:s.name, type:t, value:new Date(s.value)})
         break
