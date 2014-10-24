@@ -15,13 +15,13 @@ attachStyles = function(styles, cb){
         attachStyles(styles, cb)
     }
 },
-removeOldPage = function(){
-    if (this.oldPage) this.oldPage.remove()
-    this.oldPage = undefined
-    this.triggerAll('mainTransited', this.main.offsetLeft, this.main.offsetTop)
-},
 transited = function(){
-    this.triggerAll('mainTransited', this.main.offsetLeft, this.main.offsetTop)
+    this.signals.mainTransited(this.main.offsetLeft, this.main.offsetTop).send()
+},
+removeOldPage = function(){
+    if (this.oldPage) this.dump(this.oldPage)
+    this.oldPage = undefined
+    this.signals.mainTransited(this.main.offsetLeft, this.main.offsetTop).send()
 },
 changeRoute = function(path, params){
     var pageConfig = this.pages[path]
@@ -29,14 +29,15 @@ changeRoute = function(path, params){
     if (!pageConfig) return Router.instance.home()
 
     if (this.oldPage) removeOldPage.call(this)
-    if (this.currPage) this.oldPage = this.currPage
-    this.currPage = new Module.Class(pageConfig, params, this)
+    this.oldPage = this.currPage
+    this.currPage = this.spawn({name:path, type:'module', spec:pageConfig, Class:Module.Class}, params, null, true)
     this.render()
-    this.triggerModules('changeRoute', path, params)
+    this.signals.changeRoute(path, params).send()
 }
 
 exports.Class = Module.Class.extend({
     el: 'body',
+    signals:['modelReady', 'changeRoute', 'mainTransited'],
     initialize: function(p){
         var
         self = this,
@@ -66,11 +67,11 @@ exports.Class = Module.Class.extend({
         })
     },
 
-    create: function(spec){
+    create: function(requires, params){
+        var spec = this.spec
         for(var i=0,s; s=spec[i]; i++){
             if ('module' === s.type) {
-                // not using Module.spawn, because render immediately is not desired
-                this.modules.push(new s.Class(s, [], this))
+                this.spawn(s, params, null, true)
             }
         }
     },
@@ -81,32 +82,26 @@ exports.Class = Module.Class.extend({
         m.dispatchEvent(pico.createEvent('flip', {page:this.currPage.render(),from:Router.instance.isBack() ? 'right' : 'left'}))
     },
 
-    moduleEvents: function(){
-        var params = Array.prototype.slice.call(arguments)
+    slots: {
+        invalidate: function(sender, container){
+            if (!mod || -1 === this.modules.indexOf(mod)) return
+            switch(where){
+            case 'main': this.show(mod, this.main, true); break
+            case 'modal': this.show(mod, this.modal); break
+            default: this.show(mod, this.secondary); break
+            }
 
-        switch(params[0]){
-        case 'invalidate': this.drawModule.apply(this, params.slice(1)); break
-        case 'slide': this.main.dispatchEvent(pico.createEvent('transit', params[2])); break
-        case 'modelReady':
+            document.dispatchEvent(pico.createEvent('lnReset'))
+        },
+        slide: function(sender){
+            this.main.dispatchEvent(pico.createEvent('transit', params[2]))
+        },
+        modelReady: function(sender){
             if (!Backbone.History.started){
                 document.dispatchEvent(pico.createEvent('lnReset'))
                 Backbone.history.start()
             }
-            /* through */
-        default:
-            this.triggerAll(params, params.splice(1, 1))
-            break
+            this.signals.modelReady().send([sender])
         }
-    },
-
-    drawModule: function(mod, where){
-        if (!mod || -1 === this.modules.indexOf(mod)) return
-        switch(where){
-        case 'main': this.main.insertBefore(mod.render(), this.main.firstChild); break
-        case 'modal': this.modal.appendChild(mod.render()); break
-        default: this.secondary.appendChild(mod.render()); break
-        }
-
-        document.dispatchEvent(pico.createEvent('lnReset'))
     }
 })
