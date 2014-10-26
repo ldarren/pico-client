@@ -46,20 +46,21 @@ exports.Class = Backbone.View.extend({
         this._removed = false 
 
         var
-        ss = this.signals,
-        signals = {},
-        x
+        ss = this.signals || [],
+        signals = {}
 
-        for(var i=0,s; s=ss[i]; i++){
-            x = function(){
-                arguments.callee.args = Array.prototype.slice.call(arguments) 
-                return arguments.callee
+        ss.forEach(function(evt){
+            var sender = this
+            signals[evt] = function(){
+                return {
+                    args: Array.prototype.slice.call(arguments, 1),
+                    sender: sender,
+                    evt: evt,
+                    send: send
+                }
             }
-            x.sender = this
-            x.evt = s
-            x.send = send
-            signals[s] = x
-        }
+        }, this)
+
         this.signals = signals
 
         this.on('all', recv, this)
@@ -78,12 +79,12 @@ exports.Class = Backbone.View.extend({
 
             var
             r = {},
-            requires = self.requires,
-            item
+            requires = self.requires
 
-            for(var i=0,s; s=spec[i] && requires; i++){
-                item = requires[s.name] 
-                if (item) r[s.name] = item
+            if (requires){
+                for(var i=0,s; s=spec[i]; i++){
+                    if (s.type === requires[s.name]) r[s.name] = s
+                }
             }
 
             self.create(r, params)

@@ -41,7 +41,7 @@ exports.Class = Module.Class.extend({
     initialize: function(p){
         var
         self = this,
-        r = new Router.Class({routes: p.routes})
+        r = new Router.Class(Object.keys(p.pages))
 
         r.on('route', changeRoute, this)
         

@@ -50,7 +50,7 @@ load = function(host, params, spec, deps, cb){
         deps.push({name:s.i, type:t, value:new Date(s.v)})
         break
     default:
-        deps.push(s)
+        deps.push({name:s.i, type:t, value:s.v})
         break
     }
     load(host, params, spec, deps, cb)
