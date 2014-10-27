@@ -37,7 +37,7 @@ load = function(host, params, spec, deps, cb){
     case 'module':
         require(s.i, function(err, mod){
             if (err) return cb(err)
-            deps.push({name:s.i, type:t, Class:mod.Class, spec:s.v})
+            deps.push({name:s.i, type:t, Class:mod.Class, spec:s.v, style:s.s})
             load(host, params, spec, deps, cb)
         })
         return

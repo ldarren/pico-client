@@ -30,7 +30,7 @@ changeRoute = function(path, params){
 
     if (this.oldPage) removeOldPage.call(this)
     this.oldPage = this.currPage
-    this.currPage = this.spawn({name:path, type:'module', spec:pageConfig, Class:Module.Class}, params, null, true)
+    this.currPage = this.spawn({name:path, type:'module', spec:pageConfig.spec, style:pageConfig.style, Class:Module.Class}, params, null, true)
     this.render()
     this.signals.changeRoute(path, params).send()
 }
