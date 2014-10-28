@@ -1,12 +1,12 @@
 var
 Net = require('pico/piDataNetModel'),
-channels, addon,
+channels = {}, addon,
 create = function(list, cb){
     if (!list.length) return cb()
 
     var
     c = list.pop(),
-    config = c.value
+    config = c.v
 
     Net.create({
         url: config.url,
@@ -14,7 +14,7 @@ create = function(list, cb){
         beatRate: config.beatRate || 500,
     }, function(err, client){
         if (err) return cb(err)
-        channels[c.name] = client
+        channels[c.i] = client
         create(list, cb)
     })
 }

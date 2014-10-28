@@ -45,10 +45,10 @@ sortAsc = function(m1, m2){
 exports.Class = Module.Class.extend({
     signals:[],
     requires:{
-        data:'models',
-        dataUsers:'models',
-        pull:'models',
-        freq:'number'
+        data:'data',
+        dataUsers:'dataUsers',
+        pull:'pull',
+        freq:'freq'
     },
     create: function(requires){
         this.data = requires.data.value,

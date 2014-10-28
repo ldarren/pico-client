@@ -37,9 +37,9 @@ userAdded = function(model){
 exports.Class = Module.Class.extend({
     signals: ['signin', 'signout', 'modelReady', 'userReady'],
     requires: {
-        owner:'models',
-        data: 'models',
-        authPages: 'list'
+        owner:'owner',
+        data: 'data',
+        authPages: 'authPages'
     },
     create: function(requires){
         var

@@ -1,10 +1,10 @@
 pico.start({
-    name: 'creator',
+    name: 'main',
     production: false,
     paths:{
         '*': 'js/',
         html: 'html/',
-        ld: 'js/ldarren/',
+        ld: 'mod/ldarren/',
         pico: 'lib/pico/lib/'
     }
 },function(){

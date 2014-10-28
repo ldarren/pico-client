@@ -83,7 +83,7 @@ exports.Class = Backbone.View.extend({
 
             if (requires){
                 for(var i=0,s; s=spec[i]; i++){
-                    if (s.type === requires[s.name]) r[s.name] = s
+                    r[requires[s.name]] = s
                 }
             }
 

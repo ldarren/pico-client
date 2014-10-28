@@ -1,0 +1,38 @@
+#ldwmDesktop{
+    background: url(img/blur.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+	margin:0;
+	padding:0;
+    height:100%;
+    overflow: hidden;
+}
+#ldwmDesktop .dir {
+    overflow: hidden;
+    background: #eee;
+    padding: 10px 5px;
+}
+#ldwmDesktop .dir .file {
+    float: left;
+    padding: 5px 8px;
+    font-size: 11px;
+    text-align: center;
+    width: 33%;
+}
+#ldwmDesktop .dir .file .icon{
+    width: 80px;
+    height: 80px;
+    border-radius: 4px;
+    margin: 0 auto 3px;
+    text-align: center;
+    line-height: 82px;
+    font-size: 70px;
+    color: #fff;
+}
+#ldwmDesktop .dir .file .label{
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}

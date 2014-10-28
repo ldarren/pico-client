@@ -1,10 +1,15 @@
 {
     "deps":[
+        "lib/lean/lean.js"
     ],
     "styles":[
-        {"i":"mainChannel", "t":"channel", "v":{"url":"http://107.20.154.29:4888","delimiter":"[\"&\"]","beatRate":500}}
+        "mod/ldarren/wm/Desktop.css",
+        "lib/lean/lean.css",
+        "css/icon.css",
+        "css/main.css"
     ],
     "spec":[
+        {"i":"mainChannel", "t":"channel", "v":{"url":"http://107.20.154.29:4888","delimiter":"[\"&\"]","beatRate":500}},
         {
             "i":"owner",
             "t":"models",
@@ -42,8 +47,13 @@
                     "i":"ld/wm/Desktop",
                     "t":"module",
                     "v":[
+                    {"i":"apps","t":"list","v":[
+                        { "id":"preview", "icon":"device", "name":"Preview" },
+                        { "id":"editor", "icon":"keyboard", "name":"Editor" }
+                    ]},
                     {"i":"ld/wm/Window","t":"module","v":[]},
-                    {"i":"ld/wm/MenuBar","t":"module","v":[]}
+                    {"i":"ld/wm/MenuBar","t":"module","v":[]},
+                    {"i":"ld/wm/File","t":"module","v":[]}
                     ]
                 }
             ]
