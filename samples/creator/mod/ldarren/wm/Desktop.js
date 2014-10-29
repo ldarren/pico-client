@@ -13,9 +13,11 @@ exports.Class = Module.Class.extend({
     },
     create: function(requires, params){
         this.el.innerHTML = tpl
-        var File = requires.File
+        var
+        dir = this.$('.dir')[0],
+        File = requires.File
         for(var i=0,as=requires.apps.value,a; a=as[i]; i++){
-            this.spawn(File, params, {i:'icon', t:'icon', v:a})
+            this.show(this.spawn(File, params, [{i:'file', t:'map', v:a}], true), dir)
         }
     },
     slots:{

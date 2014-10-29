@@ -106,13 +106,16 @@ exports.Class = Backbone.View.extend({
         if (this.style) this.style.remove()
         specMgr.unload(this._rawSpec, this.spec)
     },
-    spawn: function(mod, params, spec, hidden){
-        if ('module' !== mod.type) return
-        mod.spec = spec && spec.length ? mod.spec.concat(spec) : mod.spec
+    spawn: function(Mod, params, spec, hidden){
+        if ('module' !== Mod.type) return
+        Mod.spec = spec && spec.length ? Mod.spec.concat(spec) : Mod.spec
         var
-        m = new mod.Class(mod, params, this),
-        i = this.modules.push(m)-1,
-        el = m.render()
+        m = new Mod.Class(Mod, params, this),
+        i = this.modules.push(m)-1
+
+        if (hidden) return m
+
+        var el = m.render()
         if (el) {
             this.el.appendChild(el)
             this._elements[i] = el

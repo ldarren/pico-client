@@ -1,13 +1,18 @@
-var Module = require('Module')
+var
+Module = require('Module'),
+tpl = '<div class=icon></div><div class=name></div>'
 
 exports.Class = Module.Class.extend({
-    className: 'ldwmIcon icon',
-    tagName:'li',
+    className: 'file',
     signals: [],
     requires:{
-        'icon':'icon'
+        'file':'file'
     },
     create: function(requires, params){
+        var file = requires.file.value
+        this.el.innerHTML = tpl
+        this.$('.icon').addClass('icon-'+file.icon)
+        this.$('.name').text(file.name)
     },
     slots:{
     }

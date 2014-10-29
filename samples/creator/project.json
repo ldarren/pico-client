@@ -48,7 +48,7 @@
                     "t":"module",
                     "v":[
                     {"i":"apps","t":"list","v":[
-                        { "id":"preview", "icon":"device", "name":"Preview" },
+                        { "id":"preview", "icon":"tablet", "name":"Preview" },
                         { "id":"editor", "icon":"keyboard", "name":"Editor" }
                     ]},
                     {"i":"ld/wm/Window","t":"module","v":[]},
