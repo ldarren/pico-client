@@ -53,7 +53,7 @@ exports.Class = Backbone.View.extend({
             var sender = this
             signals[evt] = function(){
                 return {
-                    args: Array.prototype.slice.call(arguments, 1),
+                    args: Array.prototype.slice.call(arguments),
                     sender: sender,
                     evt: evt,
                     send: send
@@ -78,19 +78,20 @@ exports.Class = Backbone.View.extend({
             self.spec = spec
 
             var
-            r = {},
-            requires = self.requires
+            d = {},
+            deps = self.deps
 
-            if (requires){
+            if (deps){
                 for(var i=0,s; s=spec[i]; i++){
-                    r[requires[s.name]] = s
+                    d[deps[s.name]] = s
                 }
             }
 
-            self.create(r, params)
+            self.deps = d
+            self.create(d, params)
         })
     },
-    create: function(requires, params){
+    create: function(deps, params){
         var spec = this.spec
         for(var i=0,s; s=spec[i]; i++){
             if ('module' === s.type) {

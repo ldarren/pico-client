@@ -36,18 +36,18 @@ userAdded = function(model){
 
 exports.Class = Module.Class.extend({
     signals: ['signin', 'signout', 'modelReady', 'userReady'],
-    requires: {
+    deps: {
         owner:'owner',
         data: 'data',
         authPages: 'authPages'
     },
-    create: function(requires){
+    create: function(deps){
         var
-        owner = requires.owner.value,
+        owner = deps.owner.value,
         cached = storage.getItem('owner')
 
-        this.data = requires.data.value
-        this.authPages = requires.authPages.value
+        this.data = deps.data.value
+        this.authPages = deps.authPages.value
 
         owner.reset()
         this.owner = owner

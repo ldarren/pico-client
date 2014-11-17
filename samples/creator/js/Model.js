@@ -3,7 +3,7 @@ exports.Class = Backbone.Collection.extend({
         this.url = config.list
         this.sync = function(method, model, options){
             options.channel = config.channel
-            var url = options.url || this.url || config[method]
+            var url = options.url || config[method] || this.url
             if (url){
                 options.url = url
                 return Backbone.sync(method, model, options)

@@ -67,7 +67,7 @@ exports.Class = Module.Class.extend({
         })
     },
 
-    create: function(requires, params){
+    create: function(deps, params){
         var spec = this.spec
         for(var i=0,s; s=spec[i]; i++){
             if ('module' === s.type) {

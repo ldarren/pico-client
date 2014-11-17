@@ -3,10 +3,8 @@ var Module = require('Module')
 exports.Class = Module.Class.extend({
     className: 'ldDesktop',
     signals: [],
-    requires:[],
+    deps:[],
     create: function(){
-    },
-    render: function(){
     },
     slots:{
     }

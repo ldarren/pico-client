@@ -44,17 +44,17 @@ sortAsc = function(m1, m2){
 
 exports.Class = Module.Class.extend({
     signals:[],
-    requires:{
+    deps:{
         data:'data',
         dataUsers:'dataUsers',
         pull:'pull',
         freq:'freq'
     },
-    create: function(requires){
-        this.data = requires.data.value,
-        this.dataUsers = requires.dataUsers.value,
-        this.pull = requires.pull.value,
-        this.freq = requires.freq.value
+    create: function(deps){
+        this.data = deps.data.value,
+        this.dataUsers = deps.dataUsers.value,
+        this.pull = deps.pull.value,
+        this.freq = deps.freq.value
         this.pollId = 0
         this.data.comparator = sortDesc
 
