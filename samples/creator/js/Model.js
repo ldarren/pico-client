@@ -1,9 +1,8 @@
 exports.Class = Backbone.Collection.extend({
     initialize: function(models, config){
-        this.url = config.list
         this.sync = function(method, model, options){
             options.channel = config.channel
-            var url = options.url || config[method] || this.url
+            var url = options.url || cont.model ? config.list : config[method]
             if (url){
                 options.url = url
                 return Backbone.sync(method, model, options)

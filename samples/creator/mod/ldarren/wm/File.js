@@ -9,7 +9,7 @@ exports.Class = Module.Class.extend({
         'file':'file'
     },
     create: function(deps, params){
-        var file = deps.file.value
+        var file = deps.file.v
         this.el.innerHTML = tpl
         this.el.setAttribute('fileid', file.id)
         this.$('.icon').addClass('icon-'+file.icon)

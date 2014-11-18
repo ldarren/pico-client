@@ -19,7 +19,7 @@ load = function(host, params, spec, deps, cb){
     case 'ref':
         f = find(s.v, context)
         if (!f) return cb('ref of '+s.v+' not found')
-        deps.push({name:s.i, type:f.t, value:f.v})
+        deps.push({i:s.i, t:f.t, v:f.v})
         break
     case 'refs':
         Array.prototype.push.apply(deps, findAll(s.v, context))
@@ -29,28 +29,28 @@ load = function(host, params, spec, deps, cb){
         if (!f) return cb('model of '+s.v+' not found')
         var m = f.v.get(params[s.param])
         if (!m) return cb('record '+s.param+' of model of '+s.v+' not found')
-        deps.push({name:s.i, type:t, value:m})
+        deps.push({i:s.i, t:t, v:m})
         break
     case 'models':
-        deps.push({name:s.i, type:t, value:new Model.Class(null, s.v)})
+        deps.push({i:s.i, t:t, v:new Model.Class(null, s.v)})
         break
     case 'module':
         require(s.i, function(err, mod){
             if (err) return cb(err)
-            deps.push({name:s.i, type:t, Class:mod.Class, spec:s.v, style:s.s})
+            deps.push({i:s.i, t:t, v:s.v, Class:mod.Class, spec:s.v, style:s.s})
             load(host, params, spec, deps, cb)
         })
         return
     case 'param':
-        deps.push({name:s.i, type:t, value:params[s.v]})
+        deps.push({i:s.i, t:t, v:params[s.v]})
         break
     case 'time':
     case 'date':
     case 'datetime':
-        deps.push({name:s.i, type:t, value:new Date(s.v)})
+        deps.push({i:s.i, t:t, v:new Date(s.v)})
         break
     default:
-        deps.push({name:s.i, type:t, value:s.v})
+        deps.push({i:s.i, t:t, v:s.v})
         break
     }
     load(host, params, spec, deps, cb)
@@ -63,9 +63,9 @@ unload = function(rawSpec, spec){
         case 'models':
         case 'date':
             for(var j=0,s; s=spec[i]; i++){
-                if (r.i === s.name) {
-                    if ('models' === s.type) s.value.reset()
-                    delete s.value
+                if (r.i === s.i) {
+                    if ('models' === s.t) s.v.reset()
+                    delete s.v
                 }
             }
             break
