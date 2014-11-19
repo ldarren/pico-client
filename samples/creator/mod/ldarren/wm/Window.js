@@ -7,35 +7,37 @@ open = function(){
     this.$el.addClass('opening');
     this.$el.bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function(){
         self.$el.removeClass('opening');
+        self.signals.opened().send(self.host);
         focus.call(self)
     });
 },
 close = function(){
     var self = this
-    this.blur()
+    blur.call(this)
     this.$el.addClass('closing');
     this.$el.bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function(){
         self.$el.removeClass('closing');
         self.$el.addClass('closed');
         self.$el.hide();
+        self.signals.closed().send(self.host);
 
         //self.$content.html('');
     });
 },
 focus = function(){
-    this.signals.focus().send(this.host);
+    this.signals.focused().send(this.host);
     this.$el.addClass('active');
     this.$el.removeClass('inactive');
 },
 blur = function(){
-    this.signals.blur().send(this.host);
+    this.signals.blured().send(this.host);
     this.$el.removeClass('active');
     this.$el.addClass('inactive');
 }
 
 exports.Class = Module.Class.extend({
     className: 'wm-window',
-    signals: ['focus', 'blur'],
+    signals: ['opened', 'closed', 'focused', 'blured'],
     deps:{
         title: 'title',
         width: 'width',
@@ -74,5 +76,12 @@ exports.Class = Module.Class.extend({
         close: close,
         focus: focus,
         blur: blur
+    },
+    events:{
+        'click .wm-window-title button.wm-close': function(e){
+            e.stopPropagation()
+            e.preventDefault()
+            close.call(this)
+        }
     }
 })

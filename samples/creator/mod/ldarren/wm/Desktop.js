@@ -40,6 +40,9 @@ exports.Class = Module.Class.extend({
         blur: function(sender, fileId){
         },
         toggle: function(sender, fileId){
+        },
+        closed: function(sender){
+            sender.remove()
         }
     }
 })
