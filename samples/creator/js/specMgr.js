@@ -1,5 +1,6 @@
 var
 Model = require('Model'),
+create = function(id, type, value){ return {i:id, t:type, v:value} },
 find = function(name, list){ for(var i=0,o; o=list[i]; i++){ if (name === o.i) return o } },
 findAll = function(type, list){
     var arr = []
@@ -50,7 +51,7 @@ load = function(host, params, spec, deps, cb){
         deps.push({i:s.i, t:t, v:new Date(s.v)})
         break
     default:
-        deps.push({i:s.i, t:t, v:s.v})
+        deps.push(create(s.i, t, s.v))
         break
     }
     load(host, params, spec, deps, cb)
@@ -80,3 +81,4 @@ exports.load = function(host, params, spec, cb){
 exports.unload = unload
 exports.find = find
 exports.findAll = findAll
+exports.create = create

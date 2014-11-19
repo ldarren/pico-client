@@ -43,11 +43,11 @@ exports.Class = Module.Class.extend({
     },
     create: function(deps){
         var
-        owner = deps.owner.value,
+        owner = deps.owner.v,
         cached = storage.getItem('owner')
 
-        this.data = deps.data.value
-        this.authPages = deps.authPages.value
+        this.data = deps.data.v
+        this.authPages = deps.authPages.v
 
         owner.reset()
         this.owner = owner
@@ -73,6 +73,7 @@ exports.Class = Module.Class.extend({
     },
     slots: {
         changeRoute: function(sender){
+            if (!this.authPages.length) return
             if (!this.owner.length && -1 === this.authPages.indexOf(arguments[2])) Router.instance.go(this.authPages[0])
         }
     }

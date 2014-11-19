@@ -3,7 +3,7 @@
         "lib/lean/lean.js"
     ],
     "styles":[
-        "mod/ldarren/wm/Desktop.css",
+        "mod/ldarren/wm/desktop.css",
         "lib/lean/lean.css",
         "css/icon.css",
         "css/main.css"
@@ -34,7 +34,7 @@
             "v":[
                 {"i":"owner","t":"models","v":"owner"},
                 {"i":"data","t":"models","v":"data"},
-                {"i":"authPages","t":"list","v":[""]}
+                {"i":"authPages","t":"list","v":[]}
             ]
         }
     ],

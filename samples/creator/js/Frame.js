@@ -30,7 +30,7 @@ changeRoute = function(path, params){
 
     if (this.oldPage) removeOldPage.call(this)
     this.oldPage = this.currPage
-    this.currPage = this.spawn({name:path, type:'module', spec:pageConfig.spec, style:pageConfig.style, Class:Module.Class}, params, null, true)
+    this.currPage = this.spawn({i:path, t:'module', v:pageConfig.spec, spec:pageConfig.spec, style:pageConfig.style, Class:Module.Class}, params, null, true)
     this.render()
     this.signals.changeRoute(path, params).send()
 }
@@ -70,7 +70,7 @@ exports.Class = Module.Class.extend({
     create: function(deps, params){
         var spec = this.spec
         for(var i=0,s; s=spec[i]; i++){
-            if ('module' === s.type) {
+            if ('module' === s.t) {
                 this.spawn(s, params, null, true)
             }
         }

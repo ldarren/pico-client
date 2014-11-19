@@ -51,10 +51,10 @@ exports.Class = Module.Class.extend({
         freq:'freq'
     },
     create: function(deps){
-        this.data = deps.data.value,
-        this.dataUsers = deps.dataUsers.value,
-        this.pull = deps.pull.value,
-        this.freq = deps.freq.value
+        this.data = deps.data.v,
+        this.dataUsers = deps.dataUsers.v,
+        this.pull = deps.pull.v,
+        this.freq = deps.freq.v
         this.pollId = 0
         this.data.comparator = sortDesc
 

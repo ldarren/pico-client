@@ -31,14 +31,14 @@ send = function(a){
 },
 recv = function(evt, sender){
     var func = this.slots[evt]
-    if (!func) return send.apply({evt:evt, sender:this, args:Array.prototype.slice.call(arguments, 2)}, [sender])
+    if (!func) return send.call({evt:evt, sender:this, args:Array.prototype.slice.call(arguments, 2)}, [sender])
     func.apply(this, Array.prototype.slice.call(arguments, 1))
 }
 
 exports.Class = Backbone.View.extend({
     initialize: function(options, params, host){
         this._id = id++
-        this.name = options.name
+        this.name = options.i
         this.host = host
         this.modules = []
         this._elements = []
@@ -79,12 +79,14 @@ exports.Class = Backbone.View.extend({
 
             var
             d = {},
-            deps = self.deps
+            deps = self.deps || {},
+            k
 
-            if (deps){
-                for(var i=0,s; s=spec[i]; i++){
-                    d[deps[s.name]] = s
-                }
+            for(k in deps) d[k] = {} // init deps
+            for(var i=0,s; s=spec[i]; i++){
+                k = deps[s.i]
+                if (!k) continue
+                d[k] = s
             }
 
             self.deps = d
@@ -94,7 +96,7 @@ exports.Class = Backbone.View.extend({
     create: function(deps, params){
         var spec = this.spec
         for(var i=0,s; s=spec[i]; i++){
-            if ('module' === s.type) {
+            if ('module' === s.t) {
                 this.spawn(s, params, this)
             }
         }
@@ -108,7 +110,7 @@ exports.Class = Backbone.View.extend({
         specMgr.unload(this._rawSpec, this.spec)
     },
     spawn: function(Mod, params, spec, hidden){
-        if ('module' !== Mod.type) return
+        if ('module' !== Mod.t) return
         Mod.spec = spec && spec.length ? Mod.spec.concat(spec) : Mod.spec
         var
         m = new Mod.Class(Mod, params, this),
@@ -168,7 +170,7 @@ exports.Class = Backbone.View.extend({
         return this.el
     },
     slots:{
-        // seldom use, useful only after BB setElement
+        // seldom use, useful only after BB's setElement
         invalidate: this.show
     }
 })
