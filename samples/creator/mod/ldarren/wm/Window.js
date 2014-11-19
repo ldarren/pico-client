@@ -51,7 +51,7 @@ exports.Class = Module.Class.extend({
     },
     create: function(deps, params){
         this.title = deps.title.v || 'Untitle Window'
-        this.el.innerHTML = tpl.text.replace('TEXT', this.title)
+        this.el.innerHTML = tpl.text.replace('TITLE', this.title)
 
         this.$el.width(deps.width.v || 400)
         this.$el.height(deps.height.v || 200)
