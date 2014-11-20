@@ -4,16 +4,14 @@ tpl = require('@ld/wm/window.html'),
 open = function(){
     var self = this
     this.$el.show();
+    this.signals.opened().send(self.host);
     this.$el.addClass('opening');
     this.$el.bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function(){
         self.$el.removeClass('opening');
-        self.signals.opened().send(self.host);
-        focus.call(self)
-    });
+    })
 },
 close = function(){
     var self = this
-    blur.call(this)
     this.$el.addClass('closing');
     this.$el.bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function(){
         self.$el.removeClass('closing');
@@ -22,22 +20,30 @@ close = function(){
         self.signals.closed().send(self.host);
 
         //self.$content.html('');
-    });
+    })
 },
-focus = function(){
-    this.signals.focused().send(this.host);
-    this.$el.addClass('active');
-    this.$el.removeClass('inactive');
+enable = function(){
+    this.$el.removeClass('disabled')
 },
-blur = function(){
-    this.signals.blured().send(this.host);
-    this.$el.removeClass('active');
-    this.$el.addClass('inactive');
+disable = function(){
+    this.$el.addClass('disabled')
+},
+focus = function(sender, index){
+    this.setZ(index)
+    this.$el.addClass('active')
+    this.$el.removeClass('inactive')
+    this.signals.focused().send(this.host)
+},
+blur = function(sender, index){
+    this.setZ(index)
+    this.$el.removeClass('active')
+    this.$el.addClass('inactive')
+    this.signals.blurred().send(this.host)
 }
 
 exports.Class = Module.Class.extend({
     className: 'wm-window',
-    signals: ['opened', 'closed', 'focused', 'blured'],
+    signals: ['opened', 'closed', 'focus', 'focused', 'blurred'],
     deps:{
         title: 'title',
         width: 'width',
@@ -46,42 +52,108 @@ exports.Class = Module.Class.extend({
         y: 'y',
         z: 'z',
         content: 'content',
-        movable: 'movable',
-        resizable: 'resizable',
-        widget: 'widget',
-        titlebar: 'titlebar'
+        pinned: 'pinned',
+        fixed: 'fixed',
+        widget: 'widget'
     },
     create: function(deps, params){
-        this.title = deps.title.v || 'Untitle Window'
-        this.el.innerHTML = tpl.text.replace('TITLE', this.title)
+        this.el.innerHTML = tpl.text.replace('TITLE', deps.title.v || 'Untitle Window')
 
-        this.$el.width(deps.width.v || 400)
-        this.$el.height(deps.height.v || 200)
+        this.setX(deps.x.v || 0)
+        this.setY(deps.y.v || 0)
+        this.setZ(deps.z.v || 10000)
+        this.setW(deps.width.v || 400)
+        this.setH(deps.height.v || 200)
 
-        this.$el.css('left', deps.x.v || 0)
-        this.$el.css('top', deps.y.v || 0)
-        this.$el.css('z-index', deps.z.v || 10000)
+        this.$content = this.$('.wm-content')
+        this.$toolbar = this.$('header')
+        if (deps.content.v) this.$content.append(deps.content.v)
+        deps.widget.v ? this.$toolbar.addClass('hide') : this.$toolbar.removeClass('hide')
+        deps.pinned.v ? this.$el.removeClass('movable') : this.$el.addClass('movable')
+        deps.fixed.v ? this.$el.removeClass('resizable') : this.$el.addClass('resizable')
 
-        this.content = deps.content.v || ''
-        this.movable = deps.movable.v || true
-        this.resizable = deps.resizable.v || true
-        this.widget = deps.widget.v || false
-        this.titlebar = deps.titlebar.v || true
-        this._active = false
+        this._resizing = null
+        this._moving = null
 
         open.call(this)
     },
     slots:{
         open: open,
         close: close,
+        enable: enable,
+        disable: disable,
         focus: focus,
-        blur: blur
+        blur: blur,
+        mousemove: function(sender, e){
+            if (this._moving){
+                this.setX(e.pageX - this._moving[0])
+                this.setY(e.pageY - this._moving[1])
+            }
+            if (this._resizing){
+                this.setW(e.pageX + this._resizing[0])
+                this.setH(e.pageY + this._resizing[1])
+            }
+        },
+        mouseup: function(sender, e){
+            if (this._moving){
+                this._moving = null
+                this.$el.removeClass('move')
+            }
+            if (this._resizing){
+                this._resizing = null
+                this.$el.removeClass('resizing')
+            }
+        }
     },
     events:{
         'click .wm-window-title button.wm-close': function(e){
             e.stopPropagation()
             e.preventDefault()
             close.call(this)
+        },
+        'mousedown': function(e){
+            this.signals.focus().send(this.host)
+        },
+        'mousedown .wm-window-title': function(e){
+            if(!this.isEnable() || !this.isMovable()) return
+
+            this._moving = [
+                e.pageX - this.getX(),
+                e.pageY - this.getY()
+            ]
+
+            this.$el.addClass('move')
+
+            e.preventDefault()
+        },
+        'mousedown button.wm-resize': function(e){
+            if(!this.isEnable() || !this.isResizable()) return
+
+            this._resizing = [
+                this.getW() - e.pageX,
+                this.getH() - e.pageY
+            ]
+
+            this.$el.addClass('resizing')
+
+            e.preventDefault()
         }
-    }
+    },
+
+    getX: function(){ return parseInt(this.$el.css('left'), 10) },
+    getY: function(){ return parseInt(this.$el.css('top'), 10) },
+    getZ: function(){ return parseInt(this.$el.css('z-index'), 10) },
+    getW: function(){ return this.$el.width() },
+    getH: function(){ return this.$el.height() },
+    setX: function(val){ this.$el.css('left', val) },
+    setY: function(val){ this.$el.css('top', val) },
+    setZ: function(val){ this.$el.css('z-index', val) },
+    setW: function(val){ this.$el.width(val) },
+    setH: function(val){ this.$el.height(val) },
+
+    isFocus: function(){ return this.$el.hasClass('active') },
+    isEnable: function(){ return !this.$el.hasClass('disable') },
+    isMovable: function(){ return this.$el.hasClass('movable') },
+    isResizable: function(){ return this.$el.hasClass('resizable') },
+    isWidget: function(){ return this.$toolbar.hasClass('hide') },
 })
