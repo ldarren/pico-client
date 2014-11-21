@@ -45,16 +45,16 @@ exports.Class = Module.Class.extend({
     className: 'wm-window',
     signals: ['opened', 'closed', 'focus', 'focused', 'blurred'],
     deps:{
-        title: 'title',
-        width: 'width',
-        height: 'height',
-        x: 'x',
-        y: 'y',
-        z: 'z',
-        content: 'content',
-        pinned: 'pinned',
-        fixed: 'fixed',
-        widget: 'widget'
+        title: 'text',
+        width: 'number',
+        height: 'number',
+        x: 'number',
+        y: 'number',
+        z: 'number',
+        content: '*',
+        pinned: 'bool',
+        fixed: 'bool',
+        widget: 'bool'
     },
     create: function(deps, params){
         this.el.innerHTML = tpl.text.replace('TITLE', deps.title.v || 'Untitle Window')

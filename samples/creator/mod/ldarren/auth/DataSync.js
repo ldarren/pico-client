@@ -45,10 +45,10 @@ sortAsc = function(m1, m2){
 exports.Class = Module.Class.extend({
     signals:[],
     deps:{
-        data:'data',
-        dataUsers:'dataUsers',
-        pull:'pull',
-        freq:'freq'
+        data:'models',
+        dataUsers:'models',
+        pull:'models',
+        freq:'number'
     },
     create: function(deps){
         this.data = deps.data.v,

@@ -6,7 +6,7 @@ exports.Class = Module.Class.extend({
     className: 'file',
     signals: ['open'],
     deps:{
-        'file':'file'
+        file:'model'
     },
     create: function(deps, params){
         var file = deps.file.v

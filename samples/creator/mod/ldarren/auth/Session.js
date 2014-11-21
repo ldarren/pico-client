@@ -37,9 +37,9 @@ userAdded = function(model){
 exports.Class = Module.Class.extend({
     signals: ['signin', 'signout', 'modelReady', 'userReady'],
     deps: {
-        owner:'owner',
-        data: 'data',
-        authPages: 'authPages'
+        owner:'models',
+        data: 'models',
+        authPages: 'list'
     },
     create: function(deps){
         var

@@ -8,17 +8,17 @@ exports.Class = Module.Class.extend({
     id: 'ldwmDesktop',
     signals: ['open', 'close', 'focus', 'blur', 'mousemove', 'mouseup'],
     deps:{
-        apps: 'apps',
-        'ld/wm/Window':'Window',
-        'ld/wm/MenuBar':'MenuBar',
-        'ld/wm/File':'File'
+        apps: 'list',
+        'ld/wm/Window':'module',
+        'ld/wm/MenuBar':'module',
+        'ld/wm/File':'module'
     },
     className: 'wm-space',
     create: function(deps, params){
         this.el.innerHTML = tpl
         var
         dir = this.el.querySelector('.dir'),
-        File = deps.File
+        File = deps['ld/wm/File']
 
         for(var i=0,as=deps.apps.v,a; a=as[i]; i++){
             this.show(this.spawn(File, params, [specMgr.create('file', 'map', a)], true), dir)
@@ -39,7 +39,7 @@ exports.Class = Module.Class.extend({
         open: function(sender, fileId){
             var
             currZ = baseZ + this.windows.length + 1,
-            win = this.spawn(this.deps.Window, null, [
+            win = this.spawn(this.deps['ld/wm/Window'], null, [
                     specMgr.create('title', 'text', fileId),
                     specMgr.create('z', 'number', currZ--)
                 ])

@@ -79,13 +79,11 @@ exports.Class = Backbone.View.extend({
 
             var
             d = {},
-            deps = self.deps || {},
-            k
+            deps = self.deps || {}
 
-            for(k in deps) d[k] = {} // init deps
-            for(var i=0,s; s=spec[i]; i++){
-                k = deps[s.i]
-                if (!k) continue
+            for(var k in deps) d[k] = {} // init deps
+            for(var i=0,s,k; s=spec[i]; i++,k=s.i){
+                if (!deps[k]) continue
                 d[k] = s
             }
 
