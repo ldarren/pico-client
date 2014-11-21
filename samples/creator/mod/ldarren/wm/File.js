@@ -1,6 +1,6 @@
 var
 Module = require('Module'),
-tpl = '<div class=icon></div><div class=name></div>'
+tpl = '<div class=icon draggable=true></div><div class=name></div>'
 
 exports.Class = Module.Class.extend({
     className: 'file',
