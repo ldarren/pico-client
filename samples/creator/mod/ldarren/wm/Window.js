@@ -9,6 +9,11 @@ open = function(){
     this.$el.bind("animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function(){
         self.$el.removeClass('opening');
     })
+console.log('open window: '+this._id)
+    CodeMirror(this.$content[0], {
+          value: "function myScript(){return 100;}\n",
+          mode:  "javascript"
+    })
 },
 close = function(){
     var self = this
@@ -74,8 +79,6 @@ exports.Class = Module.Class.extend({
 
         this._resizing = null
         this._moving = null
-
-        open.call(this)
     },
     slots:{
         open: open,
