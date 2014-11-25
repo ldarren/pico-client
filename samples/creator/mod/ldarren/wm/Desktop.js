@@ -6,7 +6,7 @@ baseZ = 10000
 
 exports.Class = Module.Class.extend({
     id: 'ldwmDesktop',
-    signals: ['open', 'close', 'focus', 'blur', 'mousemove', 'mouseup'],
+    signals: ['open', 'close', 'focus', 'blur', 'mousemove', 'mouseup', 'dragleave'],
     deps:{
         apps: 'list',
         'ld/wm/Window':'module',
@@ -28,11 +28,17 @@ exports.Class = Module.Class.extend({
         this.active = null
     },
     events: {
-        'mousemove': function(e){
+        mousemove: function(e){
             this.signals.mousemove(e).send([this.host])
         },
-        'mouseup': function(e){
+        mouseup: function(e){
             this.signals.mouseup(e).send([this.host])
+        },
+        dragenter: function(e){
+            this.signals.dragleave(e).send([this.host])
+        },
+        drop: function(e){
+            this.signals.dragleave(e).send([this.host])
         }
     },
     slots:{
