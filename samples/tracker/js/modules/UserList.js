@@ -30,6 +30,9 @@ reload = function(keywords){
     for(var i=0,m; m=models[i]; i++){
         addRow.call(this, m)
     }
+},
+ok = function(){
+    Router.instance.go('invoice/2/FROM/TO/ID'.replace('FROM', this.params[0]).replace('TO', this.params[1]).replace('ID',this.selectedId), true)
 }
 
 exports.Class = Module.Class.extend({
@@ -60,11 +63,13 @@ exports.Class = Module.Class.extend({
             this.$('li').removeAttr('style')
             $(selected).css('background','#f0ffff')
             this.selectedId = selected.getAttribute('userData')
+
+            if (1 === Object.keys(this.grid).length) ok.call(this)
         }
     },
     moduleEvents: function(evt, sender){
         switch(evt){
-        case 'ok': return Router.instance.go('invoice/2/FROM/TO/ID'.replace('FROM', this.params[0]).replace('TO', this.params[1]).replace('ID',this.selectedId), true)
+        case 'ok': return ok.call(this)
         case 'cancel': return Router.instance.back()
         case 'find': return reload.call(this, arguments[2])
         }

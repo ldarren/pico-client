@@ -4,15 +4,18 @@ projClient, addon,
 onSend = function(req){
     if (!req) return
     var
+    api = req.url,
     reqData = req.data,
     onReceive = function(err, data){
         if (err) {
             me.signal('error', [err])
             return req.error(err)
         }
+        me.signal('recv', [api, data])
         return req.success(data, 'success')
     }
     if (reqData instanceof HTMLFormElement){
+        api = reqData.action
         var hasFile = req.hasFile 
         for(var i=0,es=reqData.elements,e; e=es[i]; i++){
             if (e.hasAttribute('type') && 'FILE' === e.getAttribute('type').toUpperCase()){
@@ -28,6 +31,7 @@ onSend = function(req){
     }else{
         projClient.request(req.url, reqData, addon, onReceive)
     }
+    me.signal('send', [api])
 }
 
 me.slot(pico.LOAD, function(){

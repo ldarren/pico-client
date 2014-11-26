@@ -17,7 +17,7 @@ exports.Class = Module.Class.extend({
     render: function(){
         var m = this.model
         this.$el.html(_.template(tpl.text, {
-            url: this.href ? this.href + m.id : 'javascript:void()',
+            url: this.href ? this.href + m.id : 'javascript:void(0)',
             title: m.get('json').name,
             desc: common.roleDesc(m.get('user'))
         }))
