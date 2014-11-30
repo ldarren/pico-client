@@ -129,7 +129,7 @@ exports.viewablePages = function(role){
     case 21:
     case 31: return ['users','jobs','jobHistory','settings'] 
     case 41: 
-    case 101: return ['users','jobs','jobHistory','vehicles','expenses','invoice/pick','settings']
+    case 101: return ['users','jobs','jobHistory','vehicles','expense/pick','invoice/pick','settings']
     default: return ['users','jobs', 'settings']
     }
 }

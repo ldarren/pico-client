@@ -7,7 +7,7 @@ onSend= function(url){
     this.el.classList.remove('hidden')
 },
 onRecv= function(url){
-    if (-1 !== url.indexOf('tr/data/poll')) return
+    if (url.length && -1 !== url.indexOf('tr/data/poll')) return
     this.el.classList.add('hidden')
 }
 

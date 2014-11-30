@@ -20,6 +20,8 @@
 <input type="email" placeholder="<%=f.holder || 'name@domain.org'%>" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" <%=common%>>
 <% } else if (f.type === 'date'){ %>
 <input type="date" placeholder="<%=f.holder || 'date(MM/DD/YYYY)'%>" <%=common%>>
+<% } else if (f.type === 'month'){ %>
+<input type="month" placeholder="<%=f.holder || 'date(MM/YYYY)'%>" <%=common%>>
 <% } else if (f.type === 'time'){ %>
 <input type="time" placeholder="<%=f.holder || 'time(HH:MM:SS)'%>" <%=common%>>
 <% } else if (f.type === 'select'){ %>

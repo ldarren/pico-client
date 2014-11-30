@@ -20,11 +20,11 @@ removeRow = function(model){
     this.grid[id].remove()
     delete this.grid[id]
 },
-checkRight = function(mi){
+checkRight = function(mi, allowAdd){
     if (!mi || this.role) return
     var role = this.role = mi.get('user')
 
-    if (common.isCustomer(role) || common.isAdminAbove(role)) this.triggerHost('changeHeader', {right:['plus']})
+    if (allowAdd && (common.isCustomer(role) || common.isAdminAbove(role))) this.triggerHost('changeHeader', {right:['plus']})
 },
 searchLoc = function(model){
     var m = model.get('json')
@@ -53,7 +53,7 @@ exports.Class = Module.Class.extend({
         this.data = data
         this.grid = {}
 
-        checkRight.call(this, data.get(this.myId))
+        checkRight.call(this, data.get(this.myId), this.require('allowAdd').value)
         reload.call(this)
 
         this.listenTo(data, 'add', addRow)
