@@ -15,7 +15,7 @@ exports.Class = Module.Class.extend({
         date = this.require('date').value,
         expenses = data.findWhere({month:month}),
         spends = this.require('spends').value,
-        hiddens=[{name:'month', value:month, type:'hidden'},{name:'date', value:date, type:'hidden'}],
+        hiddens=[{name:'month', value:month},{name:'date', value:date},{name:'type', value:'expense'}],
         fields = [],
         spend = 0
 
@@ -23,6 +23,8 @@ exports.Class = Module.Class.extend({
             hiddens.push({name:'dataId', value:expenses.id, type:'hidden'})
             var spendModel = spends.findWhere({id:expenses.id})
             if (spendModel) spend = spendModel.get('json')
+        }else{
+            this.el.setAttribute('action', 'tr/data/create')
         }
 
         fields.push({label:'$', name:'expense', value:spend, type:'number'}) 
