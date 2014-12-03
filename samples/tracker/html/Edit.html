@@ -3,7 +3,7 @@
 <%}%>
 <% for(var i=0,f; f=fields[i]; i++){%>
 <div class="input-row"><label><%=f.label%></label>
-<% var common = 'name="'+f.name+'" value="'+(f.value || '')+'" '+(f.required?'required':'')+' '+(f.readonly ? 'readonly':'') %>
+<% var common = 'name="'+f.name+'" value="'+('undefined' === typeof f.value ? '':f.value)+'" '+(f.required?'required':'')+' '+(f.readonly ? 'readonly':'') %>
 <% if (f.type === 'static'){ %>
 <% if (f.url) {%>
     <a href="<%=f.url%>"><%=f.value || ''%></a>

@@ -13,14 +13,19 @@ exports.Class = Module.Class.extend({
     create: function(spec){
         var
         expenses = this.require('expenses').value,
-        date = new Date(this.require('month').value)
+        data = this.require('data').value,
+        month = this.require('month').value,
+        expense = data.findWhere({month:month}),
+        date = expense ? expense.get('date').split(',') : [],
+        expenseId = expense ? expense.id : 0,
+        then = new Date(month)
 
         this.Row = this.require('ExpenseRow')
 
         this.listenTo(expenses, 'add', addRow)
 
-        for(var i=1,l=daysInMonth(date.getMonth(), date.getFullYear())+1; i<l; i++){
-            expenses.add({id:i, label:date.getDate(), value:0})
+        for(var i=1,l=daysInMonth(then.getMonth(), then.getFullYear())+1; i<l; i++){
+            expenses.add({id:i, label:then.getDate(), value:date[i] || 0, expenseId:expenseId})
         }
     }
 })
