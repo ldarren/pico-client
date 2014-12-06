@@ -31,9 +31,11 @@ paymentType = {
     2: 'Credit'
 }
 invoiceType = {
-    1: 'View Invoice',
-    2: 'Download Invoice',
-    3: 'Download Report'
+    1: 'View Income',
+    2: 'Download Income Report',
+    3: 'View Profit & Loss',
+    4: 'Download Profit & Loss Report',
+    5: 'Download Invoice'
 }
 
 exports.hash = function(raw){
@@ -129,7 +131,7 @@ exports.viewablePages = function(role){
     case 21:
     case 31: return ['users','jobs','jobHistory','settings'] 
     case 41: 
-    case 101: return ['users','jobs','jobHistory','vehicles','expense/pick','invoice/pick','settings']
+    case 101: return ['users','jobs','jobHistory','vehicles','expense/pick','report/pick','settings']
     default: return ['users','jobs', 'settings']
     }
 }

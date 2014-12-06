@@ -12,12 +12,13 @@ exports.Class = Module.Class.extend({
         var self = this
         this.require('invoice').value.fetch({
             data:{
-                type: 3,
+                type: 5,
                 from: params[0],
-                to: params[1]
+                to: params[1],
+                userId: params[2]
             },
             success: function(coll, raw){
-                self.$el.append(linkTpl.replace('URL', raw).replace('ICON', 'file-excel').replace('TITLE', 'Download report').replace('DESC', 'Save as excel spreadsheet'))
+                self.$el.append(linkTpl.replace('URL', raw).replace('ICON', 'file-word').replace('TITLE', 'Download invoice').replace('DESC', 'Save as word document'))
             }
         })
     }

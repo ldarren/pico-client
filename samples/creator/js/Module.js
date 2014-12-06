@@ -161,7 +161,7 @@ exports.Class = Backbone.View.extend({
         i = this.modules.indexOf(mod),
         oldEl = this._elements[i]
         if (oldEl && host.contains(oldEl)){
-            host.removeChild(oldEL)
+            host.removeChild(oldEl)
         }
         return oldEl
     },

@@ -14,11 +14,10 @@ exports.Class = Module.Class.extend({
             data:{
                 type: 2,
                 from: params[0],
-                to: params[1],
-                userId: params[2]
+                to: params[1]
             },
             success: function(coll, raw){
-                self.$el.append(linkTpl.replace('URL', raw).replace('ICON', 'file-word').replace('TITLE', 'Download invoice').replace('DESC', 'Save as word document'))
+                self.$el.append(linkTpl.replace('URL', raw).replace('ICON', 'file-excel').replace('TITLE', 'Download income report').replace('DESC', 'Save as excel spreadsheet'))
             }
         })
     }

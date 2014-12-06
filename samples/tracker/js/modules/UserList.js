@@ -32,7 +32,7 @@ reload = function(keywords){
     }
 },
 ok = function(){
-    Router.instance.go('invoice/2/FROM/TO/ID'.replace('FROM', this.params[0]).replace('TO', this.params[1]).replace('ID',this.selectedId), true)
+    Router.instance.go('report/5/FROM/TO/ID'.replace('FROM', this.params[0]).replace('TO', this.params[1]).replace('ID',this.selectedId), true)
 }
 
 exports.Class = Module.Class.extend({
