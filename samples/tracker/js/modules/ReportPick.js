@@ -22,6 +22,10 @@ exports.Class = Module.Class.extend({
 
         this.$el.html(_.template(tpl.text, {hiddens:hiddens, fields:fields}))
     },
+    events: {
+        'change select': 'fixDates',
+        'change input': 'fixDates'
+    },
     moduleEvents: function(evt, sender){
         switch(evt){
         case 'cancel': Router.instance.back(); break
@@ -32,5 +36,23 @@ exports.Class = Module.Class.extend({
             break
         default: Module.Class.prototype.moduleEvents.apply(this, arguments)
         }
+    },
+    fixDates: function(e){
+        var
+        form = this.el.elements,
+        type = form['type'].selectedIndex,
+        fromEle = form['from'],
+        toEle = form['to'],
+        from = fromEle.value
+
+        if (!from || type < 3 || type > 4) return
+
+        var
+        date = new Date(from),
+        yr = date.getFullYear(),
+        mt = date.getMonth()+1
+
+        fromEle.value = yr + '-' + mt + '-' + '01'
+        toEle.value = yr + '-' + mt + '-' + common.daysInMonth(mt-1, yr)
     }
 })

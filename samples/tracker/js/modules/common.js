@@ -31,10 +31,10 @@ paymentType = {
     2: 'Credit'
 }
 invoiceType = {
-    1: 'View Income',
+    1: 'Income',
     2: 'Download Income Report',
-    3: 'View Profit & Loss',
-    4: 'Download Profit & Loss Report',
+    3: 'Profit & Loss (monthly)',
+    4: 'Download Profit & Loss (monthly)',
     5: 'Download Invoice'
 }
 
@@ -140,3 +140,4 @@ exports.getInvoiceType = function(){
 }
 exports.getLang = function(){ return 'en-SG' }
 exports.getDateFormat = function(){ return {weekday:'short', year:'numeric', month:'short', day:'numeric'} }
+exports.daysInMonth = function(month, year){ return new Date(year, month+1, 0).getDate() }
