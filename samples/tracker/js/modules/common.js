@@ -109,7 +109,7 @@ exports.getDrivers = function(data){
     })
     return d
 }
-exports.driverDesc = function(data, id){
+exports.userDesc = function(data, id){
     var d = data.get(id)
     if (!d) return ''
     return d.get('json').name

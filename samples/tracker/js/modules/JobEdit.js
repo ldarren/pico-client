@@ -12,6 +12,7 @@ show = function(data, job, detail){
     hiddens=[{name:'dataId', value:job.id, type:'hidden'}],
     fields = [], left=[], right=[]
 
+    fields.push({label:'Customer', name:'customer', value:common.userDesc(data,job.get('createdBy')), type:'static'}) 
     if(common.isAdminAbove(role)){
         switch(state){
         case 10:
@@ -36,7 +37,7 @@ show = function(data, job, detail){
             fields.push({label:'Payment', name:'payment', value:common.paymentTypeDesc(detail.payment), type:'static'}) 
             fields.push({label:'Charge', name:'charge', value:detail.charge, type:'number', readonly:true}) 
             fields.push({label:'Vehicle', name:'vehicle', value:common.vehicleDesc(data, detail.vehicle), type:'static'}) 
-            fields.push({label:'driver', name:'driver', value:common.driverDesc(data,detail.driver), type:'static'}) 
+            fields.push({label:'driver', name:'driver', value:common.userDesc(data,detail.driver), type:'static'}) 
             fields.push({label:'Status', name:'job', value:state, type:'select', options:common.getJobState(state, role), required:true}) 
             hiddens.push({name:'reason', value:detail.reason})
             hiddens.push({name:'payment', value:detail.payment})
@@ -69,7 +70,7 @@ show = function(data, job, detail){
             fields.push({label:'Payment', name:'payment', value:common.paymentTypeDesc(detail.payment), type:'static'}) 
             fields.push({label:'Charge', name:'charge', value:detail.charge, type:'number', readonly:true}) 
             fields.push({label:'Vehicle', name:'vehicle', value:common.vehicleDesc(data, detail.vehicle), type:'static'}) 
-            fields.push({label:'driver', name:'driver', value:common.driverDesc(data,detail.driver), type:'static'}) 
+            fields.push({label:'driver', name:'driver', value:common.userDesc(data,detail.driver), type:'static'}) 
             fields.push({label:'Status', name:'job', value:state, type:'select', options:common.getJobState(state, role), required:true}) 
             hiddens.push({name:'reason', value:detail.reason})
             hiddens.push({name:'payment', value:detail.payment})
@@ -86,7 +87,7 @@ show = function(data, job, detail){
             fields.push({label:'Payment', name:'payment', value:common.paymentTypeDesc(detail.payment), type:'static'}) 
             fields.push({label:'Charge', name:'charge', value:detail.charge, type:'number', readonly:true}) 
             fields.push({label:'Vehicle', name:'vehicle', value:common.vehicleDesc(data, detail.vehicle), type:'static'}) 
-            fields.push({label:'driver', name:'driver', value:common.driverDesc(data,detail.driver), type:'static'}) 
+            fields.push({label:'driver', name:'driver', value:common.userDesc(data,detail.driver), type:'static'}) 
             fields.push({label:'Status', name:'job', value:common.jobStateDesc(state), type:'static'}) 
             fields.push({label:'Code', name:'code', value:job.get('code'), type:'number', readonly:true}) 
             hiddens.push({name:'reason', value:detail.reason})
@@ -108,7 +109,7 @@ show = function(data, job, detail){
             fields.push({label:'Payment', name:'payment', value:common.paymentTypeDesc(detail.payment), type:'static'}) 
             fields.push({label:'Charge', name:'charge', value:detail.charge, type:'number', readonly:true}) 
             fields.push({label:'Vehicle', name:'vehicle', value:common.vehicleDesc(data, detail.vehicle), type:'static'}) 
-            fields.push({label:'driver', name:'driver', value:common.driverDesc(data,detail.driver), type:'static'}) 
+            fields.push({label:'driver', name:'driver', value:common.userDesc(data,detail.driver), type:'static'}) 
             fields.push({label:'Status', name:'job', value:state, type:'select', options:common.getJobState(state, role), required:true}) 
             hiddens.push({name:'reason', value:detail.reason})
             hiddens.push({name:'payment', value:detail.payment})
@@ -125,7 +126,7 @@ show = function(data, job, detail){
             fields.push({label:'Payment', name:'payment', value:common.paymentTypeDesc(detail.payment), type:'static'}) 
             fields.push({label:'Charge', name:'charge', value:detail.charge, type:'number', readonly:true}) 
             fields.push({label:'Vehicle', name:'vehicle', value:common.vehicleDesc(data, detail.vehicle), type:'static'}) 
-            fields.push({label:'driver', name:'driver', value:common.driverDesc(data,detail.driver), type:'static'}) 
+            fields.push({label:'driver', name:'driver', value:common.userDesc(data,detail.driver), type:'static'}) 
             fields.push({label:'Status', name:'job', value:state, type:'select', options:common.getJobState(state, role), required:true}) 
             fields.push({label:'Code', name:'verify', value:'', type:'number', required:true}) 
             hiddens.push({name:'reason', value:detail.reason})
@@ -143,7 +144,7 @@ show = function(data, job, detail){
             fields.push({label:'Payment', name:'payment', value:common.paymentTypeDesc(detail.payment), type:'static'}) 
             fields.push({label:'Charge', name:'charge', value:detail.charge, type:'number', readonly:true}) 
             fields.push({label:'Vehicle', name:'vehicle', value:common.vehicleDesc(data, detail.vehicle), type:'static'}) 
-            fields.push({label:'driver', name:'driver', value:common.driverDesc(data,detail.driver), type:'static'}) 
+            fields.push({label:'driver', name:'driver', value:common.userDesc(data,detail.driver), type:'static'}) 
             fields.push({label:'Status', name:'job', value:common.jobStateDesc(state), type:'static'}) 
             hiddens.push({name:'reason', value:detail.reason})
             hiddens.push({name:'payment', value:detail.payment})
@@ -161,8 +162,9 @@ show = function(data, job, detail){
     this.$el.html(_.template(tpl.text, {hiddens:hiddens, fields:fields}))
     this.triggerHost('changeHeader', {left:left, right:right})
 },
-getData = function(data, driverId, vehicleId, cb){
+getData = function(data, customerId, driverId, vehicleId, cb){
     var dataIds = []
+    if (customerId && !data.get(customerId)) dataIds.push(customerId)
     if (driverId && !data.get(driverId)) dataIds.push(driverId)
     if (vehicleId && !data.get(vehicleId)) dataIds.push(vehicleId)
     if (!dataIds.length) return cb()
@@ -187,7 +189,7 @@ exports.Class = Module.Class.extend({
 
         this.job = job
 
-        getData(data, detail.driver, detail.vehicle, function(){
+        getData(data, job.get('createdBy'), detail.driver, detail.vehicle, function(){
             show.call(self, data, job, detail)
         })
     },

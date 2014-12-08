@@ -14,6 +14,7 @@ exports.Class = Module.Class.extend({
 
         this.job = job 
         this.data = data 
+        fields.push({label:'Customer', value:common.userDesc(data,job.get('createdBy'))}) 
         fields.push({label:'Pickup', value:detail.pickup}) 
         fields.push({label:'Date',  value:detail.date}) 
         fields.push({label:'Time', value:detail.time}) 
@@ -22,7 +23,7 @@ exports.Class = Module.Class.extend({
         fields.push({label:'Payment', value:common.paymentTypeDesc(detail.payment)}) 
         fields.push({label:'Charge', value:detail.charge}) 
         fields.push({label:'Vehicle', value:common.vehicleDesc(data, detail.vehicle)}) 
-        fields.push({label:'driver', value:common.driverDesc(data,detail.driver)}) 
+        fields.push({label:'Driver', value:common.userDesc(data,detail.driver)}) 
         fields.push({label:'Status', value:common.jobStateDesc(job.get('job'))}) 
         fields.push({label:'Code', value:job.get('code')}) 
 
