@@ -121,7 +121,7 @@ exports.isSuperAbove = function(role){ return role > 100 }
 exports.viewableRoles = function(role){
     switch(parseInt(role)){
     case 31: return [31, 41]
-    case 41:
+    case 41: return [11, 21, 31, 41]
     case 101: return [11, 21, 31, 41, 101]
     default: return [41]
     }

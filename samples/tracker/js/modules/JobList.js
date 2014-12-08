@@ -26,13 +26,40 @@ checkRight = function(mi, allowAdd){
 
     if (allowAdd && (common.isCustomer(role) || common.isAdminAbove(role))) this.triggerHost('changeHeader', {right:['plus']})
 },
-searchLoc = function(model){
+searchLocName = function(model){
+    if ('job' !== model.get('type')) return
     var m = model.get('json')
-    return (m.pickup && -1 !== m.pickup.toLowerCase().indexOf(this)) || (m.dropoff && -1 !== m.dropoff.toLowerCase().indexOf(this))
+    if (this.customers.indexOf(model.get('createdBy')) || this.drivers.indexOf(m.driver)) return true
+    return (m.pickup && -1 !== m.pickup.toLowerCase().indexOf(this.kw)) || (m.dropoff && -1 !== m.dropoff.toLowerCase().indexOf(this.kw))
+},
+searchName = function(model){
+    if ('user' !== model.get('type')) return
+    var
+    job = model.get('job'),
+    m = model.get('json')
+
+    if (21 !== job && 31 !== job) return 
+
+    if(m.name && -1 !== m.name.toLowerCase().indexOf(this.kw)){
+        if (21 === job) this.customers.push(model.id)
+        else this.drivers.push(model.id)
+        return true
+    }
+    return
 },
 reload = function(keywords){
     this.empty()
-    var models = keywords && keywords.length ? this.data.filter(searchLoc, keywords.toLowerCase()) : this.data.models
+    var models = this.data.models
+    if (keywords && keywords.length){
+        var
+        kw = keywords.toLowerCase(),
+        customers = [],
+        drivers = []
+
+        this.data.filter(searchName, {keywords:kw, customers:customer, drivers: drivers})
+
+        models = this.data.filter(searchLocName, {keywords:kw, customers:customer, drivers: drivers})
+    }
 
     for(var i=0,m; m=models[i]; i++){
         addRow.call(this, m)

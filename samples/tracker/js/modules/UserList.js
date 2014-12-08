@@ -19,13 +19,14 @@ removeRow = function(model){
     this.grid[id].remove()
     delete this.grid[id]
 },
-searchLoc = function(model){
+searchName = function(model){
+    if ('user' !== model.get('type')) return
     var m = model.get('json')
     return m.name && -1 !== m.name.toLowerCase().indexOf(this)
 },
 reload = function(keywords){
     this.empty()
-    var models = keywords && keywords.length ? this.data.filter(searchLoc, keywords.toLowerCase()) : this.data.models
+    var models = keywords && keywords.length ? this.data.filter(searchName, keywords.toLowerCase()) : this.data.models
 
     for(var i=0,m; m=models[i]; i++){
         addRow.call(this, m)
