@@ -29,20 +29,15 @@ checkRight = function(mi, allowAdd){
 searchLocName = function(model){
     if ('job' !== model.get('type')) return
     var m = model.get('json')
-    if (-1 !== this.customers.indexOf(model.get('createdBy')) || -1 !== this.drivers.indexOf(parseInt(m.driver))) return true
+    if (-1 !== this.users.indexOf(model.get('createdBy')) || -1 !== this.users.indexOf(parseInt(m.driver))) return true
     return (m.pickup && -1 !== m.pickup.toLowerCase().indexOf(this.keyword)) || (m.dropoff && -1 !== m.dropoff.toLowerCase().indexOf(this.keyword))
 },
 searchName = function(model){
     if ('user' !== model.get('type')) return
-    var
-    job = parseInt(model.get('user')),
-    m = model.get('json')
-
-    if (21 !== job && 31 !== job) return 
+    var m = model.get('json')
 
     if(m.name && -1 !== m.name.toLowerCase().indexOf(this.keyword)){
-        if (21 === job) this.customers.push(model.id)
-        else this.drivers.push(model.id)
+        this.users.push(model.id)
         return true
     }
     return
@@ -53,12 +48,11 @@ reload = function(keyword){
     if (keyword && keyword.length){
         var
         kw = keyword.toLowerCase(),
-        customers = [],
-        drivers = []
+        users = []
 
-        this.data.filter(searchName, {keyword:kw, customers:customers, drivers: drivers})
+        this.data.filter(searchName, {keyword:kw, users: users})
 
-        models = this.data.filter(searchLocName, {keyword:kw, customers:customers, drivers: drivers})
+        models = this.data.filter(searchLocName, {keyword:kw, users: users})
     }
 
     for(var i=0,m; m=models[i]; i++){
