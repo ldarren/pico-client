@@ -1,5 +1,6 @@
 var
 specMgr = require('specMgr'),
+mixin = require('ld/wm/mixin'),
 tpl = '<div class=dir></div>',
 baseZ = 10000
 
@@ -25,6 +26,7 @@ exports.Class = {
 
         this.windows = []
         this.active = null
+        this.sayHello()
     },
     events: {
         mousemove: function(e){
@@ -81,4 +83,8 @@ exports.Class = {
             if (this.active === sender) this.active = null
         }
     }
+}
+
+exports.Mixin = function(spec, params){
+    return [mixin.test]
 }

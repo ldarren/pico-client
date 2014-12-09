@@ -8,6 +8,7 @@ pico.start({
         pico: 'lib/pico/lib/'
     }
 },function(){
+    require('Module') //preload
     var
     network = require('network'),
     specMgr = require('specMgr'),

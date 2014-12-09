@@ -111,8 +111,12 @@ exports.Class = Backbone.View.extend({
     spawn: function(Mod, params, spec, hidden){
         if (!Mod.spec) return
         Mod.spec = spec && spec.length ? Mod.spec.concat(spec) : Mod.spec
+
+        var mixin = Mod.Mixin ? Mod.Mixin(Mod.spec, params) : []
+        mixin.push(Mod.Class)
+
         var
-        m = new (exports.Class.extend(Mod.Class))(Mod, params, this),
+        m = new (exports.Class.extend(_.extend.apply(_, mixin)))(Mod, params, this),
         i = this.modules.push(m)-1
 
         if (hidden) return m

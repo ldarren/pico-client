@@ -39,7 +39,7 @@ load = function(host, params, spec, deps, cb){
     case 'module':
         require(s[ID], function(err, mod){
             if (err) return cb(err)
-            deps.push(create(s[ID], t, {name:s[ID], spec:s[VALUE], style:s[EXTRA], Class:mod.Class}))
+            deps.push(create(s[ID], t, {name:s[ID], spec:s[VALUE], style:s[EXTRA], Class:mod.Class, Mixin:mod.Mixin}))
             load(host, params, spec, deps, cb)
         })
         return
