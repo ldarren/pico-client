@@ -8,7 +8,9 @@ exports.Class = Module.Class.extend({
     className: 'table-view-cell',
     create: function(spec){
         this.model = this.requireType('model').value
-        this.edit = this.require('edit').value
+        this.href = this.require('href').value
+
+        this.el.setAttribute('userData', this.model.id)
 
         this.listenTo(this.model, 'change', this.render)
     },
@@ -17,7 +19,7 @@ exports.Class = Module.Class.extend({
         m = this.model.attributes,
         info = m.json
         this.$el.html(_.template(tpl.text, {
-            url: '#job/' +(this.edit ? 'edit/':'')+ m.id,
+            url: this.href ? this.href + m.id : 'javascript:void(0)',
             title: info.pickup + ' -> ' + info.dropoff,
             desc: info.date + ' ' + info.time
         }))

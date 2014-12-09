@@ -20,11 +20,22 @@ removeRow = function(model){
     this.grid[id].remove()
     delete this.grid[id]
 },
-checkRight = function(mi, allowAdd){
+checkRight = function(mi){
     if (!mi || this.role) return
-    var role = this.role = mi.get('user')
+    var
+    actions = this.require('actions').value || [],
+    allowAdd = actions[0],
+    allowRemove = actions[1],
+    role = this.role = mi.get('user'),
+    right=[]
 
-    if (allowAdd && (common.isCustomer(role) || common.isAdminAbove(role))) this.triggerHost('changeHeader', {right:['plus']})
+    if (allowRemove && common.isAdminAbove(role)){
+        right.push('minus')
+    }
+    if (allowAdd && (common.isCustomer(role) || common.isAdminAbove(role))){
+        right.push('plus')
+    }
+    this.triggerHost('changeHeader', {right:right})
 },
 searchLocName = function(model){
     if ('job' !== model.get('type')) return
@@ -58,6 +69,46 @@ reload = function(keyword){
     for(var i=0,m; m=models[i]; i++){
         addRow.call(this, m)
     }
+},
+remove = function(data, selectedIds, cb){
+    if (!selectedIds.length) return cb()
+
+    var job = data.get(selectedIds.pop())
+
+    if (!job) return remove(data, selectedIds, cb)
+
+    var json = job.get('json')
+    json.dataId = job.id
+    json.job = '100'
+
+    job.save(null, {
+        data: json,
+        success: function(){
+            remove(data, selectedIds, cb)
+        }
+    })
+},
+ok = function(){
+    var selectedIds = []
+    this.$('li').each(function(i){
+        if (this.getAttribute('style')){
+            selectedIds.push(this.getAttribute('userData'))
+        }
+    })
+    if (!selectedIds.length) return
+
+    var data = this.data
+
+    if (this.require('canRemove').value){
+        remove(data, selectedIds, function(){
+            Router.instance.back()
+        })
+    }else{
+        for(var i=0,s; s=selectedIds[i]; i++){
+            data.remove(s)
+        }
+        Router.instance.back()
+    }
 }
 
 exports.Class = Module.Class.extend({
@@ -74,17 +125,31 @@ exports.Class = Module.Class.extend({
         this.data = data
         this.grid = {}
 
-        checkRight.call(this, data.get(this.myId), this.require('allowAdd').value)
+        checkRight.call(this, data.get(this.myId))
         reload.call(this)
 
         this.listenTo(data, 'add', addRow)
         this.listenTo(data, 'remove', removeRow)
     },
+    events:{
+        'touchstart li': function(e){
+            var $selected = $(e.currentTarget)
+            if ($selected.attr('style').length){
+                $selected.removeAttr('style')
+            }else{
+                $selected.css('background','#f0ffff')
+                if (1 === Object.keys(this.grid).length) ok.call(this)
+            }
+        }
+    },
 
     moduleEvents: function(evt, sender){
         switch(evt){
         case 'plus': return Router.instance.go('job/new')
+        case 'minus': return Router.instance.go('job/pick/'+(this.require('canRemove').value ? 'remove' : 'forget'))
         case 'find': return reload.call(this, arguments[2])
+        case 'ok': return ok.call(this)
+        case 'cancel': return Router.instance.back()
         default: return Module.Class.prototype.moduleEvents.apply(this, arguments)
         }
     }
