@@ -1,10 +1,9 @@
 var
-Module = require('Module'),
 specMgr = require('specMgr'),
 tpl = '<div class=dir></div>',
 baseZ = 10000
 
-exports.Class = Module.Class.extend({
+exports.Class = {
     id: 'ldwmDesktop',
     signals: ['open', 'close', 'focus', 'blur', 'mousemove', 'mouseup', 'dragleave'],
     deps:{
@@ -20,7 +19,7 @@ exports.Class = Module.Class.extend({
         dir = this.el.querySelector('.dir'),
         File = deps['ld/wm/File']
 
-        for(var i=0,as=deps.apps.v,a; a=as[i]; i++){
+        for(var i=0,as=deps.apps,a; a=as[i]; i++){
             this.show(this.spawn(File, params, [specMgr.create('file', 'map', a)], true), dir)
         }
 
@@ -82,4 +81,4 @@ exports.Class = Module.Class.extend({
             if (this.active === sender) this.active = null
         }
     }
-})
+}

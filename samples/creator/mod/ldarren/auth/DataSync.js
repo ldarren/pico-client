@@ -1,5 +1,4 @@
 var
-Module = require('Module'),
 Router = require('Router'),
 storage = window.localStorage,
 status1 = {status:1},status0={status:0},merge1={merge:true},
@@ -42,7 +41,7 @@ sortAsc = function(m1, m2){
     return s1 < s2 ? -1 : s1 > s2 ? 1 : 0;
 }
 
-exports.Class = Module.Class.extend({
+exports.Class = {
     signals:[],
     deps:{
         data:'models',
@@ -51,10 +50,10 @@ exports.Class = Module.Class.extend({
         freq:'number'
     },
     create: function(deps){
-        this.data = deps.data.v,
-        this.dataUsers = deps.dataUsers.v,
-        this.pull = deps.pull.v,
-        this.freq = deps.freq.v
+        this.data = deps.data
+        this.dataUsers = deps.dataUsers
+        this.pull = deps.pull
+        this.freq = deps.freq
         this.pollId = 0
         this.data.comparator = sortDesc
 
@@ -132,4 +131,4 @@ exports.Class = Module.Class.extend({
     removeColl: function(name, userId){
         storage.removeItem(name+userId)
     }
-})
+}

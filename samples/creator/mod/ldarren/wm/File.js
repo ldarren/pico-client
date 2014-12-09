@@ -1,15 +1,14 @@
 var
-Module = require('Module'),
 tpl = '<div class=icon draggable=true></div><div class=name></div>'
 
-exports.Class = Module.Class.extend({
+exports.Class = {
     className: 'file',
     signals: ['open'],
     deps:{
         file:'model'
     },
     create: function(deps, params){
-        var file = deps.file.v
+        var file = deps.file
         this.el.innerHTML = tpl
         this.el.setAttribute('fileid', file.id)
         this.$('.icon').addClass('icon-'+file.icon)
@@ -60,4 +59,4 @@ exports.Class = Module.Class.extend({
             this.el.classList.remove('dragover')
         }
     }
-})
+}

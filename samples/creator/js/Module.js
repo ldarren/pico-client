@@ -1,4 +1,5 @@
 var
+ID=0,TYPE=1,VALUE=2,EXTRA=3,
 specMgr = require('specMgr'),
 Router = require('Router'),
 id=0,
@@ -38,7 +39,7 @@ recv = function(evt, sender){
 exports.Class = Backbone.View.extend({
     initialize: function(options, params, host){
         this._id = id++
-        this.name = options.i
+        this.name = options.name
         this.host = host
         this.modules = []
         this._elements = []
@@ -81,11 +82,10 @@ exports.Class = Backbone.View.extend({
             d = {},
             deps = self.deps || {}
 
-            for(var k in deps) d[k] = {} // init deps
             for(var i=0,s,k; s=spec[i]; i++){
-                k = s.i
+                k = s[ID]
                 if (!deps[k]) continue
-                d[k] = s
+                d[k] = s[VALUE]
             }
 
             self.deps = d
@@ -95,8 +95,8 @@ exports.Class = Backbone.View.extend({
     create: function(deps, params){
         var spec = this.spec
         for(var i=0,s; s=spec[i]; i++){
-            if ('module' === s.t) {
-                this.spawn(s, params, this)
+            if ('module' === s[TYPE]) {
+                this.spawn(s[VALUE], params, this)
             }
         }
     },
@@ -109,10 +109,10 @@ exports.Class = Backbone.View.extend({
         specMgr.unload(this._rawSpec, this.spec)
     },
     spawn: function(Mod, params, spec, hidden){
-        if ('module' !== Mod.t) return
+        if (!Mod.spec) return
         Mod.spec = spec && spec.length ? Mod.spec.concat(spec) : Mod.spec
         var
-        m = new Mod.Class(Mod, params, this),
+        m = new (exports.Class.extend(Mod.Class))(Mod, params, this),
         i = this.modules.push(m)-1
 
         if (hidden) return m

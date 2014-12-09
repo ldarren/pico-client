@@ -1,5 +1,4 @@
 var
-Module = require('Module'),
 Router = require('Router'),
 network = require('network'),
 storage = window.localStorage,
@@ -34,20 +33,20 @@ userAdded = function(model){
     if (this.owner.length) userReady.call(this, this.owner.models[0])
 }
 
-exports.Class = Module.Class.extend({
+exports.Class = {
     signals: ['signin', 'signout', 'modelReady', 'userReady'],
     deps: {
-        owner:'models',
-        data: 'models',
+        owner:'ref',
+        data: 'ref',
         authPages: 'list'
     },
     create: function(deps){
         var
-        owner = deps.owner.v,
+        owner = deps.owner,
         cached = storage.getItem('owner')
 
-        this.data = deps.data.v
-        this.authPages = deps.authPages.v
+        this.data = deps.data
+        this.authPages = deps.authPages
 
         owner.reset()
         this.owner = owner
@@ -77,4 +76,4 @@ exports.Class = Module.Class.extend({
             if (!this.owner.length && -1 === this.authPages.indexOf(arguments[2])) Router.instance.go(this.authPages[0])
         }
     }
-})
+}

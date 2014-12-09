@@ -9,53 +9,42 @@
         "css/main.css"
     ],
     "spec":[
-        {"i":"mainChannel", "t":"channel", "v":{"url":"http://107.20.154.29:4888","delimiter":"[\"&\"]","beatRate":500}},
-        {
-            "i":"owner",
-            "t":"models",
-            "v":[
+        ["mainChannel", "channel", {"url":"http://107.20.154.29:4888","delimiter":"[\"&\"]","beatRate":500}],
+        [ "owner", "models", [ ] ],
+        [ "data", "models", [ ] ],
+        [ "dataUsers", "models", [ ] ],
+        [   
+            "ld/auth/Session",
+            "module",
+            [
+                ["owner","ref","owner"],
+                ["data","ref","data"],
+                ["authPages","list",[]]
             ]
-        },
-        {
-            "i":"data",
-            "t":"models",
-            "v":[
-            ]
-        },
-        {
-            "i":"dataUsers",
-            "t":"models",
-            "v":[
-            ]
-        },
-        {
-            "i":"ld/auth/Session",
-            "t":"module",
-            "v":[
-                {"i":"owner","t":"models","v":"owner"},
-                {"i":"data","t":"models","v":"data"},
-                {"i":"authPages","t":"list","v":[]}
-            ]
-        }
+        ]
     ],
     "pages":{
         "*action":{
             "style":{
             },
             "spec":[
-                {
-                    "i":"ld/wm/Desktop",
-                    "t":"module",
-                    "v":[
-                    {"i":"apps","t":"list","v":[
-                        { "id":"preview", "icon":"tablet", "name":"Preview" },
-                        { "id":"editor", "icon":"keyboard", "name":"Editor" }
-                    ]},
-                    {"i":"ld/wm/Window","t":"module","v":[]},
-                    {"i":"ld/wm/MenuBar","t":"module","v":[]},
-                    {"i":"ld/wm/File","t":"module","v":[]}
+                [
+                    "ld/wm/Desktop",
+                    "module",
+                    [
+                        [
+                            "apps",
+                            "list",
+                            [
+                                { "id":"preview", "icon":"tablet", "name":"Preview" },
+                                { "id":"editor", "icon":"keyboard", "name":"Editor" }
+                            ]
+                        ],
+                        ["ld/wm/Window","module",[]],
+                        ["ld/wm/MenuBar","module",[]],
+                        ["ld/wm/File","module",[]]
                     ]
-                }
+                ]
             ]
         }
     }

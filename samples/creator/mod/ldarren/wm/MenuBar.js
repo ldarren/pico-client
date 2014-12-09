@@ -1,6 +1,4 @@
-var Module = require('Module')
-
-exports.Class = Module.Class.extend({
+exports.Class = {
     className: 'ldDesktop',
     signals: [],
     deps:[],
@@ -8,4 +6,4 @@ exports.Class = Module.Class.extend({
     },
     slots:{
     }
-})
+}

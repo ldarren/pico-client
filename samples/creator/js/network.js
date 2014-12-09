@@ -1,4 +1,5 @@
 var
+ID=0,TYPE=1,VALUE=2,EXTRA=3,
 Net = require('pico/piDataNetModel'),
 channels = {}, addon,
 create = function(list, cb){
@@ -6,7 +7,7 @@ create = function(list, cb){
 
     var
     c = list.pop(),
-    config = c.v
+    config = c[VALUE]
 
     Net.create({
         url: config.url,

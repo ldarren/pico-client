@@ -1,5 +1,4 @@
 var
-Module = require('Module'),
 tpl = require('@ld/wm/window.html'),
 open = function(){
     var self = this
@@ -46,7 +45,7 @@ blur = function(sender, index){
     this.signals.blurred().send(this.host)
 }
 
-exports.Class = Module.Class.extend({
+exports.Class = {
     className: 'wm-window',
     signals: ['opened', 'closed', 'focus', 'focused', 'blurred'],
     deps:{
@@ -62,20 +61,20 @@ exports.Class = Module.Class.extend({
         widget: 'bool'
     },
     create: function(deps, params){
-        this.el.innerHTML = tpl.text.replace('TITLE', deps.title.v || 'Untitle Window')
+        this.el.innerHTML = tpl.text.replace('TITLE', deps.title || 'Untitle Window')
 
-        this.setX(deps.x.v || 0)
-        this.setY(deps.y.v || 0)
-        this.setZ(deps.z.v || 10000)
-        this.setW(deps.width.v || 400)
-        this.setH(deps.height.v || 200)
+        this.setX(deps.x || 0)
+        this.setY(deps.y || 0)
+        this.setZ(deps.z || 10000)
+        this.setW(deps.width || 400)
+        this.setH(deps.height || 200)
 
         this.$content = this.$('.wm-content')
         this.$toolbar = this.$('header')
-        if (deps.content.v) this.$content.append(deps.content.v)
-        deps.widget.v ? this.$toolbar.addClass('hide') : this.$toolbar.removeClass('hide')
-        deps.pinned.v ? this.$el.removeClass('movable') : this.$el.addClass('movable')
-        deps.fixed.v ? this.$el.removeClass('resizable') : this.$el.addClass('resizable')
+        if (deps.content) this.$content.append(deps.content)
+        deps.widget ? this.$toolbar.addClass('hide') : this.$toolbar.removeClass('hide')
+        deps.pinned ? this.$el.removeClass('movable') : this.$el.addClass('movable')
+        deps.fixed ? this.$el.removeClass('resizable') : this.$el.addClass('resizable')
 
         this._resizing = null
         this._moving = null
@@ -159,4 +158,4 @@ exports.Class = Module.Class.extend({
     isMovable: function(){ return this.$el.hasClass('movable') },
     isResizable: function(){ return this.$el.hasClass('resizable') },
     isWidget: function(){ return this.$toolbar.hasClass('hide') },
-})
+}
