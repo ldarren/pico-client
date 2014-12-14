@@ -10,9 +10,9 @@
     ],
     "spec":[
         ["mainChannel", "channel", {"url":"http://107.20.154.29:4888","delimiter":"[\"&\"]","beatRate":500}],
-        [ "owner", "models", [ ] ],
-        [ "data", "models", [ ] ],
-        [ "dataUsers", "models", [ ] ],
+        ["owner","models",[]],
+        ["data","models",[]],
+        ["dataUsers","models",[]],
         [   
             "ld/auth/Session",
             "module",
@@ -32,17 +32,18 @@
                     "ld/wm/Desktop",
                     "module",
                     [
-                        [
-                            "apps",
-                            "list",
-                            [
-                                { "id":"preview", "icon":"tablet", "name":"Preview" },
-                                { "id":"editor", "icon":"keyboard", "name":"Editor" }
-                            ]
-                        ],
+                        ["apps","list",[]],
                         ["ld/wm/Window","module",[]],
                         ["ld/wm/MenuBar","module",[]],
                         ["ld/wm/File","module",[]]
+                    ]
+                ],[
+                    "mod/user",
+                    "module",
+                    [
+                        ["icon", "text", "users"],
+                        ["name", "text", "User Settings"],
+                        ["owner", "ref", "owner"],
                     ]
                 ]
             ]

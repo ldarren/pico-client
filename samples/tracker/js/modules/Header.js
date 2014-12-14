@@ -27,7 +27,8 @@ exports.Class = Module.Class.extend({
         this.$search = this.$('input[type=search]')
         this.$leftBar = this.$('.pull-left')
         this.$rightBar = this.$('.pull-right')
-        this.$title = this.$('h1#simple.title')
+        this.$title = this.$('h1.title')
+        this.$sub = this.$('span.sub')
         this.active = false
 
         this.lastConfig = null
@@ -69,7 +70,8 @@ exports.Class = Module.Class.extend({
         $search = this.$search,
         $leftBar = this.$leftBar,
         $rightBar = this.$rightBar,
-        $title = this.$title
+        $title = this.$title,
+        $sub = this.$sub
 
         $leftBar.empty()
         $rightBar.empty()
@@ -86,6 +88,7 @@ exports.Class = Module.Class.extend({
         if (c.search){
             this.$el.removeClass('hidden')
             this.$title.addClass('hidden')
+            this.$sub.addClass('hidden')
             this.$search.removeClass('hidden').focus()
             return
         }
@@ -95,6 +98,10 @@ exports.Class = Module.Class.extend({
         if (title || c.title){
             $title.text(title || c.title)
             $title.removeClass('hidden')
+        }
+        if (c.subTitle){
+            $sub.text(c.subTitle)
+            $sub.removeClass('hidden')
         }
         if (c.left){
             addToolbar($leftBar, c.left)
@@ -108,7 +115,7 @@ exports.Class = Module.Class.extend({
 
     onToolbar: function(e, isLeft){
         this.undelegateEvents()
-        window.setTimeout(function(self){ self.delegateEvents() }, 10, this)
+        window.setTimeout(function(self){ self.delegateEvents() }, 100, this)
         var
         ele = e.currentTarget,
         id = ele.id
