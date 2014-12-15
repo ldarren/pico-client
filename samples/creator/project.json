@@ -28,6 +28,7 @@
             "style":{
             },
             "spec":[
+                ["owner", "ref", "owner"],
                 [
                     "ld/wm/Desktop",
                     "module",
@@ -38,12 +39,12 @@
                         ["ld/wm/File","module",[]]
                     ]
                 ],[
-                    "mod/user",
+                    "mod/User",
                     "module",
                     [
                         ["icon", "text", "users"],
                         ["name", "text", "User Settings"],
-                        ["owner", "ref", "owner"],
+                        ["owner", "ref", "owner"]
                     ]
                 ]
             ]

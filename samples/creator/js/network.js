@@ -57,19 +57,6 @@ Backbone.ajax = function(req){
     me.signal('send', [api])
 }
 
-me.slot(pico.LOAD, function(){
-    pico.ajax('get', 'project.json', null, null, function(err, xhr){
-        if (err) return console.error(err)
-        if (4 !== xhr.readyState) return
-        try{
-            var project = JSON.parse(xhr.responseText)
-        }catch(exp){
-            return console.error(exp)
-        }
-        me.signalStep('projectLoaded', [project])
-    })
-})
-
 me.slot('addon', function(){ addon = arguments[0] })
 
 exports.create = function(list, cb){

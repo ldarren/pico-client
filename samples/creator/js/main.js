@@ -3,7 +3,9 @@ pico.start({
     production: false,
     paths:{
         '*': 'js/',
+        root: './',
         html: 'html/',
+        mod: 'mod/',
         ld: 'mod/ldarren/',
         pico: 'lib/pico/lib/'
     }
@@ -12,14 +14,14 @@ pico.start({
     var
     network = require('network'),
     specMgr = require('specMgr'),
-    Frame = require('Frame')
+    Frame = require('Frame'),
+    project = require('@root/project.json')
 
     me.slot(pico.LOAD, function(){
-        network.slot('projectLoaded', function(project){
-            network.create(specMgr.findAll('channel', project.spec), function(err){
-                if (err) return console.error(err)
-                new Frame.Class(project)
-            })
+        var json = project.json
+        network.create(specMgr.findAll('channel', json.spec), function(err){
+            if (err) return console.error(err)
+            new Frame.Class(json)
         })
     })
 })

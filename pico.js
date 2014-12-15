@@ -103,7 +103,13 @@
         pico.ajax('get', path+fname, '', null, function(err, xhr){
             if (err) return cb(err)
             if (4 !== xhr.readyState) return
-            return raw ?  cb(null, (mod.text = xhr.responseText)) : vm(link, xhr.responseText, cb)
+            if (raw){
+                mod.text = xhr.responseText
+                try{ mod.json = JSON.parse(mod.text) }
+                catch(exp){}
+                return cb(null, mod)
+            }
+            return vm(link, xhr.responseText, cb)
         })
     },
     // recurssively load dependencies in a module
