@@ -1,14 +1,12 @@
-{
-    "deps":[
+[
+    [
         "lib/lean/lean.js"
-    ],
-    "styles":[
+    ],[
         "mod/ldarren/wm/desktop.css",
         "lib/lean/lean.css",
         "css/icon.css",
         "css/main.css"
-    ],
-    "spec":[
+    ],[
         ["mainChannel", "channel", {"url":"http://107.20.154.29:4888","delimiter":"[\"&\"]","beatRate":500}],
         ["owner","models",[]],
         ["data","models",[]],
@@ -22,12 +20,9 @@
                 ["authPages","list",[]]
             ]
         ]
-    ],
-    "pages":{
-        "*action":{
-            "style":{
-            },
-            "spec":[
+    ],{
+        "*action":[
+            [
                 ["owner", "ref", "owner"],
                 [
                     "ld/wm/Desktop",
@@ -47,7 +42,8 @@
                         ["owner", "ref", "owner"]
                     ]
                 ]
-            ]
-        }
+            ],{
+            }
+        ]
     }
-}
+]

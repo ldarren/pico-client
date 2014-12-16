@@ -9,6 +9,7 @@ exports.Class = Module.Class.extend({
     create: function(spec){
         this.model = this.requireType('model').value
         this.month = this.require('month').value
+        this.date = this.require('date').value
 
         this.listenTo(this.model, 'change', this.render)
     },
@@ -17,9 +18,9 @@ exports.Class = Module.Class.extend({
         m = this.model.attributes,
         info = m.json
         this.$el.html(_.template(tpl.text, {
-            url: '#expense/' +this.month+'/'+ m.id,
-            title: this.month+'-'+String('0'+(m.id)).slice(-2),
-            desc: 'Total $'+m.value
+            url: '#expense/edit/' +this.month+'/'+'/'+this.date+'/'+ m.id,
+            title: m.desc,
+            desc: '$'+m.value
         }))
         return this.el
     }

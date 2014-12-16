@@ -1,7 +1,11 @@
 var
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
+DEPS=0,STYLES=1,SPEC=2,PAGES=3,
+PSPEC=0,PSTYLE=1,
 Router = require('Router'),
 Module = require('Module'),
+network = require('network'),
+specMgr = require('specMgr'),
 attachDeps = function(deps, cb){
     if (!deps || !deps.length) return cb()
     pico.attachFile(deps.shift(), 'js', function(){ attachDeps(deps, cb) })
@@ -25,13 +29,13 @@ removeOldPage = function(){
     this.signals.mainTransited(this.main.offsetLeft, this.main.offsetTop).send()
 },
 changeRoute = function(path, params){
-    var pageConfig = this.pages[path]
+    var p = this.pages[path]
 
-    if (!pageConfig) return Router.instance.home()
+    if (!p) return Router.instance.home()
 
     if (this.oldPage) removeOldPage.call(this)
     this.oldPage = this.currPage
-    this.currPage = this.spawn({name:path, spec:pageConfig.spec, style:pageConfig.style, Class:Module.Class}, params, null, true)
+    this.currPage = this.spawn({name:path, spec:p[PSPEC], style:p[PSTYLE], Class:Module.Class}, params, null, true)
     this.render()
     this.signals.changeRoute(path, params).send()
 }
@@ -40,30 +44,33 @@ exports.Class = Module.Class.extend({
     el: 'body',
     signals:['modelReady', 'changeRoute', 'mainTransited'],
     initialize: function(p){
-        var
-        self = this,
-        r = new Router.Class(Object.keys(p.pages))
-
-        r.on('route', changeRoute, this)
+        var self = this
         
-        this.pages = p.pages
+        this.pages = p[PAGES]
 
-        attachStyles(p.styles, function(){
-            attachDeps(p.deps, function(){
-                self.el.innerHTML = '<div class="lnBook lnSlider"></div><div></div><div></div>'
+        network.create(specMgr.findAll('channel', p[SPEC]), function(err){
+            if (err) return console.error(err)
 
-                var
-                m = self.el.firstChild,
-                s = m.nextElementSibling
+            var r = new Router.Class(Object.keys(self.pages))
+            r.on('route', changeRoute, self)
 
-                self.modal = s.nextElementSibling
-                self.main = m
-                self.secondary = s
+            attachStyles(p[STYLES], function(){
+                attachDeps(p[DEPS], function(){
+                    self.el.innerHTML = '<div class="lnBook lnSlider"></div><div></div><div></div>'
 
-                m.addEventListener('flipped', removeOldPage.bind(self), false)
-                m.addEventListener('transited', transited.bind(self), false)
+                    var
+                    m = self.el.firstChild,
+                    s = m.nextElementSibling
 
-                Module.Class.prototype.initialize.call(self, {name:'Frame', spec:p.spec})
+                    self.modal = s.nextElementSibling
+                    self.main = m
+                    self.secondary = s
+
+                    m.addEventListener('flipped', removeOldPage.bind(self), false)
+                    m.addEventListener('transited', transited.bind(self), false)
+
+                    Module.Class.prototype.initialize.call(self, {name:'Frame', spec:p[SPEC]})
+                })
             })
         })
     },

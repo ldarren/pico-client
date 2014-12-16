@@ -1,6 +1,8 @@
 var
 Router = require('Router'),
 Module = require('Module'),
+network = require('network'),
+specMgr = require('specMgr'),
 attachDeps = function(deps, cb){
     if (!deps || !deps.length) return cb()
     pico.attachFile(deps.shift(), 'js', function(){ attachDeps(deps, cb) })
@@ -38,30 +40,33 @@ changeRoute = function(path, params){
 exports.Class = Module.Class.extend({
     el: 'body',
     initialize: function(p){
-        var
-        self = this,
-        r = new Router.Class({routes: p.routes})
-
-        r.on('route', changeRoute, this)
+        var self = this
         
         this.pages = p.pages
 
-        attachStyles(p.styles, function(){
-            attachDeps(p.deps, function(){
-                self.el.innerHTML = '<div class="lnBook lnSlider"></div><div></div><div></div>'
+        network.create(specMgr.find('projURL', p.spec).value, true, function(err){
+            if (err) return console.error(err)
 
-                var
-                m = self.el.firstChild,
-                s = m.nextElementSibling
+            var r = new Router.Class({routes: p.routes})
+            r.on('route', changeRoute, self)
 
-                self.modal = s.nextElementSibling
-                self.main = m
-                self.secondary = s
+            attachStyles(p.styles, function(){
+                attachDeps(p.deps, function(){
+                    self.el.innerHTML = '<div class="lnBook lnSlider"></div><div></div><div></div>'
 
-                m.addEventListener('flipped', removeOldPage.bind(self), false)
-                m.addEventListener('transited', transited.bind(self), false)
+                    var
+                    m = self.el.firstChild,
+                    s = m.nextElementSibling
 
-                Module.Class.prototype.initialize.call(self, p)
+                    self.modal = s.nextElementSibling
+                    self.main = m
+                    self.secondary = s
+
+                    m.addEventListener('flipped', removeOldPage.bind(self), false)
+                    m.addEventListener('transited', transited.bind(self), false)
+
+                    Module.Class.prototype.initialize.call(self, p)
+                })
             })
         })
     },

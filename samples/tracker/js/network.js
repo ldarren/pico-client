@@ -34,22 +34,6 @@ onSend = function(req){
     me.signal('send', [api])
 }
 
-me.slot(pico.LOAD, function(){
-    Net.create({
-        url: 'http://107.20.154.29:4888',
-        delimiter: ['&'],
-        beatRate: 500,
-    }, function(err, client){
-        if (err) return console.error(err)
-
-        client.request('pico/project/read', {name:'tracker'}, function(err, project){
-            if (err) return console.error(err)
-            if (!project) return console.error('empty project file')
-            me.signalStep('connected', [project.json, client])
-        })
-    })
-})
-
 me.slot('addon', function(){ addon = arguments[0] })
 
 exports.create = function(url, forProj, cb){

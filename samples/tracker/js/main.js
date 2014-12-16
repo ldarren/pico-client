@@ -3,6 +3,7 @@ pico.start({
     production: false,
     paths:{
         '*': 'js/',
+        root: './',
         html: 'html/',
         modules: 'js/modules/',
         pico: 'lib/pico/lib/'
@@ -10,16 +11,10 @@ pico.start({
 },function(){
     require('Module') // preload
     var
-    network = require('network'),
-    specMgr = require('specMgr'),
-    Frame = require('Frame')
+    Frame = require('Frame'),
+    project = require('@root/project.json')
 
     me.slot(pico.LOAD, function(){
-        network.slot('connected', function(project){
-            network.create(specMgr.find('projURL', project.spec).value, true, function(err){
-                if (err) return console.error(err)
-                new Frame.Class(project)
-            })
-        })
+        new Frame.Class(project.json)
     })
 })
