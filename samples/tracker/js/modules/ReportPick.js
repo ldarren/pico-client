@@ -50,7 +50,7 @@ exports.Class = Module.Class.extend({
         var
         date = new Date(from),
         yr = date.getFullYear(),
-        mt = date.getMonth()+1
+        mt = ('0'+(date.getMonth()+1)).slice(-2)
 
         fromEle.value = yr + '-' + mt + '-' + '01'
         toEle.value = yr + '-' + mt + '-' + common.daysInMonth(mt-1, yr)

@@ -26,7 +26,7 @@ exports.Class = Module.Class.extend({
 
         this.listenTo(expenses, 'add', addRow)
 
-        for(var i=1,l=common.daysInMonth(then.getMonth(), then.getFullYear())+1, list, total, j, e; i<l; i++){
+        for(var i=0,l=common.daysInMonth(then.getMonth(), then.getFullYear()), list, total, j, e; i<l; i++){
             list = date[i]
             total = 0
             if (list) for(j=0; e=list[j]; j++) total += e[1];

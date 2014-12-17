@@ -15,16 +15,19 @@ exports.Class = Module.Class.extend({
         month = this.require('month').value,
         date = this.require('date').value,
         expense = data.findWhere({month:month}),
+        spends = [],
         items = []
+
+        if (expense && expense.has('date')){
+            try{ spends = JSON.parse(expense.get('date'))}
+            catch(exp){}
+
+            items = spends[date] || []
+        }
 
         this.items = items
         this.month = month
         this.date = date
-
-        if (expense && expense.has('date')){
-            try{ items = JSON.parse(expense.get('date'))}
-            catch(exp){}
-        }
 
         this.Row = this.require('ExpenseItem')
 

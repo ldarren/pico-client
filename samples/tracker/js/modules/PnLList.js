@@ -34,13 +34,13 @@ exports.Class = Module.Class.extend({
                 expenses = raw.expenses,
                 totalIncome=0, totalExpenses=0
 
-                for(var i=1,l=expenses.length,ex,ic; i<l; i++){
+                for(var i=0,l=expenses.length,ex,ic; i<l; i++){
                     ex=expenses[i]
                     ic=income[i]
                     totalIncome += ic
                     totalExpenses += ex
                     $el.append(_.template(pnlTpl, {
-                        date: month+'-'+('0'+i).slice(-2),
+                        date: month+'-'+('0'+(i+1)).slice(-2),
                         income: ic,
                         expenses: ex,
                         profit: totalIncome - totalExpenses

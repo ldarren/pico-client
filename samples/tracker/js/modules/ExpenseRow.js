@@ -18,7 +18,7 @@ exports.Class = Module.Class.extend({
         info = m.json
         this.$el.html(_.template(tpl.text, {
             url: '#expense/' +this.month+'/'+ m.id,
-            title: this.month+'-'+String('0'+(m.id)).slice(-2),
+            title: this.month+'-'+String('0'+(m.id+1)).slice(-2),
             desc: 'Total $'+m.value
         }))
         return this.el

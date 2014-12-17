@@ -12,11 +12,12 @@ exports.Class = Module.Class.extend({
         var
         data = this.require('data').value,
         month = this.require('month').value,
-        date = this.require('date').value,
+        date = parseInt(this.require('date').value),
         itemId = this.require('item').value,
         expense = data.findWhere({month:month}),
-        hiddens=[{name:'month', value:month},{name:'date', value:date},{name:'type', value:'expense'}],
+        hiddens=[{name:'month', value:month},{name:'type', value:'expense'}],
         fields = [],
+        spends = [],
         items = [],
         item  = []
 
@@ -24,8 +25,9 @@ exports.Class = Module.Class.extend({
             hiddens.push({name:'dataId', value:expense.id, type:'hidden'})
             if (expense.has('date')){
                 try{
-                    items = JSON.parse(expense.get('date'))
-                    item = items[itemId]
+                    spends = JSON.parse(expense.get('date'))
+                    items = spends[date] || []
+                    item = items[itemId] || []
                 }catch(exp){}
             }
         }else{
@@ -34,11 +36,12 @@ exports.Class = Module.Class.extend({
 
         fields.push({label:'Remarks', name:'desc', value:item[0], type:'text'},{label:'$', name:'value', value:item[1], type:'number'}) 
 
-        this.triggerHost('changeHeader', {title:'Expense: '+month+'-'+String('0'+date).slice(-2)})
+        this.triggerHost('changeHeader', {title:'Expense: '+month+'-'+String('0'+(date+1)).slice(-2)})
 
         this.expense = expense
-        this.data=data 
-        this.items = items
+        this.data=data
+        this.date = date
+        this.spends = spends
         this.itemId = itemId
         this.$el.html(_.template(tpl.text, {hiddens:hiddens, fields:fields}))
     },
@@ -50,14 +53,18 @@ exports.Class = Module.Class.extend({
             var
             el = this.el,
             data = {
-                dataId: el.dataId ? el.dateId.value : undefined,
+                dataId: el.dataId ? el.dataId.value : undefined,
                 month: el.month.value,
-                date: el.date.value,
                 type: el.type.value,
-                json: this.items
-
+                json: this.spends
             }
-            this.items[this.itemId] = [el.desc.value, el.value.value]
+            var
+            items = this.spends[this.date] || [],
+            item = [el.desc.value, parseFloat(el.value.value)]
+
+            items[this.itemId] = item
+            this.spends[this.date] = items
+
             if (this.expense){
                 this.expense.save(null, {
                     data: data,
