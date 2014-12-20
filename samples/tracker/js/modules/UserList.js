@@ -2,6 +2,7 @@ var
 Module = require('Module'),
 Router = require('Router'),
 common = require('modules/common'),
+voidTpl = require('@html/Void.html'),
 addRow = function(model){
     if ('user' !== model.get('type')) return
     var role = parseInt(model.get('user'))
@@ -12,12 +13,22 @@ addRow = function(model){
     if (this.whitelist && -1 === this.whitelist.indexOf(role)) return
 
     if (1 !== model.get('status')) return
+
+    if (this.$el.hasClass('voidPage')){
+        this.$el.removeClass('voidPage').addClass('table-view')
+        this.$el.empty()
+    }
     this.grid[id] = this.spawn(this.Row, [id])
 },
 removeRow = function(model){
     var id = model.id
     this.grid[id].remove()
     delete this.grid[id]
+
+    if (!Object.keys(this.grid).length && !this.$el.hasClass('voidPage')){
+        this.$el.removeClass('table-view').addClass('voidPage')
+        this.$el.html(_.template(voidTpl.text, {icon:'folder-open-empty', message:'Empty'}))
+    }
 },
 searchName = function(model){
     if ('user' !== model.get('type')) return
@@ -38,7 +49,7 @@ ok = function(){
 
 exports.Class = Module.Class.extend({
     tagName: 'ul',
-    className: 'table-view',
+    className: 'voidPage',
     create: function(spec, params){
         var
         self = this,
@@ -52,6 +63,8 @@ exports.Class = Module.Class.extend({
         this.whitelist = this.require('whitelist').value,
         this.data = data
         this.grid = {}
+
+        this.$el.html(_.template(voidTpl.text, {icon:'folder-open-empty', message:'Empty'}))
 
         reload.call(this)
 
