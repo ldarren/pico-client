@@ -1,5 +1,4 @@
-var
-tpl = '<div class=icon draggable=true></div><div class=name></div>'
+var tpl = '<div class=icon draggable=true></div><div class=name></div>'
 
 exports.Class = {
     className: 'file',

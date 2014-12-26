@@ -6,27 +6,23 @@ baseZ = 10000
 
 exports.Class = {
     id: 'ldwmDesktop',
-    signals: ['open', 'close', 'focus', 'blur', 'mousemove', 'mouseup', 'dragleave'],
+    className: 'wm-space',
+    signals: ['desktopReady', 'createInstance', 'destroyInstance', 'open', 'close', 'focus', 'blur', 'mousemove', 'mouseup', 'dragleave'],
     deps:{
         apps: 'list',
         'ld/wm/Window':'module',
         'ld/wm/MenuBar':'module',
         'ld/wm/File':'module'
     },
-    className: 'wm-space',
     create: function(deps, params){
         this.el.innerHTML = tpl
-        var
-        dir = this.el.querySelector('.dir'),
-        File = deps['ld/wm/File']
-
-        for(var i=0,as=deps.apps,a; a=as[i]; i++){
-            this.show(this.spawn(File, params, [specMgr.create('file', 'map', a)], true), dir)
-        }
+        this.dir = this.el.querySelector('.dir')
 
         this.windows = []
+        this.apps = {}
         this.active = null
-        this.sayHello()
+        this.sayHello() // mixin test
+        this.signals.desktopReady().send()
     },
     events: {
         mousemove: function(e){
@@ -44,23 +40,16 @@ exports.Class = {
     },
     slots:{
         open: function(sender, fileId){
-            var
-            currZ = baseZ + this.windows.length + 1,
-            win = this.spawn(this.deps['ld/wm/Window'], null, [
-                    specMgr.create('title', 'text', fileId),
-                    specMgr.create('z', 'number', currZ--)
-                ])
-            for(var z, i=this.windows.length; i--;) {
-                this.signals.blur(currZ--).send(this.windows[i])
-            }
-            this.windows.push(win)
-            this.active = win
-            this.signals.open().send(win)
+            var app = this.apps[fileId]
+            if (!app) return
+
+            this.signals.createInstance().send(app)
         },
         opened: function(sender){
         },
         closed: function(sender){
             sender.remove()
+            this.signals.destroyInstance(sender.instId).send()
         },
         focus: function(sender){
             var currZ = baseZ + this.windows.length
@@ -81,10 +70,44 @@ exports.Class = {
         },
         blurred: function(sender){
             if (this.active === sender) this.active = null
+        },
+        appRegister: function(sender, appId, appIcon, appName){
+            this.apps[appId] = sender
+            this.show(
+                this.spawn(this.deps['ld/wm/File'], [], [specMgr.create('file', 'map', {id:appId, icon:appIcon, name:appName})], true),
+                this.dir
+            )
+        },
+        appFocus: function(sender, instId){
+            var wins = this.windows
+            for(var i=0,w; w=wins[i]; i++){
+                if (instId === w.instId){
+                    this.slots.focus(w)
+                    return
+                }
+            }
+        },
+        appInstance: function(sender, instId, instIcon, instName, content){
+            var
+            currZ = baseZ + this.windows.length + 1,
+            win = this.spawn(this.deps['ld/wm/Window'], null, [
+                specMgr.create('instId', 'text', instId),
+                specMgr.create('title', 'text', instName),
+                specMgr.create('z', 'number', currZ--),
+                specMgr.create('content', 'dom', content)
+            ])
+
+            for(var z, i=this.windows.length; i--;) {
+                this.signals.blur(currZ--).send(this.windows[i])
+            }
+            this.windows.push(win)
+            this.active = win
+            this.signals.open().send(win)
         }
     }
 }
 
+// mixin test
 exports.Mixin = function(spec, params){
     return [mixin.test]
 }

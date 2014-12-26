@@ -9,10 +9,6 @@ open = function(){
         self.$el.removeClass('opening');
     })
 console.log('open window: '+this._id)
-    CodeMirror(this.$content[0], {
-          value: "function myScript(){return 100;}\n",
-          mode:  "javascript"
-    })
 },
 close = function(){
     var self = this
@@ -62,6 +58,8 @@ exports.Class = {
     },
     create: function(deps, params){
         this.el.innerHTML = tpl.text.replace('TITLE', deps.title || 'Untitle Window')
+
+        this.instId = deps.instId
 
         this.setX(deps.x || 0)
         this.setY(deps.y || 0)

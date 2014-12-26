@@ -4,6 +4,7 @@
     ],[
         "mod/ldarren/wm/desktop.css",
         "lib/lean/lean.css",
+        "css/skeleton.css",
         "css/icon.css",
         "css/main.css"
     ],[
@@ -34,9 +35,10 @@
                         ["ld/wm/File","module",[]]
                     ]
                 ],[
-                    "mod/User",
+                    "mod/UserApp",
                     "module",
                     [
+                        ["id", "text", "users"],
                         ["icon", "text", "users"],
                         ["name", "text", "User Settings"],
                         ["owner", "ref", "owner"]
