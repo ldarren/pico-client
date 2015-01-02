@@ -109,7 +109,7 @@ exports.Class = Backbone.View.extend({
         specMgr.unload(this._rawSpec, this.spec)
     },
     spawn: function(Mod, params, spec, hidden){
-        if (!Mod.spec) return
+        if (!Mod || !Mod.spec) return
         Mod.spec = spec && spec.length ? Mod.spec.concat(spec) : Mod.spec
 
         var mixin = Mod.Mixin ? Mod.Mixin(Mod.spec, params) : []
@@ -129,6 +129,9 @@ exports.Class = Backbone.View.extend({
         return m
     },
     dump: function(mod){
+        if (!mod) return
+        mod.remove()
+        this.hide(mod)
         var i = this.modules.indexOf(mod)
         this.modules.splice(i, 1)
         this._elements.splice(i, 1)
@@ -136,6 +139,7 @@ exports.Class = Backbone.View.extend({
     dumpAll:function(){
         for(var i=0,ms=this.modules,m; m=ms[i]; i++){
             m.remove()
+            this.hide(m)
         }
         ms.length = 0
         this._elements.length = 0

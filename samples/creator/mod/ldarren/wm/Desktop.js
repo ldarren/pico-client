@@ -87,14 +87,16 @@ exports.Class = {
                 }
             }
         },
-        appInstance: function(sender, instId, instIcon, instName, content){
+        appInstance: function(sender, content, opts){
             var
             currZ = baseZ + this.windows.length + 1,
             win = this.spawn(this.deps['ld/wm/Window'], null, [
-                specMgr.create('instId', 'text', instId),
-                specMgr.create('title', 'text', instName),
+                specMgr.create('instId', 'text', opts.id),
+                specMgr.create('title', 'text', opts.name),
                 specMgr.create('z', 'number', currZ--),
-                specMgr.create('content', 'dom', content)
+                specMgr.create('content', 'dom', content),
+                specMgr.create('width', 'number', opts.width),
+                specMgr.create('height', 'number', opts.height)
             ])
 
             for(var z, i=this.windows.length; i--;) {

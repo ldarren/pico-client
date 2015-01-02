@@ -123,16 +123,6 @@
             if (err) return cb(err)
             return loadDeps(deps, cb)
         })
-    },
-    onStateChange = function(evt){
-        pico.signal(pico.STATE_CHANGE, [pico.getState(), evt.state])
-    },
-    onHashChange = function(evt){
-        var newHash='', oldHash=''
-        if (evt.oldURL) oldHash = evt.oldURL.substring(1) || ''
-        if (evt.newURL) newHash = evt.newURL.substring(1) || ''
-        else newHash = exports.location.hash.substring(1) || ''
-        pico.signal(pico.HASH_CHANGE, [oldHash, newHash])
     }
 
     pico = exports.pico = {
@@ -144,9 +134,6 @@
                 vm(name, script, function(err, mod){
                     script = undefined
                     options = undefined
-
-                    exports.addEventListener('popstate', onStateChange, false)
-                    exports.addEventListener('hashchange', onHashChange, false)
                 })
             }
 
@@ -155,7 +142,7 @@
 
             pico.objTools.mergeObj(paths, options.paths)
 
-			if ('phonegap' === envs.browser){
+			if (envs.supportNative){
 				document.addEventListener('deviceready', onDeviceReady, false)
 				pico.attachFile('cordova.js', 'js')
 			}else{
@@ -263,33 +250,6 @@
             evt.initCustomEvent(name, bubbles || false, cancelable || false, detail)
             return evt
         },
-        changeState: function(uri, desc, userData){
-            var search = '?'
-            for (var key in uri){
-                if (!key) continue
-                search += key + '=' + uri[key] + '&'
-            }
-            // remove last & symbol
-            history.pushState(userData, desc, search.substr(0, search.length-1))
-            if (!this.envs.isWebKit){
-                this.onStateChange({})
-            }
-        },
-        getState: function(){
-            var
-            search = location.search.substring(1), // remove leading ?
-            pairs = search.split('&'),
-            pair, obj={}
-            for (var i=0, l=pairs.length; i<l; i++){
-                pair = pairs[i].split('=')
-                if (!pair[0]) continue
-                obj[pair[0]] = pair[1]
-            }
-            return obj
-        },
-        changeHash: function(hash){
-            exports.location.hash = '#' + hash
-        },
 
         // method: get/post, url: path, params: null/parameters (optional), headers: header parameter, cb: callback, userData: optional
         ajax: function(method, url, params, headers, cb, userData){
@@ -395,8 +355,6 @@
 
     Object.defineProperties(pico, {
         LOAD:           {value:'load',          writable:false, configurable:false, enumerable:true},
-        STATE_CHANGE:   {value:'stateChange',   writable:false, configurable:false, enumerable:true},
-        HASH_CHANGE:    {value:'hashChange',    writable:false, configurable:false, enumerable:true},
         slots:          {value:{},              writable:false, configurable:false, enumerable:false},
         signals:        {value:{},              writable:false, configurable:false, enumerable:false},
         contexts:       {value:{},              writable:false, configurable:false, enumerable:false},
@@ -418,43 +376,12 @@
         envs.transitionEnd = pico.detectEvent(te) ? te : pico.detectEvent(wkte) ? 'webkitTransitionEnd' : undefined
 
         envs.appVer = appVerTag ? appVerTag.getAttribute('content') : '0'
+        envs.supportNative = false
 
         if (-1 === document.URL.indexOf('http://') &&
-            -1 === document.URL.indexOf('https://') &&
-            navigator &&
-            navigator.userAgent &&
-            navigator.userAgent.match(/(iPhone|iPod|iPad|Android|BlackBerry|IEMobile)/)){
-            envs.browser = 'phonegap'
-            envs.isWebKit = true
-        }else{
-            var
-            // http://www.quirksmode.org/js/detect.html
-            vendorKeys = [
-            { string: navigator.userAgent,  subString: "chrome",    identity: "chrome"},
-            { string: navigator.userAgent,  subString: "omniweb",   identity: "omniweb"},
-            { string: navigator.vendor,     subString: "apple",     identity: "safari"},
-            { string: navigator.userAgent,  subString: "opera",     identity: "opera"},
-            { string: navigator.vendor,     subString: "icab",      identity: "icab"},
-            { string: navigator.vendor,     subString: "kde",       identity: "konqueror"},
-            { string: navigator.userAgent,  subString: "firefox",   identity: "firefox"},
-            { string: navigator.vendor,     subString: "camino",    identity: "camino"},
-            { string: navigator.userAgent,  subString: "netscape",  identity: "netscape"},
-            { string: navigator.userAgent,  subString: "msie",      identity: "explorer"},
-            { string: navigator.userAgent,  subString: "gecko",     identity: "mozilla"},
-            { string: navigator.userAgent,  subString: "mozilla",   identity: "netscape"}],
-            key
-
-            envs.browser = 'unknown'
-            envs.isWebKit = false
-
-            for (var i=0, l=vendorKeys.length; i<l; i++){
-              key = vendorKeys[i]
-              if (key.string && -1 !== key.string.indexOf(key.subString)){
-                  envs.browser = key.identity
-                  envs.isWebKit = -1 !== key.string.indexOf('WebKit')
-                  break
-              }
-            }
+            -1 === document.URL.indexOf('https://')){
+            var tag = document.querySelector('meta[name=app-support-native]')
+            envs.supportNative = tag ? 'true' === tag.getAttribute('content').toLowerCase() : false
         }
         console.log('pico envs: '+JSON.stringify(envs))
     }()

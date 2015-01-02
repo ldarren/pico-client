@@ -26,6 +26,28 @@
             [
                 ["owner", "ref", "owner"],
                 [
+                    "mod/UserApp",
+                    "module",
+                    [
+                        ["id", "text", "users"],
+                        ["icon", "text", "users"],
+                        ["name", "text", "User Settings"],
+                        ["owner", "ref", "owner"],
+                        [
+                            "mod/Signin",
+                            "module",
+                            []
+                        ], [
+                            "mod/Signup",
+                            "module",
+                            []
+                        ], [
+                            "mod/UserInfo",
+                            "module",
+                            []
+                        ]
+                    ]
+                ],[
                     "ld/wm/Desktop",
                     "module",
                     [
@@ -33,15 +55,6 @@
                         ["ld/wm/Window","module",[]],
                         ["ld/wm/MenuBar","module",[]],
                         ["ld/wm/File","module",[]]
-                    ]
-                ],[
-                    "mod/UserApp",
-                    "module",
-                    [
-                        ["id", "text", "users"],
-                        ["icon", "text", "users"],
-                        ["name", "text", "User Settings"],
-                        ["owner", "ref", "owner"]
                     ]
                 ]
             ],{
