@@ -82,6 +82,7 @@
         if (!link) return cb()
         var mod = modules[link]
         if (mod && mod.moduleName) return cb(null, mod)
+        if (!mod) mod = modules[link] = {}
 
         var
         raw = '@' === link[0],
@@ -111,6 +112,8 @@
             }
             return vm(link, xhr.responseText, cb)
         })
+
+        return mod
     },
     // recurssively load dependencies in a module
     loadDeps = function(deps, cb){
