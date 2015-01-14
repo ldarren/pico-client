@@ -24,7 +24,8 @@
     ],{
         "*action":[
             [
-                ["owner", "ref", "owner"],[
+                ["allModels", "refs", "models"],
+                [
                     "ld/wm/Desktop",
                     "module",
                     [
@@ -37,6 +38,7 @@
                     "ld/wm/Launcher",
                     "module",
                     [
+                        ["allModels", "refs", "models"],
                         ["defaultPath", "url", "@json/standard.json"]
                     ]
                 ]

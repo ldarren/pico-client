@@ -2,6 +2,10 @@ var
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
 Model = require('Model'),
 create = function(id, type, value){ return [id, type, value] },
+getId = function(spec){return spec[ID]},
+getType = function(spec){return spec[TYPE]},
+getValue = function(spec){return spec[VALUE]},
+getExtra = function(spec){return spec[EXTRA]},
 find = function(name, list){ for(var i=0,o; o=list[i]; i++){ if (name === o[ID]) return o } },
 findAll = function(type, list){
     var arr = []
@@ -83,3 +87,7 @@ exports.unload = unload
 exports.find = find
 exports.findAll = findAll
 exports.create = create
+exports.getId = getId
+exports.getType = getType
+exports.getValue = getValue
+exports.getExtra = getExtra
