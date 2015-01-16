@@ -1,18 +1,34 @@
 exports.Class = Backbone.Collection.extend({
     initialize: function(models, config){
-        this.sync = function(method, model, options){
-            options.channel = config.channel
-            var url = options.url || cont.model ? config.list : config[method]
-            if (url){
-                options.url = url
-                return Backbone.sync(method, model, options)
-            }
-            return options.success()
-        }
+        this.config = config
         this.model = Backbone.Model.extend({
             idAttribute: config.idAttribute || 'id',
             sync: this.sync
         })
         if (config.preload) this.fetch()
+    },
+    sync: function(method, cont, options){
+        var c = this.config
+        options.channel = c.channel
+        var url = options.url || cont.model ? c.list : c[method]
+        if (url){
+            options.url = url
+            return Backbone.sync(method, cont, options)
+        }
+        return options.success()
+    },
+    retrieve: function(ids, cb){
+        var
+        coll = this,
+        nf = _.filter(_.uniq(ids), function(n){return !coll.get(n)})
+        if (0 === nf.length) return cb(null, coll)
+        coll.fetch({
+            data:{
+                set: nf 
+            },
+            remove: false,
+            success: function(coll, raw){cb(null, coll)},
+            error: function(coll, raw){cb(raw)}
+        })
     }
 })
