@@ -20,12 +20,10 @@ exports.Class = Backbone.Collection.extend({
     retrieve: function(ids, cb){
         var
         coll = this,
-        nf = _.filter(_.uniq(ids), function(n){return !coll.get(n)})
+        nf = _.filter(_.without(_.uniq(ids), undefined), function(n){return !coll.get(n)})
         if (0 === nf.length) return cb(null, coll)
         coll.fetch({
-            data:{
-                set: nf 
-            },
+            data:{ set: nf },
             remove: false,
             success: function(coll, raw){cb(null, coll)},
             error: function(coll, raw){cb(raw)}

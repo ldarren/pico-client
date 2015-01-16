@@ -103,7 +103,12 @@ exports.Class = Backbone.View.extend({
     remove: function(){
         this._removed = true 
         this.off()
-        Backbone.View.prototype.remove.apply(this, arguments)
+        if (this.__proto__.el){ // dun remove things not urs
+            this.$el.empty()
+            this.stopListening()
+        }else{
+            Backbone.View.prototype.remove.apply(this, arguments)
+        }
         this.dumpAll()
         if (this.style) this.style.remove()
         specMgr.unload(this._rawSpec, this.spec)
