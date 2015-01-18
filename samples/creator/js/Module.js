@@ -103,9 +103,11 @@ exports.Class = Backbone.View.extend({
     remove: function(){
         this._removed = true 
         this.off()
-        if (this.__proto__.el){ // dun remove things not urs
+        if (this.__proto__.el){
+            // dun remove things not urs
             this.$el.empty()
             this.stopListening()
+            this.undelegateEvents()
         }else{
             Backbone.View.prototype.remove.apply(this, arguments)
         }

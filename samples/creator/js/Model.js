@@ -1,5 +1,7 @@
 exports.Class = Backbone.Collection.extend({
-    initialize: function(models, config){
+    initialize: function(models, value){
+        var config = {}
+        for(var i=0,v; v=value[i]; i++){ config[v[0]] = v[1] }
         this.config = config
         this.model = Backbone.Model.extend({
             idAttribute: config.idAttribute || 'id',
@@ -8,7 +10,7 @@ exports.Class = Backbone.Collection.extend({
         if (config.preload) this.fetch()
     },
     sync: function(method, cont, options){
-        var c = this.config
+        var c = this.config || this.collection.config
         options.channel = c.channel
         var url = options.url || cont.model ? c.list : c[method]
         if (url){
