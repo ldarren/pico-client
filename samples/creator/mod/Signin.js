@@ -17,6 +17,7 @@ exports.Class = {
         auth: 'models'
     },
     tagName: 'form',
+    className: 'content-padded',
     create: function(deps){
         this.el.innerHTML = tpl.text
     },

@@ -1,7 +1,5 @@
 exports.Class = Backbone.Collection.extend({
-    initialize: function(models, value){
-        var config = {}
-        for(var i=0,v; v=value[i]; i++){ config[v[0]] = v[1] }
+    initialize: function(models, config){
         this.config = config
         this.model = Backbone.Model.extend({
             idAttribute: config.idAttribute || 'id',

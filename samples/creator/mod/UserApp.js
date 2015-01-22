@@ -11,7 +11,7 @@ exports.Class = {
     },
     create: function(deps){
         this.instances = []
-        if(this.desktopReadied)this.signals.appRegister(deps.id, deps.icon, deps.name).send(this.host)
+        this.signals.appRegister(deps.id, deps.icon, deps.name).send(this.host)
 
         /*
         CodeMirror(this.$content[0], {
@@ -22,13 +22,6 @@ exports.Class = {
     },
     render: function(){},
     slots: {
-        desktopReady: function(sender){
-            this.desktopReadied = true
-            if (!this.instances) return
-            this.desktopReadied = false
-            var deps = this.deps
-            this.signals.appRegister(deps.id, deps.icon, deps.name).send(this.host)
-        },
         createInstance: function(sender){
             var insts = this.instances
 
@@ -52,6 +45,26 @@ exports.Class = {
         destroyInstance: function(sender, instId){
             this.dump(this.contentMod)
             this.instances.length = 0
+        },
+        userSignup: function(sender){
+            this.changeMod('mod/Signup')
+        },
+        userReady: function(sender){
+            this.changeMod('mod/Signin')
         }
+    },
+    changeMod: function(mod){
+        var
+        deps = this.deps,
+        insts = this.instances
+
+        if (!insts) return
+
+        this.dump(this.contentMod)
+        insts.length = 0
+
+        this.contentMod = this.spawn(deps.owner.length ? deps['mod/UserInfo'] : deps[mod])
+
+        insts.push(deps.id)
     }
 }

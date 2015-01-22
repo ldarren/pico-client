@@ -60,8 +60,8 @@ exports.Class = {
     },
 
     slots:{
-        signin: function(sender){
-            var userId = arguments[2].id
+        signin: function(sender, model){
+            var userId = model.id
             this.myId = userId
             this.readSeen(userId)
             this.readColl('data', userId)

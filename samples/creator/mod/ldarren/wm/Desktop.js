@@ -7,7 +7,7 @@ baseZ = 10000
 exports.Class = {
     id: 'ldwmDesktop',
     className: 'wm-space',
-    signals: ['desktopReady', 'createInstance', 'destroyInstance', 'open', 'close', 'focus', 'blur', 'mousemove', 'mouseup', 'dragleave'],
+    signals: ['createInstance', 'destroyInstance', 'open', 'close', 'focus', 'blur', 'mousemove', 'mouseup', 'dragleave'],
     deps:{
         apps: 'list',
         'ld/wm/Window':'module',
@@ -22,7 +22,6 @@ exports.Class = {
         this.apps = {}
         this.active = null
         this.sayHello() // mixin test
-        this.signals.desktopReady().send()
     },
     events: {
         mousemove: function(e){

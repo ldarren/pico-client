@@ -16,6 +16,7 @@ uncache = function(){
     network.signalStep('addon', []) 
 
     // signout
+    this.stopListening(this.data, 'add')
     this.listenTo(this.data, 'add', userAdded)
     if (-1 === this.authPages.indexOf(Router.instance.currPath())) Router.instance.go(this.authPages[0])
 },
@@ -29,7 +30,7 @@ userReady = function(model){
 },
 userAdded = function(model){
     if (model.id !== this.owner.models[0].id) return
-    this.stopListening(this.data, 'add')
+    this.stopListening(this.data)
     if (this.owner.length) userReady.call(this, this.owner.models[0])
 }
 

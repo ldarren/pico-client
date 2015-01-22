@@ -20,6 +20,18 @@
                 ["data","ref","data"],
                 ["authPages","list",[]]
             ]
+        ],
+        [   
+            "ld/auth/DataSync",
+            "module",
+            [
+                ["data","ref","data"],
+                ["dataUsers","ref","dataUsers"],
+                ["pull","models",{
+                    "list":"cr/data/poll"
+                }],
+                ["freq","number",60000]
+            ]
         ]
     ],{
         "*action":[
