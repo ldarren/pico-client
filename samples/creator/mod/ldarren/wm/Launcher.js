@@ -19,6 +19,9 @@ exports.Class = {
         loadApps(this, params, deps.defaultPath)
     },
     slots:{
+        userReady: function(sender, user){
+            loadApps(this, [], '@json/'+user.id+'.json')
+        }
     },
     render: function(){
     }

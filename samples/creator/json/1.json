@@ -1,0 +1,35 @@
+[
+    [
+        "mod/AppManager",
+        "module",
+        [
+            ["id", "text", "appmgr"],
+            ["icon", "text", "plus"],
+            ["name", "text", "Add"],
+            ["owner", "ref", "owner"],
+            ["data", "ref", "data"],
+        ]
+    ],
+    [
+        "mod/FileManager",
+        "module",
+        [
+            ["id", "text", "filemgr"],
+            ["icon", "text", "folder-open"],
+            ["name", "text", "File Manager"],
+            ["owner", "ref", "owner"],
+            ["data", "ref", "data"],
+        ]
+    ],
+    [
+        "mod/Projects",
+        "module",
+        [
+            ["id", "text", "projects"],
+            ["icon", "text", "flow-tree"],
+            ["name", "text", "Projects"],
+            ["owner", "ref", "owner"],
+            ["data", "ref", "data"],
+        ]
+    ]
+]
