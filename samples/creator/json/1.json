@@ -7,7 +7,7 @@
             ["icon", "text", "plus"],
             ["name", "text", "Add"],
             ["owner", "ref", "owner"],
-            ["data", "ref", "data"],
+            ["data", "ref", "data"]
         ]
     ],
     [
@@ -18,18 +18,18 @@
             ["icon", "text", "folder-open"],
             ["name", "text", "File Manager"],
             ["owner", "ref", "owner"],
-            ["data", "ref", "data"],
+            ["data", "ref", "data"]
         ]
     ],
     [
-        "mod/Projects",
+        "mod/ProjManager",
         "module",
         [
-            ["id", "text", "projects"],
+            ["id", "text", "projmgr"],
             ["icon", "text", "flow-tree"],
             ["name", "text", "Projects"],
             ["owner", "ref", "owner"],
-            ["data", "ref", "data"],
+            ["data", "ref", "data"]
         ]
     ]
 ]

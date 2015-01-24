@@ -13,10 +13,13 @@ loadApps = function(host, params, path){
 exports.Class = {
     signals: [],
     deps:{
+        owner: 'ref',
         defaultPath: 'url'
     },
     create: function(deps, params){
         loadApps(this, params, deps.defaultPath)
+        var user = deps.owner.at(0)
+        if (user) loadApps(this, [], '@json/'+user.id+'.json')
     },
     slots:{
         userReady: function(sender, user){

@@ -11,7 +11,7 @@ exports.Class = {
     },
     create: function(deps){
         this.instances = []
-        this.signals.appRegister(deps.id, deps.icon, deps.name).send(this.host)
+        this.signals.appRegister(this, deps.id, deps.icon, deps.name).send(this.host)
 
         /*
         CodeMirror(this.$content[0], {

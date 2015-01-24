@@ -70,8 +70,8 @@ exports.Class = {
         blurred: function(sender){
             if (this.active === sender) this.active = null
         },
-        appRegister: function(sender, appId, appIcon, appName){
-            this.apps[appId] = sender
+        appRegister: function(sender, app, appId, appIcon, appName){
+            this.apps[appId] = app 
             this.show(
                 this.spawn(this.deps['ld/wm/File'], [], [specMgr.create('file', 'map', {id:appId, icon:appIcon, name:appName})], true),
                 this.dir
