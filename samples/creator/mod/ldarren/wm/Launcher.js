@@ -22,7 +22,7 @@ exports.Class = {
         if (user) loadApps(this, [], '@json/'+user.id+'.json')
     },
     slots:{
-        userReady: function(sender, user){
+        userReady: function(from, sender, user){
             loadApps(this, [], '@json/'+user.id+'.json')
         }
     },

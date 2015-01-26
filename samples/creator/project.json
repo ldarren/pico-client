@@ -13,15 +13,6 @@
         ["data","models",[]],
         ["dataUsers","models",[]],
         [   
-            "ld/auth/Session",
-            "module",
-            [
-                ["owner","ref","owner"],
-                ["data","ref","data"],
-                ["authPages","list",[]]
-            ]
-        ],
-        [   
             "ld/auth/DataSync",
             "module",
             [
@@ -31,6 +22,14 @@
                     "list":"cr/data/poll"
                 }],
                 ["freq","number",60000]
+            ]
+        ], [   
+            "ld/auth/Session",
+            "module",
+            [
+                ["owner","ref","owner"],
+                ["data","ref","data"],
+                ["authPages","list",[]]
             ]
         ]
     ],{

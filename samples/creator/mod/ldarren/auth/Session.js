@@ -6,6 +6,7 @@ cache = function(model, coll){
     var cred = model.attributes
     network.signalStep('addon', [cred]) 
     storage.setItem('owner', JSON.stringify(cred))
+console.log('cache send signin')
     this.signals.signin(model).send()
 
     userReady.call(this, model)
@@ -22,6 +23,7 @@ uncache = function(){
 },
 userReady = function(model){
     var user = this.data.get(model.id)
+console.log('userReady: '+(user ? user.toJSON() : 'undefined'))
     if (!user) return
     this.stopListening(this.data, 'add')
     this.signals.userReady(user).send()
@@ -54,8 +56,9 @@ exports.Class = {
         this.listenTo(owner, 'add', cache)
         this.listenTo(owner, 'reset', uncache)
         this.listenTo(this.data, 'add', userAdded)
-        network.slot('error', this.onNetworkError, this)
 
+        network.slot('error', this.onNetworkError, this)
+console.log(cached)
         if(cached){
             try{ owner.add(JSON.parse(cached)) }
             catch(exp){ console.error(exp) }
@@ -72,7 +75,7 @@ exports.Class = {
         uncache.call(this)
     },
     slots: {
-        changeRoute: function(sender){
+        changeRoute: function(from, sender){
             if (!this.authPages.length) return
             if (!this.owner.length && -1 === this.authPages.indexOf(arguments[2])) Router.instance.go(this.authPages[0])
         }

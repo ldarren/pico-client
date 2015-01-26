@@ -9,8 +9,7 @@
             ["owner", "ref", "owner"],
             ["data", "ref", "data"]
         ]
-    ],
-    [
+    ], [
         "mod/FileManager",
         "module",
         [
@@ -20,14 +19,23 @@
             ["owner", "ref", "owner"],
             ["data", "ref", "data"]
         ]
-    ],
-    [
+    ], [
         "mod/ProjManager",
         "module",
         [
             ["id", "text", "projmgr"],
             ["icon", "text", "flow-tree"],
             ["name", "text", "Projects"],
+            ["owner", "ref", "owner"],
+            ["data", "ref", "data"]
+        ]
+    ], [
+        "mod/Editor",
+        "module",
+        [
+            ["id", "text", "editor"],
+            ["icon", "text", "icon"],
+            ["name", "text", "Editor"],
             ["owner", "ref", "owner"],
             ["data", "ref", "data"]
         ]

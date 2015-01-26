@@ -3,6 +3,7 @@ Router = require('Router'),
 storage = window.localStorage,
 status1 = {status:1},status0={status:0},merge1={merge:true},
 poll = function(self){
+console.log('poll: '+self.myId)
     var userId = self.myId
     if (!userId) return
     self.pull.fetch({
@@ -56,11 +57,12 @@ exports.Class = {
         this.freq = deps.freq
         this.pollId = 0
         this.data.comparator = sortDesc
-
+console.log('DataSync create')
     },
 
     slots:{
-        signin: function(sender, model){
+        signin: function(from, sender, model){
+console.log('dataSync setup polling '+from.name+', '+sender.name)
             var userId = model.id
             this.myId = userId
             this.readSeen(userId)
@@ -76,7 +78,7 @@ exports.Class = {
             this.listenTo(dataUsers, 'remove', writeDataUsers)
             this.listenTo(dataUsers, 'change', writeDataUsers)
         },
-        signout: function(sender){
+        signout: function(from, sender){
             this.stopListening()
             clearTimeout(this.pollId)
             this.pollId = 0
@@ -85,7 +87,7 @@ exports.Class = {
             this.seen = 0
             this.myId = 0
         },
-        refreshCache: function(sender){
+        refreshCache: function(from, sender){
             var userId = this.myId
             clearTimeout(this.pollId)
             this.pollId = 0

@@ -53,7 +53,7 @@ exports.Class = {
         }
     },
     slots:{
-        dragleave: function(sender, e){
+        dragleave: function(from, sender, e){
             if (this.el.classList.contains('dragging')) return
             this.el.classList.remove('dragover')
         }

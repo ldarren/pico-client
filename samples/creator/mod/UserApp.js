@@ -11,7 +11,7 @@ exports.Class = {
     },
     create: function(deps){
         this.instances = []
-        this.signals.appRegister(this, deps.id, deps.icon, deps.name).send(this.host)
+        this.signals.appRegister(deps.id, deps.icon, deps.name).send(this.host)
 
         /*
         CodeMirror(this.$content[0], {
@@ -22,7 +22,7 @@ exports.Class = {
     },
     render: function(){},
     slots: {
-        createInstance: function(sender){
+        createInstance: function(from, sender){
             var insts = this.instances
 
             if (insts.length){
@@ -42,14 +42,14 @@ exports.Class = {
                 insts.push(deps.id)
             }
         },
-        destroyInstance: function(sender, instId){
+        destroyInstance: function(from, sender, instId){
             this.dump(this.contentMod)
             this.instances.length = 0
         },
-        userSignup: function(sender){
+        userSignup: function(from, sender){
             this.changeMod('mod/Signup')
         },
-        userReady: function(sender){
+        userReady: function(from, sender){
             this.changeMod('mod/Signin')
         }
     },

@@ -38,19 +38,19 @@ exports.Class = {
         }
     },
     slots:{
-        open: function(sender, fileId){
+        open: function(from, sender, fileId){
             var app = this.apps[fileId]
             if (!app) return
 
             this.signals.createInstance().send(app)
         },
-        opened: function(sender){
+        opened: function(from, sender){
         },
-        closed: function(sender){
+        closed: function(from, sender){
             sender.remove()
             this.signals.destroyInstance(sender.instId).send()
         },
-        focus: function(sender){
+        focus: function(from, sender){
             var currZ = baseZ + this.windows.length
 
             if (this.active === sender) return
@@ -67,26 +67,26 @@ exports.Class = {
 
             this.active = sender
         },
-        blurred: function(sender){
+        blurred: function(from, sender){
             if (this.active === sender) this.active = null
         },
-        appRegister: function(sender, app, appId, appIcon, appName){
-            this.apps[appId] = app 
+        appRegister: function(from, sender, appId, appIcon, appName){
+            this.apps[appId] = sender
             this.show(
                 this.spawn(this.deps['ld/wm/File'], [], [specMgr.create('file', 'map', {id:appId, icon:appIcon, name:appName})], true),
                 this.dir
             )
         },
-        appFocus: function(sender, instId){
+        appFocus: function(from, sender, instId){
             var wins = this.windows
             for(var i=0,w; w=wins[i]; i++){
                 if (instId === w.instId){
-                    this.slots.focus(w)
+                    this.slots.focus(from, w)
                     return
                 }
             }
         },
-        appInstance: function(sender, content, opts){
+        appInstance: function(from, sender, content, opts){
             var
             currZ = baseZ + this.windows.length + 1,
             win = this.spawn(this.deps['ld/wm/Window'], null, [

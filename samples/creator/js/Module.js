@@ -3,36 +3,61 @@ ID=0,TYPE=1,VALUE=2,EXTRA=3,
 specMgr = require('specMgr'),
 Router = require('Router'),
 id=0,
+sigslot = function(){
+    var
+    ss = this.signals || [],
+    signals = {}
+
+    ss.forEach(function(evt){
+        var sender = this
+        signals[evt] = function(){
+            return {
+                args: Array.prototype.slice.call(arguments),
+                sender: sender,
+                from: sender,
+                evt: evt,
+                send: send
+            }
+        }
+    }, this)
+
+    return signals
+},
 send = function(a){
-    setTimeout(function(evt, sender, args){
+    setTimeout(function(evt, from, sender, args){
         var
         trigger = Backbone.Events.trigger,
-        params = [evt, sender].concat(args),
-        modules = sender.modules
+        params = [evt, from, sender].concat(args),
+        modules = from.modules
 
-        modules = sender.host ? modules.concat([sender.host]) : modules
+        modules = from.host ? modules.concat([from.host]) : modules
 
         switch(typeof a){
         case 'object':
             if (a.length){
+console.log('exclude start: '+modules.length)
                 for(var i=0,m; m=modules[i]; i++){
+console.log('exlude: '+m.name)
                     if (-1 === a.indexOf(m)) trigger.apply(m, params)
                 }
+console.log('exclude end')
             }else{
+console.log('only: '+a.name)
                 trigger.apply(a, params)
             }
             break
         default:
             for(var i=0,m; m=modules[i]; i++){
+console.log('all: '+m.name)
                 trigger.apply(m, params)
             }
             break
         }
-    }, 0, this.evt, this.sender, this.args)
+    }, 0, this.evt, this.from, this.sender, this.args)
 },
-recv = function(evt, sender){
+recv = function(evt, from, sender){
     var func = this.slots[evt]
-    if (!func) return send.call({evt:evt, sender:this, args:Array.prototype.slice.call(arguments, 2)}, [sender])
+    if (!func) return send.call({evt:evt, sender:sender, from:this, args:Array.prototype.slice.call(arguments, 3)}, [from])
     func.apply(this, Array.prototype.slice.call(arguments, 1))
 }
 
@@ -46,23 +71,7 @@ exports.Class = Backbone.View.extend({
         this._rawSpec = options.spec
         this._removed = false 
 
-        var
-        ss = this.signals || [],
-        signals = {}
-
-        ss.forEach(function(evt){
-            var sender = this
-            signals[evt] = function(){
-                return {
-                    args: Array.prototype.slice.call(arguments),
-                    sender: sender,
-                    evt: evt,
-                    send: send
-                }
-            }
-        }, this)
-
-        this.signals = signals
+        this.signals = sigslot.call(this)
 
         this.on('all', recv, this)
 
