@@ -12,13 +12,6 @@ exports.Class = {
     create: function(deps){
         this.instances = []
         this.signals.appRegister(deps.id, deps.icon, deps.name).send(this.host)
-
-        /*
-        CodeMirror(this.$content[0], {
-              value: "function myScript(){return 100;}\n",
-              mode:  "javascript"
-        })
-        */
     },
     render: function(){},
     slots: {

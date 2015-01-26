@@ -35,20 +35,15 @@ send = function(a){
         switch(typeof a){
         case 'object':
             if (a.length){
-console.log('exclude start: '+modules.length)
                 for(var i=0,m; m=modules[i]; i++){
-console.log('exlude: '+m.name)
                     if (-1 === a.indexOf(m)) trigger.apply(m, params)
                 }
-console.log('exclude end')
             }else{
-console.log('only: '+a.name)
                 trigger.apply(a, params)
             }
             break
         default:
             for(var i=0,m; m=modules[i]; i++){
-console.log('all: '+m.name)
                 trigger.apply(m, params)
             }
             break

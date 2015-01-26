@@ -24,6 +24,8 @@ exports.Class = {
     slots:{
         userReady: function(from, sender, user){
             loadApps(this, [], '@json/'+user.id+'.json')
+        },
+        signout: function(){
         }
     },
     render: function(){
