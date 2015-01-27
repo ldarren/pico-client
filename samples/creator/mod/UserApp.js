@@ -1,5 +1,5 @@
 exports.Class = {
-    signals: ['appRegister', 'appFocus', 'appInstance'],
+    signals: ['appRegister', 'appDeregister', 'appFocus', 'appInstance'],
     deps: {
         'id': 'text',
         'icon': 'text',
@@ -12,7 +12,10 @@ exports.Class = {
     create: function(deps){
         this.instances = []
         this.signals.appRegister(deps.id, deps.icon, deps.name).send(this.host)
-console.log('UserApp create')
+    },
+    remove: function(){
+        this.signals.appDeregister(this.deps.id).send(this.host)
+        this.ancestor.remove.call(this)
     },
     render: function(){},
     slots: {
@@ -40,12 +43,14 @@ console.log('UserApp create')
             this.dump(this.contentMod)
             this.instances.length = 0
         },
-        userSignup: function(from, sender){
+        signup: function(from, sender){
             this.changeMod('mod/Signup')
+        },
+        signout: function(from, sender){
+            this.changeMod('mod/Signin')
         },
         userReady: function(from, sender){
             this.changeMod('mod/Signin')
-console.log('UserApp userReady')
         }
     },
     changeMod: function(mod){

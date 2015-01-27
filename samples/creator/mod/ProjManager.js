@@ -1,5 +1,5 @@
 exports.Class = {
-    signals: ['appRegister', 'appFocus', 'appInstance'],
+    signals: ['appRegister', 'appDeregister', 'appFocus', 'appInstance'],
     deps: {
         'id': 'text',
         'icon': 'text',
@@ -9,6 +9,10 @@ exports.Class = {
     tagName: 'form',
     create: function(deps){
         this.signals.appRegister(deps.id, deps.icon, deps.name).send(this.host)
+    },
+    remove: function(){
+        this.signals.appDeregister(this.deps.id).send(this.host)
+        this.ancestor.remove.call(this)
     },
     render: function(){},
     slots: {

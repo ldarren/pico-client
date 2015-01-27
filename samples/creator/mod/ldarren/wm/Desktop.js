@@ -19,6 +19,7 @@ exports.Class = {
         this.dir = this.el.querySelector('.dir')
 
         this.windows = []
+        this.files = {}
         this.apps = {}
         this.active = null
         this.sayHello() // mixin test
@@ -70,12 +71,17 @@ exports.Class = {
         blurred: function(from, sender){
             if (this.active === sender) this.active = null
         },
-        appRegister: function(from, sender, appId, appIcon, appName){
-            this.apps[appId] = sender
-            this.show(
-                this.spawn(this.deps['ld/wm/File'], [], [specMgr.create('file', 'map', {id:appId, icon:appIcon, name:appName})], true),
-                this.dir
-            )
+        appRegister: function(from, sender, fileId, appIcon, appName){
+            this.apps[fileId] = sender
+            var file = this.spawn(this.deps['ld/wm/File'], [], [specMgr.create('file', 'map', {id:fileId, icon:appIcon, name:appName})], true)
+            this.files[fileId] = file
+            this.show(file, this.dir)
+        },
+        appDeregister: function(from, sender, fileId){
+            delete this.apps[fileId]
+            var file = this.files[fileId]
+            delete this.files[fileId]
+            this.dump(file)
         },
         appFocus: function(from, sender, instId){
             var wins = this.windows

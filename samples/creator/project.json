@@ -50,7 +50,8 @@
                     "module",
                     [
                         ["allModels", "refs", "models"],
-                        ["defaultPath", "url", "@json/standard.json"]
+                        ["defaultPath", "url", "@json/standard.json"],
+                        ["userPath", "url", "@json/USER_ID.json"]
                     ]
                 ]
             ],{

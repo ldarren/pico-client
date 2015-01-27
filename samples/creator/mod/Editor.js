@@ -1,5 +1,5 @@
 exports.Class = {
-    signals: ['appRegister', 'appFocus', 'appInstance'],
+    signals: ['appRegister', 'appDeregister', 'appFocus', 'appInstance'],
     deps: {
         'id': 'text',
         'icon': 'text',
@@ -13,6 +13,10 @@ exports.Class = {
               value: "function myScript(){return 100;}\n",
               mode:  "javascript"
         })
+    },
+    remove: function(){
+        this.signals.appDeregister(this.deps.id).send(this.host)
+        this.ancestor.remove.call(this)
     },
     render: function(){},
     slots: {

@@ -77,6 +77,7 @@ exports.Class = Backbone.View.extend({
         this._id = id++
         this.name = options.name
         this.host = host
+        this.ancestor = exports.Class.prototype
         this.modules = []
         this._elements = []
         this._rawSpec = options.spec
