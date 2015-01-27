@@ -12,6 +12,7 @@ exports.Class = {
     create: function(deps){
         this.instances = []
         this.signals.appRegister(deps.id, deps.icon, deps.name).send(this.host)
+console.log('UserApp create')
     },
     render: function(){},
     slots: {
@@ -44,6 +45,7 @@ exports.Class = {
         },
         userReady: function(from, sender){
             this.changeMod('mod/Signin')
+console.log('UserApp userReady')
         }
     },
     changeMod: function(mod){
