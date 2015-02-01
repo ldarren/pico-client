@@ -17,7 +17,6 @@ unloadApps = function(host, path){
     require(path, function(err, apps){
         specMgr.load(host, [], apps.json, function(err, spec){
             for(var i=0,s; s=spec[i]; i++){
-                if ('module' !== specMgr.getType(s)) continue
                 host.dump(apps[specMgr.getId(s)])
             }
         })

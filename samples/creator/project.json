@@ -50,7 +50,39 @@
                     "module",
                     [
                         ["allModels", "refs", "models"],
-                        ["defaultPath", "url", "@json/standard.json"],
+                        [
+                            "mod/UserApp",
+                            "module",
+                            [
+                                ["id", "text", "users"],
+                                ["icon", "text", "users"],
+                                ["name", "text", "User Settings"],
+                                ["owner", "ref", "owner"],
+                                ["data", "ref", "data"],
+                                [
+                                    "mod/Signin",
+                                    "module",
+                                    [
+                                        ["owner", "ref", "owner"],
+                                        ["auth", "models", {
+                                            "create": "cr/user/signin"
+                                        }]
+                                    ]
+                                ], [
+                                    "mod/Signup",
+                                    "module",
+                                    []
+                                ], [
+                                    "mod/UserInfo",
+                                    "module",
+                                    [
+                                        ["owner", "ref", "owner"],
+                                        ["data", "ref", "data"]
+                                    ]
+                                ]
+                            ]
+                        ],
+                        ["defaultPath", "url", "@json/default.json"],
                         ["userPath", "url", "@json/USER_ID.json"]
                     ]
                 ]

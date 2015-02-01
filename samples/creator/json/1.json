@@ -29,15 +29,5 @@
             ["owner", "ref", "owner"],
             ["data", "ref", "data"]
         ]
-    ], [
-        "mod/AppManager",
-        "module",
-        [
-            ["id", "text", "appmgr"],
-            ["icon", "text", "plus"],
-            ["name", "text", "Add"],
-            ["owner", "ref", "owner"],
-            ["data", "ref", "data"]
-        ]
     ]
 ]

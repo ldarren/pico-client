@@ -1,0 +1,36 @@
+<% for(var i=0,f; f=hiddens[i]; i++){%>
+<input type="hidden" name="<%=f.name%>" value="<%=f.value%>">
+<%}%>
+<% for(var i=0,f; f=fields[i]; i++){%>
+<div class="input-row"><label><%=f.label%></label>
+<% var common = 'name="'+f.name+'" value="'+('undefined' === typeof f.value ? '':f.value)+'" '+(f.required?'required':'')+' '+(f.readonly ? 'readonly':'') %>
+<% if (f.type === 'static'){ %>
+<% if (f.url) {%>
+    <a href="<%=f.url%>"><%=f.value || ''%></a>
+<% }else{ %>
+    <span><%=f.value%></span>
+<% } %>
+<% } else if (f.type === 'text'){ %>
+<input type="text" placeholder="<%=f.holder || ''%>" <%=common%>>
+<% } else if (f.type === 'number'){ %>
+<input type="number" placeholder="<%=f.holder || ''%>" <%=common%>>
+<% } else if (f.type === 'tel'){ %>
+<input type="tel" placeholder="<%=f.holder || '+6598765432'%>" pattern="[\+]\d{2}[\(]\d{2}[\)]\d{4}[\-]\d{4}" <%=common%>>
+<% } else if (f.type === 'email'){ %>
+<input type="email" placeholder="<%=f.holder || 'name@domain.org'%>" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" <%=common%>>
+<% } else if (f.type === 'date'){ %>
+<input type="date" placeholder="<%=f.holder || 'date(MM/DD/YYYY)'%>" <%=common%>>
+<% } else if (f.type === 'month'){ %>
+<input type="month" placeholder="<%=f.holder || 'date(MM/YYYY)'%>" <%=common%>>
+<% } else if (f.type === 'time'){ %>
+<input type="time" placeholder="<%=f.holder || 'time(HH:MM:SS)'%>" <%=common%>>
+<% } else if (f.type === 'select'){ %>
+<select name="<%=f.name%>" <%=f.required?'required':''%>>
+    <option value="" <%=f.value ? '' : 'selected'%> disabled><%=f.holder || 'Select an option'%></option>
+    <% for(var j=0,os=f.options,keys=Object.keys(os),k,v; k=keys[j]; j++){ v=os[k]%>
+    <option value=<%=k%> <%=k==f.value ? 'selected':''%>><%=v%></option>
+    <% } %>
+</select>
+<% } %>
+</div>
+<%}%>

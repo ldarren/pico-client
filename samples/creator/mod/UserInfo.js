@@ -1,5 +1,4 @@
-var
-tpl = require('@mod/View.html')
+var tpl = require('@mod/View.html')
 
 exports.Class = {
     signals: [],
