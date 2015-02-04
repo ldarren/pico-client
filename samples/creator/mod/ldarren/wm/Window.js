@@ -56,7 +56,7 @@ exports.Class = {
         fixed: 'bool',
         widget: 'bool'
     },
-    create: function(deps, params){
+    create: function(deps){
         this.el.innerHTML = tpl.text.replace('TITLE', deps.title || 'Untitle Window')
 
         this.instId = deps.instId

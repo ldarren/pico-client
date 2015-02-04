@@ -28,6 +28,6 @@ exports.Class = {
             }).send(sender)
         },
         destroyInstance: function(from, sender, instId){
-        },
+        }
     }
 }

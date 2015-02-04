@@ -12,8 +12,8 @@ findAll = function(type, list){
     for(var i=0,o; o=list[i]; i++){ if (type === o[TYPE]) arr.push(o) }
     return arr
 },
-load = function(host, params, spec, deps, cb){
-    if (!spec.length) return cb(null, deps)
+load = function(host, params, spec, deps, cb, userData){
+    if (!spec.length) return cb(null, deps, userData)
 
     var
     context = host ? host.spec : [],
@@ -44,7 +44,7 @@ load = function(host, params, spec, deps, cb){
         require(s[ID], function(err, mod){
             if (err) return cb(err)
             deps.push(create(s[ID], t, {name:s[ID], spec:s[VALUE], style:s[EXTRA], Class:mod.Class, Mixin:mod.Mixin}))
-            load(host, params, spec, deps, cb)
+            load(host, params, spec, deps, cb, userData)
         })
         return
     case 'param':
@@ -59,7 +59,7 @@ load = function(host, params, spec, deps, cb){
         deps.push(create(s[ID], t, s[VALUE]))
         break
     }
-    load(host, params, spec, deps, cb)
+    load(host, params, spec, deps, cb, userData)
 },
 // need to get original spec, the one before spec.load, no way to diff ref and models
 unload = function(rawSpec, spec){
@@ -80,8 +80,8 @@ unload = function(rawSpec, spec){
     spec.length = 0
 }
 
-exports.load = function(host, params, spec, cb){
-    load(host, params, spec.slice(), [], cb)
+exports.load = function(host, params, spec, cb, userData){
+    load(host, params, spec.slice(), [], cb, userData)
 }
 exports.unload = unload
 exports.find = find

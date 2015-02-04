@@ -1,6 +1,6 @@
 [
     [
-        "mod/AppManager",
+        "mod/ApplMgr",
         "module",
         [
             ["id", "text", "appmgr"],

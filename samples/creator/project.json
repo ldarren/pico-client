@@ -42,12 +42,12 @@
                     [
                         ["allModels", "refs", "models"],
                         [
-                            "mod/UserApp",
+                            "mod/UserMgr",
                             "module",
                             [
                                 ["id", "text", "users"],
                                 ["icon", "text", "users"],
-                                ["name", "text", "User Settings"],
+                                ["name", "text", "User"],
                                 ["owner", "ref", "owner"],
                                 ["data", "ref", "data"],
                                 [

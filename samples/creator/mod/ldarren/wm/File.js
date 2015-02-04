@@ -6,7 +6,7 @@ exports.Class = {
     deps:{
         file:'model'
     },
-    create: function(deps, params){
+    create: function(deps){
         var file = deps.file
         this.el.innerHTML = tpl
         this.el.setAttribute('fileid', file.id)

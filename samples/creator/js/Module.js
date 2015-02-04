@@ -3,6 +3,28 @@ ID=0,TYPE=1,VALUE=2,EXTRA=3,
 specMgr = require('specMgr'),
 Router = require('Router'),
 id=0,
+specLoaded = function(err, spec, self){
+    if (self._removed) return self.remove()
+    if (err){
+        console.warn(err)
+        return Router.instance.home()
+    }
+
+    self.spec = spec
+
+    var
+    d = {},
+    deps = self.deps || {}
+
+    for(var i=0,s,k; s=spec[i]; i++){
+        k = s[ID]
+        if (!deps[k]) continue
+        d[k] = s[VALUE]
+    }
+
+    self.deps = d
+    self.create(d)
+},
 sigslot = function(){
     var
     ss = this.signals || [],
@@ -25,8 +47,6 @@ sigslot = function(){
 },
 send = function(a){
     setTimeout(function(evt, from, sender, args){
-if ('userReady' === evt)
-console.log('send start '+evt)
         var
         trigger = Backbone.Events.trigger,
         params = [evt, from, sender].concat(args),
@@ -38,36 +58,25 @@ console.log('send start '+evt)
         case 'object':
             if (a.length){
                 for(var i=0,m; m=modules[i]; i++){
-if ('userReady' === evt)
-console.log('exlude '+m.name+', '+a.indexOf(m))
                     if (-1 === a.indexOf(m)) trigger.apply(m, params)
                 }
             }else{
-if ('userReady' === evt)
-console.log('only '+a.name)
                 trigger.apply(a, params)
             }
             break
         default:
             for(var i=0,m; m=modules[i]; i++){
-if ('userReady' === evt)
-console.log('all '+m.name)
                 trigger.apply(m, params)
             }
             break
         }
-if ('userReady' === evt)
-console.log('send end '+evt)
     }, 0, this.evt, this.from, this.sender, this.args)
 },
 recv = function(evt, from, sender){
     var
     func = this.slots[evt],
     forward = true 
-if ('userReady' === evt){
-if (func) console.log('call '+this.name)
-else console.log('forward '+this.name)
-}
+
     if (func) forward = func.apply(this, Array.prototype.slice.call(arguments, 1))
     if (forward) send.call({evt:evt, sender:sender, from:this, args:Array.prototype.slice.call(arguments, 3)}, [from])
 }
@@ -89,29 +98,7 @@ exports.Class = Backbone.View.extend({
 
         if (options.style) this.style = restyle(options.style, ['webkit'])
 
-        var self = this
-        specMgr.load(host, params || [], options.spec, function(err, spec){
-            if (self._removed) return self.remove()
-            if (err){
-                console.warn(err)
-                return Router.instance.home()
-            }
-
-            self.spec = spec
-
-            var
-            d = {},
-            deps = self.deps || {}
-
-            for(var i=0,s,k; s=spec[i]; i++){
-                k = s[ID]
-                if (!deps[k]) continue
-                d[k] = s[VALUE]
-            }
-
-            self.deps = d
-            self.create(d, params)
-        })
+        specMgr.load(host, params || [], options.spec, specLoaded, this)
     },
     create: function(deps, params){
         var spec = this.spec

@@ -14,7 +14,7 @@ exports.Class = {
         'ld/wm/MenuBar':'module',
         'ld/wm/File':'module'
     },
-    create: function(deps, params){
+    create: function(deps){
         this.el.innerHTML = tpl
         this.dir = this.el.querySelector('.dir')
 
@@ -118,6 +118,6 @@ console.log('appRegister: '+fileId)
 }
 
 // mixin test
-exports.Mixin = function(spec, params){
+exports.Mixin = function(spec){
     return [mixin.test]
 }

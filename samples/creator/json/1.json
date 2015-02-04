@@ -1,6 +1,6 @@
 [
     [
-        "mod/ProjManager",
+        "mod/ProjMgr",
         "module",
         [
             ["id", "text", "projmgr"],
@@ -10,7 +10,7 @@
             ["data", "ref", "data"]
         ]
     ], [
-        "mod/FileManager",
+        "mod/FileMgr",
         "module",
         [
             ["id", "text", "filemgr"],
@@ -20,12 +20,12 @@
             ["data", "ref", "data"]
         ]
     ], [
-        "mod/Editor",
+        "mod/TextEd",
         "module",
         [
-            ["id", "text", "editor"],
+            ["id", "text", "texted"],
             ["icon", "text", "keyboard"],
-            ["name", "text", "Editor"],
+            ["name", "text", "Text Editor"],
             ["owner", "ref", "owner"],
             ["data", "ref", "data"]
         ]
