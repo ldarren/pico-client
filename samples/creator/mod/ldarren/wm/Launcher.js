@@ -27,25 +27,38 @@ exports.Class = {
     signals: [],
     deps:{
         owner: 'ref',
+        'mod/UserApp': 'ref',
         defaultPath: 'url',
         userPath: 'url'
     },
     create: function(deps, params){
-        this.apps = {}
         this.userId = 0
-        loadApps(this, params, deps.defaultPath)
-        var user = deps.owner.at(0)
-        if (user) loadApps(this, [], deps.userPath.replace(USER_ID, user.id))
+        this.apps = {UserApp: this.spawn(deps['mod/UserApp'], params, null, true)}
     },
     slots:{
+        desktopReady: function(from, sender){
+            var
+            d = this.deps,
+            user = d.owner.at(0)
+            if (user){
+                this.userId = user.id
+                loadApps(this, null, d.defaultPath)
+                loadApps(this, null, d.userPath.replace(USER_ID, this.userId))
+            }
+            return true
+        },
         userReady: function(from, sender, user){
             this.userId = user.id
-            loadApps(this, [], this.deps.userPath.replace(USER_ID, user.id))
+            var d = this.deps
+            loadApps(this, [], d.defaultPath)
+            loadApps(this, [], d.userPath.replace(USER_ID, this.userId))
             return true
         },
         signout: function(){
             if (!this.userId) return false
-            unloadApps(this, this.deps.userPath.replace(USER_ID, this.userId))
+            var d = this.deps
+            unloadApps(this, d.userPath.replace(USER_ID, this.userId))
+            unloadApps(this, d.defaultPath)
             this.userId = 0
             return true
         }

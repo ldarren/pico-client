@@ -37,15 +37,6 @@
             [
                 ["allModels", "refs", "models"],
                 [
-                    "ld/wm/Desktop",
-                    "module",
-                    [
-                        ["apps","list",[]],
-                        ["ld/wm/Window","module",[]],
-                        ["ld/wm/MenuBar","module",[]],
-                        ["ld/wm/File","module",[]]
-                    ]
-                ],[
                     "ld/wm/Launcher",
                     "module",
                     [
@@ -84,6 +75,15 @@
                         ],
                         ["defaultPath", "url", "@json/default.json"],
                         ["userPath", "url", "@json/USER_ID.json"]
+                    ]
+                ],[
+                    "ld/wm/Desktop",
+                    "module",
+                    [
+                        ["apps","list",[]],
+                        ["ld/wm/Window","module",[]],
+                        ["ld/wm/MenuBar","module",[]],
+                        ["ld/wm/File","module",[]]
                     ]
                 ]
             ],{

@@ -7,7 +7,7 @@ baseZ = 10000
 exports.Class = {
     id: 'ldwmDesktop',
     className: 'wm-space',
-    signals: ['createInstance', 'destroyInstance', 'open', 'close', 'focus', 'blur', 'mousemove', 'mouseup', 'dragleave'],
+    signals: ['desktopReady', 'createInstance', 'destroyInstance', 'open', 'close', 'focus', 'blur', 'mousemove', 'mouseup', 'dragleave'],
     deps:{
         apps: 'list',
         'ld/wm/Window':'module',
@@ -23,6 +23,8 @@ exports.Class = {
         this.apps = {}
         this.active = null
         this.sayHello() // mixin test
+
+        this.signals.desktopReady().send()
     },
     events: {
         mousemove: function(e){
@@ -72,6 +74,7 @@ exports.Class = {
             if (this.active === sender) this.active = null
         },
         appRegister: function(from, sender, fileId, appIcon, appName){
+console.log('appRegister: '+fileId)
             this.apps[fileId] = sender
             var file = this.spawn(this.deps['ld/wm/File'], [], [specMgr.create('file', 'map', {id:fileId, icon:appIcon, name:appName})], true)
             this.files[fileId] = file
