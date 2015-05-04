@@ -1,0 +1,20 @@
+[
+    [
+        "{PATH/TO/ADDITIONAL/JAVASCRIPT}.js"
+    ],[
+        "{PATH/TO/CSS}.css",
+    ],[
+        ["mainChannel", "channel", {"url":"http://{SERVER_IP/SERVER_PORT}","delimiter":["&"],"beatRate":10000}],
+        ["{RES_ID}","{RES_TYPE}",'{RES_VALUE}']
+    ],{
+        "{PAGE_ROUTE}":[
+            [
+                ["{RES_ID}", "{RES_TYPE}", "{RES_VALUE}"]
+            ],{
+                "CSS_SELECTOR":{
+                    "CSS_PROPERTY":"CSS_VALUE"
+                }
+            }
+        ]
+    }
+]

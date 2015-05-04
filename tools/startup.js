@@ -33,7 +33,7 @@ ReplaceTransform.prototype._transform = function(chunk, encoding, cb) {
 }
 
 fs.readlink(process.argv[1], function(err, realPath){
-    if (err) return console.error(err)
+    if (err) realPath = process.argv[1]
     var srcDir = path.dirname(realPath)+'/skeleton/'
     fs.mkdir(projId, 0777, function(){
         (function(dirs, cb){
