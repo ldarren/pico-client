@@ -1,69 +1,77 @@
 var
+ID=0,TYPE=1,VALUE=2,EXTRA=3,
 Model = require('Model'),
-find = function(name, list){ for(var i=0,o; o=list[i]; i++){ if (name === o.name) return o } },
+create = function(id, type, value){ return [id, type, value] },
+getId = function(spec){return spec[ID]},
+getType = function(spec){return spec[TYPE]},
+getValue = function(spec){return spec[VALUE]},
+getExtra = function(spec){return spec[EXTRA]},
+find = function(name, list){ for(var i=0,o; o=list[i]; i++){ if (name === o[ID]) return o } },
 findAll = function(type, list){
     var arr = []
-    for(var i=0,o; o=list[i]; i++){ if (type === o.type) arr.push(o) }
+    for(var i=0,o; o=list[i]; i++){ if (type === o[TYPE]) arr.push(o) }
     return arr
 },
-load = function(host, params, spec, deps, cb){
-    if (!spec.length) return cb(null, deps)
+load = function(host, params, spec, deps, cb, userData){
+    if (!spec.length) return cb(null, deps, userData)
 
     var
     context = host ? host.spec : [],
     s = spec.shift(),
-    t = s.type,
+    t = s[TYPE],
     f
 
     switch(t){
     case 'ref':
-        f = find(s.value, context)
-        if (!f) return cb('ref of '+s.value+' not found')
-        deps.push({name:s.name, type:f.type, value:f.value})
+        f = find(s[VALUE], context)
+        if (!f) return cb('ref of '+s[VALUE]+' not found')
+        deps.push(create(s[ID], f[TYPE], f[VALUE]))
         break
     case 'refs':
-        Array.prototype.push.apply(deps, findAll(s.value, context))
+        Array.prototype.push.apply(deps, findAll(s[VALUE], context))
         break
     case 'model':
-        f = find(s.value, context)
-        if (!f) return cb('model of '+s.value+' not found')
-        var m = f.value.get(params[s.param])
-        if (!m) return cb('record '+s.param+' of model of '+s.value+' not found')
-        deps.push({name:s.name, type:t, value:m})
+        f = find(s[VALUE], context)
+        if (!f) return cb('model of '+s[VALUE]+' not found')
+        var m = f[VALUE].get(params[s.param])
+        if (!m) return cb('record '+s.param+' of model of '+s[VALUE]+' not found')
+        deps.push(create(s[ID], t, m))
         break
     case 'models':
-        deps.push({name:s.name, type:t, value:new Model.Class(null, s.value)})
+        deps.push(create(s[ID], t, new Model.Class(null, s[VALUE])))
         break
     case 'module':
-        require('modules/'+s.name, function(err, mod){
+        require(s[ID], function(err, mod){
             if (err) return cb(err)
-            deps.push({name:s.name, type:t, Class:mod.Class, spec:s.value})
-            load(host, params, spec, deps, cb)
+            deps.push(create(s[ID], t, {name:s[ID], spec:s[VALUE], style:s[EXTRA], Class:mod.Class, Mixin:mod.Mixin}))
+            load(host, params, spec, deps, cb, userData)
         })
         return
     case 'param':
-        deps.push({name:s.name, type:t, value:params[s.value]})
+        deps.push(create(s[ID], t, params[s[VALUE]]))
         break
+    case 'time':
+    case 'date':
     case 'datetime':
-        deps.push({name:s.name, type:t, value:new Date(s.value)})
+        deps.push(create(s[ID], t, new Date(s[VALUE])))
         break
     default:
-        deps.push(s)
+        deps.push(create(s[ID], t, s[VALUE]))
         break
     }
-    load(host, params, spec, deps, cb)
+    load(host, params, spec, deps, cb, userData)
 },
 // need to get original spec, the one before spec.load, no way to diff ref and models
 unload = function(rawSpec, spec){
     if (!spec || !spec.length) return
     for(var i=0,r; r=rawSpec[i]; i++){
-        switch(r.type){
+        switch(r[TYPE]){
         case 'models':
         case 'date':
             for(var j=0,s; s=spec[i]; i++){
-                if (r.name === s.name) {
-                    if ('models' === s.type) s.value.reset()
-                    delete s.value
+                if (r[ID] === s[ID]) {
+                    if ('models' === s[TYPE]) s[VALUE].reset()
+                    delete s[VALUE]
                 }
             }
             break
@@ -72,9 +80,14 @@ unload = function(rawSpec, spec){
     spec.length = 0
 }
 
-exports.load = function(host, params, spec, cb){
-    load(host, params, spec.slice(), [], cb)
+exports.load = function(host, params, spec, cb, userData){
+    load(host, params, spec.slice(), [], cb, userData)
 }
 exports.unload = unload
 exports.find = find
 exports.findAll = findAll
+exports.create = create
+exports.getId = getId
+exports.getType = getType
+exports.getValue = getValue
+exports.getExtra = getExtra

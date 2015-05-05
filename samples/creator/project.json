@@ -8,7 +8,6 @@
         "css/icon.css",
         "css/main.css"
     ],[
-        ["mainChannel", "channel", {"url":"http://107.20.154.29:4888","delimiter":["&"],"beatRate":500}],
         ["owner","models",[]],
         ["data","models",[]],
         ["dataUsers","models",[]],

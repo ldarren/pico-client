@@ -1,4 +1,4 @@
-exports.Class = return Backbone.Collection.extend({
+exports.Class = Backbone.Collection.extend({
     initialize: function(models, config){
         var self = this
         this.url = config.list

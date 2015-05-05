@@ -5,7 +5,6 @@ PSPEC=0,PSTYLE=1,
 Router = require('Router'),
 Module = require('Module'),
 network = require('network'),
-specMgr = require('specMgr'),
 attachDeps = function(deps, cb){
     if (!deps || !deps.length) return cb()
     pico.attachFile(deps.shift(), 'js', function(){ attachDeps(deps, cb) })
@@ -43,12 +42,12 @@ changeRoute = function(path, params){
 exports.Class = Module.Class.extend({
     el: 'body',
     signals:['modelReady', 'changeRoute', 'mainTransited'],
-    initialize: function(p){
+    initialize: function(p, e){
         var self = this
         
         this.pages = p[PAGES]
 
-        network.create(specMgr.findAll('channel', p[SPEC]), function(err){
+        network.create(e.channels, function(err){
             if (err) return console.error(err)
 
             var r = new Router.Class(Object.keys(self.pages))
