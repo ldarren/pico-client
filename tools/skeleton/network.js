@@ -4,14 +4,12 @@ channels, addon,
 create = function(list, cb){
     if (!list.length) return cb()
 
-    var
-    c = list.pop(),
-    config = c.config
+    var c = list.pop()
 
     Net.create({
-        url: config.url,
-        delimiter: config.delimiter || ['&'],
-        beatRate: config.beatRate || 500,
+        url: c.url,
+        delimiter: c.delimiter || ['&'],
+        beatRate: c.beatRate || 500,
     }, function(err, client){
         if (err) return cb(err)
         channels[c.name] = client
@@ -51,19 +49,6 @@ Backbone.ajax = function(req){
         c.request(req.url, reqData, addon, onReceive)
     }
 }
-
-me.slot(pico.LOAD, function(){
-    pico.ajax('get', 'project.json', null, null, function(err, xhr){
-        if (err) return console.error(err)
-        if (4 !== xhr.readyState) return
-        try{
-            var project = JSON.parse(xhr.responseText)
-        }catch(exp){
-            return console.error(exp)
-        }
-        me.signalStep('projectLoaded', [project])
-    })
-})
 
 me.slot('addon', function(){ addon = arguments[0] })
 

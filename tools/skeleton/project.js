@@ -1,11 +1,10 @@
-[
+exports.config = [
     [
         "{PATH/TO/ADDITIONAL/JAVASCRIPT}.js"
     ],[
         "{PATH/TO/CSS}.css",
     ],[
-        ["mainChannel", "channel", {"url":"http://{SERVER_IP/SERVER_PORT}","delimiter":["&"],"beatRate":10000}],
-        ["{RES_ID}","{RES_TYPE}",'{RES_VALUE}']
+        ["{RES_ID}","{RES_TYPE}","{RES_VALUE}"]
     ],{
         "{PAGE_ROUTE}":[
             [

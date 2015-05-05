@@ -2,24 +2,25 @@ pico.start({
     name: 'PROJ_ID',
     production: false,
     paths:{
-        '*': 'js/',
+        '*': 'core/',
         html: 'html/',
-        mod: 'js/mod/',
+        js: 'js/',
+        lib: 'lib/',
+        cfg: 'cfg/',
         pico: 'lib/pico/lib/'
     }
 },function(){
     require('Module') // preload
     var
+    env = require('cfg/env'),
+    project = require('cfg/project'),
     network = require('network'),
-    specMgr = require('specMgr'),
     Frame = require('Frame')
 
     me.slot(pico.LOAD, function(){
-        network.slot('projectLoaded', function(project){
-            network.create(specMgr.findAll('channel', project.spec), function(err){
-                if (err) return console.error(err)
-                new Frame.Class(project)
-            })
+        network.create(env.config.channels, function(err){
+            if (err) return console.error(err)
+            new Frame.Class(project.config)
         })
     })
 })

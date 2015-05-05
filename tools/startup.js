@@ -10,8 +10,7 @@ projName = process.argv[3],
 projLib = process.argv[4],
 replace = []
 
-if (!projId || !projName || !projLib)
-    return console.log('USAGE: '+process.argv[1]+' id name lib')
+if (!projId || !projName) return console.log('USAGE: '+process.argv[1]+' id name [lib]')
 
 function ReplaceTransform(options){
     if (!(this instanceof ReplaceTransform)) return new ReplaceTransform(options)
@@ -42,7 +41,7 @@ fs.readlink(process.argv[1], function(err, realPath){
             fs.mkdir(projId+'/'+dirs.shift(), 0777, function(){
                 next(dirs, cb) 
             })
-        })(['js', 'html', 'css', 'dat','js/modules'], function(){
+        })(['cfg','core','js','html','css','dat'], function(){
             (function(files, cb){
                 if (!files.length) return cb()
                 var
@@ -54,17 +53,19 @@ fs.readlink(process.argv[1], function(err, realPath){
                 arguments.callee(files, cb)
             })([
                 'index.html','',
-                'project.json','',
+                'project.js','cfg',
+                'env.js','cfg',
                 'main.js','js',
-                'network.js','js',
-                'Router.js','js',
-                'Frame.js','js',
-                'Module.js','js',
-                'specMgr.js','js',
-                'Model.js','js',
+                'network.js','core',
+                'Router.js','core',
+                'Frame.js','core',
+                'Module.js','core',
+                'specMgr.js','core',
+                'Model.js','core',
                 ], function(){
+                if (!projLib) return console.log('Done')
                 fs.symlink(projLib, projId+'/lib', function(){
-                    console.log('done')
+                    console.log('Done')
                 })
             })
         })
