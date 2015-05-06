@@ -1,6 +1,5 @@
 [
     [
-        "lib/lean/lean.js"
     ],[
         "mod/ldarren/wm/desktop.css",
         "lib/lean/lean.css",

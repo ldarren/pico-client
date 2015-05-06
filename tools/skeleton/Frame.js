@@ -7,13 +7,13 @@ Module = require('Module'),
 network = require('network'),
 attachDeps = function(deps, cb){
     if (!deps || !deps.length) return cb()
-    pico.attachFile(deps.shift(), 'js', function(){ attachDeps(deps, cb) })
+    __.attachFile(deps.shift(), 'js', function(){ attachDeps(deps, cb) })
 },
 attachStyles = function(styles, cb){
     if (!styles || !styles.length) return cb()
     var s = styles.shift()
     if ('string' === typeof s) {
-        pico.attachFile(s, 'css', function(){ attachStyles(styles, cb) })
+        __.attachFile(s, 'css', function(){ attachStyles(styles, cb) })
     }else{
         restyle(s, ['webkit'])
         attachStyles(styles, cb)
@@ -86,7 +86,7 @@ exports.Class = Module.Class.extend({
     render: function(){
         var m = this.main
         m.style.cssText = ''
-        m.dispatchEvent(pico.createEvent('flip', {page:this.currPage.render(),from:Router.instance.isBack() ? 'right' : 'left'}))
+        m.dispatchEvent(__.createEvent('flip', {page:this.currPage.render(),from:Router.instance.isBack() ? 'right' : 'left'}))
     },
 
     slots: {
@@ -98,14 +98,14 @@ exports.Class = Module.Class.extend({
             default: this.show(mod, this.secondary); break
             }
 
-            document.dispatchEvent(pico.createEvent('lnReset'))
+            document.dispatchEvent(__.createEvent('lnReset'))
         },
         slide: function(sender){
-            this.main.dispatchEvent(pico.createEvent('transit', params[2]))
+            this.main.dispatchEvent(__.createEvent('transit', params[2]))
         },
         modelReady: function(sender){
             if (!Backbone.History.started){
-                document.dispatchEvent(pico.createEvent('lnReset'))
+                document.dispatchEvent(__.createEvent('lnReset'))
                 Backbone.history.start()
             }
             this.signals.modelReady().send([sender])

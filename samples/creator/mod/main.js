@@ -1,6 +1,7 @@
 pico.start({
     name: 'main',
     production: false,
+    host: __,
     paths:{
         '*': 'js/',
         root: './',

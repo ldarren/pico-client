@@ -1,4 +1,4 @@
-#!/opt/local/bin/node
+#!/usr/bin/env node
 
 var
 fs = require('fs'),

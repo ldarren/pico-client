@@ -1,12 +1,14 @@
 pico.start({
     name: 'PROJ_ID',
     production: false,
+    host: __,
     paths:{
         '*': 'js/',
         root: './',
         json: 'json/',
         html: 'html/',
         mod: 'mod/',
+        ld: 'mod/ldarren/',
         pico: 'lib/pico/lib/'
     }
 },function(){
