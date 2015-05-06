@@ -41,7 +41,7 @@ fs.readlink(process.argv[1], function(err, realPath){
             fs.mkdir(projId+'/'+dirs.shift(), 0777, function(){
                 next(dirs, cb) 
             })
-        })(['js','mod','html','css','dat'], function(){
+        })(['js','mod','css','dat'], function(){
             (function(files, cb){
                 if (!files.length) return cb()
                 var
