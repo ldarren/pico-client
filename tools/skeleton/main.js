@@ -6,9 +6,7 @@ pico.start({
         '*': 'js/',
         root: './',
         json: 'json/',
-        html: 'html/',
         mod: 'mod/',
-        ld: 'mod/ldarren/',
         pico: 'lib/pico/lib/'
     }
 },function(){
