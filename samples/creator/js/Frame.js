@@ -55,7 +55,7 @@ exports.Class = Module.Class.extend({
 
             attachStyles(p[STYLES], function(){
                 attachDeps(p[DEPS], function(){
-                    self.el.innerHTML = '<div class="lnBook lnSlider"></div><div></div><div></div>'
+                    self.el.innerHTML = '<div class="__book __slider"></div><div></div><div></div>'
 
                     var
                     m = self.el.firstChild,
@@ -98,14 +98,14 @@ exports.Class = Module.Class.extend({
             default: this.show(mod, this.secondary); break
             }
 
-            document.dispatchEvent(__.createEvent('lnReset'))
+            document.dispatchEvent(__.createEvent('__reset'))
         },
         slide: function(sender){
             this.main.dispatchEvent(__.createEvent('transit', params[2]))
         },
         modelReady: function(sender){
             if (!Backbone.History.started){
-                document.dispatchEvent(__.createEvent('lnReset'))
+                document.dispatchEvent(__.createEvent('__reset'))
                 Backbone.history.start()
             }
             this.signals.modelReady().send([sender])
