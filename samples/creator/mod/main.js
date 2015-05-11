@@ -1,7 +1,8 @@
 pico.start({
     name: 'main',
     production: false,
-    host: __,
+    ajax: __.ajax,
+    onLoad: __.onLoad,
     paths:{
         '*': 'js/',
         root: './',

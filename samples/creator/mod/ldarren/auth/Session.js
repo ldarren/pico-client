@@ -16,24 +16,32 @@ uncache = function(){
     storage.removeItem('owner')
     network.signalStep('addon', []) 
 
+    var
+    d = this.deps.data,
+    ap = this.deps.authPages
+
     // signout
-    this.stopListening(this.data, 'add')
-    this.listenTo(this.data, 'add', userAdded)
-    if (-1 === this.authPages.indexOf(Router.instance.currPath())) Router.instance.go(this.authPages[0])
+    this.stopListening(d, 'add')
+    this.listenTo(d, 'add', userAdded)
+    if (-1 === ap.indexOf(Router.instance.currPath())) Router.instance.go(ap[0])
 },
 userReady = function(model){
-    var user = this.data.get(model.id)
+    var
+    d = this.deps.data,
+    ap = this.deps.authPages,
+    user = d.get(model.id)
 console.log('userReady: '+(user ? user.toJSON() : 'undefined'))
     if (!user) return
-    this.stopListening(this.data, 'add')
+    this.stopListening(d, 'add')
     this.signals.userReady(user).send()
-    if (-1 !== this.authPages.indexOf(Router.instance.currPath())) Router.instance.home(true)
+    if (-1 !== ap.indexOf(Router.instance.currPath())) Router.instance.home(true)
     this.signals.modelReady().send()
 },
 userAdded = function(model){
-    if (model.id !== this.owner.models[0].id) return
-    this.stopListening(this.data)
-    if (this.owner.length) userReady.call(this, this.owner.models[0])
+    var o = this.deps.owner
+    if (model.id !== o.models[0].id) return
+    this.stopListening(this.deps.data)
+    if (o.length) userReady.call(this, o.models[0])
 }
 
 exports.Class = {
@@ -48,14 +56,10 @@ exports.Class = {
         owner = deps.owner,
         cached = storage.getItem('owner')
 
-        this.data = deps.data
-        this.authPages = deps.authPages
-
         owner.reset()
-        this.owner = owner
         this.listenTo(owner, 'add', cache)
         this.listenTo(owner, 'reset', uncache)
-        this.listenTo(this.data, 'add', userAdded)
+        this.listenTo(deps.data, 'add', userAdded)
 
         network.slot('error', this.onNetworkError, this)
 console.log(cached)
@@ -71,13 +75,14 @@ console.log(cached)
             if (err.code) alert('Server error ['+err.code+'] msg['+err.msg+']')
             return
         }
-        this.owner.reset()
+        this.deps.owner.reset()
         uncache.call(this)
     },
     slots: {
         changeRoute: function(from, sender){
-            if (!this.authPages.length) return
-            if (!this.owner.length && -1 === this.authPages.indexOf(arguments[2])) Router.instance.go(this.authPages[0])
+            var ap = this.deps.authPages
+            if (!ap.length) return
+            if (!this.deps.owner.length && -1 === ap.indexOf(arguments[2])) Router.instance.go(ap[0])
         }
     }
 }

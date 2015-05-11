@@ -1,13 +1,14 @@
 pico.start({
     name: 'PROJ_ID',
     production: false,
-    host: __,
+    ajax: __.ajax,
+    onLoad: __.onLoad,
     paths:{
         '*': 'js/',
         root: './',
         json: 'json/',
         mod: 'mod/',
-        pico: 'lib/pico/lib/'
+        pico: 'lib/pico/lib/',
     }
 },function(){
     require('Module') //preload

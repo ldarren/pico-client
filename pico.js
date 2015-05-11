@@ -1,9 +1,8 @@
-// TODO: move ajax to lean
 !function(exports){
     'use strict'
 
     var
-    pico,
+    pico,ajax,
     modules = {},
     paths = {'*':''},
     envs = {production:true},
@@ -102,7 +101,7 @@
         }
         fname = raw ? fname : fname+'.js'
 
-        pico.ajax('get', path+fname, '', null, function(err, xhr){
+        ajax('get', path+fname, '', null, function(err, xhr){
             if (err) return cb(err)
             if (4 !== xhr.readyState) return
             if (raw){
@@ -133,17 +132,19 @@
         start: function(options, cb){
             var script = cb.toString()
 
-            if (undefined !== options.production) envs.production = options.production
+            pico.ajax = ajax = options.ajax
+            envs.production = !!options.production
             script = script.substring(script.indexOf('{') + 1, script.lastIndexOf('}'))
 
             pico.objTools.mergeObj(paths, options.paths)
-            options.host.onLoad(function(){
+            options.onLoad(function(){
                 vm(options.name, script, function(err, mod){
                     script = undefined
                     options = undefined
                 })
             })
         },
+        ajax: null,
         // for future file concatenating
         def: function(scriptLink, script){
             vm(srciptLink, script, dummyCB)
@@ -151,7 +152,7 @@
         getEnv: function(key){ return envs[key] },
         // use require('html') insteads?
         embed: function(holder, url, cb){
-            pico.ajax('get', url, '', null, function(err, xhr){
+            ajax('get', url, '', null, function(err, xhr){
                 if (err) return cb(err)
                 if (4 !== xhr.readyState) return
                 holder.innerHTML = xhr.responseText
@@ -180,51 +181,6 @@
                     if (err) console.error('embedJS['+link+'] without content error: '+err)
                     return pico.embedJS(scripts, cb)
                 })
-            }
-        },
-
-        // method: get/post, url: path, params: null/parameters (optional), headers: header parameter, cb: callback, userData: optional
-        ajax: function(method, url, params, headers, cb, userData){
-            cb = cb || dummyCB
-            if (!url) return cb(new Error('url not defined'))
-            var
-            xhr = exports.XMLHttpRequest ? new exports.XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP'),
-            post = 'POST' === (method = method.toUpperCase()),
-            dataType = ('string' === typeof params ? 1 : (params instanceof FormData ? 3 : 2))
-
-            url = encodeURI(url)
-
-            if (!post){
-                url += '?appVer='+envs.appVer
-                if (params){
-                    url += '&'
-                    switch(dataType){
-                    case 1: url += encodeURIComponent(params); break
-                    case 2: url += Object.keys(params).reduce(function(a,k){a.push(k+'='+encodeURIComponent(params[k]));return a},[]).join('&'); break
-                    case 3: return cb(new Error('FormData with GET method is not supported yet'))
-                    }
-                    params = null
-                }
-            }
-
-            xhr.open(method, url, true)
-
-            xhr.onreadystatechange=function(){
-                if (1 < xhr.readyState && cb){
-                    var st = xhr.status
-                    return cb((200 === st || !st) ? null : new Error("Error["+xhr.statusText+"] Info: "+xhr.responseText), xhr, userData)
-                }
-            }
-            xhr.onerror=function(evt){cb(evt, xhr, userData)}
-            // never set Content-Type, it will trigger preflight options and chrome 35 has problem with json type
-            //if (post && params && 2 === dataType) xhr.setRequestHeader('Content-Type', 'application/json')
-            if (post && params && 3 !== dataType) xhr.setRequestHeader('Content-Type', 'text/plain')
-            for (var key in headers) xhr.setRequestHeader(key, headers[key])
-
-            switch(dataType){
-            case 1: xhr.send(params); break
-            case 2: xhr.send(JSON.stringify(params)); break
-            case 3: xhr.send(params); break
             }
         },
 
