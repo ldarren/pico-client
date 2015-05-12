@@ -90,25 +90,25 @@ exports.Class = Module.Class.extend({
     },
 
     slots: {
-        invalidate: function(sender, container){
-            if (!mod || -1 === this.modules.indexOf(mod)) return
+        invalidate: function(from, sender, where){
+            if (!sender || -1 === this.modules.indexOf(sender)) return
             switch(where){
-            case 'main': this.show(mod, this.main, true); break
-            case 'modal': this.show(mod, this.modal); break
-            default: this.show(mod, this.secondary); break
+            case 'main': this.show(sender, this.main, true); break
+            case 'modal': this.show(sender, this.modal); break
+            default: this.show(sender, this.secondary); break
             }
 
             document.dispatchEvent(__.createEvent('__reset'))
         },
-        slide: function(sender){
-            this.main.dispatchEvent(__.createEvent('transit', params[2]))
+        slide: function(from, sender, options){
+            this.main.dispatchEvent(__.createEvent('transit', options))
         },
-        modelReady: function(sender){
+        modelReady: function(from, sender){
             if (!Backbone.History.started){
                 document.dispatchEvent(__.createEvent('__reset'))
                 Backbone.history.start()
             }
-            this.signals.modelReady().send([sender])
+            this.signals.modelReady().send([from])
         }
     }
 })

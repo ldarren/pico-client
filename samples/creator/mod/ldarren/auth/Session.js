@@ -21,7 +21,7 @@ uncache = function(){
     ap = this.deps.authPages
 
     // signout
-    this.stopListening(d, 'add')
+    this.stopListening(d, 'add', userAdded)
     this.listenTo(d, 'add', userAdded)
     if (-1 === ap.indexOf(Router.instance.currPath())) Router.instance.go(ap[0])
 },
@@ -32,7 +32,7 @@ userReady = function(model){
     user = d.get(model.id)
 console.log('userReady: '+(user ? user.toJSON() : 'undefined'))
     if (!user) return
-    this.stopListening(d, 'add')
+    this.stopListening(d, 'add', userAdded)
     this.signals.userReady(user).send()
     if (-1 !== ap.indexOf(Router.instance.currPath())) Router.instance.home(true)
     this.signals.modelReady().send()
@@ -40,7 +40,7 @@ console.log('userReady: '+(user ? user.toJSON() : 'undefined'))
 userAdded = function(model){
     var o = this.deps.owner
     if (model.id !== o.models[0].id) return
-    this.stopListening(this.deps.data)
+    this.stopListening(this.deps.data, 'add', userAdded)
     if (o.length) userReady.call(this, o.models[0])
 }
 
