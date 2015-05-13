@@ -1,11 +1,12 @@
 var
-ID=0,TYPE=1,VALUE=2,EXTRA=3,
 Model = require('Model'),
+ID=0,TYPE=1,VALUE=2,EXTRA=3,
+ERR1='ref of REF not found',ERR2='record RECORD of ref of REF not found',
 create = function(id, type, value){ return [id, type, value] },
 getId = function(spec){return spec[ID]},
 getType = function(spec){return spec[TYPE]},
 getValue = function(spec){return spec[VALUE]},
-getExtra = function(spec){return spec[EXTRA]},
+getExtra = function(spec,idx){return spec[EXTRA+(idx||0)]},
 find = function(name, list){ for(var i=0,o; o=list[i]; i++){ if (name === o[ID]) return o } },
 findAll = function(type, list){
     var arr = []
@@ -24,25 +25,32 @@ load = function(host, params, spec, deps, cb, userData){
     switch(t){
     case 'ref':
         f = find(s[VALUE], context)
-        if (!f) return cb('ref of '+s[VALUE]+' not found')
+		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
         deps.push(create(s[ID], f[TYPE], f[VALUE]))
         break
     case 'refs':
         Array.prototype.push.apply(deps, findAll(s[VALUE], context))
         break
     case 'model':
-        f = find(s[VALUE], context)
-        if (!f) return cb('model of '+s[VALUE]+' not found')
-        var m = f[VALUE].get(params[s.param])
-        if (!m) return cb('record '+s.param+' of model of '+s[VALUE]+' not found')
-        deps.push(create(s[ID], t, m))
-        break
+		f = find(s[VALUE], context)
+		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
+		var m = f[VALUE].get(params[s[EXTRA]])
+		if (!m || !m.get) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',params[s[EXTRA]]), deps, userData)
+		'field' === t ? deps.push(create(s[ID], t, m.get(s[EXTRA+1]))) : deps.push(create(s[ID], t, m)) 
+		break
     case 'models':
         deps.push(create(s[ID], t, new Model.Class(null, s[VALUE])))
         break
+	case 'fields':
+		f = find(s[VALUE], context)
+		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
+		var m = s[EXTRA] ? new Model.Class(f[VALUE].where(s[EXTRA])) : f[VALUE]
+		if (!m || !m.pluck) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',s[EXTRA]), deps, userData)
+		deps.push(create(s[ID], t, m.pluck(s[EXTRA+1])))
+		break
     case 'module':
         require(s[ID], function(err, mod){
-            if (err) return cb(err)
+            if (err) return cb(err, deps, userData)
             deps.push(create(s[ID], t, {name:s[ID], spec:s[VALUE], style:s[EXTRA], Class:mod.Class, Mixin:mod.Mixin}))
             load(host, params, spec, deps, cb, userData)
         })

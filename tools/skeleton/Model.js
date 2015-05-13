@@ -1,5 +1,6 @@
 exports.Class = Backbone.Collection.extend({
     initialize: function(models, config){
+		config = config || {}
         var self = this
         this.url = config.list
         this.model = Backbone.Model.extend({
