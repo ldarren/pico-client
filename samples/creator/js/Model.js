@@ -1,15 +1,12 @@
 exports.Class = Backbone.Collection.extend({
     initialize: function(models, config){
 		config = config || {}
-        var self = this
         this.url = config.list
         this.model = Backbone.Model.extend({
             idAttribute: config.idAttribute || 'id',
             comparator: config.comparator || 'id',
             sync: function(method, model, options){
-                if (options.data && self.data){
-                    options.data = _.extend(options.data, self.data)
-                }
+                options.channel = config.channel
                 var url = config[method]
                 if (url){
                     options.url = url

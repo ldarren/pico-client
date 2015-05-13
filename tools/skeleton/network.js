@@ -1,6 +1,6 @@
 var
 Net = require('pico/piDataNetModel'),
-channels = {}, addon,
+channels = [], addon,
 create = function(list, cb){
     if (!list.length) return cb()
 
@@ -12,7 +12,7 @@ create = function(list, cb){
         beatRate: c.beatRate || 500,
     }, function(err, client){
         if (err) return cb(err)
-        channels[c.name] = client
+        channels.push(client)
         create(list, cb)
     })
 }
@@ -21,7 +21,7 @@ Backbone.ajax = function(req){
     if (!req) return
     var
     api = req.url,
-    c = channels[req.channel],
+    c = channels[req.channel||0],
     reqData = req.data,
     onReceive = function(err, data){
         if (err) {
