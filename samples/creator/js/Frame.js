@@ -68,7 +68,7 @@ exports.Class = Module.Class.extend({
                     m.addEventListener('flipped', removeOldPage.bind(self), false)
                     m.addEventListener('transited', transited.bind(self), false)
 
-                    Module.Class.prototype.initialize.call(self, {name:'Frame', spec:p[SPEC].concat([['env','map',e]])})
+                    Module.Class.prototype.initialize.call(self, {name:'Frame'}, p[SPEC].concat([['env','map',e]]))
                 })
             })
         })

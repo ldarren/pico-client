@@ -75,7 +75,7 @@
                         ["userPath", "url", "@json/USER_ID.json"]
                     ]
                 ],[
-                    "ld/wm/Desktop",
+                    ["ld/wm/Desktop","ld/wm/mixin"],
                     "module",
                     [
                         ["apps","list",[]],

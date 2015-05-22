@@ -82,14 +82,14 @@ recv = function(evt, from, sender){
 }
 
 exports.Class = Backbone.View.extend({
-    initialize: function(options, params, host){
+    initialize: function(options, spec, params, host){
         this._id = id++
         this.name = options.name
         this.host = host
         this.ancestor = exports.Class.prototype
         this.modules = []
         this._elements = []
-        this._rawSpec = options.spec
+        this._rawSpec = spec
         this._removed = false 
 
         this.signals = sigslot.call(this)
@@ -98,13 +98,13 @@ exports.Class = Backbone.View.extend({
 
         if (options.style) this.style = restyle(options.style, ['webkit'])
 
-        specMgr.load(host, params || [], options.spec, specLoaded, this)
+        specMgr.load(host, params || [], spec, specLoaded, this)
     },
     create: function(deps, params){
         var spec = this.spec
         for(var i=0,s; s=spec[i]; i++){
             if ('module' === s[TYPE]) {
-                this.spawn(s[VALUE], params, this)
+                this.spawn(s[VALUE], params)
             }
         }
     },
@@ -125,13 +125,9 @@ exports.Class = Backbone.View.extend({
     },
     spawn: function(Mod, params, spec, hidden){
         if (!Mod || !Mod.spec) return
-        Mod.spec = spec && spec.length ? Mod.spec.concat(spec) : Mod.spec
-
-        var mixin = Mod.Mixin ? Mod.Mixin(Mod.spec, params) : []
-        mixin.push(Mod.Class)
 
         var
-        m = new (exports.Class.extend(_.extend.apply(_, mixin)))(Mod, params, this),
+        m = new (exports.Class.extend(Mod.Class))(Mod, spec && spec.length ? Mod.spec.concat(spec) : Mod.spec, params, this),
         i = this.modules.push(m)-1
 
         if (hidden) return m

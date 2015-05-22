@@ -13,6 +13,16 @@ findAll = function(type, list){
     for(var i=0,o; o=list[i]; i++){ if (type === o[TYPE]) arr.push(o) }
     return arr
 },
+loadDeps = function(links, klass, cb){
+    if (!links || !links.length) return cb(null, klass)
+    if ('string' === typeof links) return require(links, function(err, mod){
+        return cb(err, mod.Class)
+    })
+    require(links.shift(), function(err, mod){
+        if (err) return cb(err)
+        loadDeps(links, _.extend(klass, mod.Class), cb)
+    })
+},
 load = function(host, params, spec, deps, cb, userData){
     if (!spec.length) return cb(null, deps, userData)
 
@@ -49,9 +59,9 @@ load = function(host, params, spec, deps, cb, userData){
 		deps.push(create(s[ID], t, m.pluck(s[EXTRA+1])))
 		break
     case 'module':
-        require(s[ID], function(err, mod){
+        loadDeps(s[ID], {}, function(err, klass){
             if (err) return cb(err, deps, userData)
-            deps.push(create(s[ID], t, {name:s[ID], spec:s[VALUE], style:s[EXTRA], Class:mod.Class, Mixin:mod.Mixin}))
+            deps.push(create(s[ID], t, {name:s[ID], spec:s[VALUE], style:s[EXTRA], Class:klass}))
             load(host, params, spec, deps, cb, userData)
         })
         return
