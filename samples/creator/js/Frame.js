@@ -1,7 +1,7 @@
 var
-ID=0,TYPE=1,VALUE=2,EXTRA=3,
 DEPS=0,STYLES=1,SPEC=2,PAGES=3,
 PSPEC=0,PSTYLE=1,
+ID=0,TYPE=1,VALUE=2,EXTRA=3,
 Router = require('Router'),
 Module = require('Module'),
 network = require('network'),

@@ -1,3 +1,3 @@
-exports.test = {
+exports.Class = {
     sayHello: function(){console.log('hello')}
 }

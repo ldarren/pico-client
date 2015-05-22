@@ -1,6 +1,5 @@
 var
 specMgr = require('specMgr'),
-mixin = require('ld/wm/mixin'),
 tpl = '<div class=dir></div>',
 baseZ = 10000
 
@@ -114,10 +113,8 @@ console.log('appRegister: '+fileId)
             this.active = win
             this.signals.open().send(win)
         }
+    },
+    sayHello: function(){
+        console.log('mixin is not working')
     }
-}
-
-// mixin test
-exports.Mixin = function(spec){
-    return [mixin.test]
 }
