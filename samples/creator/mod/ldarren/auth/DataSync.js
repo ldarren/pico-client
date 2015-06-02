@@ -61,7 +61,7 @@ console.log('DataSync create')
     },
 
     slots:{
-        signin: function(from, sender, model){
+        userReady: function(from, sender, model){
 console.log('dataSync setup polling '+from.name+', '+sender.name)
             var userId = model.id
             this.myId = userId
