@@ -6,10 +6,15 @@ cache = function(model, coll){
     var cred = model.attributes
     network.signalStep('addon', [cred]) 
     storage.setItem('owner', JSON.stringify(cred))
-console.log('cache send signin')
-    this.signals.signin(model).send()
 
-    userReady.call(this, model)
+    var
+    users = this.deps.users,
+    user = users.get(model.id)
+
+    if (user) userReady.call(this, user)
+    else this.listenTo(users, 'add', userAdded)
+
+    this.signals.signin(model).send()
 },
 uncache = function(){
     this.signals.signout().send()
@@ -17,38 +22,34 @@ uncache = function(){
     network.signalStep('addon', []) 
 
     var
-    d = this.deps.data,
+    u = this.deps.users,
     ap = this.deps.authPages
 
     // signout
-    this.stopListening(d, 'add', userAdded)
-    this.listenTo(d, 'add', userAdded)
+    this.stopListening(u, 'add', userAdded)
+    this.listenTo(u, 'add', userAdded)
     if (-1 === ap.indexOf(Router.instance.currPath())) Router.instance.go(ap[0])
-},
-userReady = function(model){
-    var
-    d = this.deps.data,
-    ap = this.deps.authPages,
-    user = d.get(model.id)
-console.log('userReady: '+(user ? user.toJSON() : 'undefined'))
-    if (!user) return
-    this.stopListening(d, 'add', userAdded)
-    this.signals.userReady(user).send()
-    if (-1 !== ap.indexOf(Router.instance.currPath())) Router.instance.home(true)
-    this.signals.modelReady().send()
-},
+},      
 userAdded = function(model){
     var o = this.deps.owner
-    if (model.id !== o.models[0].id) return
-    this.stopListening(this.deps.data, 'add', userAdded)
-    if (o.length) userReady.call(this, o.models[0])
+    if (!o.length || model.id !== o.at(0).id) return
+    this.stopListening(this.deps.users, 'add', userAdded)
+    userReady.call(this, model)
+},
+userReady = function(user){
+    if (!user) return
+
+    if (this.dep.owner.at(0).hasChanged(['id']))this.signals.userReady(user).send()
+    if (-1 !== this.deps.authPages.indexOf(Router.instance.currPath())) Router.instance.home(true)
+    if (!this.modelReadied)this.signals.modelReady().send()
+    this.modelReadied = true
 }
 
 exports.Class = {
     signals: ['signin', 'signout', 'modelReady', 'userReady'],
     deps: {
         owner:'ref',
-        data: 'ref',
+        users: 'ref',
         authPages: 'list'
     },
     create: function(deps){
@@ -58,8 +59,8 @@ exports.Class = {
 
         owner.reset()
         this.listenTo(owner, 'add', cache)
+        this.listenTo(owner, 'change', cache)
         this.listenTo(owner, 'reset', uncache)
-        this.listenTo(deps.data, 'add', userAdded)
 
         network.slot('error', this.onNetworkError, this)
 console.log(cached)
@@ -67,6 +68,7 @@ console.log(cached)
             try{ owner.add(JSON.parse(cached)) }
             catch(exp){ console.error(exp) }
         }else{
+            this.modelReadied = true
             this.signals.modelReady().send()
         }
     },
