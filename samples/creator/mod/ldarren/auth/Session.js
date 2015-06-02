@@ -6,6 +6,7 @@ cache = function(model, coll){
     var cred = model.attributes
     network.signalStep('addon', [cred]) 
     storage.setItem('owner', JSON.stringify(cred))
+	this.userReadied = false
 
     var
     users = this.deps.users,
@@ -39,10 +40,11 @@ userAdded = function(model){
 userReady = function(user){
     if (!user) return
 
-    if (this.dep.owner.at(0).hasChanged(['id']))this.signals.userReady(user).send()
+    if (!this.userReadied || this.deps.owner.at(0).hasChanged(['id']))this.signals.userReady(user).send()
+	this.userReadied= true
     if (-1 !== this.deps.authPages.indexOf(Router.instance.currPath())) Router.instance.home(true)
     if (!this.modelReadied)this.signals.modelReady().send()
-    this.modelReadied = true
+    this.modelReadied= true
 }
 
 exports.Class = {
@@ -63,7 +65,6 @@ exports.Class = {
         this.listenTo(owner, 'reset', uncache)
 
         network.slot('error', this.onNetworkError, this)
-console.log(cached)
         if(cached){
             try{ owner.add(JSON.parse(cached)) }
             catch(exp){ console.error(exp) }
