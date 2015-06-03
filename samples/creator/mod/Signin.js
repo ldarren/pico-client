@@ -38,7 +38,5 @@ exports.Class = {
                 }
             })
         }
-    },
-    slots: {
     }
 }

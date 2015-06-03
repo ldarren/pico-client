@@ -82,10 +82,10 @@ exports.Class = {
         uncache.call(this)
     },
     slots: {
-        changeRoute: function(from, sender){
+        changeRoute: function(from, sender, route){
             var ap = this.deps.authPages
             if (!ap.length) return
-            if (!this.deps.owner.length && -1 === ap.indexOf(arguments[2])) Router.instance.go(ap[0])
+            if (!this.deps.owner.length && -1 === ap.indexOf(route)) Router.instance.go(ap[0])
         }
     }
 }

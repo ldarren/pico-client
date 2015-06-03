@@ -57,12 +57,12 @@ exports.Class = {
         this.freq = deps.freq
         this.pollId = 0
         this.data.comparator = sortDesc
-console.log('DataSync create')
     },
 
     slots:{
-        userReady: function(from, sender, model){
-console.log('dataSync setup polling '+from.name+', '+sender.name)
+        signin: function(from, sender, model){
+            if (this.myId === model.id) return
+            this.slots.signout(from, sender)
             var userId = model.id
             this.myId = userId
             this.readSeen(userId)

@@ -136,7 +136,7 @@
             envs.production = !!options.production
             script = script.substring(script.indexOf('{') + 1, script.lastIndexOf('}'))
 
-            pico.objTools.mergeObj(paths, options.paths)
+            pico.objTools.extend(paths, options.paths)
             options.onLoad(function(){
                 vm(options.name, script, function(err, mod){
                     script = undefined
