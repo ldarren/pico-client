@@ -53,8 +53,8 @@ fs.readlink(process.argv[1], function(err, realPath){
                 arguments.callee(files, cb)
             })([
                 'index.html','',
-                'project.js','',
-                'env.js','',
+                'project.json','',
+                'env.json','',
                 'main.js','mod',
                 'network.js','js',
                 'Router.js','js',
