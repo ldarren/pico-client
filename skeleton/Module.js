@@ -2,7 +2,17 @@ var
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
 specMgr = require('specMgr'),
 Router = require('Router'),
-id=0,
+index=0,
+trigger = Backbone.Events.trigger,
+evts=[],
+schedule= (function(){
+    return  window.requestAnimationFrame       ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame    ||
+            window.oRequestAnimationFrame      || 
+            window.msRequestAnimationFrame     ||
+            function(callback){ return window.setTimeout(callback, 50) }
+})(),   
 specLoaded = function(err, spec, self){
     if (self._removed) return self.remove()
     if (err){
@@ -46,31 +56,7 @@ sigslot = function(){
     return signals
 },
 send = function(a){
-    setTimeout(function(evt, from, sender, args){
-        var
-        trigger = Backbone.Events.trigger,
-        params = [evt, from, sender].concat(args),
-        modules = from.modules
-
-        modules = from.host ? modules.concat([from.host]) : modules
-
-        switch(typeof a){
-        case 'object':
-            if (a.length){
-                for(var i=0,m; m=modules[i]; i++){
-                    if (-1 === a.indexOf(m)) trigger.apply(m, params)
-                }
-            }else{
-                trigger.apply(a, params)
-            }
-            break
-        default:
-            for(var i=0,m; m=modules[i]; i++){
-                trigger.apply(m, params)
-            }
-            break
-        }
-    }, 0, this.evt, this.from, this.sender, this.args)
+    evts.push([this.evt, this.from, this.sender, a, this.args])
 },
 recv = function(evt, from, sender){
     var
@@ -79,11 +65,39 @@ recv = function(evt, from, sender){
 
     if (func) forward = func.apply(this, Array.prototype.slice.call(arguments, 1))
     if (forward) send.call({evt:evt, sender:sender, from:this, args:Array.prototype.slice.call(arguments, 3)}, [from])
+},
+tick = function(){
+    if (evts.length){
+        var
+        e=evts.shift(),
+        from=e[1],
+        a=e[3],
+        params = [e[0], from, e[2]].concat(e[4]),
+        modules = from.modules
+
+        modules = from.host ? modules.concat([from.host]) : modules
+
+        switch(typeof a){
+        case 'object':
+            if (a.length){
+                for(var i=0,m; m=modules[i]; i++) if (-1 === a.indexOf(m)) trigger.apply(m, params);
+            }else{
+                trigger.apply(a, params)
+            }
+            break
+        default:
+            for(var i=0,m; m=modules[i]; i++) trigger.apply(m, params);
+            break
+        }
+    }
+    schedule(tick)
 }
+
+schedule(tick)
 
 exports.Class = Backbone.View.extend({
     initialize: function(options, spec, params, host){
-        this._id = id++
+        this._id = index++
         this.name = options.name
         this.host = host
         this.ancestor = exports.Class.prototype
