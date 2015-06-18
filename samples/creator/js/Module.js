@@ -39,58 +39,62 @@ sigslot = function(){
     var
     ss = this.signals || [],
     signals = {}
-
+    
     ss.forEach(function(evt){
         var sender = this
         signals[evt] = function(){
             return {
                 args: Array.prototype.slice.call(arguments),
                 sender: sender,
-                from: sender,
                 evt: evt,
-                send: send
+                queue: false,
+                send: send,
+                dispatch: dispatch
             }
         }
     }, this)
-
+        
     return signals
-},
-send = function(a){
-    evts.push([this.evt, this.from, this.sender, a, this.args])
-},
-recv = function(evt, from, sender){
-    var
+},      
+send = function(a, from){
+    this.queue=true
+    evts.push([this, a, from||this.sender])
+},      
+recv = function(evt, from, params){
+    var 
     func = this.slots[evt],
     forward = true 
+                
+    if (func) forward = func.apply(this, [from, params.sender].concat(params.args))
 
-    if (func) forward = func.apply(this, Array.prototype.slice.call(arguments, 1))
-    if (forward) send.call({evt:evt, sender:sender, from:this, args:Array.prototype.slice.call(arguments, 3)}, [from])
+    if (forward){
+        (params.queue?send:dispatch).call(params, [from], this)
+    }
 },
 tick = function(){
     if (evts.length){
-        var
-        e=evts.shift(),
-        from=e[1],
-        a=e[3],
-        params = [e[0], from, e[2]].concat(e[4]),
-        modules = from.modules
-
-        modules = from.host ? modules.concat([from.host]) : modules
-
-        switch(typeof a){
-        case 'object':
-            if (a.length){
-                for(var i=0,m; m=modules[i]; i++) if (-1 === a.indexOf(m)) trigger.apply(m, params);
-            }else{
-                trigger.apply(a, params)
-            }
-            break
-        default:
-            for(var i=0,m; m=modules[i]; i++) trigger.apply(m, params);
-            break
-        }
+        var e=evts.shift()
+        dispatch.call(e[0], e[1], e[2])
     }
     schedule(tick)
+},
+dispatch = function(a, from){
+    var isObj='object'===typeof a
+    if (isObj && !a.length) return trigger.call(a, this.evt, from, this)
+
+    from=from||this.sender
+
+    var
+    host = from.host,
+    modules = from.modules
+
+    modules = host ? modules.concat([host]) : modules
+
+    if (isObj && a.length){
+        for(var i=0,m; m=modules[i]; i++) if (-1 === a.indexOf(m)) trigger.call(m, this.evt, from, this);
+    }else{
+        for(var i=0,m; m=modules[i]; i++) trigger.call(m, this.evt, from, this);
+    }
 }
 
 schedule(tick)
