@@ -28,8 +28,7 @@ specLoaded = function(err, spec, self){
 
     for(var i=0,s,k; s=spec[i]; i++){
         k = s[ID]
-        if (!deps[k]) continue
-        d[k] = s[VALUE]
+        if (deps[k]) d[k] = s[VALUE]
     }
 
     self.deps = d
@@ -66,10 +65,7 @@ recv = function(evt, from, params){
     forward = true 
                 
     if (func) forward = func.apply(this, [from, params.sender].concat(params.args))
-
-    if (forward){
-        (params.queue?send:dispatch).call(params, [from], this)
-    }
+    if (forward) (params.queue?send:dispatch).call(params, [from], this)
 },
 tick = function(){
     if (evts.length){

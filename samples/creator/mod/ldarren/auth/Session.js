@@ -40,7 +40,7 @@ userAdded = function(model){
 userReady = function(user){
     if (!user) return
 
-    if (!this.userReadied || this.deps.owner.at(0).hasChanged(['id']))this.signals.userReady(user).send()
+    if (!this.userReadied || this.deps.owner.at(0).hasChanged(['id']))this.signals.userReady(user).dispatch()
 	this.userReadied= true
     if (-1 !== this.deps.authPages.indexOf(Router.instance.currPath())) Router.instance.home(true)
     if (!this.modelReadied)this.signals.modelReady().send()

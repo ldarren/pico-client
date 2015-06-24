@@ -59,9 +59,9 @@ load = function(host, params, spec, deps, cb, userData){
 		deps.push(create(s[ID], t, m.pluck(s[EXTRA+1])))
 		break
     case 'module':
-        loadDeps(s[ID], {}, function(err, klass){
+        loadDeps(s[EXTRA]||s[ID], {}, function(err, klass){
             if (err) return cb(err, deps, userData)
-            deps.push(create(s[ID], t, {name:s[ID], spec:s[VALUE], style:s[EXTRA], Class:klass}))
+            deps.push(create(s[ID], t, {name:s[ID], spec:s[VALUE], Class:klass}))
             load(host, params, spec, deps, cb, userData)
         })
         return
