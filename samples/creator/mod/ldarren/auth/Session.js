@@ -79,7 +79,6 @@ exports.Class = {
             return
         }
         this.deps.owner.reset()
-        uncache.call(this)
     },
     slots: {
         changeRoute: function(from, sender, route){
