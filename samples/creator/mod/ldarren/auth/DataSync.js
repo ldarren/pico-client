@@ -102,7 +102,8 @@ exports.Class = {
     },
 
     readSeen: function(userId){
-        this.seen = storage.getItem('seen'+userId) || (new Date(0)).toISOString()
+        var seen=storage.getItem('seen'+userId)
+        this.seen=!seen||'undefined'===seen ?(new Date(0)).toISOString() : seen
     },
 
     writeSeen: function(userId, seen){

@@ -41,7 +41,7 @@ changeRoute = function(path, params){
 
 exports.Class = Module.Class.extend({
     el: 'body',
-    signals:['modelReady', 'changeRoute', 'mainTransited'],
+    signals:['changeRoute', 'mainTransited'],
     initialize: function(p, e){
         var self = this
         
@@ -107,8 +107,9 @@ exports.Class = Module.Class.extend({
             if (!Backbone.History.started){
                 document.dispatchEvent(__.createEvent('__reset'))
                 Backbone.history.start()
+                return true // continue propagation
             }
-            this.signals.modelReady().send([from])
+            return false
         }
     }
 })

@@ -78,6 +78,7 @@ exports.Class = {
             if (err.code) alert('Server error ['+err.code+'] msg['+err.msg+']')
             return
         }
+        this.signals.modelReady().dispatch() // router may not initialized
         this.deps.owner.reset()
     },
     slots: {
