@@ -6,12 +6,8 @@ exports.Class = Backbone.Collection.extend({
             idAttribute: config.idAttribute || 'id',
             comparator: config.comparator || 'id',
             sync: function(method, model, options){
-                options.channel = config.channel
-                var url = config[method]
-                if (url){
-                    options.url = url
-                    return Backbone.sync(method, model, options)
-                }
+                if(!options.url) options.url=config[method]
+                if (options.url) return Backbone.sync(method, model, options)
                 return options.success()
             }
         })

@@ -12,10 +12,10 @@ cache = function(model, coll){
     users = this.deps.users,
     user = users.get(model.id)
 
+    this.signals.signin(model).dispatch()
+
     if (user) userReady.call(this, user)
     else this.listenTo(users, 'add', userAdded)
-
-    this.signals.signin(model).send()
 },
 uncache = function(){
     this.signals.signout().send()

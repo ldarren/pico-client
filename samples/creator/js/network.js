@@ -1,19 +1,21 @@
 var
-Net = require('pico/piDataNetModel'),
-channels = [], addon,
-create = function(list, cb){
-    if (!list.length) return cb()
+web= pico.web
+channels = {}, addon,
+create = function(keys, domains, cb){
+    if (!keys.length) return cb()
 
-    var c = list.pop()
+    var
+    k=keys.pop(),
+    c=domains[k]
 
-    Net.create({
+    web.create({
         url: c.url,
         delimiter: c.delimiter || ['&'],
         beatRate: c.beatRate || 500,
     }, function(err, client){
         if (err) return cb(err)
-        channels.push(client)
-        create(list, cb)
+        channels[k]=client
+        create(keys, domains, cb)
     })
 }
 
@@ -21,7 +23,7 @@ Backbone.ajax = function(req){
     if (!req) return
     var
     api = req.url,
-    c = channels[req.channel||0],
+    c = channels[api.substr(apt.indexOf('/'))],
     reqData = req.data,
     onReceive = function(err, data){
         if (err) {
@@ -56,7 +58,7 @@ Backbone.ajax = function(req){
 
 me.slot('addon', function(){ addon = arguments[0] })
 
-exports.create = function(list, cb){
-    if (!list) return cb()
-    create(list, cb)
+exports.create = function(domains, cb){
+    if (!domains) return cb()
+    create(Object.keys(domains), domains, cb)
 }
