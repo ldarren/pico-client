@@ -13,14 +13,14 @@ findAll = function(type, list){
     for(var i=0,o; o=list[i]; i++){ if (type === o[TYPE]) arr.push(o) }
     return arr
 },
-loadDeps = function(links, klass, cb){
-    if (!links || !links.length) return cb(null, klass)
+loadDeps = function(links, idx, klass, cb){
+    if (!links || links.length <= idx) return cb(null, klass)
     if ('string' === typeof links) return require(links, function(err, mod){
         return cb(err, mod.Class)
     })
-    require(links.shift(), function(err, mod){
+    require(links[idx++], function(err, mod){
         if (err) return cb(err)
-        loadDeps(links, pico.obj.extend(klass, mod.Class), cb)
+        loadDeps(links, idx, pico.obj.extend(klass, mod.Class), cb)
     })
 },
 load = function(host, params, spec, deps, cb, userData){
@@ -59,9 +59,11 @@ load = function(host, params, spec, deps, cb, userData){
 		deps.push(create(s[ID], t, m.pluck(s[EXTRA+1])))
 		break
     case 'module':
-        loadDeps(s[EXTRA]||s[ID], {}, function(err, klass){
+        loadDeps(s[EXTRA]||s[ID], 0, {}, function(err, klass){
             if (err) return cb(err, deps, userData)
-            deps.push(create(s[ID], t, {name:s[ID], spec:s[VALUE], Class:klass}))
+            f=s[ID]
+            f='string'===typeof f ? f : f[0]
+            deps.push(create(f, t, {name:f, spec:s[VALUE], Class:klass}))
             load(host, params, spec, deps, cb, userData)
         })
         return
