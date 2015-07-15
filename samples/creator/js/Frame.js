@@ -107,7 +107,7 @@ exports.Class = Module.Class.extend({
             if (!Backbone.History.started){
                 document.dispatchEvent(__.createEvent('__reset'))
                 Backbone.history.start()
-                return true // continue propagation
+                return true //  continue propagate
             }
             return false
         }

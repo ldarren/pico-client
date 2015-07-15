@@ -1,0 +1,28 @@
+#!/usr/bin/env node
+
+var
+fs = require('fs'),
+path = require('path')
+
+fs.readlink(process.argv[1], function(err, realPath){
+    if (err) realPath = process.argv[1]
+    var srcDir = path.dirname(realPath)+'/skeleton/';
+    (function(files, cb){
+        if (!files.length) return cb()
+        var
+        fname = files.shift()
+        dest = files.shift() + path.sep + fname
+        fs.createReadStream(srcDir+fname)
+        .pipe(fs.createWriteStream(dest))
+        arguments.callee(files, cb)
+    })([
+        'network.js','js',
+        'Router.js','js',
+        'Frame.js','js',
+        'Module.js','js',
+        'specMgr.js','js',
+        'Model.js','js',
+        ], function(){
+        return console.log('Done')
+    })
+})
