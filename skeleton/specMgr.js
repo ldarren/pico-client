@@ -20,7 +20,7 @@ loadDeps = function(links, klass, cb){
     })
     require(links.shift(), function(err, mod){
         if (err) return cb(err)
-        loadDeps(links, pico.objTools.extend(klass, mod.Class), cb)
+        loadDeps(links, pico.obj.extend(klass, mod.Class), cb)
     })
 },
 load = function(host, params, spec, deps, cb, userData){

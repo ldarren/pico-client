@@ -1,3 +1,4 @@
+// TODO: use mixin?
 var
 Router = require('Router'),
 storage = window.localStorage,
@@ -14,6 +15,7 @@ console.log('poll: '+self.myId)
             var data = raw.data
             if (data){
                 addRemove(self.data, data) 
+                // TODO: use mixin? dataUsers is not general
                 var dUsers = data.ref
                 if (data.refs){
                     addRemove(self.dataUsers, data.refs) 
@@ -61,7 +63,6 @@ exports.Class = {
 
     slots:{
         signin: function(from, sender, model){
-            if (this.myId === model.id) return
             this.slots.signout.call(this, from, sender)
             var userId = model.id
             this.myId = userId

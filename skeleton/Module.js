@@ -68,11 +68,11 @@ recv = function(evt, from, params){
     if (forward) (params.queue?send:dispatch).call(params, [from], this)
 },
 tick = function(){
+    schedule(tick)
     if (evts.length){
         var e=evts.shift()
         dispatch.call(e[0], e[1], e[2])
     }
-    schedule(tick)
 },
 dispatch = function(a, from){
     var isObj='object'===typeof a

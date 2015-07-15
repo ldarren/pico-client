@@ -2,17 +2,20 @@ var
 Router = require('Router'),
 network = require('network'),
 storage = window.localStorage,
-cache = function(model, coll){
+changed=function(model){
     var cred = model.attributes
     network.signalStep('addon', [cred]) 
     storage.setItem('owner', JSON.stringify(cred))
-	this.userReadied = false
+},
+cache = function(model, coll){
+    changed.call(this, model)
 
     var
     users = this.deps.users,
     user = users.get(model.id)
 
     this.signals.signin(model).dispatch()
+	this.userReadied = false
 
     if (user) userReady.call(this, user)
     else this.listenTo(users, 'add', userAdded)
@@ -61,8 +64,8 @@ exports.Class = {
 
         owner.reset()
         this.listenTo(owner, 'add', cache)
-        this.listenTo(owner, 'change', cache)
         this.listenTo(owner, 'reset', uncache)
+        this.listenTo(owner, 'change', changed)
 
         network.slot('error', this.onNetworkError, this)
         if(cached){
