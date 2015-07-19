@@ -9,10 +9,6 @@ open = function(){
         self.$el.removeClass('opening');
     })
 console.log('open window: '+this._id)
-    CodeMirror(this.$content[0], {
-          value: "function myScript(){return 100;}\n",
-          mode:  "javascript"
-    })
 },
 close = function(){
     var self = this
@@ -32,13 +28,13 @@ enable = function(){
 disable = function(){
     this.$el.addClass('disabled')
 },
-focus = function(sender, index){
+focus = function(from, sender, index){
     this.setZ(index)
     this.$el.addClass('active')
     this.$el.removeClass('inactive')
     this.signals.focused().send(this.host)
 },
-blur = function(sender, index){
+blur = function(from, sender, index){
     this.setZ(index)
     this.$el.removeClass('active')
     this.$el.addClass('inactive')
@@ -60,8 +56,10 @@ exports.Class = {
         fixed: 'bool',
         widget: 'bool'
     },
-    create: function(deps, params){
+    create: function(deps){
         this.el.innerHTML = tpl.text.replace('TITLE', deps.title || 'Untitle Window')
+
+        this.instId = deps.instId
 
         this.setX(deps.x || 0)
         this.setY(deps.y || 0)
@@ -86,7 +84,7 @@ exports.Class = {
         disable: disable,
         focus: focus,
         blur: blur,
-        mousemove: function(sender, e){
+        mousemove: function(from, sender, e){
             if (this._moving){
                 this.setX(e.pageX - this._moving[0])
                 this.setY(e.pageY - this._moving[1])
@@ -96,7 +94,7 @@ exports.Class = {
                 this.setH(e.pageY + this._resizing[1])
             }
         },
-        mouseup: function(sender, e){
+        mouseup: function(from, sender, e){
             if (this._moving){
                 this._moving = null
                 this.$el.removeClass('move')

@@ -1,0 +1,9 @@
+<style scoped>
+.icon-user::-webkit-input-placeholder::before { font-family: 'fontello'; content: '\e802'; color: #ccc; padding-right: 4px; }
+.icon-lock::-webkit-input-placeholder::before { font-family: 'fontello'; content: '\e819'; color: #ccc; padding-right: 4px; }
+</style>
+<input name=username type="text" class="icon-user" placeholder="Username" autocorrect="off" autocapitalize="off">
+<input name=password type="password" class="icon-lock" placeholder="Password">
+<p class="inline-error"></p>
+<button type=button name=signin class="btn btn-primary btn-block">Sign In</button>
+<a href="#signup">or Create a new account</a>

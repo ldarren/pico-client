@@ -1,5 +1,4 @@
-var
-tpl = '<div class=icon draggable=true></div><div class=name></div>'
+var tpl = '<div class=icon draggable=true></div><div class=name></div>'
 
 exports.Class = {
     className: 'file',
@@ -7,7 +6,7 @@ exports.Class = {
     deps:{
         file:'model'
     },
-    create: function(deps, params){
+    create: function(deps){
         var file = deps.file
         this.el.innerHTML = tpl
         this.el.setAttribute('fileid', file.id)
@@ -54,7 +53,7 @@ exports.Class = {
         }
     },
     slots:{
-        dragleave: function(sender, e){
+        dragleave: function(from, sender, e){
             if (this.el.classList.contains('dragging')) return
             this.el.classList.remove('dragover')
         }

@@ -2,42 +2,59 @@ var
 Router = require('Router'),
 network = require('network'),
 storage = window.localStorage,
-cache = function(model, coll){
+changed=function(model){
     var cred = model.attributes
     network.signalStep('addon', [cred]) 
     storage.setItem('owner', JSON.stringify(cred))
-    this.signals.signin(model).send()
+},
+cache = function(model, coll){
+    changed.call(this, model)
 
-    userReady.call(this, model)
+    var
+    users = this.deps.users,
+    user = users.get(model.id)
+
+    this.signals.signin(model).dispatch()
+	this.userReadied = false
+
+    if (user) userReady.call(this, user)
+    else this.listenTo(users, 'add', userAdded)
 },
 uncache = function(){
     this.signals.signout().send()
     storage.removeItem('owner')
     network.signalStep('addon', []) 
 
+    var
+    u = this.deps.users,
+    ap = this.deps.authPages
+
     // signout
-    this.listenTo(this.data, 'add', userAdded)
-    if (-1 === this.authPages.indexOf(Router.instance.currPath())) Router.instance.go(this.authPages[0])
-},
-userReady = function(model){
-    var user = this.data.get(model.id)
-    if (!user) return
-    this.stopListening(this.data, 'add')
-    this.signals.userReady(user).send()
-    if (-1 !== this.authPages.indexOf(Router.instance.currPath())) Router.instance.home(true)
-    this.signals.modelReady().send()
-},
+    this.stopListening(u, 'add', userAdded)
+    this.listenTo(u, 'add', userAdded)
+    if (-1 === ap.indexOf(Router.instance.currPath())) Router.instance.go(ap[0])
+},      
 userAdded = function(model){
-    if (model.id !== this.owner.models[0].id) return
-    this.stopListening(this.data, 'add')
-    if (this.owner.length) userReady.call(this, this.owner.models[0])
+    var o = this.deps.owner
+    if (!o.length || model.id !== o.at(0).id) return
+    this.stopListening(this.deps.users, 'add', userAdded)
+    userReady.call(this, model)
+},
+userReady = function(user){
+    if (!user) return
+
+    if (!this.userReadied || this.deps.owner.at(0).hasChanged(['id']))this.signals.userReady(user).dispatch()
+	this.userReadied= true
+    if (-1 !== this.deps.authPages.indexOf(Router.instance.currPath())) Router.instance.home(true)
+    if (!this.modelReadied)this.signals.modelReady().send()
+    this.modelReadied= true
 }
 
 exports.Class = {
     signals: ['signin', 'signout', 'modelReady', 'userReady'],
     deps: {
         owner:'ref',
-        data: 'ref',
+        users: 'ref',
         authPages: 'list'
     },
     create: function(deps){
@@ -45,20 +62,17 @@ exports.Class = {
         owner = deps.owner,
         cached = storage.getItem('owner')
 
-        this.data = deps.data
-        this.authPages = deps.authPages
-
         owner.reset()
-        this.owner = owner
         this.listenTo(owner, 'add', cache)
         this.listenTo(owner, 'reset', uncache)
-        this.listenTo(this.data, 'add', userAdded)
-        network.slot('error', this.onNetworkError, this)
+        this.listenTo(owner, 'change', changed)
 
+        network.slot('error', this.onNetworkError, this)
         if(cached){
             try{ owner.add(JSON.parse(cached)) }
             catch(exp){ console.error(exp) }
         }else{
+            this.modelReadied = true
             this.signals.modelReady().send()
         }
     },
@@ -67,13 +81,14 @@ exports.Class = {
             if (err.code) alert('Server error ['+err.code+'] msg['+err.msg+']')
             return
         }
-        this.owner.reset()
-        uncache.call(this)
+        this.signals.modelReady().dispatch() // router may not initialized
+        this.deps.owner.reset()
     },
     slots: {
-        changeRoute: function(sender){
-            if (!this.authPages.length) return
-            if (!this.owner.length && -1 === this.authPages.indexOf(arguments[2])) Router.instance.go(this.authPages[0])
+        changeRoute: function(from, sender, route){
+            var ap = this.deps.authPages
+            if (!ap.length) return
+            if (!this.deps.owner.length && -1 === ap.indexOf(route)) Router.instance.go(ap[0])
         }
     }
 }

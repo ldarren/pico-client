@@ -1,8 +1,10 @@
+// TODO: use mixin?
 var
 Router = require('Router'),
 storage = window.localStorage,
 status1 = {status:1},status0={status:0},merge1={merge:true},
 poll = function(self){
+console.log('poll: '+self.myId)
     var userId = self.myId
     if (!userId) return
     self.pull.fetch({
@@ -13,6 +15,7 @@ poll = function(self){
             var data = raw.data
             if (data){
                 addRemove(self.data, data) 
+                // TODO: use mixin? dataUsers is not general
                 var dUsers = data.ref
                 if (data.refs){
                     addRemove(self.dataUsers, data.refs) 
@@ -56,12 +59,12 @@ exports.Class = {
         this.freq = deps.freq
         this.pollId = 0
         this.data.comparator = sortDesc
-
     },
 
     slots:{
-        signin: function(sender){
-            var userId = arguments[2].id
+        signin: function(from, sender, model){
+            this.slots.signout.call(this, from, sender)
+            var userId = model.id
             this.myId = userId
             this.readSeen(userId)
             this.readColl('data', userId)
@@ -76,7 +79,7 @@ exports.Class = {
             this.listenTo(dataUsers, 'remove', writeDataUsers)
             this.listenTo(dataUsers, 'change', writeDataUsers)
         },
-        signout: function(sender){
+        signout: function(from, sender){
             this.stopListening()
             clearTimeout(this.pollId)
             this.pollId = 0
@@ -85,7 +88,7 @@ exports.Class = {
             this.seen = 0
             this.myId = 0
         },
-        refreshCache: function(sender){
+        refreshCache: function(from, sender){
             var userId = this.myId
             clearTimeout(this.pollId)
             this.pollId = 0
@@ -100,7 +103,8 @@ exports.Class = {
     },
 
     readSeen: function(userId){
-        this.seen = storage.getItem('seen'+userId) || (new Date(0)).toISOString()
+        var seen=storage.getItem('seen'+userId)
+        this.seen=!seen||'undefined'===seen ?(new Date(0)).toISOString() : seen
     },
 
     writeSeen: function(userId, seen){

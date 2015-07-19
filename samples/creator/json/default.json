@@ -1,0 +1,12 @@
+[
+    [
+        "mod/ApplMgr",
+        "module",
+        [
+            ["id", "text", "appmgr"],
+            ["icon", "text", "plus"],
+            ["name", "text", "Add"],
+            ["repoPath", "url", "@json/repository.json"]
+        ]
+    ]
+]

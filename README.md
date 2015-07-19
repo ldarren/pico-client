@@ -4,13 +4,13 @@ pico-client
 pico html5 framework
 
 ##Browser Compatibility
- * Android Browser: Fully compatible
- * Mobile Chrome: Fully compatible
- * Mobile Safari: Fully compatible
- * Mobile Firefox: Fully compatible
- * Mobile IE 11: Fully compatible
- * Mobile IE 10: Mostly compatible
- * Mobile IE 9: Mostly compatible
+ * Android Browser: compatible
+ * Mobile Chrome: compatible
+ * Mobile Safari: compatible
+ * Mobile Firefox: compatible
+ * Mobile IE 11: compatible
+ * Mobile IE 10: partially compatible
+ * Mobile IE 9: partially compatible
  * Mobile IE 7 and below: not compatible
 
 ##Asynchronous module definition
@@ -30,7 +30,3 @@ Features
 * support circular dependencies
 * support javascript in file or embeded to html
 * similar to common.js or node.js
-
-##Reactor Programming
-
-##Optimised for canvas

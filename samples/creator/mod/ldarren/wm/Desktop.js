@@ -1,32 +1,29 @@
 var
 specMgr = require('specMgr'),
-mixin = require('ld/wm/mixin'),
 tpl = '<div class=dir></div>',
 baseZ = 10000
 
 exports.Class = {
     id: 'ldwmDesktop',
-    signals: ['open', 'close', 'focus', 'blur', 'mousemove', 'mouseup', 'dragleave'],
+    className: 'wm-space',
+    signals: ['desktopReady', 'createInstance', 'destroyInstance', 'open', 'close', 'focus', 'blur', 'mousemove', 'mouseup', 'dragleave'],
     deps:{
         apps: 'list',
         'ld/wm/Window':'module',
         'ld/wm/MenuBar':'module',
         'ld/wm/File':'module'
     },
-    className: 'wm-space',
-    create: function(deps, params){
+    create: function(deps){
         this.el.innerHTML = tpl
-        var
-        dir = this.el.querySelector('.dir'),
-        File = deps['ld/wm/File']
-
-        for(var i=0,as=deps.apps,a; a=as[i]; i++){
-            this.show(this.spawn(File, params, [specMgr.create('file', 'map', a)], true), dir)
-        }
+        this.dir = this.el.querySelector('.dir')
 
         this.windows = []
+        this.files = {}
+        this.apps = {}
         this.active = null
-        this.sayHello()
+        this.sayHello() // mixin test
+
+        this.signals.desktopReady().send()
     },
     events: {
         mousemove: function(e){
@@ -43,26 +40,19 @@ exports.Class = {
         }
     },
     slots:{
-        open: function(sender, fileId){
-            var
-            currZ = baseZ + this.windows.length + 1,
-            win = this.spawn(this.deps['ld/wm/Window'], null, [
-                    specMgr.create('title', 'text', fileId),
-                    specMgr.create('z', 'number', currZ--)
-                ])
-            for(var z, i=this.windows.length; i--;) {
-                this.signals.blur(currZ--).send(this.windows[i])
-            }
-            this.windows.push(win)
-            this.active = win
-            this.signals.open().send(win)
+        open: function(from, sender, fileId){
+            var app = this.apps[fileId]
+            if (!app) return
+
+            this.signals.createInstance().send(app)
         },
-        opened: function(sender){
+        opened: function(from, sender){
         },
-        closed: function(sender){
+        closed: function(from, sender){
             sender.remove()
+            this.signals.destroyInstance(sender.instId).send()
         },
-        focus: function(sender){
+        focus: function(from, sender){
             var currZ = baseZ + this.windows.length
 
             if (this.active === sender) return
@@ -79,12 +69,52 @@ exports.Class = {
 
             this.active = sender
         },
-        blurred: function(sender){
+        blurred: function(from, sender){
             if (this.active === sender) this.active = null
-        }
-    }
-}
+        },
+        appRegister: function(from, sender, fileId, appIcon, appName){
+console.log('appRegister: '+fileId)
+            this.apps[fileId] = sender
+            var file = this.spawn(this.deps['ld/wm/File'], [], [specMgr.create('file', 'map', {id:fileId, icon:appIcon, name:appName})], true)
+            this.files[fileId] = file
+            this.show(file, this.dir)
+        },
+        appDeregister: function(from, sender, fileId){
+            delete this.apps[fileId]
+            var file = this.files[fileId]
+            delete this.files[fileId]
+            this.dump(file)
+        },
+        appFocus: function(from, sender, instId){
+            var wins = this.windows
+            for(var i=0,w; w=wins[i]; i++){
+                if (instId === w.instId){
+                    this.slots.focus(from, w)
+                    return
+                }
+            }
+        },
+        appInstance: function(from, sender, content, opts){
+            var
+            currZ = baseZ + this.windows.length + 1,
+            win = this.spawn(this.deps['ld/wm/Window'], null, [
+                specMgr.create('instId', 'text', opts.id),
+                specMgr.create('title', 'text', opts.name),
+                specMgr.create('z', 'number', currZ--),
+                specMgr.create('content', 'dom', content),
+                specMgr.create('width', 'number', opts.width),
+                specMgr.create('height', 'number', opts.height)
+            ])
 
-exports.Mixin = function(spec, params){
-    return [mixin.test]
+            for(var z, i=this.windows.length; i--;) {
+                this.signals.blur(currZ--).send(this.windows[i])
+            }
+            this.windows.push(win)
+            this.active = win
+            this.signals.open().send(win)
+        }
+    },
+    sayHello: function(){
+        console.log('mixin is not working')
+    }
 }
