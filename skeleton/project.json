@@ -12,7 +12,7 @@
         ["dataUsers","models",[]],
         [   
             "ld/auth/DataSync",
-            "module",
+            "ctrl",
             [
                 ["data","ref","data"],
                 ["dataUsers","ref","dataUsers"],
@@ -23,7 +23,7 @@
             ]
         ], [   
             "ld/auth/Session",
-            "module",
+            "ctrl",
             [
                 ["owner","ref","owner"],
                 ["users","ref","data"],
@@ -36,12 +36,12 @@
                 ["allModels", "refs", "models"],
                 [
                     "ld/wm/Launcher",
-                    "module",
+                    "view",
                     [
                         ["allModels", "refs", "models"],
                         [
                             "mod/UserMgr",
-                            "module",
+                            "view",
                             [
                                 ["id", "text", "users"],
                                 ["icon", "text", "users"],
@@ -50,7 +50,7 @@
                                 ["data", "ref", "data"],
                                 [
                                     "mod/Signin",
-                                    "module",
+                                    "view",
                                     [
                                         ["owner", "ref", "owner"],
                                         ["auth", "models", {
@@ -59,11 +59,11 @@
                                     ]
                                 ], [
                                     "mod/Signup",
-                                    "module",
+                                    "view",
                                     []
                                 ], [
                                     "mod/UserInfo",
-                                    "module",
+                                    "view",
                                     [
                                         ["owner", "ref", "owner"],
                                         ["data", "ref", "data"]
@@ -76,12 +76,12 @@
                     ]
                 ],[
                     ["ld/wm/Desktop","ld/wm/mixin"],
-                    "module",
+                    "view",
                     [
                         ["apps","list",[]],
-                        ["ld/wm/Window","module",[]],
-                        ["ld/wm/MenuBar","module",[]],
-                        ["ld/wm/File","module",[]]
+                        ["ld/wm/Window","view",[]],
+                        ["ld/wm/MenuBar","view",[]],
+                        ["ld/wm/File","view",[]]
                     ]
                 ]
             ],{

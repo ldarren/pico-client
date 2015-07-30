@@ -34,12 +34,12 @@ changeRoute = function(path, params){
 
     if (this.oldPage) removeOldPage.call(this)
     this.oldPage = this.currPage
-    this.currPage = this.spawn({name:path, spec:p[PSPEC], style:p[PSTYLE], Class:Module.Class}, params, null, true)
+    this.currPage = this.spawn({name:path, spec:p[PSPEC], style:p[PSTYLE], Class:{}}, params, null, true)
     this.render()
     this.signals.changeRoute(path, params).send()
 }
 
-exports.Class = Module.Class.extend({
+exports.Class = Module.View.extend({
     el: 'body',
     signals:['changeRoute', 'mainTransited'],
     initialize: function(p, e){
@@ -68,7 +68,7 @@ exports.Class = Module.Class.extend({
                     m.addEventListener('flipped', removeOldPage.bind(self), false)
                     m.addEventListener('transited', transited.bind(self), false)
 
-                    Module.Class.prototype.initialize.call(self, {name:'Frame'}, p[SPEC].concat([['env','map',e]]))
+                    Module.View.prototype.initialize.call(self, {name:'Frame'}, p[SPEC].concat([['env','map',e]]))
                 })
             })
         })
@@ -77,8 +77,11 @@ exports.Class = Module.Class.extend({
     create: function(deps, params){
         var spec = this.spec
         for(var i=0,s; s=spec[i]; i++){
-            if ('module' === s[TYPE]) {
+            switch(s[TYPE]){
+            case 'ctrl':
+            case 'view':
                 this.spawn(s[VALUE], params, null, true)
+                break
             }
         }
     },

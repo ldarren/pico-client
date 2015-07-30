@@ -58,12 +58,13 @@ load = function(host, params, spec, deps, cb, userData){
 		if (!m || !m.pluck) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',s[EXTRA]), deps, userData)
 		deps.push(create(s[ID], t, m.pluck(s[EXTRA+1])))
 		break
-    case 'module':
+    case 'ctrl':
+    case 'view':
         loadDeps(s[EXTRA]||s[ID], 0, {}, function(err, klass){
             if (err) return cb(err, deps, userData)
             f=s[ID]
             f='string'===typeof f ? f : f[0]
-            deps.push(create(f, t, {name:f, spec:s[VALUE], Class:klass}))
+            deps.push(create(f, t, {name:f, type:t, spec:s[VALUE], Class:klass}))
             load(host, params, spec, deps, cb, userData)
         })
         return
