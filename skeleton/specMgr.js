@@ -68,6 +68,9 @@ load = function(host, params, spec, deps, cb, userData){
             load(host, params, spec, deps, cb, userData)
         })
         return
+    case 'events':
+        deps.push(create(s[ID], t, new EventSource(s[VALUE],{withCredentials:s[EXTRA]})))
+        break
     case 'param':
         deps.push(create(s[ID], t, params[s[VALUE]]))
         break
@@ -85,18 +88,24 @@ load = function(host, params, spec, deps, cb, userData){
 // need to get original spec, the one before spec.load, no way to diff ref and models
 unload = function(rawSpec, spec){
     if (!spec || !spec.length) return
+    var j,s
     for(var i=0,r; r=rawSpec[i]; i++){
         switch(r[TYPE]){
         case 'models':
-        case 'date':
-            for(var j=0,s; s=spec[i]; i++){
+        case 'events':
+            for(j=0; s=spec[j]; j++){
                 if (r[ID] === s[ID]) {
-                    if ('models' === s[TYPE]) s[VALUE].reset()
-                    delete s[VALUE]
+                    switch(s[TYPE]){
+                    case 'models': s[VALUE].reset(); break
+                    case 'events': s[VALUE].close(); break
+                    }
                 }
             }
             break
         }
+    }
+    for(j=0; s=spec[j]; j++){
+        delete s[VALUE]
     }
     spec.length = 0
 }
