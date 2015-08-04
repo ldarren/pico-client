@@ -54,8 +54,8 @@ exports.Class = Module.View.extend({
             r.on('route', changeRoute, self)
 
             attachStyles(p[STYLES], function(){
+                self.el.innerHTML = '<div class="__book __slider"></div><div></div><div></div>'
                 attachDeps(p[DEPS], function(){
-                    self.el.innerHTML = '<div class="__book __slider"></div><div></div><div></div>'
 
                     var
                     m = self.el.firstChild,

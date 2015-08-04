@@ -1,5 +1,6 @@
 var
-Model = require('Model'),
+Model= require('Model'),
+Stream= require('Stream'),
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
 ERR1='ref of REF not found',ERR2='record RECORD of ref of REF not found',
 create = function(id, type, value){ return [id, type, value] },
@@ -68,8 +69,8 @@ load = function(host, params, spec, deps, cb, userData){
             load(host, params, spec, deps, cb, userData)
         })
         return
-    case 'events':
-        deps.push(create(s[ID], t, new EventSource(s[VALUE],{withCredentials:s[EXTRA]})))
+    case 'stream':
+        deps.push(create(s[ID], t, new Stream.Class(s[VALUE])))
         break
     case 'param':
         deps.push(create(s[ID], t, params[s[VALUE]]))
@@ -92,12 +93,12 @@ unload = function(rawSpec, spec){
     for(var i=0,r; r=rawSpec[i]; i++){
         switch(r[TYPE]){
         case 'models':
-        case 'events':
+        case 'stream':
             for(j=0; s=spec[j]; j++){
                 if (r[ID] === s[ID]) {
                     switch(s[TYPE]){
                     case 'models': s[VALUE].reset(); break
-                    case 'events': s[VALUE].close(); break
+                    case 'stream': s[VALUE].close(); break
                     }
                 }
             }
