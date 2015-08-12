@@ -17,7 +17,7 @@ pico.start({
     project = require('@mod/project.json'),
     env = require('@mod/env.json')
 
-    me.slot(pico.LOAD, function(){
-        new Frame.Class(project.json, env.json)
-    })
+    return function(){
+        new Frame(project.json, env.json)
+    }
 })

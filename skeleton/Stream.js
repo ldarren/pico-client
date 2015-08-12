@@ -1,12 +1,19 @@
 //TODO: authentication for withCredentials option
 var network=require('network')
 
-exports.Class=function(options){
+function Stream(options){
     init(this, options.url, options.withCredentials, options.events)
 }           
             
 function init(self, url, withCredentials, events){
-    self.sse=network.createEvents(url, withCredentials)
+    var trigger=function(e){
+        var data
+        try{ data=JSON.parse(e.data) }
+        catch(exp){ data=e.data }
+        self.trigger(e.type, data, e.lastEventId)
+    }
+    self.sse=new EventSource(-1===url.indexOf('://')?network.getDomain(url)+url:url, {withCredentials:withCredentials})
+    self.sse.events=events
     self.sse.addEventListener('open', function(e){
         self.trigger(e.type)
     }, false)   
@@ -20,19 +27,19 @@ function init(self, url, withCredentials, events){
             break
         }       
     }, false)   
-    var trigger=function(e){
-        var data
-        try{ data=JSON.parse(e.data) }
-        catch(exp){ data=e.data }
-        self.trigger(e.type, data, e.lastEventId)
-    }
     for(var i=0,e; e=events[i]; i++){
         self.sse.addEventListener(e,trigger,false)
     }       
 }       
 
-_.extend(exports.Class.prototype, Backbone.Events,{
+_.extend(Stream.prototype, Backbone.Events,{
+    reconnect:function(url,withCredentials,events){
+        var s=this.sse
+        init(this,url||s.url,withCredentials||s.withCredentials||events||s.events)
+    },
     close:function(){
         this.sse.close()
     }
 })
+
+return Stream

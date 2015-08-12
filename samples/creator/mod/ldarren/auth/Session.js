@@ -4,7 +4,7 @@ network = require('network'),
 storage = window.localStorage,
 changed=function(model){
     var cred = model.attributes
-    network.signalStep('addon', [cred]) 
+    network.addon([cred]) 
     storage.setItem('owner', JSON.stringify(cred))
 },
 cache = function(model, coll){
@@ -23,7 +23,7 @@ cache = function(model, coll){
 uncache = function(){
     this.signals.signout().send()
     storage.removeItem('owner')
-    network.signalStep('addon', []) 
+    network.addon([]) 
 
     var
     u = this.deps.users,

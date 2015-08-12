@@ -39,7 +39,7 @@ changeRoute = function(path, params){
     this.signals.changeRoute(path, params).send()
 }
 
-exports.Class = Module.View.extend({
+return Module.View.extend({
     el: 'body',
     signals:['changeRoute', 'mainTransited'],
     initialize: function(p, e){

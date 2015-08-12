@@ -61,13 +61,12 @@ Backbone.ajax = function(req){
     me.signal('send', [api])
 }
 
-me.slot('addon', function(){ addon = arguments[0] })
-
-exports.create = function(domains, cb){
-    if (!domains) return cb()
-    directory=pico.obj.extend(directory, domains)
-    create(Object.keys(domains), domains, cb)
-}
-exports.createEvents=function(url, wc){
-    return new EventSource(directory[getKey(url)]+url, {withCredentials:wc})
+module.exports={
+    create:function(domains,cb){
+        if (!domains) return cb()
+        directory=pico.obj.extend(directory, domains)
+        create(Object.keys(domains), domains, cb)
+    },
+    addon:function(){ addon = arguments[0] },
+    getDomain:function(url){ return directory[getKey(url)] }
 }

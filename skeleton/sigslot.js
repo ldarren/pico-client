@@ -72,4 +72,4 @@ dispatch = function(a, from){
 
 schedule(tick)
 
-exports.attach=sigslot
+return sigslot

@@ -17,11 +17,11 @@ findAll = function(type, list){
 loadDeps = function(links, idx, klass, cb){
     if (!links || links.length <= idx) return cb(null, klass)
     if ('string' === typeof links) return require(links, function(err, mod){
-        return cb(err, mod.Class)
+        return cb(err, mod)
     })
     require(links[idx++], function(err, mod){
         if (err) return cb(err)
-        loadDeps(links, idx, pico.obj.extend(klass, mod.Class), cb)
+        loadDeps(links, idx, pico.obj.extend(klass, mod), cb)
     })
 },
 load = function(host, params, spec, deps, cb, userData){
@@ -50,12 +50,12 @@ load = function(host, params, spec, deps, cb, userData){
 		'field' === t ? deps.push(create(s[ID], t, m.get(s[EXTRA+1]))) : deps.push(create(s[ID], t, m)) 
 		break
     case 'models':
-        deps.push(create(s[ID], t, new Model.Class(null, s[VALUE])))
+        deps.push(create(s[ID], t, new Model(null, s[VALUE])))
         break
 	case 'fields':
 		f = find(s[VALUE], context)
 		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
-		var m = s[EXTRA] ? new Model.Class(f[VALUE].where(s[EXTRA])) : f[VALUE]
+		var m = s[EXTRA] ? new Model(f[VALUE].where(s[EXTRA])) : f[VALUE]
 		if (!m || !m.pluck) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',s[EXTRA]), deps, userData)
 		deps.push(create(s[ID], t, m.pluck(s[EXTRA+1])))
 		break
@@ -70,7 +70,7 @@ load = function(host, params, spec, deps, cb, userData){
         })
         return
     case 'stream':
-        deps.push(create(s[ID], t, new Stream.Class(s[VALUE])))
+        deps.push(create(s[ID], t, new Stream(s[VALUE])))
         break
     case 'param':
         deps.push(create(s[ID], t, params[s[VALUE]]))
@@ -111,14 +111,14 @@ unload = function(rawSpec, spec){
     spec.length = 0
 }
 
-exports.load = function(host, params, spec, cb, userData){
-    load(host, params, spec.slice(), [], cb, userData)
+module.exports={
+    load:function(host, params, spec, cb, userData){ load(host, params, spec.slice(), [], cb, userData) },
+    unload:unload,
+    find:find,
+    findAll:findAll,
+    create:create,
+    getId:getId,
+    getType:getType,
+    getValue:getValue,
+    getExtra:getExtra
 }
-exports.unload = unload
-exports.find = find
-exports.findAll = findAll
-exports.create = create
-exports.getId = getId
-exports.getType = getType
-exports.getValue = getValue
-exports.getExtra = getExtra

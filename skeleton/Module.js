@@ -60,7 +60,7 @@ _.extend(Ctrl.prototype, Backbone.Events, {
         if (!Mod || !Mod.spec) return
 
         var
-        Class='ctrl'===Mod.type?exports.Ctrl:exports.View,
+        Class='ctrl'===Mod.type?Ctrl:View,
         m = new (Class.extend(Mod.Class))(Mod, spec && spec.length ? Mod.spec.concat(spec) : Mod.spec, params, this)
 
         this.modules.push(m)
@@ -83,13 +83,11 @@ _.extend(Ctrl.prototype, Backbone.Events, {
     slots:{}
 })
 
-exports.Ctrl = Ctrl
-
-exports.View = Backbone.View.extend({
+var View = Backbone.View.extend({
     initialize: function(options, spec, params, host){
         Ctrl.call(this, options, spec, params, host)
 
-        this.ancestor = exports.View.prototype
+        this.ancestor = View.prototype
         this._elements = []
 
         if (options.style) this.style = restyle(options.style, ['webkit'])
@@ -170,3 +168,8 @@ exports.View = Backbone.View.extend({
         invalidate: this.show
     }
 })
+
+module.exports={
+    Ctrl:Ctrl,
+    View:View
+}
