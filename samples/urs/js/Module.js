@@ -1,18 +1,8 @@
 var
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
-specMgr = require('specMgr'),
-Router = require('Router'),
-index=0,
-trigger = Backbone.Events.trigger,
-evts=[],
-schedule= (function(){
-    return  window.requestAnimationFrame       ||
-            window.webkitRequestAnimationFrame ||
-            window.mozRequestAnimationFrame    ||
-            window.oRequestAnimationFrame      || 
-            window.msRequestAnimationFrame     ||
-            function(callback){ return window.setTimeout(callback, 50) }
-})(),   
+specMgr = require('js/specMgr'),
+Router = require('js/Router'),
+sigslot= require('js/sigslot'),
 specLoaded = function(err, spec, self){
     if (self._removed) return self.remove()
     if (err){
@@ -33,98 +23,77 @@ specLoaded = function(err, spec, self){
 
     self.deps = d
     self.create(d)
-},
-sigslot = function(){
-    var
-    ss = this.signals || [],
-    signals = {}
-    
-    ss.forEach(function(evt){
-        var sender = this
-        signals[evt] = function(){
-            return {
-                args: Array.prototype.slice.call(arguments),
-                sender: sender,
-                evt: evt,
-                queue: false,
-                send: send,
-                dispatch: dispatch
-            }
-        }
-    }, this)
-        
-    return signals
-},      
-send = function(a, from){
-    this.queue=true
-    evts.push([this, a, from||this.sender])
-},      
-recv = function(evt, from, params){
-    var 
-    func = this.slots[evt],
-    forward = true 
-                
-    if (func) forward = func.apply(this, [from, params.sender].concat(params.args))
-    if (forward) (params.queue?send:dispatch).call(params, [from], this)
-},
-tick = function(){
-    schedule(tick)
-    if (evts.length){
-        var e=evts.shift()
-        dispatch.call(e[0], e[1], e[2])
-    }
-},
-dispatch = function(a, from){
-    var isObj='object'===typeof a
-    if (isObj && !a.length) return trigger.call(a, this.evt, from, this)
-
-    from=from||this.sender
-
-    var
-    host = from.host,
-    modules = from.modules
-
-    modules = host ? modules.concat([host]) : modules
-
-    if (isObj && a.length){
-        for(var i=0,m; m=modules[i]; i++) if (-1 === a.indexOf(m)) trigger.call(m, this.evt, from, this);
-    }else{
-        for(var i=0,m; m=modules[i]; i++) trigger.call(m, this.evt, from, this);
-    }
 }
 
-schedule(tick)
+function Ctrl(options, spec, params, host){
+    this.name = options.name
+    this.host = host
+    this.ancestor = Ctrl.prototype
+    this.modules = []
+    this._rawSpec = spec
+    this._removed = false 
 
-exports.Class = Backbone.View.extend({
-    initialize: function(options, spec, params, host){
-        this._id = index++
-        this.name = options.name
-        this.host = host
-        this.ancestor = exports.Class.prototype
-        this.modules = []
-        this._elements = []
-        this._rawSpec = spec
-        this._removed = false 
+    this.signals = sigslot.attach(this)
 
-        this.signals = sigslot.call(this)
+    specMgr.load(host, params || [], spec, specLoaded, this)
+}
 
-        this.on('all', recv, this)
+Ctrl.extend = Backbone.View.extend
 
-        if (options.style) this.style = restyle(options.style, ['webkit'])
-
-        specMgr.load(host, params || [], spec, specLoaded, this)
-    },
+_.extend(Ctrl.prototype, Backbone.Events, {
     create: function(deps, params){
         var spec = this.spec
         for(var i=0,s; s=spec[i]; i++){
             if ('module' === s[TYPE]) {
-                this.spawn(s[VALUE], params)
+                this.spawn(s[VALUE], null, params, this)
             }
         }
     },
     remove: function(){
         this._removed = true 
         this.off()
+        this.stopListening()
+        this.dumpAll()
+        specMgr.unload(this._rawSpec, this.spec)
+    },
+    spawn: function(Mod, params, spec){
+        if (!Mod || !Mod.spec) return
+
+        var
+        Class='ctrl'===Mod.type?Ctrl:View,
+        m = new (Class.extend(Mod.Class))(Mod, spec && spec.length ? Mod.spec.concat(spec) : Mod.spec, params, this)
+
+        this.modules.push(m)
+
+        return m
+    },
+    dump: function(mod){
+        if (!mod) return -1
+        var i = this.modules.indexOf(mod)
+        mod.remove()
+        this.modules.splice(i, 1)
+        return i
+    },
+    dumpAll:function(){
+        var ms=this.modules
+        while(ms.length){
+            this.dump(ms[0])
+        }
+    },
+    slots:{}
+})
+
+var View = Backbone.View.extend({
+    initialize: function(options, spec, params, host){
+        Ctrl.call(this, options, spec, params, host)
+
+        this.ancestor = View.prototype
+        this._elements = []
+
+        if (options.style) this.style = restyle(options.style, ['webkit'])
+    },
+    create: Ctrl.prototype.create,
+    remove: function(){
         if (this.__proto__.el){
             // dun remove things not urs
             this.$el.empty()
@@ -133,20 +102,19 @@ exports.Class = Backbone.View.extend({
         }else{
             Backbone.View.prototype.remove.apply(this, arguments)
         }
-        this.dumpAll()
         if (this.style) this.style.remove()
-        specMgr.unload(this._rawSpec, this.spec)
+        Ctrl.prototype.remove.call(this)
     },
     spawn: function(Mod, params, spec, hidden){
-        if (!Mod || !Mod.spec) return
+        var m = Ctrl.prototype.spawn.call(this, Mod, params, spec)
+
+        if (!m) return
+        if (hidden || !m.render) return m
 
         var
-        m = new (exports.Class.extend(Mod.Class))(Mod, spec && spec.length ? Mod.spec.concat(spec) : Mod.spec, params, this),
-        i = this.modules.push(m)-1
+        el = m.render(),
+        i=this.modules.indexOf(m)
 
-        if (hidden) return m
-
-        var el = m.render()
         if (el) {
             this.el.appendChild(el)
             this._elements[i] = el
@@ -154,21 +122,13 @@ exports.Class = Backbone.View.extend({
         return m
     },
     dump: function(mod){
-        if (!mod) return
-        mod.remove()
-        this.hide(mod)
-        var i = this.modules.indexOf(mod)
-        this.modules.splice(i, 1)
+        var i=Ctrl.prototype.dump(mod)
+        if (i<0) return i
+        this.hideByIndex(i)
         this._elements.splice(i, 1)
+        return i
     },
-    dumpAll:function(){
-        for(var i=0,ms=this.modules,m; m=ms[i]; i++){
-            m.remove()
-            this.hide(m)
-        }
-        ms.length = 0
-        this._elements.length = 0
-    },
+    dumpAll:Ctrl.prototype.dumpAll,
     show: function(mod, host, first){
         host = host || this.el
 
@@ -188,10 +148,12 @@ exports.Class = Backbone.View.extend({
         return el
     },
     hide: function(mod, host){
+        return this.hideByIndex(this.modules.indexOf(mod),host)
+    },
+    hideByIndex: function(i, host){
         host = host || this.el
 
         var
-        i = this.modules.indexOf(mod),
         oldEl = this._elements[i]
         if (oldEl && host.contains(oldEl)){
             host.removeChild(oldEl)
@@ -206,3 +168,8 @@ exports.Class = Backbone.View.extend({
         invalidate: this.show
     }
 })
+
+module.exports={
+    Ctrl:Ctrl,
+    View:View
+}

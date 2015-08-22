@@ -1,6 +1,7 @@
 var
-Model= require('Model'),
-Stream= require('Stream'),
+picoObj=require('pico/obj'),
+Model= require('js/Model'),
+Stream= require('js/Stream'),
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
 ERR1='ref of REF not found',ERR2='record RECORD of ref of REF not found',
 create = function(id, type, value){ return [id, type, value] },
@@ -21,7 +22,7 @@ loadDeps = function(links, idx, klass, cb){
     })
     require(links[idx++], function(err, mod){
         if (err) return cb(err)
-        loadDeps(links, idx, pico.obj.extend(klass, mod), cb)
+        loadDeps(links, idx, picoObj.extend(klass, mod), cb)
     })
 },
 load = function(host, params, spec, deps, cb, userData){

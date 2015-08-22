@@ -1,89 +1,13 @@
 [
     [
     ],[
-        "mod/ldarren/wm/desktop.css",
         "lib/lean/lean.css",
-        "css/skeleton.css",
         "css/icon.css",
         "css/main.css"
     ],[
-        ["owner","models",[]],
-        ["data","models",[]],
-        ["dataUsers","models",[]],
-        [   
-            "ld/auth/DataSync",
-            "module",
-            [
-                ["data","ref","data"],
-                ["dataUsers","ref","dataUsers"],
-                ["pull","models",{
-                    "list":"cr/data/poll"
-                }],
-                ["freq","number",60000]
-            ]
-        ], [   
-            "ld/auth/Session",
-            "module",
-            [
-                ["owner","ref","owner"],
-                ["users","ref","data"],
-                ["authPages","list",[]]
-            ]
-        ]
     ],{
         "*action":[
             [
-                ["allModels", "refs", "models"],
-                [
-                    "ld/wm/Launcher",
-                    "module",
-                    [
-                        ["allModels", "refs", "models"],
-                        [
-                            "mod/UserMgr",
-                            "module",
-                            [
-                                ["id", "text", "users"],
-                                ["icon", "text", "users"],
-                                ["name", "text", "User"],
-                                ["owner", "ref", "owner"],
-                                ["data", "ref", "data"],
-                                [
-                                    "mod/Signin",
-                                    "module",
-                                    [
-                                        ["owner", "ref", "owner"],
-                                        ["auth", "models", {
-                                            "create": "cr/user/signin"
-                                        }]
-                                    ]
-                                ], [
-                                    "mod/Signup",
-                                    "module",
-                                    []
-                                ], [
-                                    "mod/UserInfo",
-                                    "module",
-                                    [
-                                        ["owner", "ref", "owner"],
-                                        ["data", "ref", "data"]
-                                    ]
-                                ]
-                            ]
-                        ],
-                        ["defaultPath", "url", "@json/default.json"],
-                        ["userPath", "url", "@json/USER_ID.json"]
-                    ]
-                ],[
-                    ["ld/wm/Desktop","ld/wm/mixin"],
-                    "module",
-                    [
-                        ["apps","list",[]],
-                        ["ld/wm/Window","module",[]],
-                        ["ld/wm/MenuBar","module",[]],
-                        ["ld/wm/File","module",[]]
-                    ]
-                ]
             ],{
             }
         ]

@@ -1,5 +1,7 @@
 var
-Model = require('Model'),
+picoObj=require('pico/obj'),
+Model= require('js/Model'),
+Stream= require('js/Stream'),
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
 ERR1='ref of REF not found',ERR2='record RECORD of ref of REF not found',
 create = function(id, type, value){ return [id, type, value] },
@@ -16,11 +18,11 @@ findAll = function(type, list){
 loadDeps = function(links, idx, klass, cb){
     if (!links || links.length <= idx) return cb(null, klass)
     if ('string' === typeof links) return require(links, function(err, mod){
-        return cb(err, mod.Class)
+        return cb(err, mod)
     })
     require(links[idx++], function(err, mod){
         if (err) return cb(err)
-        loadDeps(links, idx, pico.obj.extend(klass, mod.Class), cb)
+        loadDeps(links, idx, picoObj.extend(klass, mod), cb)
     })
 },
 load = function(host, params, spec, deps, cb, userData){
@@ -49,24 +51,28 @@ load = function(host, params, spec, deps, cb, userData){
 		'field' === t ? deps.push(create(s[ID], t, m.get(s[EXTRA+1]))) : deps.push(create(s[ID], t, m)) 
 		break
     case 'models':
-        deps.push(create(s[ID], t, new Model.Class(null, s[VALUE])))
+        deps.push(create(s[ID], t, new Model(null, s[VALUE])))
         break
 	case 'fields':
 		f = find(s[VALUE], context)
 		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
-		var m = s[EXTRA] ? new Model.Class(f[VALUE].where(s[EXTRA])) : f[VALUE]
+		var m = s[EXTRA] ? new Model(f[VALUE].where(s[EXTRA])) : f[VALUE]
 		if (!m || !m.pluck) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',s[EXTRA]), deps, userData)
 		deps.push(create(s[ID], t, m.pluck(s[EXTRA+1])))
 		break
-    case 'module':
+    case 'ctrl':
+    case 'view':
         loadDeps(s[EXTRA]||s[ID], 0, {}, function(err, klass){
             if (err) return cb(err, deps, userData)
             f=s[ID]
             f='string'===typeof f ? f : f[0]
-            deps.push(create(f, t, {name:f, spec:s[VALUE], Class:klass}))
+            deps.push(create(f, t, {name:f, type:t, spec:s[VALUE], Class:klass}))
             load(host, params, spec, deps, cb, userData)
         })
         return
+    case 'stream':
+        deps.push(create(s[ID], t, new Stream(s[VALUE])))
+        break
     case 'param':
         deps.push(create(s[ID], t, params[s[VALUE]]))
         break
@@ -84,30 +90,36 @@ load = function(host, params, spec, deps, cb, userData){
 // need to get original spec, the one before spec.load, no way to diff ref and models
 unload = function(rawSpec, spec){
     if (!spec || !spec.length) return
+    var j,s
     for(var i=0,r; r=rawSpec[i]; i++){
         switch(r[TYPE]){
         case 'models':
-        case 'date':
-            for(var j=0,s; s=spec[i]; i++){
+        case 'stream':
+            for(j=0; s=spec[j]; j++){
                 if (r[ID] === s[ID]) {
-                    if ('models' === s[TYPE]) s[VALUE].reset()
-                    delete s[VALUE]
+                    switch(s[TYPE]){
+                    case 'models': s[VALUE].reset(); break
+                    case 'stream': s[VALUE].close(); break
+                    }
                 }
             }
             break
         }
     }
+    for(j=0; s=spec[j]; j++){
+        delete s[VALUE]
+    }
     spec.length = 0
 }
 
-exports.load = function(host, params, spec, cb, userData){
-    load(host, params, spec.slice(), [], cb, userData)
+module.exports={
+    load:function(host, params, spec, cb, userData){ load(host, params, spec.slice(), [], cb, userData) },
+    unload:unload,
+    find:find,
+    findAll:findAll,
+    create:create,
+    getId:getId,
+    getType:getType,
+    getValue:getValue,
+    getExtra:getExtra
 }
-exports.unload = unload
-exports.find = find
-exports.findAll = findAll
-exports.create = create
-exports.getId = getId
-exports.getType = getType
-exports.getValue = getValue
-exports.getExtra = getExtra

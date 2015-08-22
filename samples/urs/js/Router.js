@@ -1,7 +1,7 @@
 var
 trigger = {trigger:true},
 triggerReplace = {trigger:true, replace:true},
-context, inst, dirList, lastIndex, index, currPath,
+context, dirList, lastIndex, index, currPath,
 changeRoute = function(path){
     currPath = path
     lastIndex = index 
@@ -32,16 +32,18 @@ inst = {
 Object.freeze(inst)
 
 // keep this instance clean, any method name used in route will be called
-exports.Class = Backbone.Router.extend({
-    initialize: function(paths){
-        context = this
-        dirList = []
-        lastIndex = index = -1
-        this.on('route', changeRoute)
-        for(var i=0,p; p=paths[i]; i++){
-            context.route(p, p)
+module.exports={
+    Class: Backbone.Router.extend({
+        initialize: function(paths){
+            context = this
+            dirList = []
+            lastIndex = index = -1
+            this.on('route', changeRoute)
+            for(var i=0,p; p=paths[i]; i++){
+                context.route(p, p)
+            }
         }
-    }
-})
+    }),
 
-exports.instance = inst
+    instance: inst
+}

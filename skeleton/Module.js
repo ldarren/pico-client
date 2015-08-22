@@ -1,8 +1,8 @@
 var
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
-specMgr = require('specMgr'),
-Router = require('Router'),
-sigslot= require('sigslot'),
+specMgr = require('js/specMgr'),
+Router = require('js/Router'),
+sigslot= require('js/sigslot'),
 specLoaded = function(err, spec, self){
     if (self._removed) return self.remove()
     if (err){
@@ -169,7 +169,7 @@ var View = Backbone.View.extend({
     }
 })
 
-module.exports={
+return {
     Ctrl:Ctrl,
     View:View
 }

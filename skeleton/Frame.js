@@ -2,9 +2,9 @@ var
 DEPS=0,STYLES=1,SPEC=2,PAGES=3,
 PSPEC=0,PSTYLE=1,
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
-Router = require('Router'),
-Module = require('Module'),
-network = require('network'),
+Router = require('js/Router'),
+Module = require('js/Module'),
+network = require('js/network'),
 attachDeps = function(deps, cb){
     if (!deps || !deps.length) return cb()
     __.attachFile(deps.shift(), 'js', function(){ attachDeps(deps, cb) })
