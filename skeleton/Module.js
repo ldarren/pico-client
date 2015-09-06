@@ -33,7 +33,7 @@ function Ctrl(options, spec, params, host){
     this._rawSpec = spec
     this._removed = false 
 
-    this.signals = sigslot.attach(this)
+    this.signals = sigslot(this)
 
     specMgr.load(host, params || [], spec, specLoaded, this)
 }
@@ -44,8 +44,11 @@ _.extend(Ctrl.prototype, Backbone.Events, {
     create: function(deps, params){
         var spec = this.spec
         for(var i=0,s; s=spec[i]; i++){
-            if ('module' === s[TYPE]) {
-                this.spawn(s[VALUE], null, params, this)
+            switch(s[TYPE]){
+            case 'ctrl':
+            case 'view':
+                this.spawn(s[VALUE], params)
+                break
             }
         }
     },
