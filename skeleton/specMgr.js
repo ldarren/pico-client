@@ -17,9 +17,7 @@ findAll = function(type, list){
 },
 loadDeps = function(links, idx, klass, cb){
     if (!links || links.length <= idx) return cb(null, klass)
-    if ('string' === typeof links) return require(links, function(err, mod){
-        return cb(err, mod)
-    })
+    if ('string' === typeof links) return require(links, cb)
     require(links[idx++], function(err, mod){
         if (err) return cb(err)
         loadDeps(links, idx, picoObj.extend(klass, mod), cb)
@@ -67,6 +65,13 @@ load = function(host, params, spec, deps, cb, userData){
             f=s[ID]
             f='string'===typeof f ? f : f[0]
             deps.push(create(f, t, {name:f, type:t, spec:s[VALUE], Class:klass}))
+            load(host, params, spec, deps, cb, userData)
+        })
+        return
+    case 'file':
+        require(s[VALUE], function(err, mod){
+            if (err) return cb(err, deps, userData)
+            deps.push(create(s[ID], t, mod))
             load(host, params, spec, deps, cb, userData)
         })
         return
