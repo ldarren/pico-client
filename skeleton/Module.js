@@ -125,7 +125,7 @@ var View = Backbone.View.extend({
         return m
     },
     dump: function(mod){
-        var i=Ctrl.prototype.dump(mod)
+        var i=Ctrl.prototype.dump.call(this,mod)
         if (i<0) return i
         this.hideByIndex(i)
         this._elements.splice(i, 1)
