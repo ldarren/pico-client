@@ -23,6 +23,7 @@ specLoaded = function(err, spec, self){
 
     self.deps = d
     self.create(d)
+    if (self._show) self.host.show(self)
 }
 
 function Ctrl(options, spec, params, host){
@@ -59,12 +60,12 @@ _.extend(Ctrl.prototype, Backbone.Events, {
         this.dumpAll()
         specMgr.unload(this._rawSpec, this.spec)
     },
-    spawn: function(Mod, params, spec){
+    spawn: function(Mod, params, spec, hidden){
         if (!Mod || !Mod.spec) return
 
         var
         Class='ctrl'===Mod.type?Ctrl:View,
-        m = new (Class.extend(Mod.Class))(Mod, spec && spec.length ? Mod.spec.concat(spec) : Mod.spec, params, this)
+        m = new (Class.extend(Mod.Class))(Mod, spec && spec.length ? Mod.spec.concat(spec) : Mod.spec, params, this, !hidden)
 
         this.modules.push(m)
 
@@ -87,7 +88,8 @@ _.extend(Ctrl.prototype, Backbone.Events, {
 })
 
 var View = Backbone.View.extend({
-    initialize: function(options, spec, params, host){
+    initialize: function(options, spec, params, host, show){
+        this._show = !!show
         Ctrl.call(this, options, spec, params, host)
 
         this.ancestor = View.prototype
@@ -108,22 +110,7 @@ var View = Backbone.View.extend({
         if (this.style) this.style.remove()
         Ctrl.prototype.remove.call(this)
     },
-    spawn: function(Mod, params, spec, hidden){
-        var m = Ctrl.prototype.spawn.call(this, Mod, params, spec)
-
-        if (!m) return
-        if (hidden || !m.render) return m
-
-        var
-        el = m.render(),
-        i=this.modules.indexOf(m)
-
-        if (el) {
-            this.el.appendChild(el)
-            this._elements[i] = el
-        }
-        return m
-    },
+    spawn: Ctrl.prototype.spawn,
     dump: function(mod){
         var i=Ctrl.prototype.dump.call(this,mod)
         if (i<0) return i
@@ -132,19 +119,19 @@ var View = Backbone.View.extend({
         return i
     },
     dumpAll:Ctrl.prototype.dumpAll,
-    show: function(mod, host, first){
-        host = host || this.el
+    show: function(mod, container, first){
+        container = container || this.el
 
         var
         i = this.modules.indexOf(mod),
         oldEl = this._elements[i],
         el = mod.render()
         if (el){
-            if (host.contains(oldEl)){
-                host.replaceChild(el, oldEl)
+            if (container.contains(oldEl)){
+                container.replaceChild(el, oldEl)
             }else{
-                if (first) host.insertBefore(el, host.firstChild)
-                else host.appendChild(el)
+                if (first) container.insertBefore(el, container.firstChild)
+                else container.appendChild(el)
             }
             this._elements[i] = el
         }

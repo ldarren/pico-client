@@ -34,7 +34,7 @@ changeRoute = function(path, params){
 
     if (this.oldPage) removeOldPage.call(this)
     this.oldPage = this.currPage
-    this.currPage = this.spawn({name:path, spec:p[PSPEC], style:p[PSTYLE], Class:{}}, params)
+    this.currPage = this.spawn({name:path, spec:p[PSPEC], style:p[PSTYLE], Class:{}}, params, null, true)
     this.render()
     this.signals.changeRoute(path, params).send()
 }
