@@ -3,7 +3,8 @@ ID=0,TYPE=1,VALUE=2,EXTRA=3,
 specMgr = require('js/specMgr'),
 Router = require('js/Router'),
 sigslot= require('js/sigslot'),
-specLoaded = function(err, spec, self){
+specLoaded = function(err, spec, userData){
+    var self=userData[0]
     if (self._removed) return self.remove()
     if (err){
         console.warn(err)
@@ -23,10 +24,10 @@ specLoaded = function(err, spec, self){
 
     self.deps = d
     self.create(d)
-    if (self._show) self.host.show(self)
+    if (userData[1]) self.host.show(self)
 }
 
-function Ctrl(options, spec, params, host){
+function Ctrl(options, spec, params, host, show){
     this.name = options.name
     this.host = host
     this.ancestor = Ctrl.prototype
@@ -36,7 +37,7 @@ function Ctrl(options, spec, params, host){
 
     this.signals = sigslot(this)
 
-    specMgr.load(host, params || [], spec, specLoaded, this)
+    specMgr.load(host, params || [], spec, specLoaded, [this,show])
 }
 
 Ctrl.extend = Backbone.View.extend
@@ -89,11 +90,11 @@ _.extend(Ctrl.prototype, Backbone.Events, {
 
 var View = Backbone.View.extend({
     initialize: function(options, spec, params, host, show){
-        this._show = !!show
-        Ctrl.call(this, options, spec, params, host)
+        this._elements = []
+
+        Ctrl.call(this, options, spec, params, host, show)
 
         this.ancestor = View.prototype
-        this._elements = []
 
         if (options.style) this.style = restyle(options.style, ['webkit'])
     },
