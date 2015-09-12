@@ -1,17 +1,35 @@
 pico-client
 ===========
-
-pico html5 framework
+pico web app framework
 
 ##Browser Compatibility
  * Android Browser: compatible
- * Mobile Chrome: compatible
- * Mobile Safari: compatible
- * Mobile Firefox: compatible
- * Mobile IE 11: compatible
- * Mobile IE 10: partially compatible
- * Mobile IE 9: partially compatible
- * Mobile IE 7 and below: not compatible
+ * Chrome/Chromium: compatible
+ * Safari: compatible
+ * Firefox: compatible
+ * IE 11: compatible
+ * IE 10 and below: not compatible
+
+##Project Configuration
+```json
+[
+    [
+        "<JAVASCRIPT DEPENDENCIES>"
+    ],[
+        "<CSS DEPENDENCIES>"
+    ],[
+        "<FRAME MODULES DECLARATION>"
+    ],{
+        "<PAGE ROUTE>":[
+            [
+                "<PAGE MODULES>"
+            ],{
+                "<PAGE SELECTOR>":"<CSS CUSTOMIZATION>"
+            }
+        ]
+    }
+]
+```
 
 ##Asynchronous module definition
 ```javascript
