@@ -1,24 +1,25 @@
-pico.start({
+pico.run({
     name: 'main',
     production: false,
     ajax: __.ajax,
     onLoad: __.onLoad,
     paths:{
-        '*': 'js/',
+        '*': 'mod/',
         root: './',
+        cfg: 'cfg/',
+        js: 'js/',
         json: 'json/',
-        mod: 'mod/',
         pico: 'lib/pico/lib/',
         ld: 'mod/ldarren/'
     }
 },function(){
-    require('Module') //preload
+    require('js/Module') //preload
     var
-    Frame = require('Frame'),
-    project = require('@root/project.json'),
-    env = require('@root/env.json')
+    Frame = require('js/Frame'),
+    project = require('cfg/project.json'),
+    env = require('cfg/env.json')
 
-    me.slot(pico.LOAD, function(){
-        new Frame.Class(project.json, env.json)
-    })
+    this.load=function(){
+        new Frame(project, env)
+    }
 })

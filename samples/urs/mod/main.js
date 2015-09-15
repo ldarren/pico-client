@@ -18,7 +18,6 @@ pico.run({
     env = require('cfg/env.json')
 
     this.load=function(){
-        debugger
         new Frame(project, env)
     }
 })

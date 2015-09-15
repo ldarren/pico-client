@@ -1,6 +1,8 @@
 var
-web= pico.web
-channels = {}, addon,
+web=require('pico/web'),
+picoObj=require('pico/obj'),
+channels = {}, directory={},
+addon,
 create = function(keys, domains, cb){
     if (!keys.length) return cb()
 
@@ -17,13 +19,17 @@ create = function(keys, domains, cb){
         channels[k]=client
         create(keys, domains, cb)
     })
+},
+getKey=function(p){ 
+    var i=p.indexOf('/')
+    return -1===i ? p : p.substr(0, i)
 }
 
 Backbone.ajax = function(req){
     if (!req) return
     var
     api = req.url,
-    c = channels[api.substr(apt.indexOf('/'))],
+    c = channel[getKey(api)],
     reqData = req.data,
     onReceive = function(err, data){
         if (err) {
@@ -56,9 +62,12 @@ Backbone.ajax = function(req){
     me.signal('send', [api])
 }
 
-me.slot('addon', function(){ addon = arguments[0] })
-
-exports.create = function(domains, cb){
-    if (!domains) return cb()
-    create(Object.keys(domains), domains, cb)
+module.exports={
+    create:function(domains,cb){
+        if (!domains) return cb()
+        directory=picoObj.extend(directory, domains)
+        create(Object.keys(domains), domains, cb)
+    },
+    addon:function(){ addon = arguments[0] },
+    getDomain:function(url){ return directory[getKey(url)] }
 }
