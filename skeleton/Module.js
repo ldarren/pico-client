@@ -1,10 +1,8 @@
-var
-ID=0,TYPE=1,VALUE=2,EXTRA=3,
+var ID=0,TYPE=1,VALUE=2,EXTRA=3,
 specMgr = require('js/specMgr'),
 Router = require('js/Router'),
 sigslot= require('js/sigslot'),
-specLoaded = function(err, spec, userData){
-    var self=userData[0]
+specLoaded = function(err, spec, self){
     if (self._removed) return self.remove()
     if (err){
         console.warn(err)
@@ -24,10 +22,21 @@ specLoaded = function(err, spec, userData){
 
     self.deps = d
     self.create(d)
-    if (userData[1]) self.host.show(self)
+    if (self._show) self.host.show(self, self._show[0], self._show[1])
+},
+// dun remove mod here, mod may be removed
+hideByIndex= function(self, i, host){
+    host = host || self.el
+
+    var oldEl = self._elements[i]
+
+    if (oldEl && host.contains(oldEl)){
+        host.removeChild(oldEl)
+    }
+    return oldEl
 }
 
-function Ctrl(options, spec, params, host, show){
+function Ctrl(options, spec, params, host){
     this.name = options.name
     this.host = host
     this.ancestor = Ctrl.prototype
@@ -37,7 +46,7 @@ function Ctrl(options, spec, params, host, show){
 
     this.signals = sigslot(this)
 
-    specMgr.load(host, params || [], spec, specLoaded, [this,show])
+    specMgr.load(host, params || [], spec, specLoaded, this)
 }
 
 Ctrl.extend = Backbone.View.extend
@@ -91,8 +100,9 @@ _.extend(Ctrl.prototype, Backbone.Events, {
 var View = Backbone.View.extend({
     initialize: function(options, spec, params, host, show){
         this._elements = []
+        this._show=show?[host.el,false]:null
 
-        Ctrl.call(this, options, spec, params, host, show)
+        Ctrl.call(this, options, spec, params, host)
 
         this.ancestor = View.prototype
 
@@ -115,13 +125,17 @@ var View = Backbone.View.extend({
     dump: function(mod){
         var i=Ctrl.prototype.dump.call(this,mod)
         if (i<0) return i
-        this.hideByIndex(i)
+        hideByIndex(this, i)
         this._elements.splice(i, 1)
         return i
     },
     dumpAll:Ctrl.prototype.dumpAll,
     show: function(mod, container, first){
+        if (!mod) return
         container = container || this.el
+        mod._show=[container, first]
+
+        if (!mod.spec) return mod.el
 
         var
         i = this.modules.indexOf(mod),
@@ -139,17 +153,8 @@ var View = Backbone.View.extend({
         return el
     },
     hide: function(mod, host){
-        return this.hideByIndex(this.modules.indexOf(mod),host)
-    },
-    hideByIndex: function(i, host){
-        host = host || this.el
-
-        var
-        oldEl = this._elements[i]
-        if (oldEl && host.contains(oldEl)){
-            host.removeChild(oldEl)
-        }
-        return oldEl
+        mod._show=null
+        return hideByIndex(this,this.modules.indexOf(mod),host)
     },
     render: function(){
         return this.el
