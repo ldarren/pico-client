@@ -8,6 +8,7 @@
         "lib/lean/lean.css",
         "css/main.css"
     ],[
+        ["pageClass","text","content"],
         ["owner","models",{}],
         ["user","models",{}],
         ["address","models",{}],
@@ -42,11 +43,15 @@
         ["common/auth/Session","ctrl",[
             ["owner","ref","owner"],
             ["users","ref","user"],
-            ["authPages","list",[]]
+            ["authPages","list",["signin","signup"]]
         ]]
     ],{
         "*action":[
             [
+                ["HeaderSetup","ctrl",[
+                    ["left","list",["menu"]],
+                    ["title","text","Home"]
+                ]]
             ],{}
         ],
         "signin": [
@@ -56,9 +61,9 @@
                     ["owner","ref","owner"],
                     ["auth","models",{
                         "create": "tr/user/signin"
-                    }]
-                ]],
-                ["HeaderSetup","ctrl",[]]
+                    }],
+                    ["title","text","Personal Delivery Locker"]
+                ]]
             ],{}
         ],
         "signup": [
@@ -68,11 +73,8 @@
                     ["owner","ref","owner"],
                     ["auth","models",{
                         "create": "tr/user/signup"
-                    }]
-                ]],
-                ["HeaderSetup","ctrl",[
-                    ["left","list",["left-nav"]],
-                    ["title","text","Sign Up"]
+                    }],
+                    ["title","text","Personal Delivery Locker"]
                 ]]
             ],{}
         ]

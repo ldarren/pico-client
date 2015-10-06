@@ -34,7 +34,7 @@ changeRoute = function(path, params){
 
     if (this.oldPage) removeOldPage.call(this)
     this.oldPage = this.currPage
-    this.currPage = this.spawn({name:path, spec:p[PSPEC], style:p[PSTYLE], Class:{}, className:this.pageClass}, params, null, true)
+    this.currPage = this.spawn({name:path, spec:p[PSPEC], style:p[PSTYLE], Class:{}, className:this.deps.pageClass}, params, null, true)
     this.render()
     this.signals.changeRoute(path, params).send()
 }
@@ -42,6 +42,9 @@ changeRoute = function(path, params){
 return Module.View.extend({
     el: 'body',
     signals:['changeRoute', 'mainTransited'],
+    deps:{
+        pageClass:'text'
+    },
     initialize: function(p, e){
         var self = this
         
@@ -81,7 +84,6 @@ return Module.View.extend({
             case 'ctrl':
             case 'view': this.spawn(s[VALUE], params, null, true); break
                 break
-            case 'class': this.pageClass=s[VALUE]; break
             }
         }
     },

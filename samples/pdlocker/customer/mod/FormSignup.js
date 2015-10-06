@@ -8,11 +8,12 @@ return{
     signals:['noHeader'],
     deps:{
         owner:'models',
-        auth:'models'
+        auth:'models',
+        title:'text'
     },
     create: function(deps){
 
-        this.el.innerHTML=tpl()
+        this.el.innerHTML=tpl({title:deps.title})
 
         if(deps.owner.length){
             Router.instance.home(true);
