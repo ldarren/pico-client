@@ -1,8 +1,13 @@
 pico.run({
     name: 'customer',
-    production: false,
     ajax: __.ajax,
     onLoad: __.onLoad,
+    env:{
+        live:false
+    },
+    preprocessors:{
+        '.html':function(url,txt){ return _.template(txt) }
+    },
     paths:{
         '*': 'mod/',
         root: './',

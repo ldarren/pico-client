@@ -1,8 +1,12 @@
 pico.run({
     name: 'PROJ_ID',
-    production: false,
     ajax: __.ajax,
     onLoad: __.onLoad,
+    env:{
+        live:false
+    },
+    preprocessors:{
+    },
     paths:{
         '*': 'mod/',
         root: './',

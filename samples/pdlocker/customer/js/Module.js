@@ -1,8 +1,30 @@
 var ID=0,TYPE=1,VALUE=2,EXTRA=3,
+REFS='refs',
 specMgr = require('js/specMgr'),
 Router = require('js/Router'),
 sigslot= require('js/sigslot'),
-specLoaded = function(err, spec, self){
+refs=function(id,spec,rawSpec){
+    var
+    ret={},
+    i,s,t
+    for(i=0; s=rawSpec[i]; i++){
+        if(REFS===s[TYPE] && id===s[ID]){
+            t=s[VALUE]
+            break
+        }
+    }
+    if (!t) return ret
+    for(i=0; s=spec[i]; i++){
+        if(t===s[TYPE]){ ret[s[EXTRA]||s[ID]]=s[VALUE] }
+    }
+    return ret
+},
+findAll = function(type, list){
+    var arr = []
+    for(var i=0,o; o=list[i]; i++){ if (type === o[ID]) arr.push(o[VALUE]) }
+    return arr
+},
+specLoaded = function(err, spec, rawSpec, self){
     if (self._removed) return self.remove()
     if (err){
         console.warn(err)
@@ -15,9 +37,18 @@ specLoaded = function(err, spec, self){
     d = {},
     deps = self.deps || {}
 
-    for(var i=0,s,k; s=spec[i]; i++){
-        k = s[ID]
-        if (deps[k]) d[k] = s[VALUE]
+    for(var i=0,keys=Object.keys(deps),s,k,v; k=keys[i]; i++){
+        switch(deps[k]){
+        case REFS:
+            d[k]=refs(k,spec,rawSpec)
+            break
+        case undefined: break
+        default:
+            s=findAll(k, spec)
+            if (1 === s.length){ d[k]=s[0] }
+            else{ d[k] = s }
+            break
+        }
     }
 
     self.deps = d

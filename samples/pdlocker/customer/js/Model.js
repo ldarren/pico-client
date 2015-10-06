@@ -1,5 +1,6 @@
 return Backbone.Collection.extend({
-    initialize: function(models, config){
+    initialize: function(models, name, config){
+        this.name=name
 		config = config || {}
         this.url = config.list
         this.model = Backbone.Model.extend({

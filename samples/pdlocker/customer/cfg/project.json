@@ -1,13 +1,80 @@
 [
     [
+        "lib/lean/lean.js"
     ],[
+        "css/ratchet.css",
+        "css/animation.css",
+        "css/icon.css",
+        "lib/lean/lean.css",
         "css/main.css"
     ],[
+        ["owner","models",{}],
+        ["user","models",{}],
+        ["address","models",{}],
+        ["domain","models",{}],
+        ["post","models",{}],
+        ["lock","models",{}],
+        ["log","models",{}],
+        ["common/auth/DataSync","ctrl", [
+            ["data","refs","models"],
+            ["demux","map",{
+                "user":{"json":"address"},
+                "domain":{"post":"post"}
+            }],
+            ["pull","models",{
+                "list":"pdlocker/data/poll"
+            }],
+            ["freq","number",10000]
+        ]],
+        ["Header","view",[
+            ["hide","number",0]
+        ]],
+        ["Drawer","view",[
+            ["side","text","right"],
+            ["menu","list",[
+                ["Users","icon-users","user"],
+                ["Domains","icon-group","domain"],
+                ["Locks","icon-lock","lock"],
+                ["Records","icon-chart","log"]
+            ]]
+        ]],
+        ["Loader","view",[]],
+        ["common/auth/Session","ctrl",[
+            ["owner","ref","owner"],
+            ["users","ref","user"],
+            ["authPages","list",[]]
+        ]]
     ],{
         "*action":[
             [
-            ],{
-            }
+            ],{}
+        ],
+        "signin": [
+            [
+                ["owner","ref","owner"],
+                ["FormSignin","view",[
+                    ["owner","ref","owner"],
+                    ["auth","models",{
+                        "create": "tr/user/signin"
+                    }]
+                ]],
+                ["HeaderSetup","ctrl",[]]
+            ],{}
+        ],
+        "signup": [
+            [
+                ["owner","ref","owner"],
+                ["FormSignup","view",[
+                    ["owner","ref","owner"],
+                    ["auth","models",{
+                        "create": "tr/user/signup"
+                    }]
+                ]],
+                ["HeaderSetup","ctrl",[
+                    ["left","list",["left-nav"]],
+                    ["title","text","Sign Up"]
+                ]]
+            ],{}
         ]
     }
 ]

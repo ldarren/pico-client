@@ -33,10 +33,10 @@ Backbone.ajax = function(req){
     reqData = req.data,
     onReceive = function(err, data){
         if (err) {
-            me.signal('error', [err])
+            Backbone.trigger('networkErr', err)
             return req.error(err)
         }
-        me.signal('recv', [api, data])
+        Backbone.trigger('networkRecv', null, api, data)
         return req.success(data, 'success')
     }
 
@@ -59,10 +59,10 @@ Backbone.ajax = function(req){
     }else{
         c.request(api, reqData, addon, onReceive)
     }
-    me.signal('send', [api])
+    Backbone.trigger('networkSend', null, api)
 }
 
-module.exports={
+return{
     create:function(domains,cb){
         if (!domains) return cb()
         directory=picoObj.extend(directory, domains)
