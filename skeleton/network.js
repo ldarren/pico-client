@@ -29,7 +29,7 @@ Backbone.ajax = function(req){
     if (!req) return
     var
     api = req.url,
-    c = channel[getKey(api)],
+    c = channels[getKey(api)],
     reqData = req.data,
     onReceive = function(err, data){
         if (err) {

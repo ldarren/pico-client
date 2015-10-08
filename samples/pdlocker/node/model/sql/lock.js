@@ -18,12 +18,12 @@ MAP_REMOVE =            'UPDATE ?? SET `status`=0, `updatedBy`=? WHERE `id`=?;'
 
 var
 sc =require('pico/obj'),
-hash=require('sql/hash')
+hash=require('sql/hash'),
+client
 
 module.exports= {
-    setup: function(client, hash, cb){
-        this.client = client 
-        this.hash = hash
+    setup: function(context, cb){
+        client = context.client 
         cb()
     }
 }

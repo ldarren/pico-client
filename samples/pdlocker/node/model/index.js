@@ -1,4 +1,4 @@
-module.exports = [
+return [
     require('sql/hash'),
     require('sql/user'),
     require('sql/domain'),

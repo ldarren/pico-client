@@ -2,10 +2,12 @@ var READ = 'SELECT `id`, `k` FROM `hash`;';
 
 var
 sc =require('pico/obj'),
-KEYS, VALS
+KEYS, VALS,
+client
 
 module.exports = {
-    setup: function(client, cb){
+    setup: function(context, cb){
+        client=context.mainDB
         client.query(READ, function(err, result){
             if (err) return cb(err)
             KEYS = sc.keyValues(result, 'id', 'k')

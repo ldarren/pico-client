@@ -1,4 +1,5 @@
 var
+picoStr=require('pico/str'),
 Router = require('js/Router'),
 tpl = require('FormSignin.html')
 
@@ -47,8 +48,8 @@ return {
             
             this.deps.auth.create(null, {
                 data: {
-                    username: fe.username.value.trim(),
-                    password: this.hashStr(fe.password.value)
+                    un: fe.username.value.trim(),
+                    pwd: picoStr.hash(fe.password.value)
                 },
                 wait: true,
                 error: function(e){

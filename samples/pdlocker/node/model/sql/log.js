@@ -12,9 +12,8 @@ sc = require('pico/obj'),
 hash=require('sql/hash')
 
 module.exports= {
-    setup: function(client, hash, cb){
+    setup: function(client, cb){
         this.client = client 
-        this.hash = hash
         cb()
     }
 }

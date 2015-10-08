@@ -1,16 +1,15 @@
 [
     [
-        "lib/lean/lean.js"
     ],[
         "css/ratchet.css",
         "css/animation.css",
         "css/icon.css",
-        "lib/lean/lean.css",
         "css/main.css"
     ],[
         ["pageClass","text","content"],
         ["owner","models",{}],
-        ["user","models",{}],
+        ["user","models",{
+        }],
         ["address","models",{}],
         ["domain","models",{}],
         ["post","models",{}],
@@ -23,7 +22,7 @@
                 "domain":{"post":"post"}
             }],
             ["pull","models",{
-                "list":"pdlocker/data/poll"
+                "list":"pdl/data/poll"
             }],
             ["freq","number",10000]
         ]],
@@ -60,9 +59,9 @@
                 ["FormSignin","view",[
                     ["owner","ref","owner"],
                     ["auth","models",{
-                        "create": "tr/user/signin"
+                        "create": "pdl/user/signin"
                     }],
-                    ["title","text","Personal Delivery Locker"]
+                    ["title","text","Beacon Platform"]
                 ]]
             ],{}
         ],
@@ -72,9 +71,9 @@
                 ["FormSignup","view",[
                     ["owner","ref","owner"],
                     ["auth","models",{
-                        "create": "tr/user/signup"
+                        "create": "pdl/user/signup"
                     }],
-                    ["title","text","Personal Delivery Locker"]
+                    ["title","text","Beacon Platform"]
                 ]]
             ],{}
         ]

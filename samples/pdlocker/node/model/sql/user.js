@@ -20,17 +20,18 @@ MAP_FIND_BY_TIME =      'SELECT `userId`, `k`, `v` FROM ?? WHERE `userId`=? AND 
 MAP_SET =               'INSERT INTO ?? (`userId`, `k`, `v`, `createdBy`) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v`=VALUES(`v`), `updatedBy`=VALUES(`createdBy`);',
 MAP_UNSET =             'UPDATE ?? SET `status`=0, `updatedBy`=? WHERE `id`=?;',
 
-LOCK_GET=               'SELECT `userId`, `lockId`, `k`, `v` FROM `userLock` WHERE `userId`=? AND `lockId`=? AND `k`=? AND `status`=1;',
-LOCK_GET_LOCKS =        'SELECT `userId`, `lockId`, `k`, `v` FROM `userLock` WHERE `userId`=? AND `k`=? AND `status`=1;',
-LOCK_GET_ALL =          'SELECT `userId`, `lockId`, `k`, `v` FROM `userLock` WHERE `userId`=? AND `status`=1;',
-LOCK_GET_BY_REF =       'SELECT `userId`, `lockId`, `k`, `v` FROM `userLock` WHERE `lockId`=? AND `k`=? AND `status`=1;',
-LOCK_FIND_BY_TIME =     'SELECT `userId`, `lockId`, `k`, `v` FROM `userLock` WHERE `userId`=? AND `updatedAt` > ? AND `status`=1;',
-LOCK_SET =              'INSERT INTO `userLock` (`userId`, `lockId`, `k`, `v`, `createdBy`) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v`=VALUES(`v`),`updatedBy`=VALUES(`createdBy`),`status`=1;',
-LOCK_TOUCH =            'UPDATE `userLock` SET `updatedBy`=? WHERE `userId`=? AND `lockId`=? AND `k`=? AND `status`=1;',
-LOCK_UPDATE=            'UPDATE `userLock` SET `v`=?,`updatedBy`=? WHERE `userId`=? AND `lockId`=? AND `k`=? AND `status`=1;',
-LOCK_UNSET=             'UPDATE `userLock` SET `status`=0, `updatedBy`=? WHERE `userId`=? AND `lockId`=? AND `k`=?;',
-LOCK_UNSET_BY_USER =    'UPDATE `userLock` SET `status`=0, `updatedBy`=? WHERE `userId` IN (?);',
-LOCK_UNSET_BY_LOCK =    'UPDATE `userLock` SET `status`=0, `updatedBy`=? WHERE `lockId` IN (?);'
+REF1_GET=               'SELECT `userId`, `ref1Id`, `k`, `v` FROM `userRef1` WHERE `userId`=? AND `ref1Id`=? AND `k`=? AND `status`=1;',
+REF1_GET_REF1S =        'SELECT `userId`, `ref1Id`, `k`, `v` FROM `userRef1` WHERE `userId`=? AND `k`=? AND `status`=1;',
+REF1_GET_ALL =          'SELECT `userId`, `ref1Id`, `k`, `v` FROM `userRef1` WHERE `userId`=? AND `status`=1;',
+REF1_GET_BY_REF =       'SELECT `userId`, `ref1Id`, `k`, `v` FROM `userRef1` WHERE `ref1Id`=? AND `k`=? AND `status`=1;',
+REF1_FIND_BY_TIME =     'SELECT `userId`, `ref1Id`, `k`, `v` FROM `userRef1` WHERE `userId`=? AND `updatedAt` > ? AND `status`=1;',
+REF1_SET =              'INSERT INTO `userRef1` (`userId`, `ref1Id`, `k`, `v`, `createdBy`) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v`=VALUES(`v`),`updatedBy`=VALUES(`createdBy`),`status`=1;',
+REF1_TOUCH =            'UPDATE `userRef1` SET `updatedBy`=? WHERE `userId`=? AND `ref1Id`=? AND `k`=? AND `status`=1;',
+REF1_UPDATE=            'UPDATE `userRef1` SET `v`=?,`updatedBy`=? WHERE `userId`=? AND `ref1Id`=? AND `k`=? AND `status`=1;',
+REF1_UNSET=             'UPDATE `userRef1` SET `status`=0, `updatedBy`=? WHERE `userId`=? AND `ref1Id`=? AND `k`=?;',
+REF1_UNSETS=            'UPDATE `userRef1` SET `status`=0, `updatedBy`=? WHERE `userId`=? AND `ref1Id`=?;',
+REF1_UNSETSS=           'UPDATE `userRef1` SET `status`=0, `updatedBy`=? WHERE `userId` IN (?);',
+REF1_UNSET_BY_REF1 =    'UPDATE `userRef1` SET `status`=0, `updatedBy`=? WHERE `ref1Id` IN (?);'
 
 var
 sc=require('pico/obj'),
