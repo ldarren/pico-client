@@ -49,14 +49,13 @@ return{
                 cordova.plugins.Keyboard.close()
             }
             
-            be.textContent = 'Authenticating...'
+            be.textContent = 'Processing...'
             be.setAttribute('disabled','')
             
             this.deps.auth.create(null, {
                 data: {
                     un: fe.username.value.trim(),
                     pwd: picoStr.hash(pass),
-                    domain: fe.domain.value.toUpperCase(),
                     json: {name:fe.name.value.trim()}
                 },
                 wait: true,
