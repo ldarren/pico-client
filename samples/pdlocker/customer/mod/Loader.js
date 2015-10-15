@@ -16,7 +16,7 @@ return{
     className: 'modal-widget hidden',
     signals: ['invalidate'],
     deps:{
-        excludes:'list'
+        excludes:['list',[]]
     },
     create: function(deps){
         this.el.innerHTML=tpl()

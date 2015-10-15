@@ -37,17 +37,17 @@ specLoaded = function(err, spec, rawSpec, self){
     d = {},
     deps = self.deps || {}
 
-    // TODO: make sure always use default value when there is no valid value
     for(var i=0,keys=Object.keys(deps),s,k,v; k=keys[i]; i++){
         v=deps[k]
-        switch(Array.isArray(v)?v[0]:v){
+        v=Array.isArray(v) ? v : [v]
+        switch(v[0]){
         case REFS:
             d[k]=refs(k,spec,rawSpec)
             break
         default:
             s=findAll(k, spec)
             if (1 === s.length){ d[k]=s[0] }
-            else if (!s.length){ d[k]=null }
+            else if (!s.length){ d[k]=v[1] }
             else{ d[k] = s }
             break
         }
