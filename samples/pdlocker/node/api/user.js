@@ -24,7 +24,7 @@ module.exports= {
         if (!un) return next(session.error(400))
         sqlUser.findByUn(un, function(err, user){
             if (err) return next(session.error(500))
-            //if (user) return next(session.error(401))
+            //if (user) return next(session.error(403))
             models.set('user',{
                 un:un,
                 pwd:data.pwd,
@@ -33,7 +33,7 @@ module.exports= {
                 createdBy:0
             })
             session.addJob(models, ['user'], sqlUser.set, sqlUser)
-            session.setOutput('user', models)
+            session.setOutput(models.get('user'), sqlUser.clean, sqlUser)
             next()
         })
     },

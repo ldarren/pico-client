@@ -37,12 +37,6 @@ REF1_UNSET_BY_REF1 =    'UPDATE `userRef1` SET `status`=0, `updatedBy`=? WHERE `
 var
 sc=require('pico/obj'),
 hash=require('sql/hash'),
-removePrivate=function(model){
-    for(var i=0,k; k=PRIVATE[i]; i++){
-        delete model[k]
-    }
-    return model
-},
 setMapTxt=function(params, cb){
     if (!params.length) return cb()
     client.query(MAP_SET, [MAP,params], cb)
@@ -80,6 +74,12 @@ module.exports= {
         client=context.mainDB
         cb()
     },
+    clean:function(model){
+        for(var i=0,k; k=PRIVATE[i]; i++){
+            delete model[k]
+        }
+        return model
+    },
     verify: function(user){
         return hash.verify(Object.keys(user), INDEX)
     },
@@ -95,7 +95,7 @@ module.exports= {
             setMap(id, user, by, INDEX, function(err){
                 if (err) return cb(err)
                 user.id=id
-                return cb(null, removePrivate(user))
+                return cb(null, user)
             })
         })
     },
