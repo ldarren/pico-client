@@ -15,8 +15,8 @@ module.exports = {
             cb()
         })
     },
-    toKey: function(v){ return KEYS[v] },
-    toVal: function(k){ return VALS[k] },
+    key: function(v){ return KEYS[v] },
+    val: function(k){ return VALS[k] },
     keys: function(){ return KEYS },
     vals: function(){ return VALS },
     verify: function(keys, index){
