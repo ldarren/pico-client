@@ -35,7 +35,7 @@ REF1_UNSETSS=           'UPDATE `userRef1` SET `status`=0, `updatedBy`=? WHERE `
 REF1_UNSET_BY_REF1 =    'UPDATE `userRef1` SET `status`=0, `updatedBy`=? WHERE `ref1Id` IN (?);'
 
 var
-sc=require('pico/obj'),
+picoObj=require('pico/obj'),
 hash=require('sql/hash'),
 setMapTxt=function(params, cb){
     if (!params.length) return cb()
@@ -101,5 +101,16 @@ module.exports= {
     },
     findByUn: function(un, cb){
         client.query(FIND_BY_UN, [un], cb)
+    },
+    getMap: function(userId, cb){
+        client.query(MAP_GET,[MAP, userId], function(err, user){
+            if (err) return cb(err)
+console.log(userId, JSON.stringify(user))
+            client.query(MAP_GET, [MAP+'Int', userId], function(err, num){
+                if (err) return cb(err)
+console.log(userId, JSON.stringify(num))
+                cb(null, hash.replace(user, num))
+            })
+        })
     }
 }
