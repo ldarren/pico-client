@@ -6,6 +6,10 @@ function Stream(options){
 }           
             
 function init(self, url, withCredentials, events){
+    self.events=events
+    self.withCredentials=withCredentials
+    if (!url) return
+
     var trigger=function(e){
         var data
         try{ data=JSON.parse(e.data) }
@@ -13,7 +17,6 @@ function init(self, url, withCredentials, events){
         self.trigger(e.type, data, e.lastEventId)
     }
     self.sse=new EventSource(-1===url.indexOf('://')?network.getDomain(url)+url:url, {withCredentials:withCredentials})
-    self.sse.events=events
     self.sse.addEventListener('open', function(e){
         self.trigger(e.type)
     }, false)   
@@ -35,11 +38,17 @@ function init(self, url, withCredentials, events){
 _.extend(Stream.prototype, Backbone.Events,{
     reconnect:function(url,withCredentials,events){
         var s=this.sse
-        s.close()
-        init(this,url||s.url,withCredentials||s.withCredentials||events||s.events)
+        if (s){
+            s.close()
+            init(this,url||s.url,withCredentials||s.withCredentials||this.withCredentials,events||this.events)
+        }else{
+            init(this,url,withCredentials||this.withCredentials,events||this.events)
+        }
     },
     close:function(){
-        this.sse.close()
+        var s=this.sse
+        if (!s) return
+        s.close()
     }
 })
 

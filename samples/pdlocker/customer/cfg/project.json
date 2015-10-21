@@ -15,17 +15,16 @@
         ["post","models",{}],
         ["lock","models",{}],
         ["log","models",{}],
-        ["common/auth/DataSync","ctrl", [
+        ["DataStream","ctrl", [
             ["data","refs","models"],
             ["demux","map",{
                 "user":{"json":"address"},
                 "domain":{"post":"post"}
             }],
-            ["pull","models",{
-                "list":"pdl/data/poll"
-            }],
-            ["freq","number",10000]
-        ]],
+            ["pull","stream",{
+                "events":[]
+            }]
+        ],["common/auth/DataStream","DataStreamMixin"]],
         ["Header","view",[
             ["hide","number",0]
         ]],

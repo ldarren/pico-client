@@ -9,7 +9,6 @@ return {
     className: 'leftMenu hidden unclickable',
     signals:['invalidate','slide'],
     deps:{
-        users:'models',
         side:'text',
         menu:'list'
     },
@@ -19,25 +18,7 @@ return {
     },
     slots: {
         signin:function(from, sender, model){
-            var self=this
-            this.deps.users.retrieve([model.id],function(err, coll, raw){
-                if (err) return console.error(err)
-                var
-                u=coll.get(model.id),
-                meta
-
-                if (!u) return
-
-                meta=u.get('meta')
-                if('string'===typeof meta){
-                    try{meta=JSON.parse(u.get('meta'))}
-                    catch(exp){console.error(exp)}
-
-                    u.set('meta',meta)
-                }
-
-                self.el.innerHTML = tpl({menu:self.deps.menu, user:meta})
-            })
+            this.el.innerHTML = tpl({menu:this.deps.menu, user:model.attributes})
         },
         menu: function(from, sender, side){
             var options = null
