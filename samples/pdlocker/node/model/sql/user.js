@@ -105,10 +105,8 @@ module.exports= {
     getMap: function(userId, cb){
         client.query(MAP_GET,[MAP, userId], function(err, user){
             if (err) return cb(err)
-console.log(userId, JSON.stringify(user))
             client.query(MAP_GET, [MAP+'Int', userId], function(err, num){
                 if (err) return cb(err)
-console.log(userId, JSON.stringify(num))
                 cb(null, hash.replace(user, num))
             })
         })

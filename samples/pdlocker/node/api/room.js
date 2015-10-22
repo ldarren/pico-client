@@ -9,7 +9,7 @@ module.exports= {
     add: function(session, models, next){
         var user=models.get('user')
         if (!user || !user.id) return next()
-        pipes.push(res)
+        pipes.push(session.res)
         userIds.push(user.id)
         next()
     },
@@ -25,6 +25,7 @@ module.exports= {
         if (!user || !user.id) return next(null, 'room.404')
         var res=pipes[userIds.indexOf(user.id)]
         if (!res) return next(null, 'room.404')
+console.log('stream',JSON.stringify(session.getOutput()))
         res.write(JSON.stringify(session.getOutput()))
         next()
     },

@@ -64,8 +64,12 @@ session.log(JSON.stringify(user))
         console.log('signout',session.data)
         next(session.error(404))
     },
+    verify:function(session,models,next){
+        models.set('user', session.data)
+        next()
+    },
     poll:function(session,models,next){
-        console.log('poll')
-        next(session.error(404))
+        session.setOutput('hello SSE')
+        next()
     }
 }
