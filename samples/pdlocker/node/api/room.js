@@ -1,9 +1,11 @@
 var
+web,
 userIds=[],
 pipes=[]
 
 module.exports= {
     setup: function(context, next){
+        web=context.webServer
         next()
     },
     add: function(session, models, next){
@@ -26,7 +28,7 @@ module.exports= {
         var res=pipes[userIds.indexOf(user.id)]
         if (!res) return next(null, 'room.404')
 console.log('stream',JSON.stringify(session.getOutput()))
-        res.write(JSON.stringify(session.getOutput()))
+        web.SSE(res,JSON.stringify(session.getOutput()),'user')
         next()
     },
     broadcast: function(session, models, next){
