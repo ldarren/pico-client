@@ -1,7 +1,12 @@
 var
 web,
 userIds=[],
-pipes=[]
+pipes=[],
+remove=function(idx){
+    if (-1 === idx) return
+    pipes.splice(idx, 1)
+    userIds.splice(idx, 1)
+}
 
 module.exports= {
     setup: function(context, next){
@@ -11,15 +16,15 @@ module.exports= {
     add: function(session, models, next){
         var user=models.get('user')
         if (!user || !user.id) return next()
+        remove(userIds.indexOf(user.id))
         pipes.push(session.res)
         userIds.push(user.id)
+console.log('add room member, new count',pipes.length)
         next()
     },
     remove: function(session, models, next){
-        var idx=pipes.indexOf(session.res)
-        if (-1 === idx) return next()
-        pipes.splice(idx, 1)
-        userIds.splice(idx, 1)
+        remove(pipes.indexOf(session.res))
+console.log('remove room member, new count',pipes.length)
         next()
     },
     stream: function(session, models, next){

@@ -10,7 +10,7 @@ route=function(session,models,next){
     }       
 },
 help=function(session, models, next){
-    next(`api ${this.api} is not supported yet`)
+    next(`api ${this.api} is not supported by pdl yet`)
 },
 all= {
     setup: function(context, next){
@@ -19,11 +19,11 @@ all= {
         web=context.webServer
 
         sigslot.slot('', [help])
-        sigslot.slot('ERR/', [web.error])
+        sigslot.slot('ERR', [web.error])
         sigslot.slot('ERR/pdl/stream', [web.SSEStop])
-        sigslot.slot('ERR/web.dc',[room.remove])
-        sigslot.slot('END/', [web.render])
+        sigslot.slot('END', [web.render])
         sigslot.slot('room.404', [web.SSEStop])
+        sigslot.slot('web.dc',[room.remove])
         sigslot.slot('/pdl',[route,web.parse])
         sigslot.slot('/pdl/stream',[user.verify,user.poll,room.add,web.SSEStart,room.stream])
         sigslot.slot('pdl/user/signin', [user.signin,web.render])
