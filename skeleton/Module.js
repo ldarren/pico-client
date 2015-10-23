@@ -143,16 +143,9 @@ var View = Backbone.View.extend({
     },
     create: Ctrl.prototype.create,
     remove: function(){
-        if (this.__proto__.el){
-            // dun remove things not urs
-            this.$el.empty()
-            this.stopListening()
-            this.undelegateEvents()
-        }else{
-            Backbone.View.prototype.remove.apply(this, arguments)
-        }
-        if (this.style) this.style.remove()
         Ctrl.prototype.remove.call(this)
+        Backbone.View.prototype.remove.apply(this, arguments)
+        if (this.style) this.style.remove()
     },
     spawn: Ctrl.prototype.spawn,
     dump: function(mod){
