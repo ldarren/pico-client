@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html lang=en>
+<html lang=en class=mdl-js>
 <head>
 <meta charset=utf-8>
-<meta name=description content="PROJ_NAME">
-<meta name=viewport content=width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1>
+<meta name="description" content="control panel for personal delivery locker">
+<meta name=viewport content=width=device-width,initial-scale=1>
 <meta name=app-version content=0.0.1>
 <meta name=app-support-native content=1>
-<link rel="shortcut icon" href=data:;base64,iVBORw0KGgo=>
-<title>PROJ_NAME</title>
+<title>PDL Admin Panel</title>
 
 <!-- Add to homescreen for Chrome on Android -->
 <meta name="mobile-web-app-capable" content="yes">
@@ -16,7 +15,7 @@
 <!-- Add to homescreen for Safari on iOS -->
 <meta name=apple-mobile-web-app-capable content=yes>
 <meta name=apple-mobile-web-app-status-bar-style content=black>
-<meta name=apple-mobile-web-app-title content="PROJ_NAME">
+<meta name=apple-mobile-web-app-title content="PDEL Admin Panel">
 <link rel=apple-touch-icon-precomposed href="dat/ios-desktop.png">
 
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -28,8 +27,15 @@
 <!--
 <link rel="canonical" href="http://www.example.com/">
 -->
+
+<link rel="shortcut icon" href="dat/favicon.png">
+<link href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel=stylesheet href="//storage.googleapis.com/code.getmdl.io/1.0.1/material.teal-red.min.css" /><!--http://www.getmdl.io/customize/-->
 <link rel=stylesheet href=lib/lean/lean.css>
-<!--<script src="http://jsconsole.com/remote.js?AUNIQNAME"></script>-->
+<link rel=stylesheet href=css/styles.css>
+
+<!--<script src="http://jsconsole.com/remote.js?DARREN-DA"></script>-->
 <style>
 body{ background:white }
 .splash{
@@ -50,13 +56,14 @@ body{ background:white }
 </head>
 <body>
 
-<h1 class=splash>PROJ_NAME</h1>
+<h1 class=splash>PDL Admin Panel</h1>
 
 <script src=lib/underscore-min.js></script>
 <script src=lib/backbone-min.js></script>
 <script src=lib/backbone.native.min.js></script>
 <script src=lib/restyle.js></script>
 <script src=lib/lean/lean.js></script>
+<script src="//storage.googleapis.com/code.getmdl.io/1.0.1/material.min.js"></script>
 <script src=lib/pico.js></script>
 <script src=mod/main.js></script>
 </body>

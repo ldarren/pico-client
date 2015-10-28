@@ -1,5 +1,5 @@
 pico.run({
-    name: 'PROJ_ID',
+    name: 'admin',
     ajax: __.ajax,
     onLoad: __.onLoad,
     env:{

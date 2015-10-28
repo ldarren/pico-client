@@ -1,0 +1,27 @@
+[
+    [
+    ],[
+    ],[
+        ["html","file","frame.html"],
+        ["els","map",{"main":".mdl-grid.demo-content"}],
+        ["svg","view",[
+            ["defs","file","chart.svg"]
+        ]],
+        ["svg","view",[
+            ["defs","file","pie.svg"]
+        ]],
+        ["header","view",[]],
+        ["drawer","view",[]]
+    ],{
+        "*action":[
+            [
+                ["html","file","path/to/page/html"],
+                ["attributes","map",{
+                    "tagName":"div",
+                    "className":""
+                }]
+            ],{
+            }
+        ]
+    }
+]

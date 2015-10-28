@@ -1,12 +1,19 @@
 [
     [
     ],[
-        "css/main.css"
+        "css/styles.css"
     ],[
-        ['page','class','content']
+        ["html","file","path/to/frame/html"],
+        ["els","map",{"main":"#container_1"}]
     ],{
         "*action":[
             [
+                ["html","file","path/to/page/html"],
+                ["el","text","#id"],
+                ["attributes","map",{
+                    "tagName":"div",
+                    "className":""
+                }]
             ],{
             }
         ]
