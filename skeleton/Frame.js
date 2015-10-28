@@ -79,7 +79,7 @@ return Module.View.extend({
     create: function(deps, params){
         var el=this.el
 
-        el.innerHTML = deps.html()
+        el.innerHTML = deps.html
 
         var
         els=deps.els,

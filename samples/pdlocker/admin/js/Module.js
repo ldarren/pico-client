@@ -90,7 +90,7 @@ _.extend(Ctrl.prototype, Backbone.Events, {
         for(var i=0,s; s=spec[i]; i++){
             switch(s[ID]){
             case 'html':
-                this.el.innerHTML=s[VALUE]()
+                this.el.innerHTML=s[VALUE]
                 break
             case 'el':
                 this.setElement(s[VALUE])
