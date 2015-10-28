@@ -69,8 +69,8 @@ hideByIndex= function(self, i, host){
     return oldEl
 }
 
-function Ctrl(options, spec, params, host){
-    this.name = options.name
+function Ctrl(prop, spec, params, host){
+    this.name = prop.name
     this.host = host
     this.ancestor = Ctrl.prototype
     this.modules = []
@@ -88,6 +88,14 @@ _.extend(Ctrl.prototype, Backbone.Events, {
     create: function(deps, params){
         var spec = this.spec
         for(var i=0,s; s=spec[i]; i++){
+            switch(s[ID]){
+            case 'html':
+                this.el.innerHTML=s[VALUE]
+                break
+            case 'el':
+                this.setElement(s[VALUE])
+                break
+            }
             switch(s[TYPE]){
             case 'ctrl':
             case 'view':
@@ -103,12 +111,11 @@ _.extend(Ctrl.prototype, Backbone.Events, {
         this.dumpAll()
         specMgr.unload(this._rawSpec, this.spec)
     },
-    spawn: function(Mod, params, spec, hidden){
+    // ctrl can't spawn view
+    spawn: function(Mod, params, spec){
         if (!Mod || !Mod.spec) return
 
-        var
-        Class='ctrl'===Mod.type?Ctrl:View,
-        m = new (Class.extend(Mod.Class))(Mod, spec && spec.length ? Mod.spec.concat(spec) : Mod.spec, params, this, !hidden)
+        var m = new (Ctrl.extend(Mod.Class))(Mod, spec && spec.length ? Mod.spec.concat(spec) : Mod.spec, params, this)
 
         this.modules.push(m)
 
@@ -131,15 +138,15 @@ _.extend(Ctrl.prototype, Backbone.Events, {
 })
 
 var View = Backbone.View.extend({
-    initialize: function(options, spec, params, host, show){
+    initialize: function(options, prop, spec, params, host, show){
         this._elements = []
         this._show=show?[host.el,false]:null
 
-        Ctrl.call(this, options, spec, params, host)
+        Ctrl.call(this, prop, spec, params, host)
 
         this.ancestor = View.prototype
 
-        if (options.style) this.style = restyle(options.style, ['webkit'])
+        if (prop.style) this.style = restyle(prop.style, ['webkit'])
     },
     create: Ctrl.prototype.create,
     remove: function(){
@@ -147,7 +154,25 @@ var View = Backbone.View.extend({
         Backbone.View.prototype.remove.apply(this, arguments)
         if (this.style) this.style.remove()
     },
-    spawn: Ctrl.prototype.spawn,
+    // view can spawn ctrl and view
+    spawn: function(Mod, params, spec, hidden){
+        if (!Mod || !Mod.spec) return
+
+        if ('ctrl'===Mod.type) return Ctrl.prototype.spawn.call(this, Mod, params, spec)
+        var
+        s=spec && spec.length ? Mod.spec.concat(spec) : Mod.spec,
+        attr
+        for(var i=0,a; a=s[i]; i++){
+            if ('attributes'===a[ID]){
+                attr=a[VALUE]
+            }
+        }
+        var m = new (View.extend(Mod.Class))(attr, Mod, spec && spec.length ? Mod.spec.concat(spec) : Mod.spec, params, this, !hidden)
+
+        this.modules.push(m)
+
+        return m
+    },
     dump: function(mod){
         var i=Ctrl.prototype.dump.call(this,mod)
         if (i<0) return i

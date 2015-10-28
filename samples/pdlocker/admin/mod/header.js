@@ -1,5 +1,4 @@
-var
-tpl=require('header.html')
+var tpl=require('header.html')
 
 return {
     tagName:'header',

@@ -1,7 +1,7 @@
 var
 picoStr=require('pico/str'),
 Router = require('js/Router'),
-tpl = require('FormSignup.html')
+tpl = require('FormSignup.asp')
 
 return{
     tagName: 'div',

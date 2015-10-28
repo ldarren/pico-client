@@ -1,4 +1,4 @@
-var tpl= require('Void.html')
+var tpl= require('Void.asp')
 
 return{
     deps:{

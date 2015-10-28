@@ -1,6 +1,6 @@
 var 
 Router=require('js/Router'),
-tpl = require('Header.html')
+html= require('Header.html')
 
 return{
     tagName: 'header',
@@ -12,7 +12,7 @@ return{
         right: 'text'
     },
     create: function(deps){
-        this.el.innerHTML=tpl()
+        this.el.innerHTML=html
         this.signals.invalidate('main').send(this.host)
     },
     events: {

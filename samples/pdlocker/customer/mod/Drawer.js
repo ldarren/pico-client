@@ -1,5 +1,5 @@
 var
-tpl = require('Drawer.html'),
+tpl = require('Drawer.asp'),
 clickable = function(self){
     var cl = self.el.classList
     if (!cl.contains('hidden')) cl.remove('unclickable')

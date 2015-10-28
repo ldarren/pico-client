@@ -6,7 +6,6 @@
         "css/icon.css",
         "css/main.css"
     ],[
-        ["pageClass","text","content"],
         ["owner","models",{}],
         ["user","models",{
         }],
@@ -46,6 +45,7 @@
     ],{
         "*action":[
             [
+                ["attributes","map",{"className":"content"}],
                 ["HeaderSetup","ctrl",[
                     ["left","list",["menu"]],
                     ["title","text","Home"]
@@ -54,6 +54,7 @@
         ],
         "signin": [
             [
+                ["attributes","map",{"className":"content"}],
                 ["owner","ref","owner"],
                 ["FormSignin","view",[
                     ["owner","ref","owner"],
@@ -66,6 +67,7 @@
         ],
         "signup": [
             [
+                ["attributes","map",{"className":"content"}],
                 ["owner","ref","owner"],
                 ["FormSignup","view",[
                     ["owner","ref","owner"],

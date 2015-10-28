@@ -1,5 +1,5 @@
 var
-tpl = require('Loader.html'),
+html= require('Loader.html'),
 excluded = function(url, excludes){
     for(var e,i=0;e=excludes[i];i++)if(-1!==url.indexOf(e))return true;
     return false
@@ -19,7 +19,7 @@ return{
         excludes:['list',[]]
     },
     create: function(deps){
-        this.el.innerHTML=tpl()
+        this.el.innerHTML=html
 
         this.listenTo(Backbone, 'networkSend', onSend)
         this.listenTo(Backbone, 'networkRecv', onRecv)

@@ -6,7 +6,7 @@ pico.run({
         live:false
     },
     preprocessors:{
-        '.html':function(url,txt){ return _.template(txt) }
+        '.asp':function(url,txt){ return _.template(txt) }
     },
     paths:{
         '*': 'mod/',
