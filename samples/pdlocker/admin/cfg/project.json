@@ -29,11 +29,48 @@
             ["attributes","map",{
                 "className":"demo-drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50"
             }]
-        ]]
+        ]],
+        ["common/auth/NoSession","ctrl",[]]
     ],{
         "*action":[
             [
-                ["attributes","map",{ "className":"mdl-grid demo-content" }]
+                ["attributes","map",{ "className":"mdl-grid demo-content" }],
+                ["element","view",[
+                    ["html","file","linecharts.html"],
+                    ["log","text","linecharts"],
+                    ["attributes","map",{
+                        "className":"demo-graphs mdl-shadow--2dp mdl-color--white mdl-cell mdl-cell--8-col"
+                    }]
+                ]],
+                ["element","view",[
+                    ["html","file","piecharts.html"],
+                    ["log","text","piecharts"],
+                    ["attributes","map",{
+                        "className":"demo-charts mdl-color--white mdl-shadow--2dp mdl-cell mdl-cell--12-col mdl-grid"
+                    }]
+                ]],
+                ["element","view",[
+                    ["attributes","map",{
+                        "className":"demo-cards mdl-cell mdl-cell--4-col mdl-cell--8-col-tablet mdl-grid mdl-grid--no-spacing"
+                    }],
+                    ["element","view",[
+                        ["html","file","optionCard.html"],
+                        ["attributes","map",{
+                            "className":"demo-options mdl-card mdl-color--deep-purple-500 mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--3-col-tablet mdl-cell--12-col-desktop"
+                        }]
+                    ]],
+                    ["element","view",[
+                        ["attributes","map",{
+                            "className":"demo-separator mdl-cell--1-col"
+                        }]
+                    ]],
+                    ["element","view",[
+                        ["html","file","infoCard.html"],
+                        ["attributes","map",{
+                            "className":"demo-updates mdl-card mdl-shadow--2dp mdl-cell mdl-cell--4-col mdl-cell--4-col-tablet mdl-cell--12-col-desktop"
+                        }]
+                    ]]
+                ]]
             ],{
             }
         ]

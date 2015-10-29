@@ -8,9 +8,9 @@ return {
     },
     slots:{
         pageAdd: function(from, sender, page, isBack){
-            el.appendChild(page)
-            componentHandler.upgradeElement(page.el)
-            self.signals.pageAdded().send(self.host) 
+            this.el.appendChild(page)
+            componentHandler.upgradeDom()
+            this.signals.pageAdded().send(this.host) 
         },
         moduleAdd: function(from, sender, mod){
             if (document.querySelector('.mdl-layout__header') && document.querySelector('.mdl-layout__drawer')) componentHandler.upgradeDom()

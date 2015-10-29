@@ -43,7 +43,7 @@ changeRoute = function(path, params){
 
 return Module.View.extend({
     el: 'body',
-    signals:['changeRoute','frameAdded','pageAdd','moduleAdd'],
+    signals:['changeRoute','pageAdd','moduleAdd'],
     deps:{
         html:'file',
         els:['map', {main:'#container_1',secondary:'#container_2'}]
@@ -88,7 +88,6 @@ return Module.View.extend({
             case 'view': this.spawn(s[VALUE], params, null, true); break
             }
         }
-        this.signals.frameAdded().send()
     },
 
     render: function(){
