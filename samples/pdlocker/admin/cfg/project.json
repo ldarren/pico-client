@@ -15,19 +15,19 @@
             ["defs","file","pie.svg"]
         ]],
         ["element","view",[
-            ["html","file","drawer.html"],
-            ["container","text","frame"],
-            ["attributes","map",{
-                "className":"demo-drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50"
-            }]
-        ]],
-        ["element","view",[
             ["html","file","header.html"],
             ["container","text","frame"],
             ["first","bool",1],
             ["attributes","map",{
                 "tagName":"header",
                 "className":"demo-header mdl-layout__header mdl-color--white mdl-color--grey-100 mdl-color-text--grey-600"
+            }]
+        ]],
+        ["element","view",[
+            ["html","file","drawer.html"],
+            ["container","text","frame"],
+            ["attributes","map",{
+                "className":"demo-drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50"
             }]
         ]]
     ],{

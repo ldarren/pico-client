@@ -86,7 +86,6 @@ return Module.View.extend({
             switch(s[TYPE]){
             case 'ctrl':
             case 'view': this.spawn(s[VALUE], params, null, true); break
-                break
             }
         }
     },
