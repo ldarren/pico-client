@@ -12,8 +12,11 @@ return {
             componentHandler.upgradeDom()
             this.signals.pageAdded().send(this.host) 
         },
+        frameAdded: function(){
+            componentHandler.upgradeDom()
+        },
         moduleAdd: function(from, sender, mod){
-            if (document.querySelector('.mdl-layout__header') && document.querySelector('.mdl-layout__drawer')) componentHandler.upgradeDom()
+            //if (document.querySelector('.mdl-layout__header') && document.querySelector('.mdl-layout__drawer')) componentHandler.upgradeDom()
         }
     }
 }

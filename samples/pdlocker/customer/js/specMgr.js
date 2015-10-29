@@ -24,7 +24,7 @@ loadDeps = function(links, idx, klass, cb){
     })
 },
 load = function(host, params, spec, idx, deps, cb, userData){
-    if (spec.length <= idx) return cb(null, deps, spec, userData)
+    if (spec.length <= idx) return cb(null, deps, userData)
 
     var
     context = host ? host.spec : [],
@@ -35,7 +35,7 @@ load = function(host, params, spec, idx, deps, cb, userData){
     switch(t){
     case 'ref': //ID[id] TYPE[ref] VALUE[orgId]
         f = find(s[VALUE], context)
-		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, spec, userData)
+		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
         deps.push(create(s[ID], f[TYPE], f[VALUE]))
         break
     case 'refs': // ID[id] TYPE[refs] VALUE[orgType]
@@ -43,9 +43,9 @@ load = function(host, params, spec, idx, deps, cb, userData){
         break
     case 'model': // ID[id] TYPE[model/field] VALUE[models] EXTRA[paramId] EXTRA1[field name]
 		f = find(s[VALUE], context)
-		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, spec, userData)
+		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
 		var m = f[VALUE].get(params[s[EXTRA]])
-		if (!m || !m.get) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',params[s[EXTRA]]), deps, spec, userData)
+		if (!m || !m.get) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',params[s[EXTRA]]), deps, userData)
 		'field' === t ? deps.push(create(s[ID], t, m.get(s[EXTRA+1]))) : deps.push(create(s[ID], t, m)) 
 		break
     case 'models': // ID[id] TYPE[models] VALUE[options] EXTRA[default value]
@@ -53,15 +53,15 @@ load = function(host, params, spec, idx, deps, cb, userData){
         break
 	case 'fields': // ID[id] TYPE[fields] VALUE[models] EXTRA[filter] EXTRA1[field names]
 		f = find(s[VALUE], context)
-		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, spec, userData)
+		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
 		var m = s[EXTRA] ? new Model(f[VALUE].where(s[EXTRA])) : f[VALUE]
-		if (!m || !m.pluck) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',s[EXTRA]), deps, spec, userData)
+		if (!m || !m.pluck) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',s[EXTRA]), deps, userData)
 		deps.push(create(s[ID], t, m.pluck(s[EXTRA+1])))
 		break
     case 'ctrl':
     case 'view': // ID[id/path] TYPE[ctrl/view] VALUE[spec] EXTRA[path/path+mixins]
         loadDeps(s[EXTRA]||s[ID], 0, {}, function(err, klass){
-            if (err) return cb(err, deps, spec, userData)
+            if (err) return cb(err, deps, userData)
             f=s[ID]
             deps.push(create(f, t, {name:f, type:t, spec:s[VALUE], Class:klass}))
             load(host, params, spec, idx, deps, cb, userData)
@@ -69,7 +69,7 @@ load = function(host, params, spec, idx, deps, cb, userData){
         return
     case 'file': // ID[id] TYPE[file] VALUE[path]
         require(s[VALUE], function(err, mod){
-            if (err) return cb(err, deps, spec, userData)
+            if (err) return cb(err, deps, userData)
             deps.push(create(s[ID], t, mod))
             load(host, params, spec, idx, deps, cb, userData)
         })

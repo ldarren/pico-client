@@ -43,7 +43,7 @@ changeRoute = function(path, params){
 
 return Module.View.extend({
     el: 'body',
-    signals:['changeRoute','pageAdd','moduleAdd'],
+    signals:['changeRoute','frameAdded','pageAdd','moduleAdd'],
     deps:{
         html:'file',
         els:['map', {main:'#container_1',secondary:'#container_2'}]
@@ -82,12 +82,15 @@ return Module.View.extend({
         this.setElement(map['main'])
         this.els=map
 
+        var list=[]
         for(var i=0,spec=this.spec,s; s=spec[i]; i++){
             switch(s[TYPE]){
-            case 'ctrl':
-            case 'view': this.spawn(s[VALUE], params, null, true); break
+            case 'ctrl': this.spawn(s[VALUE], params); break
+            case 'view': list.push(s[VALUE]); break
             }
         }
+        var self=this
+        this.spawnAsync(list, params, true, function(){self.signals.frameAdded().send()})
     },
 
     render: function(){

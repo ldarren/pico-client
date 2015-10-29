@@ -19,12 +19,12 @@ refs=function(id,spec,rawSpec){
     }
     return ret
 },
-findAll = function(type, list){
+findAll = function(id, list){
     var arr = []
-    for(var i=0,o; o=list[i]; i++){ if (type === o[ID]) arr.push(o[VALUE]) }
+    for(var i=0,o; o=list[i]; i++){ if (id === o[ID]) arr.push(o[VALUE]) }
     return arr
 },
-specLoaded = function(err, spec, rawSpec, self){
+specLoaded = function(err, spec, self){
     if (self._removed) return self.remove()
     if (err){
         console.warn(err)
@@ -42,7 +42,7 @@ specLoaded = function(err, spec, rawSpec, self){
         v=Array.isArray(v) ? v : [v]
         switch(v[0]){
         case REFS:
-            d[k]=refs(k,spec,rawSpec)
+            d[k]=refs(k,spec,self._rawSpec)
             break
         default:
             s=findAll(k, spec)
@@ -56,6 +56,20 @@ specLoaded = function(err, spec, rawSpec, self){
     self.deps = d
     self.create(d)
     if (self._show) self.host.show(self, self._show[0], self._show[1])
+
+    if (self.host && self.host._spawnList){
+        var
+        h=self.host,
+        l=h._spawnList
+
+        var m=l.shift()
+        if (!l.length){
+            delete h._spawnList
+            if(m) m()
+            return
+        }
+        h.spawn(m, self._params, null, !self._show)
+    }
 },
 // dun remove mod here, mod may be removed
 hideByIndex= function(self, i, host){
@@ -75,6 +89,7 @@ function Ctrl(prop, spec, params, host){
     this.ancestor = Ctrl.prototype
     this.modules = []
     this._rawSpec = spec
+    this._params = params
     this._removed = false 
 
     this.signals = sigslot(this)
@@ -86,23 +101,20 @@ Ctrl.extend = Backbone.View.extend
 
 _.extend(Ctrl.prototype, Backbone.Events, {
     create: function(deps, params){
-        var spec = this.spec
+        var
+        spec = this.spec,
+        list=[]
         for(var i=0,s; s=spec[i]; i++){
             switch(s[ID]){
-            case 'html':
-                this.el.innerHTML=s[VALUE]
-                break
-            case 'el':
-                this.setElement(s[VALUE])
-                break
+            case 'html': this.el.innerHTML=s[VALUE]; break
+            case 'el': this.setElement(s[VALUE]); break
             }
             switch(s[TYPE]){
-            case 'ctrl':
-            case 'view':
-                this.spawn(s[VALUE], params)
-                break
+            case 'ctrl': this.spawn(s[VALUE], params); break
+            case 'view': list.push(s[VALUE]); break
             }
         }
+        this.spawnAsync(list, params, false, function(){})
     },
     remove: function(){
         this._removed = true 
@@ -165,6 +177,7 @@ var View = Backbone.View.extend({
         for(var i=0,a; a=s[i]; i++){
             if ('attributes'===a[ID]){
                 attr=a[VALUE]
+                break
             }
         }
         var m = new (View.extend(Mod.Class))(attr, Mod, spec && spec.length ? Mod.spec.concat(spec) : Mod.spec, params, this, !hidden)
@@ -172,6 +185,13 @@ var View = Backbone.View.extend({
         this.modules.push(m)
 
         return m
+    },
+    spawnAsync: function(Mods, params, hidden, cb){
+        if (!Mods.length) return cb()
+        var m=Mods.shift()
+        Mods.push(cb)
+        this._spawnList=Mods
+        this.spawn(m, params, null, hidden)
     },
     dump: function(mod){
         var i=Ctrl.prototype.dump.call(this,mod)
