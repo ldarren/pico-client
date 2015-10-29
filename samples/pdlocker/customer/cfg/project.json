@@ -7,8 +7,7 @@
         "css/main.css"
     ],[
         ["owner","models",{}],
-        ["user","models",{
-        }],
+        ["user","models",{}],
         ["address","models",{}],
         ["domain","models",{}],
         ["post","models",{}],
@@ -24,6 +23,10 @@
                 "events":[]
             }]
         ],["common/auth/DataStream","DataStreamMixin"]],
+        ["common/ui/lean","view",[
+            ["attributes","map",{"el":"body"}],
+            ["el","text","#container_1"]
+        ]],
         ["Header","view",[
             ["hide","number",0]
         ]],

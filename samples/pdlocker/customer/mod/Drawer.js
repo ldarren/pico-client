@@ -7,7 +7,7 @@ clickable = function(self){
 
 return {
     className: 'leftMenu hidden unclickable',
-    signals:['invalidate','slide'],
+    signals:['invalidate','pageSlide'],
     deps:{
         side:'text',
         menu:'list'
@@ -28,9 +28,9 @@ return {
                 options = {from:side, ref:this.el}
             }
             this.el.classList.remove('hidden')
-            this.signals.slide(options).send(this.host)
+            this.signals.pageSlide(options).send(this.host)
         },
-        mainTransited: function(from, sender, x, y){
+        pageSlided: function(from, sender, x, y){
             if (x){
                 this.delayId = setTimeout(clickable, 500, this)
             }else{

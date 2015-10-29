@@ -1,22 +1,21 @@
-<div class="mdl-layout__drawer-button"><i class="material-icons">menu</i></div>
 <div class="mdl-layout__header-row">
   <span class="mdl-layout-title">Home</span>
   <div class="mdl-layout-spacer"></div>
-  <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable is-upgraded" data-upgraded=",MaterialTextfield">
-    <label class="mdl-button mdl-js-button mdl-button--icon" for="search" data-upgraded=",MaterialButton">
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
+    <label class="mdl-button mdl-js-button mdl-button--icon" for="search">
       <i class="material-icons">search</i>
     </label>
     <div class="mdl-textfield__expandable-holder">
-      <input class="mdl-textfield__input" type="text" id="search">
+      <input class="mdl-textfield__input" type="text" id="search" />
       <label class="mdl-textfield__label" for="search">Enter your query...</label>
     </div>
   </div>
-  <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="hdrbtn" data-upgraded=",MaterialButton,MaterialRipple">
+  <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="hdrbtn">
     <i class="material-icons">more_vert</i>
-  <span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span></button>
-  <div class="mdl-menu__container is-upgraded"><div class="mdl-menu__outline mdl-menu--bottom-right"></div><ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right mdl-js-ripple-effect--ignore-events" for="hdrbtn" data-upgraded=",MaterialMenu,MaterialRipple">
-    <li class="mdl-menu__item mdl-js-ripple-effect" tabindex="-1" data-upgraded=",MaterialRipple">About<span class="mdl-menu__item-ripple-container"><span class="mdl-ripple"></span></span></li>
-    <li class="mdl-menu__item mdl-js-ripple-effect" tabindex="-1" data-upgraded=",MaterialRipple">Contact<span class="mdl-menu__item-ripple-container"><span class="mdl-ripple"></span></span></li>
-    <li class="mdl-menu__item mdl-js-ripple-effect" tabindex="-1" data-upgraded=",MaterialRipple">Legal information<span class="mdl-menu__item-ripple-container"><span class="mdl-ripple"></span></span></li>
-  </ul></div>
+  </button>
+  <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" for="hdrbtn">
+    <li class="mdl-menu__item">About</li>
+    <li class="mdl-menu__item">Contact</li>
+    <li class="mdl-menu__item">Legal information</li>
+  </ul>
 </div>

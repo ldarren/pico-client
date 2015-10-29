@@ -19,19 +19,10 @@ attachStyles = function(styles, cb){
         attachStyles(styles, cb)
     }
 },
-loadTemplate = function(path, cb){
-    if (!path) return cb(null, '<div id=container_1 class="__book __slider"></div><div id=container_2></div>')
-    require(path, cb)
-},
-transited = function(){
-    var el=this.el
-    this.signals.mainTransited(el.offsetLeft, el.offsetTop).send()
-},
-removeOldPage = function(){
+removeOldPage=function(){
     if (this.oldPage) this.dump(this.oldPage)
     this.oldPage = undefined
     var el=this.el
-    this.signals.mainTransited(el.offsetLeft, el.offsetTop).send()
 },
 changeRoute = function(path, params){
     var p = this.pages[path]
@@ -52,7 +43,7 @@ changeRoute = function(path, params){
 
 return Module.View.extend({
     el: 'body',
-    signals:['changeRoute', 'mainTransited'],
+    signals:['changeRoute','pageAdd','moduleAdd'],
     deps:{
         html:'file',
         els:['map', {main:'#container_1',secondary:'#container_2'}]
@@ -79,7 +70,7 @@ return Module.View.extend({
     create: function(deps, params){
         var el=this.el
 
-        el.innerHTML = deps.html
+        el.innerHTML = deps.html || '<div id=container_1 class="__book __slider"></div><div id=container_2></div>'
 
         var
         els=deps.els,
@@ -91,9 +82,6 @@ return Module.View.extend({
         this.setElement(map['main'])
         this.els=map
 
-        this.el.addEventListener('flipped', removeOldPage.bind(self), false)
-        this.el.addEventListener('transited', transited.bind(self), false)
-
         for(var i=0,spec=this.spec,s; s=spec[i]; i++){
             switch(s[TYPE]){
             case 'ctrl':
@@ -104,26 +92,23 @@ return Module.View.extend({
     },
 
     render: function(){
-        var el = this.el
-        el.style.cssText = ''
-        el.dispatchEvent(__.createEvent('flip', {page:this.currPage.render(),from:Router.instance.isBack() ? 'right' : 'left'}))
+        this.el.style.cssText = ''
+        this.signals.pageAdd(this.currPage.render(), Router.instance.isBack()).send()
     },
 
     slots: {
         invalidate: function(from, sender, where, first){
             if (!sender || -1 === this.modules.indexOf(sender)) return
 
-            var c=this.els[where||'main']
+            var c=this.els[where||'secondary']
             this.show(sender, c, first)
 
-            document.dispatchEvent(__.createEvent('__reset'))
+            this.signals.moduleAdd(sender).send()
         },
-        slide: function(from, sender, options){
-            this.el.dispatchEvent(__.createEvent('transit', options))
-        },
+        pageAdded:removeOldPage,
         modelReady: function(from, sender){
             if (!Backbone.History.started){
-                document.dispatchEvent(__.createEvent('__reset'))
+                this.signals.moduleAdd().send()
                 Backbone.history.start()
                 return true //  continue propagate
             }

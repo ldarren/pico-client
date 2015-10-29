@@ -3,23 +3,37 @@
     ],[
     ],[
         ["html","file","frame.html"],
-        ["els","map",{"main":".mdl-grid.demo-content"}],
+        ["els","map",{"main":"main.mdl-layout__content","frame":".demo-layout.mdl-layout.mdl-js-layout"}],
+        ["common/ui/mdl","view",[
+            ["attributes","map",{"el":"body"}],
+            ["el","text","main.mdl-layout__content"]
+        ]],
         ["svg","view",[
             ["defs","file","chart.svg"]
         ]],
         ["svg","view",[
             ["defs","file","pie.svg"]
         ]],
-        ["header","view",[]],
-        ["drawer","view",[]]
+        ["element","view",[
+            ["html","file","drawer.html"],
+            ["container","text","frame"],
+            ["attributes","map",{
+                "className":"demo-drawer mdl-layout__drawer mdl-color--blue-grey-900 mdl-color-text--blue-grey-50"
+            }]
+        ]],
+        ["element","view",[
+            ["html","file","header.html"],
+            ["container","text","frame"],
+            ["first","bool",1],
+            ["attributes","map",{
+                "tagName":"header",
+                "className":"demo-header mdl-layout__header mdl-color--white mdl-color--grey-100 mdl-color-text--grey-600"
+            }]
+        ]]
     ],{
         "*action":[
             [
-                ["html","file","path/to/page/html"],
-                ["attributes","map",{
-                    "tagName":"div",
-                    "className":""
-                }]
+                ["attributes","map",{ "className":"mdl-grid demo-content" }]
             ],{
             }
         ]

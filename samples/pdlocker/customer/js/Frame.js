@@ -19,15 +19,10 @@ attachStyles = function(styles, cb){
         attachStyles(styles, cb)
     }
 },
-transited = function(){
-    var el=this.el
-    this.signals.mainTransited(el.offsetLeft, el.offsetTop).send()
-},
-removeOldPage = function(){
+removeOldPage=function(){
     if (this.oldPage) this.dump(this.oldPage)
     this.oldPage = undefined
     var el=this.el
-    this.signals.mainTransited(el.offsetLeft, el.offsetTop).send()
 },
 changeRoute = function(path, params){
     var p = this.pages[path]
@@ -48,7 +43,7 @@ changeRoute = function(path, params){
 
 return Module.View.extend({
     el: 'body',
-    signals:['changeRoute', 'mainTransited'],
+    signals:['changeRoute','pageAdd','moduleAdd'],
     deps:{
         html:'file',
         els:['map', {main:'#container_1',secondary:'#container_2'}]
@@ -87,9 +82,6 @@ return Module.View.extend({
         this.setElement(map['main'])
         this.els=map
 
-        this.el.addEventListener('flipped', removeOldPage.bind(this), false)
-        this.el.addEventListener('transited', transited.bind(this), false)
-
         for(var i=0,spec=this.spec,s; s=spec[i]; i++){
             switch(s[TYPE]){
             case 'ctrl':
@@ -100,9 +92,8 @@ return Module.View.extend({
     },
 
     render: function(){
-        var el = this.el
-        el.style.cssText = ''
-        el.dispatchEvent(__.createEvent('flip', {page:this.currPage.render(),from:Router.instance.isBack() ? 'right' : 'left'}))
+        this.el.style.cssText = ''
+        this.signals.pageAdd(this.currPage.render(), Router.instance.isBack()).send()
     },
 
     slots: {
@@ -112,14 +103,12 @@ return Module.View.extend({
             var c=this.els[where||'secondary']
             this.show(sender, c, first)
 
-            document.dispatchEvent(__.createEvent('__reset'))
+            this.signals.moduleAdd().send()
         },
-        slide: function(from, sender, options){
-            this.el.dispatchEvent(__.createEvent('transit', options))
-        },
+        pageAdded:removeOldPage,
         modelReady: function(from, sender){
             if (!Backbone.History.started){
-                document.dispatchEvent(__.createEvent('__reset'))
+                this.signals.moduleAdd().send()
                 Backbone.history.start()
                 return true //  continue propagate
             }

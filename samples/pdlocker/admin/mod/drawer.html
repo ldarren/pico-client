@@ -3,15 +3,15 @@
   <div class="demo-avatar-dropdown">
     <span>hello@example.com</span>
     <div class="mdl-layout-spacer"></div>
-    <button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" data-upgraded=",MaterialButton,MaterialRipple">
+    <button id="accbtn" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
       <i class="material-icons" role="presentation">arrow_drop_down</i>
       <span class="visuallyhidden">Accounts</span>
-    <span class="mdl-button__ripple-container"><span class="mdl-ripple"></span></span></button>
-    <div class="mdl-menu__container is-upgraded"><div class="mdl-menu__outline mdl-menu--bottom-right"></div><ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect mdl-js-ripple-effect--ignore-events" for="accbtn" data-upgraded=",MaterialMenu,MaterialRipple">
-      <li class="mdl-menu__item mdl-js-ripple-effect" tabindex="-1" data-upgraded=",MaterialRipple">hello@example.com<span class="mdl-menu__item-ripple-container"><span class="mdl-ripple"></span></span></li>
-      <li class="mdl-menu__item mdl-js-ripple-effect" tabindex="-1" data-upgraded=",MaterialRipple">info@example.com<span class="mdl-menu__item-ripple-container"><span class="mdl-ripple"></span></span></li>
-      <li class="mdl-menu__item mdl-js-ripple-effect" tabindex="-1" data-upgraded=",MaterialRipple"><i class="material-icons">add</i>Add another account...<span class="mdl-menu__item-ripple-container"><span class="mdl-ripple"></span></span></li>
-    </ul></div>
+    </button>
+    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
+      <li class="mdl-menu__item">hello@example.com</li>
+      <li class="mdl-menu__item">info@example.com</li>
+      <li class="mdl-menu__item"><i class="material-icons">add</i>Add another account...</li>
+    </ul>
   </div>
 </header>
 <nav class="demo-navigation mdl-navigation mdl-color--blue-grey-800">
