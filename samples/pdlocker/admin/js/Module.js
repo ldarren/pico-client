@@ -65,7 +65,7 @@ specLoaded = function(err, spec, self){
         var m=l.shift()
         if (!l.length){
             delete h._spawnList
-            if(m) m()
+            if(m) m.call(h, null, self)
             return
         }
         h.spawn(m, self._params, null, !self._show)
@@ -191,7 +191,7 @@ var View = Backbone.View.extend({
         var m=Mods.shift()
         Mods.push(cb)
         this._spawnList=Mods
-        this.spawn(m, params, null, hidden)
+        return this.spawn(m, params, null, hidden)
     },
     dump: function(mod){
         var i=Ctrl.prototype.dump.call(this,mod)
