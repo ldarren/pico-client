@@ -5,71 +5,63 @@ picoObj=require('pico/obj')
 
 module.exports= {
     setup: function(context, next){
-        var
-        sigslot=context.sigslot,
-        web=context.webServer
-
         next()
     },
-    signin:function(session,models,next){
-        var
-        data=session.data,
-        un=data.un
+    signin:function(input,user,next){
+        var un=input.un
 
-        console.log('signin',session.data)
+this.log('signin',input)
 
-        if (!un) return next(session.error(400))
+        if (!un) return next(this.error(400))
 
-        sqlUser.findByUn(un, function(err, briefs){
-            if (err) return next(session.error(500))
-            if (!briefs || !briefs.length) return next(session.error(401))
+        sqlUser.findByUn(un, (err, briefs)=>{
+            if (err) return next(this.error(500))
+            if (!briefs || !briefs.length) return next(this.error(401))
             var b=briefs[0]
 
-            sqlUser.getMap(b.id, function(err, user){
-                if (err) return next(session.error(500))
-session.log(JSON.stringify(user))
-                if (data.pwd !== user.pwd) return next(session.error(401))
+            sqlUser.getMap(b.id, (err, map)=>{
+                if (err) return next(this.error(500))
+this.log(JSON.stringify(map))
+                if (input.pwd !== map.pwd) return next(this.error(401))
 
-                models.set('user',picoObj.extend(user,b))
-                session.setOutput(models.get('user'), sqlUser.clean, sqlUser)
+                Object.assign(user,map,b)
+                this.setOutput(user, sqlUser.clean, sqlUser)
                 next()
             })
         })
     },
-    signup:function(session,models,next){
-        var
-        data=session.data,
-        un=data.un
+    signup:function(input,user,next){
+        var un=input.un
 
-        console.log('signup',data)
+this.log('signup',input)
 
-        if (!un) return next(session.error(400))
+        if (!un) return next(this.error(400))
 
-        sqlUser.findByUn(un, function(err, user){
-            if (err) return next(session.error(500))
-            //if (user) return next(session.error(403))
-            models.set('user',{
+        sqlUser.findByUn(un, (err, user)=>{
+            if (err) return next(this.error(500))
+            //if (user) return next(this.error(403))
+            Object.assign(user,{
                 un:un,
-                pwd:data.pwd,
+                pwd:input.pwd,
                 sess:picoStr.rand(),
-                json:data.json,
+                json:input.json,
                 createdBy:0
             })
-            session.addJob(models, ['user'], sqlUser.set, sqlUser)
-            session.setOutput(models.get('user'), sqlUser.clean, sqlUser)
+            this.addJob([user], sqlUser.set, sqlUser)
+            this.setOutput(user, sqlUser.clean, sqlUser)
             next()
         })
     },
-    signout:function(session,models,next){
-        console.log('signout',session.data)
+    signout:function(input,users,next){
+        this.log('signout',input)
         next(session.error(404))
     },
-    verify:function(session,models,next){
-        models.set('user', session.data)
+    verify:function(input,next){
+        this.log('verify',input)
         next()
     },
-    poll:function(session,models,next){
-        session.setOutput('hello SSE')
+    poll:function(input,next){
+        this.setOutput('hello SSE')
         next()
     }
 }

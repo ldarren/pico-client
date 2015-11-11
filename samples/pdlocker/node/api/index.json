@@ -25,26 +25,26 @@
             ["room","remove"]
         ],
         "/pdl":[
-            ["util","route","req","res"],
-            ["web","parse","req","res","evt"]
+            ["util","route","req"],
+            ["web","parse","req","res"]
         ],
         "/pdl/stream":[
-            ["user","verify"],
+            ["user","verify","input"],
             ["user","poll"],
             ["room","add"],
             ["web","SSEStart"],
             ["room","stream"]
         ],
         "pdl/user/signin": [
-            ["user","signin"],
+            ["user","signin","input","users"],
             ["web","render","query","res"]
         ],
         "pdl/user/signup": [
-            ["user","signup"],
+            ["user","signup","input","users"],
             ["web","render","query","res"]
         ],
         "pdl/user/signout": [
-            ["user","signout"],
+            ["user","signout","input","users"],
             ["web","render","query","res"]
         ]
     }
