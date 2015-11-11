@@ -29,11 +29,11 @@
             ["web","parse","req","res"]
         ],
         "/pdl/stream":[
-            ["user","verify","input"],
-            ["user","poll"],
-            ["room","add"],
-            ["web","SSEStart"],
-            ["room","stream"]
+            ["user","verify","input","user"],
+            ["user","poll","input"],
+            ["room","add","res","user"],
+            ["web","SSEStart","req","res"],
+            ["room","stream","res","user"]
         ],
         "pdl/user/signin": [
             ["user","signin","input","users"],

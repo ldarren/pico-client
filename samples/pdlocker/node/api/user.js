@@ -56,7 +56,8 @@ this.log('signup',input)
         this.log('signout',input)
         next(session.error(404))
     },
-    verify:function(input,next){
+    verify:function(input,user,next){
+        Object.assign(user,input)
         this.log('verify',input)
         next()
     },

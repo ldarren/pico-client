@@ -26,34 +26,32 @@ module.exports= {
         pingCountdown()
         next()
     },
-    add: function(session, models, next){
-        var user=models.get('user')
+    add: function(res,user,next){
         if (!user || !user.id) return next()
         remove(userIds.indexOf(user.id))
-        pipes.push(session.res)
+        pipes.push(res)
         userIds.push(user.id)
-console.log('add room member, new count',pipes.length)
+this.log('add room member, new count',pipes.length)
         next()
     },
-    remove: function(session, models, next){
-        remove(pipes.indexOf(session.res))
-console.log('remove room member, new count',pipes.length)
+    remove: function(res, next){
+        remove(pipes.indexOf(res))
+this.log('remove room member, new count',pipes.length)
         next()
     },
-    stream: function(session, models, next){
-        var user=models.get('user')
+    stream: function(res, user, next){
         if (!user || !user.id) return next(null, 'room.404')
         var res=pipes[userIds.indexOf(user.id)]
         if (!res) return next(null, 'room.404')
-console.log('stream',JSON.stringify(session.getOutput()))
+this.log('stream',JSON.stringify(this.getOutput()))
 
         pingCountdown()
 
-        web.SSE(res,JSON.stringify(session.getOutput()),'user')
+        web.SSE(res,JSON.stringify(this.getOutput()),'user')
         next()
     },
     broadcast: function(session, models, next){
         pingCountdown()
-        next(session.error(404))
+        next(think.error(404))
     }
 }
