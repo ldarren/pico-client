@@ -10,19 +10,19 @@
             ["util","help"]
         ],
         "ERR": [
-            ["web","error","query","res","err"]
+            ["web","error","query","res","error"]
         ],
         "ERR/pdl/stream": [
-            ["web","SSEStop"]
+            ["web","SSEStop","res"]
         ],
         "END": [
             ["web","render","query","res"]
         ],
         "room.404": [
-            ["web","SSEStop"]
+            ["web","SSEStop","res"]
         ],
         "web.dc":[
-            ["room","remove"]
+            ["room","remove","res"]
         ],
         "/pdl":[
             ["util","route","req"],
