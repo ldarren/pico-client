@@ -106,16 +106,9 @@ Module= {
     addSpec: function(rawSpec, cb){
         this._rawSpec=(this._rawSpec||[]).concat(rawSpec)
         specMgr.load(this.host, [], rawSpec, function(err, spec, self){
-            if (err) return console.error(err)
+            if (err) return cb(err)
             self.spec=(self.spec||[]).concat(spec)
-            var list=[]
-            for(var i=0,s; s=spec[i]; i++){
-                switch(s[TYPE]){
-                case 'ctrl':
-                case 'view': list.push(s[VALUE]); break
-                }
-            }
-            self.spawnAsync(list, false, false, cb || dummyCB)
+            cb(null, spec)
         }, this)
     },
     remove: function(){

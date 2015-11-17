@@ -116,7 +116,7 @@ unload = function(rawSpec, spec){
     spec.length = 0
 }
 
-module.exports={
+return {
     load:function(host, params, spec, cb, userData){ load(host, params, spec, 0, [], cb, userData) },
     unload:unload,
     find:find,
