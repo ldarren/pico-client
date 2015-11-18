@@ -1,5 +1,4 @@
 var
-Router = require('js/Router'),
 storage = window.localStorage,
 status1 = {status:1},status0={status:0},merge1={merge:true},
 demultiplexer=function(name,models,raw,dmux){

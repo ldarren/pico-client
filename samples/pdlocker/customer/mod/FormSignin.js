@@ -18,7 +18,7 @@ return {
         this.el.innerHTML=tpl({title:deps.title})
 
         if(deps.owner.length){
-            Router.instance.home(true);
+            Router.home(true);
         }
         this.signals.noHeader().send(this.host)
     },

@@ -32,7 +32,7 @@ uncache = function(){
     // signout
     this.stopListening(u, 'add', userAdded)
     this.listenTo(u, 'add', userAdded)
-    if (-1 === ap.indexOf(Router.instance.currPath())) Router.instance.go(ap[0])
+    if (-1 === ap.indexOf(Router.currPath())) Router.go(ap[0])
 },      
 userAdded = function(model){
     var o = this.deps.owner
@@ -45,7 +45,7 @@ userReady = function(user){
 
     if (!this.userReadied || this.deps.owner.at(0).hasChanged(['id']))this.signals.userReady(user).dispatch()
 	this.userReadied= true
-    if (-1 !== this.deps.authPages.indexOf(Router.instance.currPath())) Router.instance.home(true)
+    if (-1 !== this.deps.authPages.indexOf(Router.currPath())) Router.home(true)
     if (!this.modelReadied)this.signals.modelReady().send()
     this.modelReadied= true
 },
@@ -89,7 +89,7 @@ return{
         changeRoute: function(from, sender, route){
             var ap = this.deps.authPages
             if (!ap.length) return
-            if (!this.deps.owner.length && -1 === ap.indexOf(route)) Router.instance.go(ap[0])
+            if (!this.deps.owner.length && -1 === ap.indexOf(route)) Router.go(ap[0])
         }
     }
 }

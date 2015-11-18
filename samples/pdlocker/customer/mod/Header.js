@@ -22,7 +22,7 @@ return{
                 this.signals.menu('left').send(this.host)
                 break
             case 'icon-back':
-                Router.instance.back()
+                Router.back()
                 break
             default:
                 this.signals.selectedMenu(e.currentTarget.id).send(this.host)

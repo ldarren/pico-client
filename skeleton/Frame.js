@@ -27,7 +27,7 @@ removeOldPage=function(){
 changeRoute = function(path, params){
     var p = this.pages[path]
 
-    if (!p) return Router.instance.home()
+    if (!p) return Router.home()
 
     if (this.oldPage) removeOldPage.call(this)
     this.oldPage = this.currPage
@@ -56,7 +56,7 @@ return Module.View.extend({
         network.create(e.channels, function(err){
             if (err) return console.error(err)
 
-            var r = new Router.Class(Object.keys(self.pages))
+            var r = new Router(Object.keys(self.pages))
             r.on('route', changeRoute, self)
 
             attachStyles(p[STYLES], function(){
@@ -95,7 +95,7 @@ return Module.View.extend({
 
     render: function(){
         this.el.style.cssText = ''
-        this.signals.pageAdd(this.currPage.render(), Router.instance.isBack()).send()
+        this.signals.pageAdd(this.currPage.render(), Router.isBack()).send()
     },
 
     slots: {

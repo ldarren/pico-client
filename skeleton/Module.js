@@ -29,7 +29,7 @@ specLoaded = function(err, spec, self){
     if (self._removed) return self.remove()
     if (err){
         console.warn(err)
-        return Router.instance.home()
+        return Router.home()
     }
 
     self.spec = spec
