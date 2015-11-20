@@ -1,5 +1,4 @@
 var
-common = require('common/native/common'),
 addListeners = function(self, lm){
     var d = new lm.Delegate
 
@@ -13,12 +12,12 @@ addListeners = function(self, lm){
             setup(self, lm)
             break
         }
-        self.signals.beaconChangeAuthorizationStatus(res.authorizationStatus).send()
+        self.signals.iBeacon_changeAuthorizationStatus(res.authorizationStatus).send()
     }
     d.didStartMonitoringForRegion = function(res){
         console.debug('didStartMonitoringForRegion: '+ JSON.stringify(res))
         var r = res.region
-        self.signals.beaconStartMonitoringForRegion(r.identifier,r.uuid,r.major,r.minor).send()
+        self.signals.iBeacon_startMonitoringForRegion(r.identifier,r.uuid,r.major,r.minor).send()
     }
     d.didDetermineStateForRegion = function(res){
         console.debug('didDetermineStateForRegion: '+ JSON.stringify(res))
@@ -36,17 +35,17 @@ addListeners = function(self, lm){
             stopScan.call(lm, getRegion(self.regions,uuid,major,minor))
             break
         }
-        self.signals.beaconDetermineStateForRegion(r.identifier,uuid,major,minor,res.state).send()
+        self.signals.iBeacon_determineStateForRegion(r.identifier,uuid,major,minor,res.state).send()
     }
     d.didEnterRegion = function(res){
         console.debug('didEnterRegion: '+ JSON.stringify(res))
         var r = res.region
-        self.signals.beaconEnterRegion(r.identifier,r.uuid,r.major,r.minor).send()
+        self.signals.iBeacon_enterRegion(r.identifier,r.uuid,r.major,r.minor).send()
     }
     d.didExitRegion = function(res){
         console.debug('didExitRegion: '+ JSON.stringify(res))
         var r = res.region
-        self.signals.beaconExitRegion(r.identifier,r.uuid,r.major,r.minor).send()
+        self.signals.iBeacon_exitRegion(r.identifier,r.uuid,r.major,r.minor).send()
     }
     d.didRangeBeaconsInRegion = function(res){
         console.debug('didRangeBeaconsInRegion: '+ JSON.stringify(res))
@@ -54,17 +53,17 @@ addListeners = function(self, lm){
         r = res.region,
         bs = res.beacons
         if (!bs.length) return
-        self.signals.beaconRangeBeaconsInRegion(r.identifier,r.uuid,r.major,r.minor,bs).send()
+        self.signals.iBeacon_rangeBeaconsInRegion(r.identifier,r.uuid,r.major,r.minor,bs).send()
     }
     // Event when advertising starts
     d.peripheralManagerDidStartAdvertising = function(res){
         console.debug('peripheralManagerDidStartAdvertising: '+ JSON.stringify(res))
-        self.signals.beaconStartAdvertising(res.error,res.state).send()
+        self.signals.iBeacon_startAdvertising(res.error,res.state).send()
     }
     // Event when bluetooth transmission state changes
     d.peripheralManagerDidUpdateState = function(res){
         console.debug('peripheralManagerDidUpdateState: '+ JSON.stringify(res.state))
-        self.signals.beaconUpdateState(res.state).send()
+        self.signals.iBeacon_updateState(res.state).send()
     }
     lm.setDelegate(d)
 },
@@ -161,14 +160,14 @@ stopAdvertise = function(cb){
 
 return{
     signals: [
-        'beaconChangeAuthorizationStatus',
-        'beaconStartMonitoringForRegion',
-        'beaconDetermineStateForRegion',
-        'beaconRangeBeaconsInRegion',
-        'beaconEnterRegion',
-        'beaconExitRegion',
-        'beaconStartAdvertising',
-        'beaconUpdateState'],
+        'iBeacon_changeAuthorizationStatus',
+        'iBeacon_startMonitoringForRegion',
+        'iBeacon_determineStateForRegion',
+        'iBeacon_rangeBeaconsInRegion',
+        'iBeacon_enterRegion',
+        'iBeacon_exitRegion',
+        'iBeacon_startAdvertising',
+        'iBeacon_updateState'],
     deps: {
         daemonized:'bool',
         advertisement: 'map',
@@ -177,7 +176,7 @@ return{
     create: function(deps){
         var
         self = this,
-        lm = common.refChain(window, ['cordova', 'plugins', 'locationManager'])
+        lm = __.refChain(window, ['cordova', 'plugins', 'locationManager'])
 
         if (!lm) {
             this.slots = {}
@@ -221,10 +220,10 @@ return{
         Module.prototype.remove.call(this)
     },
     slots: {
-        beaconAddRegion: function(from, sender, id, uuid, major, minor){
+        iBeacon_addRegion: function(from, sender, id, uuid, major, minor){
             newRegion.call(this, id, uuid, major, minor)
         },
-        beaconRemoveRegion: function(from, sender, uuid, major, minor){
+        iBeacon_removeRegion: function(from, sender, uuid, major, minor){
             if (uuid){
                 stopScan.call(this.locationMgr, getRegion(this.regions,uuid,major,minor))
                 deleteRegion.call(this, uuid, major, minor)
@@ -241,7 +240,7 @@ return{
                 }
             }
         },
-        beaconStartScan: function(from, sender, keys){
+        iBeacon_startScan: function(from, sender, keys){
             var
             lm = this.locationMgr,
             rs = this.regions
@@ -258,7 +257,7 @@ return{
                 }
             }
         },
-        beaconStopScan: function(from, sender, keys){
+        iBeacon_stopScan: function(from, sender, keys){
             var
             lm = this.locationMgr,
             rs = this.regions
@@ -275,13 +274,13 @@ return{
                 }
             }
         },
-        beaconAdvertisement: function(from, sender, ads){
+        iBeacon_advertisement: function(from, sender, ads){
             startAdvertise.call(this, ads)
         },
-        beaconStartAdvertise: function(from, sender){
+        iBeacon_startAdvertise: function(from, sender){
             startAdvertise.call(this, this.deps.advertisement)
         },
-        beaconStopAdvertise: function(from, sender){
+        iBeacon_stopAdvertise: function(from, sender){
             stopAdvertise.call(this)
         }
     }
