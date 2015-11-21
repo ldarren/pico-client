@@ -48,3 +48,4 @@ Features
 * support circular dependencies
 * support javascript in file or embeded to html
 * similar to common.js or node.js
+* deployment script to app folder

@@ -81,6 +81,7 @@ return{
             this.myId = 0
 
             for(var i=0,data=this.deps.data,keys=Object.keys(data),k; k=keys[i]; i++){
+				if ('owner'===k)continue
                 data[k].reset()
             }
         },

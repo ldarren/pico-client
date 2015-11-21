@@ -4,6 +4,7 @@ disconnectAll=function(devices){
 }
 
 return{
+	signals:[ 'ble_scan', 'ble_connected', 'ble_disconnected', 'ble_notification' ],
     create: function(deps){
         if (!__.refChain(window, ['ble'])){
             this.slots={}
