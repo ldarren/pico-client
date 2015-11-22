@@ -22,7 +22,7 @@ console.log('poll: '+this.myId)
     if (!userId) return
     this.writeSeen(userId, raw.seen)
     var
-    models=this.deps.data,
+    models=this.deps.models,
     dmux=this.deps.demux
     for(var i=0,data=raw.data,keys=Object.keys(data),k; k=keys[i]; i++){
         demultiplexer(k,models,data,dmux)
@@ -47,49 +47,56 @@ sortAsc = function(m1, m2){
 return{
     signals:[],
     deps:{
-        data:'refs',
+        models:'refs',
         demux:'map',
         pull:'stream'
     },
     create: function(deps){
-        for(var i=0,data=deps.data,keys=Object.keys(data),k; k=keys[i]; i++){
-            data[k].comparator=sortDesc
+        for(var i=0,models=deps.models,keys=Object.keys(models),k; k=keys[i]; i++){
+            models[k].comparator=sortDesc
         }
     },
 
     slots:{
         signin: function(from, sender, model){
             this.slots.signout.call(this, from, sender)
-            var userId = model.id
+            var
+			self=this,
+			userId = model.id
             this.myId = userId
             this.readSeen(userId)
 
-            this.listenTo(this.deps.pull, 'message', poll)
-            this.connect(this.deps.pull, model.attributes, this.seen)
+			this.readOwnerUserInfo(userId, function(err, user){
+				self.listenTo(self.deps.pull, 'message', poll)
+				self.connect(self.deps.pull, model.attributes, self.seen)
 
-            for(var i=0,data=this.deps.data,keys=Object.keys(data),k,d; k=keys[i]; i++){
-                this.readColl(k, userId)
-                d=data[k]
-                this.listenTo(d, 'add', writeData)
-                this.listenTo(d, 'remove', writeData)
-                this.listenTo(d, 'change', writeData)
-            }
+				for(var i=0,models=self.deps.models,keys=Object.keys(models),k,d; k=keys[i]; i++){
+					self.readColl(k, userId)
+					d=models[k]
+					self.listenTo(d, 'add', writeData)
+					self.listenTo(d, 'remove', writeData)
+					self.listenTo(d, 'change', writeData)
+				}
+			})
         },
         signout: function(from, sender){
             this.stopListening()
+			var userId=this.myId
+
+            for(var i=0,models=this.deps.models,keys=Object.keys(models),k; k=keys[i]; i++){
+				if ('owner'===k)continue
+				this.writeColl(k, userId)
+                models[k].reset()
+            }
+
             this.seen = 0
             this.myId = 0
-
-            for(var i=0,data=this.deps.data,keys=Object.keys(data),k; k=keys[i]; i++){
-				if ('owner'===k)continue
-                data[k].reset()
-            }
         },
         refreshCache: function(from, sender){
             var userId = this.myId
 
-            for(var i=0,data=this.deps.data,keys=Object.keys(data),k; k=keys[i]; i++){
-                data[k].reset()
+            for(var i=0,models=this.deps.models,keys=Object.keys(models),k; k=keys[i]; i++){
+                models[k].reset()
                 this.removeColl(k, userId)
             }
 
@@ -101,6 +108,14 @@ return{
     connect: function(stream, model){
         stream.reconnect()
     },
+
+	readOwnerUserInfo: function(userId, cb){
+		var users=this.deps.models.users
+		users.retrieve([userId], function(err, coll){
+			if (err) return cb(err)
+			cb(null, coll.get(userId))
+		})
+	},
 
     readSeen: function(userId){
         var seen=storage.getItem('seen'+userId)
@@ -116,7 +131,7 @@ return{
     },
 
     readColl: function(name, userId){
-        var coll = this[name]
+        var coll = this.deps.models[name]
         if (!userId || !coll) return
         try{
             console.log(storage.getItem(name+userId))
@@ -127,7 +142,7 @@ return{
     },
 
     writeColl: function(name, userId){
-        var coll = this[name]
+        var coll = this.deps.models[name]
         if (!userId || !coll || !coll.length) return
         storage.setItem(name+userId, JSON.stringify(coll.toJSON()))
     },

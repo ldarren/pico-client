@@ -9,7 +9,6 @@ return {
     signals:['noHeader'],
     deps:{
         owner:'models',
-        user:'models',
         auth:'models',
         title:'text'
     },
@@ -58,7 +57,6 @@ return {
                     be.textContent = 'Login'
                 },
                 success: function(user, raw){
-                    self.deps.user.add(raw)
                     self.deps.owner.add(raw)
                     be.textContent = 'Loading...'
                 }

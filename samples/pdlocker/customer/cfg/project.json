@@ -7,7 +7,7 @@
         "css/main.css"
     ],[
         ["owner","models",{}],
-        ["user","models",{}],
+        ["users","models",{}],
         ["address","models",{}],
         ["domain","models",{}],
         ["post","models",{}],
@@ -16,7 +16,7 @@
         ["DataStream","ctrl", [
             ["data","refs","models"],
             ["demux","map",{
-                "user":{"json":"address"},
+                "users":{"json":"address"},
                 "domain":{"post":"post"}
             }],
             ["pull","stream",{
@@ -33,7 +33,7 @@
         ["Drawer","view",[
             ["side","text","right"],
             ["menu","list",[
-                ["Users","icon-users","user"],
+                ["Users","icon-users","users"],
                 ["Domains","icon-group","domain"],
                 ["Locks","icon-lock","lock"],
                 ["Records","icon-chart","log"]
@@ -43,7 +43,7 @@
         ["common/native/ble","ctrl",[]],
         ["common/auth/Session","ctrl",[
             ["owner","ref","owner"],
-            ["users","ref","user"],
+            ["users","ref","users"],
             ["authPages","list",["signin","signup"]]
         ]]
     ],{
@@ -62,10 +62,8 @@
             [
                 ["attributes","map",{"className":"content"}],
                 ["owner","ref","owner"],
-                ["user","ref","user"],
                 ["FormSignin","view",[
                     ["owner","ref","owner"],
-                    ["user","ref","user"],
                     ["auth","models",{
                         "create": "pdl/user/signin"
                     }],
@@ -77,10 +75,8 @@
             [
                 ["attributes","map",{"className":"content"}],
                 ["owner","ref","owner"],
-                ["user","ref","user"],
                 ["FormSignup","view",[
                     ["owner","ref","owner"],
-                    ["user","ref","user"],
                     ["auth","models",{
                         "create": "pdl/user/signup"
                     }],
