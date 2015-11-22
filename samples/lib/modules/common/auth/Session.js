@@ -10,12 +10,12 @@ changed=function(model){
 cache = function(model, coll){
     changed.call(this, model)
 
+    this.signals.signin(model).dispatch()
+	this.userReadied = false
+
     var
     users = this.deps.users,
     user = users.get(model.id)
-
-    this.signals.signin(model).dispatch()
-	this.userReadied = false
 
     if (user) userReady.call(this, user)
     else this.listenTo(users, 'add', userAdded)

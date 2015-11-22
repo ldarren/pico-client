@@ -14,7 +14,7 @@
         ["lock","models",{}],
         ["log","models",{}],
         ["DataStream","ctrl", [
-            ["data","refs","models"],
+            ["models","refs","models"],
             ["demux","map",{
                 "users":{"json":"address"},
                 "domain":{"post":"post"}
@@ -54,7 +54,9 @@
                     ["left","list",["menu"]],
                     ["title","text","Home"]
                 ]],
+                ["owner","ref","owner"],
                 ["List","view",[
+                    ["owner","ref","owner"]
                 ]]
             ],{}
         ],
