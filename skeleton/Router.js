@@ -35,7 +35,7 @@ Router= Backbone.Router.extend({
     },
     home: function(replace){ Router.go('', replace) },
     add: function(paths){
-        for(var i=0,p; p=paths[i]; i++){
+        for(var i=paths.length-1,p; p=paths[i]; i--){
             context.route(p, p)
         }
     },

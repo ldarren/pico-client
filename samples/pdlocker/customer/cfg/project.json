@@ -47,19 +47,6 @@
             ["authPages","list",["signin","signup"]]
         ]]
     ],{
-        "*action":[
-            [
-                ["attributes","map",{"className":"content"}],
-                ["HeaderSetup","ctrl",[
-                    ["left","list",["menu"]],
-                    ["title","text","Home"]
-                ]],
-                ["owner","ref","owner"],
-                ["List","view",[
-                    ["owner","ref","owner"]
-                ]]
-            ],{}
-        ],
         "signin": [
             [
                 ["attributes","map",{"className":"content"}],
@@ -83,6 +70,19 @@
                         "create": "pdl/user/signup"
                     }],
                     ["title","text","Beacon Platform"]
+                ]]
+            ],{}
+        ],
+        "*action":[
+            [
+                ["attributes","map",{"className":"content"}],
+                ["HeaderSetup","ctrl",[
+                    ["left","list",["menu"]],
+                    ["title","text","Home"]
+                ]],
+                ["owner","ref","owner"],
+                ["List","view",[
+                    ["owner","ref","owner"]
                 ]]
             ],{}
         ]
