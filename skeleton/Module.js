@@ -97,7 +97,7 @@ Module= {
             case 'el': this.setElement(s[VALUE]); break
             }
             switch(s[TYPE]){
-            case 'ctrl':
+            case 'ctrl': this.spawn(s[VALUE], params); break
             case 'view': list.push(s[VALUE]); break
             }
         }
@@ -128,6 +128,7 @@ Module= {
 
         return m
     },
+    // if mixed ctrl and view in _spawnList, all view after ctrl become hidden
     spawnAsync: function(Mods, params, hidden, cb){
         if (!Mods.length) return cb()
         var m=Mods.shift()
