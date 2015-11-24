@@ -77,7 +77,7 @@ return{
             if (cb){
                 ble.write(deviceId, serviceId, charId, buffer, cb, cb)
             }else{
-                ble.writeWithResponse(deviceId, serviceId, charId, buffer)
+                ble.writeWithoutResponse(deviceId, serviceId, charId, buffer)
             }
         },
         ble_startNotification: function(from, sender, deviceId, serviceId, charId, cb){
