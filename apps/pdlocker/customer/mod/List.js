@@ -11,14 +11,17 @@ return{
         this.el.innerHTML=tpl
 	},
 	slots:{
-		ble_scan:function(from,sender,peripheral){
-			console.log(peripheral)
+		ble_scan:function(from,sender,error,peripheral){
+			console.log(error,peripheral)
             if ('AF131569'===peripheral.name){
                 this.signals.ble_connect(peripheral.id).send(sender)
             }
 		},
         ble_connected:function(from,sender,peripheral){
-            console.log
+            console.log('connected',peripheral)
+        },
+        ble_disconnected:function(from,sender,peripheral){
+            console.log('disconnected',peripheral)
         }
 	}
 }
