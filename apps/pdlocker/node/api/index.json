@@ -33,7 +33,7 @@
             ["user","poll","input"],
             ["room","add","res","user"],
             ["web","SSEStart","req","res"],
-            ["room","stream","res","user"]
+            ["room","stream",["poll"],"user"]
         ],
         "pdl/user/signin": [
             ["user","signin","input","users"],
