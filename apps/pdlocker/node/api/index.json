@@ -10,13 +10,13 @@
             ["util","help"]
         ],
         "ERR": [
-            ["web","error","query","res","error"]
+            [0]
         ],
         "ERR/pdl/stream": [
             ["web","SSEStop","res"]
         ],
         "END": [
-            ["web","render","query","res"]
+            [0]
         ],
         "room.404": [
             ["web","SSEStop","res"]
@@ -37,15 +37,15 @@
         ],
         "pdl/user/signin": [
             ["user","signin","input","users"],
-            ["web","render","query","res"]
+            [0]
         ],
         "pdl/user/signup": [
             ["user","signup","input","users"],
-            ["web","render","query","res"]
+            [0]
         ],
         "pdl/user/signout": [
             ["user","signout","input","users"],
-            ["web","render","query","res"]
+            [0]
         ]
     }
 }
