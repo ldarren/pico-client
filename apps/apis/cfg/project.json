@@ -1,0 +1,25 @@
+[
+    [
+    ],[
+    ],[
+        ["html","file","frame.html"],
+        ["els","map",{"main":"main.mdl-layout__content","frame":".mdl-layout.mdl-js-layout"}],
+        ["common/ui/mdl","view",[
+            ["el","text",""]
+        ]],
+        ["header","view",[
+            ["attributes","map",{ "tagName":"header", "className":"mdl-layout__header" }]
+        ]],
+        ["drawer","view",[
+            ["attributes","map",{ "className":"mdl-layout__drawer" }]
+        ]],
+        ["fab","view",[
+        ]]
+    ],{
+        "*action":[
+            [
+                ["attributes","map",{ "className":"page-content" }]
+            ],{}
+        ]
+    }
+]
