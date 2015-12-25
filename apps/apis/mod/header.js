@@ -1,18 +1,26 @@
 var
+HID='hidden',
 tpl=require('header.asp'),
 BUTTON='<button class="mdl-button mdl-js-button mdl-button--icon"><i class=material-icons>ICON</i></button>',
-addAction=function(container, action){
+addAction=function(self, container, action){
+    if ('search'===action.icon){
+        self.search.classList.remove(HID)
+        self.searchBtn.classList.remove(HID)
+        self.spacer.classList.add('mdl-cell--hide-tablet')
+        self.spacer.classList.add('mdl-cell--hide-desktop')
+        return
+    }
     var badge=document.createElement('div')
     badge.classList.add('mdl-badge')
     if (action.count)badge.setAttribute('data-badge',action.count)
     badge.innerHTML=BUTTON.replace('ICON',action.icon)
     container.appendChild(badge)
 },
-addActions=function(container, actions){
+addActions=function(self, container, actions){
     while (container.lastChild) container.removeChild(container.lastChild);
     if (!actions || !actions.length) return
     for(var i=0,a; a=actions[i]; i++){
-        addAction(container,a)
+        addAction(self, container,a)
     }
 }
 
@@ -26,15 +34,17 @@ return {
     create:function(deps){
         var el=this.el
 
-        if (deps.title) el.classList.remove('hidden')
+        if (deps.title) el.classList.remove(HID)
 
         el.innerHTML=tpl({title:deps.title||''})
         this.header=el.querySelector('.mdl-layout__header-row'),
         this.search=el.querySelector('.mdh-expandable-search')
-        this.searchIcon=el.querySelector('.mdh-toggle-search i.material-icons')
+        this.spacer=el.querySelector('.mdl-layout-spacer')
+        this.searchBtn=el.querySelector('.mdh-toggle-search')
+        this.searchIcon=this.searchBtn.querySelector('i.material-icons')
 
-        addActions(el.querySelector('.ldm-right-actions'), deps.right)
-        addActions(el.querySelector('.ldm-left-actions'), deps.left)
+        addActions(this, el.querySelector('.ldm-right-actions'), deps.right)
+        addActions(this, el.querySelector('.ldm-left-actions'), deps.left)
 
         this.signals.invalidate('frame',true).send(this.host)
     },
@@ -53,7 +63,7 @@ return {
                 icon.textContent='cancel'
 
                 for(var i=0; e=elements[i]; i++){
-                    e.classList.add('hidden')
+                    e.classList.add(HID)
                 }
 
                 this.header.style.paddingLeft='16px' // Remove margin that used to hold the menu button
@@ -64,7 +74,7 @@ return {
                 icon.textContent='search'
 
                 for(var i=0; e=elements[i]; i++){
-                    e.classList.remove('hidden')
+                    e.classList.remove(HID)
                 }
 
                 this.header.style.paddingLeft='' // Remove margin that used to hold the menu button
@@ -77,12 +87,17 @@ return {
         header: function(from, sender, title, right, left){
             var el=this.el
 
-            if (!title) return el.classList.add('hidden')
-            el.classList.remove('hidden')
+            if (!title) return el.classList.add(HID)
+            el.classList.remove(HID)
             el.querySelector('.mdl-layout-title').textContent=title
 
-            addActions(el.querySelector('.ldm-right-actions'), right)
-            addActions(el.querySelector('.ldm-left-actions'), left)
+            this.search.classList.add(HID)
+            this.searchBtn.classList.add(HID)
+            this.spacer.classList.remove('mdl-cell--hide-tablet')
+            this.spacer.classList.remove('mdl-cell--hide-desktop')
+
+            addActions(this, el.querySelector('.ldm-right-actions'), right)
+            addActions(this, el.querySelector('.ldm-left-actions'), left)
         }
     }
 }

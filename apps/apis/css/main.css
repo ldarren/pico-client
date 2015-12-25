@@ -4,6 +4,9 @@
 .hidden{
     display:none;
 }
+.ldm-left-actions, .ldm-right-actions{
+    display:flex
+}
 .mdh-expandable-search {
   margin: 0 50px;
   align-items: center;
