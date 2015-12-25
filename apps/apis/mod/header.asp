@@ -1,13 +1,27 @@
     <div class="mdl-layout__header-row">
-      <!-- Title -->
-      <span class="mdl-layout-title">Title</span>
-      <!-- Add spacer, to align navigation to the right -->
+
+      <span class=ldm-left-actions></span>
+
+      <span class="mdl-layout-title"><%=title%></span>
+
+      <!-- http://codepen.io/SeanBannister/pen/BNVvVQ -->
+      <!-- Displayed on Computer and Tablet -->
+      <!-- Search -->
+      <div class="mdh-expandable-search mdl-cell--hide-phone hidden">
+        <i class="material-icons">search</i>
+        <form action="#">
+          <input type="text" placeholder="Search" size="1">
+        </form>
+      </div>
+
+      <!-- Displayed on mobile -->
       <div class="mdl-layout-spacer"></div>
-      <!-- Navigation. We hide it in small screens. -->
-      <nav class="mdl-navigation mdl-layout--large-screen-only">
-        <a class="mdl-navigation__link" href="">Link</a>
-        <a class="mdl-navigation__link" href="">Link</a>
-        <a class="mdl-navigation__link" href="">Link</a>
-        <a class="mdl-navigation__link" href="">Link</a>
-      </nav>
+
+      <!-- Search button -->
+      <button class="mdh-toggle-search mdl-button mdl-js-button mdl-button--icon mdl-cell--hide-tablet mdl-cell--hide-desktop hidden">
+        <i class="material-icons">search</i>
+      </button>
+
+      <span class=ldm-right-actions></span>
+
     </div>

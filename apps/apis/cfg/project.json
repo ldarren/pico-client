@@ -1,6 +1,7 @@
 [
     [
     ],[
+        "css/main.css"
     ],[
         ["html","file","frame.html"],
         ["els","map",{"main":"main.mdl-layout__content","frame":".mdl-layout.mdl-js-layout"}],
@@ -8,7 +9,10 @@
             ["el","text",""]
         ]],
         ["header","view",[
-            ["attributes","map",{ "tagName":"header", "className":"mdl-layout__header" }]
+            ["attributes","map",{ "tagName":"header", "className":"mdl-layout__header" }],
+            ["title","text","Home"],
+            ["left","list",[{"count":5,"icon":"notifications"}]],
+            ["right","list",[{"count":6,"icon":"chat_bubble"}]]
         ]],
         ["drawer","view",[
             ["attributes","map",{ "className":"mdl-layout__drawer" }]
