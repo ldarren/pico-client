@@ -19,29 +19,35 @@ attachStyles = function(styles, cb){
         attachStyles(styles, cb)
     }
 },
-transited = function(){
-    this.signals.mainTransited(this.main.offsetLeft, this.main.offsetTop).send()
-},
-removeOldPage = function(){
+removeOldPage=function(){
     if (this.oldPage) this.dump(this.oldPage)
     this.oldPage = undefined
-    this.signals.mainTransited(this.main.offsetLeft, this.main.offsetTop).send()
+    var el=this.el
 },
 changeRoute = function(path, params){
     var p = this.pages[path]
 
-    if (!p) return Router.instance.home()
+    if (!p) return Router.home()
 
     if (this.oldPage) removeOldPage.call(this)
     this.oldPage = this.currPage
-    this.currPage = this.spawn({name:path, spec:p[PSPEC], style:p[PSTYLE], Class:{}}, params, null, true)
+    this.currPage = this.spawn({
+        name:path,
+        spec:p[PSPEC],
+        style:p[PSTYLE],
+        Class:{},
+        }, params, null, true)
     this.render()
     this.signals.changeRoute(path, params).send()
 }
 
 return Module.View.extend({
     el: 'body',
-    signals:['changeRoute', 'mainTransited'],
+    signals:['changeRoute','frameAdded','pageAdd','moduleAdd'],
+    deps:{
+        html:'file',
+        els:['map', {main:'#container_1',secondary:'#container_2'}]
+    },
     initialize: function(p, e){
         var self = this
         
@@ -50,65 +56,61 @@ return Module.View.extend({
         network.create(e.channels, function(err){
             if (err) return console.error(err)
 
-            var r = new Router.Class(Object.keys(self.pages))
+            var r = new Router(Object.keys(self.pages))
             r.on('route', changeRoute, self)
 
             attachStyles(p[STYLES], function(){
-                self.el.innerHTML = '<div class="__book __slider"></div><div></div><div></div>'
                 attachDeps(p[DEPS], function(){
-
-                    var
-                    m = self.el.firstChild,
-                    s = m.nextElementSibling
-
-                    self.modal = s.nextElementSibling
-                    self.main = m
-                    self.secondary = s
-
-                    m.addEventListener('flipped', removeOldPage.bind(self), false)
-                    m.addEventListener('transited', transited.bind(self), false)
-
-                    Module.View.prototype.initialize.call(self, {name:'Frame'}, p[SPEC].concat([['env','map',e]]))
+                    Module.View.prototype.initialize.call(self, null, {name:'Frame'}, p[SPEC].concat([['env','map',e]]))
                 })
             })
         })
     },
 
     create: function(deps, params){
-        var spec = this.spec
-        for(var i=0,s; s=spec[i]; i++){
+        var el=this.el
+
+        el.innerHTML = deps.html || '<div id=container_1 class="__book __slider"></div><div id=container_2></div>'
+
+        var
+        els=deps.els,
+        map={}
+
+        for(var k in els){
+            map[k] = el.querySelector(els[k])
+        }
+        this.setElement(map['main'])
+        this.els=map
+
+        var list=[]
+        for(var i=0,spec=this.spec,s; s=spec[i]; i++){
             switch(s[TYPE]){
-            case 'ctrl':
-            case 'view':
-                this.spawn(s[VALUE], params, null, true)
-                break
+            case 'ctrl': this.spawn(s[VALUE], params); break
+            case 'view': list.push(s[VALUE]); break
             }
         }
+        var self=this
+        this.spawnAsync(list, params, true, function(){self.signals.frameAdded().send()})
     },
 
     render: function(){
-        var m = this.main
-        m.style.cssText = ''
-        m.dispatchEvent(__.createEvent('flip', {page:this.currPage.render(),from:Router.instance.isBack() ? 'right' : 'left'}))
+        this.el.style.cssText = ''
+        this.signals.pageAdd(this.currPage.render(), Router.isBack()).send()
     },
 
     slots: {
-        invalidate: function(from, sender, where){
+        invalidate: function(from, sender, where, first){
             if (!sender || -1 === this.modules.indexOf(sender)) return
-            switch(where){
-            case 'main': this.show(sender, this.main, true); break
-            case 'modal': this.show(sender, this.modal); break
-            default: this.show(sender, this.secondary); break
-            }
 
-            document.dispatchEvent(__.createEvent('__reset'))
+            var c=this.els[where||'secondary']
+            this.show(sender, c, first)
+
+            this.signals.moduleAdd(sender).send()
         },
-        slide: function(from, sender, options){
-            this.main.dispatchEvent(__.createEvent('transit', options))
-        },
+        pageAdded:removeOldPage,
         modelReady: function(from, sender){
             if (!Backbone.History.started){
-                document.dispatchEvent(__.createEvent('__reset'))
+                this.signals.moduleAdd().send()
                 Backbone.history.start()
                 return true //  continue propagate
             }

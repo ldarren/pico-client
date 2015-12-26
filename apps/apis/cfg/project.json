@@ -5,14 +5,12 @@
     ],[
         ["html","file","frame.html"],
         ["els","map",{"main":"main.mdl-layout__content","frame":".mdl-layout.mdl-js-layout"}],
+        ["common/auth/NoSession","ctrl",[]],
         ["common/ui/mdl","view",[
-            ["el","text",""]
+            ["el","text","main.mdl-layout__content"]
         ]],
         ["header","view",[
-            ["attributes","map",{ "tagName":"header", "className":"mdl-layout__header" }],
-            ["title","text","Home"],
-            ["left","list",[{"count":0,"icon":"notifications"}]],
-            ["right","list",[{"count":6,"icon":"chat_bubble"},{"count":6,"icon":"remove"}]]
+            ["attributes","map",{ "tagName":"header", "className":"mdl-layout__header" }]
         ]],
         ["drawer","view",[
             ["attributes","map",{ "className":"mdl-layout__drawer" }]
@@ -20,9 +18,24 @@
         ["fab","view",[
         ]]
     ],{
+        "signin":[
+            [
+                ["attributes","map",{ "className":"page-content" }],
+                ["pageHeader","ctrl",[
+                    ["title","text",""]
+                ]],
+                ["signin","view",[]]
+            ],{}
+        ],
         "*action":[
             [
-                ["attributes","map",{ "className":"page-content" }]
+                ["attributes","map",{ "className":"page-content" }],
+                ["pageHeader","ctrl",[
+                    ["title","text","Home"],
+                    ["left","list",[{"count":0,"icon":"notifications"}]],
+                    ["right","list",[{"count":6,"icon":"search"},{"count":6,"icon":"chat_bubble"}]]
+                ]],
+                ["home","view",[]]
             ],{}
         ]
     }

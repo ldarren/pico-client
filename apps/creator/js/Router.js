@@ -13,7 +13,16 @@ changeRoute = function(path){
         index = dirList.length-1
     }
 },
-inst = {
+// keep this instance clean, any method name used in route might crashed with routes defined in config
+Router= Backbone.Router.extend({
+    initialize: function(paths){
+        context = this
+        dirList = []
+        lastIndex = index = -1
+        this.on('route', changeRoute)
+        Router.add(paths)
+    }
+},{
     go: function(url, replace){
         window.setTimeout(function(){
             // BUG: android reverse the replace url
@@ -24,26 +33,14 @@ inst = {
     back: function(step){
         window.history.go(step || -1)
     },
-    home: function(replace){ inst.go('', replace) },
+    home: function(replace){ Router.go('', replace) },
+    add: function(paths){
+        for(var i=paths.length-1,p; p=paths[i]; i--){
+            context.route(p, p)
+        }
+    },
     currPath: function(){ return currPath },
     isBack: function(){ return index < lastIndex }
-}
+})
 
-Object.freeze(inst)
-
-// keep this instance clean, any method name used in route will be called
-module.exports={
-    Class: Backbone.Router.extend({
-        initialize: function(paths){
-            context = this
-            dirList = []
-            lastIndex = index = -1
-            this.on('route', changeRoute)
-            for(var i=0,p; p=paths[i]; i++){
-                context.route(p, p)
-            }
-        }
-    }),
-
-    instance: inst
-}
+return Router

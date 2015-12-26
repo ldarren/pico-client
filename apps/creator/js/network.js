@@ -29,14 +29,14 @@ Backbone.ajax = function(req){
     if (!req) return
     var
     api = req.url,
-    c = channel[getKey(api)],
+    c = channels[getKey(api)],
     reqData = req.data,
     onReceive = function(err, data){
         if (err) {
-            me.signal('error', [err])
+            Backbone.trigger('networkErr', err)
             return req.error(err)
         }
-        me.signal('recv', [api, data])
+        Backbone.trigger('networkRecv', null, api, data)
         return req.success(data, 'success')
     }
 
@@ -59,15 +59,15 @@ Backbone.ajax = function(req){
     }else{
         c.request(api, reqData, addon, onReceive)
     }
-    me.signal('send', [api])
+    Backbone.trigger('networkSend', null, api)
 }
 
-module.exports={
+return{
     create:function(domains,cb){
         if (!domains) return cb()
         directory=picoObj.extend(directory, domains)
         create(Object.keys(domains), domains, cb)
     },
     addon:function(){ addon = arguments[0] },
-    getDomain:function(url){ return directory[getKey(url)] }
+    getDomain:function(url){ return directory[getKey(url)] || {} }
 }

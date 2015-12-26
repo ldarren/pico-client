@@ -1,14 +1,35 @@
-var
-ID=0,TYPE=1,VALUE=2,EXTRA=3,
+var ID=0,TYPE=1,VALUE=2,EXTRA=3,
+REFS='refs',
 specMgr = require('js/specMgr'),
 Router = require('js/Router'),
 sigslot= require('js/sigslot'),
-specLoaded = function(err, spec, userData){
-    var self=userData[0]
+dummyCB=function(){},
+refs=function(id,spec,rawSpec){
+    var
+    ret={},
+    i,s,t
+    for(i=0; s=rawSpec[i]; i++){
+        if(REFS===s[TYPE] && id===s[ID]){
+            t=s[VALUE]
+            break
+        }
+    }
+    if (!t) return ret
+    for(i=0; s=spec[i]; i++){
+        if(t===s[TYPE]){ ret[s[EXTRA]||s[ID]]=s[VALUE] }
+    }
+    return ret
+},
+findAll = function(id, list){
+    var arr = []
+    for(var i=0,o; o=list[i]; i++){ if (id === o[ID]) arr.push(o[VALUE]) }
+    return arr
+},
+specLoaded = function(err, spec, self){
     if (self._removed) return self.remove()
     if (err){
         console.warn(err)
-        return Router.instance.home()
+        return Router.home()
     }
 
     self.spec = spec
@@ -17,42 +38,78 @@ specLoaded = function(err, spec, userData){
     d = {},
     deps = self.deps || {}
 
-    for(var i=0,s,k; s=spec[i]; i++){
-        k = s[ID]
-        if (deps[k]) d[k] = s[VALUE]
+    for(var i=0,keys=Object.keys(deps),s,k,v; k=keys[i]; i++){
+        v=deps[k]
+        v=Array.isArray(v) ? v : [v]
+        switch(v[0]){
+        case REFS:
+            d[k]=refs(k,spec,self._rawSpec)
+            break
+        default:
+            s=findAll(k, spec)
+            if (1 === s.length){ d[k]=s[0] }
+            else if (!s.length){ d[k]=v[1] }
+            else{ d[k] = s }
+            break
+        }
     }
 
     self.deps = d
     self.create(d)
-    if (userData[1]) self.host.show(self)
-}
 
-function Ctrl(options, spec, params, host, show){
-    this.name = options.name
-    this.host = host
-    this.ancestor = Ctrl.prototype
-    this.modules = []
-    this._rawSpec = spec
-    this._removed = false 
+    var h=self.host
 
-    this.signals = sigslot(this)
+    if (h){
+        if (self._show) h.show(self, self._show[0], self._show[1])
+        if (h._spawnList){
+            var
+            l=h._spawnList,
+            m=l.shift()
+            if (!l.length){
+                delete h._spawnList
+                if(m) m.call(h, null, self)
+                return
+            }
+            h.spawn(m, self._params, null, !self._show)
+        }
+    }
 
-    specMgr.load(host, params || [], spec, specLoaded, [this,show])
-}
+},
+// dun remove mod here, mod may be removed
+hideByIndex= function(self, i, host){
+    host = host || self.el
 
-Ctrl.extend = Backbone.View.extend
+    var oldEl = self._elements[i]
 
-_.extend(Ctrl.prototype, Backbone.Events, {
+    if (oldEl && host.contains(oldEl)){
+        host.removeChild(oldEl)
+    }
+    return oldEl
+},
+Module= {
     create: function(deps, params){
-        var spec = this.spec
+        var
+        spec = this.spec,
+        list=[]
         for(var i=0,s; s=spec[i]; i++){
+            switch(s[ID]){
+            case 'html': this.el.innerHTML=s[VALUE]; break
+            case 'el': this.setElement(s[VALUE]); break
+            }
             switch(s[TYPE]){
-            case 'ctrl':
-            case 'view':
-                this.spawn(s[VALUE], params)
-                break
+            case 'ctrl': this.spawn(s[VALUE], params); break
+            case 'view': list.push(s[VALUE]); break
             }
         }
+        this.spawnAsync(list, params, false, dummyCB)
+    },
+    addSpec: function(rawSpec, cb){
+        this._rawSpec=(this._rawSpec||[]).concat(rawSpec)
+        specMgr.load(this.host, [], rawSpec, function(err, spec, self){
+            if (err) return cb(err)
+            self.spec=(self.spec||[]).concat(spec)
+            cb(null, spec)
+        }, this)
     },
     remove: function(){
         this._removed = true 
@@ -61,16 +118,23 @@ _.extend(Ctrl.prototype, Backbone.Events, {
         this.dumpAll()
         specMgr.unload(this._rawSpec, this.spec)
     },
-    spawn: function(Mod, params, spec, hidden){
+    // ctrl can't spawn view
+    spawn: function(Mod, params, spec){
         if (!Mod || !Mod.spec) return
 
-        var
-        Class='ctrl'===Mod.type?Ctrl:View,
-        m = new (Class.extend(Mod.Class))(Mod, spec && spec.length ? Mod.spec.concat(spec) : Mod.spec, params, this, !hidden)
+        var m = new (Ctrl.extend(Mod.Class))(Mod, spec && spec.length ? Mod.spec.concat(spec) : Mod.spec, params, this)
 
         this.modules.push(m)
 
         return m
+    },
+    // if mixed ctrl and view in _spawnList, all view after ctrl become hidden
+    spawnAsync: function(Mods, params, hidden, cb){
+        if (!Mods.length) return cb()
+        var m=Mods.shift()
+        Mods.push(cb)
+        this._spawnList=Mods
+        return this.spawn(m, params, null, hidden)
     },
     dump: function(mod){
         if (!mod) return -1
@@ -86,42 +150,78 @@ _.extend(Ctrl.prototype, Backbone.Events, {
         }
     },
     slots:{}
-})
+}
 
-var View = Backbone.View.extend({
-    initialize: function(options, spec, params, host, show){
+function Ctrl(prop, rawSpec, params, host){
+    this.name = prop.name
+    this.host = host
+    this.ancestor = Ctrl.prototype
+    this.modules = []
+    this._rawSpec = rawSpec
+    this._params = params
+    this._removed = false 
+
+    this.signals = sigslot(this)
+
+    specMgr.load(host, params || [], rawSpec, specLoaded, this)
+}
+
+Ctrl.extend = Backbone.View.extend
+
+_.extend(Ctrl.prototype, Backbone.Events, Module)
+
+var View = Backbone.View.extend(_.extend(Module, {
+    initialize: function(options, prop, spec, params, host, show){
         this._elements = []
+        this._show=show?[host.el,false]:null
 
-        Ctrl.call(this, options, spec, params, host, show)
+        Ctrl.call(this, prop, spec, params, host)
 
         this.ancestor = View.prototype
 
-        if (options.style) this.style = restyle(options.style, ['webkit'])
+        if (prop.style) this.style = restyle(prop.style, ['webkit'])
     },
-    create: Ctrl.prototype.create,
     remove: function(){
-        if (this.__proto__.el){
-            // dun remove things not urs
-            this.$el.empty()
-            this.stopListening()
-            this.undelegateEvents()
-        }else{
-            Backbone.View.prototype.remove.apply(this, arguments)
-        }
-        if (this.style) this.style.remove()
         Ctrl.prototype.remove.call(this)
+        Backbone.View.prototype.remove.apply(this, arguments)
+        if (this.style) this.style.remove()
     },
-    spawn: Ctrl.prototype.spawn,
+    // view can spawn ctrl and view
+    spawn: function(Mod, params, spec, hidden){
+        if (!Mod || !Mod.spec) return
+
+        if ('ctrl'===Mod.type) return Ctrl.prototype.spawn.call(this, Mod, params, spec)
+
+        var
+        s=spec && spec.length ? Mod.spec.concat(spec) : Mod.spec,
+        attr
+
+        for(var i=0,a; a=s[i]; i++){
+            if ('attributes'===a[ID]){
+                attr=a[VALUE]
+                break
+            }
+        }
+
+        var m = new (View.extend(Mod.Class))(attr, Mod, s, params, this, !hidden)
+
+        this.modules.push(m)
+
+        return m
+    },
     dump: function(mod){
         var i=Ctrl.prototype.dump.call(this,mod)
         if (i<0) return i
-        this.hideByIndex(i)
+        hideByIndex(this, i)
         this._elements.splice(i, 1)
         return i
     },
-    dumpAll:Ctrl.prototype.dumpAll,
     show: function(mod, container, first){
+        if (!mod) return
         container = container || this.el
+        mod._show=[container, first]
+
+        if (!mod.spec) return mod.el
 
         var
         i = this.modules.indexOf(mod),
@@ -139,17 +239,8 @@ var View = Backbone.View.extend({
         return el
     },
     hide: function(mod, host){
-        return this.hideByIndex(this.modules.indexOf(mod),host)
-    },
-    hideByIndex: function(i, host){
-        host = host || this.el
-
-        var
-        oldEl = this._elements[i]
-        if (oldEl && host.contains(oldEl)){
-            host.removeChild(oldEl)
-        }
-        return oldEl
+        mod._show=null
+        return hideByIndex(this,this.modules.indexOf(mod),host)
     },
     render: function(){
         return this.el
@@ -158,7 +249,7 @@ var View = Backbone.View.extend({
         // seldom use, useful only after BB's setElement
         invalidate: this.show
     }
-})
+}))
 
 return {
     Ctrl:Ctrl,
