@@ -15,10 +15,14 @@ cache = function(model, coll){
 
     var
     users = this.deps.users,
-    user = users.get(model.id)
+    user=users.get(model.id),
+    brief=this.deps.owner.at(0)
 
-    if (user) userReady.call(this, user)
-    else this.listenTo(users, 'add', userAdded)
+    if (user) {
+        this.addUser(model.id, users, function(){}) // update in bg
+        return userReady.call(this, null, user)
+    }
+    this.addUser(model.id, users, userReady)
 },
 uncache = function(){
     this.signals.signout().send()
@@ -30,20 +34,13 @@ uncache = function(){
     ap = this.deps.authPages
 
     // signout
-    this.stopListening(u, 'add', userAdded)
-    this.listenTo(u, 'add', userAdded)
     if (-1 === ap.indexOf(Router.currPath())) Router.go(ap[0])
 },      
-userAdded = function(model){
-    var o = this.deps.owner
-    if (!o.length || model.id !== o.at(0).id) return
-    this.stopListening(this.deps.users, 'add', userAdded)
-    userReady.call(this, model)
-},
-userReady = function(user){
-    if (!user) return
+userReady = function(err, user){
+    if (err) return console.error(err)
+    if (!user) return console.error('owner not found')
 
-    if (!this.userReadied || this.deps.owner.at(0).hasChanged(['id']))this.signals.userReady(user).dispatch()
+    if (!this.userReadied || brief.hasChanged(['id'])) this.signals.userReady(user).dispatch()
 	this.userReadied= true
     if (-1 !== this.deps.authPages.indexOf(Router.currPath())) Router.home(true)
     if (!this.modelReadied)this.signals.modelReady().send()
@@ -91,5 +88,18 @@ return{
             if (!ap.length) return
             if (!this.deps.owner.length && -1 === ap.indexOf(route)) Router.go(ap[0])
         }
+    },
+    addUser: function(userId, users, cb){
+        if (!userId) return
+        users.add({id:userId})
+        var model=users.get(userId)
+        model.fetch({
+            success:function(model, raw, options){
+                cb.call(this, null, raw)
+            },
+            error:function(model, err, options){
+                cb.call(this, err)
+            }
+        })
     }
 }

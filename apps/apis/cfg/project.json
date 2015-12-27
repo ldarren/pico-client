@@ -5,7 +5,29 @@
     ],[
         ["html","file","frame.html"],
         ["els","map",{"main":"main.mdl-layout__content","frame":".mdl-layout.mdl-js-layout"}],
-        ["common/auth/NoSession","ctrl",[]],
+        ["owner","models",{
+            "create":"apis/acc/signup",
+            "read":"apis/acc/signin",
+            "update":"apis/acc/update",
+            "delete":"apis/acc/signout"
+        }],
+        ["accounts","models",{
+            "list":"apis/acc/search"
+        }],
+        ["apps","models",{
+            "list":"apis/app/search"
+        }],
+        ["common/auth/DataStream","ctrl",[
+            ["models","refs","models"],
+            ["demux","map",{
+            }],
+            ["pull","stream",{
+                "channel":"",
+                "path":"",
+                "events":[],
+                "withCredentials":false
+            }]
+        ]],
         ["common/ui/mdl","view",[
             ["el","text","main.mdl-layout__content"]
         ]],
@@ -16,6 +38,11 @@
             ["attributes","map",{ "className":"mdl-layout__drawer" }]
         ]],
         ["fab","view",[
+        ]],
+        ["common/auth/Session","ctrl",[
+            ["owner","ref","owner"],
+            ["users","ref","accounts"],
+            ["authPages","list",["signin","signup"]]
         ]]
     ],{
         "signin":[
@@ -24,7 +51,11 @@
                 ["pageHeader","ctrl",[
                     ["title","text",""]
                 ]],
-                ["signin","view",[]]
+                ["owner","ref","owner"],
+                ["accounts","ref","accounts"],
+                ["signin","view",[
+                    ["owner","ref","owner"]
+                ]]
             ],{}
         ],
         "*action":[

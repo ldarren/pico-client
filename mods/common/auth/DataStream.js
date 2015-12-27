@@ -3,17 +3,17 @@ storage = window.localStorage,
 status1 = {status:1},status0={status:0},merge1={merge:true},
 demultiplexer=function(name,models,raw,dmux){
     var
-    m=models[k],
-    r=raw[k],
-    d=demux[k]
+    m=models[name],
+    r=raw[name],
+    d=demux[name]
 
     addRemove(m, r) 
 
     if (!d) return
 
     for(var i=0,keys=Object.keys(d),k; k=keys[i]; i++){
-        if (!raw.k) continue
-        addRemove(models[d.k],raw.k)
+        if (!raw[k]) continue
+        addRemove(models[d[k]],raw[k])
     }
 },
 poll = function(raw){
@@ -61,23 +61,22 @@ return{
         signin: function(from, sender, model){
             this.slots.signout.call(this, from, sender)
             var
-			self=this,
+            pull=this.deps.pull,
 			userId = model.id
+
             this.myId = userId
             this.readSeen(userId)
 
-			this.readOwnerUserInfo(userId, function(err, user){
-				self.listenTo(self.deps.pull, 'message', poll)
-				self.connect(self.deps.pull, model.attributes, self.seen)
+            this.listenTo(pull, 'message', poll)
+            this.connect(pull, model.attributes, this.seen)
 
-				for(var i=0,models=self.deps.models,keys=Object.keys(models),k,d; k=keys[i]; i++){
-					self.readColl(k, userId)
-					d=models[k]
-					self.listenTo(d, 'add', writeData)
-					self.listenTo(d, 'remove', writeData)
-					self.listenTo(d, 'change', writeData)
-				}
-			})
+            for(var i=0,models=this.deps.models,keys=Object.keys(models),k,d; k=keys[i]; i++){
+                this.readColl(k, userId)
+                d=models[k]
+                this.listenTo(d, 'add', writeData)
+                this.listenTo(d, 'remove', writeData)
+                this.listenTo(d, 'change', writeData)
+            }
         },
         signout: function(from, sender){
             this.stopListening()
@@ -108,14 +107,6 @@ return{
     connect: function(stream, model){
         stream.reconnect()
     },
-
-	readOwnerUserInfo: function(userId, cb){
-		var users=this.deps.models.users
-		users.retrieve([userId], function(err, coll){
-			if (err) return cb(err)
-			cb(null, coll.get(userId))
-		})
-	},
 
     readSeen: function(userId){
         var seen=storage.getItem('seen'+userId)

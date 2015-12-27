@@ -15,11 +15,11 @@
     <div class="mdl-card__supporting-text">
     <form action="#">
         <div class="mdl-textfield mdl-js-textfield">
-            <input class="mdl-textfield__input" type="text" id="username" />
+            <input class="mdl-textfield__input" type="text" id="username" required />
             <label class="mdl-textfield__label" for="username">Username</label>
         </div>
         <div class="mdl-textfield mdl-js-textfield">
-            <input class="mdl-textfield__input" type="password" id="userpass" />
+            <input class="mdl-textfield__input" type="password" id="userpass" required />
             <label class="mdl-textfield__label" for="userpass">Password</label>
         </div>
     </form>
