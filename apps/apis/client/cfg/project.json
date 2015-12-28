@@ -6,16 +6,23 @@
         ["html","file","frame.html"],
         ["els","map",{"main":"main.mdl-layout__content","frame":".mdl-layout.mdl-js-layout"}],
         ["owner","models",{
-            "create":"apis/acc/signup",
-            "read":"apis/acc/signin",
-            "update":"apis/acc/update",
-            "delete":"apis/acc/signout"
+            "create":"apis/user/signup",
+            "read":"apis/user/signin",
+            "delete":"apis/user/signout"
         }],
         ["accounts","models",{
-            "list":"apis/acc/search"
+            "list":"apis/acc/list",
+            "create":"apis/acc/create",
+            "read":"apis/acc/read",
+            "update":"apis/acc/update",
+            "delete":"apis/acc/delete"
         }],
         ["apps","models",{
-            "list":"apis/app/search"
+            "list":"apis/app/search",
+            "create":"apis/app/install",
+            "read":"apis/app/rconfig",
+            "update":"apis/app/wconfig",
+            "delete":"apis/app/uninstall"
         }],
         ["common/auth/DataStream","ctrl",[
             ["models","refs","models"],
@@ -52,8 +59,19 @@
                     ["title","text",""]
                 ]],
                 ["owner","ref","owner"],
-                ["accounts","ref","accounts"],
                 ["signin","view",[
+                    ["owner","ref","owner"]
+                ]]
+            ],{}
+        ],
+        "signup":[
+            [
+                ["attributes","map",{ "className":"page-content" }],
+                ["pageHeader","ctrl",[
+                    ["title","text",""]
+                ]],
+                ["owner","ref","owner"],
+                ["signup","view",[
                     ["owner","ref","owner"]
                 ]]
             ],{}

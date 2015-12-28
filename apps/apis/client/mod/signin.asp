@@ -25,6 +25,7 @@
     </form>
     </div>
     <div class="mdl-card__actions mdl-card--border">
-        <button class="mdl-button mdl-button--colored mdl-js-button">Log in</button>
+        <button id=signin class="mdl-button mdl-button--colored mdl-js-button">Sign in</button>
+        <a id=signup href='#'>or, create a new account</a>
     </div>
 </div>
