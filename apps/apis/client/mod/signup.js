@@ -28,7 +28,7 @@ return {
                 data: {
                     un: els.username.value.trim(),
                     pwd: picoStr.hash(userpass),
-                    json: JSON.stringify({name:els.name.value, email:els.email.value})
+                    json: {name:els.name.value, email:els.email.value}
                 },
                 wait:true,
                 success:function(coll, raw){

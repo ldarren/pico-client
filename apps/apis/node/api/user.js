@@ -1,7 +1,7 @@
 var
-sqlUser=require('sql/user'),
 picoStr=require('pico/str'),
-picoObj=require('pico/obj')
+sqlUser=require('sql/user'),
+fsdbAcc=require('fsdb/account')
 
 module.exports= {
     setup: function(context, next){
@@ -37,19 +37,25 @@ this.log('signup',input)
 
         if (!un) return next(this.error(400))
 
-        sqlUser.findByUn(un, (err, users)=>{
-            if (err) return next(this.error(500))
-            if (users.length) return next(this.error(403))
-            var user={
-                un:un,
-                pwd:input.pwd,
-                sess:picoStr.rand(),
-                json:input.json,
-                createdBy:0
-            }
-            this.addJob([user], sqlUser.set, sqlUser)
-            this.setOutput(user, sqlUser.clean, sqlUser)
-            next()
+        var url=fsdbAcc.domain(un)
+
+        fsdbAcc.read(url, (err, data)=>{
+            if ('ENOENT'!==err.code) return next(this.error(403))
+            sqlUser.findByUn(un, (err, users)=>{
+                if (err) return next(this.error(500, err))
+                if (users.length) return next(this.error(403))
+                var user={
+                    un:un,
+                    pwd:input.pwd,
+                    sess:picoStr.rand(),
+                    json:input.json,
+                    createdBy:0
+                }
+                this.addJob([user], sqlUser.set, sqlUser)
+                this.addJob([url, input.json], fsdbAcc.create, fsdbAcc)
+                this.setOutput(user, sqlUser.clean, sqlUser)
+                next()
+            })
         })
     },
     signout:function(input,users,next){
