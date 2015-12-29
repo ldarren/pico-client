@@ -90,9 +90,9 @@ return{
         }
     },
     addUser: function(userId, users, cb){
-        users.add({id:userId})
         var model=new users.model
         model.fetch({
+            data:{},
             success:function(model, raw, options){
                 users.add(model)
                 cb.call(this, null, raw)
