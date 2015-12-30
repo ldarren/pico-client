@@ -56,6 +56,7 @@ specLoaded = function(err, spec, self){
 
     self.deps = d
     self.create(d)
+    self.signals.moduleAdd(self).send(self.host)
 
     var h=self.host
 
@@ -161,7 +162,7 @@ function Ctrl(prop, rawSpec, params, host){
     this._params = params
     this._removed = false 
 
-    this.signals = sigslot(this)
+    this.signals = sigslot(this, ['moduleAdd'])
 
     specMgr.load(host, params || [], rawSpec, specLoaded, this)
 }

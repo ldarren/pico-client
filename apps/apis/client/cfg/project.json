@@ -1,6 +1,9 @@
 [
     [
+        "//storage.googleapis.com/code.getmdl.io/1.0.6/material.min.js"
     ],[
+        "//storage.googleapis.com/code.getmdl.io/1.0.6/material.teal-cyan.min.css",
+        "//fonts.googleapis.com/icon?family=Material+Icons",
         "css/main.css"
     ],[
         ["html","file","frame.html"],
@@ -60,6 +63,7 @@
                 ]],
                 ["owner","ref","owner"],
                 ["signin","view",[
+                    ["attributes","map",{ "className":"mdl-card mdl-shadow--6dp" }],
                     ["owner","ref","owner"]
                 ]]
             ],{}
@@ -72,6 +76,7 @@
                 ]],
                 ["owner","ref","owner"],
                 ["signup","view",[
+                    ["attributes","map",{ "className":"mdl-card mdl-shadow--6dp" }],
                     ["owner","ref","owner"]
                 ]]
             ],{}

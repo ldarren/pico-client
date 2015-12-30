@@ -17,14 +17,16 @@ return {
         }, false)
     },
     slots:{
+        frameAdded: function(){
+        },
         pageAdd: function(from, sender, page, isBack){
             this.el.dispatchEvent(__.createEvent('flip', {page:page, from:isBack ? 'right' : 'left'}))
         },
-        pageSlide: function(from, sender, options){
-            this.el.dispatchEvent(__.createEvent('transit', options))
-        },
         moduleAdd: function(from, sender){
             document.dispatchEvent(__.createEvent('__reset'))
+        },
+        pageSlide: function(from, sender, options){
+            this.el.dispatchEvent(__.createEvent('transit', options))
         }
     }
 }

@@ -1,5 +1,5 @@
 return {
-    signals:['pageAdded','pageSlided'],
+    signals:['pageAdded'],
     deps:{
         el:'text'
     },
@@ -7,16 +7,19 @@ return {
         this.setElement(deps.el)
     },
     slots:{
+        frameAdded: function(){
+            componentHandler.upgradeDom()
+        },
         pageAdd: function(from, sender, page, isBack){
             this.el.appendChild(page)
             componentHandler.upgradeDom()
             this.signals.pageAdded().send(this.host) 
         },
-        frameAdded: function(){
+        moduleAdd: function(from, sender, mod){
+            if (!mod.el) return
             componentHandler.upgradeDom()
         },
-        moduleAdd: function(from, sender, mod){
-            //if (document.querySelector('.mdl-layout__header') && document.querySelector('.mdl-layout__drawer')) componentHandler.upgradeDom()
+        pageSlide: function(from, sender, options){
         }
     }
 }

@@ -43,7 +43,7 @@ changeRoute = function(path, params){
 
 return Module.View.extend({
     el: 'body',
-    signals:['changeRoute','frameAdded','pageAdd','moduleAdd'],
+    signals:['changeRoute','frameAdded','pageAdd'],
     deps:{
         html:'file',
         els:['map', {main:'#container_1',secondary:'#container_2'}]
@@ -104,13 +104,10 @@ return Module.View.extend({
 
             var c=this.els[where||'secondary']
             this.show(sender, c, first)
-
-            this.signals.moduleAdd(sender).send()
         },
         pageAdded:removeOldPage,
         modelReady: function(from, sender){
             if (!Backbone.History.started){
-                this.signals.moduleAdd().send()
                 Backbone.history.start()
                 return true //  continue propagate
             }

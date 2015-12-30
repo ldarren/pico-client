@@ -1,4 +1,5 @@
 var
+picoObj=require('pico/obj'),
 trigger = Backbone.Events.trigger,
 evts=[],
 schedule= (function(){
@@ -9,9 +10,9 @@ schedule= (function(){
             window.msRequestAnimationFrame     ||
             function(callback){ return window.setTimeout(callback, 50) }
 })(),   
-sigslot = function(self){
+sigslot = function(self, def){
     var
-    ss = self.signals || [],
+    ss = picoObj.extend(self.signals, def || [], {mergeArr:1}),
     signals = {}
     
     ss.forEach(function(evt){
