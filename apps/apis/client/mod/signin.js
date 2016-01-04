@@ -25,7 +25,7 @@ return {
             model.fetch({
                 data: {
                     un: els.username.value.trim(),
-                    passwd: picoStr.hash(els.userpass.value)
+                    pwd: picoStr.hash(els.userpass.value)
                 },
                 success:function(model, raw){
                     owner.add(model)

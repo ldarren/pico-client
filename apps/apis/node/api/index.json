@@ -46,6 +46,9 @@
         "apis/user/signout": [
             ["user","signout","input","users"],
             [0]
+        ],
+        "apis/acc/read": [
+            [0]
         ]
     }
 }

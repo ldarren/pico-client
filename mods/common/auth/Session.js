@@ -3,7 +3,7 @@ Router = require('js/Router'),
 network = require('js/network'),
 storage = window.localStorage,
 changed=function(model){
-    var cred = model.attributes
+    var cred = this.credential(model.attributes)
     network.addon([cred]) 
     storage.setItem('owner', JSON.stringify(cred))
 },
@@ -20,7 +20,7 @@ cache = function(model, coll){
 
     if (user) {
         this.addUser(model.id, users, function(){}) // update in bg
-        return userReady.call(this, null, user)
+        return userReady(null, user, this)
     }
     this.addUser(model.id, users, userReady)
 },
@@ -36,15 +36,15 @@ uncache = function(){
     // signout
     if (-1 === ap.indexOf(Router.currPath())) Router.go(ap[0])
 },      
-userReady = function(err, user){
+userReady = function(err, user, ctx){
     if (err) return console.error(err)
     if (!user) return console.error('owner not found')
 
-    if (!this.userReadied || brief.hasChanged(['id'])) this.signals.userReady(user).dispatch()
-	this.userReadied= true
-    if (-1 !== this.deps.authPages.indexOf(Router.currPath())) Router.home(true)
-    if (!this.modelReadied)this.signals.modelReady().send()
-    this.modelReadied= true
+    if (!ctx.userReadied || brief.hasChanged(['id'])) ctx.signals.userReady(user).dispatch()
+	ctx.userReadied= true
+    if (!ctx.modelReadied)ctx.signals.modelReady().send()
+    ctx.modelReadied= true
+    if (-1 !== ctx.deps.authPages.indexOf(Router.currPath())) Router.home(true)
 },
 onNetworkError= function(err){
     if (403 !== err.code){
@@ -84,21 +84,37 @@ return{
     },
     slots: {
         changeRoute: function(from, sender, route){
-            var ap = this.deps.authPages
+            var
+            d=this.deps,
+            ap = d.authPages
+
             if (!ap.length) return
-            if (!this.deps.owner.length && -1 === ap.indexOf(route)) Router.go(ap[0])
+
+            var notAuth=-1 === ap.indexOf(route)
+
+            if (d.owner.length){
+                if (!notAuth) Router.home()
+            }else{
+                if (notAuth) Router.go(ap[0])
+            }
         }
     },
+    credential: function(att){
+        return {id:att.id, sess:att.sess}
+    },
     addUser: function(userId, users, cb){
-        var model=new users.model
+        var
+        self=this,
+        model=new users.model
+
         model.fetch({
             data:{},
             success:function(model, raw, options){
                 users.add(model)
-                cb.call(this, null, raw)
+                cb(null, raw, self)
             },
             error:function(model, err, options){
-                cb.call(this, err)
+                cb(err)
             }
         })
     }

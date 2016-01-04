@@ -19,6 +19,7 @@ Router= Backbone.Router.extend({
         context = this
         dirList = []
         lastIndex = index = -1
+        currPath=window.location.hash.substr(1)
         this.on('route', changeRoute)
         Router.add(paths)
     }
