@@ -1,0 +1,26 @@
+[
+    [
+    ],[
+        "css/style.css"
+    ],[
+        ["greets","models",{
+            "create":"sirocco/greets/create"
+        }],
+        ["common/ui/no","view",[
+            ["el","text","#container_1"]
+        ]],
+        ["common/auth/NoSession","ctrl",[]]
+    ],{
+        "*action":[
+            [
+                ["attributes","map",{
+                    "className":"page"
+                }],
+                ["greets","ref","greets"],
+                ["Home","view",[
+                    ["greets","ref","greets"]
+                ]]
+            ]
+        ]
+    }
+]

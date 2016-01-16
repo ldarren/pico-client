@@ -1,0 +1,30 @@
+{
+    "deps":{
+        "util":"api/util",
+        "greets":"api/greets",
+        "web":["context","webServer"]
+    },
+    "routes":{
+        "": [
+            ["util","help"]
+        ],
+        "ERR": [
+            [0]
+        ],
+        "END": [
+            [0]
+        ],
+        "/sirocco":[
+            ["util","route","req","input"],
+            ["web","parse","req","res"]
+        ],
+        "sirocco/greets/create": [
+            ["greets","create","input"],
+            [0]
+        ],
+        "sirocco/greets/read": [
+            ["greets","read","input"],
+            [0]
+        ]
+    }
+}
