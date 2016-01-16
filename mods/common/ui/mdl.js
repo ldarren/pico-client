@@ -15,7 +15,7 @@ return {
             componentHandler.upgradeDom()
             this.signals.pageAdded().send(this.host) 
         },
-        moduleAdd: function(from, sender, mod){
+        moduleAdded: function(from, sender, mod){
             if (!mod.el) return
             componentHandler.upgradeDom()
         },

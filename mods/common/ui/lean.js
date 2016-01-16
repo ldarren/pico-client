@@ -22,7 +22,7 @@ return {
         pageAdd: function(from, sender, page, isBack){
             this.el.dispatchEvent(__.createEvent('flip', {page:page, from:isBack ? 'right' : 'left'}))
         },
-        moduleAdd: function(from, sender){
+        moduleAdded: function(from, sender){
             document.dispatchEvent(__.createEvent('__reset'))
         },
         pageSlide: function(from, sender, options){

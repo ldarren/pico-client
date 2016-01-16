@@ -1,0 +1,51 @@
+{
+    "deps":{
+        "util":"api/util",
+        "user":"api/user",
+        "room":"api/room",
+        "web":["context","webServer"]
+    },
+    "routes":{
+        "": [
+            ["util","help"]
+        ],
+        "ERR": [
+            [0]
+        ],
+        "ERR/lead/stream": [
+            ["web","SSEStop","res"]
+        ],
+        "END": [
+            [0]
+        ],
+        "room.404": [
+            ["web","SSEStop","res"]
+        ],
+        "web.dc":[
+            ["room","remove","res"]
+        ],
+        "/lead":[
+            ["util","route","req"],
+            ["web","parse","req","res"]
+        ],
+        "/lead/stream":[
+            ["user","verify","input","user"],
+            ["user","poll","input"],
+            ["room","add","res","user"],
+            ["web","SSEStart","req","res"],
+            ["room","stream",["poll"],"user"]
+        ],
+        "lead/user/signin": [
+            ["user","signin","input","users"],
+            [0]
+        ],
+        "lead/user/signup": [
+            ["user","signup","input","users"],
+            [0]
+        ],
+        "lead/user/signout": [
+            ["user","signout","input","users"],
+            [0]
+        ]
+    }
+}
