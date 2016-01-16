@@ -80,11 +80,11 @@ return{
                 ble.writeWithoutResponse(deviceId, serviceId, charId, buffer)
             }
         },
-        ble_startNotification: function(from, sender, deviceId, serviceId, charId, cb){
+        ble_startNotification: function(from, sender, deviceId, serviceId, charId ){
             var
             self=this,
             d=this.devices[deviceId]
-            if (!d) return cb('No connection to device:'+deviceId)
+            if (!d) return console.error('No connection to device:'+deviceId)
             ble.startNotification(deviceId, serviceId, charId, function(buffer){
                 var s=d[serviceId]||[]
                 if (-1 === s.indexOf(charId)){
