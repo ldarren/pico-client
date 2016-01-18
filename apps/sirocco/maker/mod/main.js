@@ -13,7 +13,8 @@ pico.run({
         root: './',
         cfg: 'cfg/',
         js: 'js/',
-        json: 'json/'
+        json: 'json/',
+        dat: 'dat/',
     }
 },function(){
     require('js/Module') //preload
