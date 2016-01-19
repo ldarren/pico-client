@@ -1,10 +1,7 @@
 var
 crypto=pico.import('crypto'),
 redisGreets=require('redis/greets'),
-tpl=require('tpl/greet.html'),
-codechar=function(codes){
-    return String.fromCodePoint(...codes)
-}
+tpl=require('tpl/greet.html')
 
 return {
     setup: function(context, next){
@@ -29,8 +26,9 @@ return {
             catch(exp){return next(this.error(500))}
             if (!obj) return next(this.error(500))
             var
-            title=codechar(obj.title),
-            desc=codechar(obj.desc)
+            title=obj.title,//picoStr.nypu(obj.title),
+            desc=obj.desc//picoStr.nypu(obj.desc)
+
             this.setOutput(tpl.replace(/URL/g, obj.url).replace(/TITLE/g, title).replace(/DESC/g, desc).replace(/ID/g,id))
             next()
         })
