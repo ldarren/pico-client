@@ -2,25 +2,7 @@ var
 Router=require('js/Router'),
 tpl=require('Home.html'),
 svg=require('dat/placeholder.svg'),
-INTENT='whatsapp://send?text=http%3A%2F%2F107.20.154.29%3A4888%2Fsirocco%3Fid%3DLINK',
-charcode=function(txt){
-    var codes= []
-    for(var i=0,l=txt.length; i<l; i++){
-        codes.push(txt.codePointAt(i))
-    }
-    return codes
-},
-unicode=function(txt){
-    var
-    codes= '',
-    code
-    for(var i=0,l=txt.length; i<l; i++){
-        code=txt.charCodeAt(i)
-        if ((code > 0x7F && code < 0xD800) || (code >= 0xE000 && code < 0x10000)){ codes += '&#' + code + ';' }
-        else { codes += txt.charAt(i) }
-    }
-    return codes
-}
+INTENT='whatsapp://send?text=http%3A%2F%2F107.20.154.29%3A4888%2Fsirocco%3Fid%3DLINK'
 
 return {
     tagName:'form',
@@ -64,8 +46,8 @@ return {
         'click #submit':function(e){
             var data={
                 url:this.search.value,
-                title:charcode(this.title.value),
-                desc:charcode(this.desc.value)
+                title:this.title.value,//picoStr.puny(this.title.value),
+                desc:this.desc.value//picoStr.puny(this.desc.value)
             }
 
             if (!data.url || !data.title|| !data.desc) return alert('Write something')
