@@ -1,8 +1,9 @@
 var
 Router=require('js/Router'),
+network=require('js/network'),
 tpl=require('Home.html'),
 svg=require('dat/placeholder.svg'),
-INTENT='whatsapp://send?text=http%3A%2F%2F107.20.154.29%3A4888%2Fsirocco%3Fid%3DLINK'
+INTENT='whatsapp://send?text='
 
 return {
     tagName:'form',
@@ -14,6 +15,7 @@ return {
         greets:'models'
     },
     create:function(deps){
+        INTENT=INTENT+encodeURIComponent(network.getDomain('sirocco').url+'?id=LINK')
         this.el.innerHTML=tpl
         var
         el=this.el
@@ -37,7 +39,7 @@ return {
             if (13 !== e.keyCode || !text) return
             var a  = document.createElement('a')
             a.href = text
-            if (window.location.hostname === a.host){
+            if (location.host=== a.host){
                 Router.go('search?q='+text)
             }else{
                 this.img.src=text

@@ -10,6 +10,8 @@
 *.xlsx
 *~
 
+env.json
+
 lib-cov
 fontello-*/
 build/

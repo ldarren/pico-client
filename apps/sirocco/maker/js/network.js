@@ -1,6 +1,5 @@
 var
 web=require('pico/web'),
-picoObj=require('pico/obj'),
 channels = {}, directory={},
 addon,
 create = function(keys, domains, cb){
@@ -65,7 +64,7 @@ Backbone.ajax = function(req){
 return{
     create:function(domains,cb){
         if (!domains) return cb()
-        directory=picoObj.extend(directory, domains)
+        directory=Object.assign(directory, domains)
         create(Object.keys(domains), domains, cb)
     },
     addon:function(){ addon = arguments[0] },
