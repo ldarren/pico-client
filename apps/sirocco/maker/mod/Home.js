@@ -5,6 +5,10 @@ tpl=require('Home.html'),
 svg=require('dat/placeholder.svg'),
 INTENT='whatsapp://send?text='
 
+this.onLoad=function(){
+    INTENT=INTENT+encodeURIComponent(network.getDomain('sirocco').url+'?id=LINK')
+}
+
 return {
     tagName:'form',
     attributes:{
@@ -15,7 +19,6 @@ return {
         greets:'models'
     },
     create:function(deps){
-        INTENT=INTENT+encodeURIComponent(network.getDomain('sirocco').url+'?id=LINK')
         this.el.innerHTML=tpl
         var
         el=this.el
