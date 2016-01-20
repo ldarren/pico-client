@@ -56,7 +56,7 @@ specLoaded = function(err, spec, self){
 
     self.deps = d
     self.create(d)
-    self.signals.moduleAdd(self).send(self.host)
+    self.signals.moduleAdded(self).send(self.host)
 
     var h=self.host
 
@@ -162,7 +162,7 @@ function Ctrl(prop, rawSpec, params, host){
     this._params = params
     this._removed = false 
 
-    this.signals = sigslot(this, ['moduleAdd'])
+    this.signals = sigslot(this, ['moduleAdded'])
 
     specMgr.load(host, params || [], rawSpec, specLoaded, this)
 }
@@ -179,13 +179,10 @@ var View = Backbone.View.extend(_.extend(Module, {
         Ctrl.call(this, prop, spec, params, host)
 
         this.ancestor = View.prototype
-
-        if (prop.style) this.style = restyle(prop.style, ['webkit'])
     },
     remove: function(){
         Ctrl.prototype.remove.call(this)
         Backbone.View.prototype.remove.apply(this, arguments)
-        if (this.style) this.style.remove()
     },
     // view can spawn ctrl and view
     spawn: function(Mod, params, spec, hidden){

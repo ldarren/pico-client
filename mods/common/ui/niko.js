@@ -6,9 +6,14 @@ return{
     deps:{
         pageClass:'text',
         timeout:['int',1100]
-    }
+    },
     create: function(deps){
         document.addEventListener()
+    },
+    events:{
+        'animationstart': function(e){
+            console.log(e.animationName)
+        }
     }
   function ripple(elem, e) {
     $(".ripple").remove();

@@ -8,7 +8,7 @@
             "create":"sirocco/greets/create"
         }],
         ["common/ui/no","view",[
-            ["el","text","#container_1"]
+            ["el","text","#layer1"]
         ]],
         ["common/auth/NoSession","ctrl",[]]
     ],{

@@ -22,7 +22,7 @@
         ],["common/auth/DataStream","DataStreamMixin"]],
         ["common/ui/lean","view",[
             ["attributes","map",{"el":"body"}],
-            ["el","text","#container_1"]
+            ["el","text","#layer1"]
         ]],
         ["Header","view",[
             ["hide","number",0]

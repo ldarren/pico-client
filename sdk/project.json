@@ -4,7 +4,7 @@
         "css/styles.css"
     ],[
         ["html","file","path/to/frame/html"],
-        ["els","map",{"main":"#container_1"}]
+        ["els","map",{"main":"#layer1"}]
     ],{
         "*action":[
             [

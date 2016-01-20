@@ -1,6 +1,5 @@
 var
 DEPS=0,STYLES=1,SPEC=2,PAGES=3,
-PSPEC=0,PSTYLE=1,
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
 Router = require('js/Router'),
 Module = require('js/Module'),
@@ -11,13 +10,7 @@ attachDeps = function(deps, cb){
 },
 attachStyles = function(styles, cb){
     if (!styles || !styles.length) return cb()
-    var s = styles.shift()
-    if ('string' === typeof s) {
-        __.attachFile(s, 'css', function(){ attachStyles(styles, cb) })
-    }else{
-        restyle(s, ['webkit'])
-        attachStyles(styles, cb)
-    }
+    __.attachFile(styles.shift(), 'css', function(){ attachStyles(styles, cb) })
 },
 removeOldPage=function(){
     if (this.oldPage) this.dump(this.oldPage)
@@ -33,8 +26,7 @@ changeRoute = function(path, params){
     this.oldPage = this.currPage
     this.currPage = this.spawn({
         name:path,
-        spec:p[PSPEC],
-        style:p[PSTYLE],
+        spec:p[0], // TODO: support multiple pages
         Class:{},
         }, params, null, true)
     this.render()
@@ -46,14 +38,14 @@ return Module.View.extend({
     signals:['changeRoute','frameAdded','pageAdd'],
     deps:{
         html:'file',
-        els:['map', {main:'#container_1',secondary:'#container_2'}]
+        els:['map', {main:'body>div#layer1',secondary:'body>div#layer2'}]
     },
     initialize: function(p, e){
         var self = this
         
         this.pages = p[PAGES]
 
-        network.create(e.channels, function(err){
+        network.create(e.domains, function(err){
             if (err) return console.error(err)
 
             var r = new Router(Object.keys(self.pages))
@@ -70,7 +62,7 @@ return Module.View.extend({
     create: function(deps, params){
         var el=this.el
 
-        el.innerHTML = deps.html || '<div id=container_1 class="__book __slider"></div><div id=container_2></div>'
+        el.innerHTML = deps.html || '<div id=layer1></div><div id=layer2></div>'
 
         var
         els=deps.els,
@@ -109,7 +101,7 @@ return Module.View.extend({
         modelReady: function(from, sender){
             if (!Backbone.History.started){
                 Backbone.history.start()
-                return true //  continue propagate
+                return true //  continue propagation
             }
             return false
         }

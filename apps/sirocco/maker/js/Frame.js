@@ -38,14 +38,14 @@ return Module.View.extend({
     signals:['changeRoute','frameAdded','pageAdd'],
     deps:{
         html:'file',
-        els:['map', {main:'#container_1',secondary:'#container_2'}]
+        els:['map', {main:'body>div#layer1',secondary:'body>div#layer2'}]
     },
     initialize: function(p, e){
         var self = this
         
         this.pages = p[PAGES]
 
-        network.create(e.channels, function(err){
+        network.create(e.domains, function(err){
             if (err) return console.error(err)
 
             var r = new Router(Object.keys(self.pages))
@@ -62,7 +62,7 @@ return Module.View.extend({
     create: function(deps, params){
         var el=this.el
 
-        el.innerHTML = deps.html || '<div id=container_1 class="__book __slider"></div><div id=container_2></div>'
+        el.innerHTML = deps.html || '<div id=layer1></div><div id=layer2></div>'
 
         var
         els=deps.els,
@@ -90,12 +90,6 @@ return Module.View.extend({
         this.signals.pageAdd(this.currPage.render(), Router.isBack()).send()
     },
 
-    events:{
-        'animationstart': function(e){
-            console.log(e.animationName)
-        }
-    },
-
     slots: {
         invalidate: function(from, sender, where, first){
             if (!sender || -1 === this.modules.indexOf(sender)) return
@@ -107,7 +101,7 @@ return Module.View.extend({
         modelReady: function(from, sender){
             if (!Backbone.History.started){
                 Backbone.history.start()
-                return true //  continue propagate
+                return true //  continue propagation
             }
             return false
         }

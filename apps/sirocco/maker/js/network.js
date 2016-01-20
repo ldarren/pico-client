@@ -1,5 +1,6 @@
 var
 web=require('pico/web'),
+picoObj=require('pico/obj'),
 channels = {}, directory={},
 addon,
 create = function(keys, domains, cb){
