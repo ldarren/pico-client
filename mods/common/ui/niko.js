@@ -1,28 +1,45 @@
+var
+transit=function(self, ele){
+    var 
+    el=self.el,
+    elTop = ele.offsetTop,
+    elLeft = ele.offsetLeft,
+    x = el.pageX - elLeft,
+    y = el.pageY - elTop
+
+    el.setAttribute('style', 'top:'+y+';left:'+x)
+    el.classList.remove('hidden')
+},
+resize=function(self){
+}
+
 return{
-    deps:{
-        info:'map'
-    },
+    signals:['pageAdded'],
     className: 'ripple hidden',
     deps:{
+        info:'map',
         pageClass:'text',
         timeout:['int',1100]
     },
     create: function(deps){
-        document.addEventListener()
+        var self=this
+        document.addEventListener('click', function(e){
+            if (e.target.classList.contains('niko_transit')) transit(self, e.target)
+        }, true)
     },
     events:{
         'animationstart': function(e){
-            console.log(e.animationName)
+            if ('niko_resize'!==e.animationName) return
+            resize(this)
         }
+    },
+    slots:{
+        frameAdded: function(){},
+        pageAdd: function(from, sender, page, isBack){
+            this.el.appendChild(page)
+            this.signals.pageAdded().send(this.host)
+        },
+        moduleAdded: function(from, sender){},
+        pageSlide: function(from, sender, options){}
     }
-  function ripple(elem, e) {
-    $(".ripple").remove();
-    var elTop = elem.offset().top,
-        elLeft = elem.offset().left,
-        x = e.pageX - elLeft,
-        y = e.pageY - elTop;
-    var $ripple = $("<div class='ripple'></div>");
-    $ripple.css({top: y, left: x});
-    elem.append($ripple);
-  };
 }

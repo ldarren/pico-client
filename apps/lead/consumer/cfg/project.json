@@ -20,9 +20,8 @@
                 "events":[]
             }]
         ],["common/auth/DataStream","DataStreamMixin"]],
-        ["common/ui/lean","view",[
-            ["attributes","map",{"el":"body"}],
-            ["el","text","#layer1"]
+        ["common/ui/niko","view",[
+            ["attributes","map",{"el":"body>div#layer1"}]
         ]],
         ["Header","view",[
             ["hide","number",0]
@@ -36,7 +35,6 @@
                 ["Records","icon-chart","log"]
             ]]
         ]],
-        ["Loader","view",[]],
         ["common/native/ble","ctrl",[]],
         ["common/auth/Session","ctrl",[
             ["owner","ref","owner"],

@@ -8,15 +8,12 @@ return {
         console.log('no ui created')
     },
     slots:{
-        frameAdded: function(){
-        },
+        frameAdded: function(){},
         pageAdd: function(from, sender, page, isBack){
             this.el.appendChild(page)
             this.signals.pageAdded().send(this.host)
         },
-        moduleAdded: function(from, sender){
-        },
-        pageSlide: function(from, sender, options){
-        }
+        moduleAdded: function(from, sender){},
+        pageSlide: function(from, sender, options){}
     }
 }

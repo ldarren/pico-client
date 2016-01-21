@@ -4,6 +4,7 @@ Router = require('js/Router'),
 tpl = require('FormSignin.asp')
 
 return {
+    tagName:'form',
     className: 'login',
     signals:['noHeader'],
     deps:{
@@ -22,35 +23,13 @@ return {
     },
 
     events: {
-  $(document).on("click", ".login__submit", function(e) {
-    if (animating) return;
-    animating = true;
-    var that = this;
-    ripple($(that), e);
-    $(that).addClass("processing");
-    setTimeout(function() {
-      $(that).addClass("success");
-      setTimeout(function() {
-        $app.show();
-        $app.css("top");
-        $app.addClass("active");
-      }, submitPhase2 - 70);
-      setTimeout(function() {
-        $login.hide();
-        $login.addClass("inactive");
-        animating = false;
-        $(that).removeClass("success processing");
-      }, submitPhase2);
-    }, submitPhase1);
-  });
         'click .login__submit':function(e){
             var
             self = this,
-            fe = this.el.querySelector('form'),
+            fe = self.el,
             ee = fe.querySelector('.inline-error'),
-            be = fe.querySelector('button')
-
-            if (be.hasAttribute('disabled')) return
+            be = fe.querySelector('button'),
+            becl=be.classList
             
             ee.textContent = ''
             
@@ -58,27 +37,31 @@ return {
                 ee.textContent = 'Your username and password must not be blank'
                 return
             }
+
+            if (becl.contains('processing')) return
+            becl.add('processing')
+            be.textContent = 'Processing...'
+
             // HACK! on ios if the virtual keyboard doesnt close at this stage, form will not render for unknown reason
             if (typeof device !== 'undefined' && typeof cordova.plugins.Keyboard !== 'undefined' && device.platform.toUpperCase() === 'IOS') {
                 cordova.plugins.Keyboard.close()
             }
-            be.textContent = 'Authenticating...'
-            be.setAttribute('disabled','')
             
             this.deps.auth.create(null, {
                 data: {
                     un: fe.username.value.trim(),
-                    pwd: picoStr.hash(fe.password.value)
+                    pwd: picoStr.hash(fe.userpass.value)
                 },
                 wait: true,
                 error: function(e){
                     ee.textContent = 'Access denied'
-                    be.removeAttribute('disabled')
-                    be.textContent = 'Login'
+                    be.removeAttribute('processing')
+                    be.textContent = 'Sign In'
                 },
                 success: function(user, raw){
                     self.deps.owner.add(raw)
-                    be.textContent = 'Loading...'
+                    be.textContent = 'Success'
+                    becl.add('success')
                 }
             })
         }

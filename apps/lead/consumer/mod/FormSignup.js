@@ -4,8 +4,8 @@ Router = require('js/Router'),
 tpl = require('FormSignup.asp')
 
 return{
-    tagName: 'div',
-    className: 'blurctr',
+    tagName: 'form',
+    className: 'login',
     signals:['noHeader'],
     deps:{
         owner:'models',
