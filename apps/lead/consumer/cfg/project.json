@@ -3,6 +3,15 @@
     ],[
         "css/index.css"
     ],[
+        ["design","list",[568]],
+        ["pane","view",[
+            ["paneId","int",0],
+            ["attributes","map",{"id":"main"}]
+        ],"js/Pane"],
+        ["pane","view",[
+            ["paneId","int",1],
+            ["attributes","map",{"id":"secondary"}]
+        ],"js/Pane"],
         ["owner","models",{}],
         ["users","models",{}],
         ["address","models",{}],
@@ -21,7 +30,7 @@
             }]
         ],["common/auth/DataStream","DataStreamMixin"]],
         ["common/ui/niko","view",[
-            ["attributes","map",{"el":"body>div#layer1"}]
+            ["attributes","map",{"el":"#main.pane>div#layer1"}]
         ]],
         ["Header","view",[
             ["hide","number",0]
@@ -42,53 +51,49 @@
             ["authPages","list",["signin","signup"]]
         ]]
     ],{
+        "":[
+        ],
         "signin": [
-            [
-                ["attributes","map",{"className":"content"}],
+            ["attributes","map",{"className":"content"}],
+            ["owner","ref","owner"],
+            ["FormSignin","view",[
                 ["owner","ref","owner"],
-                ["FormSignin","view",[
-                    ["owner","ref","owner"],
-                    ["auth","models",{
-                        "create": "lead/user/signin"
-                    }],
-                    ["title","text","Beacon Platform"]
-                ]]
-            ]
+                ["auth","models",{
+                    "create": "lead/user/signin"
+                }],
+                ["title","text","Beacon Platform"]
+            ]]
         ],
         "signup": [
-            [
-                ["attributes","map",{"className":"content"}],
+            ["attributes","map",{"className":"content"}],
+            ["owner","ref","owner"],
+            ["FormSignup","view",[
                 ["owner","ref","owner"],
-                ["FormSignup","view",[
-                    ["owner","ref","owner"],
-                    ["auth","models",{
-                        "create": "lead/user/signup"
-                    }],
-                    ["title","text","Beacon Platform"]
-                ]]
-            ]
+                ["auth","models",{
+                    "create": "lead/user/signup"
+                }],
+                ["title","text","Beacon Platform"]
+            ]]
         ],
         "list":[
-            [
-                ["attributes","map",{"className":"content"}],
-                ["HeaderSetup","ctrl",[
-                    ["left","list",["menu"]],
-                    ["title","text","Home"]
-                ]],
-                ["owner","ref","owner"],
-                ["List","view",[
-                    ["owner","ref","owner"]
-                ]]
-            ],[
-            ]
+            ["attributes","map",{"className":"content"}],
+            ["HeaderSetup","ctrl",[
+                ["left","list",["menu"]],
+                ["title","text","Home"]
+            ]],
+            ["owner","ref","owner"],
+            ["List","view",[
+                ["owner","ref","owner"]
+            ]]
         ],
-        "*action":[
-            [
-                ["attributes","map",{"className":"content"}],
-                ["Home","view",[
-                ]]
-            ],[
-            ]
+        "home":[
+            ["attributes","map",{"className":"content"}],
+            ["Home","view",[
+            ]]
         ]
+    },{
+        "signin":["signin"],
+        "signup":["signup"],
+        "*action":["home"]
     }
 ]

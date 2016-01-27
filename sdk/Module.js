@@ -25,7 +25,11 @@ findAll = function(id, list){
     for(var i=0,o; o=list[i]; i++){ if (id === o[ID]) arr.push(o[VALUE]) }
     return arr
 },
-specLoaded = function(err, spec, self){
+specLoaded = function(err, spec, userData){
+    var
+    self=userData[0],
+    spawnList=userData[1]
+
     if (self._removed) return self.remove()
     if (err){
         console.warn(err)
@@ -56,25 +60,21 @@ specLoaded = function(err, spec, self){
 
     self.deps = d
     self.create(d)
-    self.signals.moduleAdded(self).send(self.host)
 
     var h=self.host
+    self.signals.moduleAdded(self).send(h)
 
     if (h){
         if (self._show) h.show(self, self._show[0], self._show[1])
-        if (h._spawnList){
-            var
-            l=h._spawnList,
-            m=l.shift()
-            if (!l.length){
-                delete h._spawnList
+        if (spawnList){
+            var m=spawnList.shift()
+            if (!spawnList.length){
                 if(m) m.call(h, null, self)
                 return
             }
-            h.spawn(m, self._params, null, !self._show)
+            h.spawn(m, self._params, null, !self._show, spawnList)
         }
     }
-
 },
 // dun remove mod here, mod may be removed
 hideByIndex= function(self, i, host){
@@ -120,22 +120,21 @@ Module= {
         specMgr.unload(this._rawSpec, this.spec)
     },
     // ctrl can't spawn view
-    spawn: function(Mod, params, spec){
+    spawn: function(Mod, params, spec, chains){
         if (!Mod || !Mod.spec) return
 
-        var m = new (Ctrl.extend(Mod.Class))(Mod, spec && spec.length ? Mod.spec.concat(spec) : Mod.spec, params, this)
+        var m = new (Ctrl.extend(Mod.Class))(Mod, spec && spec.length ? Mod.spec.concat(spec) : Mod.spec, params, this, chains)
 
         this.modules.push(m)
 
         return m
     },
-    // if mixed ctrl and view in _spawnList, all view after ctrl become hidden
+    // if mixed ctrl and view in Mods, all view after ctrl become hidden
     spawnAsync: function(Mods, params, hidden, cb){
         if (!Mods.length) return cb()
         var m=Mods.shift()
         Mods.push(cb)
-        this._spawnList=Mods
-        return this.spawn(m, params, null, hidden)
+        return this.spawn(m, params, null, hidden, Mods)
     },
     dump: function(mod){
         if (!mod) return -1
@@ -153,7 +152,7 @@ Module= {
     slots:{}
 }
 
-function Ctrl(prop, rawSpec, params, host){
+function Ctrl(prop, rawSpec, params, host, chains){
     this.name = prop.name
     this.host = host
     this.ancestor = Ctrl.prototype
@@ -163,8 +162,7 @@ function Ctrl(prop, rawSpec, params, host){
     this._removed = false 
 
     this.signals = sigslot(this, ['moduleAdded'])
-
-    specMgr.load(host, params || [], rawSpec, specLoaded, this)
+    specMgr.load(host, params || [], rawSpec, specLoaded, [this,chains])
 }
 
 Ctrl.extend = Backbone.View.extend
@@ -172,11 +170,11 @@ Ctrl.extend = Backbone.View.extend
 _.extend(Ctrl.prototype, Backbone.Events, Module)
 
 var View = Backbone.View.extend(_.extend(Module, {
-    initialize: function(options, prop, spec, params, host, show){
+    initialize: function(options, prop, spec, params, host, show, chains){
         this._elements = []
         this._show=show?[host.el,false]:null
 
-        Ctrl.call(this, prop, spec, params, host)
+        Ctrl.call(this, prop, spec, params, host, chains)
 
         this.ancestor = View.prototype
     },
@@ -185,10 +183,10 @@ var View = Backbone.View.extend(_.extend(Module, {
         Backbone.View.prototype.remove.apply(this, arguments)
     },
     // view can spawn ctrl and view
-    spawn: function(Mod, params, spec, hidden){
+    spawn: function(Mod, params, spec, hidden, chains){
         if (!Mod || !Mod.spec) return
 
-        if ('ctrl'===Mod.type) return Ctrl.prototype.spawn.call(this, Mod, params, spec)
+        if ('ctrl'===Mod.type) return Ctrl.prototype.spawn.call(this, Mod, params, spec, chains)
 
         var
         s=spec && spec.length ? Mod.spec.concat(spec) : Mod.spec,
@@ -201,10 +199,8 @@ var View = Backbone.View.extend(_.extend(Module, {
             }
         }
 
-        var m = new (View.extend(Mod.Class))(attr, Mod, s, params, this, !hidden)
-
+        var m = new (View.extend(Mod.Class))(attr, Mod, s, params, this, !hidden, chains)
         this.modules.push(m)
-
         return m
     },
     dump: function(mod){

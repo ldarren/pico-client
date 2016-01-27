@@ -119,7 +119,7 @@ unload = function(rawSpec, spec){
 return {
     load:function(host, params, spec, cb, userData){
         if (!spec) return cb(null, [], userData)
-        load(host, params, spec, 0, [], cb, userData)
+        setTimeout(load,0,host, params, spec, 0, [], cb, userData)
     },
     unload:unload,
     find:find,

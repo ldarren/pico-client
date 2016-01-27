@@ -6,15 +6,15 @@
         ["html","file","path/to/frame/html"],
         ["els","map",{"main":"#layer1"}]
     ],{
-        "*action":[
-            [
-                ["html","file","path/to/page/html"],
-                ["el","text","#id"],
-                ["attributes","map",{
-                    "tagName":"div",
-                    "className":""
-                }]
-            ]
+        "home":[
+            ["html","file","path/to/page/html"],
+            ["el","text","#id"],
+            ["attributes","map",{
+                "tagName":"div",
+                "className":""
+            }]
         ]
+    },{
+        "*action":["home"]
     }
 ]

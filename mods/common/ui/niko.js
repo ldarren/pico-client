@@ -34,12 +34,12 @@ return{
         }
     },
     slots:{
-        frameAdded: function(){},
-        pageAdd: function(from, sender, page, isBack){
+        flyerAdded: function(){},
+        pageAdd: function(from, sender, paneId, page, isBack){
             this.el.appendChild(page)
-            this.signals.pageAdded().send(this.host)
+            this.signals.pageAdded(paneId).send(this.host)
         },
         moduleAdded: function(from, sender){},
-        pageSlide: function(from, sender, options){}
+        pageTransit: function(from, sender, options){}
     }
 }

@@ -18,7 +18,7 @@ pico.run({
 },function(){
     require('js/Module') //preload
     var
-    Frame = require('js/Frame'),
+    Frame= require('js/Frame'),
     project = require('cfg/project.json'),
     env = require('cfg/env.json')
 

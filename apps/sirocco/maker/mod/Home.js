@@ -5,7 +5,7 @@ tpl=require('Home.html'),
 svg=require('dat/placeholder.svg'),
 INTENT='whatsapp://send?text='
 
-this.onLoad=function(){
+this.load=function(){
     INTENT=INTENT+encodeURIComponent(network.getDomain('sirocco').url+'?id=LINK')
 }
 

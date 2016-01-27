@@ -1,6 +1,3 @@
-@import "normal.css";
-@import "svg.css";
-@import "frame.css";
-@import "ripple.css";
-@import "login.css";
-@import "app.css";
+@import "html.css";
+@import "flyer.css";
+@import "pane.css";

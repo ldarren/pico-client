@@ -1,5 +1,5 @@
 return {
-    signals:['pageAdded'],
+    signals:['paneAdded'],
     deps:{
         el:'text'
     },
@@ -7,19 +7,19 @@ return {
         this.setElement(deps.el)
     },
     slots:{
-        frameAdded: function(){
+        flyerAdded: function(){
             componentHandler.upgradeDom()
         },
-        pageAdd: function(from, sender, page, isBack){
-            this.el.appendChild(page)
+        paneAdd: function(from, sender, pane, isBack){
+            this.el.appendChild(pane)
             componentHandler.upgradeDom()
-            this.signals.pageAdded().send(this.host) 
+            this.signals.paneAdded().send(this.host) 
         },
         moduleAdded: function(from, sender, mod){
             if (!mod.el) return
             componentHandler.upgradeDom()
         },
-        pageSlide: function(from, sender, options){
+        paneTransit: function(from, sender, options){
         }
     }
 }
