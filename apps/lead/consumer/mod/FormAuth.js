@@ -1,29 +1,37 @@
 var
 picoStr=require('pico/str'),
 Router = require('js/Router'),
-tpl = require('FormSignin.asp')
+tplSignin = require('FormSignin.asp'),
+tplSignup = require('FormSignup.asp')
 
 return {
     tagName:'form',
     className: 'login',
-    signals:['noHeader'],
     deps:{
         owner:'models',
-        auth:'models',
-        title:'text'
+        auth:'models'
     },
+    signals:['show','hide'],
     create: function(deps){
+    },
 
-        this.el.innerHTML=tpl({title:deps.title})
-
-        if(deps.owner.length){
-            Router.home(true);
+    slots:{
+        signin:function(from, sender, user){
+            this.signals.hide().send(this.host)
+        },
+        signout:function(from, sender){
+            this.el.innerHTML=tplSignin()
+            this.signals.show().send(this.host)
         }
-        this.signals.noHeader().send(this.host)
     },
 
     events: {
+        'click a.niko_transit':function(e){
+            e.preventDefault()
+            this.el.innerHTML=tplSignup()
+        },
         'click .login__submit':function(e){
+            return this.signals.hide().send(this.host)
             var
             self = this,
             fe = self.el,

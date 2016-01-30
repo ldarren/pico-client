@@ -114,11 +114,17 @@ return Module.View.extend({
 //            this.el.appendChild(sender.el)
             this.signals.paneAdded(paneId).send()
         },
-        invalidate: function(from, sender, where, first){
+        show: function(from, sender, where, first){
             if (!sender || -1 === this.modules.indexOf(sender)) return
 
             var c=this.layers[where||'secondary']
             this.show(sender, c, first)
+        },
+        hide: function(from, sender, where){
+            if (!sender || -1 === this.modules.indexOf(sender)) return
+
+            var c=this.layers[where||'secondary']
+            this.hide(sender, c)
         },
         frameResized:resized,
         modelReady: function(from, sender){

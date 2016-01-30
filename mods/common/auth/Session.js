@@ -25,16 +25,9 @@ cache = function(model, coll){
     this.addUser(model.id, users, userReady)
 },
 uncache = function(){
-    this.signals.signout().send()
     storage.removeItem('owner')
     network.addon([]) 
-
-    var
-    u = this.deps.users,
-    ap = this.deps.authPages
-
-    // signout
-    if (-1 === ap.indexOf(Router.currPath())) Router.go(ap[0])
+    this.signals.signout().send()
 },      
 userReady = function(err, user, ctx){
     if (err) return console.error(err)
@@ -44,7 +37,7 @@ userReady = function(err, user, ctx){
 	ctx.userReadied= true
     if (!ctx.modelReadied)ctx.signals.modelReady().send()
     ctx.modelReadied= true
-    if (-1 !== ctx.deps.authPages.indexOf(Router.currPath())) Router.home(true)
+    // always home page after login? Router.home(true)
 },
 onNetworkError= function(err){
     if (403 !== err.code){
@@ -59,8 +52,7 @@ return{
     signals: ['signin', 'signout', 'modelReady', 'userReady'],
     deps: {
         owner:'ref',
-        users: 'ref',
-        authPages: 'list'
+        users: 'ref'
     },
     create: function(deps){
         var
@@ -78,25 +70,7 @@ return{
             try{ owner.add(JSON.parse(cached)) }
             catch(exp){ console.error(exp) }
         }else{
-            this.modelReadied = true
-            this.signals.modelReady().send()
-        }
-    },
-    slots: {
-        changeRoute: function(from, sender, route){
-            var
-            d=this.deps,
-            ap = d.authPages
-
-            if (!ap.length) return
-
-            var notAuth=-1 === ap.indexOf(route)
-
-            if (d.owner.length){
-                if (!notAuth) Router.home()
-            }else{
-                if (notAuth) Router.go(ap[0])
-            }
+            this.signals.signout().send()
         }
     },
     credential: function(att){

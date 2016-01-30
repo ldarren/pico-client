@@ -43,36 +43,20 @@
         ["common/ui/niko","view",[
             ["attributes","map",{"el":"#main.pane>div:nth-child(1)"}]
         ]],
+        ["FormAuth","view",[
+            ["owner","ref","owner"],
+            ["auth","models",{
+                "create": "lead/user/signup",
+                "read": "lead/user/signin"
+            }]
+        ]],
         ["common/native/ble","ctrl",[]],
         ["common/auth/Session","ctrl",[
             ["owner","ref","owner"],
-            ["users","ref","users"],
-            ["authPages","list",["signin","signup"]]
+            ["users","ref","users"]
         ]]
     ],{
         "":[
-        ],
-        "signin": [
-            ["attributes","map",{"className":"content"}],
-            ["owner","ref","owner"],
-            ["FormSignin","view",[
-                ["owner","ref","owner"],
-                ["auth","models",{
-                    "create": "lead/user/signin"
-                }],
-                ["title","text","Beacon Platform"]
-            ]]
-        ],
-        "signup": [
-            ["attributes","map",{"className":"content"}],
-            ["owner","ref","owner"],
-            ["FormSignup","view",[
-                ["owner","ref","owner"],
-                ["auth","models",{
-                    "create": "lead/user/signup"
-                }],
-                ["title","text","Beacon Platform"]
-            ]]
         ],
         "list":[
             ["attributes","map",{"className":"content"}],
@@ -91,8 +75,6 @@
             ]]
         ]
     },{
-        "signin":["signin"],
-        "signup":["signup"],
         "*action":["home"]
     }
 ]

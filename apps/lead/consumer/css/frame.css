@@ -5,7 +5,6 @@
     min-width:1024px;
     max-width:1440px;
     height:calc(100% - 38px);
-    background-color:rgba(255,255,255,0.5);
     animation-duration: 0.001s;
 }
 .layer{
