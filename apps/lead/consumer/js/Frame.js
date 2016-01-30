@@ -49,8 +49,8 @@ return Module.View.extend({
     el: 'body',
     signals:['changeRoute','frameAdded','paneAdded','paneUpdate'],
     deps:{
-        html:   ['file','<div id=layer1></div><div id=layer2></div>'],
-        layers: ['map', {main:'body>div#layer1',secondary:'body>div#layer2'}],
+        html:   ['file','<div class=frame><div class=layer></div><div class=layer></div></div>'],
+        layers: ['map', {main:'.frame>div:nth-child(1)',secondary:'.frame>div:nth-child(2)'}],
         design: ['list', [568]]
     },
     initialize: function(p, e){

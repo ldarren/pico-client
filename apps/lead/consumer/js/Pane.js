@@ -13,7 +13,7 @@ changeRoute = function(name, pageConfig, params){
     this.oldPage = this.currPage
     this.currPage = this.spawn({
         name:(name || '')+'@'+paneId,
-        spec:pageConfig, // TODO: support multiple pages
+        spec:pageConfig,
         Class:{},
         }, params, null, true)
 
@@ -25,13 +25,24 @@ return {
     className:'pane',
     signals:['paneAdd','pageAdd'],
     deps:{
-        html:   ['file','<div id=layer1></div><div id=layer2></div>'],
-        layers: ['map', {main:'div#layer1',secondary:'div#layer2'}],
+        html:   ['file','<div class=layer></div><div class=layer></div>'],
+        layers: ['map', {main:'.pane>div:nth-child(1)',secondary:'.pane>div:nth-child(2)'}],
         design: ['list', [568]],
         paneId: 'int'
     },
     create: function(deps, params){
-        this.el.innerHTML = deps.html
+        var el=this.el
+
+        el.innerHTML = deps.html
+
+        var
+        layers=deps.layers,
+        map={}
+
+        for(var k in layers){
+            map[k] = el.querySelector(layers[k])
+        }
+        this.layers=map
 
         var list=[]
         for(var i=0,spec=this.spec,s; s=spec[i]; i++){
@@ -49,7 +60,7 @@ return {
         invalidate: function(from, sender, where, first){
             if (!sender || -1 === this.modules.indexOf(sender)) return
 
-            var c=this.els[where||'secondary']
+            var c=this.layers[where||'secondary']
             this.show(sender, c, first)
         },
         paneUpdate: function(from, sender, paneId, name, pageConfig, params){

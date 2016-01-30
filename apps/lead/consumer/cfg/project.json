@@ -30,7 +30,7 @@
             }]
         ],["common/auth/DataStream","DataStreamMixin"]],
         ["common/ui/niko","view",[
-            ["attributes","map",{"el":"#main.pane>div#layer1"}]
+            ["attributes","map",{"el":"#main.pane>div:nth-child(1)"}]
         ]],
         ["Header","view",[
             ["hide","number",0]
