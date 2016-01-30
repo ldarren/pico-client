@@ -1,6 +1,8 @@
 var
 DEPS=0,STYLES=1,SPEC=2,PAGES=3,FLYERS=4,
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
+EVT_RESIZE='frameresize',
+EVT_RESIZE_LEN=EVT_RESIZE.length,
 Router = require('js/Router'),
 Module = require('js/Module'),
 network = require('js/network'),
@@ -12,16 +14,10 @@ attachStyles = function(styles, cb){
     if (!styles || !styles.length) return cb()
     __.attachFile(styles.shift(), 'css', function(){ attachStyles(styles, cb) })
 },
-resized=function(){
-    var
-    w=window.innerWidth,
-    d=this.deps.design
-
-    for(var pc=1,c; c=d[pc-1]; pc++) if (w < c) break;
-
-    if (pc === this.paneCount) return
-    this.paneCount=pc
-    if (Backbone.History.started && this.currPath) changeRoute.call(this, this.currPath, this.params)
+resized=function(self, paneCount){
+    if (paneCount === self.paneCount) return
+    self.paneCount=paneCount
+    if (Backbone.History.started && self.currPath) changeRoute.call(self, self.currPath, self.currParams)
 },
 changeRoute = function(path, params){
     var f = this.flyers[path]
@@ -33,7 +29,7 @@ changeRoute = function(path, params){
 
     var
     pages=this.pages,
-    pc=this.paneCount,
+    pc=this.paneCount || 1,
     i=f.length < pc ? 0 : f.length-pc
 
     for(var j=0,p; p=f[i]; i++,j++){
@@ -50,14 +46,20 @@ return Module.View.extend({
     signals:['changeRoute','frameAdded','paneAdded','paneUpdate'],
     deps:{
         html:   ['file','<div class=frame><div class=layer></div><div class=layer></div></div>'],
-        layers: ['map', {main:'.frame>div:nth-child(1)',secondary:'.frame>div:nth-child(2)'}],
-        design: ['list', [568]]
+        layers: ['map', {main:'.frame>div:nth-child(1)',secondary:'.frame>div:nth-child(2)'}]
     },
     initialize: function(p, e){
+        window.location.hash='#'
         var self = this
         
         this.pages= p[PAGES]
         this.flyers= p[FLYERS]
+
+        document.addEventListener('animationstart', function(e){
+            console.log(e.animationName)
+            if (-1 === e.animationName.indexOf(EVT_RESIZE)) return
+            resized(self, parseInt(e.animationName.substr(EVT_RESIZE_LEN)))
+        })
 
         network.create(e.domains, function(err){
             if (err) return console.error(err)
@@ -88,14 +90,12 @@ return Module.View.extend({
         this.setElement(map['main'])
         this.layers=map
 
-        resized.call(this)
-
         var 
         panes=[],
         list=[]
         for(var i=0,spec=this.spec,s; s=spec[i]; i++){
             switch(s[TYPE]){
-            case 'ctrl': this.spawn(s[VALUE], params); break
+            case 'ctrl': list.push(s[VALUE]); break
             case 'view':
                 if ('pane'===s[ID]) panes.push(s[VALUE])
                 else list.push(s[VALUE])
@@ -120,7 +120,7 @@ return Module.View.extend({
             var c=this.layers[where||'secondary']
             this.show(sender, c, first)
         },
-        flyerResized:resized,
+        frameResized:resized,
         modelReady: function(from, sender){
             if (!Backbone.History.started){
                 Backbone.history.start()

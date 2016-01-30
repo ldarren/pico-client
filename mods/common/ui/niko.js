@@ -1,6 +1,4 @@
 var
-EVT_RESIZE='frameresize',
-EVT_RESIZE_LEN=EVT_RESIZE.length,
 EVT_TRANSIT='panetransit',
 transit=function(self, ele){
     var 
@@ -27,12 +25,6 @@ return{
         document.addEventListener('click', function(e){
             if (e.target.classList.contains(EVT_TRANSIT)) transit(self, e.target)
         }, true)
-    },
-    events:{
-        'animationstart': function(e){
-            if (-1 === e.animationName.indexOf(EVT_RESIZE)) return
-            this.signals.frameResized(parseInt(e.animationName.substr(EVT_RESIZE_LEN))).send(this.host)
-        }
     },
     slots:{
         frameAdded: function(){},

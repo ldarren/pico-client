@@ -129,7 +129,6 @@ Module= {
 
         return m
     },
-    // if mixed ctrl and view in Mods, all view after ctrl become hidden
     spawnAsync: function(Mods, params, hidden, cb){
         if (!Mods.length) return cb()
         var m=Mods.shift()

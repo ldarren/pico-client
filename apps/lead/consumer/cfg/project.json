@@ -3,15 +3,6 @@
     ],[
         "css/index.css"
     ],[
-        ["design","list",[568]],
-        ["pane","view",[
-            ["paneId","int",0],
-            ["attributes","map",{"id":"main"}]
-        ],"js/Pane"],
-        ["pane","view",[
-            ["paneId","int",1],
-            ["attributes","map",{"id":"secondary"}]
-        ],"js/Pane"],
         ["owner","models",{}],
         ["users","models",{}],
         ["address","models",{}],
@@ -19,6 +10,26 @@
         ["post","models",{}],
         ["lock","models",{}],
         ["log","models",{}],
+        ["pane","view",[
+            ["paneId","int",0],
+            ["attributes","map",{"id":"main"}],
+            ["Header","view",[
+                ["hide","number",0]
+            ]],
+            ["Drawer","view",[
+                ["side","text","right"],
+                ["menu","list",[
+                    ["Users","icon-users","users"],
+                    ["Domains","icon-group","domain"],
+                    ["Locks","icon-lock","lock"],
+                    ["Records","icon-chart","log"]
+                ]]
+            ]]
+        ],"js/Pane"],
+        ["pane","view",[
+            ["paneId","int",1],
+            ["attributes","map",{"id":"secondary"}]
+        ],"js/Pane"],
         ["DataStream","ctrl", [
             ["models","refs","models"],
             ["demux","map",{
@@ -31,18 +42,6 @@
         ],["common/auth/DataStream","DataStreamMixin"]],
         ["common/ui/niko","view",[
             ["attributes","map",{"el":"#main.pane>div:nth-child(1)"}]
-        ]],
-        ["Header","view",[
-            ["hide","number",0]
-        ]],
-        ["Drawer","view",[
-            ["side","text","right"],
-            ["menu","list",[
-                ["Users","icon-users","users"],
-                ["Domains","icon-group","domain"],
-                ["Locks","icon-lock","lock"],
-                ["Records","icon-chart","log"]
-            ]]
         ]],
         ["common/native/ble","ctrl",[]],
         ["common/auth/Session","ctrl",[

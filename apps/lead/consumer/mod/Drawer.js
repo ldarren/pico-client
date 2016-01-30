@@ -14,7 +14,7 @@ return {
     },
     create: function(deps){
         this.delayId = 0
-        this.signals.invalidate().send(this.host)
+//        this.signals.invalidate().send(this.host)
     },
     slots: {
         signin:function(from, sender, model){

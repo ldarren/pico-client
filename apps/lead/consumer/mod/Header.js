@@ -13,7 +13,7 @@ return{
     },
     create: function(deps){
         this.el.innerHTML=html
-        this.signals.invalidate('main').send(this.host)
+//        this.signals.invalidate('main').send(this.host)
     },
     events: {
         'tap a': function(e){
