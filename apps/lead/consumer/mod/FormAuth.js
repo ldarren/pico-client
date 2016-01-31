@@ -6,7 +6,7 @@ tplSignup = require('FormSignup.asp')
 
 return {
     tagName:'form',
-    className: 'login',
+    className: 'modal',
     deps:{
         owner:'models',
         auth:'models'
