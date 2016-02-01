@@ -1,6 +1,6 @@
 var
 INDEX=                  ['un','sess'],
-PRIVATE=                ['pwd'],
+PRIVATE=                ['un','pwd','sess'],
 GET =                   'SELECT * FROM `user` WHERE `id`=? AND `status`=1;',
 GET_LIST =              'SELECT * FROM `user` WHERE `id` IN (?) AND `status`=1;',
 FIND_BY_TIME =          'SELECT * FROM `user` WHERE `updatedAt` > ?;',
@@ -107,9 +107,9 @@ module.exports= {
         return hash.verify(Object.keys(user), INDEX)
     },
     get: function(userId, cb){
-        client.query(GET,[userId],(err,user)=>{
+        client.query(GET,[userId],(err,users)=>{
             if (err) return cb(err)
-            getMap(userId, user, cb)
+            getMap(userId, users[0], cb)
         })
     },
     set: function(user, cb){

@@ -45,8 +45,7 @@ return {
         },
         'click .submit':function(e){
             var
-            self = this,
-            fe = self.el,
+            fe = this.el,
             ee = fe.querySelector('.error'),
             be = fe.querySelector('button'),
             becl=be.classList
@@ -77,7 +76,6 @@ return {
                         be.textContent = 'Sign in'
                         return
                     }
-                    self.deps.owner.add(raw)
                     be.textContent = 'Success'
                     becl.add('success')
                 })
