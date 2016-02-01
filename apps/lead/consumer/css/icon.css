@@ -13,3 +13,8 @@ svg.icon path {
   fill: none;
   stroke-width: 1;
 }
+@keyframes drawIcon{
+    to {
+        stroke-dashoffset: 0;
+    }
+}

@@ -3,8 +3,13 @@
     ],[
         "css/index.css"
     ],[
-        ["owner","models",{}],
-        ["users","models",{}],
+        ["owner","models",{
+            "create": "lead/user/signup",
+            "read": "lead/user/signin"
+        }],
+        ["users","models",{
+            "read": "lead/user/read"
+        }],
         ["address","models",{}],
         ["domain","models",{}],
         ["post","models",{}],
@@ -44,11 +49,7 @@
             ["attributes","map",{"el":"#main.pane>div:nth-child(1)"}]
         ]],
         ["FormAuth","view",[
-            ["owner","ref","owner"],
-            ["auth","models",{
-                "create": "lead/user/signup",
-                "read": "lead/user/signin"
-            }]
+            ["owner","ref","owner"]
         ]],
         ["common/native/ble","ctrl",[]],
         ["common/auth/Session","ctrl",[

@@ -61,6 +61,14 @@ this.log('signup',input)
         this.log('verify',input)
         next()
     },
+    read:function(input,next){
+console.log('read',input)
+        sqlUser.get(input.id, (err, user)=>{
+            if (err) return next(this.error(500))
+            this.setOutput(user, sqlUser.clean, sqlUser)
+            next()
+        })
+    },
     poll:function(input,next){
         this.setOutput('hello SSE')
         next()

@@ -17,8 +17,8 @@ return {
 //        this.signals.invalidate().send(this.host)
     },
     slots: {
-        signin:function(from, sender, model){
-            this.el.innerHTML = tpl({menu:this.deps.menu, user:model.attributes})
+        userReady:function(from, sender, model){
+            this.el.innerHTML = tpl({menu:this.deps.menu, user:model})
         },
         menu: function(from, sender, side){
             var options = null

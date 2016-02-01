@@ -46,6 +46,11 @@
         "lead/user/signout": [
             ["user","signout","input","users"],
             [0]
+        ],
+        "lead/user/read": [
+            ["user","verify","input","user"],
+            ["user","read","input"],
+            [0]
         ]
     }
 }

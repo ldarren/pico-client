@@ -37,6 +37,29 @@ REF1_UNSET_BY_REF1 =    'UPDATE `userRef1` SET `status`=0, `updatedBy`=? WHERE `
 var
 picoObj=require('pico/obj'),
 hash=require('sql/hash'),
+getMapTxt=function(id, cb){
+    if (!id) return cb()
+    client.query(MAP_GET, [MAP,id], cb)
+},
+getMapInt=function(id, cb){
+    if (!id) return cb()
+    client.query(MAP_GET, [MAP+'Int',id], cb)
+},
+getMap=function(id, user, cb){
+console.log('getMap',id,user)
+    var i,r
+    getMapTxt(id, (err, txt)=>{
+console.log('getMapTxt',err,txt)
+        if (err) return cb(err)
+        for(i=0; r=txt[i]; i++) user[hash.key(r.k)]=r.v
+        getMapInt(id, (err, num)=>{
+console.log('getMapInt',err,num)
+            if (err) return cb(err)
+            for(i=0; r=txt[i]; i++) user[hash.key(r.k)]=r.v
+            cb(null, user)
+        })
+    })
+},
 setMapTxt=function(params, cb){
     if (!params.length) return cb()
     client.query(MAP_SET, [MAP,params], cb)
@@ -62,7 +85,7 @@ setMap=function(id, obj, by, index, cb){
         }
         arr.push([id,hash.val(k),v,by])
     }
-    setMapTxt(txt, function(err){
+    setMapTxt(txt, (err)=>{
         if (err) return cb(err)
         setMapInt(num, cb)
     })
@@ -83,16 +106,22 @@ module.exports= {
     verify: function(user){
         return hash.verify(Object.keys(user), INDEX)
     },
+    get: function(userId, cb){
+        client.query(GET,[userId],(err,user)=>{
+            if (err) return cb(err)
+            getMap(userId, user, cb)
+        })
+    },
     set: function(user, cb){
         var
         params=[],
         by=user.createdBy
         for(var i=0,k; k=INDEX[i]; i++){ params.push(user[k]) }
         params.push(by)
-        client.query(SET, [params], function(err, result){
+        client.query(SET, [params], (err, result)=>{
             if (err) return cb(err)
             var id=result.insertId
-            setMap(id, user, by, INDEX, function(err){
+            setMap(id, user, by, INDEX, (err)=>{
                 if (err) return cb(err)
                 user.id=id
                 return cb(null, user)
@@ -103,9 +132,9 @@ module.exports= {
         client.query(FIND_BY_UN, [un], cb)
     },
     getMap: function(userId, cb){
-        client.query(MAP_GET,[MAP, userId], function(err, user){
+        client.query(MAP_GET,[MAP, userId], (err, user)=>{
             if (err) return cb(err)
-            client.query(MAP_GET, [MAP+'Int', userId], function(err, num){
+            client.query(MAP_GET, [MAP+'Int', userId], (err, num)=>{
                 if (err) return cb(err)
                 cb(null, hash.replace(user, num))
             })

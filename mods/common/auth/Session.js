@@ -4,7 +4,7 @@ network = require('js/network'),
 storage = window.localStorage,
 changed=function(model){
     var cred = this.credential(model.attributes)
-    network.addon([cred]) 
+    network.addon(cred) 
     storage.setItem('owner', JSON.stringify(cred))
 },
 cache = function(model, coll){
@@ -31,7 +31,7 @@ uncache = function(){
 },      
 userReady = function(err, user, ctx){
     if (err) return console.error(err)
-    if (!user) return console.error('owner not found')
+    if (!user) return console.error('user not found')
 
     if (!ctx.userReadied || brief.hasChanged(['id'])) ctx.signals.userReady(user).dispatch()
 	ctx.userReadied= true
@@ -73,23 +73,14 @@ return{
             this.signals.signout().send()
         }
     },
+    // welcome to override with mixin
+    addUser: function(userId, users, cb){
+        var self=this
+        users.read({}, function(err, model, raw){
+            cb(err, raw, self)
+        })
+    },
     credential: function(att){
         return {id:att.id, sess:att.sess}
-    },
-    addUser: function(userId, users, cb){
-        var
-        self=this,
-        model=new users.model
-
-        model.fetch({
-            data:{},
-            success:function(model, raw, options){
-                users.add(model)
-                cb(null, raw, self)
-            },
-            error:function(model, err, options){
-                cb(err)
-            }
-        })
     }
 }

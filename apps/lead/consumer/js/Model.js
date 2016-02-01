@@ -37,5 +37,20 @@ return Backbone.Collection.extend({
             success: function(coll, raw){cb(null, coll, raw)},
             error: function(coll, raw){cb(raw)}
         })
+    },
+    read: function(data, cb){
+        var
+        self=this,
+        model=new this.model
+        model.fetch({
+            data:data,
+            success:function(model, raw){
+                self.add(model)
+                cb(null, model, raw)
+            },
+            error:function(model, err){
+                cb(err)
+            }
+        })
     }
 })
