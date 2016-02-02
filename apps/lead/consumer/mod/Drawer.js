@@ -18,7 +18,7 @@ return {
     },
     slots: {
         userReady:function(from, sender, model){
-            this.el.innerHTML = tpl({menu:this.deps.menu, user:model})
+            this.el.innerHTML = tpl({menu:this.deps.menu, user:model.attributes})
         },
         menu: function(from, sender, side){
             var options = null

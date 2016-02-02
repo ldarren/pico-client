@@ -4,16 +4,11 @@ html= require('Header.html')
 
 return{
     tagName: 'header',
-    className: 'bar bar-nav hidden',
-    signals:['invalidate','menu','selectedMenu'],
+    signals:['menu','selectedMenu'],
     deps:{
-        title: 'text',
-        left: 'text',
-        right: 'text'
     },
     create: function(deps){
         this.el.innerHTML=html
-//        this.signals.invalidate('main').send(this.host)
     },
     events: {
         'tap a': function(e){

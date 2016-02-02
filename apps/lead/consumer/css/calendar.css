@@ -1,0 +1,77 @@
+.calendar {
+  position: relative;
+  background: #fff;
+  height:100%;
+}
+.calendar ul.days {
+  height: 7rem;
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.calendar ul.days li {
+  width: 14%;
+  text-align: center;
+  font-size: 1.2rem;
+}
+.calendar ul.days li.weekday {
+  color: #919197;
+  text-transform: uppercase;
+}
+.calendar ul.days li.date {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #3C3C43;
+}
+.calendar ul.meetings{
+  margin:5px;
+}
+.calendar ul.meetings li {
+  position: relative;
+  height: 6rem;
+  border-top: 1px solid #EEEEEF;
+  padding: 1rem 2rem 1rem 7.5rem;
+  -webkit-transition: opacity 0.3s, -webkit-transform 0.3s;
+  transition: opacity 0.3s, -webkit-transform 0.3s;
+  transition: transform 0.3s, opacity 0.3s;
+  transition: transform 0.3s, opacity 0.3s, -webkit-transform 0.3s;
+  -webkit-transform: translateY(-50%);
+          transform: translateY(-50%);
+  opacity: 0;
+}
+.calendar ul.meetings li:nth-child(1) {
+  -webkit-transition-delay: 0.2s;
+          transition-delay: 0.2s;
+}
+.calendar ul.meetings li:nth-child(2) {
+  -webkit-transition-delay: 0.3s;
+          transition-delay: 0.3s;
+}
+.calendar ul.meetings li:nth-child(3) {
+  -webkit-transition-delay: 0.4s;
+          transition-delay: 0.4s;
+}
+.calendar ul.meetings li:nth-child(4) {
+  -webkit-transition-delay: 0.5s;
+          transition-delay: 0.5s;
+}
+.calendar ul.meetings li:nth-child(5) {
+  -webkit-transition-delay: 0.6s;
+          transition-delay: 0.6s;
+}
+.calendar ul.meetings li .photo {
+  position: absolute;
+  left: 2rem;
+  top: 1rem;
+  width: 4rem;
+  height: 4rem;
+}
+.calendar ul.meetings li .name {
+  color: #000;
+  font-size: 1.3rem;
+}
+.calendar ul.meetings li .info {
+  color: #949498;
+  font-size: 1.1rem;
+}

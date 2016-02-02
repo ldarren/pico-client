@@ -32,8 +32,10 @@ changeRoute = function(path, params){
     pc=this.paneCount || 1,
     i=f.length < pc ? 0 : f.length-pc
 
-    for(var j=0,p; p=f[i]; i++,j++){
-        this.signals.paneUpdate(j, path+'.'+p, pages[p], params).send()
+    for(var j=0,p; i<pc; i++,j++){
+        p=f[i]
+        if (p) this.signals.paneUpdate(j, path+'.'+p, pages[p], params).send()
+        else this.signals.paneUpdate(j, '', pages[''], params).send()
     }
 
     this.signals.changeRoute(path, params).send()

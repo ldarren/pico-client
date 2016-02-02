@@ -16,6 +16,7 @@ return{
     signals:['pageAdded','frameResized'],
     className: 'ripple hidden',
     deps:{
+        paneId:'int',
         info:'map',
         pageClass:'text',
         timeout:['int',1100]
@@ -29,6 +30,7 @@ return{
     slots:{
         frameAdded: function(){},
         pageAdd: function(from, sender, paneId, page, isBack){
+            if (this.deps.paneId !== paneId) return
             this.el.appendChild(page)
             this.signals.pageAdded(paneId).send(this.host)
         },

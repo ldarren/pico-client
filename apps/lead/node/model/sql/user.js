@@ -1,6 +1,7 @@
 var
 INDEX=                  ['un','sess'],
 PRIVATE=                ['un','pwd','sess'],
+PRIVATE_SELF=           ['un','pwd'],
 GET =                   'SELECT * FROM `user` WHERE `id`=? AND `status`=1;',
 GET_LIST =              'SELECT * FROM `user` WHERE `id` IN (?) AND `status`=1;',
 FIND_BY_TIME =          'SELECT * FROM `user` WHERE `updatedAt` > ?;',
@@ -46,14 +47,11 @@ getMapInt=function(id, cb){
     client.query(MAP_GET, [MAP+'Int',id], cb)
 },
 getMap=function(id, user, cb){
-console.log('getMap',id,user)
     var i,r
     getMapTxt(id, (err, txt)=>{
-console.log('getMapTxt',err,txt)
         if (err) return cb(err)
         for(i=0; r=txt[i]; i++) user[hash.key(r.k)]=r.v
         getMapInt(id, (err, num)=>{
-console.log('getMapInt',err,num)
             if (err) return cb(err)
             for(i=0; r=txt[i]; i++) user[hash.key(r.k)]=r.v
             cb(null, user)
@@ -98,9 +96,11 @@ module.exports= {
         cb()
     },
     clean:function(model){
-        for(var i=0,k; k=PRIVATE[i]; i++){
-            delete model[k]
-        }
+        for(var i=0,k; k=PRIVATE[i]; i++) delete model[k];
+        return model
+    },
+    cleanForSelf:function(model){
+        for(var i=0,k; k=PRIVATE_SELF[i]; i++) delete model[k];
         return model
     },
     verify: function(user){

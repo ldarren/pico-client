@@ -1,10 +1,29 @@
-var tpl= require('Home.asp')
+var tpl = require('Menu.asp')
 
-return{
-    className: 'app',
+return {
+    tagName:'ul',
+    className:'menu',
+    signals:['refreshcache'],
+    deps:{
+        owner:'models'
+    },
     create: function(deps){
         this.el.innerHTML=tpl()
-  $(document).on("click", ".app__logout", function(e) {
+    },
+
+    events: {
+        'touchstart .signout':function(){
+            this.deps.owner.reset()
+        },
+        'touchstart .restart':function(){
+            window.location.reload(true)
+        },
+        'touchstart .reload':function(){
+            this.signals.refreshCache().send()
+        }
+    }
+}
+/*
     if (animating) return;
     $(".ripple").remove();
     animating = true;
@@ -21,6 +40,4 @@ return{
       animating = false;
       $(that).removeClass("clicked");
     }, logoutPhase1);
-  });
-    }
-}
+*/

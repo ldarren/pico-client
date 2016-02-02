@@ -25,7 +25,7 @@ this.log(JSON.stringify(map))
                 if (input.pwd !== map.pwd) return next(this.error(401))
 
                 Object.assign(user,map,b)
-                this.setOutput(user, sqlUser.clean, sqlUser)
+                this.setOutput(user, sqlUser.cleanForSelf, sqlUser)
                 next()
             })
         })
@@ -48,7 +48,7 @@ this.log('signup',input)
                 createdBy:0
             }
             this.addJob([user], sqlUser.set, sqlUser)
-            this.setOutput(user, sqlUser.clean, sqlUser)
+            this.setOutput(user, sqlUser.cleanForSelf, sqlUser)
             next()
         })
     },
@@ -62,7 +62,6 @@ this.log('signup',input)
         next()
     },
     read:function(input,next){
-console.log('read',input)
         sqlUser.get(input.id, (err, user)=>{
             if (err) return next(this.error(500))
             this.setOutput(user, sqlUser.clean, sqlUser)

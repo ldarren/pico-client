@@ -7,16 +7,22 @@
     height:calc(100% - 38px);
     animation-duration: 0.001s;
 }
-.layer{
+.frame .layer{
     display:flex;
     position:absolute;
     height:100%;
     width:100%;
 }
-.layer:not(:first-child){
-    background-color:rgba(0,0,0,0.5);
+.frame>.layer{
+    flex-direction:row;
 }
-.layer:empty{
+.frame .pane .layer{
+    flex-direction:column;
+}
+.frame .layer:not(:first-child){
+    background-color:rgba(0,0,0,0.7);
+}
+.frame .layer:empty{
     display:none;
     visibility:hidden;
 }
@@ -31,24 +37,24 @@
 }
 
 @media (max-width:1024px){
-.frame{
-    width:100%;
-    min-width:320px;
-    height:100%;
-    animation-name: frameresize2;
-}
+    .frame{
+        width:100%;
+        min-width:320px;
+        height:100%;
+        animation-name: frameresize2;
+    }
 }
 
 @media (max-width:568px){
-.frame{
-    animation-name: frameresize1;
-}
-.frame>.layer>div:nth-child(1){
-    flex-basis:unset;
-}
-.frame>.layer>div:nth-child(2){
-    display:none;
-}
+    .frame{
+        animation-name: frameresize1;
+    }
+    .frame>.layer>div:nth-child(1){
+        flex-basis:auto;
+    }
+    .frame>.layer>div:nth-child(2){
+        display:none;
+    }
 }
 
 @keyframes frameresize2 {

@@ -18,9 +18,6 @@
         ["pane","view",[
             ["paneId","int",0],
             ["attributes","map",{"id":"main"}],
-            ["Header","view",[
-                ["hide","number",0]
-            ]],
             ["Drawer","view",[
                 ["side","text","right"],
                 ["menu","list",[
@@ -46,7 +43,12 @@
             }]
         ],["common/auth/DataStream","DataStreamMixin"]],
         ["common/ui/niko","view",[
-            ["attributes","map",{"el":"#main.pane>div:nth-child(1)"}]
+            ["attributes","map",{"el":"#main.pane>div:nth-child(1)"}],
+            ["paneId","int",0]
+        ]],
+        ["common/ui/niko","view",[
+            ["attributes","map",{"el":"#secondary.pane>div:nth-child(1)"}],
+            ["paneId","int",1]
         ]],
         ["FormAuth","view",[
             ["owner","ref","owner"]
@@ -58,9 +60,12 @@
         ]]
     ],{
         "":[
+            ["attributes","map",{"className":"fulpage active"}],
+            ["Void","view",[
+            ]]
         ],
         "list":[
-            ["attributes","map",{"className":"content"}],
+            ["attributes","map",{"className":"fulpage active"}],
             ["HeaderSetup","ctrl",[
                 ["left","list",["menu"]],
                 ["title","text","Home"]
@@ -71,8 +76,15 @@
             ]]
         ],
         "home":[
-            ["attributes","map",{"className":"content"}],
-            ["Home","view",[
+            ["attributes","map",{"className":"fulpage active"}],
+            ["owner","ref","owner"],
+            ["Header","view",[
+                ["hide","number",0]
+            ]],
+            ["Calendar","view",[
+            ]],
+            ["Menu","view",[
+                ["owner","ref","owner"]
             ]]
         ]
     },{

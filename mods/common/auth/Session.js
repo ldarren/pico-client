@@ -77,7 +77,7 @@ return{
     addUser: function(userId, users, cb){
         var self=this
         users.read({}, function(err, model, raw){
-            cb(err, raw, self)
+            cb(err, model, self)
         })
     },
     credential: function(att){
