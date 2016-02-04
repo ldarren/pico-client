@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0;">
+<style>
+*{
+	box-sizing:border-box;
+	padding:0;
+	margin:0;
+}
+html,body{
+	display:flex;
+	background-color:yellow;
+	width:100%;
+	height:100%;
+}
+.flyer{
+	display:flex;
+	width:90%;
+	min-width:1024px;
+	max-width:1440px;
+	height:calc(100% - 32);
+	min-height:512px;
+	margin:auto;
+}
+.frame{
+	width:100%;
+	height:100%;
+}
+.red{
+	background-color:red;
+	flex-basis:60%;
+	min-width:320px;
+}
+.blue{
+	background-color:blue;
+}
+@media (max-width:1024px){
+.flyer{
+	width:100%;
+	min-width:320px;
+	height:100%;
+}
+}
+
+@media (max-width:568px){
+.red{
+	flex-basis:unset;
+}
+.blue{
+	display:none;
+}
+}
+</style>
+</head>
+<body>
+
+<div class=flyer>
+<div class="frame red"></div>
+<div class="frame blue"></div>
+</div>
+
+<script>
+</script>
+</body>
+</html>
