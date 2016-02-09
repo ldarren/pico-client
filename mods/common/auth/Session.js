@@ -41,7 +41,7 @@ userReady = function(err, user, ctx){
 },
 onNetworkError= function(err){
     if (403 !== err.code){
-        if (err.code) alert('Server error ['+err.code+'] msg['+err.msg+']')
+        //if (err.code) __.dialogs.alert('Server error ['+err.code+'] msg['+err.error+']')
         return
     }
     this.signals.modelReady().dispatch() // router may not initialized
