@@ -3,12 +3,13 @@ picoObj=require('pico/obj'),
 trigger = Backbone.Events.trigger,
 evts=[],
 schedule= (function(){
+    if ('undefined'!==typeof process) return process.nextTick
     return  window.requestAnimationFrame       ||
             window.webkitRequestAnimationFrame ||
             window.mozRequestAnimationFrame    ||
             window.oRequestAnimationFrame      || 
             window.msRequestAnimationFrame     ||
-            function(callback){ return window.setTimeout(callback, 50) }
+            function(cb){ return window.setTimeout(cb, 50) }
 })(),   
 sigslot = function(self, def){
     var

@@ -2,12 +2,11 @@
 
 const
 VALID_TYPE=['ctrl','view'],
-SPEC=2, PANE=3,
+DEPS=0,STYLE=1,SPEC=2,PANE=3,
 ID=0,TYPE=1,VALUE=2,EXTRA=3
 
 var
 fs=require('fs'),
-pico=require('pico'),
 projName = process.argv[2],
 projConfig=`../cfg/${projName}.json`,
 getPath=(spec, include)=>{
@@ -43,25 +42,36 @@ fs.readFile(`../cfg/${projName}.json`, 'utf8', (err, json)=>{
     if (err) return console.error(err)
     try{var config=JSON.parse(json)}
     catch(exp){return console.error(exp)}
+console.log(`Starting directory: ${process.cwd()}`);
+    var deps=new Set(config[DEPS])
+    deps.add('lib/underscore-min.js')
+    deps.add('lib/backbone.js')
+    deps.add('lib/backbone.native.js')
+    deps.add('lib/lean/lean.js')
+    deps.add('lib/pico.js')
+
+    __={ajax:null,onLoad:null}
+    _=require('underscore')
+    Backbone=require('backbone')
+    pico=require('../lib/pico.js')
+
+    process.chdir('../')
 
     scan(config[SPEC], new Set, (err, include)=>{
         if (err) return console.error(err)
-        console.log('spec',include)
         var
         panes=config[PANE],
         keys=Object.keys(panes)
 
         scanPane(keys, panes, include, (err, include)=>{
             if (err) return console.error(err)
-            console.log('pane',include)
-
             pico.build({
-                entry:'../mod/main.js',
-                output:`../dist/${projName}.js`,
-                include:include,
+                entry:'mod/main.js',
+                output:`dist/${projName}.js`,
+                deps:[...deps],
+                include:[...include],
                 exclude:['./bundle.js'] 
             })
         })
     })
 })
-
