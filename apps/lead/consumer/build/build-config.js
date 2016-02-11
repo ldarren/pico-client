@@ -7,8 +7,7 @@ ID=0,TYPE=1,VALUE=2,EXTRA=3
 
 var
 fs=require('fs'),
-projName = process.argv[2],
-projConfig=`../cfg/${projName}.json`,
+projName = process.argv[2] || 'project',
 getPath=(spec, include)=>{
     if (-1 === VALID_TYPE.indexOf(spec[TYPE])) return false
     var path=spec[EXTRA]||spec[ID]
@@ -38,11 +37,14 @@ scanPane=(keys, panes, include, cb)=>{
     })
 }
 
-fs.readFile(`../cfg/${projName}.json`, 'utf8', (err, json)=>{
+process.chdir('../')
+console.log('######',projName)
+
+fs.readFile(`cfg/${projName}.json`, 'utf8', (err, json)=>{
     if (err) return console.error(err)
     try{var config=JSON.parse(json)}
     catch(exp){return console.error(exp)}
-console.log(`Starting directory: ${process.cwd()}`);
+
     var deps=new Set(config[DEPS])
     deps.add('lib/underscore-min.js')
     deps.add('lib/backbone.js')
@@ -50,12 +52,11 @@ console.log(`Starting directory: ${process.cwd()}`);
     deps.add('lib/lean/lean.js')
     deps.add('lib/pico.js')
 
+    // global
     __={ajax:null,onLoad:null}
     _=require('underscore')
     Backbone=require('backbone')
     pico=require('../lib/pico.js')
-
-    process.chdir('../')
 
     scan(config[SPEC], new Set, (err, include)=>{
         if (err) return console.error(err)
