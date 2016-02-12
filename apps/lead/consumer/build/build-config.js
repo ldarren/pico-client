@@ -38,7 +38,6 @@ scanPane=(keys, panes, include, cb)=>{
 }
 
 process.chdir('../')
-console.log('######',projName)
 
 fs.readFile(`cfg/${projName}.json`, 'utf8', (err, json)=>{
     if (err) return console.error(err)
@@ -47,16 +46,17 @@ fs.readFile(`cfg/${projName}.json`, 'utf8', (err, json)=>{
 
     var deps=new Set(config[DEPS])
     deps.add('lib/underscore-min.js')
-    deps.add('lib/backbone.js')
-    deps.add('lib/backbone.native.js')
-    deps.add('lib/lean/lean.js')
-    deps.add('lib/pico.js')
+    deps.add('lib/backbone-min.js')
+    deps.add('lib/backbone.native.min.js')
+    deps.add('lib/lean/lean.min.js')
+    deps.add('lib/pico.min.js')
 
     // global
     __={ajax:null,onLoad:null}
     _=require('underscore')
     Backbone=require('backbone')
     pico=require('../lib/pico.js')
+    window={localStorage:{},location:{}}
 
     scan(config[SPEC], new Set, (err, include)=>{
         if (err) return console.error(err)
