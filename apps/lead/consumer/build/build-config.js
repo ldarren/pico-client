@@ -71,7 +71,7 @@ fs.readFile(`cfg/${projName}.json`, 'utf8', (err, json)=>{
                 output:`dist/${projName}.js`,
                 deps:[...deps],
                 include:[...include],
-                exclude:['./bundle.js'] 
+                exclude:['customer'] 
             })
         })
     })
