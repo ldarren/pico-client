@@ -14,7 +14,7 @@ env.json
 
 lib-cov
 fontello-*/
-build/
+dist/
 pids
 logs
 results

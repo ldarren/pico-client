@@ -1,18 +1,18 @@
 var
-DEPS=0,STYLES=1,SPEC=2,PAGES=3,FLYERS=4,
+DEPS=0,STYLE=1,SPEC=2,PAGES=3,FLYERS=4,
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
 EVT_RESIZE='frameresize',
 EVT_RESIZE_LEN=EVT_RESIZE.length,
 Router = require('js/Router'),
 Module = require('js/Module'),
 network = require('js/network'),
-attachDeps = function(deps, cb){
+attachJS = function(deps, cb){
     if (!deps || !deps.length) return cb()
-    __.attachFile(deps.shift(), 'js', function(){ attachDeps(deps, cb) })
+    __.attachFile(deps.shift(), 'js', function(){ attachJS(deps, cb) })
 },
-attachStyles = function(styles, cb){
+attachCSS = function(styles, cb){
     if (!styles || !styles.length) return cb()
-    __.attachFile(styles.shift(), 'css', function(){ attachStyles(styles, cb) })
+    __.attachFile(styles.shift(), 'css', function(){ attachCSS(styles, cb) })
 },
 resized=function(self, paneCount){
     if (paneCount === self.paneCount) return
@@ -69,8 +69,8 @@ return Module.View.extend({
             var r = new Router(Object.keys(self.flyers))
             r.on('route', changeRoute, self)
 
-            attachStyles(p[STYLES], function(){
-                attachDeps(p[DEPS], function(){
+            attachCSS(p[STYLE], function(){
+                attachJS(p[DEPS], function(){
                     Module.View.prototype.initialize.call(self, null, {name:'Frame'}, p[SPEC].concat([['env','map',e]]))
                 })
             })

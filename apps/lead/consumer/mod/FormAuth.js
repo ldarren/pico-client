@@ -5,7 +5,60 @@ SIGNUP=2,
 picoStr=require('pico/str'),
 Router = require('js/Router'),
 tplSignin = require('FormSignin.asp'),
-tplSignup = require('FormSignup.asp')
+tplSignup = require('FormSignup.asp'),
+login=function(){
+    var
+    fe = this.el,
+    ee = fe.querySelector('.error'),
+    becl = fe.querySelector('button').classList
+    
+    ee.textContent = ''
+    
+    if (!fe.checkValidity()) return ee.textContent = 'Your username and password must not be blank'
+
+    if (becl.contains('processing')) return
+    becl.add('processing')
+
+    // HACK! on ios if the virtual keyboard doesnt close at this stage, form will not render for unknown reason
+    if (typeof device !== 'undefined' && typeof cordova.plugins.Keyboard !== 'undefined' && device.platform.toUpperCase() === 'IOS') {
+        cordova.plugins.Keyboard.close()
+    }
+
+    switch(this.page){
+    case SIGNIN:
+        this.deps.owner.read({
+            un: fe.username.value.trim(),
+            pwd: picoStr.hash(fe.userpass.value)
+        },function(err){
+            if (err){
+                ee.textContent = 'Access denied'
+                becl.remove('processing')
+                return
+            }
+            becl.add('success')
+        })
+        break
+    case SIGNUP:
+        var pass = fe.userpass.value
+        if (pass !== fe.userconfirm.value) return ee.textContent = 'Confirm password and password do not match'
+        this.deps.owner.create(null, {
+            data: {
+                un: fe.username.value.trim(),
+                pwd: picoStr.hash(pass),
+                json: {name:fe.name.value.trim()}
+            },
+            wait: true,
+            error: function(e){
+                ee.textContent = 'Access denied'
+                becl.remove('processing')
+            },
+            success: function(user, raw){
+                becl.add('success')
+            }
+        })
+        break
+    }
+}
 
 return {
     tagName:'form',
@@ -43,64 +96,9 @@ return {
                 break
             }
         },
-        'click .submit':function(e){
-            var
-            fe = this.el,
-            ee = fe.querySelector('.error'),
-            be = fe.querySelector('button'),
-            becl=be.classList
-
-            if (becl.contains('processing')) return
-            becl.add('processing')
-            
-            ee.textContent = ''
-            
-            if (!fe.checkValidity()) return ee.textContent = 'Your username and password must not be blank'
-
-            be.textContent = 'Processing...'
-
-            // HACK! on ios if the virtual keyboard doesnt close at this stage, form will not render for unknown reason
-            if (typeof device !== 'undefined' && typeof cordova.plugins.Keyboard !== 'undefined' && device.platform.toUpperCase() === 'IOS') {
-                cordova.plugins.Keyboard.close()
-            }
-
-            switch(this.page){
-            case SIGNIN:
-                this.deps.owner.read({
-                    un: fe.username.value.trim(),
-                    pwd: picoStr.hash(fe.userpass.value)
-                },function(err){
-                    if (err){
-                        ee.textContent = 'Access denied'
-                        be.removeAttribute('processing')
-                        be.textContent = 'Sign in'
-                        return
-                    }
-                    be.textContent = 'Success'
-                    becl.add('success')
-                })
-                break
-            case SIGNUP:
-                var pass = fe.userpass.value
-                if (pass !== fe.userconfirm.value) return ee.textContent = 'Confirm password and password do not match'
-                this.deps.owner.create(null, {
-                    data: {
-                        un: fe.username.value.trim(),
-                        pwd: picoStr.hash(pass),
-                        json: {name:fe.name.value.trim()}
-                    },
-                    wait: true,
-                    error: function(e){
-                        ee.textContent = 'Access denied'
-                        be.removeAttribute('disabled')
-                        be.textContent = 'Sign up'
-                    },
-                    success: function(user, raw){
-                        be.textContent = 'Loading...'
-                    }
-                })
-                break
-            }
+        'click .submit':login,
+        'keypress':function(e){
+            if(13===e.keyCode) login.call(this)
         }
     }
 }

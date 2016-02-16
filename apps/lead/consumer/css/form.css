@@ -15,9 +15,6 @@
     stroke:#c5c5c5;
     stroke-width:5;
 }
-.form .error{
-    color:red;
-}
 .form .row{
   height: 5rem;
   padding-top: 1rem;
@@ -111,4 +108,7 @@
 .form .comment a {
   color: #fff;
   cursor: pointer;
+}
+.form .error{
+  color:red;
 }

@@ -1,0 +1,15 @@
+{
+  "name": "project_builder",
+  "version": "0.0.1",
+  "description": "project builder",
+  "main": "build-config.js",
+  "dependencies": {
+    "backbone": "^1.2.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "build-config.js"
+  },
+  "author": "Darren Liew",
+  "license": "MIT"
+}
