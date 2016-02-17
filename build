@@ -1,0 +1,104 @@
+#!/usr/bin/env node
+
+const
+VALID_TYPE=['ctrl','view'],
+DEPS=0,STYLE=1,SPEC=2,PANE=3,
+ID=0,TYPE=1,VALUE=2,EXTRA=3
+
+var
+fs=require('fs'),
+path=require('path'),
+setup=(distDir, cfgDir, proj, env, cb)=>{
+    var
+    rawProjPath=path.resolve(cfgDir,`proj-${proj}.json`),
+    rawEnvPath=path.resolve(cfgDir,`env-${proj}-${env}.json`),
+    projPath=path.resolve(cfgDir,'project.json'),
+    envPath=path.resolve(cfgDir,'env.json')
+
+    fs.stat(projPath, (err, stat)=>{
+        if (err) return cb(err)
+        fs.stat(envPath, (err, stat)=>{
+            if (err) return cb(err)
+            fs.writeFileSync(projPath, fs.readFileSync(rawProjPath))
+            fs.writeFileSync(envPath, fs.readFileSync(rawEnvPath))
+            fs.mkdir(distDir, 0o644, (err)=>{
+                if (err && 'EEXIST'!==err.code) return cb(err)
+                fs.mkdir(path.resolve(distDir,proj), 0o644, (err)=>{
+                    if (err && 'EEXIST'!==err.code) return cb(err)
+                    cb(null, projPath, path.resolve(distDir,proj,'project.js'))
+                })
+            })
+        })
+    })
+},
+getPath=(spec, include)=>{
+    if (-1 === VALID_TYPE.indexOf(spec[TYPE])) return false
+    var path=spec[EXTRA]||spec[ID]
+    if (Array.isArray(path)) path.forEach((p)=>{include.add(p)})
+    else include.add(path)
+    return true
+},
+scan=(arr, include, cb)=>{
+    if (!arr || !arr.length) return cb(null, include)
+    var spec=arr.pop()
+    if (getPath(spec, include)){
+        scan(spec[VALUE], include, (err, include)=>{
+            if (err) return console.error(err)
+            scan(arr, include, cb)
+        })
+    }else{
+        scan(arr, include, cb)
+    }
+},
+scanPane=(keys, panes, include, cb)=>{
+    if (!keys || !keys.length) return cb(null, include)
+    var pane=panes[keys.pop()]
+    if (!pane) return scanPane(keys, panes, include, cb)
+    scan(pane, include, (err, include)=>{
+        if (err) return console.error(err)
+        scanPane(keys, panes, include, cb)
+    })
+}
+
+if (7 !== process.argv.length) return console.log(process.argv[1],'mod/main.js','dist','cfg','lead','dev')
+
+setup(process.argv[3], process.argv[4], process.argv[5], process.argv[6], (err, projPath, outPath)=>{
+    if (err) return console.error(err)
+    fs.readFile(projPath, 'utf8', (err, json)=>{
+        if (err) return console.error(err)
+        try{var config=JSON.parse(json)}
+        catch(exp){return console.error(exp)}
+
+        var deps=new Set(config[DEPS])
+        deps.add('lib/underscore-min.js')
+        deps.add('lib/backbone-min.js')
+        deps.add('lib/backbone.native.min.js')
+        deps.add('lib/lean/lean.min.js')
+        deps.add('lib/pico.min.js')
+
+        // global
+        __={ajax:null,onLoad:null}
+        _=require('underscore')
+        Backbone=require('backbone')
+        pico=require('./lib/pico.js')
+        window={localStorage:{},location:{}}
+
+        scan(config[SPEC], new Set, (err, include)=>{
+            if (err) return console.error(err)
+            var
+            panes=config[PANE],
+            keys=Object.keys(panes)
+
+            scanPane(keys, panes, include, (err, include)=>{
+                if (err) return console.error(err)
+                pico.build({
+                    entry:process.argv[2],
+                    output:outPath,
+                    deps:[...deps],
+                    include:[...include],
+                    exclude:['main'] 
+                })
+            })
+        })
+    })
+})

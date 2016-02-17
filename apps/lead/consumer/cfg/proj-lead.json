@@ -1,0 +1,93 @@
+[
+    [
+    ],[
+        "css/index.css"
+    ],[
+        ["owner","models",{
+            "create": "lead/user/signup",
+            "read": "lead/user/signin"
+        }],
+        ["users","models",{
+            "read": "lead/user/read"
+        }],
+        ["address","models",{}],
+        ["domain","models",{}],
+        ["post","models",{}],
+        ["lock","models",{}],
+        ["log","models",{}],
+        ["pane","view",[
+            ["paneId","int",0],
+            ["attributes","map",{"id":"main"}],
+            ["Drawer","view",[
+                ["side","text","right"],
+                ["menu","list",[
+                    ["Users","icon-users","users"],
+                    ["Domains","icon-group","domain"],
+                    ["Locks","icon-lock","lock"],
+                    ["Records","icon-chart","log"]
+                ]]
+            ]]
+        ],"js/Pane"],
+        ["pane","view",[
+            ["paneId","int",1],
+            ["attributes","map",{"id":"secondary"}]
+        ],"js/Pane"],
+        ["DataStream","ctrl", [
+            ["models","refs","models"],
+            ["demux","map",{
+                "users":{"json":"address"},
+                "domain":{"post":"post"}
+            }],
+            ["pull","stream",{
+                "events":[]
+            }]
+        ],["common/auth/DataStream","DataStreamMixin"]],
+        ["common/ui/niko","view",[
+            ["attributes","map",{"el":"#main.pane>div:nth-child(1)"}],
+            ["paneId","int",0]
+        ]],
+        ["common/ui/niko","view",[
+            ["attributes","map",{"el":"#secondary.pane>div:nth-child(1)"}],
+            ["paneId","int",1]
+        ]],
+        ["FormAuth","view",[
+            ["owner","ref","owner"]
+        ]],
+        ["common/native/ble","ctrl",[]],
+        ["common/auth/Session","ctrl",[
+            ["owner","ref","owner"],
+            ["users","ref","users"]
+        ]]
+    ],{
+        "":[
+            ["attributes","map",{"className":"fulpage active"}],
+            ["Void","view",[
+            ]]
+        ],
+        "list":[
+            ["attributes","map",{"className":"fulpage active"}],
+            ["HeaderSetup","ctrl",[
+                ["left","list",["menu"]],
+                ["title","text","Home"]
+            ]],
+            ["owner","ref","owner"],
+            ["List","view",[
+                ["owner","ref","owner"]
+            ]]
+        ],
+        "home":[
+            ["attributes","map",{"className":"fulpage active"}],
+            ["owner","ref","owner"],
+            ["Header","view",[
+                ["hide","number",0]
+            ]],
+            ["Calendar","view",[
+            ]],
+            ["Menu","view",[
+                ["owner","ref","owner"]
+            ]]
+        ]
+    },{
+        "*action":["home"]
+    }
+]
