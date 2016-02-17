@@ -228,6 +228,7 @@ var View = Backbone.View.extend(_.extend(Module, {
                 else container.appendChild(el)
             }
             this._elements[i] = el
+            el.dataset.viewName=mod.name
         }
         return el
     },
