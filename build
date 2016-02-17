@@ -21,9 +21,9 @@ setup=(distDir, cfgDir, proj, env, cb)=>{
             if (err) return cb(err)
             fs.writeFileSync(projPath, fs.readFileSync(rawProjPath))
             fs.writeFileSync(envPath, fs.readFileSync(rawEnvPath))
-            fs.mkdir(distDir, 0o644, (err)=>{
+            fs.mkdir(distDir, 0o755, (err)=>{
                 if (err && 'EEXIST'!==err.code) return cb(err)
-                fs.mkdir(path.resolve(distDir,proj), 0o644, (err)=>{
+                fs.mkdir(path.resolve(distDir,proj), 0o755, (err)=>{
                     if (err && 'EEXIST'!==err.code) return cb(err)
                     cb(null, projPath, path.resolve(distDir,proj,'project.js'))
                 })
