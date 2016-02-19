@@ -1,0 +1,82 @@
+[
+    [
+    ],[
+        "css/index.css"
+    ],[
+        ["owner","models",{
+            "create": "lead/user/signup",
+            "read": "lead/user/signin"
+        }],
+        ["users","models",{
+            "read": "lead/user/read"
+        }],
+        ["address","models",{}],
+        ["domain","models",{}],
+        ["post","models",{}],
+        ["lock","models",{}],
+        ["log","models",{}],
+        ["pane","view",[
+            ["paneId","int",0],
+            ["attributes","map",{"id":"main"}],
+            ["Drawer","view",[
+                ["tpl","file","Drawer.asp"],
+                ["side","text","right"],
+                ["menu","list",[
+                    ["Users","icon-users","users"],
+                    ["Domains","icon-group","domain"],
+                    ["Locks","icon-lock","lock"],
+                    ["Records","icon-chart","log"]
+                ]]
+            ]]
+        ],"js/Pane"],
+        ["pane","view",[
+            ["paneId","int",1],
+            ["attributes","map",{"id":"secondary"}]
+        ],"js/Pane"],
+        ["DataStream","ctrl", [
+            ["models","refs","models"],
+            ["demux","map",{
+                "users":{"json":"address"},
+                "domain":{"post":"post"}
+            }],
+            ["pull","stream",{
+                "events":[]
+            }]
+        ],["common/auth/DataStream","DataStreamMixin"]],
+        ["common/ui/niko","view",[
+            ["attributes","map",{"el":"#main.pane>div:nth-child(1)"}],
+            ["paneId","int",0]
+        ]],
+        ["common/ui/niko","view",[
+            ["attributes","map",{"el":"#secondary.pane>div:nth-child(1)"}],
+            ["paneId","int",1]
+        ]],
+        ["FormAuth","view",[
+            ["owner","ref","owner"],
+            ["tplSignin","file","FormSignin.asp"],
+            ["tplSignup","file","FormSignup.asp"]
+        ]],
+        ["common/native/ble","ctrl",[]],
+        ["common/auth/Session","ctrl",[
+            ["owner","ref","owner"],
+            ["users","ref","users"]
+        ]]
+    ],{
+        "":[
+            ["attributes","map",{"className":"fulpage active"}],
+            ["Void","view",[
+				["tpl","file","Void.asp"]
+            ]]
+        ],
+        "home":[
+            ["attributes","map",{"className":"fulpage active"}],
+            ["owner","ref","owner"],
+            ["Lock","view",[
+                ["tpl","file","Lock.asp"],
+                ["owner","ref","owner"]
+            ]]
+        ]
+    },{
+        "*action":["home"]
+    }
+]
