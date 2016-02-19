@@ -15,9 +15,9 @@ setup=(distDir, cfgDir, proj, env, cb)=>{
     projPath=path.resolve(cfgDir,'project.json'),
     envPath=path.resolve(cfgDir,'env.json')
 
-    fs.stat(projPath, (err, stat)=>{
+    fs.stat(rawProjPath, (err, stat)=>{
         if (err) return cb(err)
-        fs.stat(envPath, (err, stat)=>{
+        fs.stat(rawEnvPath, (err, stat)=>{
             if (err) return cb(err)
             fs.writeFileSync(projPath, fs.readFileSync(rawProjPath))
             fs.writeFileSync(envPath, fs.readFileSync(rawEnvPath))
