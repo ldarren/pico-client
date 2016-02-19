@@ -1,14 +1,13 @@
-var tpl = require('Menu.asp')
-
 return {
     tagName:'ul',
     className:'menu',
     signals:['refreshcache'],
     deps:{
+		tpl:'file',
         owner:'models'
     },
     create: function(deps){
-        this.el.innerHTML=tpl()
+        this.el.innerHTML=deps.tpl()
     },
 
     events: {

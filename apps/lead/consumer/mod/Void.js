@@ -1,12 +1,11 @@
-var tpl= require('Void.asp')
-
 return{
     tagName: 'p',
     className: 'void',
     deps:{
+		tpl:['file','<%=message%>'],
         info:['map',{message:'Empty'}]
     },
     create: function(deps){
-        this.el.innerHTML=tpl(deps.info)
+        this.el.innerHTML=deps.tpl(deps.info)
     }
 }

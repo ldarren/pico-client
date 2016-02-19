@@ -5,7 +5,6 @@ scratch2='A495FF22-C5B1-4B44-B512-1370F02D74DE',
 scratch3='A495FF23-C5B1-4B44-B512-1370F02D74DE',
 scratch4='A495FF24-C5B1-4B44-B512-1370F02D74DE',
 scratch5='A495FF25-C5B1-4B44-B512-1370F02D74DE',
-tpl='<button class="btn btn-positive btn-block">Unlock</button>',
 passcode=65535,
 salt=456,
 credential=function(){
@@ -21,12 +20,13 @@ return{
     className:'content-padded',
 	signals:['ble_startScan','ble_connect','ble_write','ble_startNotification','ble_stopNotification'],
 	deps:{
+		html:['file','<button class="btn btn-positive btn-block">Unlock</button>'],
         owner:'models'
 	},
 	create: function(deps){
         if (!deps.owner.length) return
         this.signals.ble_startScan([],30).send(this.host)
-        this.el.innerHTML=tpl
+        this.el.innerHTML=deps.html
 		this.peripheral=null
 		this.ble=null
 	},

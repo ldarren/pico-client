@@ -1,5 +1,4 @@
 var
-tpl = require('Drawer.asp'),
 clickable = function(self){
     var cl = self.el.classList
     if (!cl.contains('hidden')) cl.remove('unclickable')
@@ -9,6 +8,7 @@ return {
     className: 'leftMenu hidden unclickable',
     signals:['invalidate','pageSlide'],
     deps:{
+		tpl:'file',
         side:'text',
         menu:'list'
     },
@@ -18,7 +18,7 @@ return {
     },
     slots: {
         userReady:function(from, sender, model){
-            this.el.innerHTML = tpl({menu:this.deps.menu, user:model.attributes})
+            this.el.innerHTML = this.deps.tpl({menu:this.deps.menu, user:model.attributes})
         },
         menu: function(from, sender, side){
             var options = null

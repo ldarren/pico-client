@@ -4,8 +4,6 @@ SIGNIN=1,
 SIGNUP=2,
 picoStr=require('pico/str'),
 Router = require('js/Router'),
-tplSignin = require('FormSignin.asp'),
-tplSignup = require('FormSignup.asp'),
 login=function(){
     var
     fe = this.el,
@@ -64,7 +62,9 @@ return {
     tagName:'form',
     className: 'modal',
     deps:{
-        owner:'models'
+        owner:'models',
+		tplSignin:'file',
+		tplSignup:'file'
     },
     signals:['show','hide'],
     create: function(deps){
@@ -77,7 +77,7 @@ return {
         },
         signout:function(from, sender){
             this.page=SIGNIN
-            this.el.innerHTML=tplSignin()
+            this.el.innerHTML=this.deps.tplSignin()
             this.signals.show().send(this.host)
         }
     },
@@ -88,11 +88,11 @@ return {
             switch(this.page){
             case SIGNIN:
                 this.page=SIGNUP
-                this.el.innerHTML=tplSignup()
+                this.el.innerHTML=this.deps.tplSignup()
                 break
             default:
                 this.page=SIGNIN
-                this.el.innerHTML=tplSignin()
+                this.el.innerHTML=this.deps.tplSignin()
                 break
             }
         },

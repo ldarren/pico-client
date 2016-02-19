@@ -1,6 +1,6 @@
 {
     "domains":{
-        "lead":{"url":"http://52.73.58.222:4888/lead","delimiter":["&"],"beatRate":350},
-        "pico":{"url":"http://52.73.58.222:4888/pico","delimiter":["&"],"beatRate":350}
+        "lead":{"url":"http://54.83.28.108:4888/lead","delimiter":["&"],"beatRate":350},
+        "pico":{"url":"http://54.83.28.108:4888/pico","delimiter":["&"],"beatRate":350}
     }
 }

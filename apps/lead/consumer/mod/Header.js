@@ -1,14 +1,13 @@
-var 
-Router=require('js/Router'),
-html= require('Header.html')
+var Router=require('js/Router')
 
 return{
     tagName: 'header',
     signals:['menu','selectedMenu'],
     deps:{
+		html:'file'
     },
     create: function(deps){
-        this.el.innerHTML=html
+        this.el.innerHTML=deps.html
     },
     events: {
         'tap a': function(e){

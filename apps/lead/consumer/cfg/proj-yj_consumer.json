@@ -19,6 +19,7 @@
             ["paneId","int",0],
             ["attributes","map",{"id":"main"}],
             ["Drawer","view",[
+                ["tpl","file","Drawer.asp"],
                 ["side","text","right"],
                 ["menu","list",[
                     ["Users","icon-users","users"],
@@ -51,7 +52,9 @@
             ["paneId","int",1]
         ]],
         ["FormAuth","view",[
-            ["owner","ref","owner"]
+            ["owner","ref","owner"],
+            ["tplSignin","file","FormSignin.asp"],
+            ["tplSignup","file","FormSignup.asp"]
         ]],
         ["common/native/ble","ctrl",[]],
         ["common/auth/Session","ctrl",[
@@ -62,6 +65,7 @@
         "":[
             ["attributes","map",{"className":"fulpage active"}],
             ["Void","view",[
+				["tpl","file","Void.asp"]
             ]]
         ],
         "list":[
@@ -79,11 +83,14 @@
             ["attributes","map",{"className":"fulpage active"}],
             ["owner","ref","owner"],
             ["Header","view",[
-                ["hide","number",0]
+                ["hide","number",0],
+                ["html","file","Header.html"]
             ]],
             ["Calendar","view",[
+                ["html","file","Calendar.html"]
             ]],
             ["Menu","view",[
+                ["tpl","file","Menu.asp"],
                 ["owner","ref","owner"]
             ]]
         ]

@@ -1,8 +1,9 @@
-var tpl= require('Calendar.html')
-
 return{
     className: 'calendar',
+	deps:{
+		html:'file'
+	},
     create: function(deps){
-        this.el.innerHTML=tpl
+        this.el.innerHTML=deps.html
     }
 }
