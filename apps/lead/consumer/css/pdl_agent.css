@@ -6,8 +6,6 @@
 @import "modal.css";
 
 /* app specific  */
-@import "header.css";
 @import "form.css";
-@import "calendar.css";
-@import "menu.css";
 @import "void.css";
+@import "lock.css";

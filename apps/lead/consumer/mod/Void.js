@@ -1,5 +1,4 @@
 return{
-    tagName: 'p',
     className: 'void',
     deps:{
 		tpl:['file','<%=message%>'],
