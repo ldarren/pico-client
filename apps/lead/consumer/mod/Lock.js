@@ -1,10 +1,10 @@
 var
 scratchSrv='A495FF20-C5B1-4B44-B512-1370F02D74DE',
-scratch1='A495FF21-C5B1-4B44-B512-1370F02D74DE',
-scratch2='A495FF22-C5B1-4B44-B512-1370F02D74DE',
-scratch3='A495FF23-C5B1-4B44-B512-1370F02D74DE',
-scratch4='A495FF24-C5B1-4B44-B512-1370F02D74DE',
-scratch5='A495FF25-C5B1-4B44-B512-1370F02D74DE',
+scratch1=  'A495FF21-C5B1-4B44-B512-1370F02D74DE',
+scratch2=  'A495FF22-C5B1-4B44-B512-1370F02D74DE',
+scratch3=  'A495FF23-C5B1-4B44-B512-1370F02D74DE',
+scratch4=  'A495FF24-C5B1-4B44-B512-1370F02D74DE',
+scratch5=  'A495FF25-C5B1-4B44-B512-1370F02D74DE',
 passcode=65535,
 salt=456,
 credential=function(){
@@ -50,7 +50,7 @@ return{
 		ble_notification:function(from,sender,err,buffer){
 			if (err) return console.error(err)
 			var stage=new Uint32Array(buffer)
-			var btn=this.el.querySelector('button')
+			var btn=this.el.querySelector('a')
 			switch(stage[0]){
 			case 1:
 				btn.setAttribute('disable',1)

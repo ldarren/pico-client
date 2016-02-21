@@ -56,7 +56,6 @@
             ["tplSignin","file","FormSignin.asp"],
             ["tplSignup","file","FormSignup.asp"]
         ]],
-        ["common/native/ble","ctrl",[]],
         ["common/auth/Session","ctrl",[
             ["owner","ref","owner"],
             ["users","ref","users"]
