@@ -15,9 +15,10 @@ attachCSS = function(styles, cb){
     __.attachFile(styles.shift(), 'css', function(){ attachCSS(styles, cb) })
 },
 resized=function(self, paneCount){
-    if (paneCount === self.paneCount) return
-    self.paneCount=paneCount
+    if (paneCount === self.paneCountSpec[VALUE]) return
+    self.paneCountSpec[VALUE]=paneCount
     if (Backbone.History.started && self.currPath) changeRoute.call(self, self.currPath, self.currParams)
+	self.signals.paneCount(paneCount).send()
 },
 changeRoute = function(path, params){
     var f = this.flyers[path]
@@ -29,7 +30,7 @@ changeRoute = function(path, params){
 
     var
     pages=this.pages,
-    pc=this.paneCount || 1,
+    pc=this.paneCountSpec[VALUE] || 1,
     i=f.length < pc ? 0 : f.length-pc
 
     for(var j=0,p; i<pc; i++,j++){
@@ -45,17 +46,17 @@ changeRoute = function(path, params){
 
 return Module.View.extend({
     el: 'body',
-    signals:['changeRoute','frameAdded','paneAdded','paneUpdate'],
+    signals:['changeRoute','frameAdded','paneAdded','paneUpdate','paneCount'],
     deps:{
         html:   ['file','<div class=frame><div class=layer></div><div class=layer></div></div>'],
         layers: ['map', {main:'.frame>div:nth-child(1)',secondary:'.frame>div:nth-child(2)'}]
     },
     initialize: function(p, e){
-        window.location.hash='#'
         var self = this
         
         this.pages= p[PAGES]
         this.flyers= p[FLYERS]
+		this.paneCountSpec=['paneCount','int',1]
 
         document.addEventListener('animationstart', function(e){
             console.log(e.animationName)
@@ -71,7 +72,11 @@ return Module.View.extend({
 
             attachCSS(p[STYLE], function(){
                 attachJS(p[DEPS], function(){
-                    Module.View.prototype.initialize.call(self, null, {name:'Frame'}, p[SPEC].concat([['env','map',e]]))
+                    Module.View.prototype.initialize.call(self, null, {name:'Frame'}, 
+						p[SPEC].concat([
+							['env','map',e],
+							self.paneCountSpec
+						]))
                 })
             })
         })

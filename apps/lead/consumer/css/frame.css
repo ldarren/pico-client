@@ -6,6 +6,7 @@
     max-width:1440px;
     height:calc(100% - 38px);
     animation-duration: 0.001s;
+    animation-name: frameresize2;
 }
 .frame .layer{
     display:flex;

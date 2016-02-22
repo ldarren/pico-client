@@ -4,13 +4,10 @@ return{
     tagName: 'header',
     signals:['menu','selectedMenu'],
     deps:{
-		tpl:'file',
-		profile:'view',
-		date:'view',
-		tabs'view'
+		html:'file'
     },
     create: function(deps){
-        this.el.innerHTML=deps.tpl()
+        this.el.innerHTML=deps.html
     },
     events: {
         'tap a': function(e){
