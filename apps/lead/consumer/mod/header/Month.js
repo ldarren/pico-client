@@ -1,7 +1,7 @@
 var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December']
 
 return{
-    classname: 'month',
+    className: 'month',
     deps:{
 		tpl:'file'
     },

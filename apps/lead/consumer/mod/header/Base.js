@@ -6,14 +6,14 @@ return{
     deps:{
 		tpl:'file',
 		title:'text',
-		profile:'view',
-		date:'view',
+		user:'view',
+		month:'view',
 		tabs:'view'
     },
     create: function(deps){
         this.el.innerHTML=deps.tpl({title:deps.title})
-		if (deps.profile) this.spawn(deps.profile)
-		if (deps.date) this.spawn(deps.date)
+		if (deps.user) this.spawn(deps.user)
+		if (deps.month) this.spawn(deps.month)
 		if (deps.tabs) this.spawn(deps.tabs)
     },
     events: {

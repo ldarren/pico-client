@@ -1,9 +1,9 @@
 header {
-  position: relative;
-  min-height: 28rem;
-  background: rgba(0, 0, 0, 0.5);
-  padding: 6rem 1.5rem 2rem;
-  text-align: center;
+	position: relative;
+	background: rgba(0, 0, 0, 0.5);
+	color:#fff;
+	padding: 6rem 1.5rem 0;
+	text-align: center;
 }
 header .menu-btn {
   position: absolute;
@@ -44,7 +44,6 @@ header .icon.search {
 }
 header>h1{
   font-size: 2.2rem;
-  color: #fff;
   font-weight: normal;
   margin-bottom: 3rem;
 }
@@ -76,13 +75,13 @@ header .user-notif {
   line-height: 3rem;
   text-align: center;
   background: #50D2C2;
-  color: #fff;
   font-size: 1.5rem;
 }
 header .month:after {
   content: "";
   display: table;
   clear: both;
+  padding-bottom:2rem;
 }
 header .month-name {
   display: inline-block;
@@ -108,4 +107,17 @@ header .month-btn.right {
   float: right;
   -webkit-transform: rotate(45deg);
           transform: rotate(45deg);
+}
+header .tabs{
+	display:flex;
+}
+header .tabs li{
+	font-size: 1.2rem;
+    padding-bottom: 1.6rem;
+	color:rgba(255,255,255,0.5);
+	cursor:pointer;
+}
+header .tabs li.selected{
+	color:unset;
+	border-bottom: #50D2C2 5px solid;
 }
