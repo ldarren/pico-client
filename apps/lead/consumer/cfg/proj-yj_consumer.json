@@ -18,7 +18,7 @@
         ["log","models",{}],
         ["pane","view",[
             ["paneId","int",0],
-            ["attributes","map",{"id":"main"}],
+            ["attributes","map",{"id":"main"}]
         ],"js/Pane"],
         ["pane","view",[
             ["paneId","int",1],
@@ -58,23 +58,18 @@
 				["tpl","file","Void.asp"]
             ]]
         ],
-        "list":[
-            ["attributes","map",{"className":"fulpage active"}],
-            ["HeaderSetup","ctrl",[
-                ["left","list",["menu"]],
-                ["title","text","Home"]
-            ]],
-            ["owner","ref","owner"],
-            ["List","view",[
-                ["owner","ref","owner"]
-            ]]
-        ],
         "home":[
             ["attributes","map",{"className":"fulpage active"}],
             ["owner","ref","owner"],
-            ["Header","view",[
-                ["hide","number",0],
-                ["html","file","Header.html"]
+            ["header/Base","view",[
+                ["tpl","file","header/Base.asp"],
+                ["title","text","My Requests"],
+                ["User","view",[
+					["tpl","file","header/User.asp"]
+				],"header/User"],
+                ["Month","view",[
+					["tpl","file","header/Month.asp"]
+				],"header/Month"]
             ]],
             ["Calendar","view",[
                 ["html","file","Calendar.html"]

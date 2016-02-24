@@ -5,12 +5,16 @@ return{
     signals:['menu','selectedMenu'],
     deps:{
 		tpl:'file',
+		title:'text',
 		profile:'view',
 		date:'view',
-		tabs'view'
+		tabs:'view'
     },
     create: function(deps){
-        this.el.innerHTML=deps.tpl()
+        this.el.innerHTML=deps.tpl({title:deps.title})
+		if (deps.profile) this.spawn(deps.profile)
+		if (deps.date) this.spawn(deps.date)
+		if (deps.tabs) this.spawn(deps.tabs)
     },
     events: {
         'tap a': function(e){

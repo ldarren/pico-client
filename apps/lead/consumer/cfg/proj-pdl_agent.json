@@ -18,17 +18,7 @@
         ["log","models",{}],
         ["pane","view",[
             ["paneId","int",0],
-            ["attributes","map",{"id":"main"}],
-            ["Drawer","view",[
-                ["tpl","file","Drawer.asp"],
-                ["side","text","right"],
-                ["menu","list",[
-                    ["Users","icon-users","users"],
-                    ["Domains","icon-group","domain"],
-                    ["Locks","icon-lock","lock"],
-                    ["Records","icon-chart","log"]
-                ]]
-            ]]
+            ["attributes","map",{"id":"main"}]
         ],"js/Pane"],
         ["pane","view",[
             ["paneId","int",1],

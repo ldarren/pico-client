@@ -18,17 +18,7 @@
         ["log","models",{}],
         ["pane","view",[
             ["paneId","int",0],
-            ["attributes","map",{"id":"main"}],
-            ["Drawer","view",[
-                ["tpl","file","Drawer.asp"],
-                ["side","text","right"],
-                ["menu","list",[
-                    ["Users","icon-users","users"],
-                    ["Domains","icon-group","domain"],
-                    ["Locks","icon-lock","lock"],
-                    ["Records","icon-chart","log"]
-                ]]
-            ]]
+            ["attributes","map",{"id":"main"}]
         ],"js/Pane"],
         ["pane","view",[
             ["paneId","int",1],
@@ -71,9 +61,12 @@
         "home":[
             ["attributes","map",{"className":"fulpage active"}],
             ["owner","ref","owner"],
-            ["Lock","view",[
-                ["tpl","file","Lock.asp"],
-                ["owner","ref","owner"]
+            ["header/Base","view",[
+                ["tpl","file","header/Base.asp"],
+                ["title","text","Jobs"],
+				["tabs","view",[
+					["list","list",["Users","Agents"]]
+				],"header/Tabs"]
             ]]
         ]
     },{
