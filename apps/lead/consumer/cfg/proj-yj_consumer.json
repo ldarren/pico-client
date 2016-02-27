@@ -64,15 +64,20 @@
             ["header/Base","view",[
                 ["tpl","file","header/Base.asp"],
                 ["title","text","My Requests"],
-                ["User","view",[
+                ["header/User","view",[
 					["tpl","file","header/User.asp"]
-				],"header/User"],
-                ["Month","view",[
+				]],
+                ["header/Month","view",[
 					["tpl","file","header/Month.asp"]
-				],"header/Month"]
+				]]
             ]],
-            ["Calendar","view",[
-                ["html","file","Calendar.html"]
+			["DateDial","view",[
+                ["html","file","DateDial.html"]
+			]],
+            ["Scrollable","view",[
+				["cell","view",[
+					["tpl","file","CellRequest.asp"]
+				],"CellRequest"]
             ]],
             ["Menu","view",[
                 ["tpl","file","Menu.asp"],

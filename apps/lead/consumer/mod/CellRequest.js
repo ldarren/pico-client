@@ -1,0 +1,19 @@
+return{
+	tagName:'li',
+	className:'anim',
+	deps:{
+		img:'url',
+		name:'text',
+		time:'text',
+		place:'text',
+		note:'text',
+		tpl:'file'
+	},
+	create: function(deps){
+		this.el.innerHTML=deps.tpl(deps)
+	},
+	slots:{
+	},
+	events:{
+	}
+}

@@ -1,20 +1,17 @@
-var Router=require('js/Router')
+var
+Router=require('js/Router'),
+specMgr=require('js/specMgr')
 
 return{
     tagName: 'header',
     signals:['menu','selectedMenu'],
     deps:{
 		tpl:'file',
-		title:'text',
-		user:'view',
-		month:'view',
-		tabs:'view'
+		title:'text'
     },
     create: function(deps){
         this.el.innerHTML=deps.tpl({title:deps.title})
-		if (deps.user) this.spawn(deps.user)
-		if (deps.month) this.spawn(deps.month)
-		if (deps.tabs) this.spawn(deps.tabs)
+		this.spawnAsync(specMgr.findAllByType('view',this.spec))
     },
     events: {
         'tap a': function(e){

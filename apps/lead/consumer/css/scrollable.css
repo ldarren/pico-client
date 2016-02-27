@@ -1,0 +1,42 @@
+.scrollable{
+	flex:1 1 auto;
+	display:flex;
+	position:relative;
+	background: #fff;
+	overflow: hidden;
+}
+.scrollable > div{
+    overflow-y: auto;
+    overflow-x: hidden;
+	position:absolute;
+	height:100%;
+	width: calc(100% + 1.6rem);
+}
+.scrollable > div >  ul{
+    display: flex;
+	flex-direction:column;
+	width:100%;
+}
+.scrollable > div >  ul li {
+  position: relative;
+  border-top: 1px solid #EEEEEF;
+  padding: 1rem 2rem 1rem 7.5rem;
+}
+.scrollable > div >  ul li .photo {
+  position: absolute;
+  left: 2rem;
+  top: 1rem;
+  width: 4rem;
+  height: 4rem;
+}
+.scrollable > div >  ul li .name {
+  color: #000;
+  font-size: 1.3rem;
+}
+.scrollable > div >  ul li .info {
+  color: #949498;
+  font-size: 1.1rem;
+}
+.scrollable > div >  ul li .info *{
+	display:block;
+}

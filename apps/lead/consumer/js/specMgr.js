@@ -9,10 +9,10 @@ getId = function(spec){return spec[ID]},
 getType = function(spec){return spec[TYPE]},
 getValue = function(spec){return spec[VALUE]},
 getExtra = function(spec,idx){return spec[EXTRA+(idx||0)]},
-find = function(name, list){ for(var i=0,o; o=list[i]; i++){ if (name === o[ID]) return o } },
-findAll = function(type, list){
+find = function(id, list){ for(var i=0,o; o=list[i]; i++){ if (id === o[ID]) return o } },
+findAll = function(cond, list, by, all){
     var arr = []
-    for(var i=0,o; o=list[i]; i++){ if (type === o[TYPE]) arr.push(o) }
+    for(var i=0,o; o=list[i]; i++){ if (cond === o[by]) arr.push(all?o:o[VALUE]) }
     return arr
 },
 loadDeps = function(links, idx, klass, cb){
@@ -39,7 +39,7 @@ load = function(host, params, spec, idx, deps, cb, userData){
         deps.push(create(s[ID], f[TYPE], f[VALUE]))
         break
     case 'refs': // ID[id] TYPE[refs] VALUE[orgType]
-        Array.prototype.push.apply(deps, findAll(s[VALUE], context))
+        Array.prototype.push.apply(deps, findAll(s[VALUE], context, TYPE, 1))
         break
     case 'model': // ID[id] TYPE[model/field] VALUE[models] EXTRA[paramId] EXTRA1[field name]
 		f = find(s[VALUE], context)
@@ -122,8 +122,8 @@ return {
         setTimeout(load,0,host, params, spec, 0, [], cb, userData)
     },
     unload:unload,
-    find:find,
-    findAll:findAll,
+    findAllById: function(cond, list, all){ return findAll(cond, list, ID, all) },
+    findAllByType:function(cond, list, all){ return findAll(cond, list, TYPE, all) },
     create:create,
     getId:getId,
     getType:getType,

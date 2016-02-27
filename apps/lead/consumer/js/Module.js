@@ -20,11 +20,6 @@ refs=function(id,spec,rawSpec){
     }
     return ret
 },
-findAll = function(id, list){
-    var arr = []
-    for(var i=0,o; o=list[i]; i++){ if (id === o[ID]) arr.push(o[VALUE]) }
-    return arr
-},
 specLoaded = function(err, spec, userData){
     var
     self=userData[0],
@@ -50,7 +45,7 @@ specLoaded = function(err, spec, userData){
             d[k]=refs(k,spec,self._rawSpec)
             break
         default:
-            s=findAll(k, spec)
+            s=specMgr.findAllById(k, spec)
             if (1 === s.length){ d[k]=s[0] }
             else if (!s.length){ d[k]=v[1] }
             else{ d[k] = s }
@@ -130,7 +125,10 @@ Module= {
         return m
     },
     spawnAsync: function(Mods, params, hidden, cb){
-        if (!Mods.length) return cb()
+        if (!Mods.length) {
+			if (cb) cb()
+			return
+		}
         var m=Mods.shift()
         Mods.push(cb)
         return this.spawn(m, params, null, hidden, Mods)
@@ -229,6 +227,7 @@ var View = Backbone.View.extend(_.extend(Module, {
             }
             this._elements[i] = el
             el.dataset.viewName=mod.name
+			mod.rendered()
         }
         return el
     },
@@ -239,6 +238,8 @@ var View = Backbone.View.extend(_.extend(Module, {
     render: function(){
         return this.el
     },
+	rendered: function(){
+	},
     slots:{
         // seldom use, useful only after BB's setElement
         invalidate: this.show

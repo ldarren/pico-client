@@ -64,9 +64,9 @@
             ["header/Base","view",[
                 ["tpl","file","header/Base.asp"],
                 ["title","text","Jobs"],
-				["tabs","view",[
+				["header/Tabs","view",[
 					["list","list",["Users","Agents"]]
-				],"header/Tabs"]
+				]]
             ]]
         ]
     },{
