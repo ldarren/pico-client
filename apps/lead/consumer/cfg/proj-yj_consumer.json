@@ -11,11 +11,32 @@
         ["users","models",{
             "read": "lead/user/read"
         }],
-        ["address","models",{}],
         ["domain","models",{}],
-        ["post","models",{}],
         ["lock","models",{}],
         ["log","models",{}],
+		["requests","list",[
+			{
+				"img":"dat/p6.png",
+				"name":"Visit Joey place",
+				"time":"8 - 10am",
+				"place":"Jurong East",
+				"note":"Change water tap"
+			},
+			{
+				"img":"dat/p5.png",
+				"name":"Visit Darren place",
+				"time":"1 - 3pm",
+				"place":"Manhattan",
+				"note":"Fix shower pipe"
+			},
+			{
+				"img":"dat/p7.png",
+				"name":"Visit Hock Soon place",
+				"time":"8 - 19pm",
+				"place":"London",
+				"note":"Aircon service"
+			}
+		]],
         ["pane","view",[
             ["paneId","int",0],
             ["attributes","map",{"id":"main"}]
@@ -61,6 +82,7 @@
         "home":[
             ["attributes","map",{"className":"fulpage active"}],
             ["owner","ref","owner"],
+			["requests","ref","requests"],
             ["header/Base","view",[
                 ["tpl","file","header/Base.asp"],
                 ["title","text","My Requests"],
@@ -75,9 +97,10 @@
                 ["html","file","DateDial.html"]
 			]],
             ["Scrollable","view",[
+				["list","ref","requests"],
 				["cell","view",[
-					["tpl","file","CellRequest.asp"]
-				],"CellRequest"]
+					["tpl","file","CardRequest.asp"]
+				],"CardRequest"]
             ]],
             ["Menu","view",[
                 ["tpl","file","Menu.asp"],

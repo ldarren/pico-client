@@ -97,7 +97,7 @@ Module= {
             case 'view': list.push(s[VALUE]); break
             }
         }
-        this.spawnAsync(list, params, false, dummyCB)
+        this.spawnAsync(list, params, null, false, dummyCB)
     },
     addSpec: function(rawSpec, cb){
         this._rawSpec=(this._rawSpec||[]).concat(rawSpec)
@@ -124,14 +124,14 @@ Module= {
 
         return m
     },
-    spawnAsync: function(Mods, params, hidden, cb){
+    spawnAsync: function(Mods, params, spec, hidden, cb){
         if (!Mods.length) {
 			if (cb) cb()
 			return
 		}
         var m=Mods.shift()
         Mods.push(cb)
-        return this.spawn(m, params, null, hidden, Mods)
+        return this.spawn(m, params, spec, hidden, Mods)
     },
     dump: function(mod){
         if (!mod) return -1
@@ -185,18 +185,11 @@ var View = Backbone.View.extend(_.extend(Module, {
 
         if ('ctrl'===Mod.type) return Ctrl.prototype.spawn.call(this, Mod, params, spec, chains)
 
-        var
-        s=spec && spec.length ? Mod.spec.concat(spec) : Mod.spec,
-        attr
+        var s=spec && spec.length ? Mod.spec.concat(spec) : Mod.spec
 
-        for(var i=0,a; a=s[i]; i++){
-            if ('attributes'===a[ID]){
-                attr=a[VALUE]
-                break
-            }
-        }
+        for(var i=0,o; o=s[i]; i++){ if ('options'===o[ID]) break }
 
-        var m = new (View.extend(Mod.Class))(attr, Mod, s, params, this, !hidden, chains)
+        var m = new (View.extend(Mod.Class))(o?o[VALUE]:o, Mod, s, params, this, !hidden, chains)
         this.modules.push(m)
         return m
     },

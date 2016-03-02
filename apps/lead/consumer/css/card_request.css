@@ -1,0 +1,23 @@
+.cardRequest {
+  position: relative;
+  border-top: 1px solid #EEEEEF;
+  padding: 1rem 2rem 1rem 7.5rem;
+}
+.cardRequest .photo {
+  position: absolute;
+  left: 2rem;
+  top: 1rem;
+  width: 4rem;
+  height: 4rem;
+}
+.cardRequest .name {
+  color: #000;
+  font-size: 1.3rem;
+}
+.cardRequest .info {
+  color: #949498;
+  font-size: 1.1rem;
+}
+.cardRequest .info *{
+	display:block;
+}

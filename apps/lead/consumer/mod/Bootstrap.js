@@ -12,7 +12,7 @@ return{
                 case 'view': list.push(specMgr.getValue(s)); break
                 }
             }
-            self.spawnAsync(list, [], false, function(){
+            self.spawnAsync(list, null, null, false, function(){
                 for(var i=0,s; s=self.spec[i]; i++){
                     console.log(s)
                 }

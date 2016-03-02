@@ -11,11 +11,26 @@
         ["users","models",{
             "read": "lead/user/read"
         }],
-        ["address","models",{}],
-        ["domain","models",{}],
-        ["post","models",{}],
-        ["lock","models",{}],
-        ["log","models",{}],
+		["jobs","list",[
+			{
+				"price":45,
+				"from":"251, Jurong East Street 24",
+				"to":"71, Woodland Avenue 65",
+				"datetime":"2016-03-02 14:30:00",
+				"requests":3,
+				"pledge":60,
+				"weight":56
+			},
+			{
+				"price":100,
+				"from":"251, Paya Lebar Street 24",
+				"to":"70, Sengkang Avenue 65",
+				"datetime":"2016-04-03 17:30:00",
+				"requests":5,
+				"pledge":290,
+				"weight":100
+			}
+		]],
         ["pane","view",[
             ["paneId","int",0],
             ["attributes","map",{"id":"main"}]
@@ -68,15 +83,40 @@
         ],
         "home":[
             ["attributes","map",{"className":"fulpage active"}],
-            ["owner","ref","owner"],
+            ["jobs","ref","jobs"],
 			["header/Base","view",[
 				["tpl","file","header/Base.asp"],
 				["title","text","Job"]
 			]],
-            ["List","view",[
-                ["owner","ref","owner"],
+            ["Scrollable","view",[
+				["html","file","DeliveryList.html"],
+				["list","ref","jobs"],
                 ["cell","view",[
-				],"CellDelivery"]
+					["CardFoldableSection","view",[
+						["options","map",{ "className":"card__map" }],
+						["tpl","file","CardDeliverySectionMap.asp"]
+					]],
+					["CardFoldableSection","view",[
+						["options","map",{ "className":"card__part card__part-1" }],
+						["data","ref","data"],
+						["tpl","file","CardDeliverySection1.asp"]
+					]],
+					["CardFoldableSection","view",[
+						["options","map",{ "className":"card__part card__part-2" }],
+						["data","ref","data"],
+						["tpl","file","CardDeliverySection2.asp"],
+						["CardFoldableSection","view",[
+							["options","map",{ "className":"card__part card__part-3" }],
+							["data","ref","data"],
+							["tpl","file","CardDeliverySection3.asp"],
+							["CardFoldableSection","view",[
+								["options","map",{ "className":"card__part card__part-4" }],
+								["data","ref","data"],
+								["tpl","file","CardDeliverySection4.asp"]
+							]]
+						]]
+					]]
+				],"CardFoldable"]
             ]]
         ]
     },{

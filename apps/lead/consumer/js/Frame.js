@@ -111,8 +111,8 @@ return Module.View.extend({
         }
 
         var self=this
-        this.spawnAsync(panes, params, false, function(){
-            self.spawnAsync(list, params, true, function(){self.signals.frameAdded().send()})
+        this.spawnAsync(panes, params, null, false, function(){
+            self.spawnAsync(list, params, null, true, function(){self.signals.frameAdded().send()})
         })
     },
 

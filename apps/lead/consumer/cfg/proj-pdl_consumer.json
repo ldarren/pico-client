@@ -18,17 +18,7 @@
         ["log","models",{}],
         ["pane","view",[
             ["paneId","int",0],
-            ["attributes","map",{"id":"main"}],
-            ["Drawer","view",[
-                ["tpl","file","Drawer.asp"],
-                ["side","text","right"],
-                ["menu","list",[
-                    ["Users","icon-users","users"],
-                    ["Domains","icon-group","domain"],
-                    ["Locks","icon-lock","lock"],
-                    ["Records","icon-chart","log"]
-                ]]
-            ]]
+            ["attributes","map",{"id":"main"}]
         ],"js/Pane"],
         ["pane","view",[
             ["paneId","int",1],
@@ -71,8 +61,26 @@
         "home":[
             ["attributes","map",{"className":"fulpage active"}],
             ["owner","ref","owner"],
-            ["Lock","view",[
-                ["tpl","file","Lock.asp"],
+            ["header/Base","view",[
+                ["tpl","file","header/Base.asp"],
+                ["title","text","My Requests"],
+                ["header/User","view",[
+					["tpl","file","header/User.asp"]
+				]],
+                ["header/Month","view",[
+					["tpl","file","header/Month.asp"]
+				]]
+            ]],
+			["DateDial","view",[
+                ["html","file","DateDial.html"]
+			]],
+            ["Scrollable","view",[
+				["cell","view",[
+					["tpl","file","CardRequest.asp"]
+				],"CardRequest"]
+            ]],
+            ["Menu","view",[
+                ["tpl","file","Menu.asp"],
                 ["owner","ref","owner"]
             ]]
         ]

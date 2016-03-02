@@ -39,7 +39,7 @@ return {
         }
         this.spec=this.spec.concat(this.host.spec)
         var self=this
-        this.spawnAsync(list, params, true, function(){self.signals.paneAdd(self.deps.paneId).send()})
+        this.spawnAsync(list, params, null, true, function(){self.signals.paneAdd(self.deps.paneId).send()})
     },
 
     slots: {
