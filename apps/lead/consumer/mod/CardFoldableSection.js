@@ -4,10 +4,10 @@ return {
 	tagName:'section',
 	deps:{
 		tpl:'file',
-		data:'map'
+		card:'map'
 	},
 	create:function(deps){
-		this.el.innerHTML=deps.tpl(deps.data)
+		this.el.innerHTML=deps.tpl(deps.card)
 		this.spawnAsync(specMgr.findAllByType('view',this.spec))
 	}
 }

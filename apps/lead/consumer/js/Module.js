@@ -1,7 +1,6 @@
 var ID=0,TYPE=1,VALUE=2,EXTRA=3,
 REFS='refs',
 specMgr = require('js/specMgr'),
-Router = require('js/Router'),
 sigslot= require('js/sigslot'),
 dummyCB=function(){},
 refs=function(id,spec,rawSpec){
@@ -27,8 +26,8 @@ specLoaded = function(err, spec, userData){
 
     if (self._removed) return self.remove()
     if (err){
-        console.warn(err)
-        return Router.home()
+		__.dialogs.alert(err, 'Load Error')
+        return console.warn(err)
     }
 
     self.spec = spec
@@ -63,11 +62,12 @@ specLoaded = function(err, spec, userData){
         if (self._show) h.show(self, self._show[0], self._show[1])
         if (spawnList){
             var m=spawnList.shift()
-            if (!spawnList.length){
+            if (1===spawnList.length){
+				spawnList.length=0
                 if(m) m.call(h, null, self)
                 return
             }
-            h.spawn(m, self._params, null, !self._show, spawnList)
+            h.spawn(m, self._params, spawnList[spawnList.length-1], !self._show, spawnList)
         }
     }
 },
@@ -131,6 +131,7 @@ Module= {
 		}
         var m=Mods.shift()
         Mods.push(cb)
+		Mods.push(spec)
         return this.spawn(m, params, spec, hidden, Mods)
     },
     dump: function(mod){

@@ -33,11 +33,11 @@
 		]],
         ["pane","view",[
             ["paneId","int",0],
-            ["attributes","map",{"id":"main"}]
+            ["options","map",{"id":"main"}]
         ],"js/Pane"],
         ["pane","view",[
             ["paneId","int",1],
-            ["attributes","map",{"id":"secondary"}]
+            ["options","map",{"id":"secondary"}]
         ],"js/Pane"],
         ["DataStream","ctrl", [
             ["models","refs","models"],
@@ -50,11 +50,11 @@
             }]
         ],["common/auth/DataStream","DataStreamMixin"]],
         ["common/ui/niko","view",[
-            ["attributes","map",{"el":"#main.pane>div:nth-child(1)"}],
+            ["options","map",{"el":"#main.pane>div:nth-child(1)"}],
             ["paneId","int",0]
         ]],
         ["common/ui/niko","view",[
-            ["attributes","map",{"el":"#secondary.pane>div:nth-child(1)"}],
+            ["options","map",{"el":"#secondary.pane>div:nth-child(1)"}],
             ["paneId","int",1]
         ]],
         ["FormAuth","view",[
@@ -68,13 +68,13 @@
         ]]
     ],{
         "":[
-            ["attributes","map",{"className":"fulpage active"}],
+            ["options","map",{"className":"fulpage active"}],
             ["Void","view",[
 				["tpl","file","Void.asp"]
             ]]
         ],
         "Lock":[
-            ["attributes","map",{"className":"fulpage active"}],
+            ["options","map",{"className":"fulpage active"}],
             ["owner","ref","owner"],
             ["Lock","view",[
                 ["tpl","file","Lock.asp"],
@@ -82,7 +82,7 @@
             ]]
         ],
         "home":[
-            ["attributes","map",{"className":"fulpage active"}],
+            ["options","map",{"className":"fulpage active"}],
             ["jobs","ref","jobs"],
 			["header/Base","view",[
 				["tpl","file","header/Base.asp"],
@@ -98,20 +98,20 @@
 					]],
 					["CardFoldableSection","view",[
 						["options","map",{ "className":"card__part card__part-1" }],
-						["data","ref","data"],
+						["card","ref","card"],
 						["tpl","file","CardDeliverySection1.asp"]
 					]],
 					["CardFoldableSection","view",[
 						["options","map",{ "className":"card__part card__part-2" }],
-						["data","ref","data"],
+						["card","ref","card"],
 						["tpl","file","CardDeliverySection2.asp"],
 						["CardFoldableSection","view",[
 							["options","map",{ "className":"card__part card__part-3" }],
-							["data","ref","data"],
+							["card","ref","card"],
 							["tpl","file","CardDeliverySection3.asp"],
 							["CardFoldableSection","view",[
 								["options","map",{ "className":"card__part card__part-4" }],
-								["data","ref","data"],
+								["card","ref","card"],
 								["tpl","file","CardDeliverySection4.asp"]
 							]]
 						]]

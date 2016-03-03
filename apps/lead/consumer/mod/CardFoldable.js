@@ -11,10 +11,11 @@ return{
 	create: function(deps){
 		var
 		data=deps.data,
-		dt=new Date(data.datetime),
-		spec=['data','map',{data:data,delivDateNoun:picoTime.day(dt),delivTime:dt.toLocaleTimeString()}]
+		dt=new Date(data.datetime)
+		// HACK: remove whenserver code is ready
+		this.spec.push(['card','map',{card:data,delivDateNoun:picoTime.day(dt),delivTime:dt.toLocaleTimeString()}])
 
-		this.spawnAsync(specMgr.findAllByType('view',this.spec), null, spec)
+		this.spawnAsync(specMgr.findAllByType('view',this.spec))
 	},
 	slots:{
 	},

@@ -2,10 +2,10 @@
 	flex:1 1 auto;
 	display:flex;
 	position:relative;
-	background: #fff;
 	overflow: hidden;
 }
 .scrollable > div{
+	background: #fff;
     overflow-y: auto;
     overflow-x: hidden;
 	position:absolute;

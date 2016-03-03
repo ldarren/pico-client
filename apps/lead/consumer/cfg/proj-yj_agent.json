@@ -18,11 +18,11 @@
         ["log","models",{}],
         ["pane","view",[
             ["paneId","int",0],
-            ["attributes","map",{"id":"main"}]
+            ["options","map",{"id":"main"}]
         ],"js/Pane"],
         ["pane","view",[
             ["paneId","int",1],
-            ["attributes","map",{"id":"secondary"}]
+            ["options","map",{"id":"secondary"}]
         ],"js/Pane"],
         ["DataStream","ctrl", [
             ["models","refs","models"],
@@ -35,11 +35,11 @@
             }]
         ],["common/auth/DataStream","DataStreamMixin"]],
         ["common/ui/niko","view",[
-            ["attributes","map",{"el":"#main.pane>div:nth-child(1)"}],
+            ["options","map",{"el":"#main.pane>div:nth-child(1)"}],
             ["paneId","int",0]
         ]],
         ["common/ui/niko","view",[
-            ["attributes","map",{"el":"#secondary.pane>div:nth-child(1)"}],
+            ["options","map",{"el":"#secondary.pane>div:nth-child(1)"}],
             ["paneId","int",1]
         ]],
         ["FormAuth","view",[
@@ -53,13 +53,13 @@
         ]]
     ],{
         "":[
-            ["attributes","map",{"className":"fulpage active"}],
+            ["options","map",{"className":"fulpage active"}],
             ["Void","view",[
 				["tpl","file","Void.asp"]
             ]]
         ],
         "home":[
-            ["attributes","map",{"className":"fulpage active"}],
+            ["options","map",{"className":"fulpage active"}],
             ["owner","ref","owner"],
 			["header/Base","view",[
 				["tpl","file","header/Base.asp"],
