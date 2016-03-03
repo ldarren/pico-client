@@ -8,7 +8,7 @@ reqStep1 = 600,
 reqStep2 = 800,
 reqClosingStep1 = 500,
 reqClosingStep2 = 500,
-initMap=function($card) {
+initMap=function(card) {
 	// my first experience with google maps api, so I have no idea what I'm doing
 	var latLngFrom = {lat: 40.7878581, lng: -73.9671309};
 	var latLngTo = {lat: 40.746433, lng: -73.9503613};
@@ -16,9 +16,9 @@ initMap=function($card) {
 		lat: (latLngFrom.lat + latLngTo.lat)/2,
 		lng: (latLngFrom.lng + latLngTo.lng)/2
 	};
-	var themeColor = $card.data("color");
+	var themeColor = card.dataset.color;
 
-	var map = new google.maps.Map($(".card__map__inner", $card)[0], {
+	var map = new google.maps.Map(card.querySelector(".card__map__inner"), {
 		zoom: 12,
 		center: latLngCenter,
 		mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -90,12 +90,12 @@ initMap=function($card) {
 return{
 	tagName:'li',
 	className:'card',
+	signals:['scrollTo'],
 	deps:{
 		data:'map'
 	},
 	create: function(deps){
 		this.animating = false;
-		this.$scrollCont = $(".phone__scroll-cont");
 
 		var
 		self=this,
@@ -108,6 +108,7 @@ return{
 			delivDateNoun:picoTime.day(dt),
 			delivTime:dt.toLocaleTimeString()}])
 		this.el.classList.add('theme-'+data.themeColor)
+		this.el.dataset.color=data.themeColorHex
 
 		this.spawnAsync(specMgr.findAllByType('view',this.spec),null,null,null,function(){
 			//initMap(self.el)
@@ -130,14 +131,14 @@ return{
 			cl.add("flip-step1");
 			cl.add("active");
 
-			$scrollCont.animate({scrollTop: scrollTopVal}, step1);
+			self.signals.scrollTop(scrollTopVal, step1).send(this.host)
 
 			setTimeout(function() {
-				$scrollCont.animate({scrollTop: scrollTopVal}, step2);
+				self.signals.scrollTop(scrollTopVal, step2).send(this.host)
 				cl.add("flip-step2");
 
 				setTimeout(function() {
-					$scrollCont.animate({scrollTop: scrollTopVal}, step3);
+					self.signals.scrollTop(scrollTopVal, step3).send(this.host)
 					cl.add("flip-step3");
 
 					setTimeout(function() {
@@ -186,11 +187,11 @@ return{
 			cl.add("req-active1");
 			cl.add("map-active");
 
-			initMap($card);
+			initMap(el);
 
 			setTimeout(function() {
 				cl.add("req-active2");
-				$scrollCont.animate({scrollTop: scrollTopVal}, reqStep2);
+				self.signals.scrollTop(scrollTopVal, reqStep2).send(this.host)
 
 				setTimeout(function() {
 					self.animating = false;

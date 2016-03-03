@@ -1,3 +1,13 @@
+var scrollTo=function (el, to, duration) {
+	if (duration <= 0) return;
+
+	setTimeout(function(perTick) {
+		el.scrollTop = el.scrollTop + perTick;
+		if (el.scrollTop === to) return;
+		scrollTo(el, to, duration - 10);
+	}, 10, (to - el.scrollTop)/duration * 10);
+}
+
 return{
 	className:'scrollable',
 	deps:{
@@ -7,6 +17,7 @@ return{
 	},
 	create: function(deps){
 		this.el.innerHTML=deps.html
+		this.scrollCont=this.el.querySelector('div')
 	},
 	rendered:function(){
 		var
@@ -19,6 +30,9 @@ return{
 		}
 	},
 	slots:{
+		scrollTo:function(from, sender, to, duration){
+			scrollTo(this.scrollCont, to, duration)
+		}
 	},
 	events:{
 	}

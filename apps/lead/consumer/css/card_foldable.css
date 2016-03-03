@@ -421,7 +421,7 @@
   transition: width 0.3s;
 }
 .card__face:hover .card__face__colored-side {
-  width: 80px;
+  width: 100px;
 }
 .card__face__price {
   margin-top: -3px;
@@ -436,7 +436,7 @@
 }
 .card__face__divider {
   position: absolute;
-  left: 80px;
+  left: 100px;
   top: 10px;
   width: 1px;
   height: calc(100% - 20px);
@@ -444,7 +444,7 @@
 }
 .card__face__path {
   position: absolute;
-  left: 105px;
+  left: 115px;
   top: 36px;
   width: 2px;
   height: 23px;
@@ -467,7 +467,7 @@
 }
 .card__face__from-to {
   position: absolute;
-  left: 120px;
+  left: 130px;
   top: 20px;
   width: 300px;
   color: #555A5F;
@@ -519,13 +519,13 @@
   font-weight: bold;
 }
 .card__face__stats--req {
-  left: 100px;
+  left: 110px;
 }
 .card__face__stats--pledge {
-  left: 190px;
+  left: 200px;
 }
 .card__face__stats--weight {
-  left: 270px;
+  left: 280px;
 }
 .card__face__stats--weight p {
   text-transform: lowercase;
