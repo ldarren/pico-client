@@ -29,7 +29,7 @@
 				"fromCity": "Jurong, 65748",
 				"toStreet": "Woodland Ave 10",
 				"toCity": "Woodland, 784839",
-				"datetime":"2016-05-16 18:30:00",
+				"datetime":"2016/05/16 18:30:00",
 				"reqDl": "24minutes"
 			},
 			{
@@ -49,7 +49,7 @@
 				"fromCity": "Seranggon, 103383",
 				"toStreet": "Woodland Ave 5",
 				"toCity": "Singapore, 374859",
-				"datetime":"2016-05-16 19:30:00",
+				"datetime":"2016/05/16 19:30:00",
 				"reqDl": "33minutes"
 			},
 			{
@@ -69,7 +69,7 @@
 				"fromCity": "Seranggon, 103383",
 				"toStreet": "Woodland Ave 5",
 				"toCity": "Singapore, 374859",
-				"datetime":"2016-05-16 21:22:00",
+				"datetime":"2016/05/16 21:22:00",
 				"reqDl": "15minutes"
 			},
 			{
@@ -89,7 +89,7 @@
 				"fromCity": "Seranggon, 103383",
 				"toStreet": "Woodland Ave 5",
 				"toCity": "Singapore, 374859",
-				"datetime":"2016-05-16 18:30:00",
+				"datetime":"2016/05/16 18:30:00",
 				"reqDl": "24minutes"
 			},
 			{
@@ -109,7 +109,7 @@
 				"fromCity": "#02-203/204, S(1734844)",
 				"toStreet": "50 #03-08, JEM",
 				"toCity": "Jurong Gateway Rd, S(17374848)",
-				"datetime":"2016-05-16 18:30:00",
+				"datetime":"2016/05/16 18:30:00",
 				"reqDl": "24minutes"
 			},
 			{
@@ -129,7 +129,7 @@
 				"fromCity": "#02-138/9, VivoCity, 098585",
 				"toStreet": "65 Airport Blvd",
 				"toCity": "Singapore, 819663",
-				"datetime":"2016-05-16 18:30:00",
+				"datetime":"2016/05/16 18:30:00",
 				"reqDl": "24minutes"
 			},
 			{
@@ -149,7 +149,7 @@
 				"fromCity": "Singapore, 485993",
 				"toStreet": "207B New Upper Changi Rd",
 				"toCity": "S(7374884)",
-				"datetime":"2016-05-16 18:30:00",
+				"datetime":"2016/05/16 18:30:00",
 				"reqDl": "24minutes"
 			},
 			{
@@ -169,7 +169,7 @@
 				"fromCity": "SIngapore, 1838393",
 				"toStreet": "154 West Coast Rd",
 				"toCity": "Singapore, 374849",
-				"datetime":"2016-05-16 18:30:00",
+				"datetime":"2016/05/16 18:30:00",
 				"reqDl": "24minutes"
 			}
 		]],

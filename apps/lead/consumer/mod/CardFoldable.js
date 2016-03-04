@@ -10,8 +10,8 @@ reqClosingStep1 = 500,
 reqClosingStep2 = 500,
 initMap=function(card) {
 	// my first experience with google maps api, so I have no idea what I'm doing
-	var latLngFrom = {lat: 40.7878581, lng: -73.9671309};
-	var latLngTo = {lat: 40.746433, lng: -73.9503613};
+	var latLngFrom = {lat:1.289365, lng:103.8521763};
+	var latLngTo = {lat:1.2897934, lng:103.8558166};
 	var latLngCenter = {
 		lat: (latLngFrom.lat + latLngTo.lat)/2,
 		lng: (latLngFrom.lng + latLngTo.lng)/2
@@ -100,13 +100,16 @@ return{
 		var
 		self=this,
 		data=deps.data,
-		dt=new Date(data.datetime)
+		dt=new Date(data.datetime),
+		t=dt.toLocaleTimeString()
 
-		// HACK: remove whenserver code is ready
+		t=t.substring(0, t.indexOf('M')+1)
+
+		// HACK: remove when server code is ready
 		this.spec.push(['card','map',{
 			card:data,
 			delivDateNoun:picoTime.day(dt),
-			delivTime:dt.toLocaleTimeString()}])
+			delivTime:t}])
 		this.el.classList.add('theme-'+data.themeColor)
 		this.el.dataset.color=data.themeColorHex
 

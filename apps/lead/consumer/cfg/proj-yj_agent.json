@@ -11,11 +11,168 @@
         ["users","models",{
             "read": "lead/user/read"
         }],
-        ["address","models",{}],
-        ["domain","models",{}],
-        ["post","models",{}],
-        ["lock","models",{}],
-        ["log","models",{}],
+		["jobs","list",[
+			{
+				"id": "2618-3157",
+				"price": 25,
+				"requests": 5,
+				"pledge": 150,
+				"weight": 50,
+				"sender": "Norton Kang",
+				"senderImg": "dat/p1.png",
+				"themeColor": "purple",
+				"themeColorHex": "#BA68C8",
+				"bgImgUrl": "//s3-us-west-2.amazonaws.com/s.cdpn.io/142996/deliv-1.jpg",
+				"rating": 5,
+				"ratingCount": 26,
+				"fromStreet": "Jurong East St 96",
+				"fromCity": "Jurong, 65748",
+				"toStreet": "Woodland Ave 10",
+				"toCity": "Woodland, 784839",
+				"datetime":"2016/05/16 18:30:00",
+				"reqDl": "24minutes"
+			},
+			{
+				"id": "2618-3156",
+				"price": 37,
+				"requests": 7,
+				"pledge": 222,
+				"weight": 66,
+				"sender": "Darren Liew",
+				"senderImg": "dat/p2.png",
+				"themeColor": "green",
+				"themeColorHex": "#52A43A",
+				"bgImgUrl": "//s3-us-west-2.amazonaws.com/s.cdpn.io/142996/deliv-2.jpg",
+				"rating": 4,
+				"ratingCount": 21,
+				"fromStreet": "Chinese Nex",
+				"fromCity": "Seranggon, 103383",
+				"toStreet": "Woodland Ave 5",
+				"toCity": "Singapore, 374859",
+				"datetime":"2016/05/16 19:30:00",
+				"reqDl": "33minutes"
+			},
+			{
+				"id": "2618-3155",
+				"price": 12,
+				"requests": 3,
+				"pledge": 80,
+				"weight": 20,
+				"sender": "Cai Yong Lan",
+				"senderImg": "dat/p3.png",
+				"themeColor": "orange",
+				"themeColorHex": "#F7AA17",
+				"bgImgUrl": "//s3-us-west-2.amazonaws.com/s.cdpn.io/142996/deliv-3.jpg",
+				"rating": 5,
+				"ratingCount": 15,
+				"fromStreet": "10 Tampinese Central 1",
+				"fromCity": "Seranggon, 103383",
+				"toStreet": "Woodland Ave 5",
+				"toCity": "Singapore, 374859",
+				"datetime":"2016/05/16 21:22:00",
+				"reqDl": "15minutes"
+			},
+			{
+				"id": "2618-3154",
+				"price": 80,
+				"requests": 25,
+				"pledge": 550,
+				"weight": 250,
+				"sender": "Liew Fong Guang",
+				"senderImg": "dat/p4.png",
+				"themeColor": "red",
+				"themeColorHex": "#EF5350",
+				"bgImgUrl": "//s3-us-west-2.amazonaws.com/s.cdpn.io/142996/deliv-4.jpg",
+				"rating": 5,
+				"ratingCount": 66,
+				"fromStreet": "10 Tampinese Central 1",
+				"fromCity": "Seranggon, 103383",
+				"toStreet": "Woodland Ave 5",
+				"toCity": "Singapore, 374859",
+				"datetime":"2016/05/16 18:30:00",
+				"reqDl": "24minutes"
+			},
+			{
+				"id": "2618-3153",
+				"price": 49,
+				"requests": 17,
+				"pledge": 299,
+				"weight": 149,
+				"sender": "Muthu",
+				"senderImg": "dat/p9.png",
+				"themeColor": "purple",
+				"themeColorHex": "#BA68C8",
+				"bgImgUrl": "//s3-us-west-2.amazonaws.com/s.cdpn.io/142996/deliv-5.jpg",
+				"rating": 5,
+				"ratingCount": 26,
+				"fromStreet": "6 Raffles Boulevard,",
+				"fromCity": "#02-203/204, S(1734844)",
+				"toStreet": "50 #03-08, JEM",
+				"toCity": "Jurong Gateway Rd, S(17374848)",
+				"datetime":"2016/05/16 18:30:00",
+				"reqDl": "24minutes"
+			},
+			{
+				"id": "2618-3152",
+				"price": 99,
+				"requests": 33,
+				"pledge": 611,
+				"weight": 432,
+				"sender": "Alawi Saab",
+				"senderImg": "dat/p10.png",
+				"themeColor": "green",
+				"themeColorHex": "#52A43A",
+				"bgImgUrl": "//s3-us-west-2.amazonaws.com/s.cdpn.io/142996/deliv-6.jpg",
+				"rating": 2,
+				"ratingCount": 26,
+				"fromStreet": "1 Harbourfront Walk",
+				"fromCity": "#02-138/9, VivoCity, 098585",
+				"toStreet": "65 Airport Blvd",
+				"toCity": "Singapore, 819663",
+				"datetime":"2016/05/16 18:30:00",
+				"reqDl": "24minutes"
+			},
+			{
+				"id": "2618-3151",
+				"price": 61,
+				"requests": 15,
+				"pledge": 318,
+				"weight": 130,
+				"sender": "Moor Nur",
+				"senderImg": "dat/p7.png",
+				"themeColor": "orange",
+				"themeColorHex": "#F7AA17",
+				"bgImgUrl": "//s3-us-west-2.amazonaws.com/s.cdpn.io/142996/deliv-7.jpg",
+				"rating": 3,
+				"ratingCount": 26,
+				"fromStreet": "1 Woodlands Square",
+				"fromCity": "Singapore, 485993",
+				"toStreet": "207B New Upper Changi Rd",
+				"toCity": "S(7374884)",
+				"datetime":"2016/05/16 18:30:00",
+				"reqDl": "24minutes"
+			},
+			{
+				"id": "2618-3150",
+				"price": 13,
+				"requests": 9,
+				"pledge": 231,
+				"weight": 55,
+				"sender": "Liu Zhi Yan",
+				"senderImg": "dat/p9.png",
+				"themeColor": "red",
+				"themeColorHex": "#EF5350",
+				"bgImgUrl": "//s3-us-west-2.amazonaws.com/s.cdpn.io/142996/deliv-8.jpg",
+				"rating": 4,
+				"ratingCount": 26,
+				"fromStreet": "21 Choa Chu Kang Avenue 4",
+				"fromCity": "SIngapore, 1838393",
+				"toStreet": "154 West Coast Rd",
+				"toCity": "Singapore, 374849",
+				"datetime":"2016/05/16 18:30:00",
+				"reqDl": "24minutes"
+			}
+		]],
         ["pane","view",[
             ["paneId","int",0],
             ["options","map",{"id":"main"}]
@@ -58,17 +215,50 @@
 				["tpl","file","Void.asp"]
             ]]
         ],
-        "home":[
+        "Lock":[
             ["options","map",{"className":"fulpage active"}],
             ["owner","ref","owner"],
+            ["Lock","view",[
+                ["tpl","file","Lock.asp"],
+                ["owner","ref","owner"]
+            ]]
+        ],
+        "home":[
+            ["options","map",{"className":"fulpage active"}],
+            ["jobs","ref","jobs"],
 			["header/Base","view",[
 				["tpl","file","header/Base.asp"],
-				["title","text","Job"]
+				["title","text","My Jobs"]
 			]],
-            ["List","view",[
-                ["owner","ref","owner"],
+            ["Scrollable","view",[
+				["html","file","DeliveryList.html"],
+				["list","ref","jobs"],
                 ["cell","view",[
-				],"CellDelivery"]
+					["CardFoldableSection","view",[
+						["options","map",{ "className":"card__map" }],
+						["tpl","file","CardDeliverySectionMap.asp"]
+					]],
+					["CardFoldableSection","view",[
+						["options","map",{ "className":"card__part card__part-1" }],
+						["card","ref","card"],
+						["tpl","file","CardDeliverySection1.asp"]
+					]],
+					["CardFoldableSection","view",[
+						["options","map",{ "className":"card__part card__part-2" }],
+						["card","ref","card"],
+						["tpl","file","CardDeliverySection2.asp"],
+						["CardFoldableSection","view",[
+							["options","map",{ "className":"card__part card__part-3" }],
+							["card","ref","card"],
+							["tpl","file","CardDeliverySection3.asp"],
+							["CardFoldableSection","view",[
+								["options","map",{ "className":"card__part card__part-4" }],
+								["card","ref","card"],
+								["tpl","file","CardDeliverySection4.asp"]
+							]]
+						]]
+					]]
+				],"CardFoldable"]
             ]]
         ]
     },{
