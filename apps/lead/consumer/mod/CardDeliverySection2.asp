@@ -31,7 +31,7 @@
 	<h4 class="card__sender__heading">Sender</h4>
 	<div class="card__sender__img-cont">
 	  <div class="card__sender__img-cont__inner">
-		<img ng-src="<%=card.senderImg%>" class="card__sender__img" />
+		<img src="<%=card.senderImg%>" class="card__sender__img" />
 	  </div>
 	</div>
 	<div class="card__sender__name-and-rating">
@@ -52,7 +52,7 @@
 	  <div class="card__receiver__inner">
 		<div class="card__sender__img-cont">
 		  <div class="card__sender__img-cont__inner">
-			<img ng-src="<%=card.senderImg%>" class="card__sender__img" />
+			<img src="<%=card.senderImg%>" class="card__sender__img" />
 		  </div>
 		</div>
 		<div class="card__sender__name-and-rating">

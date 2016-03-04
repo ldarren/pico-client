@@ -18,7 +18,7 @@ initMap=function(card) {
 	};
 	var themeColor = card.dataset.color;
 
-	var map = new google.maps.Map(card.querySelector(".card__map__inner"), {
+	var map = new google.maps.Map(card.querySelector('.card__map__inner'), {
 		zoom: 12,
 		center: latLngCenter,
 		mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -27,24 +27,24 @@ initMap=function(card) {
 
 	map.set('styles', [
 		{
-			"featureType": "landscape",
-			"elementType": "geometry",
-			"stylers": [
-				{ "hue": "#00ffdd" },
-				{ "gamma": 1 },
-				{ "lightness": 100 }
+			'featureType': 'landscape',
+			'elementType': 'geometry',
+			'stylers': [
+				{ 'hue': '#00ffdd' },
+				{ 'gamma': 1 },
+				{ 'lightness': 100 }
 			]
 		},{
-			"featureType": "road",
-			"stylers": [
-				{ "lightness": 60 },
-				{ "hue": "#006eff" }
+			'featureType': 'road',
+			'stylers': [
+				{ 'lightness': 60 },
+				{ 'hue': '#006eff' }
 			]
 		}
 	]);
 
 	var pinImage = new google.maps.MarkerImage(
-		"http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + themeColor.slice(1),
+		'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|' + themeColor.slice(1),
 		new google.maps.Size(21, 34),
 		new google.maps.Point(0,0),
 		new google.maps.Point(10, 34)
@@ -82,7 +82,7 @@ initMap=function(card) {
 		if (status == google.maps.DirectionsStatus.OK) {
 			directionsDisplay.setDirections(response);
 		} else {
-			console.log("wtf")
+			console.log('wtf')
 		}
 	});
 };
@@ -117,29 +117,33 @@ return{
 	slots:{
 	},
 	events:{
-		"click .card:not(.active)": function() {
+		'click': function() {
+			var
+			el=this.el,
+			cl=el.classList
+
+			if (cl.contains('active')) return
+
 			if (this.animating) return;
 			this.animating = true;
 
 			var
 			self=this,
-			el=this.el,
-			cl=el.classList,
-			cardTop = el.offsetTop
+			cardTop = el.offsetTop,
 			scrollTopVal = cardTop - 30
 
-			cl.add("flip-step1");
-			cl.add("active");
+			cl.add('flip-step1');
+			cl.add('active');
 
-			self.signals.scrollTop(scrollTopVal, step1).send(this.host)
+			self.signals.scrollTo(scrollTopVal, step1).sendNow(this.host)
 
 			setTimeout(function() {
-				self.signals.scrollTop(scrollTopVal, step2).send(this.host)
-				cl.add("flip-step2");
+				self.signals.scrollTo(scrollTopVal, step2).sendNow(this.host)
+				cl.add('flip-step2');
 
 				setTimeout(function() {
-					self.signals.scrollTop(scrollTopVal, step3).send(this.host)
-					cl.add("flip-step3");
+					self.signals.scrollTo(scrollTopVal, step3).sendNow(this.host)
+					cl.add('flip-step3');
 
 					setTimeout(function() {
 						self.animating = false;
@@ -148,23 +152,26 @@ return{
 			}, step1*0.65);
 		},
 
-		"click .card:not(.req-active1) .card__header__close-btn": function() {
-			if (this.animating) return;
-			this.animating = true;
-
+		'click .card__header__close-btn': function() {
 			var
-			self=this,
 			el=this.el,
 			cl=el.classList
 
-			cl.remove("flip-step3");
-			cl.remove("active");
+			if (cl.contains('req-active1')) return
+
+			if (this.animating) return;
+			this.animating = true;
+
+			var self=this
+
+			cl.remove('flip-step3');
+			cl.remove('active');
 
 			setTimeout(function() {
-				cl.remove("flip-step2");
+				cl.remove('flip-step2');
 
 				setTimeout(function() {
-					cl.remove("flip-step1");
+					cl.remove('flip-step1');
 
 					setTimeout(function() {
 						self.animating = false;
@@ -173,25 +180,29 @@ return{
 			}, step3/2);
 		},
 
-		"click .card:not(.req-active1) .card__request-btn": function(e) {
+		'click .card__request-btn': function(e) {
+			var
+			el=this.el,
+			cl=el.classList
+
+			if (cl.contains('req-active1')) return
+
 			if (this.animating) return;
 			this.animating = true;
 
 			var
 			self=this,
-			el=this.el,
-			cl=el.classList,
 			cardTop = el.offsetTop,
 			scrollTopVal = cardTop - 30
 
-			cl.add("req-active1");
-			cl.add("map-active");
+			cl.add('req-active1');
+			cl.add('map-active');
 
 			initMap(el);
 
 			setTimeout(function() {
-				cl.add("req-active2");
-				self.signals.scrollTop(scrollTopVal, reqStep2).send(this.host)
+				cl.add('req-active2');
+				self.signals.scrollTo(scrollTopVal, reqStep2).sendNow(this.host)
 
 				setTimeout(function() {
 					self.animating = false;
@@ -199,36 +210,39 @@ return{
 			}, reqStep1);
 		},
 
-		"click .card.req-active1 .card__header__close-btn, .card.req-active1 .card__request-btn": function() {
-			if (this.animating) return;
-			this.animating = true;
-
+		'click .card__header__close-btn, .card__request-btn': function() {
 			var
-			self=this,
 			el=this.el,
 			cl=el.classList
 
-			cl.add("req-closing1");
+			if (!cl.contains('req-active1')) return
+
+			if (this.animating) return;
+			this.animating = true;
+
+			var self=this
+
+			cl.add('req-closing1');
 
 			setTimeout(function() {
-				cl.add("req-closing2");
+				cl.add('req-closing2');
 
 				setTimeout(function() {
-					cl.add("no-transition")
-					cl.add("hidden-hack")
-					el.offsetHeight//$card.css("top");
-					cl.remove("req-closing2")
-					cl.remove("req-closing1")
-					cl.remove("req-active2")
-					cl.remove("req-active1")
-					cl.remove("map-active")
-					cl.remove("flip-step3")
-					cl.remove("flip-step2")
-					cl.remove("flip-step1")
-					cl.remove("active")
-					el.offsetHeight//$card.css("top");
-					cl.remove("no-transition");
-					cl.remove("hidden-hack");
+					cl.add('no-transition')
+					cl.add('hidden-hack')
+					el.offsetHeight//$card.css('top');
+					cl.remove('req-closing2')
+					cl.remove('req-closing1')
+					cl.remove('req-active2')
+					cl.remove('req-active1')
+					cl.remove('map-active')
+					cl.remove('flip-step3')
+					cl.remove('flip-step2')
+					cl.remove('flip-step1')
+					cl.remove('active')
+					el.offsetHeight//$card.css('top');
+					cl.remove('no-transition');
+					cl.remove('hidden-hack');
 					self.animating = false;
 				}, reqClosingStep2);
 			}, reqClosingStep1);

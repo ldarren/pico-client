@@ -1,4 +1,5 @@
 var scrollTo=function (el, to, duration) {
+console.log(el.scrollTop, to, duration)
 	if (duration <= 0) return;
 
 	setTimeout(function(perTick) {

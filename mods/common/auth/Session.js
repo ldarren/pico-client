@@ -10,7 +10,7 @@ changed=function(model){
 cache = function(model, coll){
     changed.call(this, model)
 
-    this.signals.signin(model).dispatch()
+    this.signals.signin(model).sendNow()
 	this.userReadied = false
 
     var
@@ -33,7 +33,7 @@ userReady = function(err, user, ctx){
     if (err) return console.error(err)
     if (!user) return console.error('user not found')
 
-    if (!ctx.userReadied || brief.hasChanged(['id'])) ctx.signals.userReady(user).dispatch()
+    if (!ctx.userReadied || brief.hasChanged(['id'])) ctx.signals.userReady(user).sendNow()
 	ctx.userReadied= true
     if (!ctx.modelReadied)ctx.signals.modelReady().send()
     ctx.modelReadied= true
@@ -44,7 +44,7 @@ onNetworkError= function(err){
         //if (err.code) __.dialogs.alert('Server error ['+err.code+'] msg['+err.error+']')
         return
     }
-    this.signals.modelReady().dispatch() // router may not initialized
+    this.signals.modelReady().sendNow() // router may not initialized
     this.deps.owner.reset()
 }
 

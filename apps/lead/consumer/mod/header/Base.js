@@ -4,6 +4,7 @@ specMgr=require('js/specMgr')
 
 return{
     tagName: 'header',
+    className: 'header',
     signals:['menu','selectedMenu'],
     deps:{
 		tpl:'file',

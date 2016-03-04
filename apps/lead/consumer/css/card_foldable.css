@@ -534,6 +534,7 @@
   position: relative;
   height: 40px;
   color: rgba(255, 255, 255, 0.8);
+  font-size:2rem;
 }
 .card__header__close-btn {
   z-index: 2;
