@@ -233,7 +233,7 @@ return{
 				setTimeout(function() {
 					cl.add('no-transition')
 					cl.add('hidden-hack')
-					el.offsetHeight//$card.css('top');
+					//el.offsetHeight//$card.css('top');
 					cl.remove('req-closing2')
 					cl.remove('req-closing1')
 					cl.remove('req-active2')
@@ -243,7 +243,7 @@ return{
 					cl.remove('flip-step2')
 					cl.remove('flip-step1')
 					cl.remove('active')
-					el.offsetHeight//$card.css('top');
+					//el.offsetHeight//$card.css('top');
 					cl.remove('no-transition');
 					cl.remove('hidden-hack');
 					self.animating = false;

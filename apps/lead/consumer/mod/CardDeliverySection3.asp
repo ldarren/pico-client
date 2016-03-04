@@ -4,7 +4,7 @@
 	<div class="card__timings__inner">
 	  <div class="card__text card__text--left">
 		<p class="card__text__heading">Delivery Date</p>
-		<p class="card__text__middle"><%=delivTime%></p>
+		<p class="card__text__middle"><%=delivDateNoun%></p>
 		<p class="card__text__bottom"><%=delivTime%></p>
 	  </div>
 	  <div class="card__text card__text--right">
