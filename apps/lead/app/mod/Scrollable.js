@@ -1,7 +1,7 @@
 var scrollTo=function (el, to, duration) {
 console.log(el.scrollTop, to, duration)
 	if (duration <= 0) return;
-
+	// TODO: requestAnimationFrame for smoother animation
 	setTimeout(function(perTick) {
 		el.scrollTop = el.scrollTop + perTick;
 		if (el.scrollTop === to) return;
