@@ -234,30 +234,7 @@
 				["html","file","DeliveryList.html"],
 				["list","ref","jobs"],
                 ["cell","view",[
-					["CardFoldableSection","view",[
-						["options","map",{ "className":"card__map" }],
-						["tpl","file","CardDeliverySectionMap.asp"]
-					]],
-					["CardFoldableSection","view",[
-						["options","map",{ "className":"card__part card__part-1" }],
-						["card","ref","card"],
-						["tpl","file","CardDeliverySection1.asp"]
-					]],
-					["CardFoldableSection","view",[
-						["options","map",{ "className":"card__part card__part-2" }],
-						["card","ref","card"],
-						["tpl","file","CardDeliverySection2.asp"],
-						["CardFoldableSection","view",[
-							["options","map",{ "className":"card__part card__part-3" }],
-							["card","ref","card"],
-							["tpl","file","CardDeliverySection3.asp"],
-							["CardFoldableSection","view",[
-								["options","map",{ "className":"card__part card__part-4" }],
-								["card","ref","card"],
-								["tpl","file","CardDeliverySection4.asp"]
-							]]
-						]]
-					]]
+					["tpl","file","CardDelivery.asp"]
 				],"CardFoldable"]
             ]]
         ]

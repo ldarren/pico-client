@@ -92,7 +92,8 @@ return{
 	className:'card',
 	signals:['scrollTo'],
 	deps:{
-		data:'map'
+		data:'map',
+		tpl:'file'
 	},
 	create: function(deps){
 		this.animating = false;
@@ -105,17 +106,13 @@ return{
 
 		t=t.substring(0, t.indexOf('M')+1)
 
-		// HACK: remove when server code is ready
-		this.spec.push(['card','map',{
-			card:data,
-			delivDateNoun:picoTime.day(dt),
-			delivTime:t}])
 		this.el.classList.add('theme-'+data.themeColor)
 		this.el.dataset.color=data.themeColorHex
 
-		this.spawnAsync(specMgr.findAllByType('view',this.spec),null,null,null,function(){
-			//initMap(self.el)
-		})
+		this.el.innerHTML = deps.tpl({
+			card:data,
+			delivDateNoun:picoTime.day(dt),
+			delivTime:t})
 	},
 	slots:{
 	},
@@ -233,7 +230,7 @@ return{
 				setTimeout(function() {
 					cl.add('no-transition')
 					cl.add('hidden-hack')
-					//el.offsetHeight//$card.css('top');
+					el.offsetHeight//$card.css('top');
 					cl.remove('req-closing2')
 					cl.remove('req-closing1')
 					cl.remove('req-active2')
@@ -243,7 +240,7 @@ return{
 					cl.remove('flip-step2')
 					cl.remove('flip-step1')
 					cl.remove('active')
-					//el.offsetHeight//$card.css('top');
+					el.offsetHeight//$card.css('top');
 					cl.remove('no-transition');
 					cl.remove('hidden-hack');
 					self.animating = false;
