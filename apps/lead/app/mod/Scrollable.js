@@ -1,7 +1,7 @@
 var
 Ceil=Math.ceil,
 scrolls=[],
-lastUpdate=Date.now()
+lastUpdate=Date.now(),
 scrollTo=function(arr){
 	var
 	el=arr[0],

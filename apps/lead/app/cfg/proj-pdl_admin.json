@@ -11,11 +11,28 @@
         ["users","models",{
             "read": "lead/user/read"
         }],
-        ["address","models",{}],
-        ["domain","models",{}],
-        ["post","models",{}],
-        ["lock","models",{}],
-        ["log","models",{}],
+		["jobs","list",[
+			{
+				"id": "2618-3157",
+				"price": 25,
+				"requests": 5,
+				"pledge": 150,
+				"weight": 50,
+				"sender": "Norton Kang",
+				"senderImg": "dat/p1.png",
+				"themeColor": "purple",
+				"themeColorHex": "#BA68C8",
+				"bgImgUrl": "//s3-us-west-2.amazonaws.com/s.cdpn.io/142996/deliv-1.jpg",
+				"rating": 5,
+				"ratingCount": 26,
+				"fromStreet": "Jurong East St 96",
+				"fromCity": "Jurong, 65748",
+				"toStreet": "Woodland Ave 10",
+				"toCity": "Woodland, 784839",
+				"datetime":"2016/05/16 18:30:00",
+				"reqDl": "24minutes"
+			}
+		]],
         ["pane","view",[
             ["paneId","int",0],
             ["options","map",{"id":"main"}]
@@ -67,6 +84,24 @@
 				["header/Tabs","view",[
 					["list","list",["Users","Agents"]]
 				]]
+            ]],
+            ["Scrollable","view",[
+				["html","file","DeliveryList.html"],
+				["list","ref","jobs"],
+                ["cell","view",[
+					["CardDeliverySection1","view",[
+						["tpl","file","CardDeliverySection1.asp"]
+					]],
+					["CardDeliverySection2","view",[
+						["tpl","file","CardDeliverySection2.asp"],
+						["CardDeliverySection3","view",[
+							["tpl","file","CardDeliverySection3.asp"],
+							["CardDeliverySection4","view",[
+								["tpl","file","CardDeliverySection4.asp"]
+							]]
+						]]
+					]]
+				],"CardFoldable"]
             ]]
         ]
     },{
