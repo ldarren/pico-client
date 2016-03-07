@@ -129,8 +129,7 @@ return{
 
 			var
 			self=this,
-			cardTop = el.offsetTop,
-			scrollTopVal = cardTop - 30
+			scrollTopVal = el.offsetTop - 30
 
 			cl.add('flip-step1');
 			cl.add('active');
@@ -192,8 +191,7 @@ return{
 
 			var
 			self=this,
-			cardTop = el.offsetTop,
-			scrollTopVal = cardTop - 30
+			scrollTopVal = el.offsetTop - 30
 
 			cl.add('req-active1');
 			cl.add('map-active');

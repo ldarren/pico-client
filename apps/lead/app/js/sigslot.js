@@ -2,15 +2,6 @@ var
 picoObj=require('pico/obj'),
 trigger = Backbone.Events.trigger,
 evts=[],
-schedule= (function(){
-    if ('undefined'!==typeof process) return process.nextTick
-    return  window.requestAnimationFrame       ||
-            window.webkitRequestAnimationFrame ||
-            window.mozRequestAnimationFrame    ||
-            window.oRequestAnimationFrame      || 
-            window.msRequestAnimationFrame     ||
-            function(cb){ return window.setTimeout(cb, 50) }
-})(),   
 sigslot = function(self, def){
     var
     ss = picoObj.extend(self.signals, def || [], {mergeArr:1}),
@@ -25,7 +16,7 @@ sigslot = function(self, def){
                 evt: evt,
                 queue: false,
                 send: send,
-                sendNow: sendNow
+                sendNow: dispatch
             }
         }
     }, self)
@@ -44,16 +35,9 @@ recv = function(evt, from, params){
     forward = true 
                 
     if (func) forward = func.apply(this, [from, params.sender].concat(params.args))
-    if (forward) (params.queue?send:sendNow).call(params, [from], this)
+    if (forward) (params.queue?send:dispatch).call(params, [from], this)
 },
-tick = function(){
-    schedule(tick)
-    if (evts.length){
-        var e=evts.shift()
-        sendNow.call(e[0], e[1], e[2])
-    }
-},
-sendNow = function(a, from){
+dispatch = function(a, from){
     var isObj='object'===typeof a
     if (isObj && !a.length) return trigger.call(a, this.evt, from, this)
 
@@ -72,6 +56,11 @@ sendNow = function(a, from){
     }
 }
 
-schedule(tick)
+this.update= function(){
+    if (evts.length){
+        var e=evts.shift()
+        dispatch.call(e[0], e[1], e[2])
+    }
+}
 
 return sigslot
