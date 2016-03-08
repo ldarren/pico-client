@@ -2,6 +2,7 @@ var
 picoObj=require('pico/obj'),
 Model= require('js/Model'),
 Stream= require('js/Stream'),
+Socket= require('js/Socket'),
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
 ERR1='ref of REF not found',ERR2='record RECORD of ref of REF not found',
 create = function(id, type, value){ return [id, type, value] },
@@ -76,6 +77,9 @@ load = function(host, params, spec, idx, deps, cb, userData){
         return
     case 'stream': // ID[id] TYPE[stream] VALUE[config]
         deps.push(create(s[ID], t, new Stream(s[VALUE])))
+        break
+    case 'socket': // ID[id] TYPE[socket] VALUE[config]
+        deps.push(create(s[ID], t, new Socket(s[VALUE])))
         break
     case 'param': // ID[id] TYPE[param] VALUE[index]
         deps.push(create(s[ID], t, params[s[VALUE]]))

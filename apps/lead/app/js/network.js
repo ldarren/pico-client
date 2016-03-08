@@ -69,5 +69,6 @@ return{
         create(Object.keys(domains), domains, cb)
     },
     addon:function(){ addon = arguments[0] },
+    getAddon:function(){ return JSON.parse(JSON.stringify(addon)) },
     getDomain:function(url){ return directory[getKey(url)] || {} }
 }
