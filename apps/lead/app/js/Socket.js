@@ -1,12 +1,14 @@
 var network=require('js/network')
 
-function Socket(options){
-    init(this, options.channel, options.path, options.protocols)
+function Socket(opt){
+    init(this, opt.channel, opt.path, opt.protocols, opt.auto)
 }           
             
-function init(self, channel, path, protocols){
+function init(self, channel, path, protocols, auto){
     self.channel=channel
-    if (!path) return
+    self.path=path
+    self.protocols=protocols
+    if (!path || !auto) return
 
     var
 	url=(-1===path.indexOf('://')?network.getDomain(channel).url+path:path).replace('http','ws'),
@@ -40,21 +42,30 @@ _.extend(Socket.prototype, Backbone.Events,{
             init(
                 this,
                 channel||this.channel,
-                path||s.url,
-                protocols||s.protocol)
+                path||s.url||this.path,
+                protocols||s.protocol||this.protocols,
+				true)
         }else{
             init(
                 this,
                 channel||this.chanel,
                 path||this.path,
-                events||this.events,
-                withCredentials||this.withCredentials)
+                protocols||this.protocol,
+				true)
         }
     },
-    close:function(){
+	readyState:function(){
+		return this.ws ? this.ws.readyState : 0
+	},
+	send:function(buff){
+		if (1 !== this.readyState()) return false
+		this.ws.send(buff)
+		return true
+	},
+    close:function(code, reason){
         var s=this.ws
         if (!s) return
-        s.close()
+        s.close(code, reason)
     }
 })
 
