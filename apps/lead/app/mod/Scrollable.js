@@ -46,6 +46,10 @@ return{
 		this.el.innerHTML=deps.html
 		this.scrollCont=this.el.querySelector(deps.containerSelector)
 	},
+	remove:function(){
+		scrolls.filter(removeExisting,this.el)
+		this.ancestor.remove()
+	},
 	rendered:function(){
 		var
 		deps=this.deps,
