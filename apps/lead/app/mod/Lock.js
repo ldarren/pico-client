@@ -17,18 +17,18 @@ credential=function(){
 }
 
 return{
-    className: 'lock',
 	signals:['ble_startScan','ble_connect','ble_write','ble_startNotification','ble_stopNotification'],
 	deps:{
-		tpl:['file','<a href=#>Unlock</a>'],
-        owner:'models'
+		ble:'ctrl'
 	},
 	create: function(deps){
-        if (!deps.owner.length) return
-        this.signals.ble_startScan([],30).send(this.host)
-        this.el.innerHTML=deps.tpl()
 		this.peripheral=null
 		this.ble=null
+		var self=this
+		this.spawnAsync([deps.ble],null,null,true,function(err){
+			if (err) return console.error(err)
+			self.signals.ble_startScan([],30).send([self.host])
+		})
 	},
 	slots:{
 		ble_scan:function(from,sender,error,peripheral){
@@ -59,19 +59,17 @@ return{
 			case 2:
 				btn.removeAttribute('disable')
 				btn.textContent='Unlock'
-				this.signals.ble_stopNotification(this.peripheral.id, scratchSrv, sratch3)
+				this.signals.ble_stopNotification(this.peripheral.id, scratchSrv, sratch3).send(this.ble)
 				break
 			}
-		}
-	},
-	events:{
-		'tap a':function(e){
+		},
+		unlock:function(from,sender){
 			var
 			self=this,
 			p=this.peripheral
 			if (!p) return
 			var cred=Uint32Array(credential())
-			this.signals.ble_startNotification(p.id, scratchSrv, scratch3)
+			this.signals.ble_startNotification(p.id, scratchSrv, scratch3).send(this.ble)
 			this.signals.ble_write(p.id, scratchSrv, scratch1, cred.buffer.slice(0, 4), function(){
 				console.log(arguments)
 				self.signals.ble_write(p.id, scratchSrv, scratch2, cred.buffer.slice(4, 8), function(){

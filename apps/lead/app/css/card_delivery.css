@@ -1,3 +1,6 @@
 .scrollable>div.darkbg{
 	background:rgba(0,0,0,0.5);
 }
+.card.simple {
+  height: 210px;
+}

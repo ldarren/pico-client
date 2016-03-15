@@ -204,6 +204,10 @@
             ["tplSignin","file","FormSignin.asp"],
             ["tplSignup","file","FormSignup.asp"]
         ]],
+		["Lock","ctrl",[
+			["ble","ctrl",[
+			],"common/native/ble"]
+		]],
         ["common/auth/Session","ctrl",[
             ["owner","ref","owner"],
             ["users","ref","users"]
@@ -213,14 +217,6 @@
             ["options","map",{"className":"fulpage active"}],
             ["Void","view",[
 				["tpl","file","Void.asp"]
-            ]]
-        ],
-        "Lock":[
-            ["options","map",{"className":"fulpage active"}],
-            ["owner","ref","owner"],
-            ["Lock","view",[
-                ["tpl","file","Lock.asp"],
-                ["owner","ref","owner"]
             ]]
         ],
         "home":[
@@ -234,8 +230,8 @@
 				["html","file","DeliveryList.html"],
 				["list","ref","jobs"],
                 ["cell","view",[
-					["tpl","file","CardDelivery.asp"]
-				],"CardFoldable"]
+					["tpl","file","CardSimple.asp"]
+				],"Card"]
             ]]
         ]
     },{
