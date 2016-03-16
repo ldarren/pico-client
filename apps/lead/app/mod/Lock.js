@@ -25,9 +25,9 @@ return{
 		this.peripheral=null
 		this.ble=null
 		var self=this
-		this.spawnAsync([deps.ble],null,null,true,function(err){
+		this.spawn(deps.ble,null,null,function(err, ble){
 			if (err) return console.error(err)
-			self.signals.ble_startScan([],30).send([self.host])
+			self.signals.ble_startScan([],30).send(ble)
 		})
 	},
 	slots:{

@@ -117,8 +117,15 @@ Module= {
     // ctrl can't spawn view
     spawn: function(Mod, params, spec, chains){
         if (!Mod || !Mod.spec) return
+		if (chains instanceof Function){
+		}
 
-        var m = new (Ctrl.extend(Mod.Class))(Mod, spec && spec.length ? Mod.spec.concat(spec) : Mod.spec, params, this, chains)
+        var m = new (Ctrl.extend(Mod.Class))(
+			Mod,
+			spec && spec.length ? Mod.spec.concat(spec) : Mod.spec,
+			params,
+			this,
+			chains instanceof Function ? [chains, spec] : chains)
 
         this.modules.push(m)
 
@@ -190,7 +197,14 @@ var View = Backbone.View.extend(_.extend(Module, {
 
         for(var i=0,o; o=s[i]; i++){ if ('options'===o[ID]) break }
 
-        var m = new (View.extend(Mod.Class))(o?o[VALUE]:o, Mod, s, params, this, !hidden, chains)
+        var m = new (View.extend(Mod.Class))(
+			o?o[VALUE]:o,
+			Mod,
+			s,
+			params,
+			this,
+			!hidden,
+			chains instanceof Function ? [chains,spec]:chains)
         this.modules.push(m)
         return m
     },
