@@ -49,7 +49,7 @@ return Module.View.extend({
     signals:['changeRoute','frameAdded','paneAdded','paneUpdate','paneCount'],
     deps:{
         html:   ['file','<div class=frame><div class=layer></div><div class=layer></div></div>'],
-        layers: ['map', {main:'.frame>div:nth-child(1)',secondary:'.frame>div:nth-child(2)'}]
+        layers: ['list', ['.frame>div:nth-child(1)','.frame>div:nth-child(2)']]
     },
     initialize: function(p, e){
         var self = this
@@ -83,36 +83,35 @@ return Module.View.extend({
     },
 
     create: function(deps, params){
-        var el=this.el
+        var
+        el=this.el,
+        layers=deps.layers,
+        list=[]
 
         el.innerHTML = deps.html
 
-        var
-        layers=deps.layers,
-        map={}
-
-        for(var k in layers){
-            map[k] = el.querySelector(layers[k])
+        for(var i=0,l; l=layers[i]; i++){
+            list.push(el.querySelector(l))
         }
-        this.setElement(map['main'])
-        this.layers=map
+        this.setElement(list[0])
+        this.layers=list
 
         var 
         panes=[],
-        list=[]
+        mods=[]
         for(var i=0,spec=this.spec,s; s=spec[i]; i++){
             switch(s[TYPE]){
-            case 'ctrl': list.push(s[VALUE]); break
+            case 'ctrl': mods.push(s[VALUE]); break
             case 'view':
                 if ('pane'===s[ID]) panes.push(s[VALUE])
-                else list.push(s[VALUE])
+                else mods.push(s[VALUE])
                 break
             }
         }
 
         var self=this
         this.spawnAsync(panes, params, null, false, function(){
-            self.spawnAsync(list, params, null, true, function(){self.signals.frameAdded().send()})
+            self.spawnAsync(mods, params, null, true, function(){self.signals.frameAdded().send()})
         })
     },
 
@@ -124,13 +123,13 @@ return Module.View.extend({
         show: function(from, sender, where, first){
             if (!sender || -1 === this.modules.indexOf(sender)) return
 
-            var c=this.layers[where||'secondary']
+            var c=this.layers[where||1]
             this.show(sender, c, first)
         },
         hide: function(from, sender, where){
             if (!sender || -1 === this.modules.indexOf(sender)) return
 
-            var c=this.layers[where||'secondary']
+            var c=this.layers[where||1]
             this.hide(sender, c)
         },
         frameResized:resized,

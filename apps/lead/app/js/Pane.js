@@ -1,6 +1,7 @@
 var
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
 Router = require('js/Router'),
+specMgr= require('js/specMgr'),
 removeOldPage=function(from, sender, paneId){
     if (paneId !== this.deps.paneId) return
     if (this.oldPage) this.dump(this.oldPage)
@@ -13,40 +14,35 @@ return {
     signals:['paneAdd','pageAdd'],
     deps:{
         html:   ['file','<div class=layer></div><div class=layer></div>'],
-        layers: ['map', {main:'.pane>div:nth-child(1)',secondary:'.pane>div:nth-child(2)'}],
+        layers: ['list', ['.pane>div:nth-child(1)','.pane>div:nth-child(2)']],
         paneId: 'int'
     },
     create: function(deps, params){
-        var el=this.el
+        var
+        el=this.el,
+        layers=deps.layers,
+        list=[]
 
         el.innerHTML = deps.html
 
+        for(var i=0,l; l=layers[i]; i++){
+            list.push(el.querySelector(l))
+        }
+        this.layers=list
+
         var
-        layers=deps.layers,
-        map={}
+		self=this,
+		mods=specMgr.findAllByType('ctrl',this.spec).concat(specMgr.findAllByType('view',this.spec))
 
-        for(var k in layers){
-            map[k] = el.querySelector(layers[k])
-        }
-        this.layers=map
-
-        var list=[]
-        for(var i=0,spec=this.spec,s; s=spec[i]; i++){
-            switch(s[TYPE]){
-            case 'ctrl':
-            case 'view': list.push(s[VALUE]); break
-            }
-        }
         this.spec=this.spec.concat(this.host.spec)
-        var self=this
-        this.spawnAsync(list, params, null, true, function(){self.signals.paneAdd(self.deps.paneId).send()})
+        this.spawnAsync(mods, params, null, true, function(){self.signals.paneAdd(self.deps.paneId).send()})
     },
 
     slots: {
         invalidate: function(from, sender, where, first){
             if (!sender || -1 === this.modules.indexOf(sender)) return
 
-            var c=this.layers[where||'secondary']
+            var c=this.layers[where||1]
             this.show(sender, c, first)
         },
         paneUpdate: function(from, sender, paneId, name, pageConfig, params){
