@@ -53,6 +53,12 @@ addListeners = function(self, lm){
         r = res.region,
         bs = res.beacons
         if (!bs.length) return
+		// bug: https://github.com/petermetz/cordova-plugin-ibeacon/issues/159
+		for(var i=0,b; b=bs[i]; i++){
+			b.uuid=b.uuid.toUpperCase()
+			b.major=parseInt(b.major)
+			b.minor=parseInt(b.minor)
+		}
         self.signals.iBeacon_rangeBeaconsInRegion(r.identifier,r.uuid,r.major,r.minor,bs).send()
     }
     // Event when advertising starts
@@ -117,11 +123,11 @@ newRegion = function(id, uuid, major, minor){
 },
 getRegion = function(regions, uuid, major, minor){
     if (!regions) return
-    return regions[uuid+':'+(major||0)+':'+(minor||0)]
+    return regions[(uuid+':'+(major||0)+':'+(minor||0)).toUpperCase()]
 },
 setRegion = function(regions, uuid, major, minor, region){
     if (!regions) return
-    regions[uuid+':'+(major||0)+':'+(minor||0)] = region
+    regions[(uuid+':'+(major||0)+':'+(minor||0)).toUpperCase()] = region
 },
 deleteRegion = function(uuid,major,minor,cb){
     var r = getRegion(this.regions,uuid,major,minor)
