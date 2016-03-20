@@ -215,14 +215,6 @@
 				["tpl","file","Void.asp"]
             ]]
         ],
-        "Lock":[
-            ["options","map",{"className":"fulpage active"}],
-            ["owner","ref","owner"],
-            ["Lock","view",[
-                ["tpl","file","Lock.asp"],
-                ["owner","ref","owner"]
-            ]]
-        ],
         "home":[
             ["options","map",{"className":"fulpage active"}],
             ["jobs","ref","jobs"],

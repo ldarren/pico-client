@@ -22,51 +22,65 @@ return{
 		ble:'ctrl'
 	},
 	create: function(deps){
-		this.peripheral=null
-		this.ble=null
-		var self=this
-		this.spawn(deps.ble,null,null,function(err, ble){
-			if (err) return console.error(err)
-			self.signals.ble_startScan([],30).send(ble)
-		})
+		this.senders={}
+		this.locks={}
+		this.names={}
+		this.ble= this.spawn(deps.ble)
 	},
 	slots:{
-		ble_scan:function(from,sender,error,peripheral){
-			console.log(error,peripheral)
-            if ('AF131569'===peripheral.name || 'DA02'===peripheral.name){
-                this.signals.ble_connect(peripheral.id).send(sender)
-            }
+		ble_scanned:function(from,sender,error,peripheral){
+			console.log('Lock.ble_scanned',error,peripheral)
+			var
+			name=peripheral.name,
+			senders=this.senders,
+			locks=this.locks,
+			names=this.names,
+			keys=Object.keys(this.senders)
+
+			for(var i=0,l; l=keys[i]; i++){
+				if (name===l){
+					locks[name]=peripheral
+					names[peripheral.id]=name
+					this.signals.lockStatus(peripheral.id,'found').send(senders[l])
+					this.signals.ble_connect(peripheral.id).send(sender)
+				}
+			}
 		},
         ble_connected:function(from,sender,peripheral){
-            console.log('connected',peripheral)
-			this.peripheral=peripheral
-			this.ble=sender
+            console.log('Lock.ble_connected',peripheral)
+			var lockOwner=this.senders[this.names[peripherals.id]]
+			this.signals.lockStatus(peripheral.id,'connected').send(lockOwner)
         },
         ble_disconnected:function(from,sender,peripheral){
-            console.log('disconnected',peripheral)
-			this.peripheral=null
-			this.ble=null
+            console.log('Lock.ble_disconnected',peripheral)
+			var lockOwner=this.senders[this.names[peripherals.id]]
+			this.signals.lockStatus(peripheral.id,'disconnected').send(lockOwner)
         },
-		ble_notification:function(from,sender,err,buffer){
+		ble_notification:function(from,sender,err,peripheral,buffer){
 			if (err) return console.error(err)
-			var stage=new Uint32Array(buffer)
-			var btn=this.el.querySelector('a')
+			var
+			stage=new Uint32Array(buffer),
+			lockOwner=this.senders[this.names[peripherals.id]]
+
 			switch(stage[0]){
 			case 1:
-				btn.setAttribute('disable',1)
-				btn.textContent='Unlocked'
+				this.signals.lockStatus(peripheral.id,'unlocked').send(lockOwner)
 				break
 			case 2:
-				btn.removeAttribute('disable')
-				btn.textContent='Unlock'
-				this.signals.ble_stopNotification(this.peripheral.id, scratchSrv, sratch3).send(this.ble)
+				this.signals.lockStatus(peripheral.id,'locked').send(lockOwner)
+				this.signals.ble_stopNotification(peripheral.id, scratchSrv, sratch3).send(this.ble)
 				break
 			}
 		},
-		unlock:function(from,sender){
+		// name='AF131569' or name='DA02'
+		scan:function(from,sender,name){
+			this.locks[name]=sender
+			this.signals.ble_startScan([],30).send(this.ble)
+		},
+		unlock:function(from,sender,name){
 			var
 			self=this,
-			p=this.peripheral
+			p=this.locks[name]
 			if (!p) return
 			var cred=Uint32Array(credential())
 			this.signals.ble_startNotification(p.id, scratchSrv, scratch3).send(this.ble)

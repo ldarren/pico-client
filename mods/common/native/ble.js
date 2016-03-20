@@ -4,7 +4,10 @@ disconnectAll=function(devices){
 }
 
 return{
-	signals:[ 'ble_scan', 'ble_connected', 'ble_disconnected', 'ble_notification' ],
+	signals:[ 'ble_scanned', 'ble_connected', 'ble_disconnected', 'ble_notification' ],
+	deps:{
+		msg_error_no_bluetooth:['text','BLE require bluetooth']
+	},
     create: function(deps){
         if (!__.refChain(window, ['ble'])){
             this.slots={}
@@ -15,7 +18,7 @@ return{
 
         ble.isEnabled(dummyCB, function(){
             ble.enable(dummyCB, function(){
-                ble.showBluetoothSettings(dummyCB, function(){ __.alert('BLE require bluetooth') })
+                ble.showBluetoothSettings(dummyCB, function(){ __.alert(deps.msg_error_no_bluetooth) })
             })
         })
     },
@@ -30,10 +33,10 @@ return{
             var
             self=this,
             success=function(device){
-                self.signals.ble_scan(null, device).send(sender)
+                self.signals.ble_scanned(null, device).send(sender)
             },
             failure=function(err){
-                self.signals.ble_scan(err).send(sender)
+                self.signals.ble_scanned(err).send(sender)
             }
 
             if (sec && sec > 0){
@@ -85,15 +88,16 @@ return{
             self=this,
             d=this.devices[deviceId]
             if (!d) return console.error('No connection to device:'+deviceId)
-            ble.startNotification(deviceId, serviceId, charId, function(buffer){
+            ble.startNotification(deviceId, serviceId, charId,
+			function(buffer){
                 var s=d[serviceId]||[]
                 if (-1 === s.indexOf(charId)){
                     s.push(charId)
                     d[serviceId]=s
                 }
-                self.signals.ble_notification(null, buffer).send(sender)
+                self.signals.ble_notification(null, d, buffer).send(sender)
             }, function(err){
-                self.signals.ble_notification(err, buffer).send(sender)
+                self.signals.ble_notification(err, d).send(sender)
             })
         },
         ble_stopNotification: function(from, sender, deviceId, serviceId, charId){
