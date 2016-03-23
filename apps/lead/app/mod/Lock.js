@@ -17,7 +17,7 @@ credential=function(){
 }
 
 return{
-	signals:['ble_startScan','ble_connect','ble_write','ble_startNotification','ble_stopNotification'],
+	signals:['lockStatus','ble_startScan','ble_connect','ble_write','ble_startNotification','ble_stopNotification'],
 	deps:{
 		ble:'ctrl'
 	},
@@ -41,40 +41,40 @@ return{
 				if (name===l){
 					locks[name]=peripheral
 					names[peripheral.id]=name
-					this.signals.lockStatus(peripheral.id,'found').send(senders[l])
+					this.signals.lockStatus(name,'found').send(senders[l])
 					this.signals.ble_connect(peripheral.id).send(sender)
 				}
 			}
 		},
         ble_connected:function(from,sender,peripheral){
             console.log('Lock.ble_connected',peripheral)
-			var lockOwner=this.senders[this.names[peripherals.id]]
-			this.signals.lockStatus(peripheral.id,'connected').send(lockOwner)
+			var lockOwner=this.senders[this.names[peripheral.id]]
+			this.signals.lockStatus(peripheral.name,'connected').send(lockOwner)
         },
         ble_disconnected:function(from,sender,peripheral){
             console.log('Lock.ble_disconnected',peripheral)
-			var lockOwner=this.senders[this.names[peripherals.id]]
-			this.signals.lockStatus(peripheral.id,'disconnected').send(lockOwner)
+			var lockOwner=this.senders[this.names[peripheral.id]]
+			this.signals.lockStatus(peripheral.name,'disconnected').send(lockOwner)
         },
 		ble_notification:function(from,sender,err,peripheral,buffer){
 			if (err) return console.error(err)
 			var
 			stage=new Uint32Array(buffer),
-			lockOwner=this.senders[this.names[peripherals.id]]
+			lockOwner=this.senders[this.names[peripheral.id]]
 
 			switch(stage[0]){
 			case 1:
-				this.signals.lockStatus(peripheral.id,'unlocked').send(lockOwner)
+				this.signals.lockStatus(peripheral.name,'unlocked').send(lockOwner)
 				break
 			case 2:
-				this.signals.lockStatus(peripheral.id,'locked').send(lockOwner)
+				this.signals.lockStatus(peripheral.name,'locked').send(lockOwner)
 				this.signals.ble_stopNotification(peripheral.id, scratchSrv, sratch3).send(this.ble)
 				break
 			}
 		},
 		// name='AF131569' or name='DA02'
 		scan:function(from,sender,name){
-			this.locks[name]=sender
+			this.senders[name]=sender
 			this.signals.ble_startScan([],30).send(this.ble)
 		},
 		unlock:function(from,sender,name){
@@ -82,7 +82,7 @@ return{
 			self=this,
 			p=this.locks[name]
 			if (!p) return
-			var cred=Uint32Array(credential())
+			var cred=new Uint32Array(credential())
 			this.signals.ble_startNotification(p.id, scratchSrv, scratch3).send(this.ble)
 			this.signals.ble_write(p.id, scratchSrv, scratch1, cred.buffer.slice(0, 4), function(){
 				console.log(arguments)

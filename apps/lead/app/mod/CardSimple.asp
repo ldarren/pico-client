@@ -45,7 +45,7 @@
 		  </div>
 		</div>
 		  <button type="button" class="card__request-btn">
-			<span class="card__request-btn__text-1">Open</span>
+			<span class="card__request-btn__text-1">Scan</span>
 		  </button>
 	  </div>
 	</div>
