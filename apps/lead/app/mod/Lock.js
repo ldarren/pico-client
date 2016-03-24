@@ -56,19 +56,20 @@ return{
 			var lockOwner=this.senders[this.names[peripheral.id]]
 			this.signals.lockStatus(peripheral.name,'disconnected').send(lockOwner)
         },
-		ble_notification:function(from,sender,err,peripheral,buffer){
+		ble_notification:function(from,sender,err,peripheralId,buffer){
 			if (err) return console.error(err)
 			var
 			stage=new Uint32Array(buffer),
-			lockOwner=this.senders[this.names[peripheral.id]]
+			name=this.names[peripheralId],
+			lockOwner=this.senders[name]
 
 			switch(stage[0]){
 			case 1:
-				this.signals.lockStatus(peripheral.name,'unlocked').send(lockOwner)
+				this.signals.lockStatus(name,'unlocked').send(lockOwner)
 				break
 			case 2:
-				this.signals.lockStatus(peripheral.name,'locked').send(lockOwner)
-				this.signals.ble_stopNotification(peripheral.id, scratchSrv, sratch3).send(this.ble)
+				this.signals.lockStatus(name,'locked').send(lockOwner)
+				this.signals.ble_stopNotification(peripheralId, scratchSrv, sratch3).send(this.ble)
 				break
 			}
 		},

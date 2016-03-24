@@ -1,6 +1,10 @@
 var
 dummyCB=function(){},
 disconnectAll=function(devices){
+	var keys=Object.keys(devices)
+	for(var i=0,k; k=keys[i]; i++){
+		ble.disconnect(k)
+	}
 }
 
 return{
@@ -95,9 +99,9 @@ return{
                     s.push(charId)
                     d[serviceId]=s
                 }
-                self.signals.ble_notification(null, d, buffer).send(sender)
+                self.signals.ble_notification(null, deviceId, buffer).send(sender)
             }, function(err){
-                self.signals.ble_notification(err, d).send(sender)
+                self.signals.ble_notification(err, deviceId).send(sender)
             })
         },
         ble_stopNotification: function(from, sender, deviceId, serviceId, charId){
