@@ -1,7 +1,6 @@
 var ID=0,TYPE=1,VALUE=2,EXTRA=3,
 REFS='refs',
 specMgr = require('js/specMgr'),
-Router = require('js/Router'),
 sigslot= require('js/sigslot'),
 dummyCB=function(){},
 refs=function(id,spec,rawSpec){
@@ -20,11 +19,6 @@ refs=function(id,spec,rawSpec){
     }
     return ret
 },
-findAll = function(id, list){
-    var arr = []
-    for(var i=0,o; o=list[i]; i++){ if (id === o[ID]) arr.push(o[VALUE]) }
-    return arr
-},
 specLoaded = function(err, spec, userData){
     var
     self=userData[0],
@@ -32,8 +26,8 @@ specLoaded = function(err, spec, userData){
 
     if (self._removed) return self.remove()
     if (err){
-        console.warn(err)
-        return Router.home()
+		__.dialogs.alert(err, 'Load Error')
+        return console.warn(err)
     }
 
     self.spec = spec
@@ -50,7 +44,7 @@ specLoaded = function(err, spec, userData){
             d[k]=refs(k,spec,self._rawSpec)
             break
         default:
-            s=findAll(k, spec)
+            s=specMgr.findAllById(k, spec)
             if (1 === s.length){ d[k]=s[0] }
             else if (!s.length){ d[k]=v[1] }
             else{ d[k] = s }
@@ -68,11 +62,12 @@ specLoaded = function(err, spec, userData){
         if (self._show) h.show(self, self._show[0], self._show[1])
         if (spawnList){
             var m=spawnList.shift()
-            if (!spawnList.length){
+            if (1===spawnList.length){
+				spawnList.length=0
                 if(m) m.call(h, null, self)
                 return
             }
-            h.spawn(m, self._params, null, !self._show, spawnList)
+            h.spawn(m, self._params, spawnList[spawnList.length-1], !self._show, spawnList)
         }
     }
 },
@@ -102,7 +97,7 @@ Module= {
             case 'view': list.push(s[VALUE]); break
             }
         }
-        this.spawnAsync(list, params, false, dummyCB)
+        this.spawnAsync(list, params, null, false, dummyCB)
     },
     addSpec: function(rawSpec, cb){
         this._rawSpec=(this._rawSpec||[]).concat(rawSpec)
@@ -122,19 +117,29 @@ Module= {
     // ctrl can't spawn view
     spawn: function(Mod, params, spec, chains){
         if (!Mod || !Mod.spec) return
+		if (chains instanceof Function){
+		}
 
-        var m = new (Ctrl.extend(Mod.Class))(Mod, spec && spec.length ? Mod.spec.concat(spec) : Mod.spec, params, this, chains)
+        var m = new (Ctrl.extend(Mod.Class))(
+			Mod,
+			spec && spec.length ? Mod.spec.concat(spec) : Mod.spec,
+			params,
+			this,
+			chains instanceof Function ? [chains, spec] : chains)
 
         this.modules.push(m)
 
         return m
     },
-    // if mixed ctrl and view in Mods, all view after ctrl become hidden
-    spawnAsync: function(Mods, params, hidden, cb){
-        if (!Mods.length) return cb()
+    spawnAsync: function(Mods, params, spec, hidden, cb){
+        if (!Mods.length) {
+			if (cb) cb()
+			return
+		}
         var m=Mods.shift()
         Mods.push(cb)
-        return this.spawn(m, params, null, hidden, Mods)
+		Mods.push(spec)
+        return this.spawn(m, params, spec, hidden, Mods)
     },
     dump: function(mod){
         if (!mod) return -1
@@ -188,18 +193,18 @@ var View = Backbone.View.extend(_.extend(Module, {
 
         if ('ctrl'===Mod.type) return Ctrl.prototype.spawn.call(this, Mod, params, spec, chains)
 
-        var
-        s=spec && spec.length ? Mod.spec.concat(spec) : Mod.spec,
-        attr
+        var s=spec && spec.length ? Mod.spec.concat(spec) : Mod.spec
 
-        for(var i=0,a; a=s[i]; i++){
-            if ('attributes'===a[ID]){
-                attr=a[VALUE]
-                break
-            }
-        }
+        for(var i=0,o; o=s[i]; i++){ if ('options'===o[ID]) break }
 
-        var m = new (View.extend(Mod.Class))(attr, Mod, s, params, this, !hidden, chains)
+        var m = new (View.extend(Mod.Class))(
+			o?o[VALUE]:o,
+			Mod,
+			s,
+			params,
+			this,
+			!hidden,
+			chains instanceof Function ? [chains,spec]:chains)
         this.modules.push(m)
         return m
     },
@@ -229,6 +234,8 @@ var View = Backbone.View.extend(_.extend(Module, {
                 else container.appendChild(el)
             }
             this._elements[i] = el
+            el.dataset.viewName=mod.name
+			mod.rendered()
         }
         return el
     },
@@ -239,6 +246,8 @@ var View = Backbone.View.extend(_.extend(Module, {
     render: function(){
         return this.el
     },
+	rendered: function(){
+	},
     slots:{
         // seldom use, useful only after BB's setElement
         invalidate: this.show

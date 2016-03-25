@@ -65,9 +65,10 @@ Backbone.ajax = function(req){
 return{
     create:function(domains,cb){
         if (!domains) return cb()
-        directory=Object.assign(directory, domains)
+        directory=picoObj.extend(directory, domains)
         create(Object.keys(domains), domains, cb)
     },
     addon:function(){ addon = arguments[0] },
+    getAddon:function(){ return JSON.parse(JSON.stringify(addon)) },
     getDomain:function(url){ return directory[getKey(url)] || {} }
 }

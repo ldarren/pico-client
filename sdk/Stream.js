@@ -1,4 +1,4 @@
-//TODO: authentication for withCredentials option
+//TODO: authentication(header or cookies) with withCredentials=true
 var network=require('js/network')
 
 function Stream(options){
@@ -8,22 +8,23 @@ function Stream(options){
 function init(self, channel, path, events, withCredentials){
     self.channel=channel
     self.events=events
-    self.withCredentials=withCredentials
     if (!path) return
 
-    var trigger=function(e){
+    var
+	trigger=function(e){
         var data
         try{ data=JSON.parse(e.data) }
         catch(exp){ data=e.data }
         self.trigger(e.type, data, e.lastEventId)
-    }
-    self.sse=new EventSource(
-            encodeURI(-1===path.indexOf('://')?network.getDomain(channel).url+path:path),
+    },
+    s=new EventSource(
+            encodeURI(-1===path.indexOf('://')?network.getDomain(channel).url+path:path)+'?'+__.querystring(network.getAddon()),
             {withCredentials:withCredentials})
-    self.sse.addEventListener('open', function(e){
+
+    s.addEventListener('open', function(e){
         self.trigger(e.type)
     }, false)   
-    self.sse.addEventListener('error', function(e){
+    s.addEventListener('error', function(e){
         switch(e.target.readyState){
         case EventSource.CONNECTING: self.trigger('connecting'); break
         case EventSource.CLOSED:
@@ -33,8 +34,9 @@ function init(self, channel, path, events, withCredentials){
         }       
     }, false)   
     for(var i=0,e; e=events[i]; i++){
-        self.sse.addEventListener(e,trigger,false)
-    }       
+        s.addEventListener(e,trigger,false)
+    }
+	self.sse=s
 }       
 
 _.extend(Stream.prototype, Backbone.Events,{
@@ -45,16 +47,16 @@ _.extend(Stream.prototype, Backbone.Events,{
             init(
                 this,
                 channel||this.channel,
-                path||s.url||this.path,
+                path||s.url,
                 events||this.events,
-                withCredentials||s.withCredentials||this.withCredentials)
+                withCredentials||s.withCredentials)
         }else{
             init(
                 this,
-                channel||this.chanel,
-                path||this.path,
+                channel||this.channel,
+                path,
                 events||this.events,
-                withCredentials||this.withCredentials)
+                withCredentials)
         }
     },
     close:function(){
