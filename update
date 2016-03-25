@@ -16,15 +16,16 @@ fs.readlink(process.argv[1], function(err, realPath){
         .pipe(fs.createWriteStream(dest))
         arguments.callee(files, cb)
     })([
-        'network.js','js',
-        'Router.js','js',
         'Frame.js','js',
-        'sigslot.js','js',
-        'Module.js','js',
-        'specMgr.js','js',
         'Model.js','js',
+        'Module.js','js',
+        'Pane.js','js',
+        'Router.js','js',
+        'Socket.js','js',
         'Stream.js','js',
-        'Socket.js','js'
+        'network.js','js',
+        'sigslot.js','js',
+        'specMgr.js','js'
         ], function(){
         return console.log('Done')
     })

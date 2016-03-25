@@ -173,14 +173,6 @@
 				"reqDl": "24minutes"
 			}
 		]],
-        ["pane","view",[
-            ["paneId","int",0],
-            ["options","map",{"id":"main"}]
-        ],"js/Pane"],
-        ["pane","view",[
-            ["paneId","int",1],
-            ["options","map",{"id":"secondary"}]
-        ],"js/Pane"],
         ["DataStream","ctrl", [
             ["models","refs","models"],
             ["demux","map",{
@@ -191,6 +183,14 @@
                 "events":[]
             }]
         ],["common/auth/DataStream","DataStreamMixin"]],
+        ["pane","view",[
+            ["paneId","int",0],
+            ["options","map",{"id":"main"}]
+        ],"js/Pane"],
+        ["pane","view",[
+            ["paneId","int",1],
+            ["options","map",{"id":"secondary"}]
+        ],"js/Pane"],
         ["common/ui/niko","view",[
             ["options","map",{"el":"#main.pane>div:nth-child(1)"}],
             ["paneId","int",0]

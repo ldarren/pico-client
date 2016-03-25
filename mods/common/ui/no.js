@@ -1,17 +1,16 @@
-return {
+return{
     signals:['pageAdded'],
     deps:{
-        el:'text'
+        paneId:'int'
     },
-    create:function(deps){
-        this.setElement(deps.el)
-        console.log('no ui created')
+    create: function(deps){
     },
     slots:{
-        flyerAdded: function(){},
-        pageAdd: function(from, sender, page, isBack){
+        frameAdded: function(){},
+        pageAdd: function(from, sender, paneId, page, isBack){
+            if (this.deps.paneId !== paneId) return
             this.el.appendChild(page)
-            this.signals.pageAdded().send(this.host)
+            this.signals.pageAdded(paneId).send(this.host)
         },
         moduleAdded: function(from, sender){},
         pageTransit: function(from, sender, options){}

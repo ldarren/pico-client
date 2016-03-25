@@ -3,6 +3,7 @@ REFS='refs',
 specMgr = require('js/specMgr'),
 sigslot= require('js/sigslot'),
 dummyCB=function(){},
+rendered=function(mod){mod.rendered()},
 refs=function(id,spec,rawSpec){
     var
     ret={},
@@ -235,7 +236,7 @@ var View = Backbone.View.extend(_.extend(Module, {
             }
             this._elements[i] = el
             el.dataset.viewName=mod.name
-			mod.rendered()
+			setTimeout(rendered, 0, mod)
         }
         return el
     },

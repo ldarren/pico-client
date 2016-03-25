@@ -56,16 +56,16 @@ fs.readlink(process.argv[1], function(err, realPath){
                 'project.json','cfg',
                 'env.json','cfg',
                 'main.js','mod',
-                'network.js','js',
-                'Router.js','js',
-                'Frame.js','js',
-                'Pane.js','js',
-                'sigslot.js','js',
-                'Module.js','js',
-                'specMgr.js','js',
-                'Model.js','js',
-                'Stream.js','js',
-                'Socket.js','js'
+				'Frame.js','js',
+				'Model.js','js',
+				'Module.js','js',
+				'Pane.js','js',
+				'Router.js','js',
+				'Socket.js','js',
+				'Stream.js','js',
+				'network.js','js',
+				'sigslot.js','js',
+				'specMgr.js','js'
                 ], function(){
                 if (!projLib) return console.log('Done')
                 fs.symlink(projLib, projId+'/lib', function(){

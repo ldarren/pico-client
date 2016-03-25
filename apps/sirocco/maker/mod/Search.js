@@ -6,20 +6,17 @@ return {
     },
     create:function(deps){
     },
-    render:function(){
-        setTimeout(function(self){
-            google.search.cse.element.render({
-                gname:'gsearch',
-                div:'gcse',
-                tag:'search',
-                attributes:{
-                    disableWebSearch:true
-                }
-            })
-            var element = google.search.cse.element.getElement('gsearch');
-            element.execute(self.deps.keyword);
-        },0,this)
-        return this.el
+    rendered:function(){
+		google.search.cse.element.render({
+			gname:'gsearch',
+			div:'gcse',
+			tag:'search',
+			attributes:{
+				disableWebSearch:true
+			}
+		})
+		var element = google.search.cse.element.getElement('gsearch');
+		element.execute(this.deps.keyword);
     },
     events:{
         'click .gs-image-popup-box':function(e){
