@@ -1,0 +1,48 @@
+[
+    [
+        "http://cse.google.com/cse.js?cx=008027924592338922030:d2cb1191n4s"
+    ],[
+        "css/style.css"
+    ],[
+        ["greets","models",{
+            "create":"sirocco/greets/create"
+        }],
+        ["pane","view",[
+			["options","map",{"id":"main"}],
+			["paneId","int",0]
+		],"js/Pane"],
+        ["common/ui/no","view",[
+            ["options","map",{"el":"#main.pane>div:nth-child(1)"}],
+			["paneId","int",0]
+        ]],
+        ["common/auth/NoSession","ctrl",[]]
+    ],{
+        "search":[
+			["options","map",{ "className":"page" }],
+			["keyword","param",0],
+			["Search","view",[
+				["keyword","ref","keyword"]
+			]]
+        ],
+        "home2":[
+			["options","map",{ "className":"page" }],
+			["greets","ref","greets"],
+			["url","param",0],
+			["Home","view",[
+				["url","ref","url"],
+				["greets","ref","greets"]
+			]]
+        ],
+        "home":[
+			["options","map",{ "className":"page" }],
+			["greets","ref","greets"],
+			["Home","view",[
+				["greets","ref","greets"]
+			]]
+        ]
+    },{
+        "search?q=:keyword":["search"],
+        "home/*url":["home2"],
+        "*action":["home"]
+    }
+]
