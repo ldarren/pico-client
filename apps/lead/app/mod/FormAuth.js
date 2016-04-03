@@ -18,9 +18,8 @@ login=function(){
     becl.add('processing')
 
     // HACK! on ios if the virtual keyboard doesnt close at this stage, form will not render for unknown reason
-    if (typeof device !== 'undefined' && typeof cordova.plugins.Keyboard !== 'undefined' && device.platform.toUpperCase() === 'IOS') {
-        cordova.plugins.Keyboard.close()
-    }
+	var n=__.refChain(window,['cordova','plugins','Keyboard'])
+	if (n) n.close()
 
     switch(this.page){
     case SIGNIN:
@@ -38,12 +37,23 @@ login=function(){
         break
     case SIGNUP:
         var pass = fe.userpass.value
-        if (pass !== fe.userconfirm.value) return ee.textContent = 'Confirm password and password do not match'
+        if (pass !== fe.userconfirm.value) return ee.textContent = 'Password does not match the confirm password'
+		var json={}
+		for(var i=0,e; e=fe[i]; i++){
+			switch(e.name){
+			case 'username':
+			case 'userpass':
+			case 'userconfirm':
+				break;
+			default:
+				json[e.name]=e.value.trim()
+			}
+		}
         this.deps.owner.create(null, {
             data: {
                 un: fe.username.value.trim(),
                 pwd: picoStr.hash(pass),
-                json: {name:fe.name.value.trim()}
+                json: json
             },
             wait: true,
             error: function(e){

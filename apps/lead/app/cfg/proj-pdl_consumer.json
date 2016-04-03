@@ -16,6 +16,29 @@
         ["post","models",{}],
         ["lock","models",{}],
         ["log","models",{}],
+		["requests","list",[
+			{
+				"img":"dat/p6.png",
+				"name":"Visit Joey place",
+				"time":"8 - 10am",
+				"place":"Jurong East",
+				"note":"Change water tap"
+			},
+			{
+				"img":"dat/p5.png",
+				"name":"Visit Darren place",
+				"time":"1 - 3pm",
+				"place":"Manhattan",
+				"note":"Fix shower pipe"
+			},
+			{
+				"img":"dat/p7.png",
+				"name":"Visit Hock Soon place",
+				"time":"8 - 19pm",
+				"place":"London",
+				"note":"Aircon service"
+			}
+		]],
         ["pane","view",[
             ["paneId","int",0],
             ["options","map",{"id":"main"}]
@@ -24,6 +47,14 @@
             ["paneId","int",1],
             ["options","map",{"id":"secondary"}]
         ],"js/Pane"],
+        ["common/ui/niko","view",[
+            ["options","map",{"el":"#main.pane>div:nth-child(1)"}],
+            ["paneId","int",0]
+        ]],
+        ["common/ui/niko","view",[
+            ["options","map",{"el":"#secondary.pane>div:nth-child(1)"}],
+            ["paneId","int",1]
+        ]],
         ["DataStream","ctrl", [
             ["models","refs","models"],
             ["demux","map",{
@@ -34,19 +65,19 @@
                 "events":[]
             }]
         ],["common/auth/DataStream","DataStreamMixin"]],
-        ["common/ui/niko","view",[
-            ["options","map",{"el":"#main.pane>div:nth-child(1)"}],
-            ["paneId","int",0]
-        ]],
-        ["common/ui/niko","view",[
-            ["options","map",{"el":"#secondary.pane>div:nth-child(1)"}],
-            ["paneId","int",1]
-        ]],
         ["FormAuth","view",[
             ["owner","ref","owner"],
             ["tplSignin","file","FormSignin.asp"],
             ["tplSignup","file","FormSignup.asp"]
         ]],
+        ["Drawer", "module", [
+            ["tpl","file","Drawer.asp"],
+			["side","text","right"],
+			["menu","list",[
+				["Users","icon-users","users"],
+				["Jobs","icon-job","jobs" ]
+			]]
+		]],
         ["common/auth/Session","ctrl",[
             ["owner","ref","owner"],
             ["users","ref","users"]
@@ -61,6 +92,7 @@
         "home":[
             ["options","map",{"className":"fulpage active"}],
             ["owner","ref","owner"],
+			["requests","ref","requests"],
             ["header/Base","view",[
                 ["tpl","file","header/Base.asp"],
                 ["title","text","My Requests"],
@@ -75,6 +107,7 @@
                 ["html","file","DateDial.html"]
 			]],
             ["Scrollable","view",[
+				["list","ref","requests"],
 				["cell","view",[
 					["tpl","file","CardRequest.asp"]
 				],"CardRequest"]

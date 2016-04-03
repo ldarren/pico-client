@@ -3,6 +3,7 @@
         "util":"api/util",
         "user":"api/user",
         "room":"api/room",
+        "case":"api/case",
         "web":["context","webServer"]
     },
     "routes":{
@@ -50,6 +51,21 @@
         "lead/user/read": [
             ["user","verify","input","user"],
             ["user","read","input"],
+            [0]
+        ],
+        "lead/case/create": [
+            ["user","verify","input","user"],
+            ["case","create","input"],
+            [0]
+        ],
+        "lead/case/update": [
+            ["user","verify","input","user"],
+            ["case","update","input"],
+            [0]
+        ],
+        "lead/case/poll": [
+            ["user","verify","input","user"],
+            ["case","poll","input"],
             [0]
         ]
     }
