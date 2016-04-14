@@ -56,7 +56,7 @@ specLoaded = function(err, spec, userData){
     self.create(d)
 
     var h=self.host
-    self.signals.moduleAdded(self).send(h)
+    self.signals.moduleAdded().send(h)
 
     if (h){
         if (self._show) h.show(self, self._show[0], self._show[1])

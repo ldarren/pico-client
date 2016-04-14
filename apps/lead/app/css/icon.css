@@ -1,14 +1,14 @@
-svg {
+svg{
   display: inline-block;
   width: 2rem;
   height: 2rem;
   overflow: visible;
 }
 
-svg.icon {
+svg.icon{
   cursor: pointer;
 }
-svg.icon path {
+svg.icon path, svg.icon use{
   stroke: rgba(255, 255, 255, 0.9);
   fill: none;
   stroke-width: 1;

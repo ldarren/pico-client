@@ -19,6 +19,7 @@ return{
             switch(e.currentTarget.id){
             case 'icon-menu':
                 this.signals.menu('left').send(this.host)
+				this.el.dispatchEvent(__.createEvent('transit', params[2])); break
                 break
             case 'icon-back':
                 Router.back()

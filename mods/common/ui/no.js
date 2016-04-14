@@ -12,7 +12,7 @@ return{
             this.el.appendChild(page)
             this.signals.pageAdded(paneId).send(this.host)
         },
-        moduleAdded: function(from, sender){},
+        moduleAdded: function(from, sender, paneId){},
         pageTransit: function(from, sender, options){}
     }
 }

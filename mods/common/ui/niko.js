@@ -13,19 +13,18 @@ transit=function(self, ele){
 }
 
 return{
-    signals:['pageAdded','frameResized'],
-    className: 'ripple hidden',
+    signals:['pageAdded','pageTransited'],
     deps:{
-        paneId:'int',
-        info:'map',
-        pageClass:'text',
-        timeout:['int',1100]
+        paneId:'int'
     },
     create: function(deps){
         var self=this
         document.addEventListener('click', function(e){
             if (e.target.classList.contains(EVT_TRANSIT)) transit(self, e.target)
         }, true)
+        this.el.addEventListener('__transited', function(){
+            self.signals.pageTransited(el.offsetLeft, el.offsetTop).send()
+        }, false)
     },
     slots:{
         frameAdded: function(){},
@@ -34,7 +33,13 @@ return{
             this.el.appendChild(page)
             this.signals.pageAdded(paneId).send(this.host)
         },
-        moduleAdded: function(from, sender){},
-        pageTransit: function(from, sender, options){}
+        moduleAdded: function(from, sender, paneId){
+            if (this.deps.paneId !== paneId) return
+            document.dispatchEvent(__.createEvent('__reset'))
+        },
+        pageTransit: function(from, sender, paneId, options){
+            if (this.deps.paneId !== paneId) return
+            this.el.dispatchEvent(__.createEvent('__transit', options))
+        }
     }
 }

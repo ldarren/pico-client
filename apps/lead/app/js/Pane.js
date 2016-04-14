@@ -11,7 +11,7 @@ removeOldPage=function(from, sender, paneId){
 
 return {
     className:'pane',
-    signals:['paneAdd','pageAdd'],
+    signals:['paneAdd','pageAdd','moduleAdded'],
     deps:{
         html:   ['file','<div class=layer></div><div class=layer></div>'],
         layers: ['list', ['.pane>div:nth-child(1)','.pane>div:nth-child(2)']],
@@ -61,6 +61,10 @@ return {
             this.el.style.cssText = ''
             this.signals.pageAdd(paneId, this.currPage.render(), Router.isBack()).send()
         },
-        pageAdded:removeOldPage
+        pageAdded:removeOldPage,
+		moduleAdded:function(from, sender){
+			if (-1===this.modules.indexOf(from)) return // not child
+			this.signals.moduleAdded(this.deps.paneId).send(this.host) // repropagate with paneId
+		}
     }
 }

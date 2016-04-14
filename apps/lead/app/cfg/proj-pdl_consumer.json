@@ -33,11 +33,15 @@
 			},
 			{
 				"img":"dat/p7.png",
-				"name":"Visit Hock Soon place",
+				"name":"Visit Ahmad place",
 				"time":"8 - 19pm",
 				"place":"London",
 				"note":"Aircon service"
 			}
+		]],
+		["Static","view",[
+			["options","map",{"tagName":"svg","className":"hidden"}],
+			["html","file","icons.svg"]
 		]],
         ["pane","view",[
             ["paneId","int",0],
@@ -48,11 +52,11 @@
             ["options","map",{"id":"secondary"}]
         ],"js/Pane"],
         ["common/ui/niko","view",[
-            ["options","map",{"el":"#main.pane>div:nth-child(1)"}],
+            ["options","map",{"el":"#main.pane>div:nth-child(1)","className":"ripple hidden"}],
             ["paneId","int",0]
         ]],
         ["common/ui/niko","view",[
-            ["options","map",{"el":"#secondary.pane>div:nth-child(1)"}],
+            ["options","map",{"el":"#secondary.pane>div:nth-child(1)","className":"ripple hidden"}],
             ["paneId","int",1]
         ]],
         ["DataStream","ctrl", [

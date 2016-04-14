@@ -123,7 +123,7 @@ return Module.View.extend({
         show: function(from, sender, where, first){
             if (!sender || -1 === this.modules.indexOf(sender)) return
 
-            var c=this.layers[where||1]
+            var c=this.layers[where]||this.layers[0]
             this.show(sender, c, first)
         },
         hide: function(from, sender, where){

@@ -1,32 +1,34 @@
 return {
-    signals:['paneAdded','paneTransited'],
+    signals:['pageAdded','pageTransited'],
     deps:{
-        el:'text'
+        paneId:'int'
     },
     create:function(deps){
-        this.setElement(deps.el)
         var
         self=this,
         el=this.el
-        el.addEventListener('flipped', function(){
-            self.signals.paneAdded().send(self.host) 
-            self.signals.paneTransited(el.offsetLeft, el.offsetTop).send()
+        el.addEventListener('__flipped', function(){
+            self.signals.pageAdded().send(self.host) 
+            self.signals.pageTransited(el.offsetLeft, el.offsetTop).send()
         }, false)
-        el.addEventListener('transited', function(){
-            self.signals.paneTransited(el.offsetLeft, el.offsetTop).send()
+        el.addEventListener('__transited', function(){
+            self.signals.pageTransited(el.offsetLeft, el.offsetTop).send()
         }, false)
     },
     slots:{
-        flyerAdded: function(){
+        frameAdded: function(){
         },
-        paneAdd: function(from, sender, pane, isBack){
-            this.el.dispatchEvent(__.createEvent('flip', {pane:pane, from:isBack ? 'right' : 'left'}))
+		pageAdd: function(from, sender, paneId, page, isBack){
+            if (this.deps.paneId !== paneId) return
+            this.el.dispatchEvent(__.createEvent('__flip', {page:page, from:isBack ? 'right' : 'left'}))
         },
-        moduleAdded: function(from, sender){
+        moduleAdded: function(from, sender, paneId){
+            if (this.deps.paneId !== paneId) return
             document.dispatchEvent(__.createEvent('__reset'))
         },
-        paneTransit: function(from, sender, options){
-            this.el.dispatchEvent(__.createEvent('transit', options))
+        pageTransit: function(from, sender, paneId, options){
+            if (this.deps.paneId !== paneId) return
+            this.el.dispatchEvent(__.createEvent('__transit', options))
         }
     }
 }

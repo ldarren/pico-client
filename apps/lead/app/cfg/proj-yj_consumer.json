@@ -56,11 +56,11 @@
             }]
         ],["common/auth/DataStream","DataStreamMixin"]],
         ["common/ui/niko","view",[
-            ["options","map",{"el":"#main.pane>div:nth-child(1)"}],
+            ["options","map",{"el":"#main.pane>div:nth-child(1)","className":"ripple hidden"}],
             ["paneId","int",0]
         ]],
         ["common/ui/niko","view",[
-            ["options","map",{"el":"#secondary.pane>div:nth-child(1)"}],
+            ["options","map",{"el":"#secondary.pane>div:nth-child(1)","className":"ripple hidden"}],
             ["paneId","int",1]
         ]],
         ["FormAuth","view",[
