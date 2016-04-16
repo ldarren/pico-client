@@ -3,6 +3,7 @@
     ],[
         "css/index.css"
     ],[
+		["html","file","Frame.html"],
 		["domain","text","pdl"],
         ["owner","models",{
             "create": "lead/user/signup",
@@ -38,10 +39,6 @@
 				"place":"London",
 				"note":"Aircon service"
 			}
-		]],
-		["Static","view",[
-			["options","map",{"tagName":"svg","className":"hidden"}],
-			["html","file","icons.svg"]
 		]],
         ["pane","view",[
             ["paneId","int",0],

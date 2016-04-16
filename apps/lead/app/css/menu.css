@@ -40,7 +40,7 @@ ul.menu li .icon {
   -webkit-transition: opacity 0.1s;
   transition: opacity 0.1s;
 }
-ul.menu li .icon path {
+ul.menu li .icon use{
   stroke-width: 4px;
   stroke-dasharray: 64.36235046386719;
   stroke-dashoffset: 64.36235046386719;

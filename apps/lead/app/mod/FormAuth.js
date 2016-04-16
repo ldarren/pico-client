@@ -88,7 +88,7 @@ return {
         signout:function(from, sender){
             this.page=SIGNIN
             this.el.innerHTML=this.deps.tplSignin()
-            this.signals.show().send(this.host)
+            this.signals.show(1).send(this.host)
         }
     },
 

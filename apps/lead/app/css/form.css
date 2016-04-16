@@ -10,7 +10,7 @@
     height: 150px;
     margin:0 auto;
 }
-.form .logo path{
+.form .logo use{
     fill: none;
     stroke:#c5c5c5;
     stroke-width:5;
