@@ -8,42 +8,19 @@
 	padding: 6rem 1.5rem 0;
 	text-align: center;
 }
-.header .menu-btn {
-  position: absolute;
-  top: 2rem;
-  left: 1.5rem;
-  width: 1.8rem;
-  height: 1.7rem;
-  cursor: pointer;
-}
-.header .menu-btn span, .menu-btn:before, .menu-btn:after {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.6);
-}
-.header .menu-btn span {
-  top: 0.8rem;
-}
-.header .menu-btn:before {
-  content: "";
-  top: 0;
-}
-.header .menu-btn:after {
-  content: "";
-  bottom: 0;
-}
 .header .icon {
   position: absolute;
   top: 2rem;
-}
-.header .icon.search {
-  right: 1.5rem;
   stroke-dasharray: 61.847137451171875;
   stroke-dashoffset: 61.847137451171875;
   -webkit-animation: animatePath 0.5s 0.5s forwards;
           animation: animatePath 0.5s 0.5s forwards;
+}
+.header .icon.left{
+  left: 1.5rem;
+}
+.header .icon.right{
+  right: 1.5rem;
 }
 .header>h1{
   font-size: 2.2rem;

@@ -117,8 +117,21 @@
                 ["tpl","file","Menu.asp"],
                 ["owner","ref","owner"]
             ]]
+        ],
+        "addTask":[
+            ["options","map",{"className":"fulpage active"}],
+            ["owner","ref","owner"],
+            ["header/Base","view",[
+                ["tpl","file","header/Base.asp"],
+                ["title","text","Add Request"]
+            ]],
+            ["Menu","view",[
+                ["tpl","file","Menu.asp"],
+                ["owner","ref","owner"]
+            ]]
         ]
     },{
+        "tasks/add":["addTask"],
         "*action":["home"]
     }
 ]

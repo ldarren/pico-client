@@ -8,24 +8,29 @@ return{
     signals:['menu','selectedMenu'],
     deps:{
 		tpl:'file',
-		title:'text'
+		title:'text',
+		iconLeft:'text',
+		iconRight:'text'
     },
     create: function(deps){
         this.el.innerHTML=deps.tpl({title:deps.title})
 		this.spawnAsync(specMgr.findAllByType('view',this.spec))
     },
     events: {
-        'tap a': function(e){
-            switch(e.currentTarget.id){
-            case 'icon-menu':
+        'tap svg': function(e){
+			var hash=e.target.getAttributeNS('http://www.w3.org/1999/xlink', 'href')
+			if (!hash) return
+			hash=hash.substr(6)
+            switch(hash){
+            case 'menu':
                 this.signals.menu('left').send(this.host)
 				this.el.dispatchEvent(__.createEvent('transit', params[2])); break
                 break
-            case 'icon-back':
+            case 'back':
                 Router.back()
                 break
             default:
-                this.signals.selectedMenu(e.currentTarget.id).send(this.host)
+                this.signals.selectedMenu(hash).send(this.host)
                 break
             }
         }
