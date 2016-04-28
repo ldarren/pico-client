@@ -97,6 +97,8 @@
             ["header/Base","view",[
                 ["tpl","file","header/Base.asp"],
                 ["title","text","My Requests"],
+                ["btnLeft","map",{"icon":"icon_plus","url":"tasks/add"}],
+                ["btnRight","map",{"icon":"icon_search"}],
                 ["header/User","view",[
 					["tpl","file","header/User.asp"]
 				]],
