@@ -48,7 +48,7 @@ return{
 	},
 	remove:function(){
 		scrolls.filter(removeExisting,this.el)
-		this.ancestor.remove()
+		this.ancestor.remove.call(this)
 	},
 	rendered:function(){
 		var

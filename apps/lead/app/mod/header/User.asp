@@ -1,2 +1,2 @@
-<img src="<%=path%>" alt="" class="user-photo anim" />
-<span class="user-notif"><%=badge%></span>
+<img src="<%=d.path%>" alt="" class="user-photo anim" />
+<span class="user-notif"><%=d.badge%></span>

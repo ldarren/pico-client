@@ -1,3 +1,4 @@
+var opt={variable:'d'}
 pico.run({
     name: 'main',
     ajax: __.ajax,
@@ -6,7 +7,7 @@ pico.run({
         live:false
     },
     preprocessors:{
-        '.asp':function(url,txt){ return _.template(txt) }
+        '.asp':function(url,txt){ return _.template(txt,opt) }
     },
     paths:{
         '*': 'mod/',

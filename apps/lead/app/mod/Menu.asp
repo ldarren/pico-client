@@ -1,12 +1,5 @@
-<li class="home">
-    <svg class="icon"><use xlink:href="#icon_home"/></svg>
+<%for(var i=0,btn; btn=d[i]; i++){%>
+<li class="<%=btn.className%>">
+    <svg class="icon <%=btn.url?btn.url:''%>"><use xlink:href="#icon_<%=btn.icon%>" xlink:role="<%=btn.url%>"/></svg>
 </li>
-<li class="history">
-    <svg class="icon"><use xlink:href="#icon_history"/></svg>
-</li>
-<li class="profile">
-    <svg class="icon"><use xlink:href="#icon_name"/></svg>
-</li>
-<li class="signout">
-    <svg class="icon"><use xlink:href="#icon_power"/></svg>
-</li>
+<%}%>

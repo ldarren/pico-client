@@ -1,23 +1,31 @@
+var Router=require('js/Router')
 return {
     tagName:'ul',
     className:'menu',
     signals:['refreshcache'],
     deps:{
-		tpl:'file',
-        owner:'models'
+		tpl:'file',	
+        owner:'models',
+		list:'list'
     },
     create: function(deps){
-        this.el.innerHTML=deps.tpl()
+        this.el.innerHTML=deps.tpl(deps.list)
     },
 
     events: {
-        'touchstart .signout':function(){
+		'tap li':function(e){
+			var
+			use='use'===e.target.tagName?e.target:e.target.querySelector('use'),
+			url=use.getAttributeNS('http://www.w3.org/1999/xlink', 'role')
+			if(url) Router.go(url)
+		},
+        'tap .signout':function(){
             this.deps.owner.reset()
         },
-        'touchstart .restart':function(){
+        'tap .restart':function(){
             window.location.reload(true)
         },
-        'touchstart .reload':function(){
+        'tap .reload':function(){
             this.signals.refreshCache().send()
         }
     }

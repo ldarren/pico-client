@@ -99,9 +99,6 @@
                 ["title","text","My Requests"],
                 ["btnLeft","map",{"icon":"icon_plus","url":"tasks/add"}],
                 ["btnRight","map",{"icon":"icon_search"}],
-                ["header/User","view",[
-					["tpl","file","header/User.asp"]
-				]],
                 ["header/Month","view",[
 					["tpl","file","header/Month.asp"]
 				]]
@@ -117,23 +114,82 @@
             ]],
             ["Menu","view",[
                 ["tpl","file","Menu.asp"],
-                ["owner","ref","owner"]
+                ["owner","ref","owner"],
+				["list","list",[
+					{"className":"home","icon":"home","url":""},
+					{"className":"history","icon":"history","url":"history"},
+					{"className":"profile","icon":"name","url":"profile"},
+					{"className":"signout","icon":"power","url":"signout"}
+				]]
             ]]
         ],
         "addTask":[
             ["options","map",{"className":"fulpage active"}],
-            ["owner","ref","owner"],
             ["header/Base","view",[
                 ["tpl","file","header/Base.asp"],
                 ["title","text","Add Request"]
             ]],
+            ["Form","view",[
+                ["tpl","file","FormNewRequest.asp"]
+            ]]
+        ],
+        "history":[
+            ["options","map",{"className":"fulpage active"}],
+            ["owner","ref","owner"],
+			["requests","ref","requests"],
+            ["header/Base","view",[
+                ["tpl","file","header/Base.asp"],
+                ["title","text","Request History"],
+                ["btnRight","map",{"icon":"icon_search"}],
+                ["header/Month","view",[
+					["tpl","file","header/Month.asp"]
+				]]
+            ]],
+			["DateDial","view",[
+                ["html","file","DateDial.html"]
+			]],
+            ["Scrollable","view",[
+				["list","ref","requests"],
+				["cell","view",[
+					["tpl","file","CardRequest.asp"]
+				],"CardRequest"]
+            ]],
             ["Menu","view",[
                 ["tpl","file","Menu.asp"],
-                ["owner","ref","owner"]
+                ["owner","ref","owner"],
+				["list","list",[
+					{"className":"home","icon":"home","url":"home"},
+					{"className":"history","icon":"history","url":""},
+					{"className":"profile","icon":"name","url":"profile"},
+					{"className":"signout","icon":"power","url":"signout"}
+				]]
             ]]
-        ]
+        ],
+		"profile":[
+            ["options","map",{"className":"fulpage active"}],
+            ["owner","ref","owner"],
+            ["header/Base","view",[
+                ["tpl","file","header/Base.asp"],
+                ["title","text","My Profile"],
+                ["header/User","view",[
+					["tpl","file","header/User.asp"]
+				]]
+            ]],
+            ["Menu","view",[
+                ["tpl","file","Menu.asp"],
+                ["owner","ref","owner"],
+				["list","list",[
+					{"className":"home","icon":"home","url":"home"},
+					{"className":"history","icon":"history","url":"history"},
+					{"className":"profile","icon":"name","url":""},
+					{"className":"signout","icon":"power","url":"signout"}
+				]]
+            ]]
+		]
     },{
         "tasks/add":["addTask"],
+        "history":["history"],
+        "profile":["profile"],
         "*action":["home"]
     }
 ]
