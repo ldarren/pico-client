@@ -4,7 +4,7 @@ return {
 		Header:'view',
 		Form:'view'
 	},
-    signals:['show','hide','formShow','header'],
+    signals:['show','hide','formShow','formCollect','dialogResult','header'],
     create: function(deps){
 		this.header=this.spawn(deps.Header)
 		this.form=this.spawn(deps.Form)
@@ -25,6 +25,11 @@ return {
 		headerButtonClicked:function(from, sender, hash){
 			switch(hash){
 			case 'ok':
+				var self=this
+				this.signals.formCollect(function(err,form){
+					if(err) return console.error(err)
+					self.signals.dialogResult(form).send(self.sender)
+				}).send(this.form)
 			case 'ko':
 				this.signals.hide().send(this.host)
 				break	

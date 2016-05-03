@@ -1,5 +1,3 @@
-var Router = require('js/Router')
-
 return {
     tagName:'form',
     className: 'form',
@@ -11,6 +9,23 @@ return {
     slots:{
 		formShow:function(from,sender,data){
 			this.el.innerHTML=this.deps.tpl(data)
+		},
+		formCollect:function(from,sender,cb){
+			var
+			fe = this.el,
+			ee = fe.querySelector('.error')
+			
+			ee.textContent = ''
+			
+			if (!fe.checkValidity()){
+				cb('Missing required fields')
+				return ee.textContent = 'Missing required fields'
+			}
+			var results={}
+			for(var i=0,f; f=fe[i]; i++){
+				results[f.name]=f.value
+			}
+			cb(null, results)
 		}
     }
 }
