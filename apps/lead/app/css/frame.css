@@ -51,7 +51,7 @@
         animation-name: frameresize1;
     }
     .frame>.layer>div:nth-child(1){
-        flex-basis:auto;
+        flex-basis:100%;
     }
     .frame>.layer>div:nth-child(2){
         display:none;

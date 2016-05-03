@@ -71,14 +71,18 @@
             ["tplSignin","file","FormSignin.asp"],
             ["tplSignup","file","FormSignup.asp"]
         ]],
-        ["Drawer", "module", [
-            ["tpl","file","Drawer.asp"],
-			["side","text","right"],
-			["menu","list",[
-				["Users","icon-users","users"],
-				["Jobs","icon-job","jobs" ]
+        ["Dialog","view",[
+            ["options","map",{"className":"modal fullpage"}],
+            ["Header","view",[
+                ["tpl","file","header/Base.asp"],
+                ["title","text","Add Request"],
+                ["btnLeft","map",{"icon":"icon_ko"}],
+                ["btnRight","map",{"icon":"icon_ok"}]
+            ],"header/Base"],
+            ["Form","view",[
+				["tpl","file","Form.asp"]
 			]]
-		]],
+        ]],
         ["common/auth/Session","ctrl",[
             ["owner","ref","owner"],
             ["users","ref","users"]
@@ -94,10 +98,18 @@
             ["options","map",{"className":"fulpage active"}],
             ["owner","ref","owner"],
 			["requests","ref","requests"],
+			["HomeCtrl","ctrl",[
+				["addRequest","list",[
+					{"name":"date","placeHolder":"Date","required":1},
+					{"name":"time","placeHolder":"Time","required":1},
+					{"name":"place","placeHolder":"Location","required":1},
+					{"name":"comment","placeHolder":"Comment","required":1}
+				]
+			]]],
             ["header/Base","view",[
                 ["tpl","file","header/Base.asp"],
                 ["title","text","My Requests"],
-                ["btnLeft","map",{"icon":"icon_plus","url":"tasks/add"}],
+                ["btnLeft","map",{"icon":"icon_plus"}],
                 ["btnRight","map",{"icon":"icon_search"}],
                 ["header/Month","view",[
 					["tpl","file","header/Month.asp"]
@@ -121,16 +133,6 @@
 					{"className":"profile","icon":"name","url":"profile"},
 					{"className":"signout","icon":"power","url":"signout"}
 				]]
-            ]]
-        ],
-        "addTask":[
-            ["options","map",{"className":"fulpage active"}],
-            ["header/Base","view",[
-                ["tpl","file","header/Base.asp"],
-                ["title","text","Add Request"]
-            ]],
-            ["Form","view",[
-                ["tpl","file","FormNewRequest.asp"]
             ]]
         ],
         "history":[
@@ -187,7 +189,6 @@
             ]]
 		]
     },{
-        "tasks/add":["addTask"],
         "history":["history"],
         "profile":["profile"],
         "*action":["home"]

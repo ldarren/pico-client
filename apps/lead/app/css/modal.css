@@ -1,5 +1,6 @@
 .modal{
     display:flex;
+	flex-direction: column;
     margin:auto;
     background: -webkit-linear-gradient(top, rgba(146, 135, 187, 0.8) 0%, rgba(0, 0, 0, 0.6) 100%);
     background: linear-gradient(to bottom, rgba(146, 135, 187, 0.8) 0%, rgba(0, 0, 0, 0.6) 100%);
@@ -14,4 +15,7 @@
   opacity: 0;
   -webkit-transform: scale(1.1);
           transform: scale(1.1);
+}
+.modal.fullpage{
+	height:100%;
 }

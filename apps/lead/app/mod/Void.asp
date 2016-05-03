@@ -1,1 +1,1 @@
-<p><%=message%></p>
+<p><%=d.message%></p>

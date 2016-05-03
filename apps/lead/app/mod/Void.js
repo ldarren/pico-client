@@ -1,7 +1,7 @@
 return{
     className: 'void',
     deps:{
-		tpl:['file','<%=message%>'],
+		tpl:['file','<%=d.message%>'],
         info:['map',{message:'Empty'}]
     },
     create: function(deps){

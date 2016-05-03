@@ -50,29 +50,15 @@ return{
     },
     slots: {
         header: function(from, sender, title, left, right){
-            var el=this.el
+            var
+			el=this.el,
+			deps=this.deps
 
             el.classList.remove('hidden')
-            el.querySelector('h1.title').textContent=title || this.deps.title
+            el.querySelector('h1').textContent=title || deps.title
 
-            var icon=el.querySelector('a.pull-left')
-            left = left || this.deps.left
-            if (left){
-                icon.className='pull-left icon '+left
-                icon.id=left
-            }else{
-                icon.className='pull-left'
-                icon.id=''
-            }
-            icon=el.querySelector('a.pull-right')
-            right = right || this.deps.right
-            if (right){
-                icon.className='pull-right icon '+right
-                icon.id=right
-            }else{
-                icon.className='pull-right'
-                icon.id=''
-            }
+			setBtn(this.el.querySelector('svg.icon.left use'),left||deps.btnLeft)
+			setBtn(this.el.querySelector('svg.icon.right use'),right||deps.btnRight)
         },
         noHeader: function(from, sender){
             this.el.classList.add('hidden')

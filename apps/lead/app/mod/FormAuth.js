@@ -69,7 +69,7 @@ login=function(){
 }
 
 return {
-    tagName:'form',
+    tagName: 'form',
     className: 'modal',
     deps:{
         owner:'models',
