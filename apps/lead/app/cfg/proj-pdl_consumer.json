@@ -12,12 +12,13 @@
         ["users","models",{
             "read": "lead/user/read"
         }],
-        ["address","models",{}],
-        ["domain","models",{}],
-        ["post","models",{}],
-        ["lock","models",{}],
-        ["log","models",{}],
-		["requests","list",[
+		["requests","models",{
+			"create":"lead/requests/add",
+			"read":"lead/requests/read",
+			"update":"lead/requests/update",
+			"delete":"lead/requests/remove",
+			"list":"lead/requests/list"
+		},[
 			{
 				"img":"dat/p6.png",
 				"name":"Visit Joey place",
@@ -99,6 +100,7 @@
             ["owner","ref","owner"],
 			["requests","ref","requests"],
 			["HomeCtrl","ctrl",[
+				["requests","ref","requests"],
 				["addRequest","list",[
 					{"name":"date","placeHolder":"Date","required":1},
 					{"name":"time","placeHolder":"Time","required":1},

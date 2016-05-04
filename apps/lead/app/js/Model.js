@@ -1,11 +1,10 @@
 return Backbone.Collection.extend({
-    initialize: function(models, name, config){
+	// config is always initialized by bb, config.comparator is consumed by bb
+    initialize: function(models, config, name){
         this.name=name
-		config = config || {}
         this.url = config.list
         this.model = Backbone.Model.extend({
             idAttribute: config.idAttribute || 'id',
-            comparator: config.comparator || 'id',
             sync: function(method, model, options){
                 if(!options.url) options.url=config[method]
                 if (options.url) return Backbone.sync(method, model, options)

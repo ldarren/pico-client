@@ -50,7 +50,7 @@ load = function(host, params, spec, idx, deps, cb, userData){
 		'field' === t ? deps.push(create(s[ID], t, m.get(s[EXTRA+1]))) : deps.push(create(s[ID], t, m)) 
 		break
     case 'models': // ID[id] TYPE[models] VALUE[options] EXTRA[default value]
-        deps.push(create(s[ID], t, new Model(s[EXTRA], s[ID], s[VALUE])))
+        deps.push(create(s[ID], t, new Model(s[EXTRA], s[VALUE], s[ID])))
         break
 	case 'fields': // ID[id] TYPE[fields] VALUE[models] EXTRA[filter] EXTRA1[field names]
 		f = find(s[VALUE], context)

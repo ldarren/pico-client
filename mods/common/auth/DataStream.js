@@ -59,7 +59,7 @@ return{
 
     slots:{
         signin: function(from, sender, model){
-            this.slots.signout.call(this, from, sender)
+            if(this.myId)this.slots.signout.call(this, from, sender)
             var
             pull=this.deps.pull,
 			userId = model.id

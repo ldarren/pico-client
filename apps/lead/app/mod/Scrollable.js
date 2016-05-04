@@ -21,6 +21,11 @@ scrollTo=function(arr){
 },
 removeExisting=function(arr){
 	return (arr[0]===this) ? false : true
+},
+addRow=function(model){
+	this.spawn(this.deps.cell, null, [['data','map',model.attributes]])
+},
+updateRow=function(model){
 }
 
 this.update=function(){
@@ -31,7 +36,6 @@ this.update=function(){
 	lastUpdate=now
 	if (!scrolls.length) return
 	scrolls=scrolls.filter(scrollTo, d)
-
 }
 
 return{
@@ -39,12 +43,14 @@ return{
 	deps:{
 		html:['file','<div><ul></ul></div>'],
 		containerSelector:['text','div'],
-		list:'list',
+		list:'models',
 		cell:'view'
 	},
 	create: function(deps){
 		this.el.innerHTML=deps.html
 		this.scrollCont=this.el.querySelector(deps.containerSelector)
+		this.listenTo(deps.list,'add',addRow)
+		this.listenTo(deps.list,'change',updateRow)
 	},
 	remove:function(){
 		scrolls.filter(removeExisting,this.el)
@@ -56,9 +62,7 @@ return{
 		list=deps.list
 
 		this.setElement(this.el.querySelector('ul'))
-		for(var i=0,l; l=list[i]; i++){
-			this.spawn(deps.cell, null, [['data','map',l]])
-		}
+		list.each(addRow,this)
 	},
 	slots:{
 		scrollTo:function(from, sender, to, duration){
