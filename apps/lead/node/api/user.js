@@ -44,7 +44,8 @@ this.log('signup',input)
                 un:un,
                 pwd:input.pwd,
                 sess:picoStr.rand(),
-                name:input.name
+                name:input.name,
+				createdBy:0
             }
             this.addJob([user], sqlUser.set, sqlUser)
             this.addJob([user], sqlUser.get, sqlUser)
