@@ -44,10 +44,10 @@ this.log('signup',input)
                 un:un,
                 pwd:input.pwd,
                 sess:picoStr.rand(),
-                json:input.json,
-                createdBy:0
+                name:input.name
             }
             this.addJob([user], sqlUser.set, sqlUser)
+            this.addJob([user], sqlUser.get, sqlUser)
             this.setOutput(user, sqlUser.cleanForSelf, sqlUser)
             next()
         })
@@ -57,17 +57,27 @@ this.log('signup',input)
         next(session.error(404))
     },
     verify:function(input,user,next){
-        Object.assign(user,input)
-        this.log('verify',input)
-        next()
+		if (!input.id || !input.sess) return next(this.error(403))
+		sqlUser.findBySess(input.sess, (err, rows)=>{
+			if (err) return next(this.error(500))
+			if (!rows.length) return next(this.error(403))
+			var data=rows[0]
+			this.log('verify',input,data)
+			if (data.id !== input.id) return next(this.error(403))
+			Object.assign(user,data)
+			next()
+		})
     },
     read:function(input,next){
-        sqlUser.get(input.id, (err, user)=>{
+        sqlUser.get(input, (err, user)=>{
             if (err) return next(this.error(500))
             this.setOutput(user, sqlUser.clean, sqlUser)
             next()
         })
     },
+	update:function(input,next){
+		next()
+	},
     poll:function(input,next){
         this.setOutput('hello SSE')
         next()

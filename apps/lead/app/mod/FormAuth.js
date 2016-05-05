@@ -38,22 +38,11 @@ login=function(){
     case SIGNUP:
         var pass = fe.userpass.value
         if (pass !== fe.userconfirm.value) return ee.textContent = 'Password does not match the confirm password'
-		var json={}
-		for(var i=0,e; e=fe[i]; i++){
-			switch(e.name){
-			case 'username':
-			case 'userpass':
-			case 'userconfirm':
-				break;
-			default:
-				json[e.name]=e.value.trim()
-			}
-		}
         this.deps.owner.create(null, {
             data: {
                 un: fe.username.value.trim(),
                 pwd: picoStr.hash(pass),
-                json: json
+                name:fe.name.value
             },
             wait: true,
             error: function(e){

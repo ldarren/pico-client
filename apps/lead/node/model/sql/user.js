@@ -2,6 +2,8 @@ var
 INDEX=                  ['un','sess'],
 PRIVATE=                ['un','pwd','sess'],
 PRIVATE_SELF=           ['un','pwd'],
+ENUM=                   ['os'],
+
 GET =                   'SELECT * FROM `user` WHERE `id`=? AND `status`=1;',
 GET_LIST =              'SELECT * FROM `user` WHERE `id` IN (?) AND `status`=1;',
 FIND_BY_TIME =          'SELECT * FROM `user` WHERE `updatedAt` > ?;',
@@ -12,24 +14,33 @@ SET =                   'INSERT INTO `user` (`un`, `sess`, `createdBy`) VALUES (
 TOUCH =                 'UPDATE `user` SET `updatedBy`=?, `updatedAt`=NOW() WHERE `id`=? AND `status`=1;',
 UNSET =                 'UPDATE `user` SET `status`=0, `updatedBy`=? WHERE `id`=?;',
 
-MAP=                    'userMap',
-MAP_GET =               'SELECT `userId`, `k`, `v` FROM ?? WHERE `userId`=?;',
-MAP_GET_BY_KEY =        'SELECT `userId`, `k`, `v` FROM ?? WHERE `userId`=? AND `k`=?;',
-MAP_GET_BY_KEYS =       'SELECT `userId`, `k`, `v` FROM ?? WHERE `userId`=? AND `k` IN (?);',
-MAP_GET_MAT_BY_KEY =    'SELECT `userId`, `k`, `v` FROM ?? WHERE `userId` IN (?) AND `k`=?;',
-MAP_GET_MAT_BY_KEYS =   'SELECT `userId`, `k`, `v` FROM ?? WHERE `userId` IN (?);',
-MAP_FIND_BY_TIME =      'SELECT `userId`, `k`, `v` FROM ?? WHERE `userId`=? AND `updatedAt` > ?;',
-MAP_SET =               'INSERT INTO ?? (`userId`, `k`, `v`, `createdBy`) VALUES ? ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v`=VALUES(`v`), `updatedBy`=VALUES(`createdBy`);',
-MAP_UNSET =             'UPDATE ?? SET `status`=0, `updatedBy`=? WHERE `id`=?;',
+MAP_GET =               'SELECT `userId`, `k`, `v1`, `v2` FROM userMap WHERE `userId`=?;',
+MAP_GET_BY_KEY =        'SELECT `userId`, `k`, `v1`, `v2` FROM userMap WHERE `userId`=? AND `k`=?;',
+MAP_GET_BY_KEYS =       'SELECT `userId`, `k`, `v1`, `v2` FROM userMap WHERE `userId`=? AND `k` IN (?);',
+MAP_GET_MAT_BY_KEY =    'SELECT `userId`, `k`, `v1`, `v2` FROM userMap WHERE `userId` IN (?) AND `k`=?;',
+MAP_GET_MAT_BY_KEYS =   'SELECT `userId`, `k`, `v1`, `v2` FROM userMap WHERE `userId` IN (?);',
+MAP_FIND_BY_TIME =      'SELECT `userId`, `k`, `v1`, `v2` FROM userMap WHERE `userId`=? AND `updatedAt` > ?;',
+MAP_SET =               'INSERT INTO userMap (`userId`, `k`, `v1`, `v2`, `createdBy`) VALUES ? ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `updatedBy`=VALUES(`createdBy`);',
+MAP_UNSET =             'UPDATE userMap SET `status`=0, `updatedBy`=? WHERE `id`=?;',
 
-REF1_GET=               'SELECT `userId`, `ref1Id`, `k`, `v` FROM `userRef1` WHERE `userId`=? AND `ref1Id`=? AND `k`=? AND `status`=1;',
-REF1_GET_REF1S =        'SELECT `userId`, `ref1Id`, `k`, `v` FROM `userRef1` WHERE `userId`=? AND `k`=? AND `status`=1;',
-REF1_GET_ALL =          'SELECT `userId`, `ref1Id`, `k`, `v` FROM `userRef1` WHERE `userId`=? AND `status`=1;',
-REF1_GET_BY_REF =       'SELECT `userId`, `ref1Id`, `k`, `v` FROM `userRef1` WHERE `ref1Id`=? AND `k`=? AND `status`=1;',
-REF1_FIND_BY_TIME =     'SELECT `userId`, `ref1Id`, `k`, `v` FROM `userRef1` WHERE `userId`=? AND `updatedAt` > ? AND `status`=1;',
-REF1_SET =              'INSERT INTO `userRef1` (`userId`, `ref1Id`, `k`, `v`, `createdBy`) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v`=VALUES(`v`),`updatedBy`=VALUES(`createdBy`),`status`=1;',
+LIST_GET =              'SELECT `userId`, `k`, `v1`, `v2` FROM userList WHERE `userId`=?;',
+LIST_GET_BY_KEY =       'SELECT `userId`, `k`, `v1`, `v2` FROM userList WHERE `userId`=? AND `k`=?;',
+LIST_GET_BY_KEYS =      'SELECT `userId`, `k`, `v1`, `v2` FROM userList WHERE `userId`=? AND `k` IN (?);',
+LIST_GET_MAT_BY_KEY =   'SELECT `userId`, `k`, `v1`, `v2` FROM userList WHERE `userId` IN (?) AND `k`=?;',
+LIST_GET_MAT_BY_KEYS =  'SELECT `userId`, `k`, `v1`, `v2` FROM userList WHERE `userId` IN (?);',
+LIST_FIND_BY_TIME =     'SELECT `userId`, `k`, `v1`, `v2` FROM userList WHERE `userId`=? AND `updatedAt` > ?;',
+LIST_SET =              'INSERT INTO userList (`userId`, `k`, `v1`, `v2`, `createdBy`) VALUES ?;',
+LIST_UNSET =            'UPDATE userList SET `status`=0, `updatedBy`=? WHERE `id`=?;',
+LIST_UPDATE=            'UPDATE userList SET `v1`=?, `v2`=?, `status`=1, `updatedBy`=? WHERE `id`=?;',
+
+REF1_GET=               'SELECT `userId`, `ref1Id`, `k`, `v1`, `v2` FROM `userRef1` WHERE `userId`=? AND `ref1Id`=? AND `k`=? AND `status`=1;',
+REF1_GET_REF1S =        'SELECT `userId`, `ref1Id`, `k`, `v1`, `v2` FROM `userRef1` WHERE `userId`=? AND `k`=? AND `status`=1;',
+REF1_GET_ALL =          'SELECT `userId`, `ref1Id`, `k`, `v1`, `v2` FROM `userRef1` WHERE `userId`=? AND `status`=1;',
+REF1_GET_BY_REF =       'SELECT `userId`, `ref1Id`, `k`, `v1`, `v2` FROM `userRef1` WHERE `ref1Id`=? AND `k`=? AND `status`=1;',
+REF1_FIND_BY_TIME =     'SELECT `userId`, `ref1Id`, `k`, `v1`, `v2` FROM `userRef1` WHERE `userId`=? AND `updatedAt` > ? AND `status`=1;',
+REF1_SET =              'INSERT INTO `userRef1` (`userId`, `ref1Id`, `k`, `v1`, `v2`, `createdBy`) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`),`updatedBy`=VALUES(`createdBy`),`status`=1;',
 REF1_TOUCH =            'UPDATE `userRef1` SET `updatedBy`=? WHERE `userId`=? AND `ref1Id`=? AND `k`=? AND `status`=1;',
-REF1_UPDATE=            'UPDATE `userRef1` SET `v`=?,`updatedBy`=? WHERE `userId`=? AND `ref1Id`=? AND `k`=? AND `status`=1;',
+REF1_UPDATE=            'UPDATE `userRef1` SET `v1`=?, `v2`=?,`updatedBy`=? WHERE `userId`=? AND `ref1Id`=? AND `k`=? AND `status`=1;',
 REF1_UNSET=             'UPDATE `userRef1` SET `status`=0, `updatedBy`=? WHERE `userId`=? AND `ref1Id`=? AND `k`=?;',
 REF1_UNSETS=            'UPDATE `userRef1` SET `status`=0, `updatedBy`=? WHERE `userId`=? AND `ref1Id`=?;',
 REF1_UNSETSS=           'UPDATE `userRef1` SET `status`=0, `updatedBy`=? WHERE `userId` IN (?);',
@@ -38,81 +49,88 @@ REF1_UNSET_BY_REF1 =    'UPDATE `userRef1` SET `status`=0, `updatedBy`=? WHERE `
 var
 picoObj=require('pico/obj'),
 hash=require('sql/hash'),
-getMapTxt=function(id, cb){
+getMap=(id, user, cb)=>{
     if (!id) return cb()
-    client.query(MAP_GET, [MAP,id], cb)
-},
-getMapInt=function(id, cb){
-    if (!id) return cb()
-    client.query(MAP_GET, [MAP+'Int',id], cb)
-},
-getMap=function(id, user, cb){
     var i,r
-    getMapTxt(id, (err, txt)=>{
+    client.query(MAP_GET, [id], (err, rows)=>{
         if (err) return cb(err)
-        for(i=0; r=txt[i]; i++) user[hash.key(r.k)]=r.v
-        getMapInt(id, (err, num)=>{
-            if (err) return cb(err)
-            for(i=0; r=txt[i]; i++) user[hash.key(r.k)]=r.v
-            cb(null, user)
-        })
+        for(i=0; r=rows[i]; i++) user[hash.key(r.k)]=r.v1 || r.v2
+		cb(null, user)
     })
 },
-setMapTxt=function(params, cb){
-    if (!params.length) return cb()
-    client.query(MAP_SET, [MAP,params], cb)
-},
-setMapInt=function(params, cb){
-    if (!params.length) return cb()
-    client.query(MAP_SET, [MAP+'Int',params], cb)
-},
-setMap=function(id, obj, by, index, cb){
+setMap=(id, obj, by, index, cb)=>{
     var
     keys=Object.keys(obj),
-    txt=[],
-    num=[],
-    arr,v
+    arr=[],
+    k,v
 
-    for(var i=0,k; k=keys[i]; i++){
-        if(index.indexOf(k)>-1)continue
+    for(var i=0,key; key=keys[i]; i++){
+        if(index.indexOf(key)>-1)continue
+		k=hash.val(key)
         v=obj[k]
-        if (!v) continue
+        if (!k || undefined===v) continue
         switch(typeof v){
-        case 'number': arr=num; break
-        default: arr=txt; break
+        case 'number': arr.push([id,k,null,v,by]); break
+        default: arr.push([id,k,v,null,by]); break
         }
-        arr.push([id,hash.val(k),v,by])
     }
-    setMapTxt(txt, (err)=>{
+	if (!arr.length) return cb()
+    client.query(MAP_SET, [arr], (err,rows)=>{
+		cb(err,rows)
+	})
+},
+getList=(id, user, cb)=>{
+	if (!id) return cb()
+    var i,r
+    client.query(LIST_GET, [id], (err, txt)=>{
         if (err) return cb(err)
-        setMapInt(num, cb)
+        for(i=0; r=txt[i]; i++) user[hash.key(r.k)]=r.v1 || r.v2
+		cb(null, user)
     })
+},
+setList=(id, key, list, by, index, cb)=>{
+	if (!key || !list || !list.length) return cb()
+    var
+	arr=[],
+	k=hash.val(key)	
+
+    if(!k || index.indexOf(key)>-1) return cb()
+    for(var i=0,v; v=list[i]; i++){
+		if (undefined===v)continue
+        switch(typeof v){
+        case 'number': arr.push([id,k,null,v,by]); break
+        default: arr.push([id,k,v,null,by]); break
+        }
+    }
+	if (!arr.length) return cb()
+    client.query(LIST_SET, [arr], cb)
 },
 client
 
 module.exports= {
-    setup: function(context, cb){
+    setup: (context, cb)=>{
         client=context.mainDB
         cb()
     },
-    clean:function(model){
+    clean:(model)=>{
         for(var i=0,k; k=PRIVATE[i]; i++) delete model[k];
         return model
     },
-    cleanForSelf:function(model){
+    cleanForSelf:(model)=>{
         for(var i=0,k; k=PRIVATE_SELF[i]; i++) delete model[k];
         return model
     },
-    verify: function(user){
+    verify: (user)=>{
         return hash.verify(Object.keys(user), INDEX)
     },
-    get: function(userId, cb){
-        client.query(GET,[userId],(err,users)=>{
+    get: (user, cb)=>{
+        client.query(GET,[user.id],(err,users)=>{
             if (err) return cb(err)
-            getMap(userId, users[0], cb)
+			Object.assign(user,users[0])
+            getMap(user.id, user, cb)
         })
     },
-    set: function(user, cb){
+    set: (user, cb)=>{
         var
         params=[],
         by=user.createdBy
@@ -128,16 +146,22 @@ module.exports= {
             })
         })
     },
-    findByUn: function(un, cb){
+    findByUn: (un, cb)=>{
         client.query(FIND_BY_UN, [un], cb)
     },
-    getMap: function(userId, cb){
-        client.query(MAP_GET,[MAP, userId], (err, user)=>{
-            if (err) return cb(err)
-            client.query(MAP_GET, [MAP+'Int', userId], (err, num)=>{
-                if (err) return cb(err)
-                cb(null, hash.replace(user, num))
-            })
-        })
-    }
+    findBySess: (sess, cb)=>{
+        client.query(FIND_BY_SESS, [sess], cb)
+    },
+    getMap: (userId, cb)=>{
+        getMap(userId, {}, cb)
+    },
+	setMap: (userId,obj,cb)=>{
+		setMap(userId,obj,userId,INDEX,cb)
+	},
+	getList: (userId,cb)=>{
+		getList(userId,cb)
+	},
+	setList: (userId,key,list,cb)=>{
+		setList(userId,key,list,cb)
+	}
 }

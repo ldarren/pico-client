@@ -32,6 +32,7 @@
         "/lead/stream":[
             ["user","verify","input","user"],
             ["user","poll","input"],
+            ["case","poll","input"],
             ["room","add","res","user"],
             ["web","SSEStart","req","res"],
             ["room","stream",["poll"],"user"]
@@ -53,9 +54,19 @@
             ["user","read","input"],
             [0]
         ],
-        "lead/case/create": [
+        "lead/user/update": [
             ["user","verify","input","user"],
-            ["case","create","input"],
+            ["user","update","input"],
+            [0]
+        ],
+        "lead/case/add": [
+            ["user","verify","input","user"],
+            ["case","add","input"],
+            [0]
+        ],
+        "lead/case/read": [
+            ["user","verify","input","user"],
+            ["case","read","input"],
             [0]
         ],
         "lead/case/update": [
@@ -63,9 +74,14 @@
             ["case","update","input"],
             [0]
         ],
-        "lead/case/poll": [
+        "lead/case/remove": [
             ["user","verify","input","user"],
-            ["case","poll","input"],
+            ["case","remove","input"],
+            [0]
+        ],
+        "lead/case/list": [
+            ["user","verify","input","user"],
+            ["case","list","input"],
             [0]
         ]
     }

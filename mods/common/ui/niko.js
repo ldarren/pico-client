@@ -31,7 +31,7 @@ return{
         pageAdd: function(from, sender, paneId, page, isBack){
             if (this.deps.paneId !== paneId) return
             this.el.appendChild(page)
-            this.signals.pageAdded(paneId).send(this.host)
+            this.signals.pageAdded(paneId).sendNow(this.host)
         },
         moduleAdded: function(from, sender, paneId){
             if (this.deps.paneId !== paneId) return

@@ -40,12 +40,10 @@ userReady = function(err, user, ctx){
     // always home page after login? Router.home(true)
 },
 onNetworkError= function(err){
-    if (403 !== err.code){
-        //if (err.code) __.dialogs.alert('Server error ['+err.code+'] msg['+err.error+']')
-        return
-    }
-    this.signals.modelReady().sendNow() // router may not initialized
-    this.deps.owner.reset()
+	if (403 === err.code){
+		this.signals.modelReady().sendNow() // router may not initialized
+		this.deps.owner.reset()
+	}
 }
 
 return{

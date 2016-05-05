@@ -9,9 +9,17 @@ return {
 			this.signals.dialogShow('Add Request',this.deps.addRequest).send(this.host)
 		},
 		dialogResult:function(from,sender,form){
-			this.deps.requests.create(form,{
-				data:form,
-				wait:true
+			this.deps.requests.create(null,{
+				data:{
+					$case:form
+				},
+				wait:true,
+				success:function(){
+					debugger
+				},
+				error:function(){
+					debugger
+				}
 			})
 		}
 	}

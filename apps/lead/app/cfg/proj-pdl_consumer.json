@@ -13,11 +13,11 @@
             "read": "lead/user/read"
         }],
 		["requests","models",{
-			"create":"lead/requests/add",
-			"read":"lead/requests/read",
-			"update":"lead/requests/update",
-			"delete":"lead/requests/remove",
-			"list":"lead/requests/list"
+			"create":"lead/case/add",
+			"read":"lead/case/read",
+			"update":"lead/case/update",
+			"delete":"lead/case/remove",
+			"list":"lead/case/list"
 		},[
 			{
 				"img":"dat/p6.png",
