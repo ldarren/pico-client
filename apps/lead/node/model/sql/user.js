@@ -4,47 +4,47 @@ PRIVATE=                ['un','pwd','sess'],
 PRIVATE_SELF=           ['un','pwd'],
 ENUM=                   ['os'],
 
-GET =                   'SELECT * FROM `user` WHERE `id`=? AND `status`=1;',
-GET_LIST =              'SELECT * FROM `user` WHERE `id` IN (?) AND `status`=1;',
-FIND_BY_TIME =          'SELECT * FROM `user` WHERE `updatedAt` > ?;',
-FIND_BY_TIMES =         'SELECT * FROM `user` WHERE `updatedAt` > ? AND `updatedAt` < ?;',
-FIND_BY_UN =            'SELECT * FROM `user` WHERE `un` = ? AND status=1;',
-FIND_BY_SESS =          'SELECT * FROM `user` WHERE `sess` = ? AND status=1;',
-SET =                   'INSERT INTO `user` (`un`, `sess`, `createdBy`) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `sess`=VALUES(`sess`), status=1;',
-TOUCH =                 'UPDATE `user` SET `updatedBy`=?, `updatedAt`=NOW() WHERE `id`=? AND `status`=1;',
-UNSET =                 'UPDATE `user` SET `status`=0, `updatedBy`=? WHERE `id`=?;',
+GET =                   'SELECT * FROM `user` WHERE `id`=? AND `s`=1;',
+GET_LIST =              'SELECT * FROM `user` WHERE `id` IN (?) AND `s`=1;',
+FIND_BY_TIME =          'SELECT * FROM `user` WHERE `uat` > ?;',
+FIND_BY_TIMES =         'SELECT * FROM `user` WHERE `uat` > ? AND `uat` < ?;',
+FIND_BY_UN =            'SELECT * FROM `user` WHERE `un` = ? AND s=1;',
+FIND_BY_SESS =          'SELECT * FROM `user` WHERE `sess` = ? AND s=1;',
+SET =                   'INSERT INTO `user` (`un`, `sess`, `cby`) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `sess`=VALUES(`sess`), s=1;',
+TOUCH =                 'UPDATE `user` SET `uby`=?, `uat`=NOW() WHERE `id`=? AND `s`=1;',
+UNSET =                 'UPDATE `user` SET `s`=0, `uby`=? WHERE `id`=?;',
 
 MAP_GET =               'SELECT `userId`, `k`, `v1`, `v2` FROM userMap WHERE `userId`=?;',
 MAP_GET_BY_KEY =        'SELECT `userId`, `k`, `v1`, `v2` FROM userMap WHERE `userId`=? AND `k`=?;',
 MAP_GET_BY_KEYS =       'SELECT `userId`, `k`, `v1`, `v2` FROM userMap WHERE `userId`=? AND `k` IN (?);',
 MAP_GET_MAT_BY_KEY =    'SELECT `userId`, `k`, `v1`, `v2` FROM userMap WHERE `userId` IN (?) AND `k`=?;',
 MAP_GET_MAT_BY_KEYS =   'SELECT `userId`, `k`, `v1`, `v2` FROM userMap WHERE `userId` IN (?);',
-MAP_FIND_BY_TIME =      'SELECT `userId`, `k`, `v1`, `v2` FROM userMap WHERE `userId`=? AND `updatedAt` > ?;',
-MAP_SET =               'INSERT INTO userMap (`userId`, `k`, `v1`, `v2`, `createdBy`) VALUES ? ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `updatedBy`=VALUES(`createdBy`);',
-MAP_UNSET =             'UPDATE userMap SET `status`=0, `updatedBy`=? WHERE `id`=?;',
+MAP_FIND_BY_TIME =      'SELECT `userId`, `k`, `v1`, `v2` FROM userMap WHERE `userId`=? AND `uat` > ?;',
+MAP_SET =               'INSERT INTO userMap (`userId`, `k`, `v1`, `v2`, `cby`) VALUES ? ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
+MAP_UNSET =             'UPDATE userMap SET `s`=0, `uby`=? WHERE `id`=?;',
 
 LIST_GET =              'SELECT `userId`, `k`, `v1`, `v2` FROM userList WHERE `userId`=?;',
 LIST_GET_BY_KEY =       'SELECT `userId`, `k`, `v1`, `v2` FROM userList WHERE `userId`=? AND `k`=?;',
 LIST_GET_BY_KEYS =      'SELECT `userId`, `k`, `v1`, `v2` FROM userList WHERE `userId`=? AND `k` IN (?);',
 LIST_GET_MAT_BY_KEY =   'SELECT `userId`, `k`, `v1`, `v2` FROM userList WHERE `userId` IN (?) AND `k`=?;',
 LIST_GET_MAT_BY_KEYS =  'SELECT `userId`, `k`, `v1`, `v2` FROM userList WHERE `userId` IN (?);',
-LIST_FIND_BY_TIME =     'SELECT `userId`, `k`, `v1`, `v2` FROM userList WHERE `userId`=? AND `updatedAt` > ?;',
-LIST_SET =              'INSERT INTO userList (`userId`, `k`, `v1`, `v2`, `createdBy`) VALUES ?;',
-LIST_UNSET =            'UPDATE userList SET `status`=0, `updatedBy`=? WHERE `id`=?;',
-LIST_UPDATE=            'UPDATE userList SET `v1`=?, `v2`=?, `status`=1, `updatedBy`=? WHERE `id`=?;',
+LIST_FIND_BY_TIME =     'SELECT `userId`, `k`, `v1`, `v2` FROM userList WHERE `userId`=? AND `uat` > ?;',
+LIST_SET =              'INSERT INTO userList (`userId`, `k`, `v1`, `v2`, `cby`) VALUES ?;',
+LIST_UNSET =            'UPDATE userList SET `s`=0, `uby`=? WHERE `id`=?;',
+LIST_UPDATE=            'UPDATE userList SET `v1`=?, `v2`=?, `s`=1, `uby`=? WHERE `id`=?;',
 
-REF1_GET=               'SELECT `userId`, `ref1Id`, `k`, `v1`, `v2` FROM `userRef1` WHERE `userId`=? AND `ref1Id`=? AND `k`=? AND `status`=1;',
-REF1_GET_REF1S =        'SELECT `userId`, `ref1Id`, `k`, `v1`, `v2` FROM `userRef1` WHERE `userId`=? AND `k`=? AND `status`=1;',
-REF1_GET_ALL =          'SELECT `userId`, `ref1Id`, `k`, `v1`, `v2` FROM `userRef1` WHERE `userId`=? AND `status`=1;',
-REF1_GET_BY_REF =       'SELECT `userId`, `ref1Id`, `k`, `v1`, `v2` FROM `userRef1` WHERE `ref1Id`=? AND `k`=? AND `status`=1;',
-REF1_FIND_BY_TIME =     'SELECT `userId`, `ref1Id`, `k`, `v1`, `v2` FROM `userRef1` WHERE `userId`=? AND `updatedAt` > ? AND `status`=1;',
-REF1_SET =              'INSERT INTO `userRef1` (`userId`, `ref1Id`, `k`, `v1`, `v2`, `createdBy`) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`),`updatedBy`=VALUES(`createdBy`),`status`=1;',
-REF1_TOUCH =            'UPDATE `userRef1` SET `updatedBy`=? WHERE `userId`=? AND `ref1Id`=? AND `k`=? AND `status`=1;',
-REF1_UPDATE=            'UPDATE `userRef1` SET `v1`=?, `v2`=?,`updatedBy`=? WHERE `userId`=? AND `ref1Id`=? AND `k`=? AND `status`=1;',
-REF1_UNSET=             'UPDATE `userRef1` SET `status`=0, `updatedBy`=? WHERE `userId`=? AND `ref1Id`=? AND `k`=?;',
-REF1_UNSETS=            'UPDATE `userRef1` SET `status`=0, `updatedBy`=? WHERE `userId`=? AND `ref1Id`=?;',
-REF1_UNSETSS=           'UPDATE `userRef1` SET `status`=0, `updatedBy`=? WHERE `userId` IN (?);',
-REF1_UNSET_BY_REF1 =    'UPDATE `userRef1` SET `status`=0, `updatedBy`=? WHERE `ref1Id` IN (?);'
+REF1_GET=               'SELECT `userId`, `ref1Id`, `k`, `v1`, `v2` FROM `userRef1` WHERE `userId`=? AND `ref1Id`=? AND `k`=? AND `s`=1;',
+REF1_GET_REF1S =        'SELECT `userId`, `ref1Id`, `k`, `v1`, `v2` FROM `userRef1` WHERE `userId`=? AND `k`=? AND `s`=1;',
+REF1_GET_ALL =          'SELECT `userId`, `ref1Id`, `k`, `v1`, `v2` FROM `userRef1` WHERE `userId`=? AND `s`=1;',
+REF1_GET_BY_REF =       'SELECT `userId`, `ref1Id`, `k`, `v1`, `v2` FROM `userRef1` WHERE `ref1Id`=? AND `k`=? AND `s`=1;',
+REF1_FIND_BY_TIME =     'SELECT `userId`, `ref1Id`, `k`, `v1`, `v2` FROM `userRef1` WHERE `userId`=? AND `uat` > ? AND `s`=1;',
+REF1_SET =              'INSERT INTO `userRef1` (`userId`, `ref1Id`, `k`, `v1`, `v2`, `cby`) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`),`uby`=VALUES(`cby`),`s`=1;',
+REF1_TOUCH =            'UPDATE `userRef1` SET `uby`=? WHERE `userId`=? AND `ref1Id`=? AND `k`=? AND `s`=1;',
+REF1_UPDATE=            'UPDATE `userRef1` SET `v1`=?, `v2`=?,`uby`=? WHERE `userId`=? AND `ref1Id`=? AND `k`=? AND `s`=1;',
+REF1_UNSET=             'UPDATE `userRef1` SET `s`=0, `uby`=? WHERE `userId`=? AND `ref1Id`=? AND `k`=?;',
+REF1_UNSETS=            'UPDATE `userRef1` SET `s`=0, `uby`=? WHERE `userId`=? AND `ref1Id`=?;',
+REF1_UNSETSS=           'UPDATE `userRef1` SET `s`=0, `uby`=? WHERE `userId` IN (?);',
+REF1_UNSET_BY_REF1 =    'UPDATE `userRef1` SET `s`=0, `uby`=? WHERE `ref1Id` IN (?);'
 
 var
 picoObj=require('pico/obj'),
@@ -67,7 +67,7 @@ setMap=(id, obj, by, index, cb)=>{
     for(var i=0,key; key=keys[i]; i++){
         if(index.indexOf(key)>-1)continue
 		k=hash.val(key)
-        v=obj[k]
+        v=obj[key]
         if (!k || undefined===v) continue
         switch(typeof v){
         case 'number': arr.push([id,k,null,v,by]); break
@@ -133,7 +133,7 @@ module.exports= {
     set: (user, cb)=>{
         var
         params=[],
-        by=user.createdBy
+        by=user.cby
         for(var i=0,k; k=INDEX[i]; i++){ params.push(user[k]) }
         params.push(by)
         client.query(SET, [params], (err, result)=>{
@@ -161,7 +161,7 @@ module.exports= {
 	getList: (userId,cb)=>{
 		getList(userId,cb)
 	},
-	setList: (userId,key,list,cb)=>{
-		setList(userId,key,list,cb)
+	setList: (userId,key,list,by,cb)=>{
+		setList(userId,key,list,by,INDEX,cb)
 	}
 }

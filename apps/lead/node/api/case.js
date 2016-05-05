@@ -9,7 +9,7 @@ module.exports= {
     },
 	add:function(input,next){
 		console.log('add',input)
-		sqlUser.setList(input.id,'$case',[input.$case],(err)=>{
+		sqlUser.setList(input.id,'$case',[input.$case],input.id,(err)=>{
 			if (err) return next(this.error(500))
 			next()
 		})
