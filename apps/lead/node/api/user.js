@@ -64,7 +64,8 @@ this.log('signup',input)
 			if (!rows.length) return next(this.error(403))
 			var data=rows[0]
 			this.log('verify',input,data)
-			if (data.id !== input.id) return next(this.error(403))
+			// for GET method, all params in string format
+			if (data.id != input.id) return next(this.error(403))
 			Object.assign(user,data)
 			next()
 		})

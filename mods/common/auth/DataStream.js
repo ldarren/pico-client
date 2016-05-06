@@ -68,7 +68,7 @@ return{
             this.readSeen(userId)
 
             this.listenTo(pull, 'message', poll)
-            //this.connect(pull, model.attributes, this.seen)
+            this.connect(pull, model.attributes, this.seen)
 
             for(var i=0,models=this.deps.models,keys=Object.keys(models),k,d; k=keys[i]; i++){
                 this.readColl(k, userId)
