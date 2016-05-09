@@ -1,3 +1,4 @@
+<%var card=d.card%>
 <section class="card__part card__part-2">
 	<div class="card__part__side m--back">
 	  <div class="card__sender">
@@ -34,8 +35,8 @@
 		<div class="card__from-to__inner">
 		  <div class="card__text card__text--left">
 				<div class="">
-					<%=delivDateNoun%>
-					<p><%=delivTime%></p>
+					<%=d.delivDateNoun%>
+					<p><%=d.delivTime%></p>
 				</div>
 		  </div>
 		  <div class="card__text card__text--right">

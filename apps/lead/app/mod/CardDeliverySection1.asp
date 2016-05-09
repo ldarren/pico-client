@@ -1,3 +1,4 @@
+<%var card=d.card%>
 <div class="card__part__inner">
   <header class="card__header">
 	<div class="card__header__close-btn"></div>

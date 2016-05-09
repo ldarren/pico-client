@@ -2,7 +2,7 @@ var
 INDEX=                  ['un','sess'],
 PRIVATE=                ['un','pwd','sess'],
 PRIVATE_SELF=           ['un','pwd'],
-ENUM=                   ['os'],
+ENUM=                   ['os','role'],
 
 GET =                   'SELECT * FROM `user` WHERE `id`=? AND `s`=1;',
 GET_LIST =              'SELECT * FROM `user` WHERE `id` IN (?) AND `s`=1;',
@@ -51,40 +51,45 @@ picoObj=require('pico/obj'),
 hash=require('sql/hash'),
 getMap=(id, user, cb)=>{
     if (!id) return cb()
-    var i,r
     client.query(MAP_GET, [id], (err, rows)=>{
         if (err) return cb(err)
-        for(i=0; r=rows[i]; i++) user[hash.key(r.k)]=r.v1 || r.v2
+        for(var i=0,r,k; r=rows[i]; i++) {
+			k=hash.key(r.k)
+			if (-1===ENUM.indexOf(k)) user[k]=r.v1 || r.v2
+			else user[k]=hash.key(r.v2)
+		}
 		cb(null, user)
     })
 },
 setMap=(id, obj, by, index, cb)=>{
-    var
-    keys=Object.keys(obj),
-    arr=[],
-    k,v
+    var arr=[]
 
-    for(var i=0,key; key=keys[i]; i++){
+    for(var i=0,keys=Object.keys(obj),key,k,v; key=keys[i]; i++){
         if(index.indexOf(key)>-1)continue
 		k=hash.val(key)
         v=obj[key]
         if (!k || undefined===v) continue
-        switch(typeof v){
-        case 'number': arr.push([id,k,null,v,by]); break
-        default: arr.push([id,k,v,null,by]); break
+		if (-1===ENUM.indexOf(key)){
+			if(v.charAt) arr.push([id,k,v,null,by])
+			else arr.push([id,k,null,v,by])
+		}else{
+			arr.push([id,k,null,hash.val(v),by])
         }
     }
 	if (!arr.length) return cb()
-    client.query(MAP_SET, [arr], (err,rows)=>{
-		cb(err,rows)
-	})
+    client.query(MAP_SET, [arr], cb)
 },
 getList=(id, user, cb)=>{
 	if (!id) return cb()
-    var i,r
-    client.query(LIST_GET, [id], (err, txt)=>{
+    client.query(LIST_GET, [id], (err, rows)=>{
         if (err) return cb(err)
-        for(i=0; r=txt[i]; i++) user[hash.key(r.k)]=r.v1 || r.v2
+        for(var i=0,r,k,arr; r=rows[i]; i++) {
+			k=hash.key(r.k)
+			arr=user[k]||[]
+			if (-1===ENUM.indexOf(k)) arr.push(r.v1 || r.v2)
+			else arr.push(hash.key(r.v2))
+			user[k]=arr
+		}
 		cb(null, user)
     })
 },
@@ -97,9 +102,11 @@ setList=(id, key, list, by, index, cb)=>{
     if(!k || index.indexOf(key)>-1) return cb()
     for(var i=0,v; v=list[i]; i++){
 		if (undefined===v)continue
-        switch(typeof v){
-        case 'number': arr.push([id,k,null,v,by]); break
-        default: arr.push([id,k,v,null,by]); break
+		if (-1===ENUM.indexOf(key)){
+			if(v.charAt) arr.push([id,k,v,null,by])
+			else arr.push([id,k,null,v,by])
+		}else{
+			arr.push([id,k,null,hash.val(v),by])
         }
     }
 	if (!arr.length) return cb()

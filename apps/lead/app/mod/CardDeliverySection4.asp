@@ -4,5 +4,5 @@
 	<span class="card__request-btn__text-1">Request</span>
 	<span class="card__request-btn__text-2">Start</span>
   </button>
-  <p class="card__counter"><%=card.requests%> people have sent a request</p>
+  <p class="card__counter"><%=d.card.requests%> people have sent a request</p>
 </div>

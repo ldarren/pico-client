@@ -1,3 +1,4 @@
+<%var card=d.card%>
 <div class="card__part__side m--back">
   <div class="card__part__inner card__face">
 	<div class="card__face__colored-side"></div>
@@ -9,8 +10,8 @@
 	  <p><%=card.toStreet%>, <%=card.toCity%></p>
 	</div>
 	<div class="card__face__deliv-date">
-		<%=delivDateNoun%>
-		<p><%=delivTime%></p>
+		<%=d.delivDateNoun%>
+		<p><%=d.delivTime%></p>
 	</div>
 	<div class="card__face__stats card__face__stats--req">
 	  Requests

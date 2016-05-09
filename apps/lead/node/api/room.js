@@ -32,18 +32,18 @@ module.exports= {
     },
     add: function(res,user,next){
         if (!user || !user.id) return next()
-        var userId=user.id
-        if (userPipeMap.has(userId)){
-            var idx=userIds.indexOf(userId)
+        var uid=user.id
+        if (userPipeMap.has(uid)){
+            var idx=userIds.indexOf(uid)
             pipes[idx]=res
-            userIds[idx]=userId
+            userIds[idx]=uid
 this.log('replaced room member, index',idx)
         }else{
             pipes.push(res)
-            userIds.push(userId)
+            userIds.push(uid)
 this.log('added room member, new count',pipes.length)
         }
-        userPipeMap.set(userId,res)
+        userPipeMap.set(uid,res)
         next()
     },
     remove: function(res, next){
@@ -63,14 +63,14 @@ this.log('stream',JSON.stringify(this.getOutput()))
     broadcast: function(evt, users, next){
         if (!users || !users.length) return next(this.error(404))
 
-        var
-        output=JSON.stringify(this.getOutput()),
-        res
-        for(var i=users.length-1,u; u=users[i]; i--){
-            if (userPipeMap.has(u.id)){
-                res=userPipeMap.get(u.id)
-                if (res.finished) continue
-                web.SSE(userPipeMap.get(u.id),output,evt)
+        var output=JSON.stringify(this.getOutput())
+
+        for(var i=users.length-1,u,uid,res; u=users[i]; i--){
+			uid=u.id
+            if (userPipeMap.has(uid)){
+                res=userPipeMap.get(uid)
+                if (!res || res.finished) continue
+                web.SSE(res,output,evt)
                 users.splice(i,1)
             }
         }

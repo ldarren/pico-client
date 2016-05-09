@@ -8,9 +8,8 @@ module.exports= {
         next()
     },
     signin:function(input,user,next){
-        var un=input.un
-
 this.log('signin',input)
+        var un=input.un
 
         if (!un) return next(this.error(400))
 
@@ -31,9 +30,8 @@ this.log(JSON.stringify(map))
         })
     },
     signup:function(input,user,next){
-        var un=input.un
-
 this.log('signup',input)
+        var un=input.un
 
         if (!un) return next(this.error(400))
 
@@ -45,6 +43,31 @@ this.log('signup',input)
                 pwd:input.pwd,
                 sess:picoStr.rand(),
                 name:input.name,
+				role:'consumer',
+				cby:0
+            }
+            this.addJob([user], sqlUser.set, sqlUser)
+            this.addJob([user], sqlUser.get, sqlUser)
+            this.setOutput(user, sqlUser.cleanForSelf, sqlUser)
+            next()
+        })
+    },
+	// TODO: implement agent approval process, should be applicant->agent
+    join:function(input,user,next){
+this.log('join',input)
+        var un=input.un
+
+        if (!un) return next(this.error(400))
+
+        sqlUser.findByUn(un, (err, users)=>{
+            if (err) return next(this.error(500))
+            if (users.length) return next(this.error(403))
+            var user={
+                un:un,
+                pwd:input.pwd,
+                sess:picoStr.rand(),
+                name:input.name,
+				role:'agent',
 				cby:0
             }
             this.addJob([user], sqlUser.set, sqlUser)

@@ -3,15 +3,19 @@
     ],[
         "css/index.css"
     ],[
+		["html","file","Frame.html"],
 		["domain","text","pdl"],
         ["owner","models",{
-            "create": "lead/user/signup",
+            "create": "lead/user/join",
             "read": "lead/user/signin"
         }],
         ["users","models",{
             "read": "lead/user/read"
         }],
-		["jobs","list",[
+		["requests","models",{
+			"read":"lead/case/read",
+			"update":"lead/case/update"
+		},[
 			{
 				"id": "2618-3157",
 				"price": 25,
@@ -173,16 +177,6 @@
 				"reqDl": "24minutes"
 			}
 		]],
-        ["DataStream","ctrl", [
-            ["models","refs","models"],
-            ["demux","map",{
-                "users":{"json":"address"},
-                "domain":{"post":"post"}
-            }],
-            ["pull","stream",{
-                "events":[]
-            }]
-        ],["common/auth/DataStream","DataStreamMixin"]],
         ["pane","view",[
             ["paneId","int",0],
             ["options","map",{"id":"main"}]
@@ -199,6 +193,16 @@
             ["options","map",{"el":"#secondary.pane>div:nth-child(1)","className":"ripple hidden"}],
             ["paneId","int",1]
         ]],
+        ["DataStream","ctrl", [
+            ["models","refs","models"],
+            ["demux","map",{
+                "users":{"json":"address"},
+                "domain":{"post":"post"}
+            }],
+            ["pull","stream",{
+                "events":[]
+            }]
+        ],["common/auth/DataStream","DataStreamMixin"]],
         ["FormAuth","view",[
             ["owner","ref","owner"],
             ["tplSignin","file","FormSignin.asp"],
@@ -221,20 +225,93 @@
         ],
         "home":[
             ["options","map",{"className":"fulpage active"}],
-            ["jobs","ref","jobs"],
+            ["owner","ref","owner"],
+            ["requests","ref","requests"],
 			["header/Base","view",[
 				["tpl","file","header/Base.asp"],
-				["title","text","My Jobs"]
+				["title","text","My Jobs"],
+                ["btnRight","map",{"icon":"icon_search"}],
+                ["header/Month","view",[
+					["tpl","file","header/Month.asp"]
+				]]
+			]],
+			["DateDial","view",[
+                ["html","file","DateDial.html"]
 			]],
             ["Scrollable","view",[
 				["html","file","DeliveryList.html"],
-				["list","ref","jobs"],
+				["list","ref","requests"],
                 ["cell","view",[
 					["tpl","file","CardSimple.asp"]
 				],"Card"]
+            ]],
+            ["Menu","view",[
+                ["tpl","file","Menu.asp"],
+                ["owner","ref","owner"],
+				["list","list",[
+					{"className":"home","icon":"home","url":""},
+					{"className":"history","icon":"history","url":"history"},
+					{"className":"profile","icon":"name","url":"profile"},
+					{"className":"signout","icon":"power","url":"signout"}
+				]]
             ]]
-        ]
+        ],
+        "history":[
+            ["options","map",{"className":"fulpage active"}],
+            ["owner","ref","owner"],
+			["requests","ref","requests"],
+            ["header/Base","view",[
+                ["tpl","file","header/Base.asp"],
+                ["title","text","Request History"],
+                ["btnRight","map",{"icon":"icon_search"}],
+                ["header/Month","view",[
+					["tpl","file","header/Month.asp"]
+				]]
+            ]],
+			["DateDial","view",[
+                ["html","file","DateDial.html"]
+			]],
+            ["Scrollable","view",[
+				["list","ref","requests"],
+				["cell","view",[
+					["tpl","file","CardRequest.asp"]
+				],"CardRequest"]
+            ]],
+            ["Menu","view",[
+                ["tpl","file","Menu.asp"],
+                ["owner","ref","owner"],
+				["list","list",[
+					{"className":"home","icon":"home","url":"home"},
+					{"className":"history","icon":"history","url":""},
+					{"className":"profile","icon":"name","url":"profile"},
+					{"className":"signout","icon":"power","url":"signout"}
+				]]
+            ]]
+        ],
+		"profile":[
+            ["options","map",{"className":"fulpage active"}],
+            ["owner","ref","owner"],
+            ["header/Base","view",[
+                ["tpl","file","header/Base.asp"],
+                ["title","text","My Profile"],
+                ["header/User","view",[
+					["tpl","file","header/User.asp"]
+				]]
+            ]],
+            ["Menu","view",[
+                ["tpl","file","Menu.asp"],
+                ["owner","ref","owner"],
+				["list","list",[
+					{"className":"home","icon":"home","url":"home"},
+					{"className":"history","icon":"history","url":"history"},
+					{"className":"profile","icon":"name","url":""},
+					{"className":"signout","icon":"power","url":"signout"}
+				]]
+            ]]
+		]
     },{
+        "history":["history"],
+        "profile":["profile"],
         "*action":["home"]
     }
 ]

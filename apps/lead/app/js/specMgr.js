@@ -18,7 +18,7 @@ findAll = function(cond, list, by, all){
 },
 loadDeps = function(links, idx, klass, cb){
     if (!links || links.length <= idx) return cb(null, klass)
-    if ('string' === typeof links) return require(links, cb)
+    if (links.charAt) return require(links, cb)
     require(links[idx++], function(err, mod){
         if (err) return cb(err)
         loadDeps(links, idx, picoObj.extend(klass, mod), cb)

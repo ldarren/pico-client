@@ -1,3 +1,4 @@
+<%var card=d.card%>
 <section class="card__map">
 	<div class=card__map__inner></div>
 </section>
@@ -36,8 +37,8 @@
 		  <p><%=card.toStreet%>, <%=card.toCity%></p>
 		</div>
 		<div class="card__face__deliv-date">
-			<%=delivDateNoun%>
-			<p><%=delivTime%></p>
+			<%=d.delivDateNoun%>
+			<p><%=d.delivTime%></p>
 		</div>
 		<div class="card__face__stats card__face__stats--req">
 		  Requests
@@ -113,8 +114,8 @@
 				<div class="card__timings__inner">
 				  <div class="card__text card__text--left">
 					<p class="card__text__heading">Delivery Date</p>
-					<p class="card__text__middle"><%=delivDateNoun%></p>
-					<p class="card__text__bottom"><%=delivTime%></p>
+					<p class="card__text__middle"><%=d.delivDateNoun%></p>
+					<p class="card__text__bottom"><%=d.delivTime%></p>
 				  </div>
 				  <div class="card__text card__text--right">
 					<p class="card__text__heading">Request Deadline</p>

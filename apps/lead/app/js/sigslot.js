@@ -38,8 +38,8 @@ recv = function(evt, from, params){
     if (forward) (params.queue?send:dispatch).call(params, [from], this)
 },
 dispatch = function(a, from){
-    var isObj='object'===typeof a
-    if (isObj && !a.length) return trigger.call(a, this.evt, from, this)
+    var isArr=a&&a.length
+    if (!isArr && a) return trigger.call(a, this.evt, from, this)
 
     from=from||this.sender
 
@@ -49,7 +49,7 @@ dispatch = function(a, from){
 
     modules = host ? modules.concat([host]) : modules
 
-    if (isObj && a.length){
+    if (isArr){
         for(var i=0,m; m=modules[i]; i++) if (-1 === a.indexOf(m)) trigger.call(m, this.evt, from, this);
     }else{
         for(var i=0,m; m=modules[i]; i++) trigger.call(m, this.evt, from, this);

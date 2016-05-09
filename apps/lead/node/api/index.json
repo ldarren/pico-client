@@ -30,23 +30,34 @@
             ["web","parse","req","res"]
         ],
         "/lead/stream":[
+            ["util","sep",["1"]],
             ["user","verify","input","user"],
+            ["util","sep",["2"]],
             ["user","poll","input"],
+            ["util","sep",["3"]],
             ["case","poll","input"],
+            ["util","sep",["4"]],
             ["room","add","res","user"],
+            ["util","sep",["5"]],
             ["web","SSEStart","req","res"],
-            ["room","stream",["poll"],"user"]
+            ["util","sep",["6"]],
+            ["room","stream",["poll"],"user"],
+            ["util","sep",["7"]]
         ],
         "lead/user/signin": [
-            ["user","signin","input","users"],
+            ["user","signin","input","user"],
             [0]
         ],
         "lead/user/signup": [
-            ["user","signup","input","users"],
+            ["user","signup","input","user"],
             [0]
         ],
         "lead/user/signout": [
-            ["user","signout","input","users"],
+            ["user","signout","input","user"],
+            [0]
+        ],
+        "lead/user/join": [
+            ["user","join","input","user"],
             [0]
         ],
         "lead/user/read": [

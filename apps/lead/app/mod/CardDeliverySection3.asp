@@ -4,12 +4,12 @@
 	<div class="card__timings__inner">
 	  <div class="card__text card__text--left">
 		<p class="card__text__heading">Delivery Date</p>
-		<p class="card__text__middle"><%=delivDateNoun%></p>
-		<p class="card__text__bottom"><%=delivTime%></p>
+		<p class="card__text__middle"><%=d.delivDateNoun%></p>
+		<p class="card__text__bottom"><%=d.delivTime%></p>
 	  </div>
 	  <div class="card__text card__text--right">
 		<p class="card__text__heading">Request Deadline</p>
-		<p class="card__text__middle"><%=card.reqDl%></p>
+		<p class="card__text__middle"><%=d.card.reqDl%></p>
 	  </div>
 	</div>
   </div>
