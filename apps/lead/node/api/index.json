@@ -44,6 +44,9 @@
             ["room","stream",["poll"],"user"],
             ["util","sep",["7"]]
         ],
+		"lead/broadcast":[
+            ["room","broadcast",["poll"],"input"]
+		],
         "lead/user/signin": [
             ["user","signin","input","user"],
             [0]
@@ -73,6 +76,8 @@
         "lead/case/add": [
             ["user","verify","input","user"],
             ["case","add","input"],
+            ["user","affected","input","affected"],
+            ["room","publish",["lead/broadcast"],"input","affected"],
             [0]
         ],
         "lead/case/read": [

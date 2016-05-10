@@ -5,4 +5,5 @@ return [
     require('sql/case'),
     require('sql/lock'),
     require('sql/log'),
+    require('redis/cache')
 ]

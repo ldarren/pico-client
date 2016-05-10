@@ -1,4 +1,5 @@
 var
+redisCache=require('redis/cache'),
 web,
 userIds=[],
 pipes=[],
@@ -60,18 +61,22 @@ this.log('stream',JSON.stringify(this.getOutput()))
         web.SSE(res,JSON.stringify(this.getOutput()),evt)
         next()
     },
-    broadcast: function(evt, users, next){
+	publish: function(evt,input,users,next){
+		if (!users.length) return next()
+		var msg={users:users,msg:input}
+		redisCache.publish(evt,JSON.stringify(msg))
+	},
+    broadcast: function(evt, input, next){
+		var users=input.users
         if (!users || !users.length) return next(this.error(404))
 
-        var output=JSON.stringify(this.getOutput())
+        var output=JSON.stringify(input.msg)
 
-        for(var i=users.length-1,u,uid,res; u=users[i]; i--){
-			uid=u.id
+        for(var i=users.length-1,uid,res; uid=users[i]; i--){
             if (userPipeMap.has(uid)){
                 res=userPipeMap.get(uid)
                 if (!res || res.finished) continue
                 web.SSE(res,output,evt)
-                users.splice(i,1)
             }
         }
 
