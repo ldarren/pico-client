@@ -11,7 +11,7 @@ module.exports= {
 this.log('signin',input)
         var un=input.un
 
-        if (!un) return next(this.error(400))
+        if (!un) return next(this.error(401))
 
         sqlUser.findByUn(un, (err, briefs)=>{
             if (err) return next(this.error(500))
@@ -33,11 +33,11 @@ this.log(JSON.stringify(map))
 this.log('signup',input)
         var un=input.un
 
-        if (!un) return next(this.error(400))
+        if (!un) return next(this.error(401))
 
         sqlUser.findByUn(un, (err, users)=>{
             if (err) return next(this.error(500))
-            if (users.length) return next(this.error(403))
+            if (users.length) return next(this.error(401))
             var user={
                 un:un,
                 pwd:input.pwd,
@@ -57,11 +57,11 @@ this.log('signup',input)
 this.log('join',input)
         var un=input.un
 
-        if (!un) return next(this.error(400))
+        if (!un) return next(this.error(401))
 
         sqlUser.findByUn(un, (err, users)=>{
             if (err) return next(this.error(500))
-            if (users.length) return next(this.error(403))
+            if (users.length) return next(this.error(401))
             var user={
                 un:un,
                 pwd:input.pwd,
@@ -106,5 +106,12 @@ this.log('join',input)
     poll:function(input,next){
         this.setOutput('hello SSE')
         next()
-    }
+    },
+	affected:function(input,output,next){
+		sqlUser.findByRole('agent',(err,rows)=>{
+			if (err) return next(this.error(500))
+			output['list']=picoObj.pluck(rows,'id')
+			next()
+		})
+	}
 }

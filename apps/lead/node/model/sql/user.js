@@ -1,5 +1,5 @@
 var
-INDEX=                  ['un','sess'],
+INDEX=                  ['un','sess','role'],
 PRIVATE=                ['un','pwd','sess'],
 PRIVATE_SELF=           ['un','pwd'],
 ENUM=                   ['os','role'],
@@ -10,6 +10,7 @@ FIND_BY_TIME =          'SELECT * FROM `user` WHERE `uat` > ?;',
 FIND_BY_TIMES =         'SELECT * FROM `user` WHERE `uat` > ? AND `uat` < ?;',
 FIND_BY_UN =            'SELECT * FROM `user` WHERE `un` = ? AND s=1;',
 FIND_BY_SESS =          'SELECT * FROM `user` WHERE `sess` = ? AND s=1;',
+FIND_BY_ROLE =          'SELECT * FROM `user` WHERE `role` = ? AND s=1;',
 SET =                   'INSERT INTO `user` (`un`, `sess`, `cby`) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `sess`=VALUES(`sess`), s=1;',
 TOUCH =                 'UPDATE `user` SET `uby`=?, `uat`=NOW() WHERE `id`=? AND `s`=1;',
 UNSET =                 'UPDATE `user` SET `s`=0, `uby`=? WHERE `id`=?;',
@@ -23,12 +24,13 @@ MAP_FIND_BY_TIME =      'SELECT `userId`, `k`, `v1`, `v2` FROM userMap WHERE `us
 MAP_SET =               'INSERT INTO userMap (`userId`, `k`, `v1`, `v2`, `cby`) VALUES ? ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
 MAP_UNSET =             'UPDATE userMap SET `s`=0, `uby`=? WHERE `id`=?;',
 
-LIST_GET =              'SELECT `userId`, `k`, `v1`, `v2` FROM userList WHERE `userId`=?;',
-LIST_GET_BY_KEY =       'SELECT `userId`, `k`, `v1`, `v2` FROM userList WHERE `userId`=? AND `k`=?;',
-LIST_GET_BY_KEYS =      'SELECT `userId`, `k`, `v1`, `v2` FROM userList WHERE `userId`=? AND `k` IN (?);',
-LIST_GET_MAT_BY_KEY =   'SELECT `userId`, `k`, `v1`, `v2` FROM userList WHERE `userId` IN (?) AND `k`=?;',
-LIST_GET_MAT_BY_KEYS =  'SELECT `userId`, `k`, `v1`, `v2` FROM userList WHERE `userId` IN (?);',
-LIST_FIND_BY_TIME =     'SELECT `userId`, `k`, `v1`, `v2` FROM userList WHERE `userId`=? AND `uat` > ?;',
+LIST_GET_BY_ID =        'SELECT * FROM userList WHERE `id`=?;',
+LIST_GET =              'SELECT * FROM userList WHERE `userId`=?;',
+LIST_GET_BY_KEY =       'SELECT * FROM userList WHERE `userId`=? AND `k`=?;',
+LIST_GET_BY_KEYS =      'SELECT * FROM userList WHERE `userId`=? AND `k` IN (?);',
+LIST_GET_MAT_BY_KEY =   'SELECT * FROM userList WHERE `userId` IN (?) AND `k`=?;',
+LIST_GET_MAT_BY_KEYS =  'SELECT * FROM userList WHERE `userId` IN (?);',
+LIST_FIND_BY_TIME =     'SELECT * FROM userList WHERE `userId`=? AND `uat` > ?;',
 LIST_SET =              'INSERT INTO userList (`userId`, `k`, `v1`, `v2`, `cby`) VALUES ?;',
 LIST_UNSET =            'UPDATE userList SET `s`=0, `uby`=? WHERE `id`=?;',
 LIST_UPDATE=            'UPDATE userList SET `v1`=?, `v2`=?, `s`=1, `uby`=? WHERE `id`=?;',
@@ -49,69 +51,6 @@ REF1_UNSET_BY_REF1 =    'UPDATE `userRef1` SET `s`=0, `uby`=? WHERE `ref1Id` IN 
 var
 picoObj=require('pico/obj'),
 hash=require('sql/hash'),
-getMap=(id, user, cb)=>{
-    if (!id) return cb()
-    client.query(MAP_GET, [id], (err, rows)=>{
-        if (err) return cb(err)
-        for(var i=0,r,k; r=rows[i]; i++) {
-			k=hash.key(r.k)
-			if (-1===ENUM.indexOf(k)) user[k]=r.v1 || r.v2
-			else user[k]=hash.key(r.v2)
-		}
-		cb(null, user)
-    })
-},
-setMap=(id, obj, by, index, cb)=>{
-    var arr=[]
-
-    for(var i=0,keys=Object.keys(obj),key,k,v; key=keys[i]; i++){
-        if(index.indexOf(key)>-1)continue
-		k=hash.val(key)
-        v=obj[key]
-        if (!k || undefined===v) continue
-		if (-1===ENUM.indexOf(key)){
-			if(v.charAt) arr.push([id,k,v,null,by])
-			else arr.push([id,k,null,v,by])
-		}else{
-			arr.push([id,k,null,hash.val(v),by])
-        }
-    }
-	if (!arr.length) return cb()
-    client.query(MAP_SET, [arr], cb)
-},
-getList=(id, user, cb)=>{
-	if (!id) return cb()
-    client.query(LIST_GET, [id], (err, rows)=>{
-        if (err) return cb(err)
-        for(var i=0,r,k,arr; r=rows[i]; i++) {
-			k=hash.key(r.k)
-			arr=user[k]||[]
-			if (-1===ENUM.indexOf(k)) arr.push(r.v1 || r.v2)
-			else arr.push(hash.key(r.v2))
-			user[k]=arr
-		}
-		cb(null, user)
-    })
-},
-setList=(id, key, list, by, index, cb)=>{
-	if (!key || !list || !list.length) return cb()
-    var
-	arr=[],
-	k=hash.val(key)	
-
-    if(!k || index.indexOf(key)>-1) return cb()
-    for(var i=0,v; v=list[i]; i++){
-		if (undefined===v)continue
-		if (-1===ENUM.indexOf(key)){
-			if(v.charAt) arr.push([id,k,v,null,by])
-			else arr.push([id,k,null,v,by])
-		}else{
-			arr.push([id,k,null,hash.val(v),by])
-        }
-    }
-	if (!arr.length) return cb()
-    client.query(LIST_SET, [arr], cb)
-},
 client
 
 module.exports= {
@@ -131,44 +70,69 @@ module.exports= {
         return hash.verify(Object.keys(user), INDEX)
     },
     get: (user, cb)=>{
+		if (!user || !user.id) return cb()
         client.query(GET,[user.id],(err,users)=>{
             if (err) return cb(err)
-			Object.assign(user,users[0])
-            getMap(user.id, user, cb)
+			Object.assign(user,client.decode(users[0],hash,ENUM))
+			client.query(MAP_GET, [user.id], (err, rows)=>{
+				if (err) return cb(err)
+				cb(null, client.mapDecode(rows, user, hash, ENUM))
+			})
         })
     },
     set: (user, cb)=>{
-        var
-        params=[],
-        by=user.cby
-        for(var i=0,k; k=INDEX[i]; i++){ params.push(user[k]) }
-        params.push(by)
-        client.query(SET, [params], (err, result)=>{
+        client.query(SET, client.encode(user,user.cby,hash,INDEX,ENUM), (err, result)=>{
             if (err) return cb(err)
-            var id=result.insertId
-            setMap(id, user, by, INDEX, (err)=>{
+            user.id=result.insertId
+			client.query(MAP_SET, client.mapEncode(user, hash, INDEX, ENUM), (err)=>{
                 if (err) return cb(err)
-                user.id=id
                 return cb(null, user)
             })
         })
     },
     findByUn: (un, cb)=>{
-        client.query(FIND_BY_UN, [un], cb)
+        client.query(FIND_BY_UN, [un], (err,rows)=>{
+            if (err) return cb(err)
+			cb(null,client.decodes(rows,hash,ENUM))
+		})
     },
     findBySess: (sess, cb)=>{
-        client.query(FIND_BY_SESS, [sess], cb)
+        client.query(FIND_BY_SESS, [sess], (err,rows)=>{
+            if (err) return cb(err)
+			cb(null,client.decodes(rows,hash,ENUM))
+		})
+    },
+    findByRole: (role, cb)=>{
+        client.query(FIND_BY_ROLE, [role], (err,rows)=>{
+            if (err) return cb(err)
+			cb(null,client.decodes(rows,hash,ENUM))
+		})
     },
     getMap: (userId, cb)=>{
-        getMap(userId, {}, cb)
+		if (userId) return cb()
+		client.query(MAP_GET, [userId], (err, rows)=>{
+			if (err) return cb(err)
+			cb(null, client.mapDecode(rows, {}, hash, ENUM))
+		})
     },
-	setMap: (userId,obj,cb)=>{
-		setMap(userId,obj,userId,INDEX,cb)
+	setMap: (user,cb)=>{
+		client.query(MAP_SET, client.mapToRows(user, hash, INDEX, ENUM), cb)
 	},
-	getList: (userId,cb)=>{
-		getList(userId,cb)
+	getListByKey: (userId,key,cb)=>{
+		if (!userId) return cb()
+		client.query(LIST_GET, [userId,hash.key(key)], (err, rows)=>{
+			if (err) return cb(err)
+			cb(null, client.listDecode(rows, key, hash, ENUM))
+		})
+	},
+	getListById: (rowId,key,cb)=>{
+		if (!rowId) return cb()
+		client.query(LIST_GET_BY_ID,[rowId], (err, rows)=>{
+			if (err) return cb(err)
+			cb(null, client.listDecode(rows, key, hash, ENUM))
+		})
 	},
 	setList: (userId,key,list,by,cb)=>{
-		setList(userId,key,list,by,INDEX,cb)
+		client.query(LIST_SET, client.listEncode(userId,key,list,by,hash,INDEX,ENUM), cb)
 	}
 }

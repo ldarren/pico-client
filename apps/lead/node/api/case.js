@@ -7,15 +7,23 @@ module.exports= {
     setup: function(context, next){
         next()
     },
-	add:function(input,next){
+	add:function(input,output,next){
 		console.log('add',input)
-		sqlUser.setList(input.id,'$case',[input.$case],input.id,(err)=>{
+		sqlUser.setList(input.id,'$case',[input.$case],input.id,(err,result)=>{
 			if (err) return next(this.error(500))
+			output['caseId']=result.insertId
 			next()
 		})
 	},
 	read:function(input,next){
         next()
+	},
+	readById:function(input,output,next){
+		sqlUser.getList(input.insertId,(err,rows)=>{
+			if (err) return next(this.error(500))
+			output['msg']=rows[0]
+			next()
+		})
 	},
 	update:function(input,next){
         next()
