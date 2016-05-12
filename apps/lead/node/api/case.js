@@ -8,8 +8,8 @@ module.exports= {
         next()
     },
 	add:function(input,output,next){
-		console.log('add',input)
-		sqlUser.setList(input.id,'$case',[input.$case],input.id,(err,result)=>{
+		this.log('add',input)
+		sqlUser.setList(input.id,'$case',[input['$case']],input.id,(err,result)=>{
 			if (err) return next(this.error(500))
 			output['caseId']=result.insertId
 			next()
@@ -19,7 +19,7 @@ module.exports= {
         next()
 	},
 	readById:function(input,output,next){
-		sqlUser.getList(input.insertId,(err,rows)=>{
+		sqlUser.getListById(input.caseId,'$case',(err,rows)=>{
 			if (err) return next(this.error(500))
 			output['msg']=rows[0]
 			next()

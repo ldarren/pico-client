@@ -61,14 +61,13 @@ this.log('stream',JSON.stringify(this.getOutput()))
         web.SSE(res,JSON.stringify(this.getOutput()),evt)
         next()
     },
-	publish: function(evt,payload,ext){
-		redisCache.publish(evt,JSON.stringify(payload))
+	publish: function(evt,input,next){
+		if (!input || !input.list || !input.list.length || !input.msg) return next()
+		redisCache.publish(evt,JSON.stringify(input))
+		next()
 	},
     broadcast: function(evt, input, next){
-		try{var payload=JSON.parse(input)}
-		catch(e){return next(this.error(500,e.message))}
-
-		var users=payload.list
+		var users=input.list
         if (!users || !users.length) return next(this.error(400))
 
         var output=JSON.stringify(input.msg)

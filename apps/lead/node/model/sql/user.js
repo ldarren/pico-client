@@ -11,7 +11,7 @@ FIND_BY_TIMES =         'SELECT * FROM `user` WHERE `uat` > ? AND `uat` < ?;',
 FIND_BY_UN =            'SELECT * FROM `user` WHERE `un` = ? AND s=1;',
 FIND_BY_SESS =          'SELECT * FROM `user` WHERE `sess` = ? AND s=1;',
 FIND_BY_ROLE =          'SELECT * FROM `user` WHERE `role` = ? AND s=1;',
-SET =                   'INSERT INTO `user` (`un`, `sess`, `cby`) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `sess`=VALUES(`sess`), s=1;',
+SET =                   'INSERT INTO `user` (`un`, `sess`, `role`, `cby`) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `sess`=VALUES(`sess`), s=1;',
 TOUCH =                 'UPDATE `user` SET `uby`=?, `uat`=NOW() WHERE `id`=? AND `s`=1;',
 UNSET =                 'UPDATE `user` SET `s`=0, `uby`=? WHERE `id`=?;',
 
@@ -81,10 +81,10 @@ module.exports= {
         })
     },
     set: (user, cb)=>{
-        client.query(SET, client.encode(user,user.cby,hash,INDEX,ENUM), (err, result)=>{
+        client.query(SET, [client.encode(user,user.cby,hash,INDEX,ENUM)], (err, result)=>{
             if (err) return cb(err)
             user.id=result.insertId
-			client.query(MAP_SET, client.mapEncode(user, hash, INDEX, ENUM), (err)=>{
+			client.query(MAP_SET, [client.mapEncode(user, hash, INDEX, ENUM)], (err,result)=>{
                 if (err) return cb(err)
                 return cb(null, user)
             })
@@ -116,7 +116,7 @@ module.exports= {
 		})
     },
 	setMap: (user,cb)=>{
-		client.query(MAP_SET, client.mapToRows(user, hash, INDEX, ENUM), cb)
+		client.query(MAP_SET, [client.mapEncode(user, hash, INDEX, ENUM)], cb)
 	},
 	getListByKey: (userId,key,cb)=>{
 		if (!userId) return cb()
@@ -133,6 +133,6 @@ module.exports= {
 		})
 	},
 	setList: (userId,key,list,by,cb)=>{
-		client.query(LIST_SET, client.listEncode(userId,key,list,by,hash,INDEX,ENUM), cb)
+		client.query(LIST_SET, [client.listEncode(userId,key,list,by,hash,INDEX,ENUM)], cb)
 	}
 }

@@ -20,7 +20,6 @@ this.log('signin',input)
 
             sqlUser.getMap(b.id, (err, map)=>{
                 if (err) return next(this.error(500))
-this.log(JSON.stringify(map))
                 if (input.pwd !== map.pwd) return next(this.error(401))
 
                 Object.assign(user,map,b)
