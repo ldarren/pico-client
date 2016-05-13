@@ -274,7 +274,7 @@
             ["Scrollable","view",[
 				["list","ref","requests"],
 				["cell","view",[
-					["tpl","file","CardRequest.asp"]
+					["tpl","file","CardSimple.asp"]
 				],"CardRequest"]
             ]],
             ["Menu","view",[

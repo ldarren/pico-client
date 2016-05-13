@@ -72,7 +72,7 @@
             ["tplSignin","file","FormSignin.asp"],
             ["tplSignup","file","FormSignup.asp"]
         ]],
-        ["Dialog","view",[
+        ["Modal","view",[
             ["options","map",{"className":"modal fullpage"}],
             ["Header","view",[
                 ["tpl","file","header/Base.asp"],
@@ -102,10 +102,9 @@
 			["HomeCtrl","ctrl",[
 				["requests","ref","requests"],
 				["addRequest","list",[
-					{"name":"date","placeHolder":"Date","required":1},
-					{"name":"time","placeHolder":"Time","required":1},
-					{"name":"place","placeHolder":"Location","required":1},
-					{"name":"comment","placeHolder":"Comment","required":1}
+					{"type":"date","name":"date","label":"Date","required":1},
+					{"type":"time","name":"time","label":"Time","required":1},
+					{"type":"text","name":"note","label":"Comment","required":1}
 				]
 			]]],
             ["header/Base","view",[
@@ -175,9 +174,14 @@
             ["header/Base","view",[
                 ["tpl","file","header/Base.asp"],
                 ["title","text","My Profile"],
+                ["btnRight","map",{"icon":"icon_edit"}],
                 ["header/User","view",[
 					["tpl","file","header/User.asp"]
 				]]
+            ]],
+            ["Panel","view",[
+				["owner","ref","owner"],
+				["tpl","file","Panel.asp"]
             ]],
             ["Menu","view",[
                 ["tpl","file","Menu.asp"],

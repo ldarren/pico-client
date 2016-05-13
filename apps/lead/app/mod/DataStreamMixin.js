@@ -1,6 +1,6 @@
 return {
     connect:function(stream, user, seen){
-        stream.reconnect('lead','/stream',['poll'],false)
+        stream.reconnect('lead','/stream',['poll','ping'],false)
     },
 	readOwnerUserInfo:function(userId, cb){
 		var

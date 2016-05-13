@@ -7,13 +7,14 @@ userPipeMap=new Map,
 pingId=0,
 pingCountdown=function(){
     clearTimeout(pingId)
-    pingId=setTimeout(ping, 20000)
+    pingId=setTimeout(ping, 30000)
 },
 ping=function(){
     if (!pipes.length) return pingCountdown()
     for(var i=pipes.length-1,r; r=pipes[i]; i--){
         if(r.finished) remove(i)
         else web.SSE(r, '', 'ping')
+console.log('ping',r.finished)
     }
     pingCountdown()
 },
@@ -35,6 +36,7 @@ module.exports= {
         if (!user || !user.id) return next()
         var uid=user.id
         if (userPipeMap.has(uid)){
+			// TODO: send 403 to old connection
             var idx=userIds.indexOf(uid)
             pipes[idx]=res
             userIds[idx]=uid

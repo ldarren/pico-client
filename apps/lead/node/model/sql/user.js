@@ -46,7 +46,9 @@ REF1_UPDATE=            'UPDATE `userRef1` SET `v1`=?, `v2`=?,`uby`=? WHERE `use
 REF1_UNSET=             'UPDATE `userRef1` SET `s`=0, `uby`=? WHERE `userId`=? AND `ref1Id`=? AND `k`=?;',
 REF1_UNSETS=            'UPDATE `userRef1` SET `s`=0, `uby`=? WHERE `userId`=? AND `ref1Id`=?;',
 REF1_UNSETSS=           'UPDATE `userRef1` SET `s`=0, `uby`=? WHERE `userId` IN (?);',
-REF1_UNSET_BY_REF1 =    'UPDATE `userRef1` SET `s`=0, `uby`=? WHERE `ref1Id` IN (?);'
+REF1_UNSET_BY_REF1 =    'UPDATE `userRef1` SET `s`=0, `uby`=? WHERE `ref1Id` IN (?);',
+
+ERR_INVALID_INPUT = 'INVALID INPUT'
 
 var
 picoObj=require('pico/obj'),
@@ -70,7 +72,7 @@ module.exports= {
         return hash.verify(Object.keys(user), INDEX)
     },
     get: (user, cb)=>{
-		if (!user || !user.id) return cb()
+		if (!user || !user.id) return cb(ERR_INVALID_INPUT)
         client.query(GET,[user.id],(err,users)=>{
             if (err) return cb(err)
 			Object.assign(user,client.decode(users[0],hash,ENUM))
@@ -109,7 +111,7 @@ module.exports= {
 		})
     },
     getMap: (userId, cb)=>{
-		if (userId) return cb()
+		if (!userId) return cb(ERR_INVALID_INPUT)
 		client.query(MAP_GET, [userId], (err, rows)=>{
 			if (err) return cb(err)
 			cb(null, client.mapDecode(rows, {}, hash, ENUM))
@@ -119,14 +121,14 @@ module.exports= {
 		client.query(MAP_SET, [client.mapEncode(user, hash, INDEX, ENUM)], cb)
 	},
 	getListByKey: (userId,key,cb)=>{
-		if (!userId) return cb()
+		if (!userId) return cb(ERR_INVALID_INPUT)
 		client.query(LIST_GET, [userId,hash.key(key)], (err, rows)=>{
 			if (err) return cb(err)
 			cb(null, client.listDecode(rows, key, hash, ENUM))
 		})
 	},
 	getListById: (rowId,key,cb)=>{
-		if (!rowId) return cb()
+		if (!rowId) return cb(ERR_INVALID_INPUT)
 		client.query(LIST_GET_BY_ID,[rowId], (err, rows)=>{
 			if (err) return cb(err)
 			cb(null, client.listDecode(rows, key, hash, ENUM))

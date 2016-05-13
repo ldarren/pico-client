@@ -20,7 +20,7 @@ this.log('signin',input)
 
             sqlUser.getMap(b.id, (err, map)=>{
                 if (err) return next(this.error(500))
-                if (input.pwd !== map.pwd) return next(this.error(401))
+                if (!map || input.pwd !== map.pwd) return next(this.error(401))
 
                 Object.assign(user,map,b)
                 this.setOutput(user, sqlUser.cleanForSelf, sqlUser)
