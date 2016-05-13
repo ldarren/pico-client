@@ -3,7 +3,7 @@
     flex-direction: column;
     margin:auto;
     padding: 1.5rem 2.5rem;
-    text-align: center;
+    text-align: left;
 }
 .form .logo {
     width: 150px;
@@ -19,6 +19,14 @@
   height: 5rem;
   padding-top: 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+.form label{
+  display:inline-block;
+  width: 8rem;
+  margin-right: 0.5rem;
+  padding-left: 1.5rem;
+  font-size: 1.5rem;
+  color: #DADADA;
 }
 .form .icon {
   margin-bottom: -0.4rem;

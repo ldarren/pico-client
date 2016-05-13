@@ -7,14 +7,13 @@ userPipeMap=new Map,
 pingId=0,
 pingCountdown=function(){
     clearTimeout(pingId)
-    pingId=setTimeout(ping, 30000)
+    pingId=setTimeout(ping, 60000)
 },
 ping=function(){
     if (!pipes.length) return pingCountdown()
     for(var i=pipes.length-1,r; r=pipes[i]; i--){
         if(r.finished) remove(i)
         else web.SSE(r, '', 'ping')
-console.log('ping',r.finished)
     }
     pingCountdown()
 },

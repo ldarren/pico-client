@@ -12,7 +12,6 @@ function init(self, channel, path, events, withCredentials){
 
     var
 	trigger=function(e){
-		debugger
         var data
         try{ data=JSON.parse(e.data) }
         catch(exp){ data=e.data }

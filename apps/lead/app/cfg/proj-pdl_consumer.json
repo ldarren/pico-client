@@ -181,7 +181,13 @@
             ]],
             ["Panel","view",[
 				["owner","ref","owner"],
-				["tpl","file","Panel.asp"]
+				["tpl","file","Panel.asp"],
+				["rows","list",[
+					{"type":"text","label":"home","value":"home"},
+					{"type":"text","label":"history","value":"history"},
+					{"type":"text","label":"name","value":""},
+					{"type":"text","label":"power","value":"signout"}
+				]]
             ]],
             ["Menu","view",[
                 ["tpl","file","Menu.asp"],
