@@ -17,8 +17,8 @@ demultiplexer=function(name,models,raw,dmux){
     }
 },
 poll = function(raw){
-console.log('poll: '+this.myId)
-    var userId = this.myId
+console.log('poll: '+this.me.id)
+    var userId = this.me.id
     if (!userId) return
     this.writeSeen(userId, raw.seen)
     var
@@ -34,7 +34,7 @@ addRemove = function(coll, list){
     coll.remove(_.where(list, status0))
     return true
 },
-writeData = function(model){ this.writeColl(model.collection.name, this.myId) },
+writeData = function(model){ this.writeColl(model.collection.name, this.me.id) },
 sortDesc = function(m1, m2){
     var s1 = m1.get('updatedAt'), s2 = m2.get('updatedAt')
     return s1 < s2 ? 1 : s1 > s2 ? -1 : 0;
@@ -59,12 +59,12 @@ return{
 
     slots:{
         signin: function(from, sender, model){
-            if(this.myId)this.slots.signout.call(this, from, sender)
+            if(this.me)this.slots.signout.call(this, from, sender)
             var
             pull=this.deps.pull,
 			userId = model.id
 
-            this.myId = userId
+            this.me=model 
             this.readSeen(userId)
 
             this.listenTo(pull, 'message', poll)
@@ -80,7 +80,7 @@ return{
         },
         signout: function(from, sender){
             this.stopListening()
-			var userId=this.myId
+			var userId=this.me.id
 
             for(var i=0,models=this.deps.models,keys=Object.keys(models),k; k=keys[i]; i++){
 				if ('owner'===k)continue
@@ -89,10 +89,10 @@ return{
             }
 
             this.seen = 0
-            this.myId = 0
+            this.me= null
         },
         refreshCache: function(from, sender){
-            var userId = this.myId
+            var userId = this.me.id
 
             for(var i=0,models=this.deps.models,keys=Object.keys(models),k; k=keys[i]; i++){
                 models[k].reset()
@@ -101,7 +101,13 @@ return{
 
             this.removeSeen(userId)
             this.readSeen(userId)
-        }
+        },
+		online: function(){
+            this.connect(this.deps.pull, this.me.attributes, this.seen)
+		},
+		offline: function(){
+			this.deps.pull.close()
+		}
     },
 
     connect: function(stream, model){

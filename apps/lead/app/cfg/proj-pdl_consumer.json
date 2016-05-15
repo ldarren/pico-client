@@ -41,6 +41,13 @@
 				"note":"Aircon service"
 			}
 		]],
+		["locks","models",{
+			"create":"lead/lock/add",
+			"read":"lead/lock/read",
+			"update":"lead/lock/update",
+			"delete":"lead/lock/remove",
+			"list":"lead/lock/list"
+		}],
         ["pane","view",[
             ["paneId","int",0],
             ["options","map",{"id":"main"}]
@@ -129,10 +136,10 @@
                 ["tpl","file","Menu.asp"],
                 ["owner","ref","owner"],
 				["list","list",[
-					{"className":"home","icon":"home","url":""},
+					{"className":"home selected","icon":"home","url":""},
 					{"className":"history","icon":"history","url":"history"},
-					{"className":"profile","icon":"name","url":"profile"},
-					{"className":"signout","icon":"power","url":"signout"}
+					{"className":"lock","icon":"pass","url":"lock"},
+					{"className":"profile","icon":"name","url":"profile"}
 				]]
             ]]
         ],
@@ -140,6 +147,9 @@
             ["options","map",{"className":"fulpage active"}],
             ["owner","ref","owner"],
 			["requests","ref","requests"],
+			["HistoryCtrl","ctrl",[
+				["requests","ref","requests"]
+			]],
             ["header/Base","view",[
                 ["tpl","file","header/Base.asp"],
                 ["title","text","Request History"],
@@ -162,18 +172,48 @@
                 ["owner","ref","owner"],
 				["list","list",[
 					{"className":"home","icon":"home","url":"home"},
+					{"className":"history selected","icon":"history","url":""},
+					{"className":"lock","icon":"pass","url":"lock"},
+					{"className":"profile","icon":"name","url":"profile"}
+				]]
+            ]]
+		],
+        "lock":[
+            ["options","map",{"className":"fulpage active"}],
+            ["owner","ref","owner"],
+			["LockCtrl","ctrl",[
+			]],
+            ["header/Base","view",[
+                ["tpl","file","header/Base.asp"],
+                ["title","text","My Locks"],
+                ["btnRight","map",{"icon":"icon_search"}]
+            ]],
+            ["Scrollable","view",[
+				["list","ref","locks"],
+				["cell","view",[
+					["tpl","file","CardLock.asp"]
+				],"CardLock"]
+            ]],
+            ["Menu","view",[
+                ["tpl","file","Menu.asp"],
+                ["owner","ref","owner"],
+				["list","list",[
+					{"className":"home","icon":"home","url":"home"},
 					{"className":"history","icon":"history","url":""},
-					{"className":"profile","icon":"name","url":"profile"},
-					{"className":"signout","icon":"power","url":"signout"}
+					{"className":"lock selected","icon":"pass","url":"lock"},
+					{"className":"profile","icon":"name","url":"profile"}
 				]]
             ]]
         ],
 		"profile":[
             ["options","map",{"className":"fulpage active"}],
             ["owner","ref","owner"],
+			["ProfileCtrl","ctrl",[
+			]],
             ["header/Base","view",[
                 ["tpl","file","header/Base.asp"],
                 ["title","text","My Profile"],
+                ["btnLeft","map",{"icon":"icon_power"}],
                 ["btnRight","map",{"icon":"icon_edit"}],
                 ["header/User","view",[
 					["tpl","file","header/User.asp"]
@@ -183,10 +223,10 @@
 				["owner","ref","owner"],
 				["tpl","file","Panel.asp"],
 				["rows","list",[
-					{"type":"text","label":"home","value":"home"},
-					{"type":"text","label":"history","value":"history"},
-					{"type":"text","label":"name","value":""},
-					{"type":"text","label":"power","value":"signout"}
+					{"type":"text","label":"Total Requests","value":76},
+					{"type":"text","label":"Monthly Requests","value":21},
+					{"type":"text","label":"Weekly Requests","value":13},
+					{"type":"text","label":"Accepted Requests","value":69}
 				]]
             ]],
             ["Menu","view",[
@@ -195,11 +235,11 @@
 				["list","list",[
 					{"className":"home","icon":"home","url":"home"},
 					{"className":"history","icon":"history","url":"history"},
-					{"className":"profile","icon":"name","url":""},
-					{"className":"signout","icon":"power","url":"signout"}
+					{"className":"lock","icon":"pass","url":"lock"},
+					{"className":"profile selected","icon":"name","url":""}
 				]]
             ]]
-		]
+        ]
     },{
         "history":["history"],
         "profile":["profile"],

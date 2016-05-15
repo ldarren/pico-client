@@ -42,11 +42,19 @@ changeRoute = function(path, params){
     this.signals.changeRoute(path, params).send()
     this.currPath=path
     this.currParams=params
+},
+netstat=function(self){
+	window.addEventListener('online',function(){
+		self.signals.online().send()
+	})
+	window.addEventListener('offline',function(){
+		self.signals.offline().send()
+	})
 }
 
 return Module.View.extend({
     el: 'body',
-    signals:['changeRoute','frameAdded','paneAdded','paneUpdate','paneCount'],
+    signals:['online','offline','changeRoute','frameAdded','paneAdded','paneUpdate','paneCount'],
     deps:{
         html:   ['file','<div class=frame><div class=layer></div><div class=layer></div></div>'],
         layers: ['list', ['.frame>div:nth-child(1)','.frame>div:nth-child(2)']]
@@ -136,6 +144,7 @@ return Module.View.extend({
         modelReady: function(from, sender){
             if (!Backbone.History.started){
                 Backbone.history.start()
+				netstat(this)
                 return true //  continue propagation
             }
             return false

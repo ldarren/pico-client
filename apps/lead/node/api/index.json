@@ -4,6 +4,7 @@
         "user":"api/user",
         "room":"api/room",
         "case":"api/case",
+        "lock":"api/lock",
         "web":["context","webServer"]
     },
     "routes":{
@@ -92,6 +93,32 @@
         "lead/case/list": [
             ["user","verify","input","user"],
             ["case","list","input"],
+            [0]
+        ],
+        "lead/lock/add": [
+            ["user","verify","input","user"],
+            ["lock","add","input","lock"],
+            ["lock","readById","lock","output"],
+            [0]
+        ],
+        "lead/lock/read": [
+            ["user","verify","input","user"],
+            ["lock","read","input"],
+            [0]
+        ],
+        "lead/lock/update": [
+            ["user","verify","input","user"],
+            ["lock","update","input"],
+            [0]
+        ],
+        "lead/lock/remove": [
+            ["user","verify","input","user"],
+            ["lock","remove","input"],
+            [0]
+        ],
+        "lead/lock/list": [
+            ["user","verify","input","user"],
+            ["lock","list","input"],
             [0]
         ]
     }
