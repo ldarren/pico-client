@@ -1,14 +1,14 @@
 return {
-	signals:['dialogShow'],
+	signals:['modalShow'],
 	deps:{
 		requests:'models',
 		addRequest:'list'
 	},
 	slots:{
 		headerButtonClicked:function(from,sender,hash){
-			this.signals.dialogShow('Add Request',this.deps.addRequest).send(this.host)
+			this.signals.modalShow('Add Request',this.deps.addRequest).send(this.host)
 		},
-		dialogResult:function(from,sender,form){
+		modalResult:function(from,sender,form){
 			this.deps.requests.create(null,{
 				data:{
 					$case:form

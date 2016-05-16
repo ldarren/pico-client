@@ -18,8 +18,8 @@ ul.menu li{
   transition: bottom 0.4s 0.1s, right 0.4s 0.1s, transform 0.4s 0.4s, opacity 0.1s 0.7s, background-color 0.1s 0.7s;
   transition: bottom 0.4s 0.1s, right 0.4s 0.1s, transform 0.4s 0.4s, opacity 0.1s 0.7s, background-color 0.1s 0.7s, -webkit-transform 0.4s 0.4s;
 }
-ul.menu li .selected{
-	color:#FC3768;
+ul.menu li.selected use{
+	stroke:#FC3768;
 }
 ul.menu li .icon {
   width: 3rem;

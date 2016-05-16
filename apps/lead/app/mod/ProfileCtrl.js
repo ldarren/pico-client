@@ -1,7 +1,6 @@
 return {
     signals:['refreshcache'],
 	deps:{
-		requests:'models',
         owner:'models'
 	},
 	slots:{

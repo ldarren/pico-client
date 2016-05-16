@@ -1,15 +1,15 @@
 return {
-	signals:['dialogShow'],
+	signals:['modalShow'],
 	deps:{
-		requests:'models',
-		addRequest:'list'
+		locks:'models',
+		addLock:'list'
 	},
 	slots:{
 		headerButtonClicked:function(from,sender,hash){
-			this.signals.dialogShow('Add Request',this.deps.addRequest).send(this.host)
+			this.signals.modalShow('Add Lock',this.deps.addLock).send(this.host)
 		},
-		dialogResult:function(from,sender,form){
-			this.deps.requests.create(null,{
+		modalResult:function(from,sender,form){
+			this.deps.locks.create(null,{
 				data:{
 					$case:form
 				},

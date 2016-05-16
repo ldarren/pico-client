@@ -179,11 +179,13 @@
         "lock":[
             ["options","map",{"className":"fulpage active"}],
             ["owner","ref","owner"],
+			["locks","ref","locks"],
 			["LockCtrl","ctrl",[
 			]],
             ["header/Base","view",[
                 ["tpl","file","header/Base.asp"],
                 ["title","text","My Locks"],
+                ["btnLeft","map",{"icon":"icon_plus"}],
                 ["btnRight","map",{"icon":"icon_search"}]
             ]],
             ["Scrollable","view",[
@@ -239,6 +241,7 @@
         ]
     },{
         "history":["history"],
+        "lock":["lock"],
         "profile":["profile"],
         "*action":["home"]
     }

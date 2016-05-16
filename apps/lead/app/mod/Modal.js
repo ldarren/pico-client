@@ -4,7 +4,7 @@ return {
 		Header:'view',
 		Form:'view'
 	},
-    signals:['show','hide','formShow','formCollect','dialogResult','header'],
+    signals:['show','hide','formShow','formCollect','modalResult','header'],
     create: function(deps){
 		this.header=this.spawn(deps.Header)
 		this.form=this.spawn(deps.Form)
@@ -12,13 +12,13 @@ return {
     },
 
     slots:{
-        dialogShow:function(from, sender, title, form){
+        modalShow:function(from, sender, title, form){
 			this.sender=sender
             this.signals.show(1).send(this.host)
 			this.signals.header(title).send(this.header)
 			this.signals.formShow(form).send(this.form)
         },
-        dialogHide:function(from, sender){
+        modalHide:function(from, sender){
 			this.sender=null
             this.signals.hide().send(this.host)
 		},
@@ -28,7 +28,7 @@ return {
 				var self=this
 				this.signals.formCollect(function(err,form){
 					if(err) return console.error(err)
-					self.signals.dialogResult(form).send(self.sender)
+					self.signals.modalResult(form).send(self.sender)
 				}).send(this.form)
 			case 'ko':
 				this.signals.hide().send(this.host)
