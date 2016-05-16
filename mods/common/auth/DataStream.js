@@ -35,6 +35,9 @@ addRemove = function(coll, list){
     return true
 },
 writeData = function(model){ this.writeColl(model.collection.name, this.me.id) },
+reconn=function(){
+    this.connect(this.deps.pull, this.me.attributes, this.seen)
+},
 sortDesc = function(m1, m2){
     var s1 = m1.get('updatedAt'), s2 = m2.get('updatedAt')
     return s1 < s2 ? 1 : s1 > s2 ? -1 : 0;
@@ -55,6 +58,7 @@ return{
         for(var i=0,models=deps.models,keys=Object.keys(models),k; k=keys[i]; i++){
             models[k].comparator=sortDesc
         }
+		this.listenTo(deps.pull, 'closed', reconn)
     },
 
     slots:{
@@ -103,7 +107,7 @@ return{
             this.readSeen(userId)
         },
 		online: function(){
-            this.connect(this.deps.pull, this.me.attributes, this.seen)
+			reconn.call(this)
 		},
 		offline: function(){
 			this.deps.pull.close()

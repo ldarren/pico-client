@@ -1,26 +1,22 @@
 return {
-	signals:['dialogShow'],
+    signals:['refreshcache'],
 	deps:{
 		requests:'models',
-		addRequest:'list'
+        owner:'models'
 	},
 	slots:{
 		headerButtonClicked:function(from,sender,hash){
-			this.signals.dialogShow('Add Request',this.deps.addRequest).send(this.host)
-		},
-		dialogResult:function(from,sender,form){
-			this.deps.requests.create(null,{
-				data:{
-					$case:form
-				},
-				wait:true,
-				success:function(){
-					debugger
-				},
-				error:function(){
-					debugger
-				}
-			})
+			switch(hash){
+			case 'power':
+				this.deps.owner.reset()
+				break
+			case 'restart':
+				window.location.reload(true)
+				break
+			case 'reload':
+				this.signals.refreshCache().send()
+				break
+			}
 		}
 	}
 }

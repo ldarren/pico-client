@@ -134,7 +134,6 @@
             ]],
             ["Menu","view",[
                 ["tpl","file","Menu.asp"],
-                ["owner","ref","owner"],
 				["list","list",[
 					{"className":"home selected","icon":"home","url":""},
 					{"className":"history","icon":"history","url":"history"},
@@ -169,7 +168,6 @@
             ]],
             ["Menu","view",[
                 ["tpl","file","Menu.asp"],
-                ["owner","ref","owner"],
 				["list","list",[
 					{"className":"home","icon":"home","url":"home"},
 					{"className":"history selected","icon":"history","url":""},
@@ -196,7 +194,6 @@
             ]],
             ["Menu","view",[
                 ["tpl","file","Menu.asp"],
-                ["owner","ref","owner"],
 				["list","list",[
 					{"className":"home","icon":"home","url":"home"},
 					{"className":"history","icon":"history","url":""},
@@ -209,6 +206,7 @@
             ["options","map",{"className":"fulpage active"}],
             ["owner","ref","owner"],
 			["ProfileCtrl","ctrl",[
+				["owner","ref","owner"]
 			]],
             ["header/Base","view",[
                 ["tpl","file","header/Base.asp"],
@@ -231,7 +229,6 @@
             ]],
             ["Menu","view",[
                 ["tpl","file","Menu.asp"],
-                ["owner","ref","owner"],
 				["list","list",[
 					{"className":"home","icon":"home","url":"home"},
 					{"className":"history","icon":"history","url":"history"},

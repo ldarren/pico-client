@@ -2,10 +2,9 @@ var Router=require('js/Router')
 return {
     tagName:'ul',
     className:'menu',
-    signals:['refreshcache'],
+	signals:[],
     deps:{
 		tpl:'file',	
-        owner:'models',
 		list:'list'
     },
     create: function(deps){
@@ -18,15 +17,6 @@ return {
 			use='use'===e.target.tagName?e.target:e.target.querySelector('use'),
 			url=use.getAttributeNS('http://www.w3.org/1999/xlink', 'role')
 			if(url) Router.go(url)
-		},
-        'tap .signout':function(){
-            this.deps.owner.reset()
-        },
-        'tap .restart':function(){
-            window.location.reload(true)
-        },
-        'tap .reload':function(){
-            this.signals.refreshCache().send()
         }
     }
 }
