@@ -2,6 +2,7 @@ var
 NO=0,
 SIGNIN=1,
 SIGNUP=2,
+Ceil=Math.ceil,Random=Math.random,
 picoStr=require('pico/str'),
 Router = require('js/Router'),
 login=function(){
@@ -42,7 +43,8 @@ login=function(){
             data: {
                 un: fe.username.value.trim(),
                 pwd: picoStr.hash(pass),
-                name:fe.name.value
+                name:fe.name.value,
+				$profile:{img:Ceil(10*Random())}
             },
             wait: true,
             error: function(e){

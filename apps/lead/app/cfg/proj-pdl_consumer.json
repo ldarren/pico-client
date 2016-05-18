@@ -18,29 +18,7 @@
 			"update":"lead/case/update",
 			"delete":"lead/case/remove",
 			"list":"lead/case/list"
-		},[
-			{
-				"img":"dat/p6.png",
-				"name":"Visit Joey place",
-				"time":"8 - 10am",
-				"place":"Jurong East",
-				"note":"Change water tap"
-			},
-			{
-				"img":"dat/p5.png",
-				"name":"Visit Darren place",
-				"time":"1 - 3pm",
-				"place":"Manhattan",
-				"note":"Fix shower pipe"
-			},
-			{
-				"img":"dat/p7.png",
-				"name":"Visit Ahmad place",
-				"time":"8 - 19pm",
-				"place":"London",
-				"note":"Aircon service"
-			}
-		]],
+		}],
 		["locks","models",{
 			"create":"lead/lock/add",
 			"read":"lead/lock/read",
@@ -106,12 +84,15 @@
             ["options","map",{"className":"fulpage active"}],
             ["owner","ref","owner"],
 			["requests","ref","requests"],
+			["locks","ref","locks"],
 			["HomeCtrl","ctrl",[
 				["requests","ref","requests"],
+				["locks","ref","locks"],
 				["addRequest","list",[
 					{"type":"date","name":"date","label":"Date","required":1},
 					{"type":"time","name":"time","label":"Time","required":1},
-					{"type":"text","name":"note","label":"Comment","required":1}
+					{"type":"text","name":"note","label":"Comment"},
+					{"type":"select","name":"lock","label":"Locker","holder":"Select a locker","options":[]}
 				]
 			]]],
             ["header/Base","view",[
@@ -181,10 +162,17 @@
             ["owner","ref","owner"],
 			["locks","ref","locks"],
 			["LockCtrl","ctrl",[
+				["locks","ref","locks"],
+				["addLock","list",[
+					{"type":"text","name":"name","label":"Name","holder":"Joe's Locker","required":1},
+					{"type":"text","name":"device","label":"Device Id","value":"AF131569","required":1},
+					{"type":"text","name":"street","label":"Street","required":1},
+					{"type":"text","name":"city","label":"City","required":1}
+				]]
 			]],
             ["header/Base","view",[
                 ["tpl","file","header/Base.asp"],
-                ["title","text","My Locks"],
+                ["title","text","My Lockers"],
                 ["btnLeft","map",{"icon":"icon_plus"}],
                 ["btnRight","map",{"icon":"icon_search"}]
             ]],

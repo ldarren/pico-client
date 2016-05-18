@@ -14,8 +14,8 @@
 <% continue} else if (f.type === "select"){%>
 <select class=input name="<%=f.name%>" <%=f.required?"required":""%>>
     <option value="" <%=f.value ? "" : "selected"%> disabled><%=f.holder || "Select an option"%></option>
-    <% for(var j=0,os=f.options,keys=Object.keys(os),k,v; k=keys[j]; j++){ v=os[k]%>
-    <option value=<%=k%> <%=k==f.value ? "selected":""%>><%=v%></option>
+    <% for(var j=0,os=f.options,o; o=os[j]; j++){ %>
+    <option value=<%=o[0]%> <%=o[0]==f.value ? "selected":""%>><%=o[1]%></option>
     <%}%>
 </select>
 <% continue} %>

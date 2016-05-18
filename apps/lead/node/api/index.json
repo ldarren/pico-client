@@ -95,6 +95,12 @@
             ["case","list","input"],
             [0]
         ],
+        "lead/case/unlock": [
+            ["user","verify","input","user"],
+            ["case","verify","input","lock"],
+            ["lock","unlock","input","output"],
+            [0]
+        ],
         "lead/lock/add": [
             ["user","verify","input","user"],
             ["lock","add","input","lock"],
@@ -119,6 +125,12 @@
         "lead/lock/list": [
             ["user","verify","input","user"],
             ["lock","list","input"],
+            [0]
+        ],
+        "lead/lock/unlock": [
+            ["user","verify","input","user"],
+            ["lock","verify","input","lock"],
+            ["lock","unlock","input","output"],
             [0]
         ]
     }

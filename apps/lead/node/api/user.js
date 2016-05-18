@@ -37,15 +37,11 @@ this.log('signup',input)
         sqlUser.findByUn(un, (err, users)=>{
             if (err) return next(this.error(500))
             if (users.length) return next(this.error(401))
-            var user={
-                un:un,
-                pwd:input.pwd,
-                sess:picoStr.rand(),
-                name:input.name,
-				role:'consumer',
-				cby:0
-            }
-            this.addJob([user], sqlUser.set, sqlUser)
+            Object.assign(user,input,{
+				sess:picoStr.rand(),
+				role:'consumer'
+			})
+            this.addJob([user, 0], sqlUser.set, sqlUser)
             this.addJob([user], sqlUser.get, sqlUser)
             this.setOutput(user, sqlUser.cleanForSelf, sqlUser)
             next()
@@ -61,15 +57,11 @@ this.log('join',input)
         sqlUser.findByUn(un, (err, users)=>{
             if (err) return next(this.error(500))
             if (users.length) return next(this.error(401))
-            var user={
-                un:un,
-                pwd:input.pwd,
-                sess:picoStr.rand(),
-                name:input.name,
-				role:'agent',
-				cby:0
-            }
-            this.addJob([user], sqlUser.set, sqlUser)
+            Object.assign(user,input,{
+				sess:picoStr.rand(),
+				role:'agent'
+			})
+            this.addJob([user, 0], sqlUser.set, sqlUser)
             this.addJob([user], sqlUser.get, sqlUser)
             this.setOutput(user, sqlUser.cleanForSelf, sqlUser)
             next()

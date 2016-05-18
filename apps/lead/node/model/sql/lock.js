@@ -1,20 +1,58 @@
 var
-GET =                   'SELECT * FROM `lock` WHERE `id`=? AND `status`=1;',
-GET_LIST =              'SELECT * FROM `lock` WHERE `id` IN (?) AND `status`=1;',
-FIND_BY_TIME =          'SELECT * FROM `lock` WHERE `updatedAt` > ?;',
-FIND_BY_TIMES =         'SELECT * FROM `lock` WHERE `updatedAt` > ? AND `updatedAt` < ?;',
-CREATE =                'INSERT INTO `lock` (`createdBy`) VALUES ?;',
-TOUCH =                 'UPDATE `lock` SET `updatedBy`=?, `updatedAt`=NOW() WHERE `id`=? AND `status`=1;',
-REMOVE =                'UPDATE `lock` SET `status`=0, `updatedBy`=? WHERE `id`=?;'
+INDEX=                  ['userId','name'],
+PRIVATE=                ['passcode','salt'],
+ENUM=                   [],
 
-var
-sc =require('pico/obj'),
+GET =                   'SELECT * FROM `lock` WHERE `id`=? AND `s`=1;',
+SET =                   'INSERT INTO `lock` (`userId`, `name`, `cby`) VALUES (?);',
+FIND_BY_NAME =          'SELECT * FROM `lock` WHERE `userId`=? AND `name`=? AND `s`=1;',
+
+MAP_GET =               'SELECT `lockId`, `k`, `v1`, `v2` FROM lockMap WHERE `lockId`=?;',
+MAP_SET =               'INSERT INTO lockMap (`lockId`, `k`, `v1`, `v2`, `cby`) VALUES ? ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
+
+ERR_INVALID_INPUT = 'INVALID INPUT',
+
+picoObj=require('pico/obj'),
 hash=require('sql/hash'),
 client
 
 module.exports= {
     setup: function(context, cb){
-        client = context.client 
+        client=context.mainDB
         cb()
-    }
+    },
+    clean:function(model){
+        for(var i=0,k; k=PRIVATE[i]; i++) delete model[k];
+        return model
+    },
+    get: function(lock, cb){
+        if (!lock || !lock.id) return cb(ERR_INVALID_INPUT)
+        client.query(GET,[lock.id],(err,rows)=>{
+            if (err) return cb(err)
+            Object.assign(lock,client.decode(rows[0],hash,ENUM))
+            client.query(MAP_GET, [lock.id], (err, rows)=>{
+                if (err) return cb(err)
+                cb(null, client.mapDecode(rows, lock, hash, ENUM))
+            })
+        })      
+    },
+	getMap: function(lock, cb){
+		client.query(MAP_GET, [lock.id], (err, rows)=>{
+			if (err) return cb(err)
+			cb(null, client.mapDecode(rows, lock, hash, ENUM))
+		})
+	},
+	set: function(lock,by,cb){
+        client.query(SET, [client.encode(lock,by,hash,INDEX,ENUM)], (err, result)=>{
+            if (err) return cb(err)
+            lock.id=result.insertId
+			client.query(MAP_SET, [client.mapEncode(lock, by, hash, INDEX, ENUM)], (err,result)=>{
+                if (err) return cb(err)
+                return cb(null, lock)
+            })
+        })
+	},
+	findByName: function(userId,name,cb){
+		client.query(FIND_BY_NAME,[userId,name],cb)
+	}
 }

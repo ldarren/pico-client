@@ -11,7 +11,8 @@ return {
 		modalResult:function(from,sender,form){
 			this.deps.locks.create(null,{
 				data:{
-					$case:form
+					name:form.name,
+					$addr:{street:form.street,city:form.city}
 				},
 				wait:true,
 				success:function(){

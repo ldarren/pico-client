@@ -83,6 +83,7 @@ return{
             }
         },
         signout: function(from, sender){
+			if (!this.me) return
             this.stopListening()
 			var userId=this.me.id
 
@@ -96,6 +97,7 @@ return{
             this.me= null
         },
         refreshCache: function(from, sender){
+			if (!this.me) return
             var userId = this.me.id
 
             for(var i=0,models=this.deps.models,keys=Object.keys(models),k; k=keys[i]; i++){

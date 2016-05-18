@@ -7,6 +7,9 @@ module.exports= {
     setup: function(context, next){
         next()
     },
+	verify:function(input,output,next){
+		next()
+	},
 	add:function(input,output,next){
 		this.log('add',input)
 		sqlUser.setList(input.id,'$case',[input['$case']],input.id,(err,result)=>{
@@ -35,7 +38,7 @@ module.exports= {
         next()
 	},
     poll:function(input,next){
-        this.setOutput('hello SSE')
+        this.setOutput('sse case')
         next()
     }
 }

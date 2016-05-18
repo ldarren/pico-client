@@ -48,9 +48,8 @@ REF1_UNSETS=            'UPDATE `userRef1` SET `s`=0, `uby`=? WHERE `userId`=? A
 REF1_UNSETSS=           'UPDATE `userRef1` SET `s`=0, `uby`=? WHERE `userId` IN (?);',
 REF1_UNSET_BY_REF1 =    'UPDATE `userRef1` SET `s`=0, `uby`=? WHERE `ref1Id` IN (?);',
 
-ERR_INVALID_INPUT = 'INVALID INPUT'
+ERR_INVALID_INPUT = 'INVALID INPUT',
 
-var
 picoObj=require('pico/obj'),
 hash=require('sql/hash'),
 client
@@ -82,11 +81,11 @@ module.exports= {
 			})
         })
     },
-    set: (user, cb)=>{
-        client.query(SET, [client.encode(user,user.cby,hash,INDEX,ENUM)], (err, result)=>{
+    set: (user, by, cb)=>{
+        client.query(SET, [client.encode(user,by,hash,INDEX,ENUM)], (err, result)=>{
             if (err) return cb(err)
             user.id=result.insertId
-			client.query(MAP_SET, [client.mapEncode(user, hash, INDEX, ENUM)], (err,result)=>{
+			client.query(MAP_SET, [client.mapEncode(user, by, hash, INDEX, ENUM)], (err,result)=>{
                 if (err) return cb(err)
                 return cb(null, user)
             })
@@ -117,8 +116,8 @@ module.exports= {
 			cb(null, client.mapDecode(rows, {}, hash, ENUM))
 		})
     },
-	setMap: (user,cb)=>{
-		client.query(MAP_SET, [client.mapEncode(user, hash, INDEX, ENUM)], cb)
+	setMap: (user,by,cb)=>{
+		client.query(MAP_SET, [client.mapEncode(user, by, hash, INDEX, ENUM)], cb)
 	},
 	getListByKey: (userId,key,cb)=>{
 		if (!userId) return cb(ERR_INVALID_INPUT)

@@ -29,7 +29,9 @@ return {
 				this.signals.formCollect(function(err,form){
 					if(err) return console.error(err)
 					self.signals.modalResult(form).send(self.sender)
+					self.signals.hide().send(self.host)
 				}).send(this.form)
+				break
 			case 'ko':
 				this.signals.hide().send(this.host)
 				break	
