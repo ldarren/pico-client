@@ -13,18 +13,18 @@
             "read": "lead/user/read"
         }],
 		["requests","models",{
-			"create":"lead/case/add",
-			"read":"lead/case/read",
-			"update":"lead/case/update",
-			"delete":"lead/case/remove",
-			"list":"lead/case/list"
+			"create":"lead/request/add",
+			"read":"lead/request/read",
+			"update":"lead/request/update",
+			"delete":"lead/request/remove",
+			"list":"lead/request/list"
 		}],
-		["locks","models",{
-			"create":"lead/lock/add",
-			"read":"lead/lock/read",
-			"update":"lead/lock/update",
-			"delete":"lead/lock/remove",
-			"list":"lead/lock/list"
+		["lockers","models",{
+			"create":"lead/locker/add",
+			"read":"lead/locker/read",
+			"update":"lead/locker/update",
+			"delete":"lead/locker/remove",
+			"list":"lead/locker/list"
 		}],
         ["pane","view",[
             ["paneId","int",0],
@@ -84,15 +84,15 @@
             ["options","map",{"className":"fulpage active"}],
             ["owner","ref","owner"],
 			["requests","ref","requests"],
-			["locks","ref","locks"],
+			["lockers","ref","lockers"],
 			["HomeCtrl","ctrl",[
 				["requests","ref","requests"],
-				["locks","ref","locks"],
+				["lockers","ref","lockers"],
 				["addRequest","list",[
 					{"type":"date","name":"date","label":"Date","required":1},
 					{"type":"time","name":"time","label":"Time","required":1},
 					{"type":"text","name":"note","label":"Comment"},
-					{"type":"select","name":"lock","label":"Locker","holder":"Select a locker","options":[]}
+					{"type":"select","name":"lockerId","label":"Locker","holder":"Select a locker","options":[]}
 				]
 			]]],
             ["header/Base","view",[
@@ -118,7 +118,7 @@
 				["list","list",[
 					{"className":"home selected","icon":"home","url":""},
 					{"className":"history","icon":"history","url":"history"},
-					{"className":"lock","icon":"pass","url":"lock"},
+					{"className":"locker","icon":"pass","url":"locker"},
 					{"className":"profile","icon":"name","url":"profile"}
 				]]
             ]]
@@ -152,18 +152,18 @@
 				["list","list",[
 					{"className":"home","icon":"home","url":"home"},
 					{"className":"history selected","icon":"history","url":""},
-					{"className":"lock","icon":"pass","url":"lock"},
+					{"className":"locker","icon":"pass","url":"locker"},
 					{"className":"profile","icon":"name","url":"profile"}
 				]]
             ]]
 		],
-        "lock":[
+        "locker":[
             ["options","map",{"className":"fulpage active"}],
             ["owner","ref","owner"],
-			["locks","ref","locks"],
-			["LockCtrl","ctrl",[
-				["locks","ref","locks"],
-				["addLock","list",[
+			["lockers","ref","lockers"],
+			["LockerCtrl","ctrl",[
+				["lockers","ref","lockers"],
+				["addLocker","list",[
 					{"type":"text","name":"name","label":"Name","holder":"Joe's Locker","required":1},
 					{"type":"text","name":"device","label":"Device Id","value":"AF131569","required":1},
 					{"type":"text","name":"street","label":"Street","required":1},
@@ -177,17 +177,17 @@
                 ["btnRight","map",{"icon":"icon_search"}]
             ]],
             ["Scrollable","view",[
-				["list","ref","locks"],
+				["list","ref","lockers"],
 				["cell","view",[
-					["tpl","file","CardLock.asp"]
-				],"CardLock"]
+					["tpl","file","CardLocker.asp"]
+				],"CardLocker"]
             ]],
             ["Menu","view",[
                 ["tpl","file","Menu.asp"],
 				["list","list",[
 					{"className":"home","icon":"home","url":"home"},
 					{"className":"history","icon":"history","url":""},
-					{"className":"lock selected","icon":"pass","url":"lock"},
+					{"className":"locker selected","icon":"pass","url":"locker"},
 					{"className":"profile","icon":"name","url":"profile"}
 				]]
             ]]
@@ -222,14 +222,14 @@
 				["list","list",[
 					{"className":"home","icon":"home","url":"home"},
 					{"className":"history","icon":"history","url":"history"},
-					{"className":"lock","icon":"pass","url":"lock"},
+					{"className":"locker","icon":"pass","url":"locker"},
 					{"className":"profile selected","icon":"name","url":""}
 				]]
             ]]
         ]
     },{
         "history":["history"],
-        "lock":["lock"],
+        "locker":["locker"],
         "profile":["profile"],
         "*action":["home"]
     }

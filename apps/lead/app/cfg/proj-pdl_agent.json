@@ -208,7 +208,7 @@
             ["tplSignin","file","FormSignin.asp"],
             ["tplSignup","file","FormSignup.asp"]
         ]],
-		["Lock","ctrl",[
+		["Locker","ctrl",[
 			["ble","ctrl",[
 			],"common/native/ble"]
 		]],

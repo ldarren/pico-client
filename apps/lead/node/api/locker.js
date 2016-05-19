@@ -57,7 +57,7 @@ this.log('add lock',input)
 			if (err) return next(this.error(500))
 			if (!map || !map.passcode || !map.salt) return next(this.error(400))
 
-			var key=Floor(Random()*0xffffffff),
+			var key=Floor(Random()*0xffffffff)
 			
 			output.hash=map.passcode^key
 			output.key=key+map.salt

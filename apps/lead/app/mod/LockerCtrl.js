@@ -1,15 +1,15 @@
 return {
 	signals:['modalShow'],
 	deps:{
-		locks:'models',
-		addLock:'list'
+		lockers:'models',
+		addLocker:'list'
 	},
 	slots:{
 		headerButtonClicked:function(from,sender,hash){
-			this.signals.modalShow('Add Lock',this.deps.addLock).send(this.host)
+			this.signals.modalShow('Add Locker',this.deps.addLocker).send(this.host)
 		},
 		modalResult:function(from,sender,form){
-			this.deps.locks.create(null,{
+			this.deps.lockers.create(null,{
 				data:{
 					name:form.name,
 					$addr:{street:form.street,city:form.city}

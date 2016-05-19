@@ -2,7 +2,7 @@ return {
 	signals:['modalShow'],
 	deps:{
 		requests:'models',
-		locks:'models',
+		lockers:'models',
 		addRequest:'list'
 	},
 	create:function(deps){
@@ -10,7 +10,7 @@ return {
 			if ('select'===f.type){
 				o=f.options
 				o.length=0
-				for(var j=0,ls=deps.locks,l;l=ls.at(j); j++){
+				for(var j=0,ls=deps.lockers,l;l=ls.at(j); j++){
 					o.push([l.id,l.get('name')])
 				}
 				break

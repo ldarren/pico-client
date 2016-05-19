@@ -3,8 +3,8 @@
         "util":"api/util",
         "user":"api/user",
         "room":"api/room",
-        "case":"api/case",
-        "lock":"api/lock",
+        "request":"api/request",
+        "locker":"api/locker",
         "web":["context","webServer"]
     },
     "routes":{
@@ -33,7 +33,7 @@
         "/lead/stream":[
             ["user","verify","input","user"],
             ["user","poll","input"],
-            ["case","poll","input"],
+            ["request","poll","input"],
             ["room","add","res","user"],
             ["web","SSEStart","req","res"],
             ["room","stream",["poll"],"user"]
@@ -67,70 +67,70 @@
             ["user","update","input"],
             [0]
         ],
-        "lead/case/add": [
+        "lead/request/add": [
             ["user","verify","input","user"],
-            ["case","add","input","case"],
-            ["case","readById","case","output"],
+            ["request","add","input","request"],
+            ["request","readById","request","output"],
             ["user","affected","input","output"],
             ["room","publish",["lead/broadcast"],"output"],
             [0]
         ],
-        "lead/case/read": [
+        "lead/request/read": [
             ["user","verify","input","user"],
-            ["case","read","input"],
+            ["request","read","input"],
             [0]
         ],
-        "lead/case/update": [
+        "lead/request/update": [
             ["user","verify","input","user"],
-            ["case","update","input"],
+            ["request","update","input"],
             [0]
         ],
-        "lead/case/remove": [
+        "lead/request/remove": [
             ["user","verify","input","user"],
-            ["case","remove","input"],
+            ["request","remove","input"],
             [0]
         ],
-        "lead/case/list": [
+        "lead/request/list": [
             ["user","verify","input","user"],
-            ["case","list","input"],
+            ["request","list","input"],
             [0]
         ],
-        "lead/case/unlock": [
+        "lead/request/unlock": [
             ["user","verify","input","user"],
-            ["case","verify","input","lock"],
-            ["lock","unlock","input","output"],
+            ["request","verify","input","locker"],
+            ["locker","unlock","locker","output"],
             [0]
         ],
-        "lead/lock/add": [
+        "lead/locker/add": [
             ["user","verify","input","user"],
-            ["lock","add","input","lock"],
-            ["lock","readById","lock","output"],
+            ["locker","add","input","locker"],
+            ["locker","readById","locker","output"],
             [0]
         ],
-        "lead/lock/read": [
+        "lead/locker/read": [
             ["user","verify","input","user"],
-            ["lock","read","input"],
+            ["locker","read","input"],
             [0]
         ],
-        "lead/lock/update": [
+        "lead/locker/update": [
             ["user","verify","input","user"],
-            ["lock","update","input"],
+            ["locker","update","input"],
             [0]
         ],
-        "lead/lock/remove": [
+        "lead/locker/remove": [
             ["user","verify","input","user"],
-            ["lock","remove","input"],
+            ["locker","remove","input"],
             [0]
         ],
-        "lead/lock/list": [
+        "lead/locker/list": [
             ["user","verify","input","user"],
-            ["lock","list","input"],
+            ["locker","list","input"],
             [0]
         ],
-        "lead/lock/unlock": [
+        "lead/locker/unlock": [
             ["user","verify","input","user"],
-            ["lock","verify","input","lock"],
-            ["lock","unlock","input","output"],
+            ["locker","verify","input","locker"],
+            ["locker","unlock","locker","output"],
             [0]
         ]
     }
