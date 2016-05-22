@@ -1,11 +1,11 @@
 var
-LOCKID='AF131569',
+COLORS=['purple','green','orange','red'],
+COLOR_HEX=['#BA68C8','#52A43A','#F7AA17','#EF5350'],
 specMgr=require('js/specMgr'),
 picoTime=require('pico/time')
 
 return{
 	tagName:'li',
-	className:'card simple',
 	signals:['scrollTo','scan','unlock'],
 	deps:{
 		data:'map',
@@ -14,16 +14,17 @@ return{
 	create: function(deps){
 		var
 		self=this,
+		el=this.el,
 		data=deps.data,
-		dt=new Date(data.datetime),
+		dt=new Date(data.uat),
 		t=dt.toLocaleTimeString()
 
-		t=t.substring(0, t.indexOf('M')+1)
+		t=t.substring(0, t.indexOf('M')+1)//remove time zone
 
-		this.el.classList.add('theme-'+data.themeColor)
-		this.el.dataset.color=data.themeColorHex
+		el.classList.add('theme-'+COLORS[data.s])
+		el.dataset.color=COLOR_HEX[data.s]
 
-		this.el.innerHTML = deps.tpl({
+		el.innerHTML = deps.tpl({
 			card:data,
 			delivDateNoun:picoTime.day(dt),
 			delivTime:t})
@@ -56,17 +57,19 @@ return{
 	},
 	events:{
 		'click button':function(e){
-			var span=this.el.querySelector('span')
-			switch(span.textContent){
+			var lock=this.deps.data
+			if (!lock || !lock.$detail || !lock.$detail.deviceId) return __.dialogs.alert('Missing device id',lock.name)
+			var btn=e.srcElement
+			switch(btn.textContent){
 			case 'Scan':
-				this.signals.scan(LOCKID).send(this.host)
-				span.textContent='Scanning...'
-				span.setAttribute('disabled',1)
+				this.signals.scan(lock.$detail.deviceId).send(this.host)
+				btn.textContent='Scanning...'
+				btn.setAttribute('disabled',1)
 				break
 			case 'Open':
-				this.signals.unlock(LOCKID).send(this.host)
-				span.textContent='Openning...'
-				span.setAttribute('disabled',1)
+				this.signals.unlock(lock.$detail.deviceId,lock.id).send(this.host)
+				btn.textContent='Openning...'
+				btn.setAttribute('disabled',1)
 				break
 			}
 		}

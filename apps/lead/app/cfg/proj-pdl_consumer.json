@@ -48,7 +48,7 @@
                 "users":{"json":"address"},
                 "domain":{"post":"post"}
             }],
-            ["pull","stream",{
+            ["push","stream",{
                 "events":[]
             }]
         ],["common/auth/DataStream","DataStreamMixin"]],
@@ -69,6 +69,12 @@
 				["tpl","file","Form.asp"]
 			]]
         ]],
+        ["Locker","ctrl",[
+			["Lock","models",{
+				"create":"lead/locker/unlock"
+			}],
+			["ble","ctrl",[],"common/native/ble"]
+		]],
         ["common/auth/Session","ctrl",[
             ["owner","ref","owner"],
             ["users","ref","users"]
@@ -91,7 +97,7 @@
 				["addRequest","list",[
 					{"type":"date","name":"date","label":"Date","required":1},
 					{"type":"time","name":"time","label":"Time","required":1},
-					{"type":"text","name":"note","label":"Comment"},
+					{"type":"text","name":"note","label":"Note"},
 					{"type":"select","name":"lockerId","label":"Locker","holder":"Select a locker","options":[]}
 				]
 			]]],
@@ -109,9 +115,10 @@
 			]],
             ["Scrollable","view",[
 				["list","ref","requests"],
-				["cell","view",[
+				["Cell","view",[
+					["options","map",{"className":"cardRequest"}],
 					["tpl","file","CardRequest.asp"]
-				],"CardRequest"]
+				],"Card"]
             ]],
             ["Menu","view",[
                 ["tpl","file","Menu.asp"],
@@ -141,11 +148,12 @@
 			["DateDial","view",[
                 ["html","file","DateDial.html"]
 			]],
-            ["Scrollable","view",[
+            [["Scrollable","HistoryScrollableMixin"],"view",[
 				["list","ref","requests"],
-				["cell","view",[
+				["Cell","view",[
+					["options","map",{"className":"cardRequest"}],
 					["tpl","file","CardRequest.asp"]
-				],"CardRequest"]
+				],"Card"]
             ]],
             ["Menu","view",[
                 ["tpl","file","Menu.asp"],
@@ -165,7 +173,7 @@
 				["lockers","ref","lockers"],
 				["addLocker","list",[
 					{"type":"text","name":"name","label":"Name","holder":"Joe's Locker","required":1},
-					{"type":"text","name":"device","label":"Device Id","value":"AF131569","required":1},
+					{"type":"text","name":"deviceId","label":"Device Id","value":"AF131569","required":1},
 					{"type":"text","name":"street","label":"Street","required":1},
 					{"type":"text","name":"city","label":"City","required":1}
 				]]
@@ -178,9 +186,10 @@
             ]],
             ["Scrollable","view",[
 				["list","ref","lockers"],
-				["cell","view",[
+				["Cell","view",[
+					["options","map",{"className":"cardRequest"}],
 					["tpl","file","CardLocker.asp"]
-				],"CardLocker"]
+				],"Card"]
             ]],
             ["Menu","view",[
                 ["tpl","file","Menu.asp"],

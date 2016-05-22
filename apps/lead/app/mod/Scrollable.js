@@ -23,7 +23,8 @@ removeExisting=function(arr){
 	return (arr[0]===this) ? false : true
 },
 addRow=function(model){
-	this.spawn(this.deps.cell, null, [['data','map',model.attributes]])
+	var a=model.attributes
+	if (this.filter(a)) this.spawn(this.deps.Cell, null, [['data','map',a]])
 },
 updateRow=function(model){
 }
@@ -41,10 +42,10 @@ this.update=function(){
 return{
 	className:'scrollable',
 	deps:{
-		html:['file','<div><ul></ul></div>'],
+		html:['file','<div><ul><li class=empty-message>There are no items at this time.</li></ul></div>'],
 		containerSelector:['text','div'],
 		list:'models',
-		cell:'view'
+		Cell:'view'
 	},
 	create: function(deps){
 		this.el.innerHTML=deps.html
@@ -72,5 +73,8 @@ return{
 		}
 	},
 	events:{
+	},
+	filter:function(model){
+		return true
 	}
 }

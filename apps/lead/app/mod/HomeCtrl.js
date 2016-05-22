@@ -1,3 +1,4 @@
+var Router=require('js/Router')
 return {
 	signals:['modalShow'],
 	deps:{
@@ -19,12 +20,22 @@ return {
 	},
 	slots:{
 		headerButtonClicked:function(from,sender,hash){
+			if (!this.deps.lockers.length) 
+				return __.dialogs.alert(
+					'You need a locker to add request',
+					'No locker found',
+					'Add locker',
+					function(){ 
+						Router.go('locker')
+					}
+			)
 			this.signals.modalShow('Add Request',this.deps.addRequest).send(this.host)
 		},
 		modalResult:function(from,sender,form){
 			this.deps.requests.create(null,{
 				data:{
-					$case:form
+					$detail:form,
+					lockerId:form.lockerId
 				},
 				wait:true,
 				success:function(){

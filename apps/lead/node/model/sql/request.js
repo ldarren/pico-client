@@ -3,12 +3,12 @@ INDEX=                  ['userId'],
 PRIVATE=                [],
 ENUM=                   [],
 
-GET =                   'SELECT * FROM `case` WHERE `id`=? AND `s`=1;',
-SET =                   'INSERT INTO `case` (`userId`, `name`, `cby`) VALUES (?);',
-FIND_BY_NAME =          'SELECT * FROM `case` WHERE `userId`=? AND `name`=? AND `s`=1;',
+GET =                   'SELECT * FROM `request` WHERE `id`=? AND `s`=1;',
+SET =                   'INSERT INTO `request` (`userId`, `cby`) VALUES (?);',
+FIND_BY_USERID=         'SELECT * FROM `request` WHERE `userId`=? AND `s`=1;',
 
-MAP_GET =               'SELECT `caseId`, `k`, `v1`, `v2` FROM caseMap WHERE `caseId`=?;',
-MAP_SET =               'INSERT INTO caseMap (`caseId`, `k`, `v1`, `v2`, `cby`) VALUES ? ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
+MAP_GET =               'SELECT `requestId`, `k`, `v1`, `v2` FROM requestMap WHERE `requestId`=?;',
+MAP_SET =               'INSERT INTO requestMap (`requestId`, `k`, `v1`, `v2`, `cby`) VALUES ? ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
 
 ERR_INVALID_INPUT = 'INVALID INPUT',
 
@@ -25,34 +25,33 @@ module.exports= {
         for(var i=0,k; k=PRIVATE[i]; i++) delete model[k];
         return model
     },
-    get: function(lock, cb){
-        if (!lock || !lock.id) return cb(ERR_INVALID_INPUT)
-        client.query(GET,[lock.id],(err,rows)=>{
+    get: function(request, cb){
+        if (!request || !request.id) return cb(ERR_INVALID_INPUT)
+        client.query(GET,[request.id],(err,rows)=>{
             if (err) return cb(err)
-            Object.assign(lock,client.decode(rows[0],hash,ENUM))
-            client.query(MAP_GET, [lock.id], (err, rows)=>{
-                if (err) return cb(err)
-                cb(null, client.mapDecode(rows, lock, hash, ENUM))
-            })
+            Object.assign(request,client.decode(rows[0],hash,ENUM))
+			this.getMap(request,cb)
         })      
     },
-	getMap: function(lock, cb){
-		client.query(MAP_GET, [lock.id], (err, rows)=>{
+	getMap: function(request, cb){
+		client.query(MAP_GET, [request.id], (err, rows)=>{
 			if (err) return cb(err)
-			cb(null, client.mapDecode(rows, lock, hash, ENUM))
+			cb(null, client.mapDecode(rows, request, hash, ENUM))
 		})
 	},
-	set: function(lock,by,cb){
-        client.query(SET, [client.encode(lock,by,hash,INDEX,ENUM)], (err, result)=>{
+	set: function(request,by,cb){
+        client.query(SET, [client.encode(request,by,hash,INDEX,ENUM)], (err, result)=>{
             if (err) return cb(err)
-            lock.id=result.insertId
-			client.query(MAP_SET, [client.mapEncode(lock, by, hash, INDEX, ENUM)], (err,result)=>{
-                if (err) return cb(err)
-                return cb(null, lock)
+            request.id=result.insertId
+			this.setMap(request,by,(err)=>{
+                cb(err, request)
             })
         })
 	},
-	findByName: function(userId,name,cb){
-		client.query(FIND_BY_NAME,[userId,name],cb)
+	setMap:function(request,by,cb){
+		client.query(MAP_SET, [client.mapEncode(request, by, hash, INDEX, ENUM)], cb)
+	},
+	findByUserId: function(userId,cb){
+		client.query(FIND_BY_USERID,[userId],cb)
 	}
 }

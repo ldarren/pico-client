@@ -17,3 +17,12 @@
 	flex-direction:column;
 	width:100%;
 }
+.scrollable li.empty-message {
+	display: none;
+}
+.scrollable li.empty-message:last-child {
+	display: block;
+	margin: 1rem;
+	text-align: center;
+	font-size: 1.5rem;
+}

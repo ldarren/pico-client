@@ -199,7 +199,7 @@
                 "users":{"json":"address"},
                 "domain":{"post":"post"}
             }],
-            ["pull","stream",{
+            ["push","stream",{
                 "events":[]
             }]
         ],["common/auth/DataStream","DataStreamMixin"]],
@@ -241,7 +241,8 @@
             ["Scrollable","view",[
 				["html","file","DeliveryList.html"],
 				["list","ref","requests"],
-                ["cell","view",[
+                ["Cell","view",[
+					["options","map",{"className":"card simple"}],
 					["tpl","file","CardSimple.asp"]
 				],"Card"]
             ]],
@@ -273,9 +274,10 @@
 			]],
             ["Scrollable","view",[
 				["list","ref","requests"],
-				["cell","view",[
+				["Cell","view",[
+					["options","map",{"className":"cardRequest"}],
 					["tpl","file","CardSimple.asp"]
-				],"CardRequest"]
+				],"Card"]
             ]],
             ["Menu","view",[
                 ["tpl","file","Menu.asp"],

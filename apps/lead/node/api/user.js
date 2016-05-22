@@ -18,7 +18,7 @@ this.log('signin',input)
             if (!briefs || !briefs.length) return next(this.error(401))
             var b=briefs[0]
 
-            sqlUser.getMap(b.id, (err, map)=>{
+            sqlUser.getMap(b, (err, map)=>{
                 if (err) return next(this.error(500))
                 if (!map || input.pwd !== map.pwd) return next(this.error(401))
 

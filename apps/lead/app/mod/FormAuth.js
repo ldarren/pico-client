@@ -44,7 +44,7 @@ login=function(){
                 un: fe.username.value.trim(),
                 pwd: picoStr.hash(pass),
                 name:fe.name.value,
-				$profile:{img:Ceil(10*Random())}
+				$detail:{img:Ceil(10*Random())}
             },
             wait: true,
             error: function(e){

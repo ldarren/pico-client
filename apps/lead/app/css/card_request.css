@@ -21,3 +21,16 @@
 .cardRequest .info *{
 	display:block;
 }
+.cardRequest button{
+  position: relative;
+  width: 100%;
+  height: 40px;
+  background-color: #FFBD18;
+  text-transform: uppercase;
+  font-size: 18px;
+  color: #3F2F1F;
+  border-radius: 8px;
+  cursor: pointer;
+  letter-spacing: 0;
+  transition: letter-spacing 0.3s;
+}

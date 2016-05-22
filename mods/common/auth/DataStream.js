@@ -36,7 +36,7 @@ addRemove = function(coll, list){
 },
 writeData = function(model){ this.writeColl(model.collection.name, this.me.id) },
 reconn=function(){
-    this.connect(this.deps.pull, this.me.attributes, this.seen)
+    this.connect(this.deps.push, this.me.attributes, this.seen)
 },
 sortDesc = function(m1, m2){
     var s1 = m1.get('updatedAt'), s2 = m2.get('updatedAt')
@@ -52,27 +52,27 @@ return{
     deps:{
         models:'refs',
         demux:'map',
-        pull:'stream'
+        push:'stream'
     },
     create: function(deps){
         for(var i=0,models=deps.models,keys=Object.keys(models),k; k=keys[i]; i++){
             models[k].comparator=sortDesc
         }
-		this.listenTo(deps.pull, 'closed', reconn)
+		this.listenTo(deps.push, 'closed', reconn)
     },
 
     slots:{
         signin: function(from, sender, model){
             if(this.me)this.slots.signout.call(this, from, sender)
             var
-            pull=this.deps.pull,
+            push=this.deps.push,
 			userId = model.id
 
             this.me=model 
             this.readSeen(userId)
 
-            this.listenTo(pull, 'message', poll)
-            this.connect(pull, model.attributes, this.seen)
+            this.listenTo(push, 'message', poll)
+            this.connect(push, model.attributes, this.seen)
 
             for(var i=0,models=this.deps.models,keys=Object.keys(models),k,d; k=keys[i]; i++){
                 this.readColl(k, userId)
@@ -84,14 +84,14 @@ return{
         },
         signout: function(from, sender){
 			if (!this.me) return
+			this.deps.push.close()
             this.stopListening()
 			var userId=this.me.id
 
             for(var i=0,models=this.deps.models,keys=Object.keys(models),k; k=keys[i]; i++){
-				if ('owner'===k)continue
-				this.writeColl(k, userId)
                 models[k].reset()
             }
+			storage.clear()
 
             this.seen = 0
             this.me= null
@@ -112,7 +112,7 @@ return{
 			reconn.call(this)
 		},
 		offline: function(){
-			this.deps.pull.close()
+			this.deps.push.close()
 		}
     },
 

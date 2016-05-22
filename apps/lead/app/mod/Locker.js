@@ -4,26 +4,17 @@ scratch1=  'A495FF21-C5B1-4B44-B512-1370F02D74DE',
 scratch2=  'A495FF22-C5B1-4B44-B512-1370F02D74DE',
 scratch3=  'A495FF23-C5B1-4B44-B512-1370F02D74DE',
 scratch4=  'A495FF24-C5B1-4B44-B512-1370F02D74DE',
-scratch5=  'A495FF25-C5B1-4B44-B512-1370F02D74DE',
-passcode=65535,
-salt=456,
-credential=function(){
-	var
-	key=Math.floor(Math.random()*0xffffffff),
-	hash=passcode^key
-
-	key+=salt
-	return [hash, key]
-}
+scratch5=  'A495FF25-C5B1-4B44-B512-1370F02D74DE'
 
 return{
 	signals:['lockStatus','ble_startScan','ble_connect','ble_write','ble_startNotification','ble_stopNotification'],
 	deps:{
+		lock:'models',
 		ble:'ctrl'
 	},
 	create: function(deps){
 		this.senders={}
-		this.locks={}
+		this.lockers={}
 		this.names={}
 		this.ble= this.spawn(deps.ble)
 	},
@@ -33,13 +24,13 @@ return{
 			var
 			name=peripheral.name,
 			senders=this.senders,
-			locks=this.locks,
+			lockers=this.lockers,
 			names=this.names,
 			keys=Object.keys(this.senders)
 
 			for(var i=0,l; l=keys[i]; i++){
 				if (name===l){
-					locks[name]=peripheral
+					lockers[name]=peripheral
 					names[peripheral.id]=name
 					this.signals.lockStatus(name,'found').send(senders[l])
 					this.signals.ble_connect(peripheral.id).send(sender)
@@ -78,19 +69,29 @@ return{
 			this.senders[name]=sender
 			this.signals.ble_startScan([],30).send(this.ble)
 		},
-		unlock:function(from,sender,name){
+		unlock:function(from,sender,name,lockerId){
+			var p=this.lockers[name]
+
+			if (!p) return console.error('Locker unlock without lock')
+
 			var
 			self=this,
-			p=this.locks[name]
-			if (!p) return
-			var cred=new Uint32Array(credential())
-			this.signals.ble_startNotification(p.id, scratchSrv, scratch3).send(this.ble)
-			this.signals.ble_write(p.id, scratchSrv, scratch1, cred.buffer.slice(0, 4), function(){
-				console.log(arguments)
-				self.signals.ble_write(p.id, scratchSrv, scratch2, cred.buffer.slice(4, 8), function(){
-					console.log(arguments)
-				}).send(self.ble)
-			}).send(this.ble)
+			lock=this.deps.lock
+
+			lock.reset()
+			lock.create(null,{
+				data:{lockerId:lockerId},
+				success:function(model,raw){
+					var cred=new Uint32Array(raw.cred)
+					self.signals.ble_startNotification(p.id, scratchSrv, scratch3).send(self.ble)
+					self.signals.ble_write(p.id, scratchSrv, scratch1, cred.buffer.slice(0, 4), function(){
+						console.log(arguments)
+						self.signals.ble_write(p.id, scratchSrv, scratch2, cred.buffer.slice(4, 8), function(){
+							console.log(arguments)
+						}).send(self.ble)
+					}).send(self.ble)
+				}
+			})
 		}
 	}
 }

@@ -55,85 +55,81 @@ hash=require('sql/hash'),
 client
 
 module.exports= {
-    setup: (context, cb)=>{
+    setup: function(context, cb){
         client=context.mainDB
         cb()
     },
-    clean:(model)=>{
+    clean:function(model){
         for(var i=0,k; k=PRIVATE[i]; i++) delete model[k];
         return model
     },
-    cleanForSelf:(model)=>{
+    cleanForSelf:function(model){
         for(var i=0,k; k=PRIVATE_SELF[i]; i++) delete model[k];
         return model
     },
-    verify: (user)=>{
+    verify: function(user){
         return hash.verify(Object.keys(user), INDEX)
     },
-    get: (user, cb)=>{
+    get: function(user, cb){
 		if (!user || !user.id) return cb(ERR_INVALID_INPUT)
         client.query(GET,[user.id],(err,users)=>{
             if (err) return cb(err)
 			Object.assign(user,client.decode(users[0],hash,ENUM))
-			client.query(MAP_GET, [user.id], (err, rows)=>{
-				if (err) return cb(err)
-				cb(null, client.mapDecode(rows, user, hash, ENUM))
-			})
+			this.getMap(user,cb)
         })
     },
-    set: (user, by, cb)=>{
+    set: function(user, by, cb){
         client.query(SET, [client.encode(user,by,hash,INDEX,ENUM)], (err, result)=>{
             if (err) return cb(err)
             user.id=result.insertId
-			client.query(MAP_SET, [client.mapEncode(user, by, hash, INDEX, ENUM)], (err,result)=>{
-                if (err) return cb(err)
-                return cb(null, user)
+			this.setMap(user,by,(err)=>{
+                cb(err, user)
             })
         })
     },
-    findByUn: (un, cb)=>{
+    findByUn: function(un, cb){
         client.query(FIND_BY_UN, [un], (err,rows)=>{
             if (err) return cb(err)
 			cb(null,client.decodes(rows,hash,ENUM))
 		})
     },
-    findBySess: (sess, cb)=>{
+    findBySess: function(sess, cb){
         client.query(FIND_BY_SESS, [sess], (err,rows)=>{
             if (err) return cb(err)
 			cb(null,client.decodes(rows,hash,ENUM))
 		})
     },
-    findByRole: (role, cb)=>{
+    findByRole: function(role, cb){
         client.query(FIND_BY_ROLE, [role], (err,rows)=>{
             if (err) return cb(err)
 			cb(null,client.decodes(rows,hash,ENUM))
 		})
     },
-    getMap: (userId, cb)=>{
-		if (!userId) return cb(ERR_INVALID_INPUT)
-		client.query(MAP_GET, [userId], (err, rows)=>{
+    getMap: function(user, cb){
+		if (!user.id) return cb(ERR_INVALID_INPUT)
+		client.query(MAP_GET, [user.id], (err, rows)=>{
 			if (err) return cb(err)
-			cb(null, client.mapDecode(rows, {}, hash, ENUM))
+			cb(null, client.mapDecode(rows, user, hash, ENUM))
 		})
     },
-	setMap: (user,by,cb)=>{
+	setMap: function(user,by,cb){
 		client.query(MAP_SET, [client.mapEncode(user, by, hash, INDEX, ENUM)], cb)
 	},
-	getListByKey: (userId,key,cb)=>{
+	getListByKey: function(userId,key,cb){
 		if (!userId) return cb(ERR_INVALID_INPUT)
 		client.query(LIST_GET, [userId,hash.key(key)], (err, rows)=>{
 			if (err) return cb(err)
 			cb(null, client.listDecode(rows, key, hash, ENUM))
 		})
 	},
-	getListById: (rowId,key,cb)=>{
+	getListById: function(rowId,key,cb){
 		if (!rowId) return cb(ERR_INVALID_INPUT)
 		client.query(LIST_GET_BY_ID,[rowId], (err, rows)=>{
 			if (err) return cb(err)
 			cb(null, client.listDecode(rows, key, hash, ENUM))
 		})
 	},
-	setList: (userId,key,list,by,cb)=>{
+	setList: function(userId,key,list,by,cb){
 		client.query(LIST_SET, [client.listEncode(userId,key,list,by,hash,INDEX,ENUM)], cb)
 	}
 }

@@ -12,9 +12,11 @@ module.exports= {
 	},
 	add:function(input,output,next){
 		this.log('add',input)
-		sqlRequest.setList(input.id,'$case',[input['$case']],input.id,(err,result)=>{
+		Object.assign(output,input,{
+			userId:input.id
+		})
+		sqlRequest.set(output,input.id,(err)=>{
 			if (err) return next(this.error(500))
-			output['caseId']=result.insertId
 			next()
 		})
 	},
@@ -22,9 +24,10 @@ module.exports= {
         next()
 	},
 	readById:function(input,output,next){
-		sqlRequest.getListById(input.caseId,'$case',(err,rows)=>{
+		sqlRequest.get(input,(err,request)=>{
 			if (err) return next(this.error(500))
-			output['msg']=rows[0]
+			Object.assign(output,request)
+			this.setOutput(output,sqlRequest.clean,sqlRequest)
 			next()
 		})
 	},
