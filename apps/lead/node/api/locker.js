@@ -59,7 +59,7 @@ this.log('add lock',input)
 
 			var key=Floor(Random()*0xffffffff)
 			
-			output.cred=[map.passcode^key, key+map.salt[
+			output.cred=[map.passcode^key, key+map.salt]
 
 			this.setOutput(output, sqlLocker.clean, sqlLocker)
 			next()
