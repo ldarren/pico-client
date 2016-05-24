@@ -31,26 +31,27 @@ return{
 	},
 	slots:{
 		lockStatus:function(from, sender, id, state){
-			if (id !== LOCKID) return
-			var span=this.el.querySelector('span')
-			span.removeAttribute('disabled')
+			var lock=this.deps.data
+			if (id !== lock.$detail.deviceId) return
+			var btn=this.el.querySelector('button')
+			btn.removeAttribute('disabled')
 			switch(state){
 			case 'found':
-				span.textContent='Connecting...'
-				span.setAttribute('disabled',1)
+				btn.textContent='Connecting...'
+				btn.setAttribute('disabled',1)
 				break
 			case 'connected':
-				span.textContent='Open'
+				btn.textContent='Open'
 				break
 			case 'disconnected':
-				span.textContent='Scan'
+				btn.textContent='Scan'
 				break
 			case 'locked':
-				span.textContent='Open'
+				btn.textContent='Open'
 				break
 			case 'unlocked':
-				span.textContent='Openned'
-				span.setAttribute('disabled',1)
+				btn.textContent='Openned'
+				btn.setAttribute('disabled',1)
 				break
 			}
 		}
@@ -58,7 +59,9 @@ return{
 	events:{
 		'click button':function(e){
 			var lock=this.deps.data
+
 			if (!lock || !lock.$detail || !lock.$detail.deviceId) return __.dialogs.alert('Missing device id',lock.name)
+
 			var btn=e.srcElement
 			switch(btn.textContent){
 			case 'Scan':

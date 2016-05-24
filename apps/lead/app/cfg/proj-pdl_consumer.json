@@ -70,7 +70,7 @@
 			]]
         ]],
         ["Locker","ctrl",[
-			["Lock","models",{
+			["lock","models",{
 				"create":"lead/locker/unlock"
 			}],
 			["ble","ctrl",[],"common/native/ble"]
