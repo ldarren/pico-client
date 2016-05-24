@@ -172,7 +172,7 @@
 			["LockerCtrl","ctrl",[
 				["lockers","ref","lockers"],
 				["addLocker","list",[
-					{"type":"text","name":"name","label":"Name","holder":"Joe Locker","required":1},
+					{"type":"text","name":"name","label":"Name","holder":"Joe's Locker","required":1},
 					{"type":"text","name":"deviceId","label":"Device Id","value":"AF131569","required":1},
 					{"type":"text","name":"street","label":"Street","required":1},
 					{"type":"text","name":"city","label":"City","required":1}
