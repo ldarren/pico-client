@@ -3,6 +3,7 @@ DEPS=0,STYLE=1,SPEC=2,PAGES=3,FLYERS=4,
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
 EVT_RESIZE='frameresize',
 EVT_RESIZE_LEN=EVT_RESIZE.length,
+Floor=Math.floor,Random=Math.random,
 Router = require('js/Router'),
 Module = require('js/Module'),
 network = require('js/network'),
@@ -132,6 +133,8 @@ return Module.View.extend({
             if (!sender || -1 === this.modules.indexOf(sender)) return
 
             var c=this.layers[where]||this.layers[0]
+            // force reflow for safari bug, which not show new content
+            c.style.zIndex=(where||0)*(1000+Floor(100*Random()))
             this.show(sender, c, first)
         },
         hide: function(from, sender, where){
