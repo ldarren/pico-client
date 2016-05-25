@@ -53,13 +53,13 @@ this.log('added room member, new count',pipes.length)
         //remove(pipes.indexOf(res))
         next()
     },
-    stream: function(evt, user, next){
+    stream: function(evt, user, output, next){
         if (!user || !user.id) return next(this.error(404))
         var res=userPipeMap.get(user.id)
         if (!res || res.finished) return next() //TODO: better handling
-this.log('stream',JSON.stringify(this.getOutput()))
+this.log('stream',JSON.stringify(output))
 
-        web.SSE(res,JSON.stringify(this.getOutput()),evt)
+        web.SSE(res,JSON.stringify(output),evt)
         next()
     },
 	publish: function(evt,input,next){

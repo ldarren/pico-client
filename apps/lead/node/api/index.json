@@ -33,11 +33,12 @@
         ],
         "/lead/stream":[
             ["user","verify","input","user"],
-            ["user","poll","input"],
-            ["request","poll","input"],
+            ["user","poll","input","output"],
+            ["request","poll","input","output"],
+            ["locker","poll","input","output"],
             ["room","add","res","user"],
             ["web","SSEStart","req","res"],
-            ["room","stream",["poll"],"user"]
+            ["room","stream",["poll"],"user","output"]
         ],
 		"lead/broadcast":[
             ["room","broadcast",["poll"],"input"]

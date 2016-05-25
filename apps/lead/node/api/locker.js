@@ -1,5 +1,5 @@
 var
-Floor=Math.floor,Random=Math.random,
+Floor=Math.floor,Random=Math.random,Max=Math.max,
 sqlLocker=require('sql/locker'),
 picoObj=require('pico/obj')
 
@@ -49,12 +49,24 @@ this.log('add lock',input)
 	list:function(input,next){
         next()
 	},
-    poll:function(input,next){
-        this.setOutput('sse lock')
-        next()
+    poll:function(input,output,next){
+        sqlLocker.poll(input.id,new Date(parseInt(input.t)),(err, briefs)=>{
+            if (err) return next(this.error(500))
+            sqlLocker.map_getList(briefs, (err, lockers)=>{
+                if (err) return next(this.error(500))
+                if (lockers.length){
+                    var lastSeen=Max(...(picoObj.pluck(lockers,'uat')))
+                    output['seen']=Max(lastSeen,output['seen']||input.t) 
+                    output['lockers']=lockers
+                }else{
+                    output['seen']=input.t
+                }
+                next()
+            })
+        })
     },
 	unlock:function(lock,output,next){
-		sqlLocker.getMap(lock,(err,map)=>{
+		sqlLocker.map_get(lock,(err,map)=>{
 			if (err) return next(this.error(500))
 			if (!map || !map.passcode || !map.salt) return next(this.error(400))
 

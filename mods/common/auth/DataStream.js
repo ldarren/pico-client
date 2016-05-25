@@ -6,12 +6,12 @@ poll = function(raw){
     if (!userId) return
     writeSeen(this, userId, raw.seen)
     var models=this.deps.models
-    for(var i=0,data=raw.data,keys=Object.keys(data),k; k=keys[i]; i++){
-        addRemove(models[k],data[k])
+    for(var i=0,keys=Object.keys(raw),k; k=keys[i]; i++){
+        addRemove(models[k],raw[k])
     }
 },
 addRemove = function(coll, list){
-    if (!list || !list.length) return false
+    if (!coll || !list || !list.length) return false
     coll.add(list, merge1)
     return true
 },
@@ -29,7 +29,7 @@ sortAsc = function(m1, m2){
 },
 readSeen= function(self,userId){
     var seen=storage.getItem('seen'+userId)
-    self.seen=!seen||'undefined'===seen ?(new Date(0)).toISOString() : seen
+    self.seen=JSON.parse(seen)||0
 },
 writeSeen= function(self,userId, seen){
     storage.setItem('seen'+userId, self.seen = seen)
@@ -68,15 +68,13 @@ return{
     slots:{
         signin: function(from, sender, model){
             if(this.me)this.slots.signout.call(this, from, sender)
-            var
-            push=this.deps.push,
-			userId = model.id
+            var userId = model.id
 
             this.me=model 
             readSeen(this,userId)
 
-            this.listenTo(push, 'message', poll)
-            this.connect(push, model.attributes, this.seen)
+            this.listenTo(this.deps.push, 'poll', poll)
+            reconn.call(this)
 
             for(var i=0,models=this.deps.models,keys=Object.keys(models),k,d; k=keys[i]; i++){
                 readColl(this,k, userId)

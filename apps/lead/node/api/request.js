@@ -40,8 +40,7 @@ module.exports= {
 	list:function(input,next){
         next()
 	},
-    poll:function(input,next){
-        this.setOutput('sse case')
+    poll:function(input,output,next){
         next()
     }
 }

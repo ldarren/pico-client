@@ -94,8 +94,7 @@ this.log('join',input)
 	update:function(input,next){
 		next()
 	},
-    poll:function(input,next){
-        this.setOutput('hello SSE')
+    poll:function(input,output,next){
         next()
     },
 	affected:function(input,output,next){
