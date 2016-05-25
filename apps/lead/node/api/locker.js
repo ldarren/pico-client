@@ -55,9 +55,6 @@ this.log('add lock',input)
     },
 	unlock:function(lock,output,next){
 		sqlLocker.getMap(lock,(err,map)=>{
-console.log(1,lock)
-console.log(2,err)
-console.log(3,map)
 			if (err) return next(this.error(500))
 			if (!map || !map.passcode || !map.salt) return next(this.error(400))
 
