@@ -44,10 +44,6 @@
         ]],
         ["DataStream","ctrl", [
             ["models","refs","models"],
-            ["demux","map",{
-                "users":{"json":"address"},
-                "domain":{"post":"post"}
-            }],
             ["push","stream",{
                 "events":[]
             }]

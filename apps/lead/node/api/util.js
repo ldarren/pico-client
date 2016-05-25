@@ -10,6 +10,9 @@ return {
         default: return next(null, this.sigslot.abort())
         }       
     },
+    delay:function(period,next){
+        setTimeout(next,period)
+    },
     help:function(next){
         next(`api ${this.api} is not supported by lead yet`)
     }

@@ -12,6 +12,7 @@
             ["util","help"]
         ],
         "ERR": [
+            ["util","delay",[3000]],
             [0]
         ],
         "ERR/lead/stream": [
