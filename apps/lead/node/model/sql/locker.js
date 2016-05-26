@@ -76,7 +76,6 @@ module.exports= {
 		client.query(TOUCH, [lockerId], cb)
     },
     poll: function(userId, updatedAt, cb){
-console.log(client.format(POLL,[userId,updatedAt]))
 		client.query(POLL, [userId, updatedAt], cb)
     }
 }

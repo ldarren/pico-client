@@ -71,9 +71,10 @@
 			}],
 			["ble","ctrl",[],"common/native/ble"]
 		]],
-        ["common/auth/Session","ctrl",[
+        [["common/auth/Session","SessionMixin"],"ctrl",[
             ["owner","ref","owner"],
-            ["users","ref","users"]
+            ["users","ref","users"],
+            ["domain","ref","domain"]
         ]]
     ],{
         "":[
@@ -87,7 +88,7 @@
             ["owner","ref","owner"],
 			["requests","ref","requests"],
 			["lockers","ref","lockers"],
-			["HomeCtrl","ctrl",[
+			["ConsumerCtrl","ctrl",[
 				["requests","ref","requests"],
 				["lockers","ref","lockers"],
 				["addRequest","list",[
@@ -101,14 +102,8 @@
                 ["tpl","file","header/Base.asp"],
                 ["title","text","My Requests"],
                 ["btnLeft","map",{"icon":"icon_plus"}],
-                ["btnRight","map",{"icon":"icon_search"}],
-                ["header/Month","view",[
-					["tpl","file","header/Month.asp"]
-				]]
+                ["btnRight","map",{"icon":"icon_search"}]
             ]],
-			["DateDial","view",[
-                ["html","file","DateDial.html"]
-			]],
             ["Scrollable","view",[
 				["list","ref","requests"],
 				["Cell","view",[
@@ -120,47 +115,11 @@
                 ["tpl","file","Menu.asp"],
 				["list","list",[
 					{"className":"home selected","icon":"home","url":""},
-					{"className":"history","icon":"history","url":"history"},
 					{"className":"locker","icon":"pass","url":"locker"},
 					{"className":"profile","icon":"name","url":"profile"}
 				]]
             ]]
         ],
-        "history":[
-            ["options","map",{"className":"fulpage active"}],
-            ["owner","ref","owner"],
-			["requests","ref","requests"],
-			["HistoryCtrl","ctrl",[
-				["requests","ref","requests"]
-			]],
-            ["header/Base","view",[
-                ["tpl","file","header/Base.asp"],
-                ["title","text","Request History"],
-                ["btnRight","map",{"icon":"icon_search"}],
-                ["header/Month","view",[
-					["tpl","file","header/Month.asp"]
-				]]
-            ]],
-			["DateDial","view",[
-                ["html","file","DateDial.html"]
-			]],
-            [["Scrollable","HistoryScrollableMixin"],"view",[
-				["list","ref","requests"],
-				["Cell","view",[
-					["options","map",{"className":"cardRequest"}],
-					["tpl","file","CardRequest.asp"]
-				],"Card"]
-            ]],
-            ["Menu","view",[
-                ["tpl","file","Menu.asp"],
-				["list","list",[
-					{"className":"home","icon":"home","url":"home"},
-					{"className":"history selected","icon":"history","url":""},
-					{"className":"locker","icon":"pass","url":"locker"},
-					{"className":"profile","icon":"name","url":"profile"}
-				]]
-            ]]
-		],
         "locker":[
             ["options","map",{"className":"fulpage active"}],
             ["owner","ref","owner"],
@@ -191,7 +150,6 @@
                 ["tpl","file","Menu.asp"],
 				["list","list",[
 					{"className":"home","icon":"home","url":"home"},
-					{"className":"history","icon":"history","url":""},
 					{"className":"locker selected","icon":"pass","url":"locker"},
 					{"className":"profile","icon":"name","url":"profile"}
 				]]
@@ -226,14 +184,12 @@
                 ["tpl","file","Menu.asp"],
 				["list","list",[
 					{"className":"home","icon":"home","url":"home"},
-					{"className":"history","icon":"history","url":"history"},
 					{"className":"locker","icon":"pass","url":"locker"},
 					{"className":"profile selected","icon":"name","url":""}
 				]]
             ]]
         ]
     },{
-        "history":["history"],
         "locker":["locker"],
         "profile":["profile"],
         "*action":["home"]

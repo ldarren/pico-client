@@ -29,7 +29,8 @@ sortAsc = function(m1, m2){
 },
 readSeen= function(self,userId){
     var seen=storage.getItem('seen'+userId)
-    self.seen=JSON.parse(seen)||0
+    try{self.seen=JSON.parse(seen)||0}
+    catch(e){self.seen=0}
 },
 writeSeen= function(self,userId, seen){
     storage.setItem('seen'+userId, self.seen = seen)

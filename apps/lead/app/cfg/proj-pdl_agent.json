@@ -13,170 +13,12 @@
             "read": "lead/user/read"
         }],
 		["requests","models",{
-			"read":"lead/case/read",
-			"update":"lead/case/update"
-		},[
-			{
-				"id": "2618-3157",
-				"price": 25,
-				"requests": 5,
-				"pledge": 150,
-				"weight": 50,
-				"sender": "Norton Kang",
-				"senderImg": "dat/p1.png",
-				"themeColor": "purple",
-				"themeColorHex": "#BA68C8",
-				"bgImgUrl": "//s3-us-west-2.amazonaws.com/s.cdpn.io/142996/deliv-1.jpg",
-				"rating": 5,
-				"ratingCount": 26,
-				"fromStreet": "Jurong East St 96",
-				"fromCity": "Jurong, 65748",
-				"toStreet": "Woodland Ave 10",
-				"toCity": "Woodland, 784839",
-				"datetime":"2016/05/16 18:30:00",
-				"reqDl": "24minutes"
-			},
-			{
-				"id": "2618-3156",
-				"price": 37,
-				"requests": 7,
-				"pledge": 222,
-				"weight": 66,
-				"sender": "Darren Liew",
-				"senderImg": "dat/p2.png",
-				"themeColor": "green",
-				"themeColorHex": "#52A43A",
-				"bgImgUrl": "//s3-us-west-2.amazonaws.com/s.cdpn.io/142996/deliv-2.jpg",
-				"rating": 4,
-				"ratingCount": 21,
-				"fromStreet": "Chinese Nex",
-				"fromCity": "Seranggon, 103383",
-				"toStreet": "Woodland Ave 5",
-				"toCity": "Singapore, 374859",
-				"datetime":"2016/05/16 19:30:00",
-				"reqDl": "33minutes"
-			},
-			{
-				"id": "2618-3155",
-				"price": 12,
-				"requests": 3,
-				"pledge": 80,
-				"weight": 20,
-				"sender": "Cai Yong Lan",
-				"senderImg": "dat/p3.png",
-				"themeColor": "orange",
-				"themeColorHex": "#F7AA17",
-				"bgImgUrl": "//s3-us-west-2.amazonaws.com/s.cdpn.io/142996/deliv-3.jpg",
-				"rating": 5,
-				"ratingCount": 15,
-				"fromStreet": "10 Tampinese Central 1",
-				"fromCity": "Seranggon, 103383",
-				"toStreet": "Woodland Ave 5",
-				"toCity": "Singapore, 374859",
-				"datetime":"2016/05/16 21:22:00",
-				"reqDl": "15minutes"
-			},
-			{
-				"id": "2618-3154",
-				"price": 80,
-				"requests": 25,
-				"pledge": 550,
-				"weight": 250,
-				"sender": "Liew Fong Guang",
-				"senderImg": "dat/p4.png",
-				"themeColor": "red",
-				"themeColorHex": "#EF5350",
-				"bgImgUrl": "//s3-us-west-2.amazonaws.com/s.cdpn.io/142996/deliv-4.jpg",
-				"rating": 5,
-				"ratingCount": 66,
-				"fromStreet": "10 Tampinese Central 1",
-				"fromCity": "Seranggon, 103383",
-				"toStreet": "Woodland Ave 5",
-				"toCity": "Singapore, 374859",
-				"datetime":"2016/05/16 18:30:00",
-				"reqDl": "24minutes"
-			},
-			{
-				"id": "2618-3153",
-				"price": 49,
-				"requests": 17,
-				"pledge": 299,
-				"weight": 149,
-				"sender": "Muthu",
-				"senderImg": "dat/p9.png",
-				"themeColor": "purple",
-				"themeColorHex": "#BA68C8",
-				"bgImgUrl": "//s3-us-west-2.amazonaws.com/s.cdpn.io/142996/deliv-5.jpg",
-				"rating": 5,
-				"ratingCount": 26,
-				"fromStreet": "6 Raffles Boulevard,",
-				"fromCity": "#02-203/204, S(1734844)",
-				"toStreet": "50 #03-08, JEM",
-				"toCity": "Jurong Gateway Rd, S(17374848)",
-				"datetime":"2016/05/16 18:30:00",
-				"reqDl": "24minutes"
-			},
-			{
-				"id": "2618-3152",
-				"price": 99,
-				"requests": 33,
-				"pledge": 611,
-				"weight": 432,
-				"sender": "Alawi Saab",
-				"senderImg": "dat/p10.png",
-				"themeColor": "green",
-				"themeColorHex": "#52A43A",
-				"bgImgUrl": "//s3-us-west-2.amazonaws.com/s.cdpn.io/142996/deliv-6.jpg",
-				"rating": 2,
-				"ratingCount": 26,
-				"fromStreet": "1 Harbourfront Walk",
-				"fromCity": "#02-138/9, VivoCity, 098585",
-				"toStreet": "65 Airport Blvd",
-				"toCity": "Singapore, 819663",
-				"datetime":"2016/05/16 18:30:00",
-				"reqDl": "24minutes"
-			},
-			{
-				"id": "2618-3151",
-				"price": 61,
-				"requests": 15,
-				"pledge": 318,
-				"weight": 130,
-				"sender": "Moor Nur",
-				"senderImg": "dat/p7.png",
-				"themeColor": "orange",
-				"themeColorHex": "#F7AA17",
-				"bgImgUrl": "//s3-us-west-2.amazonaws.com/s.cdpn.io/142996/deliv-7.jpg",
-				"rating": 3,
-				"ratingCount": 26,
-				"fromStreet": "1 Woodlands Square",
-				"fromCity": "Singapore, 485993",
-				"toStreet": "207B New Upper Changi Rd",
-				"toCity": "S(7374884)",
-				"datetime":"2016/05/16 18:30:00",
-				"reqDl": "24minutes"
-			},
-			{
-				"id": "2618-3150",
-				"price": 13,
-				"requests": 9,
-				"pledge": 231,
-				"weight": 55,
-				"sender": "Liu Zhi Yan",
-				"senderImg": "dat/p9.png",
-				"themeColor": "red",
-				"themeColorHex": "#EF5350",
-				"bgImgUrl": "//s3-us-west-2.amazonaws.com/s.cdpn.io/142996/deliv-8.jpg",
-				"rating": 4,
-				"ratingCount": 26,
-				"fromStreet": "21 Choa Chu Kang Avenue 4",
-				"fromCity": "SIngapore, 1838393",
-				"toStreet": "154 West Coast Rd",
-				"toCity": "Singapore, 374849",
-				"datetime":"2016/05/16 18:30:00",
-				"reqDl": "24minutes"
-			}
-		]],
+            "create":"lead/request/add",
+            "read":"lead/request/read",
+            "update":"lead/request/update",
+            "delete":"lead/request/remove",
+            "list":"lead/request/list"
+		}],
         ["pane","view",[
             ["paneId","int",0],
             ["options","map",{"id":"main"}]
@@ -195,10 +37,6 @@
         ]],
         ["DataStream","ctrl", [
             ["models","refs","models"],
-            ["demux","map",{
-                "users":{"json":"address"},
-                "domain":{"post":"post"}
-            }],
             ["push","stream",{
                 "events":[]
             }]
@@ -208,13 +46,28 @@
             ["tplSignin","file","FormSignin.asp"],
             ["tplSignup","file","FormSignup.asp"]
         ]],
-		["Locker","ctrl",[
-			["ble","ctrl",[
-			],"common/native/ble"]
-		]],
-        ["common/auth/Session","ctrl",[
+        ["Modal","view",[
+            ["options","map",{"className":"modal fullpage"}],
+            ["Header","view",[
+                ["tpl","file","header/Base.asp"],
+                ["title","text","Add Request"],
+                ["btnLeft","map",{"icon":"icon_ko"}],
+                ["btnRight","map",{"icon":"icon_ok"}]
+            ],"header/Base"],
+            ["Form","view",[
+                ["tpl","file","Form.asp"]
+            ]]
+        ]],
+        ["Locker","ctrl",[
+            ["lock","models",{
+                "create":"lead/request/unlock"
+            }],
+            ["ble","ctrl",[],"common/native/ble"]
+        ]],
+        [["common/auth/Session","SessionMixin"],"ctrl",[
             ["owner","ref","owner"],
-            ["users","ref","users"]
+            ["users","ref","users"],
+            ["domain","ref","domain"]
         ]]
     ],{
         "":[
@@ -227,92 +80,63 @@
             ["options","map",{"className":"fulpage active"}],
             ["owner","ref","owner"],
             ["requests","ref","requests"],
-			["header/Base","view",[
-				["tpl","file","header/Base.asp"],
-				["title","text","My Jobs"],
-                ["btnRight","map",{"icon":"icon_search"}],
-                ["header/Month","view",[
-					["tpl","file","header/Month.asp"]
-				]]
-			]],
-			["DateDial","view",[
-                ["html","file","DateDial.html"]
-			]],
-            ["Scrollable","view",[
-				["html","file","DeliveryList.html"],
-				["list","ref","requests"],
-                ["Cell","view",[
-					["options","map",{"className":"card simple"}],
-					["tpl","file","CardSimple.asp"]
-				],"Card"]
+            ["AgentCtrl","ctrl",[
+                ["requests","ref","requests"]
             ]],
-            ["Menu","view",[
-                ["tpl","file","Menu.asp"],
-                ["owner","ref","owner"],
-				["list","list",[
-					{"className":"home","icon":"home","url":""},
-					{"className":"history","icon":"history","url":"history"},
-					{"className":"profile","icon":"name","url":"profile"},
-					{"className":"signout","icon":"power","url":"signout"}
-				]]
-            ]]
-        ],
-        "history":[
-            ["options","map",{"className":"fulpage active"}],
-            ["owner","ref","owner"],
-			["requests","ref","requests"],
             ["header/Base","view",[
                 ["tpl","file","header/Base.asp"],
-                ["title","text","Request History"],
-                ["btnRight","map",{"icon":"icon_search"}],
-                ["header/Month","view",[
-					["tpl","file","header/Month.asp"]
-				]]
+                ["title","text","My Jobs"],
+                ["btnRight","map",{"icon":"icon_search"}]
             ]],
-			["DateDial","view",[
-                ["html","file","DateDial.html"]
-			]],
             ["Scrollable","view",[
-				["list","ref","requests"],
-				["Cell","view",[
-					["options","map",{"className":"cardRequest"}],
-					["tpl","file","CardSimple.asp"]
-				],"Card"]
+                ["list","ref","requests"],
+                ["Cell","view",[
+                    ["options","map",{"className":"cardRequest"}],
+                    ["tpl","file","CardRequest.asp"]
+                ],"Card"]
             ]],
             ["Menu","view",[
                 ["tpl","file","Menu.asp"],
-                ["owner","ref","owner"],
-				["list","list",[
-					{"className":"home","icon":"home","url":"home"},
-					{"className":"history","icon":"history","url":""},
-					{"className":"profile","icon":"name","url":"profile"},
-					{"className":"signout","icon":"power","url":"signout"}
-				]]
+                ["list","list",[
+                    {"className":"home selected","icon":"home","url":""},
+                    {"className":"profile","icon":"name","url":"profile"}
+                ]]
             ]]
         ],
-		"profile":[
+        "profile":[
             ["options","map",{"className":"fulpage active"}],
             ["owner","ref","owner"],
+            ["ProfileCtrl","ctrl",[
+                ["owner","ref","owner"]
+            ]],
             ["header/Base","view",[
                 ["tpl","file","header/Base.asp"],
                 ["title","text","My Profile"],
+                ["btnLeft","map",{"icon":"icon_power"}],
+                ["btnRight","map",{"icon":"icon_edit"}],
                 ["header/User","view",[
-					["tpl","file","header/User.asp"]
-				]]
+                    ["tpl","file","header/User.asp"]
+                ]]
+            ]],
+            ["Panel","view",[
+                ["owner","ref","owner"],
+                ["tpl","file","Panel.asp"],
+                ["rows","list",[
+                    {"type":"text","label":"Total Jobs","value":76},
+                    {"type":"text","label":"Monthly Jobs","value":21},
+                    {"type":"text","label":"Weekly Jobs","value":13},
+                    {"type":"text","label":"Accepted Jobs","value":69}
+                ]]
             ]],
             ["Menu","view",[
                 ["tpl","file","Menu.asp"],
-                ["owner","ref","owner"],
-				["list","list",[
-					{"className":"home","icon":"home","url":"home"},
-					{"className":"history","icon":"history","url":"history"},
-					{"className":"profile","icon":"name","url":""},
-					{"className":"signout","icon":"power","url":"signout"}
-				]]
+                ["list","list",[
+                    {"className":"home","icon":"home","url":"home"},
+                    {"className":"profile selected","icon":"name","url":""}
+                ]]
             ]]
-		]
+        ]
     },{
-        "history":["history"],
         "profile":["profile"],
         "*action":["home"]
     }
