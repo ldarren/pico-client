@@ -1,4 +1,5 @@
 var
+Floor=Math.floor,Random=Math.random,
 sqlUser=require('sql/user'),
 picoStr=require('pico/str'),
 picoObj=require('pico/obj')
@@ -18,7 +19,7 @@ this.log('signin',input)
             if (!briefs || !briefs.length) return next(this.error(401))
             var b=briefs[0]
 
-            sqlUser.getMap(b, (err, map)=>{
+            sqlUser.map_get(b, (err, map)=>{
                 if (err) return next(this.error(500))
                 if (!map || input.pwd !== map.pwd) return next(this.error(401))
 
@@ -94,13 +95,11 @@ this.log('join',input)
 	update:function(input,next){
 		next()
 	},
-    poll:function(input,output,next){
-        next()
-    },
-	affected:function(input,output,next){
+	appoint:function(input,output,next){
 		sqlUser.findByRole('agent',(err,rows)=>{
 			if (err) return next(this.error(500))
-			output['list']=picoObj.pluck(rows,'id')
+            if (!rows.length) return next(this.error(500, 'No Agent Avialble'))
+			output['list']=[rows[Floor(rows.length*Random())].id]
 			next()
 		})
 	}

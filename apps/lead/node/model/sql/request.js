@@ -10,6 +10,8 @@ FIND_BY_USERID=         'SELECT * FROM `request` WHERE `userId`=? AND `s`=1;',
 MAP_GET =               'SELECT `requestId`, `k`, `v1`, `v2` FROM requestMap WHERE `requestId`=?;',
 MAP_SET =               'INSERT INTO requestMap (`requestId`, `k`, `v1`, `v2`, `cby`) VALUES ? ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
 
+LIST_SET =               'INSERT INTO requestList (`requestId`, `k`, `v1`, `v2`, `cby`) VALUES ?;',
+
 ERR_INVALID_INPUT = 'INVALID INPUT',
 
 picoObj=require('pico/obj'),
@@ -30,10 +32,10 @@ module.exports= {
         client.query(GET,[request.id],(err,rows)=>{
             if (err) return cb(err)
             Object.assign(request,client.decode(rows[0],hash,ENUM))
-			this.getMap(request,cb)
+			this.map_get(request,cb)
         })      
     },
-	getMap: function(request, cb){
+	map_get: function(request, cb){
 		client.query(MAP_GET, [request.id], (err, rows)=>{
 			if (err) return cb(err)
 			cb(null, client.mapDecode(rows, request, hash, ENUM))
@@ -43,15 +45,18 @@ module.exports= {
         client.query(SET, [client.encode(request,by,hash,INDEX,ENUM)], (err, result)=>{
             if (err) return cb(err)
             request.id=result.insertId
-			this.setMap(request,by,(err)=>{
+			this.map_set(request,by,(err)=>{
                 cb(err, request)
             })
         })
 	},
-	setMap:function(request,by,cb){
+	map_set:function(request,by,cb){
 		client.query(MAP_SET, [client.mapEncode(request, by, hash, INDEX, ENUM)], cb)
+    },
+    list_set:function(request,key,list,by,cb){
+		client.query(LIST_SET, [client.listEncode(request.id, key, list, by, hash, INDEX, ENUM)], cb)
 	},
 	findByUserId: function(userId,cb){
 		client.query(FIND_BY_USERID,[userId],cb)
-	}
+    }
 }

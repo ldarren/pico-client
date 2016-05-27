@@ -75,14 +75,14 @@ module.exports= {
         client.query(GET,[user.id],(err,users)=>{
             if (err) return cb(err)
 			Object.assign(user,client.decode(users[0],hash,ENUM))
-			this.getMap(user,cb)
+			this.map_get(user,cb)
         })
     },
     set: function(user, by, cb){
         client.query(SET, [client.encode(user,by,hash,INDEX,ENUM)], (err, result)=>{
             if (err) return cb(err)
             user.id=result.insertId
-			this.setMap(user,by,(err)=>{
+			this.map_set(user,by,(err)=>{
                 cb(err, user)
             })
         })
@@ -100,19 +100,19 @@ module.exports= {
 		})
     },
     findByRole: function(role, cb){
-        client.query(FIND_BY_ROLE, [role], (err,rows)=>{
+        client.query(FIND_BY_ROLE, [hash.val(role)], (err,rows)=>{
             if (err) return cb(err)
 			cb(null,client.decodes(rows,hash,ENUM))
 		})
     },
-    getMap: function(user, cb){
+    map_get: function(user, cb){
 		if (!user.id) return cb(ERR_INVALID_INPUT)
 		client.query(MAP_GET, [user.id], (err, rows)=>{
 			if (err) return cb(err)
 			cb(null, client.mapDecode(rows, user, hash, ENUM))
 		})
     },
-	setMap: function(user,by,cb){
+	map_set: function(user,by,cb){
 		client.query(MAP_SET, [client.mapEncode(user, by, hash, INDEX, ENUM)], cb)
 	},
 	getListByKey: function(userId,key,cb){

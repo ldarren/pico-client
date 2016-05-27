@@ -11,7 +11,6 @@ module.exports= {
 		next()
 	},
 	add:function(input,output,next){
-		this.log('add',input)
 		Object.assign(output,input,{
 			userId:input.id
 		})
@@ -40,7 +39,34 @@ module.exports= {
 	list:function(input,next){
         next()
 	},
-    poll:function(input,output,next){
-        next()
+    poll:function(input,user,output,next){
+        var t=input.t
+        switch(user.role){
+        case 'consumer':
+            sqlRequest.poll(user.id,t,(err, briefs)=>{
+                if (err) return next(this.error(500))
+                next()
+            })
+            break
+        case 'agent':
+            sqlRequest.list_poll('agentId',user.id,t,(err, list)=>{
+                if (err) return next(this.error(500))
+                sqlRequest.getList(picoObj.pluck(list,'requestId',(err,briefs)=>{
+                    if (err) return next(this.error(500))
+                    next()
+                })
+            })
+            break
+        case 'admin':
+        default:
+            next()
+            break
+        }
+    },
+    addAgent:function(request,output,next){
+        sqlRequest.list_set(request,'agentId',output.list,0,(err)=>{
+            if (err) return next(this.error(500,err))
+            next()
+        })
     }
 }
