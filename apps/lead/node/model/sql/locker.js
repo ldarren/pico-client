@@ -46,12 +46,7 @@ module.exports= {
         if (!lockers.length) return cb(null, lockers)
 		client.query(MAP_GET_LIST, [picoObj.pluck(lockers,'id')], (err, rows)=>{
 			if (err) return cb(err)
-            var details=picoObj.group(rows,'lockerId')
-            for(var i=0,l,d; l=lockers[i]; i++){
-                d=details[l.id]
-                client.mapDecode(d, l, hash, ENUM)
-            }
-			cb(null, lockers)
+			cb(null, client.mapDecodes(picoObj.group(rows,'lockerId'),lockers,hash,ENUM))
 		})
 	},
 	set: function(locker,by,cb){

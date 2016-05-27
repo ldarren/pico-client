@@ -13,7 +13,7 @@ return {
     delay:function(period,next){
         setTimeout(next,period)
     },
-    preparePoll:function(input,next){
+    prepareStream:function(input,next){
         input.t=new Date(parseInt(input.t))
         next()
     },

@@ -30,7 +30,7 @@ LIST_GET_BY_KEY =       'SELECT * FROM userList WHERE `userId`=? AND `k`=?;',
 LIST_GET_BY_KEYS =      'SELECT * FROM userList WHERE `userId`=? AND `k` IN (?);',
 LIST_GET_MAT_BY_KEY =   'SELECT * FROM userList WHERE `userId` IN (?) AND `k`=?;',
 LIST_GET_MAT_BY_KEYS =  'SELECT * FROM userList WHERE `userId` IN (?);',
-LIST_FIND_BY_TIME =     'SELECT * FROM userList WHERE `userId`=? AND `uat` > ?;',
+LIST_FIND_BY_TIME =     'SELECT * FROM userList WHERE `userId`=? AND `k`=? AND `uat` > ?;',
 LIST_SET =              'INSERT INTO userList (`userId`, `k`, `v1`, `v2`, `cby`) VALUES ?;',
 LIST_UNSET =            'UPDATE userList SET `s`=0, `uby`=? WHERE `id`=?;',
 LIST_UPDATE=            'UPDATE userList SET `v1`=?, `v2`=?, `s`=1, `uby`=? WHERE `id`=?;',
@@ -115,21 +115,24 @@ module.exports= {
 	map_set: function(user,by,cb){
 		client.query(MAP_SET, [client.mapEncode(user, by, hash, INDEX, ENUM)], cb)
 	},
-	getListByKey: function(userId,key,cb){
+	list_getByKey: function(userId,key,cb){
 		if (!userId) return cb(ERR_INVALID_INPUT)
 		client.query(LIST_GET, [userId,hash.key(key)], (err, rows)=>{
 			if (err) return cb(err)
 			cb(null, client.listDecode(rows, key, hash, ENUM))
 		})
 	},
-	getListById: function(rowId,key,cb){
+	list_getById: function(rowId,key,cb){
 		if (!rowId) return cb(ERR_INVALID_INPUT)
 		client.query(LIST_GET_BY_ID,[rowId], (err, rows)=>{
 			if (err) return cb(err)
 			cb(null, client.listDecode(rows, key, hash, ENUM))
 		})
 	},
-	setList: function(userId,key,list,by,cb){
+	list_set: function(userId,key,list,by,cb){
 		client.query(LIST_SET, [client.listEncode(userId,key,list,by,hash,INDEX,ENUM)], cb)
-	}
+	},
+    list_findByTime:function(userId,key,time,cb){
+        client.query(LIST_FIND_BY_TIME, [userId,key,time],cb)
+    }
 }

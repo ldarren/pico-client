@@ -1,8 +1,17 @@
 var
 Floor=Math.floor,Random=Math.random,
 sqlUser=require('sql/user'),
+sqlRequest=require('sql/request'),
 picoStr=require('pico/str'),
-picoObj=require('pico/obj')
+picoObj=require('pico/obj'),
+poll=function(list,seen,output,next){
+    sqlRequest.getList(list,(err,requests)=>{
+        if (err) return next(this.error(500))
+        output['requests']=requests
+        output['seen']=Max(seen,Max(...(picoObj.pluck(requests,'uat'))))
+        next()
+    })
+}
 
 module.exports= {
     setup: function(context, next){
@@ -98,9 +107,23 @@ this.log('join',input)
 	appoint:function(input,output,next){
 		sqlUser.findByRole('agent',(err,rows)=>{
 			if (err) return next(this.error(500))
-            if (!rows.length) return next(this.error(500, 'No Agent Avialble'))
+            if (!rows.length) return next(this.error(500, 'No Agent Available'))
 			output['list']=[rows[Floor(rows.length*Random())].id]
 			next()
 		})
-	}
+    },
+    addAgent:function(request,output,next){
+        sqlUser.list_set(output.list[0],'requestId',[request.id],0,(err)=>{
+            if (err) return next(this.error(500,err))
+            next()
+        })
+	},
+    poll:function(input,user,output,next){
+        if ('agent'!==user.role) return next()
+        var t=input.t
+        sqlRequest.list_findByTime(user.id,'requestId',t,(err, list)=>{
+            if (err) return next(this.error(500))
+            poll(picoObj.pluck(list,'requestId'),t,output,next)
+        })
+    }
 }

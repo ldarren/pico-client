@@ -1,7 +1,16 @@
 var
+Max=Math.max,
 sqlRequest=require('sql/request'),
 picoStr=require('pico/str'),
-picoObj=require('pico/obj')
+picoObj=require('pico/obj'),
+poll=function(list,seen,output,next){
+    sqlRequest.map_gets(list,(err,requests)=>{
+        if (err) return next(this.error(500))
+        output['requests']=requests
+        output['seen']=Max(seen,Max(...(picoObj.pluck(requests,'uat'))))
+        next()
+    })
+}
 
 module.exports= {
     setup: function(context, next){
@@ -40,33 +49,11 @@ module.exports= {
         next()
 	},
     poll:function(input,user,output,next){
+        if ('consumer'!==user.role) return next()
         var t=input.t
-        switch(user.role){
-        case 'consumer':
-            sqlRequest.poll(user.id,t,(err, briefs)=>{
-                if (err) return next(this.error(500))
-                next()
-            })
-            break
-        case 'agent':
-            sqlRequest.list_poll('agentId',user.id,t,(err, list)=>{
-                if (err) return next(this.error(500))
-                sqlRequest.getList(picoObj.pluck(list,'requestId',(err,briefs)=>{
-                    if (err) return next(this.error(500))
-                    next()
-                })
-            })
-            break
-        case 'admin':
-        default:
-            next()
-            break
-        }
-    },
-    addAgent:function(request,output,next){
-        sqlRequest.list_set(request,'agentId',output.list,0,(err)=>{
-            if (err) return next(this.error(500,err))
-            next()
+        sqlRequest.poll(user.id,t,(err, briefs)=>{
+            if (err) return next(this.error(500))
+            poll(briefs,t,output,next)
         })
     }
 }
