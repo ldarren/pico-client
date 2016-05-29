@@ -35,12 +35,12 @@
             ["options","map",{"el":"#secondary.pane>div:nth-child(1)","className":"ripple hidden"}],
             ["paneId","int",1]
         ]],
-        ["DataStream","ctrl", [
+        [["common/auth/DataStream","DataStreamMixin"],"ctrl",[
             ["models","refs","models"],
             ["push","stream",{
                 "events":[]
             }]
-        ],["common/auth/DataStream","DataStreamMixin"]],
+        ]],
         ["FormAuth","view",[
             ["owner","ref","owner"],
             ["tplSignin","file","FormSignin.asp"],

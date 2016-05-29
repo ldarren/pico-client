@@ -33,7 +33,7 @@
         ],
         "/lead/stream":[
             ["user","verify","input","user"],
-            ["util","prepareStream","input"],
+            ["util","prepareStream","input","output"],
             ["user","poll","input","user","output"],
             ["request","poll","input","user","output"],
             ["locker","poll","input","user","output"],
@@ -44,6 +44,10 @@
 		"lead/broadcast":[
             ["room","broadcast",["poll"],"input"]
 		],
+        "lead/util/ping":[
+            ["user","verify","input","user"],
+            [0]
+        ],
         "lead/user/signin": [
             ["user","signin","input","user"],
             [0]

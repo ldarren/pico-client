@@ -133,6 +133,9 @@ module.exports= {
 		client.query(LIST_SET, [client.listEncode(userId,key,list,by,hash,INDEX,ENUM)], cb)
 	},
     list_findByTime:function(userId,key,time,cb){
-        client.query(LIST_FIND_BY_TIME, [userId,key,time],cb)
+        client.query(LIST_FIND_BY_TIME, [userId,hash.val(key),time],(err,rows)=>{
+            if (err) return cb(err)
+			cb(null, client.listDecode(rows, key, hash, ENUM))
+        })
     }
 }

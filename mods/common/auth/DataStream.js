@@ -64,6 +64,7 @@ return{
             models[k].comparator=sortDesc
         }
 		this.listenTo(deps.push, 'closed', reconn)
+		this.listenTo(deps.push, 'connecting', this.disconnect)//in case credential has lost
     },
 
     slots:{
@@ -121,5 +122,7 @@ return{
 
     connect: function(stream, model, seen){
         stream.reconnect()
+    },
+    disconnect: function(count){
     }
 }

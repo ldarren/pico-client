@@ -50,7 +50,7 @@ this.log('add lock',input)
         next()
 	},
     poll:function(input,user,output,next){
-        var lastSeen=input.t
+        var t=input.t
         sqlLocker.poll(user.id,t,(err, briefs)=>{
             if (err) return next(this.error(500))
             sqlLocker.map_getList(briefs, (err, lockers)=>{
@@ -59,8 +59,6 @@ this.log('add lock',input)
                     var lastSeen=Max(...(picoObj.pluck(lockers,'uat')))
                     output['seen']=Max(lastSeen,output['seen']||t) 
                     output['lockers']=lockers
-                }else{
-                    output['seen']=t
                 }
                 next()
             })

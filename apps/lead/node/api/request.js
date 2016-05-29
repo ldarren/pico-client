@@ -4,6 +4,7 @@ sqlRequest=require('sql/request'),
 picoStr=require('pico/str'),
 picoObj=require('pico/obj'),
 poll=function(list,seen,output,next){
+    if (!list.length) return next()
     sqlRequest.map_gets(list,(err,requests)=>{
         if (err) return next(this.error(500))
         output['requests']=requests
@@ -53,7 +54,7 @@ module.exports= {
         var t=input.t
         sqlRequest.poll(user.id,t,(err, briefs)=>{
             if (err) return next(this.error(500))
-            poll(briefs,t,output,next)
+            poll.call(this,briefs,t,output,next)
         })
     }
 }

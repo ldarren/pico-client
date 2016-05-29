@@ -52,9 +52,9 @@ module.exports= {
 		})
 	},
     map_gets:function(requests,cb){
-		client.query(MAP_GETS, [picoObj.pluck(request,'id')], (err, rows)=>{
+		client.query(MAP_GETS, [picoObj.pluck(requests,'id')], (err, rows)=>{
 			if (err) return cb(err)
-			cb(null, client.mapDecodes(picoObj.groups(rows,'requestId'), requests, hash, ENUM))
+			cb(null, client.mapDecodes(picoObj.group(rows,'requestId'), requests, hash, ENUM))
 		})
     },
 	set: function(request,by,cb){

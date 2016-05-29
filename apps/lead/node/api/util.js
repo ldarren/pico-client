@@ -13,8 +13,10 @@ return {
     delay:function(period,next){
         setTimeout(next,period)
     },
-    prepareStream:function(input,next){
-        input.t=new Date(parseInt(input.t))
+    prepareStream:function(input,output,next){
+        var t=parseInt(input.t)
+        output['seen']=t
+        input.t=new Date(t)
         next()
     },
     help:function(next){
