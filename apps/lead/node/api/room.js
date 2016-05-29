@@ -62,9 +62,9 @@ this.log('stream',JSON.stringify(output))
         web.SSE(res,JSON.stringify(output),evt)
         next()
     },
-	publish: function(evt,input,next){
-		if (!input || !input.list || !input.list.length || !input.msg) return next()
-		redisCache.publish(evt,JSON.stringify(input))
+	publish: function(evt,msg,list,next){
+		if (!msg || !list || !list.length) return next()
+		redisCache.publish(evt,JSON.stringify({msg:msg,list:list}))
 		next()
 	},
     broadcast: function(evt, input, next){

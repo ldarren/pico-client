@@ -35,8 +35,8 @@ module.exports= {
 	readById:function(input,output,next){
 		sqlRequest.get(input,(err,request)=>{
 			if (err) return next(this.error(500))
-			Object.assign(output,request)
-			this.setOutput(output,sqlRequest.clean,sqlRequest)
+            output['requests']=[request]
+			this.setOutput(request,sqlRequest.clean,sqlRequest)
 			next()
 		})
 	},

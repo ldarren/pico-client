@@ -88,7 +88,7 @@ this.log('join',input)
 			if (err) return next(this.error(500))
 			if (!rows.length) return next(this.error(403))
 			var data=rows[0]
-			this.log('verify',input,data)
+			this.log('verify',input,JSON.stringify(data))
 			// for GET method, all params in string format
 			if (data.id != input.id) return next(this.error(403))
 			Object.assign(user,data)
@@ -109,12 +109,12 @@ this.log('join',input)
 		sqlUser.findByRole('agent',(err,rows)=>{
 			if (err) return next(this.error(500))
             if (!rows.length) return next(this.error(500, 'No Agent Available'))
-			output['list']=[rows[Floor(rows.length*Random())].id]
+			output.push(rows[Floor(rows.length*Random())].id)
 			next()
 		})
     },
-    addAgent:function(request,output,next){
-        sqlUser.list_set(output.list[0],'requestId',[request.id],0,(err)=>{
+    addAgent:function(request,list,next){
+        sqlUser.list_set(list[0],'requestId',[request.id],0,(err)=>{
             if (err) return next(this.error(500,err))
             next()
         })

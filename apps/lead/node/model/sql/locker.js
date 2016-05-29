@@ -32,8 +32,7 @@ module.exports= {
         if (!locker || !locker.id) return cb(ERR_INVALID_INPUT)
         client.query(GET,[locker.id],(err,rows)=>{
             if (err) return cb(err)
-            Object.assign(locker,client.decode(rows[0],hash,ENUM))
-			this.map_get(locker,cb)
+			this.map_get(client.decode(rows[0],hash,ENUM),cb)
         })      
     },
 	map_get: function(locker, cb){

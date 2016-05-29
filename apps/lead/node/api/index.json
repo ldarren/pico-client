@@ -77,10 +77,10 @@
         "lead/request/add": [
             ["user","verify","input","user"],
             ["request","add","input","request"],
-            ["request","readById","request","output"],
-            ["user","appoint","input","output"],
-            ["user","addAgent","request","output"],
-            ["room","publish",["lead/broadcast"],"output"],
+            ["request","readById","request","msg"],
+            ["user","appoint","input",":list"],
+            ["user","addAgent","request",":list"],
+            ["room","publish",["lead/broadcast"],"msg",":list"],
             [0]
         ],
         "lead/request/read": [
