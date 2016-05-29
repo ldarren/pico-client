@@ -35,7 +35,7 @@ return {
 			this.deps.requests.create(null,{
 				data:{
 					$detail:form,
-					lockerId:form.lockerId
+					lockerId:parseInt(form.lockerId)
 				},
 				wait:true,
 				success:function(){

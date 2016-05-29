@@ -33,9 +33,10 @@
         ],
         "/lead/stream":[
             ["user","verify","input","user"],
-            ["user","poll","input","output"],
-            ["request","poll","input","output"],
-            ["locker","poll","input","output"],
+            ["util","prepareStream","input"],
+            ["user","poll","input","user","output"],
+            ["request","poll","input","user","output"],
+            ["locker","poll","input","user","output"],
             ["room","add","res","user"],
             ["web","SSEStart","req","res"],
             ["room","stream",["poll"],"user","output"]
@@ -73,7 +74,8 @@
             ["user","verify","input","user"],
             ["request","add","input","request"],
             ["request","readById","request","output"],
-            ["user","affected","input","output"],
+            ["user","appoint","input","output"],
+            ["user","addAgent","request","output"],
             ["room","publish",["lead/broadcast"],"output"],
             [0]
         ],

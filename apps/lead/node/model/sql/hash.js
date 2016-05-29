@@ -1,4 +1,4 @@
-var READ = 'SELECT `id`, `k` FROM `hash`;';
+var READ = 'SELECT `v`, `k` FROM `hash`;';
 
 var
 picoObj =require('pico/obj'),
@@ -10,8 +10,8 @@ module.exports = {
         client=context.mainDB
         client.query(READ, function(err, result){
             if (err) return cb(err)
-            KEYS = picoObj.keyValues(result, 'id', 'k')
-            VALS = picoObj.keyValues(result, 'k', 'id')
+            KEYS = picoObj.keyValues(result, 'v', 'k')
+            VALS = picoObj.keyValues(result, 'k', 'v')
             cb()
         })
     },

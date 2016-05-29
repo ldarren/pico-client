@@ -1,7 +1,16 @@
 var
+Max=Math.max,
 sqlRequest=require('sql/request'),
 picoStr=require('pico/str'),
-picoObj=require('pico/obj')
+picoObj=require('pico/obj'),
+poll=function(list,seen,output,next){
+    sqlRequest.map_gets(list,(err,requests)=>{
+        if (err) return next(this.error(500))
+        output['requests']=requests
+        output['seen']=Max(seen,Max(...(picoObj.pluck(requests,'uat'))))
+        next()
+    })
+}
 
 module.exports= {
     setup: function(context, next){
@@ -11,7 +20,6 @@ module.exports= {
 		next()
 	},
 	add:function(input,output,next){
-		this.log('add',input)
 		Object.assign(output,input,{
 			userId:input.id
 		})
@@ -40,7 +48,12 @@ module.exports= {
 	list:function(input,next){
         next()
 	},
-    poll:function(input,output,next){
-        next()
+    poll:function(input,user,output,next){
+        if ('consumer'!==user.role) return next()
+        var t=input.t
+        sqlRequest.poll(user.id,t,(err, briefs)=>{
+            if (err) return next(this.error(500))
+            poll(briefs,t,output,next)
+        })
     }
 }

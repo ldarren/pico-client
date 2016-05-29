@@ -13,6 +13,10 @@ return {
     delay:function(period,next){
         setTimeout(next,period)
     },
+    prepareStream:function(input,next){
+        input.t=new Date(parseInt(input.t))
+        next()
+    },
     help:function(next){
         next(`api ${this.api} is not supported by lead yet`)
     }
