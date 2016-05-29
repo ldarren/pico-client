@@ -4,14 +4,16 @@ network=require('js/network'),
 callbacks=function(self){
     return [
     function(e){
+		self.connectAttempts=0
         self.trigger(e.type)
     },
     function(e){
+		self.connectAttempts++
         switch(e.target.readyState){
-        case EventSource.CONNECTING: self.trigger('connecting'); break
+        case EventSource.CONNECTING: self.trigger('connecting',self.connectAttempts); break
         case EventSource.CLOSED:
         default:
-            self.trigger('closed');
+            self.trigger('closed',self.connectAttempts);
             break
         }       
     },
@@ -31,6 +33,7 @@ function Stream(options){
 function init(self, channel, path, events, withCredentials){
     self.channel=channel
     self.events=events
+	self.connectAttempts=0
     if (!path) return
 
     var
