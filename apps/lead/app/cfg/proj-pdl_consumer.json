@@ -95,10 +95,23 @@
 				["requests","ref","requests"],
 				["lockers","ref","lockers"],
 				["addRequest","list",[
-					{"type":"date","name":"date","label":"Date","required":1},
-					{"type":"time","name":"time","label":"Time","required":1},
-					{"type":"text","name":"note","label":"Note"},
-					{"type":"select","name":"lockerId","label":"Locker","holder":"Select a locker","options":[]}
+                    [
+					    {"type":"select","name":"type","label":"Type","holder":"Request Type","options":["Laundry"]},
+					    {"type":"datetime-local","name":"collection","label":"Collection","required":1},
+                        {"type":"select","name":"lockerId","label":"Locker","holder":"Select a locker","options":[]}
+                    ],
+                    [
+                        {"type":"number","name":"count","label":"Count","required":1},
+                        {"type":"select","name":"return","label":"Return","holder":"Return Date","options":["1","2","3","4"]}
+                        {"type":"Select","name":"laundry","label":"Laundary Type","holder":"Laundry Type","options":[
+                            "DryClean",
+                            "Laundry",
+                            "Load Wash",
+                            "Mix"
+                        ]}
+                        {"type":"text","name":"note","label":"Note"},
+                        {"type":"checkbox","name":"termncond","label":"Term & Conditions","url":"legal"}
+                    ]
 				]
 			]]],
             ["header/Base","view",[
@@ -174,13 +187,22 @@
 				]]
             ]],
             ["Panel","view",[
-				["owner","ref","owner"],
 				["tpl","file","Panel.asp"],
+                ["title","text","Statistic"],
 				["rows","list",[
 					{"type":"text","label":"Total Requests","value":76},
 					{"type":"text","label":"Monthly Requests","value":21},
 					{"type":"text","label":"Weekly Requests","value":13},
 					{"type":"text","label":"Accepted Requests","value":69}
+				]]
+            ]],
+            ["Panel","view",[
+				["tpl","file","Panel.asp"],
+                ["title","text","Contacts"],
+				["rows","list",[
+					{"type":"static","label":"Tel","value":"+65 98765432","url":"tel:/+6598765432"},
+					{"type":"static","label":"Email","value":"support@laundrymart.com","url":"email:/support@laundrymart.com"},
+					{"type":"static","label":"Address","value":"234, Jalan Woodlad E1, S(6745849)","url":"loc:/674849"}
 				]]
             ]],
             ["Menu","view",[

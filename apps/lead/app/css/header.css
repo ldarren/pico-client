@@ -12,6 +12,9 @@
 .header .icon {
   position: absolute;
   top: 2rem;
+  width:5rem;
+  height:5rem;
+  padding:1.5rem;
   stroke-dasharray: 61.847137451171875;
   stroke-dashoffset: 61.847137451171875;
   -webkit-animation: animatePath 0.5s 0.5s forwards;
