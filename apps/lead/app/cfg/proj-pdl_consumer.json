@@ -102,13 +102,13 @@
                     ],
                     [
                         {"type":"number","name":"count","label":"Count","required":1},
-                        {"type":"select","name":"return","label":"Return","holder":"Return Date","options":["1","2","3","4"]}
+                        {"type":"select","name":"return","label":"Return","holder":"Return Date","options":[]},
                         {"type":"Select","name":"laundry","label":"Laundary Type","holder":"Laundry Type","options":[
                             "DryClean",
                             "Laundry",
                             "Load Wash",
                             "Mix"
-                        ]}
+                        ]},
                         {"type":"text","name":"note","label":"Note"},
                         {"type":"checkbox","name":"termncond","label":"Term & Conditions","url":"legal"}
                     ]
