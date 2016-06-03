@@ -96,21 +96,21 @@
 				["lockers","ref","lockers"],
 				["addRequest","list",[
                     [
-					    {"type":"select","name":"type","label":"Type","holder":"Request Type","options":["Laundry"]},
+					    {"type":"select","name":"type","label":"Type","holder":"Request Type","options":[[1,"Laundry"]],"value":1},
 					    {"type":"datetime-local","name":"collection","label":"Collection","required":1},
-                        {"type":"select","name":"lockerId","label":"Locker","holder":"Select a locker","options":[]}
+                        {"type":"select","name":"lockerId","label":"Locker","holder":"Select a locker","options":[],"value":1}
                     ],
                     [
-                        {"type":"number","name":"count","label":"Count","required":1},
-                        {"type":"select","name":"return","label":"Return","holder":"Return Date","options":[]},
-                        {"type":"Select","name":"laundry","label":"Laundary Type","holder":"Laundry Type","options":[
-                            "DryClean",
-                            "Laundry",
-                            "Load Wash",
-                            "Mix"
-                        ]},
+                        {"type":"number","name":"count","label":"Count","value":1,"required":1},
+                        {"type":"select","name":"return","label":"Return","holder":"Return Date","options":[],"value":4},
+                        {"type":"select","name":"laundry","label":"Laundary Type","holder":"Laundry Type","options":[
+                            [1,"DryClean"],
+                            [2,"Laundry"],
+                            [3,"Load Wash"],
+                            [4,"Mix"]
+                        ],"value":2,"required":1},
                         {"type":"text","name":"note","label":"Note"},
-                        {"type":"checkbox","name":"termncond","label":"Term & Conditions","url":"legal"}
+                        {"type":"checkbox","name":"termncond","label":"Term & Conditions","url":"legal","required":1}
                     ]
 				]
 			]]],

@@ -1,8 +1,9 @@
 var 
 Router=require('js/Router'),
+picoStr=require('pico/str'),
 prepareForm0=function(self,result,form){
     var lockers=self.deps.lockers
-    for(var i=0,f,o; f=form[i]; i++){
+    for(var i=0,f,o,v; f=form[i]; i++){
         switch(f.name){
         case 'lockerId':
             o=f.options
@@ -13,24 +14,34 @@ prepareForm0=function(self,result,form){
             break
         case 'collection':
             var d=new Date(Date.now()+self.deps.leadTime)
-            f.value=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()+' '+d.getHours()+':'+d.getMinutes()
+            f.value=d.getFullYear()+'-'+
+                picoStr.pad(d.getMonth()+1,2)+'-'+
+                picoStr.pad(d.getDate(),2)+'T'+
+                picoStr.pad(d.getHours(),2)+':'+
+                picoStr.pad(d.getMinutes(),2)
             break
         }
+        v=result[f.name]
+        if (undefined!==v) f.value=v
     }
     return form
 },
 prepareForm1=function(self,result,form){
-    for(var i=0,f,o; f=form[i]; i++){
+    for(var i=0,f,o,v; f=form[i]; i++){
         switch(f.name){
         case 'return':
-            var c=result.collection
+            var
+            c=result.collection,
+            surcharge=self.deps.surcharge
             o=f.options
             o.length=0
-            for(var j=1;l<5; j++){
-                o.push([j,(new Date((new Date(c)).getTime()+(j*86400000))).toLocaleDate()+' +'+surcharge[j]])
+            for(var j=1;j<5; j++){
+                o.push([j,(new Date((new Date(c)).getTime()+(j*86400000))).toLocaleDateString()+' +'+surcharge[j]])
             }
             break
         }
+        v=result[f.name]
+        if (undefined!==v) f.value=v
     }
     return form
 },
@@ -62,6 +73,7 @@ return {
 						Router.go('locker')
 					}
 			)
+            this.result={}
 			this.signals.modalShow(this.deps.addRequest).send(this.host)
 		},
         pageCreate:function(from,sender,index,total,form,cb){

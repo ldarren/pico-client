@@ -10,8 +10,8 @@ showPage=function(self,curr,pages){
         self.signals.formShow(form).send(self.form)
     }).send(self.sender)
 },
-closePage=function(self,curr,pages,cb){
-    self.signals.formCollect(function(err,data){
+closePage=function(self,curr,pages,verify,cb){
+    self.signals.formCollect(verify,function(err,data){
         if(err) return cb(err)
         picoObj.extend(self.data,data)
         self.signals.pageResult(self.data,cb).send(self.sender)
@@ -51,9 +51,9 @@ return {
             var self=this
 			switch(hash){
 			case 'ok':
-                closePage(self,self.currentPage,self.pages,function(err){
+                closePage(self,self.currentPage,self.pages,true,function(err){
                     if (err) return console.error(err)
-					self.signals.modalResult(this.data).send(self.sender)
+					self.signals.modalResult(self.data).send(self.sender)
 					self.signals.hide().send(self.host)
                 })
 				break
@@ -62,16 +62,16 @@ return {
 				break	
 			case 'prev':
                 if (!self.currentPage) break
-                closePage(self,self.currentPage,self.pages,function(err){
+                closePage(self,self.currentPage,self.pages,false,function(err){
                     if (err) return console.error(err)
-                    showPage(self,--(self.currentPage),pages)
+                    showPage(self,--(self.currentPage),self.pages)
                 })
 				break	
 			case 'next':
                 if (self.pages.length===self.currentPage+1) break
-                closePage(self,self.currentPage,self.pages,function(err){
+                closePage(self,self.currentPage,self.pages,true,function(err){
                     if (err) return console.error(err)
-                    showPage(self,++(self.currentPage),pages)
+                    showPage(self,++(self.currentPage),self.pages)
                 })
 				break	
 			}
