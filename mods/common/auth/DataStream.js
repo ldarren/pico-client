@@ -1,15 +1,6 @@
 var
 storage = window.localStorage,
 merge1={merge:true},
-poll = function(raw){
-    var userId = this.me.id
-    if (!userId) return
-    writeSeen(this, userId, raw.seen)
-    var models=this.deps.models
-    for(var i=0,keys=Object.keys(raw),k; k=keys[i]; i++){
-        addRemove(models[k],raw[k])
-    }
-},
 addRemove = function(coll, list){
     if (!coll || !list || !list.length) return false
     coll.add(list, merge1)
@@ -22,9 +13,11 @@ reconn=function(count){
     var push=this.deps.push
     this.connect(push, this.me.attributes, this.seen)
     this.stopListening(push)
-    this.listenTo(push, 'closed', reconn)
-    this.listenTo(push, 'connecting', this.retry)//in case credential has lost
-    this.listenTo(push, 'poll', poll)
+    this.listenTo(push, 'closed', reconn) // when server side shutdown connect
+    this.listenTo(push, 'connecting', this.retry)// when client cant react server
+    for(var i=0,evts=this.sseEvts,cbs=this.sseCBs,e; e=evts[i]; i++){
+        this.listenTo(push, e, cbs[i])
+    }
 },
 sortDesc = function(m1, m2){
     var s1 = m1.get('uat'), s2 = m2.get('uat')
@@ -70,6 +63,7 @@ return{
         for(var i=0,models=deps.models,keys=Object.keys(models),k; k=keys[i]; i++){
             models[k].comparator=sortDesc
         }
+        this.addSSEEvents()
     },
 
     slots:{
@@ -124,7 +118,19 @@ return{
 		}
     },
 
-    connect: function(stream, model, seen){
+    sseEvts:['poll'],
+    sseCBs:[function(raw){
+        var userId = this.me.id
+        if (!userId) return
+        writeSeen(this, userId, raw.seen)
+        var models=this.deps.models
+        for(var i=0,keys=Object.keys(raw),k; k=keys[i]; i++){
+            addRemove(models[k],raw[k])
+        }
+    }],
+    addSSEEvents: function(){
+    },
+    connect: function(stream, model, seen, count){
         stream.reconnect()
     },
     retry: function(count){
