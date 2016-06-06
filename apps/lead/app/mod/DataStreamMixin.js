@@ -2,11 +2,11 @@ return {
     deps:{
         ping:'models'
     },
-    connect:function(stream, user, seen){
+    connect:function(stream, user, seen, count){
         stream.reconnect('lead','/stream?t='+seen,['poll'],false)
     },
-	disconnect:function(count){
-        if (count < 10) return // health check only if disconnected more than 10 times in a row
+	retry:function(count){
+        if (count < 10) return
         this.deps.ping.reset()
         this.deps.ping.create()
 	}

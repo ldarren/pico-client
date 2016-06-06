@@ -15,14 +15,15 @@
             ["util","delay",[3000]],
             [0]
         ],
-        "ERR/lead/stream": [
+        "ERR//lead/stream": [
+            ["util","delay",[3000]],
             ["web","SSEStop","res"]
         ],
         "END": [
             [0]
         ],
         "room.404": [
-            ["web","SSEStop","res"]
+            ["util","sep",["#DEBUG# room.404 #DEBUG#"]]
         ],
         "web.dc":[
             ["room","remove","res"]

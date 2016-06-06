@@ -30,10 +30,10 @@ function Stream(options){
     init(this, options.channel, options.path, options.events, options.withCredentials)
 }           
             
-function init(self, channel, path, events, withCredentials){
+function init(self, channel, path, events, withCredentials, dcCount){
     self.channel=channel
     self.events=events
-	self.dcCount=0
+	self.dcCount=dcCount||0
     if (!path) return
 
     var
@@ -62,7 +62,8 @@ _.extend(Stream.prototype, Backbone.Events,{
                 channel||this.channel,
                 path||s.url,
                 events||this.events,
-                withCredentials||s.withCredentials)
+                withCredentials||s.withCredentials,
+                this.dcCount)
         }else{
             init(
                 this,

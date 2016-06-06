@@ -57,7 +57,6 @@ this.log('added room member, new count',pipes.length)
         if (!user || !user.id) return next(this.error(404))
         var res=userPipeMap.get(user.id)
         if (!res || res.finished) return next() //TODO: better handling
-this.log('stream',JSON.stringify(output))
 
         web.SSE(res,JSON.stringify(output),evt)
         next()

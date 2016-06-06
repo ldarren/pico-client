@@ -16,8 +16,15 @@ addRemove = function(coll, list){
     return true
 },
 writeData = function(model){ writeColl(this,model.collection.name, this.me.id) },
-reconn=function(){
-    this.connect(this.deps.push, this.me.attributes, this.seen)
+reconn=function(count){
+    this.retry(count)
+    if (!this.me) return
+    var push=this.deps.push
+    this.connect(push, this.me.attributes, this.seen)
+    this.stopListening(push)
+    this.listenTo(push, 'closed', reconn)
+    this.listenTo(push, 'connecting', this.retry)//in case credential has lost
+    this.listenTo(push, 'poll', poll)
 },
 sortDesc = function(m1, m2){
     var s1 = m1.get('uat'), s2 = m2.get('uat')
@@ -63,19 +70,16 @@ return{
         for(var i=0,models=deps.models,keys=Object.keys(models),k; k=keys[i]; i++){
             models[k].comparator=sortDesc
         }
-		this.listenTo(deps.push, 'closed', reconn)
-		this.listenTo(deps.push, 'connecting', this.disconnect)//in case credential has lost
     },
 
     slots:{
         signin: function(from, sender, model){
-            if(this.me)this.slots.signout.call(this, from, sender)
+            if(this.me)this.slots.signout.call(this)
             var userId = model.id
 
             this.me=model 
             readSeen(this,userId)
 
-            this.listenTo(this.deps.push, 'poll', poll)
             reconn.call(this)
 
             for(var i=0,models=this.deps.models,keys=Object.keys(models),k,d; k=keys[i]; i++){
@@ -86,7 +90,7 @@ return{
                 this.listenTo(d, 'change', writeData)
             }
         },
-        signout: function(from, sender){
+        signout: function(){
 			if (!this.me) return
 			this.deps.push.close()
             this.stopListening()
@@ -100,7 +104,7 @@ return{
             this.seen = 0
             this.me= null
         },
-        refreshCache: function(from, sender){
+        refreshCache: function(){
 			if (!this.me) return
             var userId = this.me.id
 
@@ -123,6 +127,6 @@ return{
     connect: function(stream, model, seen){
         stream.reconnect()
     },
-    disconnect: function(count){
+    retry: function(count){
     }
 }
