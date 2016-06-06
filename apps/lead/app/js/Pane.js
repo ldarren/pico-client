@@ -31,8 +31,8 @@ return {
         this.layers=list
 
         var
-		self=this,
-		mods=specMgr.findAllByType('ctrl',this.spec).concat(specMgr.findAllByType('view',this.spec))
+        self=this,
+        mods=this.spec.slice()
 
         this.spec=this.spec.concat(this.host.spec)
         this.spawnAsync(mods, params, null, true, function(){self.signals.paneAdd(self.deps.paneId).send()})
@@ -56,7 +56,7 @@ return {
                 name:(name || '')+'@'+paneId,
                 spec:pageConfig,
                 Class:{},
-                }, params, null, true)
+                }, params, null, false)
 
             this.el.style.cssText = ''
             this.signals.pageAdd(paneId, this.currPage.render(), Router.isBack()).send()

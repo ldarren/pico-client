@@ -91,6 +91,12 @@
             ["owner","ref","owner"],
 			["requests","ref","requests"],
 			["lockers","ref","lockers"],
+            ["header/Base","view",[
+                ["tpl","file","header/Base.asp"],
+                ["title","text","My Requests"],
+                ["btnLeft","map",{"icon":"icon_plus"}],
+                ["btnRight","map",{"icon":"icon_search"}]
+            ]],
 			["ConsumerCtrl","ctrl",[
 				["requests","ref","requests"],
 				["lockers","ref","lockers"],
@@ -114,13 +120,7 @@
                     ]
 				]
 			]]],
-            ["header/Base","view",[
-                ["tpl","file","header/Base.asp"],
-                ["title","text","My Requests"],
-                ["btnLeft","map",{"icon":"icon_plus"}],
-                ["btnRight","map",{"icon":"icon_search"}]
-            ]],
-            ["Scrollable","view",[
+            ["ListView","view",[
 				["list","ref","requests"],
 				["Cell","view",[
 					["options","map",{"className":"cardRequest"}],
@@ -155,7 +155,7 @@
                 ["btnLeft","map",{"icon":"icon_plus"}],
                 ["btnRight","map",{"icon":"icon_search"}]
             ]],
-            ["Scrollable","view",[
+            ["ListView","view",[
 				["list","ref","lockers"],
 				["Cell","view",[
 					["options","map",{"className":"cardRequest"}],
@@ -186,24 +186,26 @@
 					["tpl","file","header/User.asp"]
 				]]
             ]],
-            ["Panel","view",[
-				["tpl","file","Panel.asp"],
-                ["title","text","Statistic"],
-				["rows","list",[
-					{"type":"text","label":"Total Requests","value":76},
-					{"type":"text","label":"Monthly Requests","value":21},
-					{"type":"text","label":"Weekly Requests","value":13},
-					{"type":"text","label":"Accepted Requests","value":69}
-				]]
-            ]],
-            ["Panel","view",[
-				["tpl","file","Panel.asp"],
-                ["title","text","Contacts"],
-				["rows","list",[
-					{"type":"static","label":"Tel","value":"+65 98765432","url":"tel:/+6598765432"},
-					{"type":"static","label":"Email","value":"support@laundrymart.com","url":"email:/support@laundrymart.com"},
-					{"type":"static","label":"Address","value":"234, Jalan Woodlad E1, S(6745849)","url":"loc:/674849"}
-				]]
+            ["ScrollView","view",[
+                ["Panel","view",[
+                    ["tpl","file","Panel.asp"],
+                    ["title","text","Statistic"],
+                    ["rows","list",[
+                        {"type":"text","label":"Total Requests","value":76},
+                        {"type":"text","label":"Monthly Requests","value":21},
+                        {"type":"text","label":"Weekly Requests","value":13},
+                        {"type":"text","label":"Accepted Requests","value":69}
+                    ]]
+                ]],
+                ["Panel","view",[
+                    ["tpl","file","Panel.asp"],
+                    ["title","text","Contacts"],
+                    ["rows","list",[
+                        {"type":"static","label":"Tel","value":"+65 98765432","url":"tel:+6598765432"},
+                        {"type":"static","label":"Email","value":"support@laundrymart.com","url":"mailto:support@laundrymart.com"},
+                        {"type":"static","label":"Address","value":"234, Jalan Woodlad E1, S(6745849)","url":"geo:53.33196,6.92583"}
+                    ]]
+                ]]
             ]],
             ["Menu","view",[
                 ["tpl","file","Menu.asp"],

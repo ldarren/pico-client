@@ -1,6 +1,5 @@
 var
 Router=require('js/Router'),
-specMgr=require('js/specMgr'),
 setBtn=function(ele, btn){
 	if (!ele || !btn) return
 	ele.setAttributeNS('http://www.w3.org/1999/xlink', 'href','#'+btn.icon)
@@ -21,7 +20,7 @@ return{
         this.el.innerHTML=deps.tpl({title:deps.title})
 		setBtn(this.el.querySelector('svg.icon.left use'),deps.btnLeft)
 		setBtn(this.el.querySelector('svg.icon.right use'),deps.btnRight)
-		this.spawnAsync(specMgr.findAllByType('view',this.spec))
+		this.spawnAsync(this.spec)
     },
     events: {
         'tap svg': function(e){

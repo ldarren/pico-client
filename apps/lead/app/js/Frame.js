@@ -104,23 +104,26 @@ return Module.View.extend({
         }
         this.setElement(list[0])
         this.layers=list
-
+        
         var 
+        self=this,
         panes=[],
         mods=[]
+
         for(var i=0,spec=this.spec,s; s=spec[i]; i++){
             switch(s[TYPE]){
-            case 'ctrl': mods.push(s[VALUE]); break
+            case 'ctrl': mods.push(s); break
             case 'view':
-                if ('pane'===s[ID]) panes.push(s[VALUE])
-                else mods.push(s[VALUE])
+                if ('pane'===s[ID]) panes.push(s)
+                else mods.push(s)
                 break
             }
         }
 
-        var self=this
         this.spawnAsync(panes, params, null, false, function(){
-            self.spawnAsync(mods, params, null, true, function(){self.signals.frameAdded().send()})
+            self.spawnAsync(mods, params, null, true, function(){
+                self.signals.frameAdded().send()
+            })
         })
     },
 

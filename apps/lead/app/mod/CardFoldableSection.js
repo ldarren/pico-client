@@ -8,6 +8,6 @@ return {
 	},
 	create:function(deps){
 		this.el.innerHTML=deps.tpl(deps.card)
-		this.spawnAsync(specMgr.findAllByType('view',this.spec))
+		this.spawnAsync(this.spec)
 	}
 }

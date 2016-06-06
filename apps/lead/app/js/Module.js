@@ -22,7 +22,7 @@ refs=function(id,spec,rawSpec){
 specLoaded = function(err, spec, userData){
     var
     self=userData[0],
-    spawnList=userData[1]
+    chains=userData[1]
 
     if (self._removed) return self.remove()
     if (err){
@@ -59,15 +59,15 @@ specLoaded = function(err, spec, userData){
     self.signals.moduleAdded().send(h)
 
     if (h){
-        if (self._show) h.show(self, self._show[0], self._show[1])
-        if (spawnList){
-            var m=spawnList.shift()
-            if (1===spawnList.length){
-				spawnList.length=0
+        if (self._show && self.show) h.show(self, self._show[0], self._show[1])
+        if (chains){
+            var m=chains.shift()
+            if (1===chains.length){
+				chains.length=0
                 if(m) m.call(h, null, self)
                 return
             }
-            h.spawn(m, self._params, spawnList[spawnList.length-1], !self._show, spawnList)
+            h.spawn(m, self._params, chains[chains.length-1], !self._show, chains)
         }
     }
 },
@@ -92,12 +92,8 @@ Module= {
             case 'html': this.el.innerHTML=s[VALUE]; break
             case 'el': this.setElement(s[VALUE]); break
             }
-            switch(s[TYPE]){
-            case 'ctrl': this.spawn(s[VALUE], params); break
-            case 'view': list.push(s[VALUE]); break
-            }
         }
-        this.spawnAsync(list, params, null, false, dummyCB)
+        this.spawnAsync(spec, params, null, false, dummyCB)
     },
     addSpec: function(rawSpec, cb){
         this._rawSpec=(this._rawSpec||[]).concat(rawSpec)
@@ -115,16 +111,15 @@ Module= {
         specMgr.unload(this._rawSpec, this.spec)
     },
     // ctrl can't spawn view
-    spawn: function(Mod, params, spec, chains){
+    spawn: function(Mod, params, spec, hidden, chains){
         if (!Mod || !Mod.spec) return
-		if (chains instanceof Function){
-		}
 
         var m = new (Ctrl.extend(Mod.Class))(
 			Mod,
 			spec && spec.length ? Mod.spec.concat(spec) : Mod.spec,
 			params,
 			this,
+            !hidden,
 			chains instanceof Function ? [chains, spec] : chains)
 
         this.modules.push(m)
@@ -132,14 +127,19 @@ Module= {
         return m
     },
     spawnAsync: function(Mods, params, spec, hidden, cb){
-        if (!Mods.length) {
+        var list=[]
+        for(var i=0,m; m=Mods[i]; i++){
+            switch(m[TYPE]){
+            case 'ctrl': 
+            case 'view': list.push(m[VALUE]); break
+            }
+        }
+        if (!list.length) {
 			if (cb) cb()
 			return
 		}
-        var m=Mods.shift()
-        Mods.push(cb)
-		Mods.push(spec)
-        return this.spawn(m, params, spec, hidden, Mods)
+        list.push(cb,spec)
+        return this.spawn(list.shift(), params, spec, hidden, list)
     },
     dump: function(mod){
         if (!mod) return -1
@@ -157,7 +157,7 @@ Module= {
     slots:{}
 }
 
-function Ctrl(prop, rawSpec, params, host, chains){
+function Ctrl(prop, rawSpec, params, host, show, chains){
     this.name = prop.name
     this.host = host
     this.ancestor = Ctrl.prototype
@@ -165,6 +165,7 @@ function Ctrl(prop, rawSpec, params, host, chains){
     this._rawSpec = rawSpec
     this._params = params
     this._removed = false 
+    this._show=show?[host.el,false]:null // view in chains migh need to show
 
     this.signals = sigslot(this, ['moduleAdded'])
     specMgr.load(host, params || [], rawSpec, specLoaded, [this,chains])
@@ -177,9 +178,8 @@ _.extend(Ctrl.prototype, Backbone.Events, Module)
 var View = Backbone.View.extend(_.extend(Module, {
     initialize: function(options, prop, spec, params, host, show, chains){
         this._elements = []
-        this._show=show?[host.el,false]:null
 
-        Ctrl.call(this, prop, spec, params, host, chains)
+        Ctrl.call(this, prop, spec, params, host, show, chains)
 
         this.ancestor = View.prototype
     },
@@ -191,7 +191,7 @@ var View = Backbone.View.extend(_.extend(Module, {
     spawn: function(Mod, params, spec, hidden, chains){
         if (!Mod || !Mod.spec) return
 
-        if ('ctrl'===Mod.type) return Ctrl.prototype.spawn.call(this, Mod, params, spec, chains)
+        if ('ctrl'===Mod.type) return Ctrl.prototype.spawn.call(this, Mod, params, spec, hidden, chains)
 
         var s=spec && spec.length ? Mod.spec.concat(spec) : Mod.spec
 
