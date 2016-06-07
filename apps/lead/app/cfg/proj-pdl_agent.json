@@ -41,6 +41,9 @@
                 "events":[]
             }]
         ]],
+        ["common/native/push","ctrl",[
+            ["gcmSenderId","text","pdl-agent"]
+        ]],
         ["FormAuth","view",[
             ["owner","ref","owner"],
             ["tplSignin","file","FormSignin.asp"],
