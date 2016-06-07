@@ -5,6 +5,9 @@
         "room":"api/room",
         "request":"api/request",
         "locker":"api/locker",
+        "consumer":"api/consumer",
+        "agent":"api/agent",
+        "device":"api/device",
         "web":["context","webServer"]
     },
     "routes":{
@@ -75,6 +78,11 @@
             ["user","update","input"],
             [0]
         ],
+        "lead/device/update": [
+            ["user","verify","input","user"],
+            ["device","update","input"],
+            [0]
+        ],
         "lead/request/add": [
             ["user","verify","input","user"],
             ["request","add","input","request"],
@@ -82,6 +90,9 @@
             ["user","appoint","input",":list"],
             ["user","addAgent","request",":list"],
             ["room","publish",["lead/broadcast"],"msg",":list"],
+            ["device","readTokens",":list","devices"],
+            ["agent","newJobMsg","msg"],
+            ["agent","send","devices","msg"],
             [0]
         ],
         "lead/request/read": [
@@ -108,6 +119,9 @@
             ["user","verify","input","user"],
             ["request","verify","input","locker"],
             ["locker","unlock","locker","output"],
+            ["device","readTokens",":list","devices"],
+            ["agent","updatedJobMsg","msg"],
+            ["consumer","send","devices","msg"],
             [0]
         ],
         "lead/locker/add": [
