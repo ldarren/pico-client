@@ -24,4 +24,8 @@
         <allow-intent href="itms-apps:*" />
     </platform>
     <plugin name="cordova-plugin-ble-central" spec="~1.1.0" />
+    <plugin name="phonegap-plugin-push" spec="~1.7.0">
+        <variable name="SENDER_ID" value="pdl-consumer" />
+    </plugin>
+    <plugin name="cordova-plugin-device" spec="~1.1.2" />
 </widget>
