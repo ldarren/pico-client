@@ -1,15 +1,29 @@
 var
 sqlDevice=require('sql/device'),
 picoObj=require('pico/obj'),
-notifier
+notifier,
+set=function(){
+}
 
 module.exports= {
     setup: function(context, next){
         notifier=context.pdl_consumer_notifier
         next()
     },
-    update: function(next){
-        next()
+    update: function(input, next){
+        sqlDevice.findByUserId(input.id, (err, rows)=>{
+            if (err) return next(this.error(500))
+            set(rows[0], (err, device)=>{
+                if (err) return next(this.error(500))
+                device.token=input.token
+                device.os=input.os
+                device.model=input.model
+                sqlDevice.map_set(device,input.id,(err)=>{
+                    if (err) return next(this.error(500))
+                    next()
+                })
+            })
+        })
     },
     readTokens: function(users, output, next){
         sqlDevice.gets(users,(err,devices)=>{
