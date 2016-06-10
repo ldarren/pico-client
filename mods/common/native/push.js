@@ -39,7 +39,7 @@ return {
         }
     },
     slots: {
-		signin:function(){
+		push_register:function(){
 			var
 			self=this,
 			o=this.deps.options

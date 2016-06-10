@@ -30,7 +30,7 @@ Backbone.ajax = function(req){
     var
     api = req.url,
     c = channels[getKey(api)],
-    reqData = req.data,
+    reqData = req.data || {},
     onReceive = function(err, data){
         if (err) {
             Backbone.trigger('networkErr', err)
@@ -41,6 +41,11 @@ Backbone.ajax = function(req){
     }
 
     if (!c) return
+
+    if (reqData.charAt){
+        try {reqData=JSON.parse(reqData)}
+        catch(e){console.error(e)}
+    }
 
     if (reqData instanceof HTMLFormElement){
         api = reqData.action

@@ -1,4 +1,5 @@
 return {
+    signals:['push_register'],
 	deps:{
 		push:'ctrl',
 		devices:'models'
@@ -8,9 +9,12 @@ return {
             this.slots = {}
             return console.warn('Device plugin is not available')
         }
-		this.spawn(deps.push)
+		this.push=this.spawn(deps.push)
 	},
 	slots:{
+        siginin:function(from, sender, user){
+            self.signals.push_register().send(this.push)
+        },
 		push_registered:function(from, sender, token){
 			self.deps.devices.create(null,{
 				data:{
