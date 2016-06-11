@@ -46,7 +46,7 @@ return {
 
 			this.push=PushNotification.init({
 				android: {
-					senderID:           deps.gcmSenderId,
+					senderID:           self.deps.gcmSenderId,
 					sound:              o.sound,
 					//vibrate:            o.vibrate, // ios no vibration?
 					icon:               o.icon,
