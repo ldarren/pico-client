@@ -2,7 +2,17 @@ var
 sqlDevice=require('sql/device'),
 picoObj=require('pico/obj'),
 notifier,
-set=function(){
+set=function(input, cb){
+    sqlDevice.findByUserId(input.id, (err, rows)=>{
+        if (err) return cb(err)
+        if (rows.length) return cb(null, rows[0])
+        sqlDevice.set({
+            userId:input.id,
+            token:input.token,
+            os:input.os,
+            model:input.model
+        }, input.id, cb)
+    })
 }
 
 module.exports= {
@@ -11,17 +21,11 @@ module.exports= {
         next()
     },
     update: function(input, next){
-        sqlDevice.findByUserId(input.id, (err, rows)=>{
+        set(rows[0], (err, device)=>{
             if (err) return next(this.error(500))
-            set(rows[0], (err, device)=>{
+            sqlDevice.map_set(device,input.id,(err)=>{
                 if (err) return next(this.error(500))
-                device.token=input.token
-                device.os=input.os
-                device.model=input.model
-                sqlDevice.map_set(device,input.id,(err)=>{
-                    if (err) return next(this.error(500))
-                    next()
-                })
+                next()
             })
         })
     },

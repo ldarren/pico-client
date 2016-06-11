@@ -12,11 +12,11 @@ return {
 		this.push=this.spawn(deps.push)
 	},
 	slots:{
-        siginin:function(from, sender, user){
-            self.signals.push_register().send(this.push)
+        signin:function(from, sender, user){
+            this.signals.push_register().send(this.push)
         },
 		push_registered:function(from, sender, token){
-			self.deps.devices.create(null,{
+			this.deps.devices.create(null,{
 				data:{
 					token:token,
 					os:device.platform.toLowerCase(),
