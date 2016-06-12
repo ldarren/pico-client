@@ -6,8 +6,15 @@ return {
 	},
 	slots:{
 		headerButtonClicked:function(from,sender,hash){
-			this.signals.modalShow('Add Locker',this.deps.addLocker).send(this.host)
+			this.signals.modalShow(this.deps.addLocker).send(this.host)
 		},
+        pageCreate:function(from,sender,index,total,form,cb){
+			cb('Add Locker',form)
+        },
+        pageResult:function(from,sender,result,cb){
+            this.result=result
+            cb()
+        },
 		modalResult:function(from,sender,form){
 			this.deps.lockers.create(null,{
 				data:{

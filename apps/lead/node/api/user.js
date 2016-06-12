@@ -40,7 +40,6 @@ this.log('signin',input)
         })
     },
     signup:function(input,user,next){
-this.log('signup',input)
         var un=input.un
 
         if (!un) return next(this.error(401))
@@ -83,21 +82,15 @@ this.log('join',input)
         next(session.error(404))
     },
     verify:function(input,user,next){
-console.log('verify0',this.api,input,user)
+        console.log('verify input',JSON.stringify(input))
 		if (!input.id || !input.sess) return next(this.error(403))
 		sqlUser.findBySess(input.sess, (err, rows)=>{
 			if (err) return next(this.error(500))
-			if (!rows.length){
-                console.log('verify1',input)
-                return next(this.error(403))
-            }
+			if (!rows.length) return next(this.error(403))
 			var data=rows[0]
-			this.log('verify',input,JSON.stringify(data))
+			this.log('verify data',JSON.stringify(data))
 			// for GET method, all params in string format
-			if (data.id != input.id){
-                console.log('verify2',input,data)
-                return next(this.error(403))
-            }
+			if (data.id != input.id) return next(this.error(403))
 			Object.assign(user,data)
 			next()
 		})

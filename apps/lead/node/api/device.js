@@ -21,7 +21,7 @@ module.exports= {
         next()
     },
     update: function(input, next){
-        set(rows[0], (err, device)=>{
+        set(input, (err, device)=>{
             if (err) return next(this.error(500))
             sqlDevice.map_set(device,input.id,(err)=>{
                 if (err) return next(this.error(500))
