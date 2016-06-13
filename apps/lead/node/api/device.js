@@ -3,7 +3,6 @@ sqlDevice=require('sql/device'),
 picoObj=require('pico/obj'),
 notifier,
 set=function(input, cb){
-console.log('device.set 1',input)
     var device={
         userId:input.id,
         token:input.token,
@@ -34,7 +33,7 @@ module.exports= {
     readTokens: function(users, output, next){
         sqlDevice.gets(users,(err,devices)=>{
             if (err) return next(this.error(500, err))
-            sqlDevice.map_gets(picoObj.pluck(devices,'id'),(err,maps)=>{
+            sqlDevice.map_gets(devices,(err,maps)=>{
                 if (err) return next(this.error(500, err))
                 var ids={},tokens={}
                 for(var i=0,d; d=maps[i]; i++){

@@ -1,16 +1,14 @@
-var
-sqlDevice=require('sql/device'),
-picoObj=require('pico/obj'),
-notifier
+var notifier
 
 module.exports= {
     setup: function(context, next){
         notifier=context.pdl_agent_notifier
         next()
     },
-    newjobMsg:function(output){
+    newJobMsg:function(output, next){
         output['title']='New Job'
         output['content']='New Job!'
+        next()
     },
     send: function(devices, data, next){
         notifier.broadcast(devices.tokens, devices.ids, data.title, data.content)

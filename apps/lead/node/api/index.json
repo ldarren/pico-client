@@ -118,7 +118,7 @@
             ["request","verify","input","locker"],
             ["locker","unlock","locker","output"],
             ["device","readTokens",":list","devices"],
-            ["agent","updatedJobMsg","msg"],
+            ["consumer","requestUpdated","msg"],
             ["consumer","send","devices","msg"],
             [0]
         ],
