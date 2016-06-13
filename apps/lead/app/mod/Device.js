@@ -15,6 +15,9 @@ return {
         signin:function(from, sender, user){
             this.signals.push_register().send(this.push)
         },
+        signout:function(from, sender){
+            this.signals.push_unregister().send(this.push)
+        },
 		push_registered:function(from, sender, token){
 			this.deps.devices.create(null,{
 				data:{
@@ -25,6 +28,11 @@ return {
 			})
 		},
 		push_unregistered:function(){
+			/*this.deps.devices.remove(null,{
+				data:{
+					token:token
+				}
+			})*/
 		},
 		push_notification:function(){
 		},

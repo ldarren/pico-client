@@ -68,7 +68,7 @@ return {
             var self=this
             this.push.unregister(
                 function(){
-                    self.signals.push_unregistered().send()
+                    self.signals.push_unregistered().sendNow()
                 },
                 function(error){
                     self.signals.push_error(error).send()

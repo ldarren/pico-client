@@ -37,12 +37,20 @@
         ]],
         [["common/auth/DataStream","DataStreamMixin"],"ctrl",[
             ["models","refs","models"],
+            ["ping","models",{
+                "create":"lead/util/ping"
+            }],
             ["push","stream",{
                 "events":[]
             }]
         ]],
-        ["common/native/push","ctrl",[
-            ["gcmSenderId","text","pdl-agent"]
+        ["Device","ctrl",[
+			["push","ctrl",[
+				["gcmSenderId","text","pdl-agent"]
+			],"common/native/push"],
+            ["devices","models",{
+				"create":"lead/device/update"
+			}]
         ]],
         ["FormAuth","view",[
             ["owner","ref","owner"],
@@ -91,7 +99,7 @@
                 ["title","text","My Jobs"],
                 ["btnRight","map",{"icon":"icon_search"}]
             ]],
-            ["Scrollable","view",[
+            ["ListView","view",[
                 ["list","ref","requests"],
                 ["Cell","view",[
                     ["options","map",{"className":"cardRequest"}],
@@ -121,14 +129,25 @@
                     ["tpl","file","header/User.asp"]
                 ]]
             ]],
-            ["Panel","view",[
-                ["owner","ref","owner"],
-                ["tpl","file","Panel.asp"],
-                ["rows","list",[
-                    {"type":"text","label":"Total Jobs","value":76},
-                    {"type":"text","label":"Monthly Jobs","value":21},
-                    {"type":"text","label":"Weekly Jobs","value":13},
-                    {"type":"text","label":"Accepted Jobs","value":69}
+            ["ScrollView","view",[
+                ["Panel","view",[
+                    ["tpl","file","Panel.asp"],
+                    ["title","text","Statistic"],
+                    ["rows","list",[
+                        {"type":"text","label":"Total Requests","value":76},
+                        {"type":"text","label":"Monthly Requests","value":21},
+                        {"type":"text","label":"Weekly Requests","value":13},
+                        {"type":"text","label":"Accepted Requests","value":69}
+                    ]]
+                ]],
+                ["Panel","view",[
+                    ["tpl","file","Panel.asp"],
+                    ["title","text","Contacts"],
+                    ["rows","list",[
+                        {"type":"static","label":"Tel","value":"+65 98765432","url":"tel:+6598765432"},
+                        {"type":"static","label":"Email","value":"support@laundrymart.com","url":"mailto:support@laundrymart.com"},
+                        {"type":"static","label":"Address","value":"234, Jalan Woodlad E1, S(6745849)","url":"geo:53.33196,6.92583"}
+                    ]]
                 ]]
             ]],
             ["Menu","view",[
