@@ -64,8 +64,6 @@ module.exports= {
         })
 	},
 	map_set:function(device,by,cb){
-console.log(device,by)
-console.log(client.format(MAP_SET, [client.mapEncode(device, by, hash, INDEX, ENUM)]))
 		client.query(MAP_SET, [client.mapEncode(device, by, hash, INDEX, ENUM)], cb)
     },
 	findByUserId: function(userId,cb){

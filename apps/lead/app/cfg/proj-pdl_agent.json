@@ -102,8 +102,8 @@
             ["ListView","view",[
                 ["list","ref","requests"],
                 ["Cell","view",[
-                    ["options","map",{"className":"cardRequest"}],
-                    ["tpl","file","CardRequest.asp"]
+                    ["options","map",{"className":"simple"}],
+                    ["tpl","file","CardSimple.asp"]
                 ],"Card"]
             ]],
             ["Menu","view",[
