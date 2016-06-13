@@ -1,13 +1,15 @@
 var
-INDEX=                  ['userId'],
+INDEX=                  ['userId','uuid'],
 PRIVATE=                [],
 ENUM=                   [],
 
 GET =                   'SELECT * FROM `device` WHERE `id`=? AND `s`=1;',
 GETS =                  'SELECT * FROM `device` WHERE `id` IN (?) AND `s`=1;',
-SET =                   'INSERT INTO `device` (`userId`, `cby`) VALUES (?);',
+SET =                   'INSERT INTO `device` (`userId`, `uuid`, `cby`) VALUES (?) ON DUPLICATE KEY UPDATE `s`=1;',
+UNSET=                  'UPDATE `device` SET `s`=0 WHERE `id`=?;',
 FIND_BY_USERID=         'SELECT * FROM `device` WHERE `userId`=? AND `s`=1;',
 FIND_BY_USERIDS=        'SELECT * FROM `device` WHERE `userId` IN (?) AND `s`=1;',
+FIND_BY_USERID_UUID=    'SELECT * FROM `device` WHERE `userId`=? AND `uuid`=? AND `s`=1;',
 
 MAP_GET =               'SELECT `deviceId`, `k`, `v1`, `v2` FROM deviceMap WHERE `deviceId`=?;',
 MAP_GETS =              'SELECT `deviceId`, `k`, `v1`, `v2` FROM deviceMap WHERE `deviceId` IN (?);',
@@ -68,5 +70,8 @@ module.exports= {
     },
 	findByUserId: function(userId,cb){
 		client.query(FIND_BY_USERID,[userId],cb)
+    },
+	findByUserIdUUID: function(userId,uuid,cb){
+		client.query(FIND_BY_USERID_UUID,[userId,uuid],cb)
     }
 }

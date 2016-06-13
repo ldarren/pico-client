@@ -18,7 +18,7 @@
             [0]
         ],
         "ERR//lead/stream": [
-            ["web","SSEStop","res"]
+            ["web","SSEAbort","error","res"]
         ],
         "END": [
             [0]
