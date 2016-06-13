@@ -1,13 +1,12 @@
 return {
-    signals:['refreshcache'],
+    signals:['refreshcache','powerDown'],
 	deps:{
-        owner:'models'
 	},
 	slots:{
 		headerButtonClicked:function(from,sender,hash){
 			switch(hash){
 			case 'power':
-				this.deps.owner.reset()
+				this.signals.powerDown().send()
 				break
 			case 'restart':
 				window.location.reload(true)

@@ -1,7 +1,8 @@
 return {
-    signals:['push_register'],
+    signals:['push_register','push_unregister'],
 	deps:{
 		push:'ctrl',
+		owner:'models',
 		devices:'models'
 	},
 	create:function(deps){
@@ -15,7 +16,7 @@ return {
         signin:function(from, sender, user){
             this.signals.push_register().send(this.push)
         },
-        signout:function(from, sender){
+        powerDown:function(from, sender){
             this.signals.push_unregister().send(this.push)
         },
 		push_registered:function(from, sender, token){
@@ -23,16 +24,26 @@ return {
 				data:{
 					token:token,
 					os:device.platform.toLowerCase(),
-					model:device.model.toLowerCase()
+					uuid:device.uuid,
+					$detail:{
+						sw:device.cordova,
+						os:device.version,
+						hw:device.manufacturer+':'+device.model,
+						sim:device.isVirtual
+					}
 				}
 			})
 		},
 		push_unregistered:function(){
-			/*this.deps.devices.remove(null,{
+			var
+			ds=this.deps.devices,
+			d=ds.at(0)
+			ds.remove(d,{
 				data:{
-					token:token
+					deviceId:d.id
 				}
-			})*/
+			})
+			this.deps.owner.reset()
 		},
 		push_notification:function(){
 		},

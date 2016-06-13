@@ -45,11 +45,13 @@
             }]
         ]],
         ["Device","ctrl",[
+			["owner","ref","owner"],
 			["push","ctrl",[
 				["gcmSenderId","text","pdl-agent"]
 			],"common/native/push"],
             ["devices","models",{
-				"create":"lead/device/update"
+				"create":"lead/device/update",
+				"remove":"lead/device/remove"
 			}]
         ]],
         ["FormAuth","view",[
@@ -118,7 +120,6 @@
             ["options","map",{"className":"fulpage active"}],
             ["owner","ref","owner"],
             ["ProfileCtrl","ctrl",[
-                ["owner","ref","owner"]
             ]],
             ["header/Base","view",[
                 ["tpl","file","header/Base.asp"],
