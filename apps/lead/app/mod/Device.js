@@ -7,7 +7,11 @@ return {
 	},
 	create:function(deps){
         if (!__.refChain(window, ['device'])) {
-            this.slots = {}
+            this.slots = {
+				powerDown:function(){
+					this.deps.owner.reset()
+				}
+			}
             return console.warn('Device plugin is not available')
         }
 		this.push=this.spawn(deps.push)
@@ -29,7 +33,7 @@ return {
 						sw:device.cordova,
 						os:device.version,
 						hw:device.manufacturer+':'+device.model,
-						sim:device.isVirtual
+						vm:device.isVirtual
 					}
 				}
 			})
