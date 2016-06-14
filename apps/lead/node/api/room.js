@@ -58,7 +58,7 @@ this.log('added room member, new count',pipes.length)
         var res=userPipeMap.get(user.id)
         if (!res || res.finished) return next() //TODO: better handling
 
-        web.SSE(res,JSON.stringify(output),evt)
+        web.SSE(res,output,evt)
         next()
     },
 	publish: function(evt,msg,list,next){
@@ -70,7 +70,7 @@ this.log('added room member, new count',pipes.length)
 		var users=input.list
         if (!users || !users.length) return next(this.error(400))
 
-        var output=JSON.stringify(input.msg)
+        var output=input.msg
 
         for(var i=users.length-1,uid,res; uid=users[i]; i--){
             if (userPipeMap.has(uid)){

@@ -41,7 +41,7 @@ module.exports= {
         if (!ids || !ids.length) return cb(ERR_INVALID_INPUT)
         client.query(GETS,[ids],(err,rows)=>{
             if (err) return cb(err)
-			this.map_get(client.decodes(rows,hash,ENUM),cb)
+			this.map_gets(client.decodes(rows,hash,ENUM),cb)
         })      
     },
 	map_get: function(request, cb){

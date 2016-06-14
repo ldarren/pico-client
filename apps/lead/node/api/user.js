@@ -3,16 +3,7 @@ Floor=Math.floor,Random=Math.random,Max=Math.max,
 sqlUser=require('sql/user'),
 sqlRequest=require('sql/request'),
 picoStr=require('pico/str'),
-picoObj=require('pico/obj'),
-poll=function(list,seen,output,next){
-    if (!list.length) return next()
-    sqlRequest.gets(list,(err,requests)=>{
-        if (err) return next(this.error(500))
-        output['requests']=requests
-        output['seen']=Max(seen,Max(...(picoObj.pluck(requests,'uat'))))
-        next()
-    })
-}
+picoObj=require('pico/obj')
 
 module.exports= {
     setup: function(context, next){
@@ -124,7 +115,14 @@ this.log('join',input)
         var t=input.t
         sqlUser.list_findByTime(user.id,'requestId',t,(err, list)=>{
             if (err) return next(this.error(500))
-            poll.call(this,picoObj.pluck(list,'requestId'),t,output,next)
+            var list=picoObj.pluck(list,'requestId')
+            if (!list.length) return next()
+            sqlRequest.gets(list,(err,requests)=>{
+                if (err) return next(this.error(500))
+                output['requests']=requests
+                output['seen']=Max(t,Max(...(picoObj.pluck(requests,'uat'))))
+                next()
+            })
         })
     }
 }

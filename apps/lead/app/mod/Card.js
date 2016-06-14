@@ -32,7 +32,7 @@ return{
 	slots:{
 		lockStatus:function(from, sender, id, state){
 			var lock=this.deps.data
-			if (id !== lock.$detail.deviceId) return
+			if (id !== lock.$detail.lockerId) return
 			var btn=this.el.querySelector('button')
 			btn.removeAttribute('disabled')
 			switch(state){
@@ -60,17 +60,17 @@ return{
 		'click button':function(e){
 			var lock=this.deps.data
 
-			if (!lock || !lock.$detail || !lock.$detail.deviceId) return __.dialogs.alert('Missing device id',lock.name)
+			if (!lock || !lock.$detail || !lock.$detail.lockerId) return __.dialogs.alert('Missing locker information',lock.name)
 
 			var btn=e.srcElement
 			switch(btn.textContent){
 			case 'Scan':
-				this.signals.scan(lock.$detail.deviceId).send(this.host)
+				this.signals.scan(lock.$detail.lockerId).send(this.host)
 				btn.textContent='Scanning...'
 				btn.setAttribute('disabled',1)
 				break
 			case 'Open':
-				this.signals.unlock(lock.$detail.deviceId,lock.id).send(this.host)
+				this.signals.unlock(lock.$detail.lockerId,lock.id).send(this.host)
 				btn.textContent='Openning...'
 				btn.setAttribute('disabled',1)
 				break

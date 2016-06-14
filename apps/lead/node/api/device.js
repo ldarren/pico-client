@@ -19,6 +19,7 @@ module.exports= {
         sqlDevice.findByUserIdUUID(input.id, input.uuid, (err, rows)=>{
             if (err) return cb(err)
             if (rows.length){
+                device['id']=rows[0].id
                 sqlDevice.map_set(device,input.id,(err)=>{
                     if (err) return next(this.error(500,err))
                     next()

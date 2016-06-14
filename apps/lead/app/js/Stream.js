@@ -1,6 +1,9 @@
-//TODO: authentication(header or cookies) with withCredentials=true
+// TODO:
+// authentication(header or cookies) with withCredentials=true
+// how to get sep["&"] from pico/web?
 var
 network=require('js/network'),
+PJSON=require('pico/json'),
 callbacks=function(self){
     return [
     function(e){
@@ -19,7 +22,7 @@ callbacks=function(self){
     },
 	function(e){
         var data
-        try{ data=JSON.parse(e.data) }
+        try{ data=PJSON.parse(e.data.split('["&"]'),true) }
         catch(exp){ data=e.data }
         self.trigger(e.type, data, e.lastEventId)
     }
