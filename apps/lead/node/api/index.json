@@ -115,11 +115,18 @@
         ],
         "lead/request/unlock": [
             ["user","verify","input","user"],
-            ["request","verify","input","locker"],
+            ["request","verify","input","request","locker"],
             ["locker","unlock","locker","output"],
+            ["request","getCreator","request",":list"],
             ["device","readTokens",":list","devices"],
             ["consumer","requestUpdated","msg"],
             ["consumer","send","devices","msg"],
+            [0]
+        ],
+        "lead/request/locker":[
+            ["user","verify","input","user"],
+            ["request","verify","input","request","locker"],
+            ["locker","readById","locker","output"],
             [0]
         ],
         "lead/locker/add": [

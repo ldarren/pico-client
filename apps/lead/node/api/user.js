@@ -96,11 +96,11 @@ this.log('join',input)
 	update:function(input,next){
 		next()
 	},
-	appoint:function(input,output,next){
+	appoint:function(input,list,next){
 		sqlUser.findByRole('agent',(err,rows)=>{
 			if (err) return next(this.error(500))
             if (!rows.length) return next(this.error(500, 'No Agent Available'))
-			output.push(rows[Floor(rows.length*Random())].id)
+			list.push(rows[Floor(rows.length*Random())].id)
 			next()
 		})
     },

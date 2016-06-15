@@ -8,7 +8,7 @@ module.exports= {
         next()
     },
 	verify:function(input,output,next){
-        Object.assign(output,input)
+        Object.assign(output,{id:input.lockerId})
 		next()
 	},
 	add:function(input,output,next){
@@ -64,8 +64,8 @@ this.log('add lock',input)
             })
         })
     },
-	unlock:function(lock,output,next){
-		sqlLocker.map_get(lock,(err,map)=>{
+	unlock:function(input,output,next){
+		sqlLocker.map_get(input,(err,map)=>{
 			if (err) return next(this.error(500))
 			if (!map || !map.passcode || !map.salt) return next(this.error(400))
 

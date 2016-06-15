@@ -8,8 +8,15 @@ module.exports= {
     setup: function(context, next){
         next()
     },
-	verify:function(input,output,next){
-		next()
+	verify:function(input,output,locker,next){
+        // TODO: check user.list contains input.id
+        Object.assign(locker,{id:input.lockerId})
+		sqlRequest.get({id:input.requestId},(err,request)=>{
+            if (err) return next(this.error(500,err))
+            if (request.lockerId != input.lockerId) return next(this.error(400,'invalid lockerId'))
+            Object.assign(output,request)
+		    next()
+        })
 	},
 	add:function(input,output,next){
 		Object.assign(output,input,{
@@ -53,5 +60,9 @@ module.exports= {
                 next()
             })
         })
+    },
+    getCreator:function(request,list,next){
+        list.push(request.cby)
+        next()
     }
 }
