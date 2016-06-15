@@ -34,8 +34,10 @@ return{
 					names[peripheral.id]=name
 					this.signals.lockStatus(name,'found').send(senders[l])
 					this.signals.ble_connect(peripheral.id).send(sender)
+					return
 				}
 			}
+			this.signals.lockStatus(name,'disconnected').send(senders[l])
 		},
         ble_connected:function(from,sender,peripheral){
             console.log('Lock.ble_connected',peripheral)
@@ -69,7 +71,7 @@ return{
 			this.senders[name]=sender
 			this.signals.ble_startScan([],30).send(this.ble)
 		},
-		unlock:function(from,sender,name,lockerId){
+		unlock:function(from,sender,name,lockerId,requestId){
 			var p=this.lockers[name]
 
 			if (!p) return console.error('Locker unlock without lock')
@@ -80,7 +82,7 @@ return{
 
 			lock.reset()
 			lock.create(null,{
-				data:{lockerId:lockerId},
+				data:{lockerId:lockerId,requestId:requestId},
 				success:function(model,raw){
 					var cred=new Uint32Array(raw.cred)
 					self.signals.ble_startNotification(p.id, scratchSrv, scratch3).send(self.ble)

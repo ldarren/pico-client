@@ -170,7 +170,7 @@
 				["Cell","view",[
 					["options","map",{"className":"cardRequest"}],
 					["tpl","file","CardLocker.asp"]
-				],"Card"]
+				],["Card","CardLockerMixin"]]
             ]],
             ["Menu","view",[
                 ["tpl","file","Menu.asp"],

@@ -103,10 +103,14 @@
             ]],
             ["ListView","view",[
                 ["list","ref","requests"],
+				["lockers","models",{
+					"create":"lead/request/locker"
+				}],
                 ["Cell","view",[
                     ["options","map",{"className":"simple"}],
-                    ["tpl","file","CardSimple.asp"]
-                ],"Card"]
+                    ["tpl","file","CardSimple.asp"],
+                    ["lockers","ref","lockers"]
+                ],["Card","CardSimpleMixin"]]
             ]],
             ["Menu","view",[
                 ["tpl","file","Menu.asp"],

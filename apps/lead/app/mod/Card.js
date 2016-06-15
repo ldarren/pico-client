@@ -28,53 +28,5 @@ return{
 			card:data,
 			delivDateNoun:picoTime.day(dt),
 			delivTime:t})
-	},
-	slots:{
-		lockStatus:function(from, sender, id, state){
-			var lock=this.deps.data
-			if (id !== lock.$detail.lockerId) return
-			var btn=this.el.querySelector('button')
-			btn.removeAttribute('disabled')
-			switch(state){
-			case 'found':
-				btn.textContent='Connecting...'
-				btn.setAttribute('disabled',1)
-				break
-			case 'connected':
-				btn.textContent='Open'
-				break
-			case 'disconnected':
-				btn.textContent='Scan'
-				break
-			case 'locked':
-				btn.textContent='Open'
-				break
-			case 'unlocked':
-				btn.textContent='Openned'
-				btn.setAttribute('disabled',1)
-				break
-			}
-		}
-	},
-	events:{
-		'click button':function(e){
-			var lock=this.deps.data
-
-			if (!lock || !lock.$detail || !lock.$detail.lockerId) return __.dialogs.alert('Missing locker information',lock.name)
-
-			var btn=e.srcElement
-			switch(btn.textContent){
-			case 'Scan':
-				this.signals.scan(lock.$detail.lockerId).send(this.host)
-				btn.textContent='Scanning...'
-				btn.setAttribute('disabled',1)
-				break
-			case 'Open':
-				this.signals.unlock(lock.$detail.lockerId,lock.id).send(this.host)
-				btn.textContent='Openning...'
-				btn.setAttribute('disabled',1)
-				break
-			}
-		}
 	}
 }
