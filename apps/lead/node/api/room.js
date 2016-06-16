@@ -53,12 +53,12 @@ this.log('added room member, new count',pipes.length)
         //remove(pipes.indexOf(res))
         next()
     },
-    stream: function(evt, user, output, next){
+    stream: function(evt, user, msg, next){
         if (!user || !user.id) return next(this.error(404))
         var res=userPipeMap.get(user.id)
         if (!res || res.finished) return next() //TODO: better handling
 
-        web.SSE(res,output,evt)
+        web.SSE(res,msg,evt)
         next()
     },
 	publish: function(evt,msg,list,next){
@@ -73,11 +73,9 @@ this.log('added room member, new count',pipes.length)
         var output=input.msg
 
         for(var i=users.length-1,uid,res; uid=users[i]; i--){
-            if (userPipeMap.has(uid)){
-                res=userPipeMap.get(uid)
-                if (!res || res.finished) continue
-                web.SSE(res,output,evt)
-            }
+            res=userPipeMap.get(uid)
+            if (!res || res.finished) continue
+            web.SSE(res,output,evt)
         }
 
         next()

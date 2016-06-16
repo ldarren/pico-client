@@ -60,10 +60,26 @@ return {
 				break
 			case 'Open':
 				if (!lockers.length) break
-				var locker=lockers.at(0)
-				this.signals.unlock(locker.get('$detail').deviceId,locker.id,request.id).send(this.host)
-				btn.textContent='Openning...'
-				btn.setAttribute('disabled',1)
+				var
+                locker=lockers.at(0),
+                lockerId=locker.id,
+                deviceId=locker.get('$detail').deviceId
+
+                lockers.remove(locker,{
+                    data:{
+                        lockerId:lockerId,
+                        requestId:request.id
+                    },
+                    success:function(model,raw){
+                        this.signals.unlock(deviceId,raw.cred).send(this.host)
+                        btn.textContent='Openning...'
+                        btn.setAttribute('disabled',1)
+                    },
+                    error:function(err){
+                        console.error(err)
+                        btn.textContent='Scan'
+                    }
+                })
 				break
 			}
 		}

@@ -22,20 +22,22 @@
 </select>
 <% continue} %>
 
-<% if (f.type === "tel"){ %>
+<% if (f.type === "number"){ %>
+<input type="tel" placeholder="<%=f.holder || ""%>" min=<%=undefined===f.min?-999:f.min%> max=<%=undefined===f.max?999:f.max%>
+<% } else if (f.type === "tel"){ %>
 <input type="tel" placeholder="<%=f.holder || "+6598765432"%>" pattern="[\+]\d{2}[\(]\d{2}[\)]\d{4}[\-]\d{4}"
 <% } else if (f.type === "email"){ %>
 <input type="email" placeholder="<%=f.holder || "name@domain.org"%>" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$"
-<% } else if (f.type === "date"){ %>
-<input type="date" placeholder="<%=f.holder || "date(MM/DD/YYYY)"%>"
-<% } else if (f.type === "month"){ %>
-<input type="month" placeholder="<%=f.holder || "date(MM/YYYY)"%>"
-<% } else if (f.type === "time"){ %>
-<input type="time" placeholder="<%=f.holder || "time(HH:MM:SS)"%>"
 <% } else {%>
 <input type="<%=f.type%>" placeholder="<%=f.holder || ""%>"
 <% }%>
-class=input name="<%=f.name%>" value="<%=undefined===f.value ? "":f.value%>" <%=f.required?"required":""%> <%=f.readonly?"readonly":""%>>
-
+class=input
+name="<%=f.name%>"
+value="<%=undefined===f.value?"":f.value%>"
+<%=f.autocapitalize?"autocapitalize="+f.autocapitalize:""%>
+<%=f.autocomplete?"autocomplete="+f.autocomplete:""%>
+<%=f.autofocus?"autofocus":""%>
+<%=f.required?"required":""%>
+<%=f.readonly?"readonly":""%>>
 </div>
 <% }%>

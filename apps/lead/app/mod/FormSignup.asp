@@ -2,11 +2,11 @@
 	<svg class="logo"><use xlink:href="#icon_user"/></svg>
     <div class="row">
 		<svg class="icon name"><use xlink:href="#icon_name"/></svg>
-        <input type="text" name=name class="input name" placeholder="Full Name" required />
+        <input type="text" name=name class="input name" autocapitalize=none placeholder="Full Name" required />
     </div>
     <div class="row">
 		<svg class="icon name"><use xlink:href="#icon_name"/></svg>
-        <input type="text" name=username class="input name" placeholder="Username" required />
+        <input type="text" name=username class="input name" autocapitalize=words placeholder="Username" required />
     </div>
     <div class="row">
 		<svg class="icon pass"><use xlink:href="#icon_pass"/></svg>

@@ -1,5 +1,5 @@
 var
-INDEX=                  ['userId'],
+INDEX=                  ['userId','s'],
 PRIVATE=                [],
 ENUM=                   [],
 
@@ -13,7 +13,9 @@ MAP_GET =               'SELECT `requestId`, `k`, `v1`, `v2` FROM requestMap WHE
 MAP_GETS =              'SELECT `requestId`, `k`, `v1`, `v2` FROM requestMap WHERE `requestId` IN (?);',
 MAP_SET =               'INSERT INTO requestMap (`requestId`, `k`, `v1`, `v2`, `cby`) VALUES ? ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
 
-LIST_SET =               'INSERT INTO requestList (`requestId`, `k`, `v1`, `v2`, `cby`) VALUES ?;',
+LIST_SET =              'INSERT INTO requestList (`requestId`, `k`, `v1`, `v2`, `cby`) VALUES ?;',
+
+UPDATE_STATE=           'UPDATE `request` SET `s`=? where `id`=?;',
 
 ERR_INVALID_INPUT = 'INVALID INPUT',
 
@@ -76,5 +78,8 @@ module.exports= {
     },
     poll:function(userId,time,cb){
 		client.query(POLL,[userId,time],cb)
+    },
+    updateStatus:function(requestId,state,cb){
+        client.query(UPDATE_STATE,[state,requestId],cb)
     }
 }

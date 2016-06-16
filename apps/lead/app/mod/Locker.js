@@ -71,29 +71,20 @@ return{
 			this.senders[name]=sender
 			this.signals.ble_startScan([],30).send(this.ble)
 		},
-		unlock:function(from,sender,name,lockerId,requestId){
+		unlock:function(from,sender,name,cred){
 			var p=this.lockers[name]
 
 			if (!p) return console.error('Locker unlock without lock')
 
 			var
-			self=this,
-			lock=this.deps.lock
+            self=this,
+            buf=(new Uint32Array(cred)).buffer
 
-			lock.reset()
-			lock.create(null,{
-				data:{lockerId:lockerId,requestId:requestId},
-				success:function(model,raw){
-					var cred=new Uint32Array(raw.cred)
-					self.signals.ble_startNotification(p.id, scratchSrv, scratch3).send(self.ble)
-					self.signals.ble_write(p.id, scratchSrv, scratch1, cred.buffer.slice(0, 4), function(){
-						console.log(arguments)
-						self.signals.ble_write(p.id, scratchSrv, scratch2, cred.buffer.slice(4, 8), function(){
-							console.log(arguments)
-						}).send(self.ble)
-					}).send(self.ble)
-				}
-			})
+            this.signals.ble_startNotification(p.id, scratchSrv, scratch3).send(this.ble)
+            this.signals.ble_write(p.id, scratchSrv, scratch1, buf.slice(0, 4), function(){
+                self.signals.ble_write(p.id, scratchSrv, scratch2, buf.slice(4, 8), function(){
+                }).send(self.ble)
+            }).send(this.ble)
 		}
 	}
 }

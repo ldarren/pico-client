@@ -52,6 +52,7 @@
             }]
         ]],
         ["Device","ctrl",[
+            ["owner","ref","owner"],
 			["push","ctrl",[
 				["gcmSenderId","text","pdl-consumer"]
 			],"common/native/push"],

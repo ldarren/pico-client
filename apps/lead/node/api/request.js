@@ -27,9 +27,6 @@ module.exports= {
 			next()
 		})
 	},
-	read:function(input,next){
-        next()
-	},
 	readById:function(input,output,next){
 		sqlRequest.get(input,(err,request)=>{
 			if (err) return next(this.error(500))
@@ -38,14 +35,11 @@ module.exports= {
 			next()
 		})
 	},
-	update:function(input,next){
-        next()
-	},
-	remove:function(input,next){
-        next()
-	},
-	list:function(input,next){
-        next()
+	updateState:function(input,state,next){
+        sqlRequest.updateStatus(input.id, state, (err)=>{
+            if (err) return next(this.error(500))
+            next()
+        })
 	},
     poll:function(input,user,output,next){
         if ('consumer'!==user.role) return next()
