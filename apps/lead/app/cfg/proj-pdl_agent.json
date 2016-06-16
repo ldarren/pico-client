@@ -72,9 +72,6 @@
             ]]
         ]],
         ["Locker","ctrl",[
-            ["lock","models",{
-                "create":"lead/request/unlock"
-            }],
             ["ble","ctrl",[],"common/native/ble"]
         ]],
         [["common/auth/Session","SessionMixin"],"ctrl",[
@@ -104,7 +101,8 @@
             ["ListView","view",[
                 ["list","ref","requests"],
 				["lockers","models",{
-					"create":"lead/request/locker"
+					"create":"lead/request/locker",
+					"delete":"lead/request/unlock"
 				}],
                 ["Cell","view",[
                     ["options","map",{"className":"simple"}],

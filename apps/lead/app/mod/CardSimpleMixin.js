@@ -4,10 +4,6 @@ return {
 	},
 	slots:{
 		lockStatus:function(from, sender, id, state){
-				debugger
-			var lockers=this.deps.lockers
-			if (!lockers.length) return
-			if (id !== lockers.at(0).get('$detail').deviceId) return
 			var btn=this.el.querySelector('button')
 			btn.removeAttribute('disabled')
 			switch(state){
@@ -33,7 +29,6 @@ return {
 	},
 	events:{
 		'click button':function(e){
-				debugger
 			var
 			self=this,
 			deps=this.deps,
@@ -60,18 +55,15 @@ return {
 				break
 			case 'Open':
 				if (!lockers.length) break
-				var
-                locker=lockers.at(0),
-                lockerId=locker.id,
-                deviceId=locker.get('$detail').deviceId
+				var locker=lockers.at(0)
 
-                lockers.remove(locker,{
+                locker.destroy({
                     data:{
-                        lockerId:lockerId,
+                        lockerId:locker.id,
                         requestId:request.id
                     },
                     success:function(model,raw){
-                        this.signals.unlock(deviceId,raw.cred).send(this.host)
+                        self.signals.unlock(model.get('$detail').deviceId,raw.cred).send(self.host)
                         btn.textContent='Openning...'
                         btn.setAttribute('disabled',1)
                     },

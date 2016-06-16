@@ -78,9 +78,6 @@
 			]]
         ]],
         ["Locker","ctrl",[
-			["lock","models",{
-				"create":"lead/locker/unlock"
-			}],
 			["ble","ctrl",[],"common/native/ble"]
 		]],
         [["common/auth/Session","SessionMixin"],"ctrl",[
@@ -168,9 +165,13 @@
             ]],
             ["ListView","view",[
 				["list","ref","lockers"],
+				["lockers","models",{
+					"create":"lead/locker/unlock"
+				}],
 				["Cell","view",[
 					["options","map",{"className":"cardRequest"}],
-					["tpl","file","CardLocker.asp"]
+					["tpl","file","CardLocker.asp"],
+					["lockers","ref","lockers"]
 				],["Card","CardLockerMixin"]]
             ]],
             ["Menu","view",[

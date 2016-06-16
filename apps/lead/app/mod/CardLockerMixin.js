@@ -1,4 +1,7 @@
 return {
+	deps:{
+		lockers:'models'
+	},
 	slots:{
 		lockStatus:function(from, sender, id, state){
 			var lock=this.deps.data
@@ -40,9 +43,24 @@ return {
 				btn.setAttribute('disabled',1)
 				break
 			case 'Open':
-				this.signals.unlock(lock.$detail.deviceId,lock.id).send(this.host)
-				btn.textContent='Openning...'
-				btn.setAttribute('disabled',1)
+				var
+				self=this,
+				lockers=this.deps.lockers
+				lockers.reset()
+                lockers.create(null,{
+                    data:{
+                        lockerId:lock.id
+                    },
+                    success:function(model,raw){
+                        self.signals.unlock(lock.$detail.deviceId,raw.cred).send(self.host)
+                        btn.textContent='Openning...'
+                        btn.setAttribute('disabled',1)
+                    },
+                    error:function(err){
+                        console.error(err)
+                        btn.textContent='Scan'
+                    }
+                })
 				break
 			}
 		}

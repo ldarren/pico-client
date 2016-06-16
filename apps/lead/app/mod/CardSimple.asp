@@ -45,9 +45,7 @@
 			<p class="card__text__bottom"><%=card.toCity%></p>
 		  </div>
 		</div>
-		  <button type="button" class="card__request-btn">
-			<span class="card__request-btn__text-1">Scan</span>
-		  </button>
+		  <button type="button" class="card__request-btn">Scan</button>
 	  </div>
 	</div>
 </section>
