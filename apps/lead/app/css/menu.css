@@ -1,5 +1,6 @@
 ul.menu{
   position:relative;
+  flex-shrink:0;
   display:flex;
   justify-content:space-around;
 }

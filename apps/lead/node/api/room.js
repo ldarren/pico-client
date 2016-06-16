@@ -7,7 +7,7 @@ userPipeMap=new Map,
 pingId=0,
 pingCountdown=function(){
     clearTimeout(pingId)
-    pingId=setTimeout(ping, 60000)
+    pingId=setTimeout(ping, 45000)
 },
 ping=function(){
     if (!pipes.length) return pingCountdown()

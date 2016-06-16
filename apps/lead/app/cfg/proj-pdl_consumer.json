@@ -109,7 +109,7 @@
 				["addRequest","list",[
                     [
 					    {"type":"select","name":"type","label":"Type","holder":"Request Type","options":[[1,"Laundry"]],"value":1},
-					    {"type":"datetime-local","name":"collection","label":"Collection","required":1},
+					    {"type":"datetime-local","name":"collect","label":"Collection","required":1},
                         {"type":"select","name":"lockerId","label":"Locker","holder":"Select a locker","options":[],"value":1}
                     ],
                     [
@@ -127,11 +127,12 @@
 				]
 			]]],
             ["ListView","view",[
+                ["options","map",{"className":"scrollable glass"}],
 				["list","ref","requests"],
 				["Cell","view",[
-					["options","map",{"className":"cardRequest"}],
+					["options","map",{"className":"card request"}],
 					["tpl","file","CardRequest.asp"]
-				],"Card"]
+				],["Card","CardRequestMixin"]]
             ]],
             ["Menu","view",[
                 ["tpl","file","Menu.asp"],
@@ -164,6 +165,7 @@
                 ["btnRight","map",{"icon":"icon_search"}]
             ]],
             ["ListView","view",[
+                ["options","map",{"className":"scrollable glass"}],
 				["list","ref","lockers"],
 				["lockers","models",{
 					"create":"lead/locker/unlock"
@@ -199,6 +201,7 @@
 				]]
             ]],
             ["ScrollView","view",[
+                ["options","map",{"className":"scrollable glass"}],
                 ["Panel","view",[
                     ["tpl","file","Panel.asp"],
                     ["title","text","Statistic"],

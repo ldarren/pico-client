@@ -1,18 +1,14 @@
 .scrollable{
 	flex:1 1 auto;
+    flex-grow:1;
 	display:flex;
 	position:relative;
-	overflow: hidden;
-}
-.scrollable > div{
 	background: #fff;
     overflow-y: auto;
     overflow-x: hidden;
-	position:absolute;
-	height:100%;
-	width: calc(100% + 1.6rem);
+    width:100%;
 }
-.scrollable > div >  ul{
+.scrollable ul{
     display: flex;
 	flex-direction:column;
 	width:100%;
@@ -25,4 +21,7 @@
 	margin: 1rem;
 	text-align: center;
 	font-size: 1.5rem;
+}
+.scrollable.glass {
+    background:rgba(0,0,0,0.5)
 }

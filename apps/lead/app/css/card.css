@@ -1,0 +1,14 @@
+.card{
+    position:relative;
+    border-radius:1rem;
+    background:#fff;
+    padding:1rem;
+    margin:0.5rem;
+}
+.card .top{
+}
+.card .bottom{
+}
+.card .icon{
+
+}

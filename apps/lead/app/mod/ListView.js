@@ -42,14 +42,12 @@ this.update=function(){
 return{
 	className:'scrollable',
 	deps:{
-		html:['file','<div><ul><li class=empty-message>There are no items at this time.</li></ul></div>'],
-		containerSelector:['text','div'],
+		html:['file','<ul><li class=empty-message>There are no items at this time.</li></ul>'],
 		list:'models',
 		Cell:'view'
 	},
 	create: function(deps){
 		this.el.innerHTML=deps.html
-		this.scrollCont=this.el.querySelector(deps.containerSelector)
 		this.listenTo(deps.list,'add',addRow)
 		this.listenTo(deps.list,'change',updateRow)
 	},
@@ -67,7 +65,7 @@ return{
 	},
 	slots:{
 		scrollTo:function(from, sender, to, duration){
-			var el=this.scrollCont
+			var el=this.el
 			scrolls=scrolls.filter(removeExisting,el)
 			scrolls.push([el, to, (to-el.scrollTop)/duration,Ceil(duration/10)])
 		}
