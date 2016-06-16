@@ -11,6 +11,10 @@ module.exports= {
         Object.assign(output,{id:input.lockerId})
 		next()
 	},
+    setOutput:function(output,next){
+		this.setOutput(output,sqlLocker.clean,sqlLocker)
+        next()
+    },
 	add:function(input,output,next){
 this.log('add lock',input)
 		if (!input.name) return next(this.error(400))
@@ -36,7 +40,6 @@ this.log('add lock',input)
 		sqlLocker.get(input,(err,lock)=>{
 			if (err) return next(this.error(500))
 			Object.assign(output,lock)
-			this.setOutput(output,sqlLocker.clean,sqlLocker)
 			next()
 		})
 	},
@@ -70,10 +73,7 @@ this.log('add lock',input)
 			if (!map || !map.passcode || !map.salt) return next(this.error(400))
 
 			var key=Floor(Random()*0xffffffff)
-			
 			output.cred=[map.passcode^key, key+map.salt]
-
-			this.setOutput(output, sqlLocker.clean, sqlLocker)
 			next()
 		})
 	}

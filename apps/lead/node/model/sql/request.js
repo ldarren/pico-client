@@ -1,13 +1,13 @@
 var
-INDEX=                  ['userId','s'],
+INDEX=                  ['userId'],
 PRIVATE=                [],
 ENUM=                   [],
 
-GET =                   'SELECT * FROM `request` WHERE `id`=? AND `s`=1;',
-GETS =                  'SELECT * FROM `request` WHERE `id` IN (?) AND `s`=1;',
+GET =                   'SELECT * FROM `request` WHERE `id`=? AND `s`!=0;',
+GETS =                  'SELECT * FROM `request` WHERE `id` IN (?) AND `s`!=0;',
 SET =                   'INSERT INTO `request` (`userId`, `cby`) VALUES (?);',
 POLL =                  'SELECT * FROM `request` WHERE `userId`=? AND `uat` > ?;',
-FIND_BY_USERID=         'SELECT * FROM `request` WHERE `userId`=? AND `s`=1;',
+FIND_BY_USERID=         'SELECT * FROM `request` WHERE `userId`=? AND `s`!=0;',
 
 MAP_GET =               'SELECT `requestId`, `k`, `v1`, `v2` FROM requestMap WHERE `requestId`=?;',
 MAP_GETS =              'SELECT `requestId`, `k`, `v1`, `v2` FROM requestMap WHERE `requestId` IN (?);',

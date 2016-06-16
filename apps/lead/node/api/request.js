@@ -18,6 +18,12 @@ module.exports= {
 		    next()
         })
 	},
+    setOutput:function(output,next){
+        var res=output['requests']
+        if (!res) return next(this.error(500,'Missing requests'))
+		this.setOutput(res[0],sqlRequest.clean,sqlRequest)
+        next()
+    },
 	add:function(input,output,next){
 		Object.assign(output,input,{
 			userId:input.id
@@ -31,7 +37,6 @@ module.exports= {
 		sqlRequest.get(input,(err,request)=>{
 			if (err) return next(this.error(500))
             output['requests']=[request]
-			this.setOutput(request,sqlRequest.clean,sqlRequest)
 			next()
 		})
 	},

@@ -85,6 +85,7 @@
             ["user","verify","input","user"],
             ["request","add","input","request"],
             ["request","readById","request","msg"],
+            ["request","setOutput","msg"],
             ["user","appoint","input",":list"],
             ["user","addAgent","request",":list"],
             ["room","publish",["lead/broadcast"],"msg",":list"],
@@ -112,6 +113,7 @@
             ["user","verify","input","user"],
             ["request","verify","input","request","locker"],
             ["locker","unlock","locker","output"],
+            ["locker","setOutput","output"],
             ["request","updateState","request",[2]],
             ["request","readById","request","msg"],
             ["request","getCreator","request",":list"],
@@ -125,12 +127,14 @@
             ["user","verify","input","user"],
             ["request","verify","input","request","locker"],
             ["locker","readById","locker","output"],
+            ["locker","setOutput","output"],
             [0]
         ],
         "lead/locker/add": [
             ["user","verify","input","user"],
             ["locker","add","input","locker"],
             ["locker","readById","locker","output"],
+            ["locker","setOutput","output"],
             [0]
         ],
         "lead/locker/read": [
@@ -157,6 +161,7 @@
             ["user","verify","input","user"],
             ["locker","verify","input","locker"],
             ["locker","unlock","locker","output"],
+            ["locker","setOutput","output"],
             [0]
         ]
     }

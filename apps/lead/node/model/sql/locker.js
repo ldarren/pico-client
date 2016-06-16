@@ -3,11 +3,11 @@ INDEX=                  ['userId','name'],
 PRIVATE=                ['passcode','salt'],
 ENUM=                   [],
 
-GET =                   'SELECT * FROM `locker` WHERE `id`=? AND `s`=1;',
+GET =                   'SELECT * FROM `locker` WHERE `id`=? AND `s`!=0;',
 SET =                   'INSERT INTO `locker` (`userId`, `name`, `cby`) VALUES (?);',
 TOUCH=                  'UPDATE `locker` SET `uat`=NOW() WHERE `id`=?;',
 POLL=                   'SELECT * FROM `locker` WHERE `userId`=? AND `uat` > ?;',
-FIND_BY_NAME =          'SELECT * FROM `locker` WHERE `userId`=? AND `name`=? AND `s`=1;',
+FIND_BY_NAME =          'SELECT * FROM `locker` WHERE `userId`=? AND `name`=? AND `s`!=0;',
 
 MAP_GET =               'SELECT `lockerId`, `k`, `v1`, `v2` FROM `lockerMap` WHERE `lockerId`=?;',
 MAP_GET_LIST =          'SELECT `lockerId`, `k`, `v1`, `v2` FROM `lockerMap` WHERE `lockerId` IN (?);',
