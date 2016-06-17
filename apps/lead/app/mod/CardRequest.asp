@@ -1,11 +1,10 @@
-<%var detail=d.detail%>
-<span class=profile><%=detail.type==1?"L":"O"%></span>
 <header>
+<span class=profile><%=d.type%></span>
 <span>Collection: <%=d.collectDate%><p><%=d.collectTime%></p></span>
-<span>Return: <%=d.returnDate%><p><%=d.returnTime%></p></span>
+<span>Service: <%=d.service%></span>
 </header>
 <footer>
-<span>type: <%=detail.laundry%></span>
-<span>Count: <%=detail.count%></span>
-<span>Locker: <%=detail.lockerId%></span>
+<span>Laundry type: <%=d.laundry%></span>
+<span>Count: <%=d.count%></span>
+<span>Locker: <%=d.locker%></span>
 </footer>

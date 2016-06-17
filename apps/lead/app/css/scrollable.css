@@ -1,17 +1,13 @@
 .scrollable{
 	flex:1 1 auto;
     flex-grow:1;
+	flex-direction:column;
 	display:flex;
 	position:relative;
 	background: #fff;
     overflow-y: auto;
     overflow-x: hidden;
     width:100%;
-}
-.scrollable ul{
-    display: flex;
-	flex-direction:column;
-	width:100%;
 }
 .scrollable li.empty-message {
 	display: none;
@@ -24,4 +20,12 @@
 }
 .scrollable.glass {
     background:rgba(0,0,0,0.5)
+}
+.scrollable::-webkit-scrollbar {
+    width: 5px;
+    background-color: none;
+}
+.scrollable::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background-color: rgba(0,0,0,0.3);
 }

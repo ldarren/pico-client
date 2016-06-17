@@ -23,10 +23,7 @@ removeExisting=function(arr){
 	return (arr[0]===this) ? false : true
 },
 addRow=function(model){
-	var a=model.attributes
-	if (this.filter(a)) this.spawn(this.deps.Cell, null, [['data','map',a]])
-},
-updateRow=function(model){
+	if (this.filter(model.attributes)) this.spawn(this.deps.Cell, [model.id], [['data','model','list',0]])
 }
 
 this.update=function(){
@@ -40,27 +37,34 @@ this.update=function(){
 }
 
 return{
+    tagName:'ul',
 	className:'scrollable',
 	deps:{
-		html:['file','<ul><li class=empty-message>There are no items at this time.</li></ul>'],
+		emptyMsg:['file','There are no items at this time'],
 		list:'models',
 		Cell:'view'
 	},
 	create: function(deps){
-		this.el.innerHTML=deps.html
-		this.listenTo(deps.list,'add',addRow)
-		this.listenTo(deps.list,'change',updateRow)
+        var list=deps.list
+		this.listenTo(list,'add',addRow)
+		this.listenTo(list,'reset',this.rendered)
 	},
 	remove:function(){
 		scrolls.filter(removeExisting,this.el)
 		this.ancestor.remove.call(this)
 	},
 	rendered:function(){
+        this.dumpAll()
+
 		var
 		deps=this.deps,
 		list=deps.list
 
-		this.setElement(this.el.querySelector('ul'))
+        var li=document.createElement('li')
+        li.classList.add('empty-message')
+        li.innerHTML=deps.emptyMsg
+        this.el.appendChild(li)
+
 		list.each(addRow,this)
 	},
 	slots:{

@@ -12,7 +12,7 @@ prepareForm0=function(self,result,form){
                 o.push([l.id,l.get('name')])
             }
             break
-        case 'collection':
+        case 'collect':
             var d=new Date(Date.now()+self.deps.leadTime)
             f.value=d.getFullYear()+'-'+
                 picoStr.pad(d.getMonth()+1,2)+'-'+
@@ -27,16 +27,27 @@ prepareForm0=function(self,result,form){
     return form
 },
 prepareForm1=function(self,result,form){
+    var deps=self.deps
+
     for(var i=0,f,o,v; f=form[i]; i++){
         switch(f.name){
         case 'return':
             var
-            c=result.collection,
-            surcharge=self.deps.surcharge
+            c=result.collect,
+            surcharges=deps.surcharges
             o=f.options
             o.length=0
-            for(var j=1;j<5; j++){
-                o.push([j,(new Date((new Date(c)).getTime()+(j*86400000))).toLocaleDateString()+' +'+surcharge[j]])
+            for(var j=0,s;s=surcharges.at(j); j++){
+                o.push([s.id,s.get('name')+'['+(new Date((new Date(c)).getTime()+(s.get('lead')*86400000))).toLocaleDateString()+'] Fee: '+s.get('percent')+'%'])
+            }
+            break
+        case 'laundry':
+            var
+            laundryOpt=deps.laundryOpt,
+            o=f.options
+            o.length=0
+            for(var j=0,l;l=laundryOpt.at(j); j++){
+                o.push([l.id,l.get('name')])
             }
             break
         }
@@ -56,9 +67,10 @@ return {
 	deps:{
 		requests:'models',
 		lockers:'models',
+		laundryOpt:'models',
+		surcharges:'models',
 		addRequest:'list',
-        leadTime:['int',10800],
-        surcharge:['list',[0,100,50,25,0]]
+        leadTime:['int',10800]
 	},
 	create:function(deps){
 	},

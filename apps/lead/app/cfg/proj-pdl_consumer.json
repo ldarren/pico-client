@@ -26,6 +26,18 @@
 			"delete":"lead/locker/remove",
 			"list":"lead/locker/list"
 		}],
+        ["laundryOpt","models",{},[
+            {"id":1,"name":"DryClean"},
+            {"id":2,"name":"Laundry"},
+            {"id":3,"name":"Load Wash"},
+            {"id":4,"name":"Mix"}
+        ]],
+        ["surcharges","models",{},[
+            {"id":1,"name":"Standard","percent":0,"lead":4},
+            {"id":2,"name":"Quick","percent":25,"lead":3},
+            {"id":3,"name":"Priority","percent":50,"lead":2},
+            {"id":4,"name":"Express","percent":100,"lead":1}
+        ]],
         ["pane","view",[
             ["paneId","int",0],
             ["options","map",{"id":"main"}]
@@ -97,6 +109,8 @@
             ["owner","ref","owner"],
 			["requests","ref","requests"],
 			["lockers","ref","lockers"],
+			["laundryOpt","ref","laundryOpt"],
+			["surcharges","ref","surcharges"],
             ["header/Base","view",[
                 ["tpl","file","header/Base.asp"],
                 ["title","text","My Requests"],
@@ -106,6 +120,8 @@
 			["ConsumerCtrl","ctrl",[
 				["requests","ref","requests"],
 				["lockers","ref","lockers"],
+                ["laundryOpt","ref","laundryOpt"],
+                ["surcharges","ref","surcharges"],
 				["addRequest","list",[
                     [
 					    {"type":"select","name":"type","label":"Type","holder":"Request Type","options":[[1,"Laundry"]],"value":1},
@@ -114,13 +130,8 @@
                     ],
                     [
                         {"type":"number","name":"count","label":"Count","value":1,"required":1},
-                        {"type":"select","name":"return","label":"Return","holder":"Return Date","options":[],"value":4},
-                        {"type":"select","name":"laundry","label":"Laundary Type","holder":"Laundry Type","options":[
-                            [1,"DryClean"],
-                            [2,"Laundry"],
-                            [3,"Load Wash"],
-                            [4,"Mix"]
-                        ],"value":2,"required":1},
+                        {"type":"select","name":"return","label":"Return","holder":"Return Date","options":[],"value":1},
+                        {"type":"select","name":"laundry","label":"Laundary Type","holder":"Laundry Type","options":[],"value":2,"required":1},
                         {"type":"text","name":"note","label":"Note"},
                         {"type":"checkbox","name":"termncond","label":"Term & Conditions","url":"legal","required":1}
                     ]
@@ -129,9 +140,15 @@
             ["ListView","view",[
                 ["options","map",{"className":"scrollable glass"}],
 				["list","ref","requests"],
+				["lockers","ref","lockers"],
+                ["laundryOpt","ref","laundryOpt"],
+                ["surcharges","ref","surcharges"],
 				["Cell","view",[
 					["options","map",{"className":"card request"}],
-					["tpl","file","CardRequest.asp"]
+					["tpl","file","CardRequest.asp"],
+				    ["lockers","ref","lockers"],
+                    ["laundryOpt","ref","laundryOpt"],
+                    ["surcharges","ref","surcharges"]
 				],["Card","CardRequestMixin"]]
             ]],
             ["Menu","view",[

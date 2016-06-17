@@ -1,26 +1,31 @@
 var
 COLORS=['purple','green','orange','red'],
-COLOR_HEX=['#BA68C8','#52A43A','#F7AA17','#EF5350'],
 picoTime=require('pico/time')
 
 return{
+    deps:{
+        lockers:'models',
+        laundryOpt:'models',
+        surcharges:'models'
+    },
     parseData:function(data){
 		var
-		self=this,
+		deps=this.deps,
+        lockers=deps.lockers,
+        surcharges=deps.surcharges,
+        laundryOpt=deps.laundryOpt,
         d=data.$detail,
-		cdt=new Date(d.collect),
-		ct=cdt.toLocaleTimeString(),
-		rdt=new Date(d.return),
-		rt=rdt.toLocaleTimeString()
+		dt=new Date(d.collect),
+		t=dt.toLocaleTimeString()
 
 		return {
-			detail:d,
-            theme:COLORS[data.s],
-            color:COLOR_HEX[data.s],
-			collectDate:picoTime.day(cdt),
-			collectTime:ct.substring(0, ct.indexOf('M')+1),//remove time zone
-			returnDate:picoTime.day(rdt),
-			returnTime:rt.substring(0, rt.indexOf('M')+1),//remove time zone
+            colors:COLORS,
+			collectDate:picoTime.day(dt),
+			collectTime:t.substring(0, t.indexOf('M')+1),//remove time zone
+            type:1==d.type?'LDY':'NA',
+            service:surcharges.get(d.return).get('name'),
+            laundry:laundryOpt.get(d.laundry).get('name'),
+            locker:lockers.get(d.lockerId).get('name')
         }
     }
 }
