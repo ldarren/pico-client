@@ -35,6 +35,7 @@ module.exports= {
     readTokens: function(users, output, next){
         sqlDevice.gets(users,(err,devices)=>{
             if (err) return next(this.error(500, err))
+            if (!devices.length) return next()// TODO: add chrome and safari notification
             sqlDevice.map_gets(devices,(err,maps)=>{
                 if (err) return next(this.error(500, err))
                 var ids={},tokens={}
