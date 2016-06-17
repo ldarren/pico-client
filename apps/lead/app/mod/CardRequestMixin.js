@@ -1,5 +1,6 @@
 var
 COLORS=['purple','green','orange','red'],
+STATES=['Cancelled','Order placed','Collected','Delivered'],
 picoTime=require('pico/time')
 
 return{
@@ -19,13 +20,17 @@ return{
 		t=dt.toLocaleTimeString()
 
 		return {
-            colors:COLORS,
+            COLORS:COLORS,
+            STATES:STATES,
 			collectDate:picoTime.day(dt),
 			collectTime:t.substring(0, t.indexOf('M')+1),//remove time zone
-            type:1==d.type?'LDY':'NA',
+            type:d.type,
+            abbr:1==d.type?'LDY':'NA',
             service:surcharges.get(d.return).get('name'),
             laundry:laundryOpt.get(d.laundry).get('name'),
-            locker:lockers.get(d.lockerId).get('name')
+            locker:lockers.get(d.lockerId).get('name'),
+            count:d.count,
+            state:data.s
         }
     }
 }

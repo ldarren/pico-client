@@ -188,7 +188,7 @@
 					"create":"lead/locker/unlock"
 				}],
 				["Cell","view",[
-					["options","map",{"className":"cardRequest"}],
+					["options","map",{"className":"card locker"}],
 					["tpl","file","CardLocker.asp"],
 					["lockers","ref","lockers"]
 				],["Card","CardLockerMixin"]]

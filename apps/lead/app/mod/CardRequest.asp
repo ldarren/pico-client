@@ -1,10 +1,13 @@
-<header>
-<span class=profile><%=d.type%></span>
-<span>Collection: <%=d.collectDate%><p><%=d.collectTime%></p></span>
-<span>Service: <%=d.service%></span>
+<header class="color-<%=d.COLORS[d.state]%>">
+<div class="profile color-<%=d.COLORS[4-d.type]%>"><%=d.abbr%></div>
+<div class=title>
+    <div>Collection: <%=d.collectDate%> <%=d.collectTime%></div>
+    <div>Service: <%=d.service%></div>
+    <div>Status: <%=d.STATES[d.state]%></div>
+</div>
 </header>
 <footer>
-<span>Laundry type: <%=d.laundry%></span>
-<span>Count: <%=d.count%></span>
-<span>Locker: <%=d.locker%></span>
+<div>Laundry type: <%=d.laundry%></div>
+<div>Laundry count: <%=d.count%></div>
+<div>Locker: <%=d.locker%></div>
 </footer>

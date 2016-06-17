@@ -2,6 +2,9 @@ return {
 	deps:{
 		lockers:'models'
 	},
+    parseData:function(data){
+        return data
+    },
 	slots:{
 		lockStatus:function(from, sender, id, state){
 			var lock=this.deps.data
