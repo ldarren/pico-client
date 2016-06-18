@@ -4,7 +4,7 @@
         "css/index.css"
     ],[
 		["html","file","Frame.html"],
-		["domain","text","pdl"],
+		["org","text","pdl"],
         ["owner","models",{
             "create": "lead/user/signup",
             "read": "lead/user/signin"
@@ -69,7 +69,8 @@
 				["gcmSenderId","text","pdl-consumer"]
 			],"common/native/push"],
             ["devices","models",{
-				"create":"lead/device/update"
+				"create":"lead/device/update",
+				"remove":"lead/device/remove"
 			}]
         ]],
         ["FormAuth","view",[
@@ -95,7 +96,7 @@
         [["common/auth/Session","SessionMixin"],"ctrl",[
             ["owner","ref","owner"],
             ["users","ref","users"],
-            ["domain","ref","domain"]
+            ["org","ref","org"]
         ]]
     ],{
         "":[
@@ -131,9 +132,9 @@
                     [
                         {"type":"number","name":"count","label":"Count","value":1,"required":1},
                         {"type":"select","name":"return","label":"Return","holder":"Return Date","options":[],"value":1},
-                        {"type":"select","name":"laundry","label":"Laundary Type","holder":"Laundry Type","options":[],"value":2,"required":1},
+                        {"type":"select","name":"laundry","label":"Process","holder":"Process","options":[],"value":2,"required":1},
                         {"type":"text","name":"note","label":"Note"},
-                        {"type":"checkbox","name":"termncond","label":"Term & Conditions","url":"legal","required":1}
+                        {"type":"checkbox","name":"termncond","label":"T&Cs","url":"legal","required":1}
                     ]
 				]
 			]]],

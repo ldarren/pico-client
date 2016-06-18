@@ -11,12 +11,18 @@ return{
 		tpl:'file'
 	},
 	create: function(deps){
-        var data=deps.data
-		this.el.innerHTML = deps.tpl(this.parseData(data.attributes))
-        this.listenTo(data,'change',change)
-        this.listenTo(data,'destroy',this.remove)
+        var
+        self=this,
+        data=deps.data
+
+        this.parseData(data.attributes, function(err, d){
+            if (err) return console.error(err)
+            self.el.innerHTML = deps.tpl(d)
+            self.listenTo(data,'change',change)
+            self.listenTo(data,'destroy',self.remove)
+        })
 	},
-    parseData:function(data){
-        return data
+    parseData:function(data,cb){
+        cb(null,data)
     }
 }

@@ -1,7 +1,3 @@
-.card.request .color-purple{ background:#BA68C8 }
-.card.request .color-green{ background:#52A43A }
-.card.request .color-orange{ background:#F7AA17 }
-.card.request .color-red{ background:#EF5350 }
 .card.request>header{
     border-radius:1rem 1rem 0 0;
     display:flex;

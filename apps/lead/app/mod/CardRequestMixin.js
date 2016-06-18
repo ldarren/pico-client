@@ -9,7 +9,7 @@ return{
         laundryOpt:'models',
         surcharges:'models'
     },
-    parseData:function(data){
+    parseData:function(data, cb){
 		var
 		deps=this.deps,
         lockers=deps.lockers,
@@ -19,7 +19,7 @@ return{
 		dt=new Date(d.collect),
 		t=dt.toLocaleTimeString()
 
-		return {
+		cb(null, {
             COLORS:COLORS,
             STATES:STATES,
 			collectDate:picoTime.day(dt),
@@ -27,10 +27,10 @@ return{
             type:d.type,
             abbr:1==d.type?'LDY':'NA',
             service:surcharges.get(d.return).get('name'),
-            laundry:laundryOpt.get(d.laundry).get('name'),
+            process:laundryOpt.get(d.laundry).get('name'),
             locker:lockers.get(d.lockerId).get('name'),
             count:d.count,
             state:data.s
-        }
+        })
     }
 }

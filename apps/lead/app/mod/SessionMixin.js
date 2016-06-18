@@ -1,8 +1,8 @@
 return {
     deps:{
-        domain:'text'
+        org:'text'
     },
     credential:function(att){
-        return {id:att.id, sess:att.sess, domain:this.deps.domain}
+        return {id:att.id, sess:att.sess, org:this.deps.org}
     }
 }

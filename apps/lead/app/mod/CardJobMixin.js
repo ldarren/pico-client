@@ -1,7 +1,40 @@
+var
+COLORS=['purple','green','orange','red'],
+STATES=['Cancelled','Order placed','Collected','Delivered'],
+picoTime=require('pico/time')
+
 return {
 	deps:{
-		lockers:'models'
+		lockers:'models',
+		users:'models'
 	},
+    parseData:function(data, cb){
+		var deps=this.deps
+
+        deps.lockers.retrieve([data.$detail.lockerId],function(err, lockers, locker){
+            if (err) return cb(err)
+            deps.users.retrieve([data.cby],function(err, users, user){
+                if (err) return cb(err)
+
+                var
+                lockers=deps.lockers,
+                d=data.$detail,
+                dt=new Date(d.collect),
+                t=dt.toLocaleTimeString()
+
+                return cb(null, {
+                    COLORS:COLORS,
+                    STATES:STATES,
+                    collectDate:picoTime.day(dt),
+                    collectTime:t.substring(0, t.indexOf('M')+1),//remove time zone
+                    type:d.type,
+                    locker:lockers.get(d.lockerId).get('name'),
+                    count:d.count,
+                    state:data.s
+                })
+            })
+        })
+    },
 	slots:{
 		lockStatus:function(from, sender, id, state){
 			var btn=this.el.querySelector('button')

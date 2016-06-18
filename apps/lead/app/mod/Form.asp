@@ -11,8 +11,10 @@
 <% }else{ %>
     <span class=input><%=f.value%></span>
 <% }%>
+</div>
 <% continue} else if (f.type === "checkbox"){%>
 <input type=checkbox class=input name="<%=f.name%>" <%=f.value?"checked=1":""%> <%=f.required?"required":""%> <%=f.readonly?"readonly":""%>>
+</div>
 <% continue} else if (f.type === "select"){%>
 <select class=input name="<%=f.name%>" <%=f.required?"required":""%> <%=f.readonly?"readonly":""%>>
     <option value="" <%=f.value ? "" : "selected"%> disabled><%=f.holder || "Select an option"%></option>
@@ -20,6 +22,7 @@
     <option value=<%=o[0]%> <%=o[0]==f.value ? "selected":""%>><%=o[1]%></option>
     <%}%>
 </select>
+</div>
 <% continue} %>
 
 <% if (f.type === "number"){ %>

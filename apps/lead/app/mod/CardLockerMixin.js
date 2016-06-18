@@ -2,8 +2,8 @@ return {
 	deps:{
 		lockers:'models'
 	},
-    parseData:function(data){
-        return data
+    parseData:function(data, cb){
+        return cb(null, data)
     },
 	slots:{
 		lockStatus:function(from, sender, id, state){

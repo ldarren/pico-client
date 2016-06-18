@@ -31,7 +31,7 @@ return{
 			hash=hash.substr(6)
             switch(hash){
             case 'menu':
-                this.signals.menu('left').send(this.host)
+                this.signals.menu('left').sendNow(this.host)
 				this.el.dispatchEvent(__.createEvent('transit', params[2])); break
                 break
             case 'back':
@@ -42,7 +42,7 @@ return{
             default:
 				var url=use.getAttributeNS('http://www.w3.org/1999/xlink', 'role')
                 if(url) Router.go(url)
-				else this.signals.headerButtonClicked(hash).send(this.host)
+				else this.signals.headerButtonClicked(hash).sendNow(this.host)
                 break
             }
         }

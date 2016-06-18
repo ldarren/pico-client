@@ -7,7 +7,7 @@
 </div>
 </header>
 <footer>
-<div>Laundry type: <%=d.laundry%></div>
-<div>Laundry count: <%=d.count%></div>
+<div>Process: <%=d.process%></div>
+<div>Count: <%=d.count%></div>
 <div>Locker: <%=d.locker%></div>
 </footer>
