@@ -6,7 +6,7 @@ return Backbone.Collection.extend({
         this.model = Backbone.Model.extend({
             idAttribute: config.idAttribute || 'id',
             sync: function(method, model, options){
-                if(!options.url) options.url=config[method]||model.url
+                if(!options.url) options.url=config[method]
                 if (options.url) return Backbone.sync(method, model, options)
                 return options.success()
             }
