@@ -5,23 +5,24 @@ PRIVATE_SELF=           ['un','pwd'],
 ENUM=                   ['os','role'],
 
 GET =                   'SELECT * FROM `user` WHERE `id`=? AND `s`!=0;',
-GET_LIST =              'SELECT * FROM `user` WHERE `id` IN (?) AND `s`!=0;',
+GETS =                  'SELECT * FROM `user` WHERE `id` IN (?) AND `s`!=0;',
 FIND_BY_TIME =          'SELECT * FROM `user` WHERE `uat` > ?;',
 FIND_BY_TIMES =         'SELECT * FROM `user` WHERE `uat` > ? AND `uat` < ?;',
-FIND_BY_UN =            'SELECT * FROM `user` WHERE `un` = ? AND s=1;',
-FIND_BY_SESS =          'SELECT * FROM `user` WHERE `sess` = ? AND s=1;',
-FIND_BY_ROLE =          'SELECT * FROM `user` WHERE `role` = ? AND s=1;',
-SET =                   'INSERT INTO `user` (`un`, `sess`, `role`, `cby`) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `sess`=VALUES(`sess`), s=1;',
+FIND_BY_UN =            'SELECT * FROM `user` WHERE `un` = ? AND `s`!=0;',
+FIND_BY_SESS =          'SELECT * FROM `user` WHERE `sess` = ? AND `s`!=0;',
+FIND_BY_ROLE =          'SELECT * FROM `user` WHERE `role` = ? AND `s`!=0;',
+SET =                   'INSERT INTO `user` (`un`, `sess`, `role`, `cby`) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `sess`=VALUES(`sess`), `s`!=0;',
 TOUCH =                 'UPDATE `user` SET `uby`=?, `uat`=NOW() WHERE `id`=? AND `s`!=0;',
 UNSET =                 'UPDATE `user` SET `s`=0, `uby`=? WHERE `id`=?;',
 
-MAP_GET =               'SELECT `userId`, `k`, `v1`, `v2` FROM userMap WHERE `userId`=?;',
-MAP_GET_BY_KEY =        'SELECT `userId`, `k`, `v1`, `v2` FROM userMap WHERE `userId`=? AND `k`=?;',
-MAP_GET_BY_KEYS =       'SELECT `userId`, `k`, `v1`, `v2` FROM userMap WHERE `userId`=? AND `k` IN (?);',
-MAP_GET_MAT_BY_KEY =    'SELECT `userId`, `k`, `v1`, `v2` FROM userMap WHERE `userId` IN (?) AND `k`=?;',
-MAP_GET_MAT_BY_KEYS =   'SELECT `userId`, `k`, `v1`, `v2` FROM userMap WHERE `userId` IN (?);',
-MAP_FIND_BY_TIME =      'SELECT `userId`, `k`, `v1`, `v2` FROM userMap WHERE `userId`=? AND `uat` > ?;',
-MAP_SET =               'INSERT INTO userMap (`userId`, `k`, `v1`, `v2`, `cby`) VALUES ? ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
+MAP_GET =               'SELECT `userId`, `k`, `v1`, `v2` FROM `userMap` WHERE `userId`=?;',
+MAP_GETS =              'SELECT `userId`, `k`, `v1`, `v2` FROM `userMap` WHERE `userId` IN (?);',
+MAP_GET_BY_KEY =        'SELECT `userId`, `k`, `v1`, `v2` FROM `userMap` WHERE `userId`=? AND `k`=?;',
+MAP_GET_BY_KEYS =       'SELECT `userId`, `k`, `v1`, `v2` FROM `userMap` WHERE `userId`=? AND `k` IN (?);',
+MAP_GET_MAT_BY_KEY =    'SELECT `userId`, `k`, `v1`, `v2` FROM `userMap` WHERE `userId` IN (?) AND `k`=?;',
+MAP_GET_MAT_BY_KEYS =   'SELECT `userId`, `k`, `v1`, `v2` FROM `userMap` WHERE `userId` IN (?);',
+MAP_FIND_BY_TIME =      'SELECT `userId`, `k`, `v1`, `v2` FROM `userMap` WHERE `userId`=? AND `uat` > ?;',
+MAP_SET =               'INSERT INTO `userMap` (`userId`, `k`, `v1`, `v2`, `cby`) VALUES ? ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
 MAP_UNSET =             'UPDATE userMap SET `s`=0, `uby`=? WHERE `id`=?;',
 
 LIST_GET_BY_ID =        'SELECT * FROM userList WHERE `id`=?;',
@@ -63,6 +64,10 @@ module.exports= {
         for(var i=0,k; k=PRIVATE[i]; i++) delete model[k];
         return model
     },
+    cleanList:function(list){
+        for(var i=0,l; l=list[i]; i++) list[i]=this.clean(l)
+        return list 
+    },
     cleanForSelf:function(model){
         for(var i=0,k; k=PRIVATE_SELF[i]; i++) delete model[k];
         return model
@@ -76,6 +81,13 @@ module.exports= {
             if (err) return cb(err)
 			this.map_get(client.decode(users[0],hash,ENUM),cb)
         })
+    },
+    gets:function(ids,cb){
+        if (!ids || !ids.length) return cb(ERR_INVALID_INPUT)
+        client.query(GETS,[ids],(err,rows)=>{
+            if (err) return cb(err)
+			this.map_gets(client.decodes(rows,hash,ENUM),cb)
+        })      
     },
     set: function(user, by, cb){
         client.query(SET, [client.encode(user,by,hash,INDEX,ENUM)], (err, result)=>{
@@ -111,6 +123,13 @@ module.exports= {
 			cb(null, client.mapDecode(rows, user, hash, ENUM))
 		})
     },
+	map_gets: function(users, cb){
+        if (!users.length) return cb(null, users)
+		client.query(MAP_GETS, [picoObj.pluck(users,'id')], (err, rows)=>{
+			if (err) return cb(err)
+			cb(null, client.mapDecodes(picoObj.group(rows,'userId'),users,hash,ENUM))
+		})
+	},
 	map_set: function(user,by,cb){
 		client.query(MAP_SET, [client.mapEncode(user, by, hash, INDEX, ENUM)], cb)
 	},

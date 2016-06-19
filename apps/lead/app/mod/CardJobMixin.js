@@ -9,30 +9,30 @@ return {
 		users:'models'
 	},
     parseData:function(data, cb){
-		var deps=this.deps
+		var
+        deps=this.deps,
+        detail=data.$detail,
+        lockerId=detail.lockerId
 
-        deps.lockers.retrieve([data.$detail.lockerId],function(err, lockers, locker){
-            if (err) return cb(err)
-            deps.users.retrieve([data.cby],function(err, users, user){
-                if (err) return cb(err)
+        var locker=deps.lockers.get(lockerId)
+        if (!locker) return cb('Invalid lockerId:'+lockerId)
+        var user=deps.users.get(data.cby)
+        if (!user) return cb('Invalid userId:'+data.cby)
 
-                var
-                lockers=deps.lockers,
-                d=data.$detail,
-                dt=new Date(d.collect),
-                t=dt.toLocaleTimeString()
+        var
+        dt=new Date(detail.collect),
+        t=dt.toLocaleTimeString()
 
-                return cb(null, {
-                    COLORS:COLORS,
-                    STATES:STATES,
-                    collectDate:picoTime.day(dt),
-                    collectTime:t.substring(0, t.indexOf('M')+1),//remove time zone
-                    type:d.type,
-                    locker:lockers.get(d.lockerId).get('name'),
-                    count:d.count,
-                    state:data.s
-                })
-            })
+        return cb(null, {
+            COLORS:COLORS,
+            STATES:STATES,
+            jobState:data.s,
+            jobCollectDate:picoTime.day(dt),
+            jobCollectTime:t.substring(0, t.indexOf('M')+1),//remove time zone
+            type:detail.type,
+            locker:locker.get('$detail'),
+            userName:user.get('name'),
+            user:user.get('$detail')
         })
     },
 	slots:{

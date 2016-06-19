@@ -61,7 +61,7 @@ login=function(){
 
 return {
     tagName: 'form',
-    className: 'modal',
+    className: 'modal bigframe',
     deps:{
         owner:'models',
 		tplSignin:'file',

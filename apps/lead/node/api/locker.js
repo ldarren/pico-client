@@ -15,8 +15,11 @@ module.exports= {
 		this.setOutput(output,sqlLocker.clean,sqlLocker)
         next()
     },
+    setOutputList:function(list,next){
+		this.setOutput(list,sqlLocker.cleanList,sqlLocker)
+        next()
+    },
 	add:function(input,output,next){
-this.log('add lock',input)
 		if (!input.name) return next(this.error(400))
 		sqlLocker.findByName(input.id, input.name, (err, rows)=>{
 			if (err) return next(this.error(500,err))
@@ -49,14 +52,18 @@ this.log('add lock',input)
 	remove:function(input,next){
         next()
 	},
-	list:function(input,next){
-        next()
+	list:function(input,list,next){
+		sqlLocker.gets(input.set,(err,locks)=>{
+			if (err) return next(this.error(500))
+            list.push(...locks)
+			next()
+		})
 	},
     poll:function(input,user,output,next){
         var t=input.t
         sqlLocker.poll(user.id,t,(err, briefs)=>{
             if (err) return next(this.error(500))
-            sqlLocker.map_getList(briefs, (err, lockers)=>{
+            sqlLocker.map_gets(briefs, (err, lockers)=>{
                 if (err) return next(this.error(500))
                 if (lockers.length){
                     var lastSeen=Max(...(picoObj.pluck(lockers,'uat')))

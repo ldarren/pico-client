@@ -52,10 +52,12 @@
         ],
         "lead/user/signin": [
             ["user","signin","input","user"],
+            ["user","setOutputSelf","user"],
             [0]
         ],
         "lead/user/signup": [
             ["user","signup","input","user"],
+            ["user","setOutputSelf","user"],
             [0]
         ],
         "lead/user/signout": [
@@ -64,16 +66,24 @@
         ],
         "lead/user/join": [
             ["user","join","input","user"],
+            ["user","setOutputSelf","user"],
             [0]
         ],
         "lead/user/read": [
             ["user","verify","input","user"],
-            ["user","read","input"],
+            ["user","read","input","output"],
+            ["user","setOutput","output"],
             [0]
         ],
         "lead/user/update": [
             ["user","verify","input","user"],
             ["user","update","input"],
+            [0]
+        ],
+        "lead/user/list": [
+            ["user","verify","input","user"],
+            ["user","list","input",":list"],
+            ["user","setOutputList",":list"],
             [0]
         ],
         "lead/device/update": [
@@ -154,7 +164,8 @@
         ],
         "lead/locker/list": [
             ["user","verify","input","user"],
-            ["locker","list","input"],
+            ["locker","list","input",":list"],
+            ["locker","setOutputList",":list"],
             [0]
         ],
         "lead/locker/unlock": [

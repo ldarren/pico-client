@@ -9,6 +9,32 @@ module.exports= {
     setup: function(context, next){
         next()
     },
+    verify:function(input,user,next){
+        console.log('verify input',JSON.stringify(input))
+		if (!input.id || !input.sess) return next(this.error(403))
+		sqlUser.findBySess(input.sess, (err, rows)=>{
+			if (err) return next(this.error(500))
+			if (!rows.length) return next(this.error(403))
+			var data=rows[0]
+			this.log('verify data',JSON.stringify(data))
+			// for GET method, all params in string format
+			if (data.id != input.id) return next(this.error(403))
+			Object.assign(user,data)
+			next()
+		})
+    },
+    setOutput:function(output,next){
+		this.setOutput(output,sqlUser.clean,sqlUser)
+        next()
+    },
+    setOutputSelf:function(output,next){
+		this.setOutput(output,sqlUser.cleanSelf,sqlUser)
+        next()
+    },
+    setOutputList:function(list,next){
+		this.setOutput(list,sqlUser.cleanList,sqlUser)
+        next()
+    },
     signin:function(input,user,next){
 this.log('signin',input)
         var un=input.un
@@ -25,7 +51,6 @@ this.log('signin',input)
                 if (!map || input.pwd !== map.pwd) return next(this.error(401))
 
                 Object.assign(user,map,b)
-                this.setOutput(user, sqlUser.cleanForSelf, sqlUser)
                 next()
             })
         })
@@ -44,7 +69,6 @@ this.log('signin',input)
 			})
             this.addJob([user, 0], sqlUser.set, sqlUser)
             this.addJob([user], sqlUser.get, sqlUser)
-            this.setOutput(user, sqlUser.cleanForSelf, sqlUser)
             next()
         })
     },
@@ -64,7 +88,6 @@ this.log('join',input)
 			})
             this.addJob([user, 0], sqlUser.set, sqlUser)
             this.addJob([user], sqlUser.get, sqlUser)
-            this.setOutput(user, sqlUser.cleanForSelf, sqlUser)
             next()
         })
     },
@@ -72,24 +95,10 @@ this.log('join',input)
         this.log('signout',input)
         next(session.error(404))
     },
-    verify:function(input,user,next){
-        console.log('verify input',JSON.stringify(input))
-		if (!input.id || !input.sess) return next(this.error(403))
-		sqlUser.findBySess(input.sess, (err, rows)=>{
-			if (err) return next(this.error(500))
-			if (!rows.length) return next(this.error(403))
-			var data=rows[0]
-			this.log('verify data',JSON.stringify(data))
-			// for GET method, all params in string format
-			if (data.id != input.id) return next(this.error(403))
-			Object.assign(user,data)
-			next()
-		})
-    },
-    read:function(input,next){
+    read:function(input,output,next){
         sqlUser.get(input, (err, user)=>{
             if (err) return next(this.error(500))
-            this.setOutput(user, sqlUser.clean, sqlUser)
+            Object.assign(output,user)
             next()
         })
     },
@@ -124,5 +133,12 @@ this.log('join',input)
                 next()
             })
         })
+    },
+    list:function(input,list,next){
+		sqlUser.gets(input.set,(err,users)=>{
+			if (err) return next(this.error(500))
+            list.push(...users)
+			next()
+		})
     }
 }

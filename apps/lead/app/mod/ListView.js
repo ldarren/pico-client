@@ -22,6 +22,12 @@ scrollTo=function(arr){
 removeExisting=function(arr){
 	return (arr[0]===this) ? false : true
 },
+loadDependencies=function(model,coll){
+    var self=this
+    this.loadDependencies(coll,function(){
+        addRow.call(self,model)
+    })
+},
 addRow=function(model){
 	if (this.filter(model.attributes)) this.spawn(this.deps.Cell, [model.id], [['data','model','list',0]])
 }
@@ -46,7 +52,7 @@ return{
 	},
 	create: function(deps){
         var list=deps.list
-		this.listenTo(list,'add',addRow)
+		this.listenTo(list,'add',loadDependencies)
 		this.listenTo(list,'reset',this.rendered)
 	},
 	remove:function(){
@@ -57,6 +63,7 @@ return{
         this.dumpAll()
 
 		var
+        self=this,
 		deps=this.deps,
 		list=deps.list
 
@@ -65,7 +72,9 @@ return{
         li.innerHTML=deps.emptyMsg
         this.el.appendChild(li)
 
-		list.each(addRow,this)
+		this.loadDependencies(list,function(){
+            list.each(addRow,self)
+        })
 	},
 	slots:{
 		scrollTo:function(from, sender, to, duration){
@@ -76,6 +85,9 @@ return{
 	},
 	events:{
 	},
+    loadDependencies:function(list, cb){
+        cb()
+    },
 	filter:function(model){
 		return true
 	}

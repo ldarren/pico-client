@@ -1,3 +1,5 @@
+.card.job{
+}
 .card.job>header{
     border-radius:1rem 1rem 0 0;
     display:flex;
@@ -14,9 +16,6 @@
 }
 .card.job>footer{
     padding:1rem 1rem 1rem 7rem
-}
-.card.job{
-    padding:1rem
 }
 .card.job .name {
   color: #000;

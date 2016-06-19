@@ -19,3 +19,6 @@
 .modal.fullpage{
 	height:100%;
 }
+.modal.bigframe{
+    padding:3rem;
+}

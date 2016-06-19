@@ -224,10 +224,10 @@
                     ["tpl","file","Panel.asp"],
                     ["title","text","Statistic"],
                     ["rows","list",[
-                        {"type":"text","label":"Total Requests","value":76},
-                        {"type":"text","label":"Monthly Requests","value":21},
-                        {"type":"text","label":"Weekly Requests","value":13},
-                        {"type":"text","label":"Accepted Requests","value":69}
+                        {"type":"text","label":"Total","value":0},
+                        {"type":"text","label":"Monthly","value":0},
+                        {"type":"text","label":"Weekly","value":0},
+                        {"type":"text","label":"Accepted","value":0}
                     ]]
                 ]],
                 ["Panel","view",[

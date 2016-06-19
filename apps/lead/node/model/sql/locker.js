@@ -4,13 +4,14 @@ PRIVATE=                ['passcode','salt'],
 ENUM=                   [],
 
 GET =                   'SELECT * FROM `locker` WHERE `id`=? AND `s`!=0;',
+GETS =                  'SELECT * FROM `locker` WHERE `id` IN (?) AND `s`!=0;',
 SET =                   'INSERT INTO `locker` (`userId`, `name`, `cby`) VALUES (?);',
 TOUCH=                  'UPDATE `locker` SET `uat`=NOW() WHERE `id`=?;',
 POLL=                   'SELECT * FROM `locker` WHERE `userId`=? AND `uat` > ?;',
 FIND_BY_NAME =          'SELECT * FROM `locker` WHERE `userId`=? AND `name`=? AND `s`!=0;',
 
 MAP_GET =               'SELECT `lockerId`, `k`, `v1`, `v2` FROM `lockerMap` WHERE `lockerId`=?;',
-MAP_GET_LIST =          'SELECT `lockerId`, `k`, `v1`, `v2` FROM `lockerMap` WHERE `lockerId` IN (?);',
+MAP_GETS =              'SELECT `lockerId`, `k`, `v1`, `v2` FROM `lockerMap` WHERE `lockerId` IN (?);',
 MAP_SET =               'INSERT INTO lockerMap (`lockerId`, `k`, `v1`, `v2`, `cby`) VALUES ? ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
 
 ERR_INVALID_INPUT = 'INVALID INPUT',
@@ -28,11 +29,22 @@ module.exports= {
         for(var i=0,k; k=PRIVATE[i]; i++) delete model[k];
         return model
     },
+    cleanList:function(list){
+        for(var i=0,l; l=list[i]; i++) list[i]=this.clean(l)
+        return list 
+    },
     get: function(locker, cb){
         if (!locker || !locker.id) return cb(ERR_INVALID_INPUT)
         client.query(GET,[locker.id],(err,rows)=>{
             if (err) return cb(err)
 			this.map_get(client.decode(rows[0],hash,ENUM),cb)
+        })      
+    },
+    gets:function(ids,cb){
+        if (!ids || !ids.length) return cb(ERR_INVALID_INPUT)
+        client.query(GETS,[ids],(err,rows)=>{
+            if (err) return cb(err)
+			this.map_gets(client.decodes(rows,hash,ENUM),cb)
         })      
     },
 	map_get: function(locker, cb){
@@ -41,9 +53,9 @@ module.exports= {
 			cb(null, client.mapDecode(rows, locker, hash, ENUM))
 		})
 	},
-	map_getList: function(lockers, cb){
+	map_gets: function(lockers, cb){
         if (!lockers.length) return cb(null, lockers)
-		client.query(MAP_GET_LIST, [picoObj.pluck(lockers,'id')], (err, rows)=>{
+		client.query(MAP_GETS, [picoObj.pluck(lockers,'id')], (err, rows)=>{
 			if (err) return cb(err)
 			cb(null, client.mapDecodes(picoObj.group(rows,'lockerId'),lockers,hash,ENUM))
 		})
