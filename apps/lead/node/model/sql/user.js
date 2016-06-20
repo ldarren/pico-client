@@ -11,7 +11,7 @@ FIND_BY_TIMES =         'SELECT * FROM `user` WHERE `uat` > ? AND `uat` < ?;',
 FIND_BY_UN =            'SELECT * FROM `user` WHERE `un` = ? AND `s`!=0;',
 FIND_BY_SESS =          'SELECT * FROM `user` WHERE `sess` = ? AND `s`!=0;',
 FIND_BY_ROLE =          'SELECT * FROM `user` WHERE `role` = ? AND `s`!=0;',
-SET =                   'INSERT INTO `user` (`un`, `sess`, `role`, `cby`) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `sess`=VALUES(`sess`), `s`!=0;',
+SET =                   'INSERT INTO `user` (`un`, `sess`, `role`, `cby`) VALUES (?) ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `sess`=VALUES(`sess`), `s`=1;',
 TOUCH =                 'UPDATE `user` SET `uby`=?, `uat`=NOW() WHERE `id`=? AND `s`!=0;',
 UNSET =                 'UPDATE `user` SET `s`=0, `uby`=? WHERE `id`=?;',
 
