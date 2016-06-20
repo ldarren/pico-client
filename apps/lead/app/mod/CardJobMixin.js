@@ -68,7 +68,9 @@ return {
 			lockers=deps.lockers,
 			request=deps.data
 
-			if (!request || !request.$detail || !request.$detail.lockerId) return __.dialogs.alert('Missing locker information',request.id)
+			if (!request || !request.get) return __.dialogs.alert('Invalid request')
+			var detail=request.get('$detail')
+			if (!detail || !detail.lockerId) return __.dialogs.alert('Missing locker information',request.id)
 
 			var btn=e.srcElement
 			switch(btn.textContent){
@@ -76,7 +78,7 @@ return {
 				lockers.reset()
 				lockers.create(null,{
 					data:{
-						lockerId:request.$detail.lockerId,
+						lockerId:detail.lockerId,
 						requestId:request.id
 					},
 					success:function(model){

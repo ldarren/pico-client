@@ -46,7 +46,7 @@
         ["Device","ctrl",[
 			["owner","ref","owner"],
 			["push","ctrl",[
-				["gcmSenderId","text","pdl-agent"]
+				["senderId","text","56885480619"]
 			],"common/native/push"],
             ["devices","models",{
 				"create":"lead/device/update",

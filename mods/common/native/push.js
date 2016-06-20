@@ -22,7 +22,7 @@ return {
         'push_error'
     ],
     deps: {
-        gcmSenderId: 'text',
+        senderId: 'text',
 		devices:'models',
         options: ['map',{
             sound:true,
@@ -46,7 +46,7 @@ return {
 
 			this.push=PushNotification.init({
 				android: {
-					senderID:           self.deps.gcmSenderId,
+					senderID:           self.deps.senderId,
 					sound:              o.sound,
 					//vibrate:            o.vibrate, // ios no vibration?
 					icon:               o.icon,

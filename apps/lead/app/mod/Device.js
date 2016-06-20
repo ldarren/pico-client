@@ -33,7 +33,7 @@ return {
 						sw:device.cordova,
 						os:device.version,
 						hw:device.manufacturer+':'+device.model,
-						vm:device.isVirtual
+						vm:device.isVirtual?1:0
 					}
 				}
 			})
