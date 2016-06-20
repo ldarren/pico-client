@@ -5,7 +5,7 @@ ENUM=                   [],
 
 GET =                   'SELECT * FROM `device` WHERE `id`=? AND `s`!=0;',
 GETS =                  'SELECT * FROM `device` WHERE `id` IN (?) AND `s`!=0;',
-SET =                   'INSERT INTO `device` (`userId`, `uuid`, `cby`) VALUES (?) ON DUPLICATE KEY UPDATE `s`!=0;',
+SET =                   'INSERT INTO `device` (`userId`, `uuid`, `cby`) VALUES (?) ON DUPLICATE KEY UPDATE `s`=1;',
 UNSET=                  'UPDATE `device` SET `s`=0 WHERE `id`=?;',
 FIND_BY_USERID=         'SELECT * FROM `device` WHERE `userId`=? AND `s`!=0;',
 FIND_BY_USERIDS=        'SELECT * FROM `device` WHERE `userId` IN (?) AND `s`!=0;',
@@ -70,6 +70,9 @@ module.exports= {
     },
 	findByUserId: function(userId,cb){
 		client.query(FIND_BY_USERID,[userId],cb)
+    },
+	findByUserIds: function(userIds,cb){
+		client.query(FIND_BY_USERIDS,[userIds],cb)
     },
 	findByUserIdUUID: function(userId,uuid,cb){
 		client.query(FIND_BY_USERID_UUID,[userId,uuid],cb)
