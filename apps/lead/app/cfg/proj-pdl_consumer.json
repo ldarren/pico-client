@@ -125,14 +125,15 @@
                 ["surcharges","ref","surcharges"],
 				["addRequest","list",[
                     [
-					    {"type":"select","name":"type","label":"Type","holder":"Request Type","options":[[1,"Laundry"]],"value":1},
-					    {"type":"datetime-local","name":"collect","label":"Collection","required":1},
+					    {"type":"select","name":"category","label":"Category","holder":"Category","options":[[1,"Laundry"]],"value":1},
+					    {"type":"select","name":"merchant","label":"Merchant","holder":"Merchant","options":[[1,"LaundryMart"]],"value":1},
                         {"type":"select","name":"lockerId","label":"Locker","holder":"Select a locker","options":[],"value":1}
                     ],
                     [
+					    {"type":"datetime-local","name":"collect","label":"Collection","required":1},
+                        {"type":"select","name":"delivery","label":"Delivery","holder":"Delivery Date","options":[],"value":1},
                         {"type":"number","name":"count","label":"Count","value":1,"required":1},
-                        {"type":"select","name":"return","label":"Return","holder":"Return Date","options":[],"value":1},
-                        {"type":"select","name":"laundry","label":"Process","holder":"Process","options":[],"value":2,"required":1},
+                        {"type":"select","name":"process","label":"Type","holder":"Process Type","options":[],"value":2,"required":1},
                         {"type":"text","name":"note","label":"Note"},
                         {"type":"checkbox","name":"termncond","label":"T&Cs","url":"legal","required":1}
                     ]
