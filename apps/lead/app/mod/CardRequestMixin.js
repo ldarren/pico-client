@@ -26,8 +26,8 @@ return{
 			collectTime:t.substring(0, t.indexOf('M')+1),//remove time zone
             type:d.type,
             abbr:1==d.type?'LDY':'NA',
-            service:surcharges.get(d.return).get('name'),
-            process:laundryOpt.get(d.laundry).get('name'),
+            service:surcharges.get(d.delivery).get('name'),
+            process:laundryOpt.get(d.process).get('name'),
             locker:lockers.get(d.lockerId).get('name'),
             count:d.count,
             state:data.s

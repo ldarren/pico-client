@@ -125,8 +125,8 @@
                 ["surcharges","ref","surcharges"],
 				["addRequest","list",[
                     [
-					    {"type":"select","name":"category","label":"Category","holder":"Category","options":[[1,"Laundry"]],"value":1},
-					    {"type":"select","name":"merchant","label":"Merchant","holder":"Merchant","options":[[1,"LaundryMart"]],"value":1},
+					    {"type":"select","name":"category","label":"Category","holder":"Select a category","options":[[1,"Laundry"]],"value":1},
+					    {"type":"select","name":"merchant","label":"Merchant","holder":"Select a merchant","options":[[1,"LaundryMart"]],"value":1},
                         {"type":"select","name":"lockerId","label":"Locker","holder":"Select a locker","options":[],"value":1}
                     ],
                     [

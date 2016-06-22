@@ -24,7 +24,7 @@ return {
 		Header:'view',
 		Form:'view'
 	},
-    signals:['show','hide','formShow','formCollect','pageCreate','pageResult','modalResult','header'],
+    signals:['show','hide','formShow','formCollect','formUpdate','pageCreate','pageResult','pageChange','modalResult','header'],
     create: function(deps){
 		this.header=this.spawn(deps.Header)
 		this.form=this.spawn(deps.Form)
@@ -47,6 +47,12 @@ return {
 			this.sender=null
             this.signals.hide().send(this.host)
 		},
+        formChange:function(from, sender, name, value){
+            var self=this
+            this.signals.pageChange(name, value, function(name, value, options){
+                self.signals.formUpdate(name,value,options).send(self.form)
+            }).send()
+        },
 		headerButtonClicked:function(from, sender, hash){
             var self=this
 			switch(hash){

@@ -123,3 +123,19 @@
 .form .error{
   color:red;
 }
+.form :invalid{
+  color:red;
+}
+.form .errors{
+  list-style-type: disc;
+  margin: 0 10px 15px 10px;
+  padding: 8px 35px 8px 30px;
+  color: #B94A48;
+  background-color: #F2DEDE;
+  border: 2px solid #EED3D7;
+  border-radius: 4px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+.form .errors span {
+  font-weight: bold;
+}

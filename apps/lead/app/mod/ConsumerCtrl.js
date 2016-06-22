@@ -1,6 +1,22 @@
 var 
 Router=require('js/Router'),
 picoStr=require('pico/str'),
+datetime=function(leadTime){
+    var d=new Date(Date.now()+leadTime)
+    return d.getFullYear()+'-'+
+        picoStr.pad(d.getMonth()+1,2)+'-'+
+        picoStr.pad(d.getDate(),2)+'T'+
+        picoStr.pad(d.getHours(),2)+':'+
+        picoStr.pad(d.getMinutes(),2)
+},
+prepareDelivery=function(collect,surcharges,o){
+    var c=(new Date(collect)).getTime()
+    o.length=0
+    for(var j=0,s;s=surcharges.at(j); j++){
+        o.push([s.id,s.get('name')+'['+(new Date(c+(s.get('lead')*86400000))).toLocaleDateString()+'] Fee: '+s.get('percent')+'%'])
+    }
+    return o
+},
 prepareForm0=function(self,result,form){
     var lockers=self.deps.lockers
     for(var i=0,f,o,v; f=form[i]; i++){
@@ -11,14 +27,6 @@ prepareForm0=function(self,result,form){
             for(var j=0,l;l=lockers.at(j); j++){
                 o.push([l.id,l.get('name')])
             }
-            break
-        case 'collect':
-            var d=new Date(Date.now()+self.deps.leadTime)
-            f.value=d.getFullYear()+'-'+
-                picoStr.pad(d.getMonth()+1,2)+'-'+
-                picoStr.pad(d.getDate(),2)+'T'+
-                picoStr.pad(d.getHours(),2)+':'+
-                picoStr.pad(d.getMinutes(),2)
             break
         }
         v=result[f.name]
@@ -31,17 +39,14 @@ prepareForm1=function(self,result,form){
 
     for(var i=0,f,o,v; f=form[i]; i++){
         switch(f.name){
-        case 'return':
-            var
-            c=result.collect,
-            surcharges=deps.surcharges
-            o=f.options
-            o.length=0
-            for(var j=0,s;s=surcharges.at(j); j++){
-                o.push([s.id,s.get('name')+'['+(new Date((new Date(c)).getTime()+(s.get('lead')*86400000))).toLocaleDateString()+'] Fee: '+s.get('percent')+'%'])
-            }
+        case 'collect':
+            f.min=f.value=datetime(deps.leadTime)
+            f.max=datetime(deps.leadTime*21)
             break
-        case 'laundry':
+        case 'delivery':
+            prepareDelivery(datetime(deps.leadTime),deps.surcharges,f.options)
+            break
+        case 'process':
             var
             laundryOpt=deps.laundryOpt,
             o=f.options
@@ -70,7 +75,7 @@ return {
 		laundryOpt:'models',
 		surcharges:'models',
 		addRequest:'list',
-        leadTime:['int',10800]
+        leadTime:['int',28800000]
 	},
 	create:function(deps){
 	},
@@ -94,6 +99,14 @@ return {
         pageResult:function(from,sender,result,cb){
             this.result=result
             cb()
+        },
+        pageChange:function(from,sender,name,value,cb){
+            this.result[name]=value
+            switch(name){
+            case 'collect':
+                var deps=this.deps
+                return cb('delivery',this.result['delivery']||1,prepareDelivery(value,deps.surcharges,[]))
+            }
         },
 		modalResult:function(from,sender,result){
 			this.deps.requests.create(null,{
