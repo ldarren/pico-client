@@ -1,8 +1,8 @@
 var 
 Router=require('js/Router'),
 picoStr=require('pico/str'),
-datetime=function(leadTime){
-    var d=new Date(Date.now()+leadTime)
+datetime=function(unixtime){
+    var d=new Date(unixtime)
     return d.getFullYear()+'-'+
         picoStr.pad(d.getMonth()+1,2)+'-'+
         picoStr.pad(d.getDate(),2)+'T'+
@@ -13,7 +13,7 @@ prepareDelivery=function(collect,surcharges,o){
     var c=(new Date(collect)).getTime()
     o.length=0
     for(var j=0,s;s=surcharges.at(j); j++){
-        o.push([s.id,s.get('name')+'['+(new Date(c+(s.get('lead')*86400000))).toLocaleDateString()+'] Fee: '+s.get('percent')+'%'])
+        o.push([s.id,s.get('name')+'\t['+(new Date(c+(s.get('lead')*86400000))).toLocaleDateString()+'] Fee: '+s.get('percent')+'%'])
     }
     return o
 },
@@ -40,11 +40,11 @@ prepareForm1=function(self,result,form){
     for(var i=0,f,o,v; f=form[i]; i++){
         switch(f.name){
         case 'collect':
-            f.min=f.value=datetime(deps.leadTime)
-            f.max=datetime(deps.leadTime*21)
+            f.min=f.value=datetime(Date.now()+deps.leadTime)
+            f.max=datetime(Date.now()+(deps.leadTime*21))
             break
         case 'delivery':
-            prepareDelivery(datetime(deps.leadTime),deps.surcharges,f.options)
+            prepareDelivery(datetime(Date.now()+deps.leadTime),deps.surcharges,f.options)
             break
         case 'process':
             var
@@ -91,7 +91,7 @@ return {
 					}
 			)
             this.result={}
-			this.signals.modalShow(this.deps.addRequest).send(this.host)
+			this.signals.modalShow(this.deps.addRequest).sendNow(this.host)
 		},
         pageCreate:function(from,sender,index,total,form,cb){
 			cb('Add Request, Step '+(index+1),prepareForm(this,index,this.result,form))

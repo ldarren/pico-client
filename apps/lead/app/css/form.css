@@ -35,18 +35,6 @@
   margin-bottom: -0.4rem;
   margin-right: 0.5rem;
 }
-.form .icon.name path {
-    stroke-dasharray: 73.50196075439453;
-    stroke-dashoffset: 73.50196075439453;
-    -webkit-animation: animatePath 2s 0.5s forwards;
-    animation: animatePath 2s 0.5s forwards;
-}
-.form .icon.pass path {
-    stroke-dasharray: 92.10662841796875;
-    stroke-dashoffset: 92.10662841796875;
-    -webkit-animation: animatePath 2s 0.5s forwards;
-    animation: animatePath 2s 0.5s forwards;
-}
 .form .input{
   flex-grow:1;
   width:100%;
@@ -138,4 +126,5 @@
 }
 .form .errors span {
   font-weight: bold;
+  padding-right:4px;
 }

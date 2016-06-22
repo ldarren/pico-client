@@ -7,8 +7,8 @@ showPage=function(self,curr,pages){
         rightBtn=pages[curr+1]?{icon:'icon_next'}:{icon:'icon_ok'}
 
         self.signals.header(title,leftBtn,rightBtn).send(self.header)
-        self.signals.formShow(form).send(self.form)
-    }).send(self.sender)
+        self.signals.formShow(form).sendNow(self.form)
+    }).sendNow(self.sender)
 },
 closePage=function(self,curr,pages,verify,cb){
     self.signals.formCollect(verify,function(err,data){

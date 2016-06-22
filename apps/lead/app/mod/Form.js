@@ -14,10 +14,8 @@ errorMsgs=function(fe,ee){
         span.textContent=label?label.textContent:name
         li.appendChild(span)
 
-        span=document.createElement('span')
         //Opera incorrectly does not fill the validationMessage property.
-        span.textContent=f.validationMessage || 'Invalid value.';
-        li.appendChild(span)
+        li.appendChild(document.createTextNode(f.validationMessage || 'Invalid value.'))
 
         ee.appendChild(li)
     }
