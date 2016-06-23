@@ -100,7 +100,7 @@
             ["user","addAgent","request",":list"],
             ["room","publish",["lead/broadcast"],"msg",":list"],
             ["device","readTokens",":list","devices"],
-            ["agent","newJobMsg","msg"],
+            ["agent","newJobMsg","request","msg"],
             ["agent","send","devices","msg"],
             [0]
         ],
@@ -129,7 +129,7 @@
             ["request","getCreator","request",":list"],
             ["room","publish",["lead/broadcast"],"msg",":list"],
             ["device","readTokens",":list","devices"],
-            ["consumer","requestUpdated","msg"],
+            ["consumer","requestUpdated","request","msg"],
             ["consumer","send","devices","msg"],
             [0]
         ],

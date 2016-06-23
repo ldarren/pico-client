@@ -1,13 +1,15 @@
-var notifier
+var
+picoStr=require('pico/str'),
+notifier
 
 module.exports= {
     setup: function(context, next){
         notifier=context.pdl_consumer_notifier
         next()
     },
-    requestUpdated:function(output,next){
-        output['title']='Your Request Update'
-        output['content']='Your job has been updated!'
+    requestUpdated:function(request,output,next){
+        output['title']='Request Updated'
+        output['content']=`Your request #${picoStr.pad(request.id,4)} has been updated!`
         next()
     },
     send: function(devices, data, next){

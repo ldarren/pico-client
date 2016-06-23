@@ -1,7 +1,8 @@
 var
 COLORS=['purple','green','orange','red'],
 STATES=['Cancelled','Order placed','Collected','Delivered'],
-picoTime=require('pico/time')
+picoTime=require('pico/time'),
+picoStr=require('pico/str')
 
 return {
 	deps:{
@@ -26,6 +27,7 @@ return {
         return cb(null, {
             COLORS:COLORS,
             STATES:STATES,
+            id:picoStr.pad(data.id,4),
             jobState:data.s,
             jobCollectDate:picoTime.day(dt),
             jobCollectTime:t.substring(0, t.indexOf('M')+1),//remove time zone

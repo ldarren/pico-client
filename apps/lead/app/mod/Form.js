@@ -24,6 +24,7 @@ errorMsgs=function(fe,ee){
 getFieldValue=function(f){
     switch(f.type){
     case 'checkbox': return f.checked?1:0
+    case 'select-one': return parseInt(f.value)
     case 'number':
     case 'range': return f.valueAsNumber
     default: return f.value
