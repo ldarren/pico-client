@@ -14,21 +14,10 @@ return {
     signals:['paneAdd','pageAdd','moduleAdded'],
     deps:{
         html:   ['file','<div class=layer></div><div class=layer></div>'],
-        layers: ['list', ['.pane>div:nth-child(1)','.pane>div:nth-child(2)']],
         paneId: 'int'
     },
     create: function(deps, params){
-        var
-        el=this.el,
-        layers=deps.layers,
-        list=[]
-
-        el.innerHTML = deps.html
-
-        for(var i=0,l; l=layers[i]; i++){
-            list.push(el.querySelector(l))
-        }
-        this.layers=list
+        this.el.innerHTML = deps.html
 
         var
         self=this,
@@ -39,12 +28,6 @@ return {
     },
 
     slots: {
-        invalidate: function(from, sender, where, first){
-            if (!sender || -1 === this.modules.indexOf(sender)) return
-
-            var c=this.layers[where||1]
-            this.show(sender, c, first)
-        },
         paneUpdate: function(from, sender, paneId, name, pageConfig, params){
             if (this.deps.paneId !== paneId) return
             if (name === this.name && this.params && params && _.isEqual(this.params,params)) return

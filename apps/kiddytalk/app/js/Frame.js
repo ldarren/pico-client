@@ -129,10 +129,9 @@ return Module.View.extend({
 
     slots: {
         paneAdd: function(from, sender, paneId){
-//            this.el.appendChild(sender.el)
             this.signals.paneAdded(paneId).send()
         },
-        show: function(from, sender, where, first){
+        layerShow: function(from, sender, where, first){
             if (!sender || -1 === this.modules.indexOf(sender)) return
 
             var c=this.layers[where]||this.layers[0]
@@ -140,7 +139,7 @@ return Module.View.extend({
             c.style.zIndex=(where||0)*(1000+Floor(100*Random()))
             this.show(sender, c, first)
         },
-        hide: function(from, sender, where){
+        layerHide: function(from, sender, where){
             if (!sender || -1 === this.modules.indexOf(sender)) return
 
             var c=this.layers[where||1]

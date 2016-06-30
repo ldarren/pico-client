@@ -7,7 +7,14 @@ ID=0,TYPE=1,VALUE=2,EXTRA=3
 var
 fs=require('fs'),
 path=require('path'),
-setup=(distDir, cfgDir, proj, env, cb)=>{
+CleanCSS=require('clean-css'),
+proj=process.argv[2],
+env=process.argv[3]||'pro',
+mainjs=process.argv[4]||'main.js',
+srcDir=process.argv[5]||'mod',
+distDir=process.argv[6]||'bin',
+cfgDir=process.argv[7]||'cfg',
+setup=function(cb){
     var
     rawProjPath=path.resolve(cfgDir,`proj-${proj}.json`),
     rawEnvPath=path.resolve(cfgDir,`env-${proj}-${env}.json`),
@@ -18,23 +25,28 @@ setup=(distDir, cfgDir, proj, env, cb)=>{
         if (err) return cb(err)
         fs.stat(rawEnvPath, (err, stat)=>{
             if (err) return cb(err)
-            fs.writeFileSync(projPath, fs.readFileSync(rawProjPath))
+			var json=fs.readFileSync(rawProjPath)
+            fs.writeFileSync(projPath, json)
             fs.writeFileSync(envPath, fs.readFileSync(rawEnvPath))
             fs.mkdir(distDir, 0o755, (err)=>{
                 if (err && 'EEXIST'!==err.code) return cb(err)
                 fs.mkdir(path.resolve(distDir,proj), 0o755, (err)=>{
                     if (err && 'EEXIST'!==err.code) return cb(err)
-                    cb(null, projPath, path.resolve(distDir,proj,'project.js'))
+                    cb(null, json, path.resolve(distDir,proj,'project.js'))
                 })
             })
         })
     })
 },
-getPath=(spec, include)=>{
-	switch(spec[TYPE]){
+getPath=function(spec, include, style){
+	var s=spec[STYLE]
+	switch(s){
 	case 'file':
 		include.add(spec[VALUE])
-		break
+		return false
+	case 'css':
+		style.add(spec[VALUE])
+		return false
 	case 'view':
 	case 'ctrl':
 		var path=spec[EXTRA]||spec[ID]
@@ -45,67 +57,91 @@ getPath=(spec, include)=>{
 	}
     return true
 },
-scan=(arr, include, cb)=>{
-    if (!arr || !Array.isArray(arr) || !arr.length) return cb(null, include)
+scan=function(arr, include, style, cb){
+    if (!arr || !Array.isArray(arr) || !arr.length) return cb(null, include, style)
     var spec=arr.pop()
-    if (getPath(spec, include)){
-        scan(spec[VALUE], include, (err, include)=>{
+    if (getPath(spec, include, style)){
+        scan(spec[VALUE], include, style, (err, include, style)=>{
             if (err) return console.error(err)
-            scan(arr, include, cb)
+            scan(arr, include, style, cb)
         })
     }else{
-        scan(arr, include, cb)
+        scan(arr, include, style, cb)
     }
 },
-scanPane=(keys, panes, include, cb)=>{
-    if (!keys || !keys.length) return cb(null, include)
+scanPane=function(keys, panes, include, style, cb){
+    if (!keys || !keys.length) return cb(null, include, style)
     var pane=panes[keys.pop()]
-    if (!pane) return scanPane(keys, panes, include, cb)
-    scan(pane, include, (err, include)=>{
+    if (!pane) return scanPane(keys, panes, include, style, cb)
+    scan(pane, include, style, (err, include, style)=>{
         if (err) return console.error(err)
-        scanPane(keys, panes, include, cb)
+        scanPane(keys, panes, include, style, cb)
     })
+},
+writeCSS=function(style){
+	var
+	content='',
+	src=proj+'.css',
+	target=path.resolve(distDir,proj,proj+'.css')
+
+	style.forEach((v)=>{
+		content+=`@import url(${srcDir+path.sep+v});\n`
+	})
+	fs.writeFile(src, content, 'utf8', (err)=>{
+		if (err) console.error(err)
+			console.log(content)
+		new CleanCSS({rebase:false,sourceMap:true,target:target}).minify(content, (err, minified)=>{
+			if (err) return console.error(err)
+			fs.writeFile(target, minified.styles, 'utf8', (err)=>{
+				if (err) return console.error(err)
+				fs.writeFile(target+'.map', minified.sourceMap.toString(), 'utf8', (err)=>{
+					if (err) return console.error(err)
+					console.log('css saved')
+				})
+			})
+		})
+	})
 }
 
-if (7 !== process.argv.length) return console.log(process.argv[1],'mod/main.js','dist','cfg','lead','dev')
+if (3 > process.argv.length) return console.log(process.argv[1],'PROJ_NAME','[ENV]','[main.js]','[mod]','[bin]','[cfg]')
 
-setup(process.argv[3], process.argv[4], process.argv[5], process.argv[6], (err, projPath, outPath)=>{
-    if (err) return console.error(err)
-    fs.readFile(projPath, 'utf8', (err, json)=>{
-        if (err) return console.error(err)
-        try{var config=JSON.parse(json)}
-        catch(exp){return console.error(exp)}
+setup((err, json, outPath)=>{
+	if (err) return console.error(err)
+	try{var config=JSON.parse(json); json=null}
+	catch(exp){return console.error(exp)}
 
-        var deps=new Set(config[DEPS])
-        deps.add('lib/underscore-min.js')
-        deps.add('lib/backbone-min.js')
-        deps.add('lib/backbone.native.min.js')
-        deps.add('lib/lean/lean.min.js')
-        deps.add('lib/pico.min.js')
+	var deps=new Set(config[DEPS])
+	deps.add('lib/underscore-min.js')
+	deps.add('lib/backbone-min.js')
+	deps.add('lib/backbone.native.min.js')
+	deps.add('lib/lean/lean.min.js')
+	deps.add('lib/pico.min.js')
 
-        // global
-        __={ajax:null,onLoad:null}
-        _=require('underscore')
-        Backbone=require('backbone')
-        pico=require('./lib/pico.js')
-        window={localStorage:{},location:{}}
+	// global
+	__={ajax:null,onLoad:null}
+	_=require('underscore')
+	Backbone=require('backbone')
+	pico=require('./lib/pico.js')
+	window={localStorage:{},location:{}}
 
-        scan(config[SPEC], new Set, (err, include)=>{
-            if (err) return console.error(err)
-            var
-            panes=config[PANE],
-            keys=Object.keys(panes)
+	scan(config[SPEC], new Set, new Set, (err, include, style)=>{
+		if (err) return console.error(err)
+		var
+		panes=config[PANE],
+		keys=Object.keys(panes)
 
-            scanPane(keys, panes, include, (err, include)=>{
-                if (err) return console.error(err)
-                pico.build({
-                    entry:process.argv[2],
-                    output:outPath,
-                    deps:[...deps],
-                    include:[...include],
-                    exclude:['main'] 
-                })
-            })
-        })
+		scanPane(keys, panes, include, style, (err, include, style)=>{
+			if (err) return console.error(err)
+
+			writeCSS(style)
+
+			pico.build({
+				entry:path.resolve(srcDir,mainjs),
+				output:outPath,
+				deps:[...deps],
+				include:[...include],
+				exclude:['main'] 
+			})
+		})
     })
 })

@@ -1,7 +1,7 @@
 [
     [
     ],[
-        "css/styles.css"
+        "css/index.css"
     ],[
         ["html","file","path/to/frame/html"],
         ["els","map",{"main":"#layer1"}]
@@ -9,7 +9,7 @@
         "home":[
             ["html","file","path/to/page/html"],
             ["el","text","#id"],
-            ["attributes","map",{
+            ["options","map",{
                 "tagName":"div",
                 "className":""
             }]

@@ -1,0 +1,65 @@
+@import url(main.css);
+.keypad{
+	display:flex;
+	flex-direction:column;
+	width:100%;
+    font-size: 5rem;
+	justify-content:space-around;
+	padding:1rem 20%;
+}
+.keypad .row{
+	display:flex;
+	width:100%;
+	align-items: center;
+	justify-content:space-around;
+}
+.keypad .display{
+	width:100%;
+	height:12rem;
+	line-height:10rem;
+	text-align:right;
+	padding:1rem 10%;
+}
+.keypad .btn{
+	display: block;
+	position:relative;
+    width:calc(80% / 3);
+    text-align: center;
+    border: 1px solid brown;
+    border-radius: 50%;
+}
+.keypad .btn:before{
+	content:"";
+	display:block;
+	padding-top:100%;
+}
+.keypad .btn span {
+	position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+	line-height:100%;
+	margin:calc((100% - 5rem) / 2) 0;
+}
+.keypad .btn.down{
+	background:brown;
+	color:#fff;
+}
+.keypad .call{
+    border: 1px solid lightgreen;
+	background:lightgreen;
+	color:#fff;
+}
+.keypad .call.down{
+    border: 1px solid darkgreen;
+	background:darkgreen;
+	color:gray;
+}
+.keypad .btn svg{
+	position:absolute;
+	top:20%;
+	left:20%;
+	fill:white;
+	width:60%;
+	height:60%;
+}
