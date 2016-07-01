@@ -624,17 +624,18 @@ hideByIndex= function(self, i, host){
     return oldEl
 },
 Module= {
-    create: function(deps, params){
+    create: function(deps, params, hidden, cb){
         var
-        spec = this.spec,
-        list=[]
+		spec = this.spec,
+		html
         for(var i=0,s; s=spec[i]; i++){
             switch(s[ID]){
-            case 'html': this.el.innerHTML=s[VALUE]; break
+            case 'html': html=s[VALUE]; break
             case 'el': this.setElement(s[VALUE]); break
             }
         }
-        this.spawnAsync(spec, params, null, false, dummyCB)
+		if(html)this.el.innerHTML=deps.html||html // ctrl has no html
+        this.spawnAsync(this.spec, params, null, hidden, cb || dummyCB)
     },
     addSpec: function(rawSpec, cb){
         this._rawSpec=(this._rawSpec||[]).concat(rawSpec)
@@ -874,8 +875,8 @@ attachCSS = function(styles, cb){
     __.attachFile(styles.shift(), 'css', function(){ attachCSS(styles, cb) })
 },
 resized=function(self, paneCount){
-    if (paneCount === self.paneCountSpec[VALUE]) return
-    self.paneCountSpec[VALUE]=paneCount
+    if (paneCount === self.deps.paneCount) return
+    self.deps.paneCount=paneCount
     if (Backbone.History.started && self.currPath) changeRoute.call(self, self.currPath, self.currParams)
 	self.signals.paneCount(paneCount).send()
 },
@@ -889,7 +890,7 @@ changeRoute = function(path, params){
 
     var
     pages=this.pages,
-    pc=this.paneCountSpec[VALUE] || 1,
+    pc=this.deps.paneCount || 1,
     i=f.length < pc ? 0 : f.length-pc
 
     for(var j=0,p; i<pc; i++,j++){
@@ -916,14 +917,14 @@ return Module.View.extend({
     signals:['online','offline','changeRoute','frameAdded','paneAdded','paneUpdate','paneCount'],
     deps:{
         html:   ['file','<div class=frame><div class=layer></div><div class=layer></div></div>'],
-        layers: ['list', ['.frame>div:nth-child(1)','.frame>div:nth-child(2)']]
+        layers: ['list', ['.frame>div:nth-child(1)','.frame>div:nth-child(2)']],
+		paneCount:['int',1]
     },
     initialize: function(p, e){
         var self = this
         
         this.pages= p[PAGES]
         this.flyers= p[FLYERS]
-		this.paneCountSpec=['paneCount','int',1]
 
         document.addEventListener('animationstart', function(e){
             console.log(e.animationName)
@@ -941,8 +942,7 @@ return Module.View.extend({
                 attachJS(p[DEPS], function(){
                     Module.View.prototype.initialize.call(self, null, {name:'Frame'}, 
 						p[SPEC].concat([
-							['env','map',e],
-							self.paneCountSpec
+							['env','map',e]
 						]))
                 })
             })
@@ -950,39 +950,20 @@ return Module.View.extend({
     },
 
     create: function(deps, params){
-        var
-        el=this.el,
-        layers=deps.layers,
-        list=[]
+        var self=this
+		this.ancestor.create.call(this, deps, params, true, function(){
+			var
+			el=self.el,
+			layers=deps.layers,
+			list=[]
 
-        el.innerHTML = deps.html
+			for(var i=0,l; l=layers[i]; i++){
+				list.push(el.querySelector(l))
+			}
+			self.layers=list
 
-        for(var i=0,l; l=layers[i]; i++){
-            list.push(el.querySelector(l))
-        }
-        this.setElement(list[0])
-        this.layers=list
-        
-        var 
-        self=this,
-        panes=[],
-        mods=[]
-
-        for(var i=0,spec=this.spec,s; s=spec[i]; i++){
-            switch(s[TYPE]){
-            case 'ctrl': mods.push(s); break
-            case 'view':
-                if ('pane'===s[ID]) panes.push(s)
-                else mods.push(s)
-                break
-            }
-        }
-
-        this.spawnAsync(panes, params, null, false, function(){
-            self.spawnAsync(mods, params, null, true, function(){
-                self.signals.frameAdded().send()
-            })
-        })
+			self.signals.frameAdded().send()
+		})
     },
 
     slots: {
@@ -1016,7 +997,7 @@ return Module.View.extend({
 })
 //# sourceURL=js/Frame
 })
-pico.define('cfg/project.json','[[],["kiddytalk.css"],[["html","file","Frame.html"],["layers","list",[".frame"]],["style","css","Frame.css"],["contacts","models",{},[{"name":"Bella Wa","tel":"123","img":"../dat/img/dog.jpg","snd":"../dat/snd/dog.wav"}]],["recents","models",{}],["auth/NoSession","ctrl",[]],["pane","view",[["paneId","int",0],["html","file","Pane.html"]],"js/Pane"],["Header","view",[["options","map",{"el":".pane>#header"}],["paneId","int",0]]],["Page","view",[["options","map",{"el":".pane>#page"}],["paneId","int",0]]],["Footer","view",[["options","map",{"el":".pane>#footer"}],["paneId","int",0]]]],{"keypad":[[["Keypad","KeypadMixin"],"view",[["html","file","Keypad.html"],["style","css","Keypad.css"]]]],"recents":[],"contacts":[],"call":[]},{"*action":["keypad"],"recents":["recents"],"contacts":["contacts"],"call":["call"]}]')
+pico.define('cfg/project.json','[[],["kiddytalk.css"],[["html","file","Frame.html"],["layers","list",[".frame"]],["style","css","Frame.css"],["contacts","models",{},[{"name":"Bella Wa","tel":"123","img":"../dat/img/dog.jpg","snd":"../dat/snd/dog.wav"}]],["recents","models",{}],["auth/NoSession","ctrl",[]],["pane","view",[["options","map",{"el":".frame"}],["paneId","int",0],["html","file","Pane.html"]],"js/Pane"],["Header","view",[["options","map",{"el":".frame>#header"}],["paneId","int",0]]],["Page","view",[["options","map",{"el":".frame>#page"}],["paneId","int",0]]],["Footer","view",[["options","map",{"el":".frame>#footer"}],["paneId","int",0]]]],{"keypad":[["options","map",{"el":".frame>#page"}],[["Keypad","KeypadMixin"],"view",[["html","file","Keypad.html"],["style","css","Keypad.css"]]]],"recents":[["options","map",{"el":".frame>#page"}]],"contacts":[["options","map",{"el":".frame>#page"}]],"callin":[["options","map",{"el":".frame>#page"}]],"callout":[["options","map",{"el":".frame>#page"}]]},{"*action":["keypad"],"recents":["recents"],"contacts":["contacts"],"callin":["callin"],"callout":["callout"]}]')
 pico.define('cfg/env.json','{"domains":{}}')
 
 var opt={variable:'d'}
@@ -1115,21 +1096,16 @@ removeOldPage=function(from, sender, paneId){
 }
 
 return {
-    className:'pane',
     signals:['paneAdd','pageAdd','moduleAdded'],
     deps:{
         html:   ['file','<div class=layer></div><div class=layer></div>'],
         paneId: 'int'
     },
     create: function(deps, params){
-        this.el.innerHTML = deps.html
-
-        var
-        self=this,
-        mods=this.spec.slice()
-
-        this.spec=this.spec.concat(this.host.spec)
-        this.spawnAsync(mods, params, null, true, function(){self.signals.paneAdd(self.deps.paneId).send()})
+        var self=this
+		this.ancestor.create.call(this, deps, params, true, function(){
+			self.signals.paneAdd(deps.paneId).send()
+		})
     },
 
     slots: {
@@ -1144,7 +1120,7 @@ return {
                 name:(name || '')+'@'+paneId,
                 spec:pageConfig,
                 Class:{},
-                }, params, null, false)
+                }, params, null, true)
 
             this.el.style.cssText = ''
             this.signals.pageAdd(paneId, this.currPage.render(), Router.isBack()).send()

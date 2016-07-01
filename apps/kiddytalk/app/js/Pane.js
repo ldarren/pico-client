@@ -10,21 +10,16 @@ removeOldPage=function(from, sender, paneId){
 }
 
 return {
-    className:'pane',
     signals:['paneAdd','pageAdd','moduleAdded'],
     deps:{
         html:   ['file','<div class=layer></div><div class=layer></div>'],
         paneId: 'int'
     },
     create: function(deps, params){
-        this.el.innerHTML = deps.html
-
-        var
-        self=this,
-        mods=this.spec.slice()
-
-        this.spec=this.spec.concat(this.host.spec)
-        this.spawnAsync(mods, params, null, true, function(){self.signals.paneAdd(self.deps.paneId).send()})
+        var self=this
+		this.ancestor.create.call(this, deps, params, true, function(){
+			self.signals.paneAdd(deps.paneId).send()
+		})
     },
 
     slots: {
@@ -39,7 +34,7 @@ return {
                 name:(name || '')+'@'+paneId,
                 spec:pageConfig,
                 Class:{},
-                }, params, null, false)
+                }, params, null, true)
 
             this.el.style.cssText = ''
             this.signals.pageAdd(paneId, this.currPage.render(), Router.isBack()).send()

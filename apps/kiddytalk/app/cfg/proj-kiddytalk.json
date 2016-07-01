@@ -17,38 +17,47 @@
 		["recents","models",{}],
 		["auth/NoSession","ctrl",[]],
         ["pane","view",[
+			["options","map",{"el":".frame"}],
             ["paneId","int",0],
             ["html","file","Pane.html"]
         ],"js/Pane"],
 		["Header","view",[
-			["options","map",{"el":".pane>#header"}],
+			["options","map",{"el":".frame>#header"}],
 			["paneId","int",0]
 		]],
 		["Page","view",[
-			["options","map",{"el":".pane>#page"}],
+			["options","map",{"el":".frame>#page"}],
 			["paneId","int",0]
 		]],
 		["Footer","view",[
-			["options","map",{"el":".pane>#footer"}],
+			["options","map",{"el":".frame>#footer"}],
 			["paneId","int",0]
 		]]
     ],{
         "keypad":[
+			["options","map",{"el":".frame>#page"}],
 			[["Keypad","KeypadMixin"],"view",[
 				["html","file","Keypad.html"],
 				["style","css","Keypad.css"]
 			]]
         ],
         "recents":[
+			["options","map",{"el":".frame>#page"}]
         ],
         "contacts":[
+			["options","map",{"el":".frame>#page"}]
         ],
-        "call":[
+        "callin":[
+			["options","map",{"el":".frame>#page"}]
+        ],
+        "callout":[
+			["options","map",{"el":".frame>#page"}]
         ]
     },{
         "*action":["keypad"],
         "recents":["recents"],
         "contacts":["contacts"],
-        "call":["call"]
+        "callin":["callin"],
+        "callout":["callout"]
     }
 ]

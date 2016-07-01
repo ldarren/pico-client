@@ -16,8 +16,8 @@ attachCSS = function(styles, cb){
     __.attachFile(styles.shift(), 'css', function(){ attachCSS(styles, cb) })
 },
 resized=function(self, paneCount){
-    if (paneCount === self.paneCountSpec[VALUE]) return
-    self.paneCountSpec[VALUE]=paneCount
+    if (paneCount === self.deps.paneCount) return
+    self.deps.paneCount=paneCount
     if (Backbone.History.started && self.currPath) changeRoute.call(self, self.currPath, self.currParams)
 	self.signals.paneCount(paneCount).send()
 },
@@ -31,7 +31,7 @@ changeRoute = function(path, params){
 
     var
     pages=this.pages,
-    pc=this.paneCountSpec[VALUE] || 1,
+    pc=this.deps.paneCount || 1,
     i=f.length < pc ? 0 : f.length-pc
 
     for(var j=0,p; i<pc; i++,j++){
@@ -58,14 +58,14 @@ return Module.View.extend({
     signals:['online','offline','changeRoute','frameAdded','paneAdded','paneUpdate','paneCount'],
     deps:{
         html:   ['file','<div class=frame><div class=layer></div><div class=layer></div></div>'],
-        layers: ['list', ['.frame>div:nth-child(1)','.frame>div:nth-child(2)']]
+        layers: ['list', ['.frame>div:nth-child(1)','.frame>div:nth-child(2)']],
+		paneCount:['int',1]
     },
     initialize: function(p, e){
         var self = this
         
         this.pages= p[PAGES]
         this.flyers= p[FLYERS]
-		this.paneCountSpec=['paneCount','int',1]
 
         document.addEventListener('animationstart', function(e){
             console.log(e.animationName)
@@ -83,8 +83,7 @@ return Module.View.extend({
                 attachJS(p[DEPS], function(){
                     Module.View.prototype.initialize.call(self, null, {name:'Frame'}, 
 						p[SPEC].concat([
-							['env','map',e],
-							self.paneCountSpec
+							['env','map',e]
 						]))
                 })
             })
@@ -92,39 +91,20 @@ return Module.View.extend({
     },
 
     create: function(deps, params){
-        var
-        el=this.el,
-        layers=deps.layers,
-        list=[]
+        var self=this
+		this.ancestor.create.call(this, deps, params, true, function(){
+			var
+			el=self.el,
+			layers=deps.layers,
+			list=[]
 
-        el.innerHTML = deps.html
+			for(var i=0,l; l=layers[i]; i++){
+				list.push(el.querySelector(l))
+			}
+			self.layers=list
 
-        for(var i=0,l; l=layers[i]; i++){
-            list.push(el.querySelector(l))
-        }
-        this.setElement(list[0])
-        this.layers=list
-        
-        var 
-        self=this,
-        panes=[],
-        mods=[]
-
-        for(var i=0,spec=this.spec,s; s=spec[i]; i++){
-            switch(s[TYPE]){
-            case 'ctrl': mods.push(s); break
-            case 'view':
-                if ('pane'===s[ID]) panes.push(s)
-                else mods.push(s)
-                break
-            }
-        }
-
-        this.spawnAsync(panes, params, null, false, function(){
-            self.spawnAsync(mods, params, null, true, function(){
-                self.signals.frameAdded().send()
-            })
-        })
+			self.signals.frameAdded().send()
+		})
     },
 
     slots: {

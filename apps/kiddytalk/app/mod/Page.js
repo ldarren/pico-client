@@ -7,7 +7,6 @@ return{
         frameAdded: function(){},
         pageAdd: function(from, sender, paneId, page, isBack){
             if (this.deps.paneId !== paneId) return
-            this.el.appendChild(page)
             this.signals.pageAdded(paneId).sendNow(this.host)
         },
         moduleAdded: function(from, sender, paneId){
