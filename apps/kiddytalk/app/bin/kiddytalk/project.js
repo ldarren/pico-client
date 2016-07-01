@@ -626,16 +626,14 @@ hideByIndex= function(self, i, host){
 Module= {
     create: function(deps, params, hidden, cb){
         var
-		spec = this.spec,
-		html
-        for(var i=0,s; s=spec[i]; i++){
-            switch(s[ID]){
-            case 'html': html=s[VALUE]; break
-            case 'el': this.setElement(s[VALUE]); break
-            }
-        }
-		if(html)this.el.innerHTML=deps.html||html // ctrl has no html
-        this.spawnAsync(this.spec, params, null, hidden, cb || dummyCB)
+		el=this.el,
+		spec = this.spec
+
+		if(el){ // ctrl has no el
+			if (deps.html) el.innerHTML=deps.html
+			else for(var i=0,s; s=spec[i]; i++) if('html'===s[ID]){ el.innerHTML=s[VALUE]; break }
+		}
+        this.spawnAsync(spec, params, null, hidden, cb || dummyCB)
     },
     addSpec: function(rawSpec, cb){
         this._rawSpec=(this._rawSpec||[]).concat(rawSpec)
@@ -997,7 +995,7 @@ return Module.View.extend({
 })
 //# sourceURL=js/Frame
 })
-pico.define('cfg/project.json','[[],["kiddytalk.css"],[["html","file","Frame.html"],["layers","list",[".frame"]],["style","css","Frame.css"],["contacts","models",{},[{"name":"Bella Wa","tel":"123","img":"../dat/img/dog.jpg","snd":"../dat/snd/dog.wav"}]],["recents","models",{}],["auth/NoSession","ctrl",[]],["pane","view",[["options","map",{"el":".frame"}],["paneId","int",0],["html","file","Pane.html"]],"js/Pane"],["Header","view",[["options","map",{"el":".frame>#header"}],["paneId","int",0]]],["Page","view",[["options","map",{"el":".frame>#page"}],["paneId","int",0]]],["Footer","view",[["options","map",{"el":".frame>#footer"}],["paneId","int",0]]]],{"keypad":[["options","map",{"el":".frame>#page"}],[["Keypad","KeypadMixin"],"view",[["html","file","Keypad.html"],["style","css","Keypad.css"]]]],"recents":[["options","map",{"el":".frame>#page"}]],"contacts":[["options","map",{"el":".frame>#page"}]],"callin":[["options","map",{"el":".frame>#page"}]],"callout":[["options","map",{"el":".frame>#page"}]]},{"*action":["keypad"],"recents":["recents"],"contacts":["contacts"],"callin":["callin"],"callout":["callout"]}]')
+pico.define('cfg/project.json','[[],["kiddytalk.css"],[["html","file","Frame.html"],["layers","list",[".frame"]],["style","css","Frame.css"],["contacts","models",{},[{"name":"Bella Wa","tel":"123","img":"../dat/img/dog.jpg","snd":"../dat/snd/dog.wav"}]],["recents","models",{}],["auth/NoSession","ctrl",[]],["js/Pane","view",[["options","map",{"el":".frame"}],["paneId","int",0],["html","file","Pane.html"]]],["Header","view",[["options","map",{"el":".frame>#header"}],["paneId","int",0]]],["Page","view",[["options","map",{"el":".frame>#page"}],["paneId","int",0]]],["Footer","view",[["options","map",{"el":".frame>#footer"}],["paneId","int",0]]]],{"keypad":[["options","map",{"el":".frame>#page"}],[["Keypad","KeypadMixin"],"view",[["html","file","Keypad.html"],["style","css","Keypad.css"]]]],"recents":[["options","map",{"el":".frame>#page"}]],"contacts":[["options","map",{"el":".frame>#page"}]],"callin":[["options","map",{"el":".frame>#page"}]],"callout":[["options","map",{"el":".frame>#page"}]]},{"*action":["keypad"],"recents":["recents"],"contacts":["contacts"],"callin":["callin"],"callout":["callout"]}]')
 pico.define('cfg/env.json','{"domains":{}}')
 
 var opt={variable:'d'}
@@ -1054,7 +1052,6 @@ return{
         frameAdded: function(){},
         pageAdd: function(from, sender, paneId, page, isBack){
             if (this.deps.paneId !== paneId) return
-            this.el.appendChild(page)
             this.signals.pageAdded(paneId).sendNow(this.host)
         },
         moduleAdded: function(from, sender, paneId){

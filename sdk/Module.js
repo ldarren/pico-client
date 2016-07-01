@@ -85,16 +85,14 @@ hideByIndex= function(self, i, host){
 Module= {
     create: function(deps, params, hidden, cb){
         var
-		spec = this.spec,
-		html
-        for(var i=0,s; s=spec[i]; i++){
-            switch(s[ID]){
-            case 'html': html=s[VALUE]; break
-            case 'el': this.setElement(s[VALUE]); break
-            }
-        }
-		if(html)this.el.innerHTML=deps.html||html // ctrl has no html
-        this.spawnAsync(this.spec, params, null, hidden, cb || dummyCB)
+		el=this.el,
+		spec = this.spec
+
+		if(el){ // ctrl has no el
+			if (deps.html) el.innerHTML=deps.html
+			else for(var i=0,s; s=spec[i]; i++) if('html'===s[ID]){ el.innerHTML=s[VALUE]; break }
+		}
+        this.spawnAsync(spec, params, null, hidden, cb || dummyCB)
     },
     addSpec: function(rawSpec, cb){
         this._rawSpec=(this._rawSpec||[]).concat(rawSpec)

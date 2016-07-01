@@ -16,11 +16,11 @@
 		]],
 		["recents","models",{}],
 		["auth/NoSession","ctrl",[]],
-        ["pane","view",[
+        ["js/Pane","view",[
 			["options","map",{"el":".frame"}],
             ["paneId","int",0],
             ["html","file","Pane.html"]
-        ],"js/Pane"],
+        ]],
 		["Header","view",[
 			["options","map",{"el":".frame>#header"}],
 			["paneId","int",0]
