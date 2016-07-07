@@ -996,7 +996,7 @@ return Module.View.extend({
 })
 //# sourceURL=js/Frame
 })
-pico.define('cfg/project.json','[[],["kiddytalk.css"],[["html","file","Frame.html"],["layers","list",[".frame"]],["contacts","models",{},[{"id":1,"name":"Bella Wa","tel":"123","img":"dat/img/dog.jpg","snd":"dat/snd/dog.wav"}]],["recents","models",{}],["auth/NoSession","ctrl",[]],["js/Pane","view",[["options","map",{"el":".frame"}],["paneId","int",0],["html","file","Pane.html"],["allmodels","refs","models"]]],["Header","view",[["options","map",{"el":".frame>#header"}],["paneId","int",0],["tpl","file","Header.asp"]]],["Page","view",[["options","map",{"el":".frame>#page"}],["paneId","int",0]]],["Footer","view",[["options","map",{"el":".frame>#footer"}],["paneId","int",0],["tpl","file","Footer.asp"],["list","list",[{"name":"Keypad","id":"keypad","icon":"keyboard","url":""},{"name":"Contacts","id":"contacts","icon":"address-book","url":"contacts"},{"name":"Recents","id":"recents","icon":"clock","url":"recents"}]]]]],{"keypad":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],[["Keypad","KeypadMixin"],"view",[["html","file","Keypad.html"],["contacts","ref","contacts"]]]],"recents":[["options","map",{"el":".frame>#page"}],["recents","ref","recents"],["contacts","ref","contacts"],["PageCtrl","ctrl",[["title","text","All Recents"]]],["scrollable/ListView","view",[["options","map",{"className":"scrollable"}],["list","ref","recents"],["contacts","ref","contacts"],["Cell","view",[["options","map",{"className":"row recent"}],["tpl","file","RowRecent.asp"],["contacts","ref","contacts"]],["Row","RowRecent"]]]]],"contacts":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],["PageCtrl","ctrl",[["title","text","All Contacts"]]],["scrollable/ListView","view",[["options","map",{"className":"scrollable"}],["list","ref","contacts"],["Cell","view",[["options","map",{"className":"row contact"}],["tpl","file","RowContact.asp"]],"Row"]]]],"callin":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],["Call","view",[["tpl","file","Call.asp"],["maxDelay","int",0],["contact","model","contacts",0],["Keypad","view",[["html","file","CallinKeypad.html"]],["Keypad","CallKeypadMixin"]]]]],"callout":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],["Call","view",[["tpl","file","Call.asp"],["contact","model","contacts",0],["Keypad","view",[["html","file","CalloutKeypad.html"]],["Keypad","CallKeypadMixin"]]]]]},{"recents":["recents"],"contacts":["contacts"],"callin/:contactId":["callin"],"callout/:contactId":["callout"],"*action":["keypad"]}]')
+pico.define('cfg/project.json','[[],["kiddytalk.css"],[["html","file","Frame.html"],["layers","list",[".frame"]],["contacts","models",{},[{"id":1,"name":"Bella Wa","tel":"123","img":"dat/img/dog.jpg","snd":"dat/snd/dog.wav"}]],["recents","models",{}],["auth/NoSession","ctrl",[]],["js/Pane","view",[["options","map",{"el":".frame"}],["paneId","int",0],["html","file","Pane.html"],["allmodels","refs","models"]]],["Header","view",[["options","map",{"el":".frame>#header"}],["paneId","int",0],["tpl","file","Header.asp"]]],["Page","view",[["options","map",{"el":".frame>#page"}],["paneId","int",0]]],["Footer","view",[["options","map",{"el":".frame>#footer"}],["paneId","int",0],["tpl","file","Footer.asp"],["list","list",[{"name":"Keypad","id":"keypad","icon":"keyboard","url":""},{"name":"Contacts","id":"contacts","icon":"address-book","url":"contacts"},{"name":"Recents","id":"recents","icon":"clock","url":"recents"}]]]]],{"keypad":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],[["Keypad","KeypadMixin"],"view",[["html","file","Keypad.html"],["contacts","ref","contacts"]]]],"recents":[["options","map",{"el":".frame>#page"}],["recents","ref","recents"],["contacts","ref","contacts"],["PageCtrl","ctrl",[["title","text","All Recents"]]],["scrollable/ListView","view",[["options","map",{"className":"scrollable"}],["list","ref","recents"],["contacts","ref","contacts"],["Cell","view",[["options","map",{"className":"row recent"}],["tpl","file","RowRecent.asp"],["contacts","ref","contacts"]],["Row","RowRecent"]]]]],"contacts":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],["PageCtrl","ctrl",[["title","text","All Contacts"]]],["scrollable/ListView","view",[["options","map",{"className":"scrollable"}],["list","ref","contacts"],["Cell","view",[["options","map",{"className":"row contact"}],["tpl","file","RowContact.asp"]],["Row","RowContact"]]]]],"callin":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],["recents","ref","recents"],["Call","view",[["tpl","file","Call.asp"],["maxDelay","int",0],["contact","model","contacts",0],["recents","ref","recents"],["Keypad","view",[["html","file","CallinKeypad.html"]],["Keypad","CallKeypadMixin"]]]]],"callout":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],["recents","ref","recents"],["Call","view",[["tpl","file","Call.asp"],["contact","model","contacts",0],["recents","ref","recents"],["Keypad","view",[["html","file","CalloutKeypad.html"]],["Keypad","CallKeypadMixin"]]]]]},{"recents":["recents"],"contacts":["contacts"],"callin/:contactId":["callin"],"callout/:contactId":["callout"],"*action":["keypad"]}]')
 pico.define('cfg/env.json','{"domains":{}}')
 
 var opt={variable:'d'}
@@ -1454,18 +1454,42 @@ return{
 pico.define('RowRecent',function anonymous(exports,require,module,define,inherit,pico
 /**/) {
 "use strict";
+var
+Router=require('js/Router'),
+pTime=require('pico/time')
+
 return {
 	deps:{
 		contacts:'models'
 	},
+	events:{
+		'click':function(e){
+			var c=this.deps.contacts.get(data.contactId)
+			Router.go('callout/'+c.id)
+		}
+	},
 	parseData:function(data,cb){
 		var c=this.deps.contacts.get(data.contactId)
-		return cb(null, {name:c.name, datetime:data.datetime})	
+		return cb(null, {name:c.name, datetime:pTime.day(new Date(data.id))})	
 	}
 }
 //# sourceURL=RowRecent
 })
 pico.define('RowRecent.asp','<p class="title"><%=d.name%></p>\n<span class="info"><%=d.recent%></span>\n')
+pico.define('RowContact',function anonymous(exports,require,module,define,inherit,pico
+/**/) {
+"use strict";
+var Router=require('js/Router')
+
+return {
+	events:{
+		'click':function(e){
+			Router.go('callout/'+this.deps.data.id)
+		}
+	}
+}
+//# sourceURL=RowContact
+})
 pico.define('RowContact.asp','<p class="title"><%=d.name%></p>\n<span class="info"><%=d.tel%></span>\n')
 pico.define('Call',function anonymous(exports,require,module,define,inherit,pico
 /**/) {
@@ -1475,6 +1499,7 @@ Rand=Math.random,Ceil=Math.ceil,
 talk=function(self){
 	self.el.querySelector('.profile').classList.add('invisible')
 	self.el.style.backgroundImage='url('+self.deps.contact.get('img')+')'
+	self.deps.contacts.get(self.recentId).state=0
 },
 connected=function(self){
 	self.el.querySelector('.profile .state').textContent='connected'
@@ -1487,6 +1512,7 @@ return {
 		tpl:'file',
 		maxDelay:['int',10000],
 		contact:'model',
+		recents:'models',
 		Keypad:'view'
 	},
 	create:function(deps,params){
@@ -1494,6 +1520,8 @@ return {
 		el.innerHTML=deps.tpl(deps.contact.attributes)
 		if (deps.maxDelay)setTimeout(connected,Ceil(deps.maxDelay*Rand()),this)
 		this.spawn(deps.Keypad,params)
+		this.recentId=Date.now()
+		deps.recents.add({contactId:params[0],id:this.recentId,period:0,state:0})
 	},
 	slots:{
 		callAccepted:function(){

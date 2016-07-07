@@ -87,17 +87,19 @@
 					["options","map",{"className":"row contact"}],
 					["tpl","file","RowContact.asp"],
 					["css","file","Row.css"]
-				],"Row"]
+				],["Row","RowContact"]]
 			]]
         ],
         "callin":[
 			["options","map",{"el":".frame>#page"}],
 			["contacts","ref","contacts"],
+			["recents","ref","recents"],
 			["Call","view",[
 				["tpl","file","Call.asp"],
 				["css","file","Call.css"],
 				["maxDelay","int",0],
 				["contact","model","contacts",0],
+				["recents","ref","recents"],
 				["Keypad","view",[
 					["html","file","CallinKeypad.html"],
 					["css","file","Keypad.css"]
@@ -107,10 +109,12 @@
         "callout":[
 			["options","map",{"el":".frame>#page"}],
 			["contacts","ref","contacts"],
+			["recents","ref","recents"],
 			["Call","view",[
 				["tpl","file","Call.asp"],
 				["css","file","Call.css"],
 				["contact","model","contacts",0],
+				["recents","ref","recents"],
 				["Keypad","view",[
 					["html","file","CalloutKeypad.html"],
 					["css","file","Keypad.css"]

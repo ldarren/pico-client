@@ -1,6 +1,7 @@
 var Router=require('js/Router')
 
 return {
+	signals:['header'],
 	deps:{
 		contacts:'models'
 	},
@@ -9,6 +10,7 @@ return {
 		el.innerHTML=deps.html
 		this.display=el.querySelector('.display')
 		this.value=[]
+		this.signals.header().send(this.host)
 	},
 	events:{
 		'touchend .btn':function(e){
