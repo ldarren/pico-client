@@ -1,69 +1,33 @@
+@import url(main.css);
 .frame{
+	display:flex;
+	flex-direction:column;
     position:relative;
     margin:auto;
-    width:90%;
-    min-width:1024px;
-    max-width:1440px;
-    height:calc(100% - 38px);
+	width:100%;
+	height:100%;
     animation-duration: 0.001s;
-    animation-name: frameresize2;
-}
-.frame .layer{
-    display:flex;
-    position:absolute;
-    height:100%;
-    width:100%;
-}
-.frame>.layer{
-    flex-direction:row;
-}
-.frame .pane .layer{
-    flex-direction:column;
-}
-.frame .layer:not(:first-child){
-    background-color:rgba(0,0,0,0.7);
-}
-.frame .layer:empty{
-    display:none;
-    visibility:hidden;
-}
-.frame>.layer .pane{
-    position:relative;
-    width:100%;
-    height:100%;
-    overflow:hidden;
-}
-.frame>.layer>div:nth-child(1){
-    flex-basis:60%;
-}
-
-@media (max-width:1024px){
-    .frame{
-        width:100%;
-        min-width:320px;
-        height:100%;
-        animation-name: frameresize2;
-    }
-}
-
-@media (max-width:568px){
-    .frame{
-        animation-name: frameresize1;
-    }
-    .frame>.layer>div:nth-child(1){
-        flex-basis:100%;
-    }
-    .frame>.layer>div:nth-child(2){
-        display:none;
-    }
-}
-
-@keyframes frameresize2 {
-  from { clip: rect(1px, auto, auto, auto) }
-    to { clip: rect(0px, auto, auto, auto) }
+	animation-name: frameresize1;
 }
 
 @keyframes frameresize1 {
   from { clip: rect(1px, auto, auto, auto) }
     to { clip: rect(0px, auto, auto, auto) }
+}
+.frame #title{
+	flex-shrink:0;
+}
+.frame #page{
+	display:flex;
+	position:relative;
+	flex-grow:1;
+}
+.frame #page>div{
+	display:flex;
+	position:absolute;
+	width:100%;
+	height:100%;
+}
+.frame #footer{
+	flex-shrink:0;
 }

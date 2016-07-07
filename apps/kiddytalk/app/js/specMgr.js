@@ -89,7 +89,6 @@ load = function(host, params, spec, idx, deps, cb, userData){
     case 'datetime': // ID[id] TYPE[date/datetime] VALUE[unixtime/time in string]
         deps.push(create(s[ID], t, new Date(s[VALUE])))
         break
-	case 'css': break // not for runtime
     default:
         deps.push(create(s[ID], t, s[VALUE]))
         break

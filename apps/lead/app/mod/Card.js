@@ -1,6 +1,10 @@
 var
 change=function(model){
-    this.el.innerHTML=this.deps.tpl(this.parseData(model.attributes))
+    var self=this
+    this.parseData(model.attributes, function(err, d){
+        if (err) return console.error(err)
+        self.el.innerHTML=self.deps.tpl(d)
+    })
 }
 
 return{
@@ -11,16 +15,9 @@ return{
 		tpl:'file'
 	},
 	create: function(deps){
-        var
-        self=this,
-        data=deps.data
-
-        this.parseData(data.attributes, function(err, d){
-            if (err) return console.error(err)
-            self.el.innerHTML = deps.tpl(d)
-            self.listenTo(data,'change',change)
-            self.listenTo(data,'destroy',self.remove)
-        })
+        change.call(this, deps.data)
+        this.listenTo(data,'change',change)
+        this.listenTo(data,'destroy',this.remove)
 	},
     parseData:function(data,cb){
         cb(null,data)

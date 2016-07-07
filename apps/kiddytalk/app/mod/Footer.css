@@ -1,0 +1,31 @@
+ul#footer{
+  position:relative;
+  flex-shrink:0;
+  display:flex;
+  justify-content:space-around;
+}
+ul#footer li{
+  display: flex;
+  flex-direction:column;
+  align-items: center;
+  justify-content: center;
+  color: #b3b3b3;
+  font-size: 1rem;
+  cursor: pointer;
+  margin:5px;
+}
+ul#footer li.selected{
+	color:#007aff;
+}
+ul#footer li.selected use{
+	fill:#007aff;
+}
+ul#footer li .icon {
+	width: 2rem;
+	height: 2rem;
+	stroke-width: 0;
+	fill: currentColor;
+}
+ul#footer li .icon use{
+  stroke-width: 2px;
+}

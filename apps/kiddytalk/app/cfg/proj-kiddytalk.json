@@ -1,17 +1,17 @@
 [
     [
     ],[
-        "kiddytalk.css"
     ],[
         ["html","file","Frame.html"],
 		["layers","list",[".frame"]],
-        ["style","css","Frame.css"],
+        ["css","file","Frame.css"],
 		["contacts","models",{},[
 			{
+				"id":1,
 				"name":"Bella Wa",
 				"tel":"123",
-				"img":"../dat/img/dog.jpg",
-				"snd":"../dat/snd/dog.wav"
+				"img":"dat/img/dog.jpg",
+				"snd":"dat/snd/dog.wav"
 			}
 		]],
 		["recents","models",{}],
@@ -19,11 +19,14 @@
         ["js/Pane","view",[
 			["options","map",{"el":".frame"}],
             ["paneId","int",0],
-            ["html","file","Pane.html"]
+            ["html","file","Pane.html"],
+			["allmodels","refs","models"]
         ]],
 		["Header","view",[
 			["options","map",{"el":".frame>#header"}],
-			["paneId","int",0]
+			["paneId","int",0],
+			["tpl","file","Header.asp"],
+			["css","file","Header.css"]
 		]],
 		["Page","view",[
 			["options","map",{"el":".frame>#page"}],
@@ -31,33 +34,94 @@
 		]],
 		["Footer","view",[
 			["options","map",{"el":".frame>#footer"}],
-			["paneId","int",0]
+			["paneId","int",0],
+			["tpl","file","Footer.asp"],
+			["css","file","Footer.css"],
+			["list","list",[
+				{"name":"Keypad","id":"keypad","icon":"keyboard","url":""},
+				{"name":"Contacts","id":"contacts","icon":"address-book","url":"contacts"},
+				{"name":"Recents","id":"recents","icon":"clock","url":"recents"}
+			]]
 		]]
     ],{
         "keypad":[
 			["options","map",{"el":".frame>#page"}],
+			["contacts","ref","contacts"],
 			[["Keypad","KeypadMixin"],"view",[
 				["html","file","Keypad.html"],
-				["style","css","Keypad.css"]
+				["css","file","Keypad.css"],
+				["contacts","ref","contacts"]
 			]]
         ],
         "recents":[
-			["options","map",{"el":".frame>#page"}]
+			["options","map",{"el":".frame>#page"}],
+			["recents","ref","recents"],
+			["contacts","ref","contacts"],
+			["PageCtrl","ctrl",[
+				["title","text","All Recents"]
+			]],
+			["scrollable/ListView","view",[
+				["options","map",{"className":"scrollable"}],
+				["css","file","scrollable/style.css"],
+				["list","ref","recents"],
+				["contacts","ref","contacts"],
+				["Cell","view",[
+					["options","map",{"className":"row recent"}],
+					["tpl","file","RowRecent.asp"],
+					["css","file","Row.css"],
+					["contacts","ref","contacts"]
+				],["Row","RowRecent"]]
+			]]
         ],
         "contacts":[
-			["options","map",{"el":".frame>#page"}]
+			["options","map",{"el":".frame>#page"}],
+			["contacts","ref","contacts"],
+			["PageCtrl","ctrl",[
+				["title","text","All Contacts"]
+			]],
+			["scrollable/ListView","view",[
+				["options","map",{"className":"scrollable"}],
+				["css","file","scrollable/style.css"],
+				["list","ref","contacts"],
+				["Cell","view",[
+					["options","map",{"className":"row contact"}],
+					["tpl","file","RowContact.asp"],
+					["css","file","Row.css"]
+				],"Row"]
+			]]
         ],
         "callin":[
-			["options","map",{"el":".frame>#page"}]
+			["options","map",{"el":".frame>#page"}],
+			["contacts","ref","contacts"],
+			["Call","view",[
+				["tpl","file","Call.asp"],
+				["css","file","Call.css"],
+				["maxDelay","int",0],
+				["contact","model","contacts",0],
+				["Keypad","view",[
+					["html","file","CallinKeypad.html"],
+					["css","file","Keypad.css"]
+				],["Keypad","CallKeypadMixin"]]
+			]]
         ],
         "callout":[
-			["options","map",{"el":".frame>#page"}]
+			["options","map",{"el":".frame>#page"}],
+			["contacts","ref","contacts"],
+			["Call","view",[
+				["tpl","file","Call.asp"],
+				["css","file","Call.css"],
+				["contact","model","contacts",0],
+				["Keypad","view",[
+					["html","file","CalloutKeypad.html"],
+					["css","file","Keypad.css"]
+				],["Keypad","CallKeypadMixin"]]
+			]]
         ]
     },{
-        "*action":["keypad"],
         "recents":["recents"],
         "contacts":["contacts"],
-        "callin":["callin"],
-        "callout":["callout"]
+        "callin/:contactId":["callin"],
+        "callout/:contactId":["callout"],
+        "*action":["keypad"]
     }
 ]

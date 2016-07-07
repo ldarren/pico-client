@@ -417,7 +417,6 @@ load = function(host, params, spec, idx, deps, cb, userData){
     case 'datetime': // ID[id] TYPE[date/datetime] VALUE[unixtime/time in string]
         deps.push(create(s[ID], t, new Date(s[VALUE])))
         break
-	case 'css': break // not for runtime
     default:
         deps.push(create(s[ID], t, s[VALUE]))
         break
@@ -594,7 +593,7 @@ specLoaded = function(err, spec, userData){
     }
 
     self.deps = d
-    self.create(d)
+    self.create(d,self.params)
 
     var h=self.host
     self.signals.moduleAdded().send(h)
@@ -608,7 +607,7 @@ specLoaded = function(err, spec, userData){
                 if(m) m.call(h, null, self)
                 return
             }
-            h.spawn(m, self._params, chains[chains.length-1], !self._show, chains)
+            h.spawn(m, self.params, chains[chains.length-1], !self._show, chains)
         }
     }
 },
@@ -702,8 +701,8 @@ function Ctrl(prop, rawSpec, params, host, show, chains){
     this.host = host
     this.ancestor = Ctrl.prototype
     this.modules = []
+    this.params = params
     this._rawSpec = rawSpec
-    this._params = params
     this._removed = false 
     this._show=show?[host.el,false]:null // view in chains migh need to show
 
@@ -718,6 +717,7 @@ _.extend(Ctrl.prototype, Backbone.Events, Module)
 var View = Backbone.View.extend(_.extend(Module, {
     initialize: function(options, prop, spec, params, host, show, chains){
         this._elements = []
+		this._el=options && options.el
 
         Ctrl.call(this, prop, spec, params, host, show, chains)
 
@@ -725,7 +725,8 @@ var View = Backbone.View.extend(_.extend(Module, {
     },
     remove: function(){
         Ctrl.prototype.remove.call(this)
-        Backbone.View.prototype.remove.apply(this, arguments)
+		// remove if not base on existing el
+		if (!this._el) Backbone.View.prototype.remove.apply(this, arguments)
     },
     // view can spawn ctrl and view
     spawn: function(Mod, params, spec, hidden, chains){
@@ -995,7 +996,7 @@ return Module.View.extend({
 })
 //# sourceURL=js/Frame
 })
-pico.define('cfg/project.json','[[],["kiddytalk.css"],[["html","file","Frame.html"],["layers","list",[".frame"]],["style","css","Frame.css"],["contacts","models",{},[{"name":"Bella Wa","tel":"123","img":"../dat/img/dog.jpg","snd":"../dat/snd/dog.wav"}]],["recents","models",{}],["auth/NoSession","ctrl",[]],["js/Pane","view",[["options","map",{"el":".frame"}],["paneId","int",0],["html","file","Pane.html"]]],["Header","view",[["options","map",{"el":".frame>#header"}],["paneId","int",0]]],["Page","view",[["options","map",{"el":".frame>#page"}],["paneId","int",0]]],["Footer","view",[["options","map",{"el":".frame>#footer"}],["paneId","int",0]]]],{"keypad":[["options","map",{"el":".frame>#page"}],[["Keypad","KeypadMixin"],"view",[["html","file","Keypad.html"],["style","css","Keypad.css"]]]],"recents":[["options","map",{"el":".frame>#page"}]],"contacts":[["options","map",{"el":".frame>#page"}]],"callin":[["options","map",{"el":".frame>#page"}]],"callout":[["options","map",{"el":".frame>#page"}]]},{"*action":["keypad"],"recents":["recents"],"contacts":["contacts"],"callin":["callin"],"callout":["callout"]}]')
+pico.define('cfg/project.json','[[],["kiddytalk.css"],[["html","file","Frame.html"],["layers","list",[".frame"]],["contacts","models",{},[{"id":1,"name":"Bella Wa","tel":"123","img":"dat/img/dog.jpg","snd":"dat/snd/dog.wav"}]],["recents","models",{}],["auth/NoSession","ctrl",[]],["js/Pane","view",[["options","map",{"el":".frame"}],["paneId","int",0],["html","file","Pane.html"],["allmodels","refs","models"]]],["Header","view",[["options","map",{"el":".frame>#header"}],["paneId","int",0],["tpl","file","Header.asp"]]],["Page","view",[["options","map",{"el":".frame>#page"}],["paneId","int",0]]],["Footer","view",[["options","map",{"el":".frame>#footer"}],["paneId","int",0],["tpl","file","Footer.asp"],["list","list",[{"name":"Keypad","id":"keypad","icon":"keyboard","url":""},{"name":"Contacts","id":"contacts","icon":"address-book","url":"contacts"},{"name":"Recents","id":"recents","icon":"clock","url":"recents"}]]]]],{"keypad":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],[["Keypad","KeypadMixin"],"view",[["html","file","Keypad.html"],["contacts","ref","contacts"]]]],"recents":[["options","map",{"el":".frame>#page"}],["recents","ref","recents"],["contacts","ref","contacts"],["PageCtrl","ctrl",[["title","text","All Recents"]]],["scrollable/ListView","view",[["options","map",{"className":"scrollable"}],["list","ref","recents"],["contacts","ref","contacts"],["Cell","view",[["options","map",{"className":"row recent"}],["tpl","file","RowRecent.asp"],["contacts","ref","contacts"]],["Row","RowRecent"]]]]],"contacts":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],["PageCtrl","ctrl",[["title","text","All Contacts"]]],["scrollable/ListView","view",[["options","map",{"className":"scrollable"}],["list","ref","contacts"],["Cell","view",[["options","map",{"className":"row contact"}],["tpl","file","RowContact.asp"]],"Row"]]]],"callin":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],["Call","view",[["tpl","file","Call.asp"],["maxDelay","int",0],["contact","model","contacts",0],["Keypad","view",[["html","file","CallinKeypad.html"]],["Keypad","CallKeypadMixin"]]]]],"callout":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],["Call","view",[["tpl","file","Call.asp"],["contact","model","contacts",0],["Keypad","view",[["html","file","CalloutKeypad.html"]],["Keypad","CallKeypadMixin"]]]]]},{"recents":["recents"],"contacts":["contacts"],"callin/:contactId":["callin"],"callout/:contactId":["callout"],"*action":["keypad"]}]')
 pico.define('cfg/env.json','{"domains":{}}')
 
 var opt={variable:'d'}
@@ -1028,55 +1029,21 @@ pico.run({
     }
 })
 
-pico.define('Footer',function anonymous(exports,require,module,define,inherit,pico
+pico.define('Frame.html','<svg class=hidden>\n<symbol id="icon-phone" viewBox="0 0 32 32">\n<path d="M22 20c-2 2-2 4-4 4s-4-2-6-4-4-4-4-6 2-2 4-4-4-8-6-8-6 6-6 6c0 4 4.109 12.109 8 16s12 8 16 8c0 0 6-4 6-6s-6-8-8-6z"/>\n</symbol>\n<symbol id="icon-phone-hang-up" viewBox="0 0 32 32">\n<path d="M31.793 18c0.25 1.734 0.413 4.106-0.364 5.014-1.286 1.501-9.428 1.501-9.428-1.501 0-1.512 1.339-2.504 0.053-4.006-1.265-1.477-3.532-1.501-6.054-1.501s-4.789 0.024-6.054 1.501c-1.286 1.501 0.054 2.493 0.054 4.006 0 3.003-8.143 3.003-9.429 1.501-0.777-0.908-0.615-3.28-0.364-5.014 0.193-1.157 0.679-2.406 2.236-4 0-0 0-0 0-0 2.336-2.179 5.87-3.961 13.432-3.999v-0.001c0.042 0 0.083 0 0.125 0s0.083-0 0.125-0v0.001c7.562 0.038 11.096 1.82 13.432 3.999 0 0 0 0 0 0 1.557 1.594 2.043 2.842 2.236 4z"/>\n</symbol>\n<symbol id="icon-address-book" viewBox="0 0 32 32">\n<path d="M6 0v32h24v-32h-24zM18 8.010c2.203 0 3.99 1.786 3.99 3.99s-1.786 3.99-3.99 3.99-3.99-1.786-3.99-3.99 1.786-3.99 3.99-3.99v0zM24 24h-12v-2c0-2.209 1.791-4 4-4v0h4c2.209 0 4 1.791 4 4v2z"/>\n<path d="M2 2h3v6h-3v-6z"/>\n<path d="M2 10h3v6h-3v-6z"/>\n<path d="M2 18h3v6h-3v-6z"/>\n<path d="M2 26h3v6h-3v-6z"/>\n</symbol>\n<symbol id="icon-clock" viewBox="0 0 32 32">\n<path d="M20.586 23.414l-6.586-6.586v-8.828h4v7.172l5.414 5.414zM16 0c-8.837 0-16 7.163-16 16s7.163 16 16 16 16-7.163 16-16-7.163-16-16-16zM16 28c-6.627 0-12-5.373-12-12s5.373-12 12-12c6.627 0 12 5.373 12 12s-5.373 12-12 12z"/>\n</symbol>\n<symbol id="icon-keyboard" viewBox="0 0 36 32">\n<path d="M34 4h-32c-1.1 0-2 0.9-2 2v20c0 1.1 0.9 2 2 2h32c1.1 0 2-0.9 2-2v-20c0-1.1-0.9-2-2-2zM20 8h4v4h-4v-4zM26 14v4h-4v-4h4zM14 8h4v4h-4v-4zM20 14v4h-4v-4h4zM8 8h4v4h-4v-4zM14 14v4h-4v-4h4zM4 8h2v4h-2v-4zM4 14h4v4h-4v-4zM6 24h-2v-4h2v4zM24 24h-16v-4h16v4zM32 24h-6v-4h6v4zM32 18h-4v-4h4v4zM32 12h-6v-4h6v4z"/>\n</symbol>\n</svg>\n<div class=frame></div>\n')
+pico.define('auth/NoSession',function anonymous(exports,require,module,define,inherit,pico
 /**/) {
 "use strict";
 return{
-    deps:{
-        paneId:'int'
+    signals: ['modelReady'],
+    create: function(deps){
     },
     slots:{
-    }
-}
-//# sourceURL=Footer
-})
-pico.define('Page',function anonymous(exports,require,module,define,inherit,pico
-/**/) {
-"use strict";
-return{
-    signals:['pageAdded'],
-    deps:{
-        paneId:'int'
-    },
-    slots:{
-        frameAdded: function(){},
-        pageAdd: function(from, sender, paneId, page, isBack){
-            if (this.deps.paneId !== paneId) return
-            this.signals.pageAdded(paneId).sendNow(this.host)
-        },
-        moduleAdded: function(from, sender, paneId){
-            if (this.deps.paneId !== paneId) return
-            document.dispatchEvent(__.createEvent('__reset'))
-        },
-        pageTransit: function(from, sender, paneId, options){
-            if (this.deps.paneId !== paneId) return
-            this.el.dispatchEvent(__.createEvent('__transit', options))
+        frameAdded:function(){
+            this.signals.modelReady().send()
         }
     }
 }
-//# sourceURL=Page
-})
-pico.define('Header',function anonymous(exports,require,module,define,inherit,pico
-/**/) {
-"use strict";
-return{
-    deps:{
-        paneId:'int'
-    },
-    slots:{
-    }
-}
-//# sourceURL=Header
+//# sourceURL=auth/NoSession
 })
 pico.define('js/Pane',function anonymous(exports,require,module,define,inherit,pico
 /**/) {
@@ -1131,23 +1098,143 @@ return {
 }
 //# sourceURL=js/Pane
 })
-pico.define('Pane.html','<div id=title></div>\n<div id=page></div>\n<div id=footer></div>\n')
-pico.define('auth/NoSession',function anonymous(exports,require,module,define,inherit,pico
+pico.define('Pane.html','<div id=header></div>\n<div id=page></div>\n<ul id=footer></ul>\n')
+pico.define('Header',function anonymous(exports,require,module,define,inherit,pico
 /**/) {
 "use strict";
+var
+Router=require('js/Router'),
+DUMMY_BTN={icon:'',url:''},
+setBtn=function(ele, btn){
+    if (!ele || !btn) return
+    ele.setAttributeNS('http://www.w3.org/1999/xlink', 'href','#'+btn.icon)
+    if(btn.url)ele.setAttributeNS('http://www.w3.org/1999/xlink', 'role',btn.url)
+}   
+    
 return{
-    signals: ['modelReady'],
-    create: function(deps){
+    signals:['menu','headerButtonClicked'],
+    deps:{
+        paneId:'int',
+        tpl:'file'
     },
-    slots:{
-        frameAdded:function(){
-            this.signals.modelReady().send()
+    create: function(deps){
+        this.el.innerHTML=deps.tpl({title:''})
+		this.title=this.el.querySelector('h1')
+		this.btnLeft=this.el.querySelector('svg.icon.left use')
+		this.btnRight=this.el.querySelector('svg.icon.right use')
+		this.el.classList.add('hidden')
+    },
+    events: {
+        'tap svg': function(e){
+            var
+            use='svg'===e.target.tagName?e.target.querySelector('use'):e.target,
+            hash=use.getAttributeNS('http://www.w3.org/1999/xlink', 'href')
+            if (!hash) return
+            hash=hash.substr(6)
+            switch(hash){
+            case 'menu':
+                this.signals.menu('left').sendNow(this.host)
+                this.el.dispatchEvent(__.createEvent('transit', params[2])); break
+                break
+            case 'back':
+                Router.back()
+                break
+            case 'search':
+                break
+            default:
+                var url=use.getAttributeNS('http://www.w3.org/1999/xlink', 'role')
+                if(url) Router.go(url)
+                else this.signals.headerButtonClicked(hash).sendNow(this.host)
+                break
+            }
+        } 
+    },
+    slots: {
+        header: function(from, sender, title, left, right){
+			if (!title) return this.el.classList.add('hidden')
+            this.el.classList.remove('hidden')
+
+            this.title.textContent=title
+  
+            setBtn(this.btnLeft,left||DUMMY_BTN)
+            setBtn(this.btnRight,right||DUMMY_BTN)
         }
     }
 }
-//# sourceURL=auth/NoSession
+//# sourceURL=Header
 })
-pico.define('Frame.html','<svg class=hidden>\n<symbol id="icon_call" viewBox="0 0 401.998 401.998">\n<path d="M401.129,311.475c-1.137-3.426-8.371-8.473-21.697-15.129c-3.61-2.098-8.754-4.949-15.41-8.566c-6.662-3.617-12.709-6.95-18.13-9.996c-5.432-3.045-10.521-5.995-15.276-8.846c-0.76-0.571-3.139-2.234-7.136-5c-4.001-2.758-7.375-4.805-10.14-6.14c-2.759-1.327-5.473-1.995-8.138-1.995c-3.806,0-8.56,2.714-14.268,8.135c-5.708,5.428-10.944,11.324-15.7,17.706c-4.757,6.379-9.802,12.275-15.126,17.7c-5.332,5.427-9.713,8.138-13.135,8.138c-1.718,0-3.86-0.479-6.427-1.424c-2.566-0.951-4.518-1.766-5.858-2.423c-1.328-0.671-3.607-1.999-6.845-4.004c-3.244-1.999-5.048-3.094-5.428-3.285c-26.075-14.469-48.438-31.029-67.093-49.676c-18.649-18.658-35.211-41.019-49.676-67.097c-0.19-0.381-1.287-2.19-3.284-5.424c-2-3.237-3.333-5.518-3.999-6.854c-0.666-1.331-1.475-3.283-2.425-5.852s-1.427-4.709-1.427-6.424c0-3.424,2.713-7.804,8.138-13.134c5.424-5.327,11.326-10.373,17.7-15.128c6.379-4.755,12.275-9.991,17.701-15.699c5.424-5.711,8.136-10.467,8.136-14.273c0-2.663-0.666-5.378-1.997-8.137c-1.332-2.765-3.378-6.139-6.139-10.138c-2.762-3.997-4.427-6.374-4.999-7.139c-2.852-4.755-5.799-9.846-8.848-15.271c-3.049-5.424-6.377-11.47-9.995-18.131c-3.615-6.658-6.468-11.799-8.564-15.415C98.986,9.233,93.943,1.997,90.516,0.859C89.183,0.288,87.183,0,84.521,0c-5.142,0-11.85,0.95-20.129,2.856c-8.282,1.903-14.799,3.899-19.558,5.996c-9.517,3.995-19.604,15.605-30.264,34.826C4.863,61.566,0.01,79.271,0.01,96.78c0,5.135,0.333,10.131,0.999,14.989c0.666,4.853,1.856,10.326,3.571,16.418c1.712,6.09,3.093,10.614,4.137,13.56c1.045,2.948,2.996,8.229,5.852,15.845c2.852,7.614,4.567,12.275,5.138,13.988c6.661,18.654,14.56,35.307,23.695,49.964c15.03,24.362,35.541,49.539,61.521,75.521c25.981,25.98,51.153,46.49,75.517,61.526c14.655,9.134,31.314,17.032,49.965,23.698c1.714,0.568,6.375,2.279,13.986,5.141c7.614,2.854,12.897,4.805,15.845,5.852c2.949,1.048,7.474,2.43,13.559,4.145c6.098,1.715,11.566,2.905,16.419,3.576c4.856,0.657,9.853,0.996,14.989,0.996c17.508,0,35.214-4.856,53.105-14.562c19.219-10.656,30.826-20.745,34.823-30.269c2.102-4.754,4.093-11.273,5.996-19.555c1.909-8.278,2.857-14.985,2.857-20.126C401.99,314.814,401.703,312.819,401.129,311.475z"/>\n</symbol>\n<symbol id="icon_endcall" viewBox="0 0 612 612">\n<path d="M306,243.525c-40.8,0-79.05,7.65-117.3,17.85v79.05c0,10.199-5.1,17.85-15.3,22.949c-25.5,12.75-48.45,28.051-68.85,48.45c-5.1,5.101-10.2,7.65-17.85,7.65c-7.65,0-12.75-2.55-17.85-7.65L5.1,348.075c-2.55-5.1-5.1-10.2-5.1-17.85c0-7.65,2.55-12.75,7.65-17.851c76.5-73.95,183.6-119.85,298.35-119.85s221.85,45.9,298.35,119.85c5.101,5.101,7.65,10.2,7.65,17.851c0,7.649-2.55,12.75-7.65,17.85l-63.75,63.75c-5.1,5.101-10.199,7.65-17.85,7.65s-12.75-2.55-17.85-7.65c-20.4-17.85-43.351-35.7-68.851-48.45c-7.649-5.1-15.3-12.75-15.3-22.949v-79.05C385.05,251.175,346.8,243.525,306,243.525z"/>\n</symbol>\n</svg>\n<div class=frame></div>\n')
+pico.define('Header.asp','<svg class="icon left"><use xlink:href="#" /></svg>\n<svg class="icon right"><use xlink:href="#" /></svg>\n<h1><%=d.title%></h1>\n')
+pico.define('Page',function anonymous(exports,require,module,define,inherit,pico
+/**/) {
+"use strict";
+return{
+    signals:['pageAdded'],
+    deps:{
+        paneId:'int'
+    },
+    slots:{
+        frameAdded: function(){},
+        pageAdd: function(from, sender, paneId, page, isBack){
+            if (this.deps.paneId !== paneId) return
+            this.signals.pageAdded(paneId).sendNow(this.host)
+        },
+        moduleAdded: function(from, sender, paneId){
+            if (this.deps.paneId !== paneId) return
+            document.dispatchEvent(__.createEvent('__reset'))
+        },
+        pageTransit: function(from, sender, paneId, options){
+            if (this.deps.paneId !== paneId) return
+            this.el.dispatchEvent(__.createEvent('__transit', options))
+        }
+    }
+}
+//# sourceURL=Page
+})
+pico.define('Footer',function anonymous(exports,require,module,define,inherit,pico
+/**/) {
+"use strict";
+var Router=require('js/Router')
+return {
+	signals:[],
+    deps:{
+        paneId:'int',
+		tpl:'file',	
+		list:'list'
+    },
+    create: function(deps){
+        this.el.innerHTML=deps.tpl(deps.list)
+    },
+	slots:{
+		pageAdd:function(from,sender){
+			var arr=sender.name.split('.')
+			if (!arr || arr.length < 2) return
+			var
+			id=arr[1],
+			ul=this.el.querySelectorAll('li'),
+			hide=true
+			for(var i=0,li; li=ul[i]; i++){
+				if(id===li.id){
+					li.classList.add('selected')
+					hide=false
+				}else{
+					li.classList.remove('selected')
+				}
+			}
+			if (hide) this.el.classList.add('hidden')
+			else this.el.classList.remove('hidden')
+		}
+	},
+
+    events: {
+		'tap li':function(e){
+			var use='use'===e.target.tagName?e.target:e.target.querySelector('use')
+			Router.go(use.getAttributeNS('http://www.w3.org/1999/xlink', 'role'))
+        }
+    }
+}
+//# sourceURL=Footer
+})
+pico.define('Footer.asp','<%for(var i=0,btn; btn=d[i]; i++){%>\n<li id="<%=btn.id%>">\n    <svg class="icon <%=btn.url?btn.url:""%>"><use xlink:href="#icon-<%=btn.icon%>" xlink:role="<%=btn.url%>"/></svg>\n	<span><%=btn.name%></span>\n</li>\n<%}%>\n')
 pico.define('Keypad',function anonymous(exports,require,module,define,inherit,pico
 /**/) {
 "use strict";
@@ -1158,21 +1245,22 @@ return {
 		keypadCtrl:'ctrl'
 	},
 	create:function(deps){
-		var el=this.el
-		el.innerHTML=deps.html
-		this.setup()
+		this.el.innerHTML=deps.html
 	},
 	events:{
-		'touchstart .btn':this.btnDown,
-		'touchend .btn':this.btnUp
+		'touchstart .btn':function(e){
+			this.selectBtn(e.target).classList.add('down')
+		},
+		'touchend .btn':function(e){
+			this.selectBtn(e.target).classList.remove('down')
+		}
 	},
-	setup:function(){
-	},
-	btnDown:function(e){
-		e.currentTarget.classList.add('down')
-	},
-	btnUp:function(e){
-		e.currentTarget.classList.remove('down')
+	selectBtn:function(target){
+		var btn=target
+		while(btn && !btn.classList.contains('btn')){
+			btn=btn.parentElement
+		}
+		return btn
 	}
 }
 //# sourceURL=Keypad
@@ -1180,34 +1268,270 @@ return {
 pico.define('KeypadMixin',function anonymous(exports,require,module,define,inherit,pico
 /**/) {
 "use strict";
+var Router=require('js/Router')
+
 return {
-	setup:function(){
-		this.display=this.el.querySelector('.display')
+	deps:{
+		contacts:'models'
+	},
+	create:function(deps){
+		var el=this.el
+		el.innerHTML=deps.html
+		this.display=el.querySelector('.display')
 		this.value=[]
 	},
-	btnUp:function(e){
-		var
-		t=e.currentTarget,
-		value=this.value,
-		cl=t.classList
+	events:{
+		'touchend .btn':function(e){
+			var
+			t=this.selectBtn(e.target),
+			value=this.value,
+			cl=t.classList
 
-		cl.remove('down')
+			cl.remove('down')
 
-		if (cl.contains('plus')){
-			if ('+'===value[0]) value.shift()
-			else value.unshift('+')
-		}else if (cl.contains('del')){
-			value.pop()
-		}else if (cl.contains('call')){
-			window.location.href='Call.html'
-		}else{
-			var span=t.querySelector('span')
-			value.push(span.textContent)
+			if (cl.contains('plus')){
+				if ('+'===value[0]) value.shift()
+				else value.unshift('+')
+			}else if (cl.contains('del')){
+				value.pop()
+			}else if (cl.contains('call')){
+				Router.go('callout/1')
+			}else{
+				var span=t.querySelector('span')
+				value.push(span.textContent)
+			}
+
+			this.display.textContent=value.join('')
 		}
-
-		this.display.textContent=value.join('')
 	}
 }
 //# sourceURL=KeypadMixin
 })
-pico.define('Keypad.html','<ul class=row><li class=display></li></ul>\n<ul class=row><li class=btn><span>1</span></li><li class=btn><span>2</span></li><li class=btn><span>3</span></li></ul>\n<ul class=row><li class=btn><span>4</span></li><li class=btn><span>5</span></li><li class=btn><span>6</span></li></ul>\n<ul class=row><li class=btn><span>7</span></li><li class=btn><span>8</span></li><li class=btn><span>9</span></li></ul>\n<ul class=row><li class="btn plus"><span>+</span></li><li class=btn><span>0</span></li><li class="btn del"><span>&lt;</span></li></ul>\n<ul class=row><li class="btn call"><svg class="icon"><use xlink:href="#icon_call"/></svg></li></ul>\n')
+pico.define('Keypad.html','<ul class=row><li class=display></li></ul>\n<ul class=row><li class=btn><span>1</span></li><li class=btn><span>2</span></li><li class=btn><span>3</span></li></ul>\n<ul class=row><li class=btn><span>4</span></li><li class=btn><span>5</span></li><li class=btn><span>6</span></li></ul>\n<ul class=row><li class=btn><span>7</span></li><li class=btn><span>8</span></li><li class=btn><span>9</span></li></ul>\n<ul class=row><li class="btn plus"><span>+</span></li><li class=btn><span>0</span></li><li class="btn del"><span>&lt;</span></li></ul>\n<ul class=row><li class="btn call"><svg class="icon"><use xlink:href="#icon-phone"/></svg></li></ul>\n')
+pico.define('PageCtrl',function anonymous(exports,require,module,define,inherit,pico
+/**/) {
+"use strict";
+return {
+	signals:['header'],
+	deps:{
+		title:'text'
+	},
+	create:function(deps){
+		this.signals.header(deps.title).sendNow(this.host)
+	}
+}
+//# sourceURL=PageCtrl
+})
+pico.define('scrollable/ListView',function anonymous(exports,require,module,define,inherit,pico
+/**/) {
+"use strict";
+var
+Ceil=Math.ceil,
+scrolls=[],
+lastUpdate=Date.now(),
+scrollTo=function(arr){
+	var
+	el=arr[0],
+	to=arr[1],
+	step=arr[2],
+	oldFrom=el.scrollTop,
+	newFrom=oldFrom+(step*this)
+
+	arr[3]--
+
+	if (!arr[3] || (oldFrom <= to && newFrom >= to)||(oldFrom >= to && newFrom <= to)){
+		el.scrollTop=to
+		return false
+	}
+	el.scrollTop=newFrom
+	return true
+},
+removeExisting=function(arr){
+	return (arr[0]===this) ? false : true
+},
+loadDependencies=function(model,coll){
+    var self=this
+    this.loadDependencies(coll,function(){
+        addRow.call(self,model)
+    })
+},
+addRow=function(model){
+	if (this.filter(model.attributes)) this.spawn(this.deps.Cell, [model.id], [['data','model','list',0]])
+}
+
+this.update=function(){
+	var
+	now=Date.now(),
+	d=now-lastUpdate
+
+	lastUpdate=now
+	if (!scrolls.length) return
+	scrolls=scrolls.filter(scrollTo, d)
+}
+
+return{
+    tagName:'ul',
+	className:'scrollable',
+	deps:{
+		emptyMsg:['file','There are no items at this time'],
+		list:'models',
+		Cell:'view'
+	},
+	create: function(deps){
+        var list=deps.list
+		this.listenTo(list,'add',loadDependencies)
+		this.listenTo(list,'reset',this.rendered)
+	},
+	remove:function(){
+		scrolls.filter(removeExisting,this.el)
+		this.ancestor.remove.call(this)
+	},
+	rendered:function(){
+        this.dumpAll()
+
+		var
+        self=this,
+		deps=this.deps,
+		list=deps.list
+
+        var li=document.createElement('li')
+        li.classList.add('empty-message')
+        li.innerHTML=deps.emptyMsg
+        this.el.appendChild(li)
+
+		this.loadDependencies(list,function(){
+            list.each(addRow,self)
+        })
+	},
+	slots:{
+		scrollTo:function(from, sender, to, duration){
+			var el=this.el
+			scrolls=scrolls.filter(removeExisting,el)
+			scrolls.push([el, to, (to-el.scrollTop)/duration,Ceil(duration/10)])
+		}
+	},
+	events:{
+	},
+    loadDependencies:function(list, cb){
+        cb()
+    },
+	filter:function(model){
+		return true
+	}
+}
+//# sourceURL=scrollable/ListView
+})
+pico.define('Row',function anonymous(exports,require,module,define,inherit,pico
+/**/) {
+"use strict";
+var         
+change=function(model){
+	var self=this
+	this.parseData(model.attributes, function(err, d){
+		if (err) return console.error(err)
+    	self.el.innerHTML=self.deps.tpl(d)
+	})
+}       
+        
+return{     
+    tagName:'li',
+    deps:{  
+        data:'model',
+        tpl:'file'
+    },      
+    create: function(deps){
+		var data=deps.data
+		change.call(this, data)
+		this.listenTo(data,'change',change)
+		this.listenTo(data,'destroy',this.remove)
+    },      
+    parseData:function(data,cb){
+        cb(null,data)
+    }           
+}               
+//# sourceURL=Row
+})
+pico.define('RowRecent',function anonymous(exports,require,module,define,inherit,pico
+/**/) {
+"use strict";
+return {
+	deps:{
+		contacts:'models'
+	},
+	parseData:function(data,cb){
+		var c=this.deps.contacts.get(data.contactId)
+		return cb(null, {name:c.name, datetime:data.datetime})	
+	}
+}
+//# sourceURL=RowRecent
+})
+pico.define('RowRecent.asp','<p class="title"><%=d.name%></p>\n<span class="info"><%=d.recent%></span>\n')
+pico.define('RowContact.asp','<p class="title"><%=d.name%></p>\n<span class="info"><%=d.tel%></span>\n')
+pico.define('Call',function anonymous(exports,require,module,define,inherit,pico
+/**/) {
+"use strict";
+var
+Rand=Math.random,Ceil=Math.ceil,
+talk=function(self){
+	self.el.querySelector('.profile').classList.add('invisible')
+	self.el.style.backgroundImage='url('+self.deps.contact.get('img')+')'
+},
+connected=function(self){
+	self.el.querySelector('.profile .state').textContent='connected'
+	setTimeout(talk,1000,self)
+}
+
+return {
+	className:'callscr',
+	deps:{
+		tpl:'file',
+		maxDelay:['int',10000],
+		contact:'model',
+		Keypad:'view'
+	},
+	create:function(deps,params){
+		var el=this.el
+		el.innerHTML=deps.tpl(deps.contact.attributes)
+		if (deps.maxDelay)setTimeout(connected,Ceil(deps.maxDelay*Rand()),this)
+		this.spawn(deps.Keypad,params)
+	},
+	slots:{
+		callAccepted:function(){
+			talk(this)
+		}
+	}
+}
+//# sourceURL=Call
+})
+pico.define('Call.asp','<ul class="profile">\n<li class=name><%=d.name%></li>\n<li class=state>calling...</li>\n<li class=picture style="background-image:url(<%=d.img%>)"></li>\n</ul>\n')
+pico.define('CallKeypadMixin',function anonymous(exports,require,module,define,inherit,pico
+/**/) {
+"use strict";
+var Router=require('js/Router')
+
+return {
+	signals:['callAccepted','header'],
+	create:function(deps){
+		this.el.innerHTML=deps.html
+		this.signals.header().send(this.host)
+	},
+	events:{
+		'touchend .btn':function(e){
+			var btn=this.selectBtn(e.target)
+			if (!btn) return
+			var cl=btn.classList
+			cl.remove('down')
+
+			if (cl.contains('call')){
+				cl.add('hidden')
+				this.signals.callAccepted().send()
+			}else{
+				Router.go('keypad')
+			}
+		}
+	}
+}
+//# sourceURL=CallKeypadMixin
+})
+pico.define('CallinKeypad.html','<ul class=row>\n<li class="btn call"><svg class="icon"><use xlink:href="#icon-phone"/></svg></li>\n<li class="btn endcall"><svg class="icon"><use xlink:href="#icon-phone-hang-up"/></svg></li>\n</ul>\n')
+pico.define('CalloutKeypad.html','<ul class=row><li class="btn endcall"><svg class="icon"><use xlink:href="#icon-phone-hang-up"/></svg></li></ul>\n')

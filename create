@@ -46,7 +46,7 @@ fs.readlink(process.argv[1], (err, realPath)=>{
             fs.mkdir(path.resolve(projPath,dirs.shift()), 0777, ()=>{
                 next(dirs, cb) 
             })
-        })(['js','mod','cfg','run','bin','css','dat'], ()=>{
+        })(['js','mod','cfg','run','bin','dat'], ()=>{
             (function(files, cb){
                 if (!files.length) return cb()
                 var

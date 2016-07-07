@@ -5,20 +5,21 @@ return {
 		keypadCtrl:'ctrl'
 	},
 	create:function(deps){
-		var el=this.el
-		el.innerHTML=deps.html
-		this.setup()
+		this.el.innerHTML=deps.html
 	},
 	events:{
-		'touchstart .btn':this.btnDown,
-		'touchend .btn':this.btnUp
+		'touchstart .btn':function(e){
+			this.selectBtn(e.target).classList.add('down')
+		},
+		'touchend .btn':function(e){
+			this.selectBtn(e.target).classList.remove('down')
+		}
 	},
-	setup:function(){
-	},
-	btnDown:function(e){
-		e.currentTarget.classList.add('down')
-	},
-	btnUp:function(e){
-		e.currentTarget.classList.remove('down')
+	selectBtn:function(target){
+		var btn=target
+		while(btn && !btn.classList.contains('btn')){
+			btn=btn.parentElement
+		}
+		return btn
 	}
 }

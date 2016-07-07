@@ -1,25 +1,31 @@
 var
 Rand=Math.random,Ceil=Math.ceil,
-btnDown=function(e){
-	e.currentTarget.classList.add('down')
+talk=function(self){
+	self.el.querySelector('.profile').classList.add('invisible')
+	self.el.style.backgroundImage='url('+self.deps.contact.get('img')+')'
 },
-btnUp=function(e){
-	e.currentTarget.classList.remove('down')
-
-	setTimeout(function(){window.location.href='Keypad.html'},300)
-},
-talk=function(callscr, profile){
-	profile.classList.add('hide')
-	callscr.style.backgroundImage='url(../dat/dog.jpg)'
-},
-connected=function(state){
-	state.textContent='connected'
-	setTimeout(talk,1000,document.querySelector('.callscr'),document.querySelector('.profile'))
+connected=function(self){
+	self.el.querySelector('.profile .state').textContent='connected'
+	setTimeout(talk,1000,self)
 }
 
-window.onload=function(){
-	var btn=document.querySelector('.btn')
-	btn.addEventListener('mousedown',btnDown,false)
-	btn.addEventListener('mouseup',btnUp,false)
-	setTimeout(connected,Ceil(10000*Rand()),document.querySelector('.profile .state'))
+return {
+	className:'callscr',
+	deps:{
+		tpl:'file',
+		maxDelay:['int',10000],
+		contact:'model',
+		Keypad:'view'
+	},
+	create:function(deps,params){
+		var el=this.el
+		el.innerHTML=deps.tpl(deps.contact.attributes)
+		if (deps.maxDelay)setTimeout(connected,Ceil(deps.maxDelay*Rand()),this)
+		this.spawn(deps.Keypad,params)
+	},
+	slots:{
+		callAccepted:function(){
+			talk(this)
+		}
+	}
 }
