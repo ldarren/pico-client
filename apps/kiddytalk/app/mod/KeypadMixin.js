@@ -15,7 +15,7 @@ return {
 	events:{
 		'touchend .btn':function(e){
 			var
-			t=this.selectBtn(e.target),
+			t=e.target.closest('.btn'),
 			value=this.value,
 			cl=t.classList
 

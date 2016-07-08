@@ -9,17 +9,10 @@ return {
 	},
 	events:{
 		'touchstart .btn':function(e){
-			this.selectBtn(e.target).classList.add('down')
+			e.target.closest('.btn').classList.add('down')
 		},
 		'touchend .btn':function(e){
-			this.selectBtn(e.target).classList.remove('down')
+			e.target.closest('.btn').classList.remove('down')
 		}
-	},
-	selectBtn:function(target){
-		var btn=target
-		while(btn && !btn.classList.contains('btn')){
-			btn=btn.parentElement
-		}
-		return btn
 	}
 }

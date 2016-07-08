@@ -8,9 +8,72 @@
 		["contacts","models",{},[
 			{
 				"id":1,
-				"name":"Bella Wa",
-				"tel":"123",
+				"name":"Dog",
+				"tel":"000",
 				"img":"dat/img/dog.jpg",
+				"snd":"dat/snd/dog.wav"
+			},
+			{
+				"id":2,
+				"name":"Cat",
+				"tel":"111",
+				"img":"dat/img/cat.jpg",
+				"snd":"dat/snd/dog.wav"
+			},
+			{
+				"id":3,
+				"name":"Horse",
+				"tel":"222",
+				"img":"dat/img/horse.jpg",
+				"snd":"dat/snd/dog.wav"
+			},
+			{
+				"id":4,
+				"name":"Lion",
+				"tel":"333",
+				"img":"dat/img/lion.jpg",
+				"snd":"dat/snd/dog.wav"
+			},
+			{
+				"id":5,
+				"name":"Monkey",
+				"tel":"444",
+				"img":"dat/img/monkey.jpg",
+				"snd":"dat/snd/dog.wav"
+			},
+			{
+				"id":6,
+				"name":"Mouse",
+				"tel":"555",
+				"img":"dat/img/prairie.jpg",
+				"snd":"dat/snd/dog.wav"
+			},
+			{
+				"id":7,
+				"name":"Rabbit",
+				"tel":"666",
+				"img":"dat/img/rabbit.jpg",
+				"snd":"dat/snd/dog.wav"
+			},
+			{
+				"id":8,
+				"name":"Bird",
+				"tel":"777",
+				"img":"dat/img/robin.jpg",
+				"snd":"dat/snd/dog.wav"
+			},
+			{
+				"id":9,
+				"name":"Sheep",
+				"tel":"888",
+				"img":"dat/img/sheep.jpg",
+				"snd":"dat/snd/dog.wav"
+			},
+			{
+				"id":10,
+				"name":"Cow",
+				"tel":"999",
+				"img":"dat/img/yak.jpg",
 				"snd":"dat/snd/dog.wav"
 			}
 		]],

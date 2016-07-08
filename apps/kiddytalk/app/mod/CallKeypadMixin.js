@@ -8,7 +8,7 @@ return {
 	},
 	events:{
 		'touchend .btn':function(e){
-			var btn=this.selectBtn(e.target)
+			var btn=e.target.closest('.btn')
 			if (!btn) return
 			var cl=btn.classList
 			cl.remove('down')
@@ -17,7 +17,7 @@ return {
 				cl.add('hidden')
 				this.signals.callAccepted().send()
 			}else{
-				Router.go('keypad')
+				Router.back()
 			}
 		}
 	}

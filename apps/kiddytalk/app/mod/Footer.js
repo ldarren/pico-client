@@ -32,7 +32,7 @@ return {
 
     events: {
 		'tap li':function(e){
-			var use='use'===e.target.tagName?e.target:e.target.querySelector('use')
+			var use=e.target.closest('li').querySelector('use')
 			Router.go(use.getAttributeNS('http://www.w3.org/1999/xlink', 'role'))
         }
     }

@@ -1,2 +1,12 @@
-.row{
+.scrollable .row{
+	font-size:1.2rem;
+	border-bottom: 1px solid #b3b3b3;
+	padding:0.5rem;
+}
+.scrollable .row .title{
+	color:black;
+
+}
+.scrollable .row .info{
+	color:#b3b3b3;
 }

@@ -8,7 +8,7 @@ return {
 	},
 	events:{
 		'click':function(e){
-			var c=this.deps.contacts.get(data.contactId)
+			var c=this.deps.contacts.get(this.deps.data.get('contactId'))
 			Router.go('callout/'+c.id)
 		}
 	},

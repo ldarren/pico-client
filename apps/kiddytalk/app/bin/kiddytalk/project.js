@@ -996,7 +996,7 @@ return Module.View.extend({
 })
 //# sourceURL=js/Frame
 })
-pico.define('cfg/project.json','[[],["kiddytalk.css"],[["html","file","Frame.html"],["layers","list",[".frame"]],["contacts","models",{},[{"id":1,"name":"Bella Wa","tel":"123","img":"dat/img/dog.jpg","snd":"dat/snd/dog.wav"}]],["recents","models",{}],["auth/NoSession","ctrl",[]],["js/Pane","view",[["options","map",{"el":".frame"}],["paneId","int",0],["html","file","Pane.html"],["allmodels","refs","models"]]],["Header","view",[["options","map",{"el":".frame>#header"}],["paneId","int",0],["tpl","file","Header.asp"]]],["Page","view",[["options","map",{"el":".frame>#page"}],["paneId","int",0]]],["Footer","view",[["options","map",{"el":".frame>#footer"}],["paneId","int",0],["tpl","file","Footer.asp"],["list","list",[{"name":"Keypad","id":"keypad","icon":"keyboard","url":""},{"name":"Contacts","id":"contacts","icon":"address-book","url":"contacts"},{"name":"Recents","id":"recents","icon":"clock","url":"recents"}]]]]],{"keypad":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],[["Keypad","KeypadMixin"],"view",[["html","file","Keypad.html"],["contacts","ref","contacts"]]]],"recents":[["options","map",{"el":".frame>#page"}],["recents","ref","recents"],["contacts","ref","contacts"],["PageCtrl","ctrl",[["title","text","All Recents"]]],["scrollable/ListView","view",[["options","map",{"className":"scrollable"}],["list","ref","recents"],["contacts","ref","contacts"],["Cell","view",[["options","map",{"className":"row recent"}],["tpl","file","RowRecent.asp"],["contacts","ref","contacts"]],["Row","RowRecent"]]]]],"contacts":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],["PageCtrl","ctrl",[["title","text","All Contacts"]]],["scrollable/ListView","view",[["options","map",{"className":"scrollable"}],["list","ref","contacts"],["Cell","view",[["options","map",{"className":"row contact"}],["tpl","file","RowContact.asp"]],["Row","RowContact"]]]]],"callin":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],["recents","ref","recents"],["Call","view",[["tpl","file","Call.asp"],["maxDelay","int",0],["contact","model","contacts",0],["recents","ref","recents"],["Keypad","view",[["html","file","CallinKeypad.html"]],["Keypad","CallKeypadMixin"]]]]],"callout":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],["recents","ref","recents"],["Call","view",[["tpl","file","Call.asp"],["contact","model","contacts",0],["recents","ref","recents"],["Keypad","view",[["html","file","CalloutKeypad.html"]],["Keypad","CallKeypadMixin"]]]]]},{"recents":["recents"],"contacts":["contacts"],"callin/:contactId":["callin"],"callout/:contactId":["callout"],"*action":["keypad"]}]')
+pico.define('cfg/project.json','[[],["kiddytalk.css"],[["html","file","Frame.html"],["layers","list",[".frame"]],["contacts","models",{},[{"id":1,"name":"Dog","tel":"000","img":"dat/img/dog.jpg","snd":"dat/snd/dog.wav"},{"id":2,"name":"Cat","tel":"111","img":"dat/img/cat.jpg","snd":"dat/snd/dog.wav"},{"id":3,"name":"Horse","tel":"222","img":"dat/img/horse.jpg","snd":"dat/snd/dog.wav"},{"id":4,"name":"Lion","tel":"333","img":"dat/img/lion.jpg","snd":"dat/snd/dog.wav"},{"id":5,"name":"Monkey","tel":"444","img":"dat/img/monkey.jpg","snd":"dat/snd/dog.wav"},{"id":6,"name":"Mouse","tel":"555","img":"dat/img/prairie.jpg","snd":"dat/snd/dog.wav"},{"id":7,"name":"Rabbit","tel":"666","img":"dat/img/rabbit.jpg","snd":"dat/snd/dog.wav"},{"id":8,"name":"Bird","tel":"777","img":"dat/img/robin.jpg","snd":"dat/snd/dog.wav"},{"id":9,"name":"Sheep","tel":"888","img":"dat/img/sheep.jpg","snd":"dat/snd/dog.wav"},{"id":10,"name":"Cow","tel":"999","img":"dat/img/yak.jpg","snd":"dat/snd/dog.wav"}]],["recents","models",{}],["auth/NoSession","ctrl",[]],["js/Pane","view",[["options","map",{"el":".frame"}],["paneId","int",0],["html","file","Pane.html"],["allmodels","refs","models"]]],["Header","view",[["options","map",{"el":".frame>#header"}],["paneId","int",0],["tpl","file","Header.asp"]]],["Page","view",[["options","map",{"el":".frame>#page"}],["paneId","int",0]]],["Footer","view",[["options","map",{"el":".frame>#footer"}],["paneId","int",0],["tpl","file","Footer.asp"],["list","list",[{"name":"Keypad","id":"keypad","icon":"keyboard","url":""},{"name":"Contacts","id":"contacts","icon":"address-book","url":"contacts"},{"name":"Recents","id":"recents","icon":"clock","url":"recents"}]]]]],{"keypad":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],[["Keypad","KeypadMixin"],"view",[["html","file","Keypad.html"],["contacts","ref","contacts"]]]],"recents":[["options","map",{"el":".frame>#page"}],["recents","ref","recents"],["contacts","ref","contacts"],["PageCtrl","ctrl",[["title","text","All Recents"]]],["scrollable/ListView","view",[["options","map",{"className":"scrollable"}],["list","ref","recents"],["contacts","ref","contacts"],["Cell","view",[["options","map",{"className":"row recent"}],["tpl","file","RowRecent.asp"],["contacts","ref","contacts"]],["Row","RowRecent"]]]]],"contacts":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],["PageCtrl","ctrl",[["title","text","All Contacts"]]],["scrollable/ListView","view",[["options","map",{"className":"scrollable"}],["list","ref","contacts"],["Cell","view",[["options","map",{"className":"row contact"}],["tpl","file","RowContact.asp"]],["Row","RowContact"]]]]],"callin":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],["recents","ref","recents"],["Call","view",[["tpl","file","Call.asp"],["maxDelay","int",0],["contact","model","contacts",0],["recents","ref","recents"],["Keypad","view",[["html","file","CallinKeypad.html"]],["Keypad","CallKeypadMixin"]]]]],"callout":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],["recents","ref","recents"],["Call","view",[["tpl","file","Call.asp"],["contact","model","contacts",0],["recents","ref","recents"],["Keypad","view",[["html","file","CalloutKeypad.html"]],["Keypad","CallKeypadMixin"]]]]]},{"recents":["recents"],"contacts":["contacts"],"callin/:contactId":["callin"],"callout/:contactId":["callout"],"*action":["keypad"]}]')
 pico.define('cfg/env.json','{"domains":{}}')
 
 var opt={variable:'d'}
@@ -1271,6 +1271,7 @@ pico.define('KeypadMixin',function anonymous(exports,require,module,define,inher
 var Router=require('js/Router')
 
 return {
+	signals:['header'],
 	deps:{
 		contacts:'models'
 	},
@@ -1279,6 +1280,7 @@ return {
 		el.innerHTML=deps.html
 		this.display=el.querySelector('.display')
 		this.value=[]
+		this.signals.header().send(this.host)
 	},
 	events:{
 		'touchend .btn':function(e){
@@ -1470,12 +1472,12 @@ return {
 	},
 	parseData:function(data,cb){
 		var c=this.deps.contacts.get(data.contactId)
-		return cb(null, {name:c.name, datetime:pTime.day(new Date(data.id))})	
+		return cb(null, {name:c.get('name'), day:pTime.day(new Date(data.id))})	
 	}
 }
 //# sourceURL=RowRecent
 })
-pico.define('RowRecent.asp','<p class="title"><%=d.name%></p>\n<span class="info"><%=d.recent%></span>\n')
+pico.define('RowRecent.asp','<p class="title"><%=d.name%></p>\n<span class="info"><%=d.day%></span>\n')
 pico.define('RowContact',function anonymous(exports,require,module,define,inherit,pico
 /**/) {
 "use strict";
@@ -1499,7 +1501,7 @@ Rand=Math.random,Ceil=Math.ceil,
 talk=function(self){
 	self.el.querySelector('.profile').classList.add('invisible')
 	self.el.style.backgroundImage='url('+self.deps.contact.get('img')+')'
-	self.deps.contacts.get(self.recentId).state=0
+	self.deps.recents.get(self.recentId).state=0
 },
 connected=function(self){
 	self.el.querySelector('.profile .state').textContent='connected'
