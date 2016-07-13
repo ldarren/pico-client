@@ -5,7 +5,8 @@
 }
 .scrollable .row .title{
 	color:black;
-
+	font-size:1.6rem;
+	line-height:2rem;
 }
 .scrollable .row .info{
 	color:#b3b3b3;

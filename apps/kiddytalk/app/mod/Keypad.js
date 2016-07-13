@@ -10,10 +10,10 @@ return {
 	},
 	events:{
 		'touchstart .btn':function(e){
-			this.signals.WebAudio_start('dial').send(this.host)
 			e.target.closest('.btn').classList.add('down')
 		},
 		'touchend .btn':function(e){
+			this.signals.WebAudio_start('dial').sendNow(this.host) // ios9 bug, only word at touchend
 			e.target.closest('.btn').classList.remove('down')
 		}
 	}

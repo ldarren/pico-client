@@ -19,7 +19,7 @@ return {
 			}else{
 				Router.back()
 				this.signals.WebAudio_start('hangup').send(this.host)
-				this.signals.WebAudio_stop().send(this.host)
+				this.signals.WebAudio_stop().send(this.host)// stop any looping sound
 			}
 		}
 	}

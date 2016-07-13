@@ -13,7 +13,12 @@ return {
 		}
 	},
 	parseData:function(data,cb){
-		var c=this.deps.contacts.get(data.contactId)
-		return cb(null, {name:c.get('name'), day:pTime.day(new Date(data.id))})	
+		var
+		c=this.deps.contacts.get(data.contactId),
+		date=new Date(data.id),
+		day=pTime.day(date)
+
+		if ('Today'===day) day=date.toLocaleTimeString()
+		return cb(null, {name:c.get('name'), day:day})	
 	}
 }

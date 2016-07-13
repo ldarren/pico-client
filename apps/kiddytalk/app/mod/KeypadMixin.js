@@ -28,7 +28,7 @@ return {
 				value.pop()
 			}else if (cl.contains('call')){
 				var
-				tel='+'===this.display[0] ? this.value.slice(1).join('') : this.value.join(''),
+				tel='+'===this.value[0] ? this.value.slice(1).join('') : this.value.join(''),
 				contacts=this.deps.contacts,
 				contact=contacts.findWhere({tel:tel})
 				if (contact) return Router.go('callout/'+contact.id)
@@ -43,6 +43,7 @@ return {
 			}
 
 			this.display.textContent=value.join('')
+			this.signals.WebAudio_start('dial').sendNow(this.host)
 		}
 	}
 }
