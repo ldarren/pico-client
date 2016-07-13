@@ -11,74 +11,92 @@
 				"name":"Dog",
 				"tel":"000",
 				"img":"dat/img/dog.jpg",
-				"snd":"dat/snd/dog.wav"
+				"snd":"dog"
 			},
 			{
 				"id":2,
 				"name":"Cat",
 				"tel":"111",
 				"img":"dat/img/cat.jpg",
-				"snd":"dat/snd/dog.wav"
+				"snd":"cat"
 			},
 			{
 				"id":3,
 				"name":"Horse",
 				"tel":"222",
 				"img":"dat/img/horse.jpg",
-				"snd":"dat/snd/dog.wav"
+				"snd":"horse"
 			},
 			{
 				"id":4,
 				"name":"Lion",
 				"tel":"333",
 				"img":"dat/img/lion.jpg",
-				"snd":"dat/snd/dog.wav"
+				"snd":"lion"
 			},
 			{
 				"id":5,
 				"name":"Monkey",
 				"tel":"444",
 				"img":"dat/img/monkey.jpg",
-				"snd":"dat/snd/dog.wav"
+				"snd":"monkey"
 			},
 			{
 				"id":6,
 				"name":"Mouse",
 				"tel":"555",
 				"img":"dat/img/prairie.jpg",
-				"snd":"dat/snd/dog.wav"
+				"snd":"mouse"
 			},
 			{
 				"id":7,
 				"name":"Rabbit",
 				"tel":"666",
 				"img":"dat/img/rabbit.jpg",
-				"snd":"dat/snd/dog.wav"
+				"snd":"rabbit"
 			},
 			{
 				"id":8,
 				"name":"Bird",
 				"tel":"777",
 				"img":"dat/img/robin.jpg",
-				"snd":"dat/snd/dog.wav"
+				"snd":"bird"
 			},
 			{
 				"id":9,
 				"name":"Sheep",
 				"tel":"888",
 				"img":"dat/img/sheep.jpg",
-				"snd":"dat/snd/dog.wav"
+				"snd":"sheep"
 			},
 			{
 				"id":10,
 				"name":"Cow",
 				"tel":"999",
 				"img":"dat/img/yak.jpg",
-				"snd":"dat/snd/dog.wav"
+				"snd":"cow"
 			}
 		]],
 		["recents","models",{}],
 		["auth/NoSession","ctrl",[]],
+		["WebAudio","ctrl",[
+			["sounds","models",{},[
+				{"id":1,"name":"callin","path":"dat/snd/callin"},
+				{"id":2,"name":"callout","path":"dat/snd/callout"},
+				{"id":3,"name":"hangup","path":"dat/snd/hangup"},
+				{"id":4,"name":"dial","path":"dat/snd/dial"},
+				{"id":5,"name":"dog","path":"dat/snd/dog"},
+				{"id":6,"name":"cat","path":"dat/snd/cat"},
+				{"id":7,"name":"bird","path":"dat/snd/bird"},
+				{"id":8,"name":"horse","path":"dat/snd/horse"},
+				{"id":9,"name":"sheep","path":"dat/snd/sheep"},
+				{"id":10,"name":"mouse","path":"dat/snd/mouse"},
+				{"id":11,"name":"cow","path":"dat/snd/cow"},
+				{"id":12,"name":"lion","path":"dat/snd/lion"},
+				{"id":13,"name":"monkey","path":"dat/snd/monkey"},
+				{"id":14,"name":"rabbit","path":"dat/snd/rabbit"}
+			]]
+		]],
         ["js/Pane","view",[
 			["options","map",{"el":".frame"}],
             ["paneId","int",0],

@@ -1,7 +1,7 @@
 var Router=require('js/Router')
 
 return {
-	signals:['callAccepted','header'],
+	signals:['callAccepted','header','WebAudio_stop'],
 	create:function(deps){
 		this.el.innerHTML=deps.html
 		this.signals.header().send(this.host)
@@ -18,6 +18,8 @@ return {
 				this.signals.callAccepted().send()
 			}else{
 				Router.back()
+				this.signals.WebAudio_start('hangup').send(this.host)
+				this.signals.WebAudio_stop().send(this.host)
 			}
 		}
 	}
