@@ -5,6 +5,7 @@ Stream= require('js/Stream'),
 Socket= require('js/Socket'),
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
 ERR1='ref of REF not found',ERR2='record RECORD of ref of REF not found',
+extOpt={mergeArr:1},
 create = function(id, type, value){ return [id, type, value] },
 getId = function(spec){return spec[ID]},
 getType = function(spec){return spec[TYPE]},
@@ -21,7 +22,7 @@ loadDeps = function(links, idx, klass, cb){
     if (links.charAt) return require(links, cb)
     require(links[idx++], function(err, mod){
         if (err) return cb(err)
-        loadDeps(links, idx, picoObj.extend(klass, mod), cb)
+        loadDeps(links, idx, picoObj.extend(klass, mod, extOpt), cb)
     })
 },
 load = function(host, params, spec, idx, deps, cb, userData){
@@ -89,7 +90,6 @@ load = function(host, params, spec, idx, deps, cb, userData){
     case 'datetime': // ID[id] TYPE[date/datetime] VALUE[unixtime/time in string]
         deps.push(create(s[ID], t, new Date(s[VALUE])))
         break
-	case 'css': break // not for runtime
     default:
         deps.push(create(s[ID], t, s[VALUE]))
         break
