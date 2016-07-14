@@ -53,7 +53,7 @@ specLoaded = function(err, spec, userData){
     }
 
     self.deps = d
-    self.create(d)
+    self.create(d,self.params)
 
     var h=self.host
     self.signals.moduleAdded().send(h)
@@ -67,7 +67,7 @@ specLoaded = function(err, spec, userData){
                 if(m) m.call(h, null, self)
                 return
             }
-            h.spawn(m, self._params, chains[chains.length-1], !self._show, chains)
+            h.spawn(m, self.params, chains[chains.length-1], !self._show, chains)
         }
     }
 },
@@ -161,8 +161,8 @@ function Ctrl(prop, rawSpec, params, host, show, chains){
     this.host = host
     this.ancestor = Ctrl.prototype
     this.modules = []
+    this.params = params
     this._rawSpec = rawSpec
-    this._params = params
     this._removed = false 
     this._show=show?[host.el,false]:null // view in chains migh need to show
 
@@ -177,6 +177,7 @@ _.extend(Ctrl.prototype, Backbone.Events, Module)
 var View = Backbone.View.extend(_.extend(Module, {
     initialize: function(options, prop, spec, params, host, show, chains){
         this._elements = []
+		this._el=options && options.el
 
         Ctrl.call(this, prop, spec, params, host, show, chains)
 
@@ -184,7 +185,8 @@ var View = Backbone.View.extend(_.extend(Module, {
     },
     remove: function(){
         Ctrl.prototype.remove.call(this)
-        Backbone.View.prototype.remove.apply(this, arguments)
+		// remove if not base on existing el
+		if (!this._el) Backbone.View.prototype.remove.apply(this, arguments)
     },
     // view can spawn ctrl and view
     spawn: function(Mod, params, spec, hidden, chains){

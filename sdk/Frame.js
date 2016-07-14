@@ -7,13 +7,9 @@ Floor=Math.floor,Random=Math.random,
 Router = require('js/Router'),
 Module = require('js/Module'),
 network = require('js/network'),
-attachJS = function(deps, cb){
-    if (!deps || !deps.length) return cb()
-    __.attachFile(deps.shift(), 'js', function(){ attachJS(deps, cb) })
-},
-attachCSS = function(styles, cb){
-    if (!styles || !styles.length) return cb()
-    __.attachFile(styles.shift(), 'css', function(){ attachCSS(styles, cb) })
+includeAll= function(urls, func, type, cb){
+    if (!urls || !urls.length) return cb()
+    func(urls.shift(), type, function(){ includeAll(urls, func, type, cb) })
 },
 resized=function(self, paneCount){
     if (paneCount === self.deps.paneCount) return
@@ -79,8 +75,8 @@ return Module.View.extend({
             var r = new Router(Object.keys(self.flyers))
             r.on('route', changeRoute, self)
 
-            attachCSS(p[STYLE], function(){
-                attachJS(p[DEPS], function(){
+            includeAll(p[STYLE], __.dom.link, 'css', function(){
+                includeAll(p[DEPS], __.dom.link, 'js', function(){
                     Module.View.prototype.initialize.call(self, null, {name:'Frame'}, 
 						p[SPEC].concat([
 							['env','map',e]
