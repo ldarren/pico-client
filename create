@@ -5,16 +5,19 @@ fs = require('fs'),
 path = require('path'),
 Transform = require('stream').Transform,
 util = require('util'),
-projPath = process.argv[2],
-projName = process.argv[3],
-projLib = process.argv[4],
+argv=process.argv,
+projPath = argv[2],
+projId = argv[3],
+projName = argv[4],
+projLib = argv[5],
 replace = []
 
-if (!projPath || !projName) return console.log('USAGE: '+process.argv[1]+' path name [lib]')
+if (5 > argv.length) return console.log('USAGE: '+argv[1]+' path id name [lib]')
 
 function ReplaceTransform(options){
     if (!(this instanceof ReplaceTransform)) return new ReplaceTransform(options)
 
+    replace.push(/PROJ_ID/g, projId)
     replace.push(/PROJ_NAME/g, projName)
 
     Transform.call(this, options)
@@ -34,8 +37,8 @@ function symlink(fs, from, to, ln, cb){
 	fs.symlink(path.relative(to,from), path.resolve(to, ln), cb)
 }
 
-fs.readlink(process.argv[1], (err, realPath)=>{
-    if (err) realPath = process.argv[1]
+fs.readlink(argv[1], (err, realPath)=>{
+    if (err) realPath = argv[1]
 	realPath=path.dirname(realPath)
 	projLib=path.resolve(realPath,'lib')
     var srcDir = path.resolve(realPath,'sdk')
@@ -51,26 +54,26 @@ fs.readlink(process.argv[1], (err, realPath)=>{
                 if (!files.length) return cb()
                 var
                 fname = files.shift()
-                dest = path.resolve(projPath, files.shift(), fname)
+                dest = path.resolve(projPath, files.shift(), files.shift()||fname)
                 fs.createReadStream(path.resolve(srcDir,fname))
                 .pipe(new ReplaceTransform({decodeStrings:false}))
                 .pipe(fs.createWriteStream(dest))
                 arguments.callee(files, cb)
             })([
-                'index.html','',
-                'project.json','cfg',
-                'env.json','cfg',
-                'main.js','mod',
-				'Frame.js','js',
-				'Model.js','js',
-				'Module.js','js',
-				'Pane.js','js',
-				'Router.js','js',
-				'Socket.js','js',
-				'Stream.js','js',
-				'network.js','js',
-				'sigslot.js','js',
-				'specMgr.js','js'
+                'index.html','',null,
+                'project.json','cfg',`proj-${projId}.json`,
+                'env.json','cfg',null,
+                'main.js','mod',null,
+				'Frame.js','js',null,
+				'Model.js','js',null,
+				'Module.js','js',null,
+				'Pane.js','js',null,
+				'Router.js','js',null,
+				'Socket.js','js',null,
+				'Stream.js','js',null,
+				'network.js','js',null,
+				'sigslot.js','js',null,
+				'specMgr.js','js',null
                 ], ()=>{
                 symlink(fs, projLib, projPath, 'lib', ()=>{
 					symlink(fs, path.resolve(srcDir,'..','build'), path.resolve(projPath,'run'), 'build', ()=>{
