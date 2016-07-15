@@ -17,6 +17,16 @@ resized=function(self, paneCount){
     if (Backbone.History.started && self.currPath) changeRoute.call(self, self.currPath, self.currParams)
 	self.signals.paneCount(paneCount).send()
 },
+parseFlyers=function(list, cb){
+	var flyers={}, routes=[]
+
+	for(var i=0,f,k; f=list[i]; i++){
+		k=f.shift()
+		flyers[k]=f
+		routes.push(k)
+	}
+	cb(flyers,routes)
+},
 changeRoute = function(path, params){
     var f = this.flyers[path]
 
@@ -32,11 +42,11 @@ changeRoute = function(path, params){
 
     for(var j=0,p; i<pc; i++,j++){
         p=f[i]
-        if (p) this.signals.paneUpdate(j, path+'.'+p, pages[p], params).send()
-        else this.signals.paneUpdate(j, '', pages[''], params).send()
+        if (p) this.signals.paneUpdate(j, path+'.'+p, pages[p], params).sendNow()
+        else this.signals.paneUpdate(j, '', pages[''], params).sendNow()
     }
 
-    this.signals.changeRoute(path, params).send()
+    this.signals.changeRoute(path, params).sendNow()
     this.currPath=path
     this.currParams=params
 },
@@ -58,22 +68,22 @@ return Module.View.extend({
 		paneCount:['int',1]
     },
     initialize: function(p, e){
-        var self = this
-        
-        this.pages= p[PAGES]
-        this.flyers= p[FLYERS]
-
-        document.addEventListener('animationstart', function(e){
-            console.log(e.animationName)
-            if (-1 === e.animationName.indexOf(EVT_RESIZE)) return
-            resized(self, parseInt(e.animationName.substr(EVT_RESIZE_LEN)))
-        })
+        var self=this
 
         network.create(e.domains, function(err){
             if (err) return console.error(err)
+        
+			self.pages= p[PAGES]
+			parseFlyers(p[FLYERS],function(flyers,routes){
+				self.flyers=flyers;
+				(new Router(routes)).on('route', changeRoute, self)
+			})
 
-            var r = new Router(Object.keys(self.flyers))
-            r.on('route', changeRoute, self)
+			document.addEventListener('animationstart', function(e){
+				console.log(e.animationName)
+				if (-1 === e.animationName.indexOf(EVT_RESIZE)) return
+				resized(self, parseInt(e.animationName.substr(EVT_RESIZE_LEN)))
+			})
 
             includeAll(p[STYLE], __.dom.link, 'css', function(){
                 includeAll(p[DEPS], __.dom.link, 'js', function(){

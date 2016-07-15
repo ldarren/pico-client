@@ -1,18 +1,15 @@
 [
     [
+        "lib/3rdparty.js"
     ],[
-        "css/index.css"
+        "lib/3rdparty.css"
     ],[
-        ["html","file","path/to/frame/html"],
-        ["els","map",{"main":"#layer1"}]
+        ["options","map",{"el":"body"}],
+        ["html","file","path/to/frame/html"]
     ],{
         "home":[
-            ["html","file","path/to/page/html"],
-            ["el","text","#id"],
-            ["options","map",{
-                "tagName":"div",
-                "className":""
-            }]
+            ["options","map",{"className":"home"}],
+            ["html","file","path/to/page/html"]
         ]
     },{
         "*action":["home"]

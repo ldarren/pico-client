@@ -202,11 +202,11 @@
 				],["Keypad","CallKeypadMixin"]]
 			]]
         ]
-    },{
-        "recents":["recents"],
-        "contacts":["contacts"],
-        "callin/:contactId":["callin"],
-        "callout/:contactId":["callout"],
-        "*action":["keypad"]
-    }
+    },[
+        ["recents","recents"],
+        ["contacts","contacts"],
+        ["callin/:contactId","callin"],
+        ["callout/:contactId","callout"],
+        ["*action","keypad"]
+    ]
 ]
