@@ -62,7 +62,7 @@ fs.readlink(argv[1], (err, realPath)=>{
             })([
                 'index.html','',null,
                 'project.json','cfg',`proj-${projId}.json`,
-                'env.json','cfg',null,
+                'env.json','cfg',`env-${projId}-dev.json`,
                 'main.js','mod',null,
 				'Frame.js','js',null,
 				'Model.js','js',null,
