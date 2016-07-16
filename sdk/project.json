@@ -11,7 +11,7 @@
             ["options","map",{"className":"home"}],
             ["html","file","path/to/page/html"]
         ]
-    },{
-        "*action":["home"]
-    }
+    },[
+        ["*action","home"]
+    ]
 ]
