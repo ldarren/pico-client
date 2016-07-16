@@ -10,10 +10,11 @@ path=require('path'),
 CleanCSS=require('clean-css'),
 proj=process.argv[2],
 env=process.argv[3]||'pro',
-mainjs=process.argv[4]||'main.js',
-srcDir=process.argv[5]||'mod',
-distDir=process.argv[6]||'bin',
-cfgDir=process.argv[7]||'cfg',
+cwd=path.resolve(process.cwd(),process.argv[4]||'.'),
+srcDir=path.resolve(cwd,process.argv[5]||'mod'),
+cfgDir=path.resolve(cwd,process.argv[6]||'cfg'),
+distDir=path.resolve(cwd,process.argv[7]||'bin'),
+mainjs=process.argv[8]||'main.js',
 setup=function(cb){
     var
     rawProjPath=path.resolve(cfgDir,`proj-${proj}.json`),
@@ -110,7 +111,9 @@ writeCSS=function(style, cb){
 	})
 }
 
-if (3 > process.argv.length) return console.log(process.argv[1],'PROJ_NAME','[ENV]','[main.js]','[mod]','[bin]','[cfg]')
+if (3 > process.argv.length) return console.log(process.argv[1],'PROJ_NAME','[ENV]','[cwd]','[mod]','[cfg]','[bin]','[main.js]')
+
+process.chdir(cwd)
 
 setup((err, project, projPath, outPath)=>{
 	if (err) return console.error(err)
