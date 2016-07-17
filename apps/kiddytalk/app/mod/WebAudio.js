@@ -1,5 +1,7 @@
 var
+DEFAULT_PERIOD=300000,
 useOgg,
+looping=0,
 loadAudio=function(ctx, idx, input, output, cb){
 	if (idx >= input.length) return cb()
 	var
@@ -13,6 +15,21 @@ loadAudio=function(ctx, idx, input, output, cb){
 			loadAudio(ctx, idx, input, output, cb)
 		})
 	})
+},
+playAudio=function(self,name){
+	var buf=self.map[name]
+	if (!buf) return console.warn('Audio '+name+' not found')
+
+	var
+	ctx=self.ctx,
+	source=ctx.createBufferSource()
+
+	source.connect(ctx.destination)
+	source.buffer=buf
+	source.onended=function(){
+		if (looping > Date.now()) playAudio(self,name)
+	}
+	source.start(ctx.currentTime)
 }
 
 this.load=function(){
@@ -35,27 +52,11 @@ return {
 	},
 	slots:{
 		WebAudio_start:function(from,sender,name,loop,period){
-			var buf=this.map[name]
-			if (!buf) return console.warn('Audio '+name+' not found')
-			var
-			ctx=this.ctx,
-			source=ctx.createBufferSource()
-
-			source.connect(ctx.destination)
-			source.buffer=buf
-
-			if (loop){
-				if (this.loopSource) this.loopSource.stop()
-				this.loopSource=source
-				source.loop=true
-				source.start(ctx.currentTime)
-			}else{
-				source.start(ctx.currentTime)
-			}
-			if (period) source.stop(ctx.currentTime+period)
+			if (loop) looping=Date.now()+period||DEFAULT_PERIOD
+			playAudio(this,name)
 		},
 		WebAudio_stop:function(from,sender){
-			if (this.loopSource) this.loopSource.stop()
+			looping=0
 		}
 	}
 }

@@ -31,7 +31,7 @@ return {
 		if (deps.maxDelay){
 			var delay=1000+Ceil(deps.maxDelay*Rand())
 			setTimeout(connected,delay,this)
-			this.signals.WebAudio_start('callout',1,delay/1000).send(this.host)
+			this.signals.WebAudio_start('callout',1,delay).send(this.host)
 		}else{
 			this.signals.WebAudio_start('callin',1).send(this.host)
 		}
