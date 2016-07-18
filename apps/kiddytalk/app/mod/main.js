@@ -24,6 +24,6 @@ pico.run({
     env = require('cfg/env.json')
 
     this.load=function(){
-        new Frame(project, env)
+        Frame.start(project, env)
     }
 })

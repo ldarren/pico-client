@@ -4,3 +4,18 @@
 [submodule "apps/kiddytalk/app/mod/auth"]
 	path = apps/kiddytalk/app/mod/auth
 	url = https://github.com/ldarren/pico-mod-auth.git
+[submodule "apps/kiddytalk/app/mod/footer"]
+	path = apps/kiddytalk/app/mod/footer
+	url = https://github.com/ldarren/pico-mod-footer.git
+[submodule "apps/kiddytalk/app/mod/header"]
+	path = apps/kiddytalk/app/mod/header
+	url = https://github.com/ldarren/pico-mod-header.git
+[submodule "apps/lead/app1/mod/footer"]
+	path = apps/lead/app1/mod/footer
+	url = https://github.com/ldarren/pico-mod-footer.git
+[submodule "apps/lead/app1/mod/header"]
+	path = apps/lead/app1/mod/header
+	url = https://github.com/ldarren/pico-mod-header.git
+[submodule "apps/lead/app1/mod/scrollable"]
+	path = apps/lead/app1/mod/scrollable
+	url = https://github.com/ldarren/pico-mod-scrollable.git

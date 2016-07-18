@@ -57,17 +57,15 @@ netstat=function(self){
 	window.addEventListener('offline',function(){
 		self.signals.offline().send()
 	})
-}
-
-return Module.View.extend({
-    el: 'body',
+},
+Body=Module.View.extend({
     signals:['online','offline','changeRoute','frameAdded','paneAdded','paneUpdate','paneCount'],
     deps:{
         html:   ['file','<div class=frame><div class=layer></div><div class=layer></div></div>'],
         layers: ['list', ['.frame>div:nth-child(1)','.frame>div:nth-child(2)']],
 		paneCount:['int',1]
     },
-    initialize: function(p, e){
+    initialize: function(options, p, e){
         var self=this
 
         network.create(e.domains, function(err){
@@ -142,3 +140,9 @@ return Module.View.extend({
         }
     }
 })
+
+return {
+	start:function(project,env){
+        return new Body(Module.getViewOptions(project[SPEC]), project, env)
+	}
+}

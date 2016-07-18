@@ -2,6 +2,7 @@
     [
     ],[
     ],[
+		["options","map",{"el":"body"}],
         ["html","file","Frame.html"],
 		["layers","list",[".frame"]],
         ["css","file","Frame.css"],
@@ -103,21 +104,21 @@
             ["html","file","Pane.html"],
 			["allmodels","refs","models"]
         ]],
-		["Header","view",[
+		["header/Basic","view",[
 			["options","map",{"el":".frame>#header"}],
 			["paneId","int",0],
-			["tpl","file","Header.asp"],
-			["css","file","Header.css"]
+			["tpl","file","header/Basic.asp"],
+			["css","file","header/Basic.css"]
 		]],
 		["Page","view",[
 			["options","map",{"el":".frame>#page"}],
 			["paneId","int",0]
 		]],
-		["Footer","view",[
+		["footer/Menu","view",[
 			["options","map",{"el":".frame>#footer"}],
 			["paneId","int",0],
-			["tpl","file","Footer.asp"],
-			["css","file","Footer.css"],
+			["tpl","file","footer/Menu.asp"],
+			["css","file","footer/Menu.css"],
 			["list","list",[
 				{"name":"Keypad","id":"keypad","icon":"keyboard","url":""},
 				{"name":"Contacts","id":"contacts","icon":"address-book","url":"contacts"},

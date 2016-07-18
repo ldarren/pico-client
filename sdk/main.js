@@ -17,13 +17,13 @@ pico.run({
         json: 'json/'
     }
 },function(){
-    require('js/Module') //preload
+    require('js/Module') // reload
     var
     Frame= require('js/Frame'),
     project = require('cfg/project.json'),
     env = require('cfg/env.json')
 
     this.load=function(){
-        new Frame(project, env)
+        Frame.start(project, env)
     }
 })

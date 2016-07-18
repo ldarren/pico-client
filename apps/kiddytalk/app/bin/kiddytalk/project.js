@@ -612,6 +612,10 @@ specLoaded = function(err, spec, userData){
         }
     }
 },
+getViewOptions=function(spec){
+    for(var i=0,o; o=spec[i]; i++){ if ('options'===o[ID]) return o[VALUE]}
+	return null
+},
 // dun remove mod here, mod may be removed
 hideByIndex= function(self, i, host){
     host = host || self.el
@@ -735,12 +739,10 @@ var View = Backbone.View.extend(_.extend(Module, {
 
         if ('ctrl'===Mod.type) return Ctrl.prototype.spawn.call(this, Mod, params, spec, hidden, chains)
 
-        var s=spec && spec.length ? Mod.spec.concat(spec) : Mod.spec
-
-        for(var i=0,o; o=s[i]; i++){ if ('options'===o[ID]) break }
-
-        var m = new (View.extend(Mod.Class))(
-			o?o[VALUE]:o,
+        var
+		s=spec && spec.length ? Mod.spec.concat(spec) : Mod.spec,
+        m=new (View.extend(Mod.Class))(
+			getViewOptions(s),
 			Mod,
 			s,
 			params,
@@ -798,7 +800,8 @@ var View = Backbone.View.extend(_.extend(Module, {
 
 return {
     Ctrl:Ctrl,
-    View:View
+    View:View,
+	getViewOptions:getViewOptions
 }
 //# sourceURL=js/Module
 })
@@ -843,7 +846,7 @@ Router= Backbone.Router.extend({
     },
     home: function(replace){ Router.go('', replace) },
     add: function(paths){
-        for(var i=0,p; p=paths[i]; i++){
+        for(var i=paths.length-1,p; p=paths[i]; i--){
             context.route(p, p)
         }
     },
@@ -916,17 +919,15 @@ netstat=function(self){
 	window.addEventListener('offline',function(){
 		self.signals.offline().send()
 	})
-}
-
-return Module.View.extend({
-    el: 'body',
+},
+Body=Module.View.extend({
     signals:['online','offline','changeRoute','frameAdded','paneAdded','paneUpdate','paneCount'],
     deps:{
         html:   ['file','<div class=frame><div class=layer></div><div class=layer></div></div>'],
         layers: ['list', ['.frame>div:nth-child(1)','.frame>div:nth-child(2)']],
 		paneCount:['int',1]
     },
-    initialize: function(p, e){
+    initialize: function(options, p, e){
         var self=this
 
         network.create(e.domains, function(err){
@@ -1001,9 +1002,15 @@ return Module.View.extend({
         }
     }
 })
+
+return {
+	start:function(project,env){
+        return new Body(Module.getViewOptions(project[SPEC]), project, env)
+	}
+}
 //# sourceURL=js/Frame
 })
-pico.define('cfg/project.json','[[],["kiddytalk.css"],[["html","file","Frame.html"],["layers","list",[".frame"]],["contacts","models",{},[{"id":1,"name":"Dog","tel":"000","img":"dat/img/dog.jpg","snd":"dog"},{"id":2,"name":"Cat","tel":"111","img":"dat/img/cat.jpg","snd":"cat"},{"id":3,"name":"Horse","tel":"222","img":"dat/img/horse.jpg","snd":"horse"},{"id":4,"name":"Lion","tel":"333","img":"dat/img/lion.jpg","snd":"lion"},{"id":5,"name":"Monkey","tel":"444","img":"dat/img/monkey.jpg","snd":"monkey"},{"id":6,"name":"Mouse","tel":"555","img":"dat/img/prairie.jpg","snd":"mouse"},{"id":7,"name":"Rabbit","tel":"666","img":"dat/img/rabbit.jpg","snd":"rabbit"},{"id":8,"name":"Bird","tel":"777","img":"dat/img/robin.jpg","snd":"bird"},{"id":9,"name":"Sheep","tel":"888","img":"dat/img/sheep.jpg","snd":"sheep"},{"id":10,"name":"Cow","tel":"999","img":"dat/img/yak.jpg","snd":"cow"}]],["recents","models",{}],["auth/NoSession","ctrl",[]],["WebAudio","ctrl",[["sounds","models",{},[{"id":1,"name":"callin","path":"dat/snd/callin"},{"id":2,"name":"callout","path":"dat/snd/callout"},{"id":3,"name":"hangup","path":"dat/snd/hangup"},{"id":4,"name":"dial","path":"dat/snd/dial"},{"id":5,"name":"dog","path":"dat/snd/dog"},{"id":6,"name":"cat","path":"dat/snd/cat"},{"id":7,"name":"bird","path":"dat/snd/bird"},{"id":8,"name":"horse","path":"dat/snd/horse"},{"id":9,"name":"sheep","path":"dat/snd/sheep"},{"id":10,"name":"mouse","path":"dat/snd/mouse"},{"id":11,"name":"cow","path":"dat/snd/cow"},{"id":12,"name":"lion","path":"dat/snd/lion"},{"id":13,"name":"monkey","path":"dat/snd/monkey"},{"id":14,"name":"rabbit","path":"dat/snd/rabbit"}]]]],["js/Pane","view",[["options","map",{"el":".frame"}],["paneId","int",0],["html","file","Pane.html"],["allmodels","refs","models"]]],["Header","view",[["options","map",{"el":".frame>#header"}],["paneId","int",0],["tpl","file","Header.asp"]]],["Page","view",[["options","map",{"el":".frame>#page"}],["paneId","int",0]]],["Footer","view",[["options","map",{"el":".frame>#footer"}],["paneId","int",0],["tpl","file","Footer.asp"],["list","list",[{"name":"Keypad","id":"keypad","icon":"keyboard","url":""},{"name":"Contacts","id":"contacts","icon":"address-book","url":"contacts"},{"name":"Recents","id":"recents","icon":"clock","url":"recents"}]]]]],{"keypad":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],[["Keypad","KeypadMixin"],"view",[["html","file","Keypad.html"],["contacts","ref","contacts"]]]],"recents":[["options","map",{"el":".frame>#page"}],["recents","ref","recents"],["contacts","ref","contacts"],["PageCtrl","ctrl",[["title","text","All Recents"]]],["scrollable/ListView","view",[["options","map",{"className":"scrollable"}],["list","ref","recents"],["contacts","ref","contacts"],["Cell","view",[["options","map",{"className":"row recent"}],["tpl","file","RowRecent.asp"],["contacts","ref","contacts"]],["Row","RowRecent"]]]]],"contacts":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],["PageCtrl","ctrl",[["title","text","All Contacts"]]],["scrollable/ListView","view",[["options","map",{"className":"scrollable"}],["list","ref","contacts"],["Cell","view",[["options","map",{"className":"row contact"}],["tpl","file","RowContact.asp"]],["Row","RowContact"]]]]],"callin":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],["recents","ref","recents"],["Call","view",[["tpl","file","Call.asp"],["maxDelay","int",0],["contact","model","contacts",0],["recents","ref","recents"],["Keypad","view",[["html","file","CallinKeypad.html"]],["Keypad","CallKeypadMixin"]]]]],"callout":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],["recents","ref","recents"],["Call","view",[["tpl","file","Call.asp"],["contact","model","contacts",0],["recents","ref","recents"],["Keypad","view",[["html","file","CalloutKeypad.html"]],["Keypad","CallKeypadMixin"]]]]]},[["recents","recents"],["contacts","contacts"],["callin/:contactId","callin"],["callout/:contactId","callout"],["*action","keypad"]]]')
+pico.define('cfg/project.json','[[],["kiddytalk.css"],[["options","map",{"el":"body"}],["html","file","Frame.html"],["layers","list",[".frame"]],["contacts","models",{},[{"id":1,"name":"Dog","tel":"000","img":"dat/img/dog.jpg","snd":"dog"},{"id":2,"name":"Cat","tel":"111","img":"dat/img/cat.jpg","snd":"cat"},{"id":3,"name":"Horse","tel":"222","img":"dat/img/horse.jpg","snd":"horse"},{"id":4,"name":"Lion","tel":"333","img":"dat/img/lion.jpg","snd":"lion"},{"id":5,"name":"Monkey","tel":"444","img":"dat/img/monkey.jpg","snd":"monkey"},{"id":6,"name":"Mouse","tel":"555","img":"dat/img/prairie.jpg","snd":"mouse"},{"id":7,"name":"Rabbit","tel":"666","img":"dat/img/rabbit.jpg","snd":"rabbit"},{"id":8,"name":"Bird","tel":"777","img":"dat/img/robin.jpg","snd":"bird"},{"id":9,"name":"Sheep","tel":"888","img":"dat/img/sheep.jpg","snd":"sheep"},{"id":10,"name":"Cow","tel":"999","img":"dat/img/yak.jpg","snd":"cow"}]],["recents","models",{}],["auth/NoSession","ctrl",[]],["WebAudio","ctrl",[["sounds","models",{},[{"id":1,"name":"callin","path":"dat/snd/callin"},{"id":2,"name":"callout","path":"dat/snd/callout"},{"id":3,"name":"hangup","path":"dat/snd/hangup"},{"id":4,"name":"dial","path":"dat/snd/dial"},{"id":5,"name":"dog","path":"dat/snd/dog"},{"id":6,"name":"cat","path":"dat/snd/cat"},{"id":7,"name":"bird","path":"dat/snd/bird"},{"id":8,"name":"horse","path":"dat/snd/horse"},{"id":9,"name":"sheep","path":"dat/snd/sheep"},{"id":10,"name":"mouse","path":"dat/snd/mouse"},{"id":11,"name":"cow","path":"dat/snd/cow"},{"id":12,"name":"lion","path":"dat/snd/lion"},{"id":13,"name":"monkey","path":"dat/snd/monkey"},{"id":14,"name":"rabbit","path":"dat/snd/rabbit"}]]]],["js/Pane","view",[["options","map",{"el":".frame"}],["paneId","int",0],["html","file","Pane.html"],["allmodels","refs","models"]]],["header/Basic","view",[["options","map",{"el":".frame>#header"}],["paneId","int",0],["tpl","file","header/Basic.asp"]]],["Page","view",[["options","map",{"el":".frame>#page"}],["paneId","int",0]]],["footer/Menu","view",[["options","map",{"el":".frame>#footer"}],["paneId","int",0],["tpl","file","footer/Menu.asp"],["list","list",[{"name":"Keypad","id":"keypad","icon":"keyboard","url":""},{"name":"Contacts","id":"contacts","icon":"address-book","url":"contacts"},{"name":"Recents","id":"recents","icon":"clock","url":"recents"}]]]]],{"keypad":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],[["Keypad","KeypadMixin"],"view",[["html","file","Keypad.html"],["contacts","ref","contacts"]]]],"recents":[["options","map",{"el":".frame>#page"}],["recents","ref","recents"],["contacts","ref","contacts"],["PageCtrl","ctrl",[["title","text","All Recents"]]],["scrollable/ListView","view",[["options","map",{"className":"scrollable"}],["list","ref","recents"],["contacts","ref","contacts"],["Cell","view",[["options","map",{"className":"row recent"}],["tpl","file","RowRecent.asp"],["contacts","ref","contacts"]],["Row","RowRecent"]]]]],"contacts":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],["PageCtrl","ctrl",[["title","text","All Contacts"]]],["scrollable/ListView","view",[["options","map",{"className":"scrollable"}],["list","ref","contacts"],["Cell","view",[["options","map",{"className":"row contact"}],["tpl","file","RowContact.asp"]],["Row","RowContact"]]]]],"callin":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],["recents","ref","recents"],["Call","view",[["tpl","file","Call.asp"],["maxDelay","int",0],["contact","model","contacts",0],["recents","ref","recents"],["Keypad","view",[["html","file","CallinKeypad.html"]],["Keypad","CallKeypadMixin"]]]]],"callout":[["options","map",{"el":".frame>#page"}],["contacts","ref","contacts"],["recents","ref","recents"],["Call","view",[["tpl","file","Call.asp"],["contact","model","contacts",0],["recents","ref","recents"],["Keypad","view",[["html","file","CalloutKeypad.html"]],["Keypad","CallKeypadMixin"]]]]]},[["recents","recents"],["contacts","contacts"],["callin/:contactId","callin"],["callout/:contactId","callout"],["*action","keypad"]]]')
 pico.define('cfg/env.json','{"domains":{}}')
 
 var opt={variable:'d'}
@@ -1056,7 +1063,9 @@ pico.define('WebAudio',function anonymous(exports,require,module,define,inherit,
 /**/) {
 "use strict";
 var
+DEFAULT_PERIOD=300000,
 useOgg,
+looping=0,
 loadAudio=function(ctx, idx, input, output, cb){
 	if (idx >= input.length) return cb()
 	var
@@ -1070,6 +1079,21 @@ loadAudio=function(ctx, idx, input, output, cb){
 			loadAudio(ctx, idx, input, output, cb)
 		})
 	})
+},
+playAudio=function(self,name){
+	var buf=self.map[name]
+	if (!buf) return console.warn('Audio '+name+' not found')
+
+	var
+	ctx=self.ctx,
+	source=ctx.createBufferSource()
+
+	source.connect(ctx.destination)
+	source.buffer=buf
+	source.onended=function(){
+		if (looping > Date.now()) playAudio(self,name)
+	}
+	source.start(ctx.currentTime)
 }
 
 this.load=function(){
@@ -1092,27 +1116,11 @@ return {
 	},
 	slots:{
 		WebAudio_start:function(from,sender,name,loop,period){
-			var buf=this.map[name]
-			if (!buf) return console.warn('Audio '+name+' not found')
-			var
-			ctx=this.ctx,
-			source=ctx.createBufferSource()
-
-			source.connect(ctx.destination)
-			source.buffer=buf
-
-			if (loop){
-				if (this.loopSource) this.loopSource.stop()
-				this.loopSource=source
-				source.loop=true
-				source.start(ctx.currentTime)
-			}else{
-				source.start(ctx.currentTime)
-			}
-			if (period) source.stop(ctx.currentTime+period)
+			if (loop) looping=Date.now()+period||DEFAULT_PERIOD
+			playAudio(this,name)
 		},
 		WebAudio_stop:function(from,sender){
-			if (this.loopSource) this.loopSource.stop()
+			looping=0
 		}
 	}
 }
@@ -1172,7 +1180,7 @@ return {
 //# sourceURL=js/Pane
 })
 pico.define('Pane.html','<div id=header></div>\n<div id=page></div>\n<ul id=footer></ul>\n')
-pico.define('Header',function anonymous(exports,require,module,define,inherit,pico
+pico.define('header/Basic',function anonymous(exports,require,module,define,inherit,pico
 /**/) {
 "use strict";
 var
@@ -1234,9 +1242,9 @@ return{
         }
     }
 }
-//# sourceURL=Header
+//# sourceURL=header/Basic
 })
-pico.define('Header.asp','<svg class="icon left"><use xlink:href="#" /></svg>\n<svg class="icon right"><use xlink:href="#" /></svg>\n<h1><%=d.title%></h1>\n')
+pico.define('header/Basic.asp','<svg class="icon left"><use xlink:href="#" /></svg>\n<svg class="icon right"><use xlink:href="#" /></svg>\n<h1><%=d.title%></h1>\n')
 pico.define('Page',function anonymous(exports,require,module,define,inherit,pico
 /**/) {
 "use strict";
@@ -1263,7 +1271,7 @@ return{
 }
 //# sourceURL=Page
 })
-pico.define('Footer',function anonymous(exports,require,module,define,inherit,pico
+pico.define('footer/Menu',function anonymous(exports,require,module,define,inherit,pico
 /**/) {
 "use strict";
 var Router=require('js/Router')
@@ -1305,9 +1313,9 @@ return {
         }
     }
 }
-//# sourceURL=Footer
+//# sourceURL=footer/Menu
 })
-pico.define('Footer.asp','<%for(var i=0,btn; btn=d[i]; i++){%>\n<li id="<%=btn.id%>">\n    <svg class="icon <%=btn.url?btn.url:""%>"><use xlink:href="#icon-<%=btn.icon%>" xlink:role="<%=btn.url%>"/></svg>\n	<span><%=btn.name%></span>\n</li>\n<%}%>\n')
+pico.define('footer/Menu.asp','<%for(var i=0,btn; btn=d[i]; i++){%>\n<li id="<%=btn.id%>">\n    <svg class="icon <%=btn.url?btn.url:""%>"><use xlink:href="#icon-<%=btn.icon%>" xlink:role="<%=btn.url%>"/></svg>\n	<span><%=btn.name%></span>\n</li>\n<%}%>\n')
 pico.define('Keypad',function anonymous(exports,require,module,define,inherit,pico
 /**/) {
 "use strict";
@@ -1612,7 +1620,7 @@ return {
 		if (deps.maxDelay){
 			var delay=1000+Ceil(deps.maxDelay*Rand())
 			setTimeout(connected,delay,this)
-			this.signals.WebAudio_start('callout',1,delay/1000).send(this.host)
+			this.signals.WebAudio_start('callout',1,delay).send(this.host)
 		}else{
 			this.signals.WebAudio_start('callin',1).send(this.host)
 		}

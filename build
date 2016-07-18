@@ -11,7 +11,7 @@ CleanCSS=require('clean-css'),
 proj=process.argv[2],
 env=process.argv[3]||'pro',
 cwd=path.resolve(process.cwd(),process.argv[4]||'.'),
-srcDir=path.resolve(cwd,process.argv[5]||'mod'),
+modDir=path.resolve(cwd,process.argv[5]||'mod'),
 cfgDir=path.resolve(cwd,process.argv[6]||'cfg'),
 distDir=path.resolve(cwd,process.argv[7]||'bin'),
 mainjs=process.argv[8]||'main.js',
@@ -94,10 +94,11 @@ writeCSS=function(style, cb){
 	var
 	content='',
 	src=proj+'.css',
-	target=path.resolve(distDir,proj,proj+'.css')
+	target=path.resolve(distDir,proj,proj+'.css'),
+	relative=path.relative(cwd,modDir)
 
 	style.forEach((v)=>{
-		content+=`@import url(${srcDir+path.sep+v});\n`
+		content+=`@import url(${relative+path.sep+v});\n`
 	})
 	fs.writeFile(src, content, 'utf8', (err)=>{
 		if (err) cb(err)
@@ -149,7 +150,7 @@ setup((err, project, projPath, outPath)=>{
 					if (err) return console.error(err)
 
 					pico.build({
-						entry:path.resolve(srcDir,mainjs),
+						entry:path.resolve(modDir,mainjs),
 						output:outPath,
 						deps:[...deps],
 						include:[...include],
