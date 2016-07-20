@@ -10,12 +10,12 @@
 [submodule "apps/kiddytalk/app/mod/header"]
 	path = apps/kiddytalk/app/mod/header
 	url = https://github.com/ldarren/pico-mod-header.git
-[submodule "apps/lead/app1/mod/footer"]
-	path = apps/lead/app1/mod/footer
+[submodule "apps/lead/app/mod/footer"]
+	path = apps/lead/app/mod/footer
 	url = https://github.com/ldarren/pico-mod-footer.git
-[submodule "apps/lead/app1/mod/header"]
-	path = apps/lead/app1/mod/header
+[submodule "apps/lead/app/mod/header"]
+	path = apps/lead/app/mod/header
 	url = https://github.com/ldarren/pico-mod-header.git
-[submodule "apps/lead/app1/mod/scrollable"]
-	path = apps/lead/app1/mod/scrollable
+[submodule "apps/lead/app/mod/scrollable"]
+	path = apps/lead/app/mod/scrollable
 	url = https://github.com/ldarren/pico-mod-scrollable.git
