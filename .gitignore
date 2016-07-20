@@ -16,7 +16,7 @@ index.css
 
 lib-cov
 fontello-*/
-dist/
+bin/
 pids
 logs
 results
