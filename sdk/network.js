@@ -2,7 +2,7 @@ var
 web=require('pico/web'),
 picoObj=require('pico/obj'),
 channels = {}, directory={},
-addon,
+addon,count=30,
 create = function(keys, domains, cb){
     if (!keys.length) return cb()
 
@@ -23,6 +23,14 @@ create = function(keys, domains, cb){
 getKey=function(p){ 
     var i=p.indexOf('/')
     return -1===i ? p : p.substr(0, i)
+}
+
+this.update=function(){
+	if (count--) return
+	count=30
+	for(var i=0,keys=Object.keys(channels),c; c=channels[keys[i]]; i++){
+		c.beat()
+	}
 }
 
 Backbone.ajax = function(req){
@@ -73,6 +81,7 @@ return{
         directory=picoObj.extend(directory, domains)
         create(Object.keys(domains), domains, cb)
     },
+	//TODO: per domain addon
     addon:function(){ addon = arguments[0] },
     getAddon:function(){ return addon ? JSON.parse(JSON.stringify(addon)) : ''},
     getDomain:function(url){ return directory[getKey(url)] || {} }

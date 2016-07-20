@@ -1,0 +1,12 @@
+@import url(scrollable/style.css);
+ul.scrollable>button{
+	position: relative;
+    height: 40px;
+    background-color: #FFBD18;
+    text-transform: uppercase;
+    font-size: 18px;
+    color: #3F2F1F;
+    border-radius: 8px;
+    cursor: pointer;
+    margin: 1rem 2rem;
+}

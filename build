@@ -102,7 +102,7 @@ writeCSS=function(style, cb){
 	})
 	fs.writeFile(src, content, 'utf8', (err)=>{
 		if (err) cb(err)
-		new CleanCSS({rebase:false,sourceMap:true,target:target}).minify(content, (err, minified)=>{
+		new CleanCSS({rebase:true,sourceMap:true,target:target}).minify(content, (err, minified)=>{
 			if (err) return cb(err)
 			fs.writeFile(target, minified.styles, 'utf8', (err)=>{
 				if (err) return cb(err)
@@ -124,7 +124,7 @@ setup((err, project, projPath, outPath)=>{
 	deps.add('lib/backbone-min.js')
 	deps.add('lib/backbone.native.min.js')
 	deps.add('lib/lean/lean.min.js')
-	deps.add('lib/pico.min.js')
+	deps.add('lib/pico.js')
 
 	// global
 	__={ajax:null,onLoad:null}

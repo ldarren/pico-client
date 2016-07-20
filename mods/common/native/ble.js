@@ -15,7 +15,7 @@ return{
     create: function(deps){
         if (!__.refChain(window, ['ble'])){
             this.slots={}
-            return console.log('cordova-plugin-ble-central is not installed')
+            return console.warn('cordova-plugin-ble-central is not installed')
         }
 
         this.devices={}

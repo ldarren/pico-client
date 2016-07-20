@@ -133,7 +133,6 @@ Body=Module.View.extend({
         modelReady: function(from, sender){
             if (!Backbone.History.started){
                 Backbone.history.start()
-				netstat(this)
                 return true //  continue propagation
             }
             return false
@@ -143,6 +142,8 @@ Body=Module.View.extend({
 
 return {
 	start:function(project,env){
-        return new Body(Module.getViewOptions(project[SPEC]), project, env)
+		var body=new Body(Module.getViewOptions(project[SPEC]), project, env)
+		netstat(body)
+		return body
 	}
 }

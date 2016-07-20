@@ -1,6 +1,0 @@
-{
-    "domains":{
-        "lead":{"url":"http://52.74.115.76:2016/lead","delimiter":["&"],"beatRate":350},
-        "pico":{"url":"http://52.74.115.76:2016/pico","delimiter":["&"],"beatRate":350}
-    }
-}

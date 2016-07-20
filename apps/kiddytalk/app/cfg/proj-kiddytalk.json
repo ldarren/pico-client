@@ -120,9 +120,9 @@
 			["tpl","file","footer/Menu.asp"],
 			["css","file","footer/Menu.css"],
 			["list","list",[
-				{"name":"Keypad","id":"keypad","icon":"keyboard","url":""},
-				{"name":"Contacts","id":"contacts","icon":"address-book","url":"contacts"},
-				{"name":"Recents","id":"recents","icon":"clock","url":"recents"}
+				{"name":"Keypad","id":"keypad","icon":"icon-keyboard","url":""},
+				{"name":"Contacts","id":"contacts","icon":"icon-address-book","url":"contacts"},
+				{"name":"Recents","id":"recents","icon":"icon-clock","url":"recents"}
 			]]
 		]]
     ],{

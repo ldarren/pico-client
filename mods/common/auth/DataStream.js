@@ -43,6 +43,7 @@ readColl= function(self,name, userId){
     if (!userId || !coll) return
     try{ coll.add(JSON.parse(storage.getItem(name+userId))) }
     catch(exp){ return console.error(exp) }
+console.log('readColl: '+name+', count'+coll.length)
 },
 writeColl= function(self,name, userId){
     var coll = self.deps.models[name]
