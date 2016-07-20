@@ -6,6 +6,7 @@ EVT_RESIZE_LEN=EVT_RESIZE.length,
 Floor=Math.floor,Random=Math.random,
 Router = require('js/Router'),
 Module = require('js/Module'),
+specMgr= require('js/specMgr'),
 network = require('js/network'),
 includeAll= function(urls, func, type, cb){
     if (!urls || !urls.length) return cb()
@@ -142,8 +143,8 @@ Body=Module.View.extend({
 
 return {
 	start:function(project,env){
-		var body=new Body(Module.getViewOptions(project[SPEC]), project, env)
+        var body=new Body(specMgr.find('options',project[SPEC]), project, env)
 		netstat(body)
-		return body
+        return body
 	}
 }

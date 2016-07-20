@@ -166,13 +166,14 @@
                     ]
 				]
 			]]],
-            [["scrollable/ListView","ListViewRequestMixin"],"view",[
+            [["scrollable/ListView","ListViewAddButtonMixin"],"view",[
                 ["options","map",{"className":"scrollable glass"}],
 				["css","file","ListView.css"],
 				["list","ref","requests"],
 				["lockers","ref","lockers"],
                 ["laundryOpt","ref","laundryOpt"],
                 ["surcharges","ref","surcharges"],
+				["buttonText","text","Add Request"],
 				["Cell","view",[
 					["options","map",{"className":"card request"}],
 					["tpl","file","CardRequest.asp"],
@@ -198,13 +199,14 @@
                     ]
 				]]
 			]],
-            [["scrollable/ListView","ListViewLockerMixin"],"view",[
+            [["scrollable/ListView","ListViewAddButtonMixin"],"view",[
                 ["options","map",{"className":"scrollable glass"}],
 				["css","file","ListView.css"],
 				["list","ref","lockers"],
 				["lockers","models",{
 					"create":"lead/locker/unlock"
 				}],
+				["buttonText","text","Add Job"],
 				["Cell","view",[
 					["options","map",{"className":"card locker"}],
 					["tpl","file","CardLocker.asp"],
