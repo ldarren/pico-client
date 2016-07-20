@@ -1,0 +1,251 @@
+[
+    [
+    ],[
+    ],[
+        ["options","map",{"el":"body"}],
+		["html","file","Frame.html"],
+		["css","file","Frame.css"],
+		["org","text","pdl"],
+		["layers","list",["#layer0","#layer1"]],
+        ["owner","models",{
+            "create": "lead/user/signup",
+            "read": "lead/user/signin"
+        }],
+        ["users","models",{
+            "read": "lead/user/read"
+        }],
+		["requests","models",{
+			"create":"lead/request/add",
+			"read":"lead/request/read",
+			"update":"lead/request/update",
+			"delete":"lead/request/remove",
+			"list":"lead/request/list"
+		}],
+		["lockers","models",{
+			"create":"lead/locker/add",
+			"read":"lead/locker/read",
+			"update":"lead/locker/update",
+			"delete":"lead/locker/remove",
+			"list":"lead/locker/list"
+		}],
+        ["laundryOpt","models",{},[
+            {"id":1,"name":"DryClean"},
+            {"id":2,"name":"Laundry"},
+            {"id":3,"name":"Load Wash"},
+            {"id":4,"name":"Mix"}
+        ]],
+        ["surcharges","models",{},[
+            {"id":1,"name":"Standard","percent":0,"lead":4},
+            {"id":2,"name":"Quick","percent":25,"lead":3},
+            {"id":3,"name":"Priority","percent":50,"lead":2},
+            {"id":4,"name":"Express","percent":100,"lead":1}
+        ]],
+        ["js/Pane","view",[
+            ["options","map",{"el":"#layer0 #pane0"}],
+			["html","file","Pane.html"],
+			["css","file","Pane.css"],
+            ["paneId","int",0],
+			["AllModels","refs","models"]
+        ]],
+        ["js/Pane","view",[
+            ["options","map",{"el":"#layer0 #pane1"}],
+			["html","file","Pane.html"],
+			["css","file","Pane.css"],
+            ["paneId","int",1],
+			["AllModels","refs","models"]
+        ]],
+        ["Page","view",[
+            ["options","map",{"el":"#layer0 #pane0 #page"}],
+			["css","file","Page.css"],
+            ["paneId","int",0]
+        ]],
+        ["Page","view",[
+            ["options","map",{"el":"#layer0 #pane1 #page"}],
+			["css","file","Page.css"],
+            ["paneId","int",1]
+        ]],
+		["header/Basic","view",[
+            ["options","map",{"el":"#layer0 #pane0 #header"}],
+			["paneId","int",0],
+			["tpl","file","header/Basic.asp"],
+			["css","file","Header.css"]
+		]],
+		["footer/Menu","view",[
+            ["options","map",{"el":"#layer0 #pane0 #footer"}],
+			["paneId","int",0],
+			["tpl","file","footer/Menu.asp"],
+			["css","file","Menu.css"],
+			["list","list",[
+				{"name":"Home","id":"home","icon":"icon_home","url":""},
+				{"name":"Lockers","id":"locker","icon":"icon_pass","url":"locker"},
+				{"name":"Profile","id":"profile","icon":"icon_name","url":"profile"}
+			]]
+		]],
+        [["common/auth/DataStream","DataStreamMixin"],"ctrl",[
+            ["models","refs","models"],
+            ["ping","models",{
+                "create":"lead/util/ping"
+            }],
+            ["push","stream",{
+                "events":[]
+            }]
+        ]],
+        ["Device","ctrl",[
+            ["owner","ref","owner"],
+			["push","ctrl",[
+				["senderId","text","488537087657"]
+			],"common/native/push"],
+            ["devices","models",{
+				"create":"lead/device/update",
+				"remove":"lead/device/remove"
+			}]
+        ]],
+        ["FormAuth","view",[
+            ["owner","ref","owner"],
+            ["tplSignin","file","FormSignin.asp"],
+            ["tplSignup","file","FormSignup.asp"]
+        ]],
+        ["Modal","view",[
+            ["options","map",{"className":"modal fullpage"}],
+			["css","file","Modal.css"],
+            ["Header","view",[
+				["options","map",{"className":"header"}],
+                ["tpl","file","header/Basic.asp"],
+                ["css","file","Header.css"],
+                ["title","text","Add Request"],
+                ["btnLeft","map",{"icon":"icon_ko"}],
+                ["btnRight","map",{"icon":"icon_ok"}]
+            ],"header/Basic"],
+            ["Form","view",[
+				["tpl","file","Form.asp"],
+				["css","file","Form.css"]
+			]]
+        ]],
+        ["Locker","ctrl",[
+			["ble","ctrl",[],"common/native/ble"]
+		]],
+        [["common/auth/Session","SessionMixin"],"ctrl",[
+            ["owner","ref","owner"],
+            ["users","ref","users"],
+            ["org","ref","org"]
+        ]]
+    ],{
+        "":[
+            ["options","map",{"className":"fulpage active"}],
+            ["options","map",{"el":"#pane0 #page"}],
+            ["Void","view",[
+				["tpl","file","Void.asp"],
+				["css","file","Void.css"]
+            ]]
+        ],
+        "home":[
+            ["options","map",{"el":"#pane0 #page"}],
+            ["owner","ref","owner"],
+			["requests","ref","requests"],
+			["lockers","ref","lockers"],
+			["laundryOpt","ref","laundryOpt"],
+			["surcharges","ref","surcharges"],
+			["ConsumerCtrl","ctrl",[
+				["requests","ref","requests"],
+				["lockers","ref","lockers"],
+                ["laundryOpt","ref","laundryOpt"],
+                ["surcharges","ref","surcharges"],
+				["addRequest","list",[
+                    [
+					    {"type":"select","name":"category","label":"Category","holder":"Select a category","options":[[1,"Laundry"]],"value":1},
+					    {"type":"select","name":"merchant","label":"Merchant","holder":"Select a merchant","options":[[1,"LaundryMart"]],"value":1},
+                        {"type":"select","name":"lockerId","label":"Locker","holder":"Select a locker","options":[],"value":1}
+                    ],
+                    [
+					    {"type":"datetime-local","name":"collect","label":"Collection","required":1},
+                        {"type":"select","name":"delivery","label":"Delivery","holder":"Delivery Date","options":[],"value":1},
+                        {"type":"number","name":"count","label":"Count","value":1,"required":1},
+                        {"type":"select","name":"process","label":"Type","holder":"Process Type","options":[],"value":2,"required":1},
+                        {"type":"text","name":"note","label":"Note"},
+                        {"type":"checkbox","name":"termncond","label":"T&Cs","url":"legal","required":1}
+                    ]
+				]
+			]]],
+            [["scrollable/ListView","ListViewRequestMixin"],"view",[
+                ["options","map",{"className":"scrollable glass"}],
+				["css","file","ListView.css"],
+				["list","ref","requests"],
+				["lockers","ref","lockers"],
+                ["laundryOpt","ref","laundryOpt"],
+                ["surcharges","ref","surcharges"],
+				["Cell","view",[
+					["options","map",{"className":"card request"}],
+					["tpl","file","CardRequest.asp"],
+					["css","file","CardRequest.css"],
+				    ["lockers","ref","lockers"],
+                    ["laundryOpt","ref","laundryOpt"],
+                    ["surcharges","ref","surcharges"]
+				],["Card","CardRequestMixin"]]
+            ]]
+        ],
+        "locker":[
+            ["options","map",{"el":"#pane0 #page"}],
+            ["owner","ref","owner"],
+			["lockers","ref","lockers"],
+			["LockerCtrl","ctrl",[
+				["lockers","ref","lockers"],
+				["addLocker","list",[
+                    [
+                        {"type":"text","name":"name","label":"Name","holder":"Joe's Locker","required":1},
+                        {"type":"text","name":"deviceId","label":"Device Id","value":"AF131569","required":1},
+                        {"type":"text","name":"street","label":"Street","required":1},
+                        {"type":"text","name":"city","label":"City","required":1}
+                    ]
+				]]
+			]],
+            [["scrollable/ListView","ListViewLockerMixin"],"view",[
+                ["options","map",{"className":"scrollable glass"}],
+				["css","file","ListView.css"],
+				["list","ref","lockers"],
+				["lockers","models",{
+					"create":"lead/locker/unlock"
+				}],
+				["Cell","view",[
+					["options","map",{"className":"card locker"}],
+					["tpl","file","CardLocker.asp"],
+					["css","file","CardLocker.css"],
+					["lockers","ref","lockers"]
+				],["Card","CardLockerMixin"]]
+            ]]
+        ],
+		"profile":[
+            ["options","map",{"el":"#pane0 #page"}],
+            ["owner","ref","owner"],
+			["ProfileCtrl","ctrl",[
+				["owner","ref","owner"]
+			]],
+            ["scrollable/ScrollView","view",[
+                ["options","map",{"className":"scrollable glass"}],
+				["css","file","scrollable/style.css"],
+                ["Panel","view",[
+                    ["tpl","file","Panel.asp"],
+                    ["title","text","Statistic"],
+                    ["rows","list",[
+                        {"type":"text","label":"Total","value":0},
+                        {"type":"text","label":"Monthly","value":0},
+                        {"type":"text","label":"Weekly","value":0},
+                        {"type":"text","label":"Accepted","value":0}
+                    ]]
+                ]],
+                ["Panel","view",[
+                    ["tpl","file","Panel.asp"],
+                    ["title","text","Contacts"],
+                    ["rows","list",[
+                        {"type":"static","label":"Tel","value":"+65 98765432","url":"tel:+6598765432"},
+                        {"type":"static","label":"Email","value":"support@laundrymart.com","url":"mailto:support@laundrymart.com"},
+                        {"type":"static","label":"Address","value":"234, Jalan Woodlad E1, S(6745849)","url":"geo:53.33196,6.92583"}
+                    ]]
+                ]]
+            ]]
+        ]
+    },[
+        ["locker","locker"],
+        ["profile","profile"],
+        ["*action","home"]
+    ]
+]

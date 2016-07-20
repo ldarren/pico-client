@@ -1,0 +1,8 @@
+@import url(footer/Menu.css);
+ul#footer li.selected use {
+	stroke:#FC3768;
+	fill:none;
+}
+ul#footer li.selected {
+	color: #FC3768;
+}
