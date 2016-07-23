@@ -1,5 +1,5 @@
 var
-COLORS=['purple','green','orange','red'],
+COLORS=['purple','orange','green','red'],
 STATES=['Cancelled','Order placed','Collected','Delivered'],
 picoTime=require('pico/time'),
 picoStr=require('pico/str')

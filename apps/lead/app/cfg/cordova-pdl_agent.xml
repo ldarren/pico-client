@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.jasaws.pdl.agent" version="0.1.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.jasaws.pdl.agent" version="0.1.2" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>PDL:Agent</name>
 	<description>
 		Put dirty laundry inside DD Box, send message to DD Box sponsored dry cleaners, we will collect your dirty laundry by next working day, then send back your clean to DD Box once job is done.  You can drop off and collect laundry 24/7 any time!

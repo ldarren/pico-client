@@ -9,8 +9,1065 @@
 !function(){"use strict";function g(a){a[c]||(a[c]=0===f.length?++d:f.pop());var b=a[c];return e[b]||(e[b]=[])}function h(a){var b=a[c];e[b]&&(e[b]=null,a[c]=null,f.push(b))}function i(c,d,e,f){"function"==typeof e&&(f=e,e=null);var h=a.exec(d);d=h[1]||null;var i=h[2]||null;if(d){var j=f,k=f;j=e?function(a){for(var d=a.target;d&&d!==c;d=d.parentElement)if(b.call(d,e)){var f=k.call(d,a,d);return f===!1&&(a.stopPropagation(),a.preventDefault()),f}}:function(a){var b=k.call(c,a,c);return b===!1&&(a.stopPropagation(),a.preventDefault()),b},c.addEventListener(d,j,!1),g(c).push({eventName:d,callback:f,handler:j,namespace:i,selector:e})}}function j(b,c,d,e){"function"==typeof d&&(e=d,d=null);var f=a.exec(c||"");c=f[1];var i=f[2],j=g(b)||[];if(c||i||d||e){var k=j.filter(function(a){return!(i&&a.namespace!==i||c&&a.eventName!==c||e&&a.callback!==e||d&&a.selector!==d)});k.forEach(function(a){b.removeEventListener(a.eventName,a.handler,!1),j.splice(j.indexOf(a),1)}),0===j.length&&h(b)}else j.forEach(function(a){b.removeEventListener(a.eventName,a.handler,!1)}),h(b)}function k(a,b){if(b=b||document,!(this instanceof k))return new k(a,b);if(a)if("string"==typeof a)if(/^\s*</.test(a)){var c=document.createElement("div");c.innerHTML=a,this[0]=c.firstChild,c.removeChild(c.firstChild),this.length=1}else a=b.querySelector(a),null!==a?(this[0]=a,this.length=1):this.length=0;else this[0]=a,this.length=1;else this.length=0}var a=/^([^.]+)?(?:\.([^.]+))?$/,b=Element.prototype.matchesSelector||null;b||["webkit","moz","o","ms"].forEach(function(a){var c=Element.prototype[a+"MatchesSelector"];c&&(b=c)});var c="backboneNativeKey"+Math.random(),d=1,e={},f=[];if(k.prototype={hide:null,appendTo:null,find:null,attr:function(a){return Object.keys(a).forEach(function(b){switch(b){case"html":this[0].innerHTML=a[b];break;case"text":this[0].textContent=a[b];break;case"class":this[0].className=a[b];break;default:this[0].setAttribute(b,a[b])}},this),this},html:function(a){return this[0].innerHTML=a,this},remove:function(){var a=this[0];return a.parentElement&&a.parentElement.removeChild(a),function b(a){j(a);for(var c=0,d=a.childNodes.length;d>c;c++)a.childNodes[c].nodeType!==Node.TEXT_NODE&&b(a.childNodes[c])}(a),this},on:function(a,b,c){return i(this[0],a,b,c),this},off:function(a,b,c){return j(this[0],a,b,c),this},bind:function(a,b){return this.on(a,b)},unbind:function(a,b){return this.off(a,b)},delegate:function(a,b,c){return this.on(b,a,c)},undelegate:function(a,b,c){return this.off(b,a,c)}},k.ajax=function(a){a=a||{};var b=a.type||"GET",c=a.url,d=void 0===a.processData?!0:!!a.processData,e=a.contentType||"application/x-www-form-urlencoded; charset=UTF-8",f=a.data;if(d&&"object"==typeof f){var g=Object.keys(f).map(function(a){return encodeURIComponent(a)+"="+encodeURIComponent(f[a])});f=g.join("&")}!f||"GET"!==b&&"HEAD"!==b||(c+=(-1===c.indexOf("?")?"?":"&")+f,f=void 0);var h=new XMLHttpRequest;return h.open(b,c,!0),h.setRequestHeader("Content-Type",e),a.beforeSend&&a.beforeSend(h),h.onload=function(){var b=!1,c=h.responseText;if("json"===a.dataType)try{c=JSON.parse(c)}catch(d){b=!0}!b&&h.status>=200&&h.status<300?a.success&&a.success(c,h.statusText,h):a.error&&a.error(h)}.bind(this),h.onerror=h.onabort=function(){a.error&&a.error(h)},h.send(f),h},k.on=i,k.off=j,"undefined"!=typeof exports)module.exports=k;else{var l=this,m=l.Backbone?l.Backbone.Native:null,n=l.$;l.Backbone&&(l.Backbone.Native=k),l.$=k,k.noConflict=function(a){return l.$=n,a&&(l.Backbone.Native=m),k},l.Backbone&&(l.Backbone.setDomLibrary?l.Backbone.setDomLibrary(k):l.Backbone.$=k)}}.call(this);
 !function(){window.__&&console.error("Another instance of lean detected")}();var __={env:{},onLoad:function(e){if(__.env.supportNative)document.addEventListener("deviceready",e,!1),__.env.loaded&&__.dom.link("cordova.js","js");else{if("complete"===document.readyState)return e();window.addEventListener("load",e,!1)}__.env.loaded=!0},dummyCB:function(){},refChain:function(e,t){if(!t||!t.length)return e;var n=e[t.shift()];return n?arguments.callee(n,t):0},querystring:function(e){return Object.keys(e).reduce(function(t,n){return t.push(encodeURIComponent(n)+"="+encodeURIComponent(e[n])),t},[]).join("&")},ajax:function(e,t,n,r,o,a){if(o=o||function(e){e&&console.error(e)},!t)return o("url not defined");r=r||{};var i=new XMLHttpRequest,s="POST"===(e=e.toUpperCase()),c="string"==typeof n?1:n instanceof FormData?3:2;if(i.responseType=r.responseType||"",t=encodeURI(t),!s&&(t+="?appVer="+__.env.appVer,n)){switch(t+="&",c){case 1:t+=encodeURIComponent(n);break;case 2:t+=__.querystring(n);break;case 3:return o("FormData with GET method is not supported yet")}n=null}i.open(e,t,void 0===r.async?!0:r.async,r.un,r.passwd),i.onreadystatechange=function(){if(1<i.readyState){var t,s=i.status;return s>=300&&400>s&&(t=i.getResponseHeader("location"))?__.ajax(e,t,n,r,o,a):o(300>s||!s?null:{error:i.statusText,code:i.status},i.readyState,i.response,a)}},i.onerror=function(e){o({error:i.statusText,code:i.status,params:arguments},i.readyState,null,a)},s&&n&&3!==c&&i.setRequestHeader("Content-Type","text/plain");var u=r.headers;for(var d in u)i.setRequestHeader(d,u[d]);switch(c){case 1:i.send(n);break;case 2:i.send(JSON.stringify(n));break;case 3:i.send(n)}},createEvent:function(e,t,n,r){var o=document.createEvent("CustomEvent");return o.initCustomEvent(e,n||!1,r||!1,t),o},detectEvent:function(e,t){var n=document.createElement(t||"div");e="on"+e;var r=e in n||e in window;return r||(n.setAttribute(e,""),r="function"==typeof n[e],n[e]=void 0,n.removeAttribute(e)),n=void 0,r}};!function(){var e=__.env,t=document.querySelector("meta[name=app-version]"),n="transitionend",r="webkitTransitionEnd";e.transitionEnd=__.detectEvent(n)?n:__.detectEvent(r.toLowerCase())?r:void 0,e.supportPassive=!1;try{window.addEventListener("t",null,Object.defineProperty({},"passive",{get:function(){e.supportPassive=!0}}))}catch(o){}if(e.appVer=t?t.getAttribute("content"):"0",e.supportNative=!1,-1===document.URL.indexOf("http://")&&-1===document.URL.indexOf("https://")){var a=document.querySelector("meta[name=app-support-native]");e.supportNative=a?"1"===a.getAttribute("content").toLowerCase():!1}}(),!function(){function e(e){var t=e.target,n=e.detail.page,r=t.querySelector(".__page");if(t&&n){if(!r)return n.classList.add("__page"),t.appendChild(n),t.dispatchEvent(__.createEvent("__flipped"));switch(r.addEventListener(__.env.transitionEnd,function o(e){r.removeEventListener(__.env.transitionEnd,o),t.dispatchEvent(__.createEvent("__flipped",{page:r})),r=void 0},!1),e.detail.from){case"right":attr="left",px=r.offsetWidth;break;case"left":attr="left",px=-r.offsetWidth;break;case"bottom":attr="top",px=r.offsetHeight;break;case"top":attr="top",px=-r.offsetHeight}n.style[attr]=px+"px",n.classList.add("__page"),t.appendChild(n),n.offsetWidth,n.style[attr]="",r.style[attr]=-px+"px"}}function t(){for(var t,n=0,r=document.querySelectorAll(".__book");t=r[n];n++)t.addEventListener("__flip",e,!1)}t(),document.addEventListener("__reset",t,!1)}(),!function(){function e(){var e=__.refChain(window,["navigator","notification"]);e?__.dialogs={alert:function(t,n,r,o){e.alert(t,o||__.dummyCB,n,r)},confirm:function(t,n,r,o){e.confirm(t,o,n,r)},prompt:function(t,n,r,o,a){e.prompt(t,a,n,r,o)},beep:function(t){e.beep(t)}}:__.dialogs={alert:function(e,t,n,r){setTimeout(function(){alert(e),(r||__.dummyCB)()},0)},confirm:function(e,t,n,r){setTimeout(function(){r(confirm(e)?1:2)},0)},prompt:function(e,t,n,r,o){setTimeout(function(){var t=prompt(e,r);o({buttonIndex:t?1:2,input1:t})},0)},beep:function(){console.log("beep")}}}__.onLoad(e)}(),!function(){"function"!=typeof Element.prototype.matches&&(Element.prototype.matches=Element.prototype.webkitMatchesSelector||Element.prototype.mozMatchesSelector||Element.prototype.msMatchesSelector||function(e){for(var t,n=this.parentElement.querySelectorAll(e),r=0;t=n[r];r++)if(this===t)return!0;return!1}),"function"!=typeof Element.prototype.closest&&(Element.prototype.closest=function(e){for(var t=this;t&&!t.matches(e);)t=t.parentElement;return t}),__.dom={link:function(e,t,n){var r,o=document.getElementsByTagName("head")[0];switch(t){case"js":return r=document.createElement("script"),r.setAttribute("src",e),r.onload=n,r.onerror=n,void o.insertBefore(r,o.lastChild);case"css":return r=document.createElement("link"),r.setAttribute("rel","stylesheet"),r.setAttribute("href",e),o.insertBefore(r,o.lastChild),setTimeout(n,0);default:return n()}},unlink:function(e,t){var n,r;switch(t){case"js":r=document.getElementsByTagName("script"),n="src";break;case"css":r=document.getElementsByTagName("link"),n="href";break;default:r=[]}for(var o,a=r.length;o=r[a];a--)o&&null!=o.getAttribute(n)&&-1!=o.getAttribute(n).indexOf(e)&&o.parentNode.removeChild(o)}}}(),!function(){if(!__.detectEvent("touchstart")){var e=__.env.supportPassive?{capture:!0,passive:!0}:!0,t="mousedown",n="mouseup",r="mousemove",o="mouseout",a="touchstart",i="touchend",s="touchmove",c="touchcancel",u=function(e){var u;switch(e.type){case t:u=a;break;case n:u=i;break;case r:u=s;break;case o:u=c;break;default:return console.error("wrong event: "+e.type)}var d=e.target,p=[{pageX:e.pageX,pageY:e.pageY,target:d}],f=new Event(u,{bubbles:e.bubbles,cancelable:e.cancelable});f.pageX=e.pageX,f.pageY=e.pageY,f.touches=f.changedTouches=f.targetTouches=p,f.mouseToTouch=!0,d.dispatchEvent(f)},d=function(){document.removeEventListener(t,p),document.removeEventListener(r,f),document.removeEventListener(n,v),document.removeEventListener(o,l)},p=function(t){d(),document.addEventListener(r,f,e),document.addEventListener(n,v,e),document.addEventListener(o,l,e),u(t)},f=function(e){u(e)},v=function(n){d(),document.addEventListener(t,p,e),u(n)},l=function(n){d(),document.addEventListener(t,p,e),u(n)};document.addEventListener(t,p,e)}}(),!function(){function e(t){var n=t.target;n.removeEventListener(__.env.transitionEnd,e),n.dispatchEvent(__.createEvent("__transited"))}function t(t){var n,r,o=t.target,a=t.detail;if(o.removeEventListener(__.env.transitionEnd,e),o.addEventListener(__.env.transitionEnd,e,!1),!a)return o.style.cssText="";switch(a.from){case"top":n="top",r=a.ref.offsetHeight;break;case"bottom":n="top",r=-a.ref.offsetHeight;break;case"left":n="left",r=a.ref.offsetWidth;break;case"right":n="left",r=-a.ref.offsetWidth;break;default:return}o.style.cssText=n+":"+r+"px"}function n(){for(var e,n=0,r=document.querySelectorAll(".__slider");e=r[n];n++)e.addEventListener("__transit",t,!1)}n(),document.addEventListener("__reset",n,!1)}(),!function(){var e,t,n=__.env.supportPassive?{capture:!0,passive:!0}:!0,r=!1,o=0,a=0,i=function(e){return[e.pageX,e.pageY]},s=function(e){r||(r=!0,e.target.dispatchEvent(__.createEvent("longTap",null,!0)))},c=function(n){r=!1,t=e=i(n.touches[0]),o=window.setTimeout(s,2e3,n)},u=function(e){if(window.clearTimeout(o),!r){var t=Date.now();300>t-a?(e.target.dispatchEvent(__.createEvent("taps",null,!0)),a=0):(e.target.dispatchEvent(__.createEvent("tap",null,!0)),a=t)}},d=function(n){var o=i(n.touches[0]);r?(o[0]>t[0]+9||o[1]>t[1]+9)&&n.target.dispatchEvent(__.createEvent("rub",[o[0]-t[0],o[1]-t[1]],!0)):(o[0]>e[0]+9||o[1]>e[1]+9)&&(r=!0),t=o},p=function(e){r=!0,window.clearTimeout(o)};document.addEventListener("touchstart",c,n),document.addEventListener("touchend",u,n),document.addEventListener("touchmove",d,n),document.addEventListener("touchcancel",p,n)}();
 //# sourceMappingURL=/opt/lean/lean.min.js.map
-(function(e,r,t){var n,i,o=function(){},a=function(){arguments[arguments.length-1]()},u={run:o,build:o,reload:o,parse:o,define:o,"import":o,"export":o,env:o,ajax:o},s={"'":"&#039;","\n":"\\n","\r":"\\n"},c=function(e){return s[e]},l={},f=[],p=".js",d=".json",h="pico.define('URL','FUNC')\n",g='"use strict";\n',v="//# sourceURL=",m="return arguments.callee.__proto__.apply(this,arguments)",y={},b={},S={},k=function(){return"undefined"==typeof requestAnimationFrame?function(e){return setTimeout(e,100)}:requestAnimationFrame}(),x=function(e){return e.substring(e.indexOf("{")+1,e.lastIndexOf("}"))},w=function(e){if(!e)return null;var r=e.lastIndexOf(".");return-1!==r&&-1===e.indexOf("/",r)?e.substr(r):null},I=function(e,r){return e.length?void T(e.shift(),function(t){return t?r(t):void I(e,r)}):r()},T=function(e,r){if(l[e])return r(null,l[e]);var t=w(e),i=e.indexOf("/"),o=y[-1===i?e:e.substr(0,i)];o||(i=-1,o=y["*"]||"");var a=-1===i?e:e.substr(i+1);o instanceof Function?o(a,function(t,n){return t?r(t):(l[e]=n,void r(null,n))}):n("get",o+a+(t?"":p),null,null,function(n,i,o){if(n)return r(n);if(4===i)switch(t||p){case p:return M(e,o,r);default:return r(null,D(e,o))}})},O=function(){return Function(m)},F=function(e,r){var t=l[e];return t?(setTimeout(r||o,0,null,t),t):r?T(e,r):l[e]=O()},N=function(e,r,t,n,i){i=i||u;var a=e?g+r+(b.live?"":v+e):r,s=function(e){return l[e]||t.push(e),l[e]},c=function(e){n.unshift(e),s(e)};try{var f=Function("exports","require","module","define","inherit","pico",a)}catch(p){return console.error(e,p.message)}return f.call({},{},s,{},o,c,i),f},D=function(e,r,t,n){var i=w(e)||p,a=S[i];switch(a&&(r=a(e,r)),i){case p:var u={exports:{}},s={},c=r.call(n?{}:s,u.exports,F,u,D,o,E)||u.exports;if(t&&(c.__proto__=t),s.load&&s.load(),"function"==typeof s.update&&f.push(s.update),!e)return c;var h=l[e];return h?(h.prototype=c.prototype,h.__proto__=c,l[e]=h):l[e]=c;case d:try{return l[e]=JSON.parse(r)}catch(g){return console.error(e,g.message)}default:return l[e]=r}},M=function(e,r,t){if(t=t||o,l[e])return t(null,l[e]);var n=[],i=[],a=N(e,r,n,i);e&&(l[e]=O()),I(n,function(r){return r?t(r):void t(null,D(e,a,l[i[0]]))})},J=function(e){k(J);for(var r,t=0;r=f[t];t++)r(e)},E=e[r]={run:function(e,r){E.ajax=n=e.ajax||n,y=e.paths||y,b=e.env||b,S=e.preprocessors||S;var t;for(var o in l)t=S[w(o)||p],t&&(l[o]=t(o,l[o]));(e.onLoad||a)(function(){M(e.name||null,x(r.toString()),function(e,r){return e?console.error(e):(r instanceof Function&&r(),i&&i(),void k(J))})})},build:function(e){var r=t("fs"),n=e.entry,a=e.output,u=e.exclude,s=D,l=function(e,t){t&&t.length&&(r.appendFileSync(e,r.readFileSync(t.shift())),r.appendFileSync(e,"\n"),l(e,t))},f=function(e,r){return e&&e.length?void T(e.shift(),function(t){f(e,r)}):r()};J=o,D=function(e,t,n){if(s(e,t,n,!0),e&&-1===u.indexOf(e))switch(w(e)||p){case p:return r.appendFileSync(a,h.replace("URL",e).replace("'FUNC'",t.toString()));case d:return r.appendFileSync(a,h.replace("URL",e).replace("FUNC",JSON.stringify(JSON.parse(t)).replace(/['\n\r]/g,c)));default:return r.appendFileSync(a,h.replace("URL",e).replace("FUNC",t.replace(/['\n\r]/g,c)))}},r.unlink(a,function(){l(a,e.deps),r.readFile(n,"utf8",function(t,o){if(t)return console.error(t);var s=N(null,o,[],[],E);-1===u.indexOf(n)&&(i=function(){r.appendFileSync(a,x(s.toString())),f(e.include,function(e){e&&console.error(e),process.exit()})})})})},reload:function(e,r,t){"function"==typeof r&&(t=r),t=t||o;var n=l[e];if(delete l[e],p!==(w(e)||p))return t(null,n);var i=function(r,i){return r?t(r):n?(n.prototype=i.prototype,n.__proto__=i,t(null,l[e]=n)):t(null,i)};"string"==typeof r?M(e,r,i):T(e,i)},parse:M,define:D,"import":t,"export":F,env:function(e){return b[e]}};"object"==typeof process&&(n=n||function(e,r,n,i,o,a){var u=t("fs").readFileSync(r,"utf8");return u?setImmediate(o,null,4,u,a):void setImmediate(o,"failed",2,null,a)}),D("pico/json",function(e,r,t,n,i,o){return{parse:function(e,r){return JSON.parse(e[0],function(t,n){switch(t[0]){case"$":if(r)return JSON.parse(e[n]);case"_":return e[n];default:return n}})},stringify:function(e,r){var t=[];return t.unshift(JSON.stringify(e,function(e,n){switch(e[0]){case"$":if(r)return t.push(JSON.stringify(n));case"_":return t.push(n);default:return n}})),t}}}),D("pico/obj",function(){var e=["object","function"];return{extend:function(r,t,n){var i=e.indexOf(typeof r);if(-1===i)return t;var o=e.indexOf(typeof t);if(-1===o)return r;if(1===o&&o===i)return t;n=n||{};var a,u,s=n.tidy,c=arguments.callee;if(1===o||void 0===t.length)for(a in t)u=t[a],void 0===u&&s||(r[a]=c(r[a],u,n));else if(n.mergeArr){var l,f,p={};for(l=0,f=r.length;f>l;l++)void 0===(u=r[l])&&s||(p[u]=u);for(l=0,f=t.length;f>l;l++)void 0===(u=t[l])&&s||(p[u]=u);r=[];for(a in p)r.push(p[a])}else r=t;return r},"extends":function(e,r,t){for(var n,i=this.extend,o=0;n=r[o];o++)e=i(e,n,t);return e},parseInts:function(e){for(var r=0,t=e.length;t>r;r++)e[r]=parseInt(e[r]);return e},pluck:function(e,r){var t=[];if(e.length){var n,i,o,a,u,s={};for(o=0,a=e.length;a>o;o++)n=e[o],n&&(i=n[r],void 0!==i&&(s[i]=i));for(u in s)t.push(s[u])}return t},strip:function(e,r){if(e.length)for(var t,n=0;t=e[n];n++)t[r]=void 0;return e},keyValues:function(e,r,t){for(var n,i={},o=0;n=e[o];o++)i[n[r]]=n[t];return i},map:function(e,r,t,n){for(var i,o={},a=0;i=e[a];a++)o[r[i[t]]]=i[n];return o},replace:function(e,r,t){for(var n,i=0;n=e[i];i++)n[t]=r[n[t]];return e},group:function(e,r,t){var n={};t=t||{};for(var i,o,a=0;i=e[a];a++)o=i[r],o=t[o]||o,n[o]=n[o]||[],n[o].push(i);return n},values:function(e,r){for(var t,n=[],i=0;t=r[i];i++)n.push(e[t]);return n},merge:function(e,r){if(!e)return r;if(!r)return e;for(var t,n=0,i=Object.keys(r);t=i[n];n++)e[t]=r[t];return e},mergeByKey:function(e,r,t){var n,i=this.merge,o={},a=[];if(e)for(var u,s=0;u=e[s];s++)n=u[t],void 0!==n&&(o[n]=u);if(r)for(var c,l=0;c=r[l];l++)n=c[t],void 0!==n&&(u=o[n],o[n]=u?i(u,c):c);for(n in o)a.push(o[n]);return a},filter:function(e,r,t){for(var n,i,o=[],a=0;i=e[a];a++)n=i[t],n&&-1===r.indexOf(n)&&o.push(i);return o},insert:function(e,r){for(var t,n=this.merge,i=0;t=e[i];i++)t=n(t,r);return e}}}),D("pico/str",function(){var e=(Math.ceil,Math.random),r=function(e,r){var t=r[0];return"["+(t.getFunctionName()||t.getTypeName()+"."+t.getMethodName())+"@"+t.getFileName()+":"+t.getLineNumber()+":"+t.getColumnNumber()+"]"};return{codec:function(e,r){for(var t,n=0,i="";t=r.charCodeAt(n);n++)i+=String.fromCharCode(t^e);return i},hash:function(e){for(var r,t=0,n=0;r=e.charCodeAt(t);t++)n=31*n+r|0;return n},rand:function(){return e().toString(36).substr(2)},pad:function(e,r,t){return this.tab(e,r,t)+e},tab:function(e,r,t){return Array(r-String(e).length+1).join(t||"0")},log:function(){var e=Error.prepareStackTrace,t=Error.stackTraceLimit;Error.prepareStackTrace=r,Error.stackTraceLimit=1;var n=new Error;Error.captureStackTrace(n,arguments.callee);var i=[(new Date).toISOString(),n.stack];console.log.apply(console,i.concat(Array.prototype.slice.call(arguments))),Error.prepareStackTrace=e,Error.stackTraceLimit=t},error:function(){var e=Error.stackTraceLimit;Error.stackTraceLimit=4;var r=new Error;Error.captureStackTrace(r,arguments.callee);var t=[(new Date).toISOString()];t=t.concat(Array.prototype.slice.call(arguments)),t.push("\n"),console.error.apply(console,t.concat(r.stack)),Error.stackTraceLimit=e}}}),D("pico/test",function(){var e=E["export"]("pico/str"),r="undefined"==typeof t?JSON.stringify:t("util").inspect;return{ensure:function(t,n){n(function(n,i){return n?console.error(t+":"+e.tab(t,100,"-")+n):void console.log(t+":"+e.tab(t,100,".")+r(i,{colors:!0}))})}}}),D("pico/time",function(){var e=Math.max,r=Math.min,t=Math.floor,n=Math.ceil,i=864e5,o=36e5,a=6e4,u=1e3,s=function(e,r){return(e-r)/i},c=function(e,r,t){var i=r?1:0,o=new Date(e.getFullYear()+(t||0),0,1),a=(7-o.getDay())%7+i,u=s(e,o);return u>a?n((u-a)/7):c(e,r,-1)},l=function(e,r,t){var n=e.split("/"),i=n[0];if("*"===i)n[0]=r;else if(i=n[0]=parseInt(i),r>i||i>t)return;return 1===n.length?n.push(0):n[1]=parseInt(n[1]),n},f=function(e,r,t){if("*"===e)return 0;var n=[];list=e.split(",");for(var i,o,a,u,s,c,f,p=0;i=list[p];p++){if(a=i.split("-"),!a.length)return null;if(u=l(a[0],r,t),1!==a.length)if(s=l(a[1],r,t),o=u[0],c=s[0],f=s[1]||1,o>c){for(c=t;c>=o;o+=f)n.push(o);for(o=r,c=s[0];c>=o;o+=f)n.push(o)}else for(;c>=o;o+=f)n.push(o);else if(f=u[1])for(o=u[0];t>=o;o+=f)n.push(o);else n.push(u[0])}return n.sort(function(e,r){return e-r}),n},p=function(t,n,i){if(!n)return t;if(e.apply(Math,n.concat(t))===t)return t+(i-t)+r.apply(Math,n);for(var o=0,a=n.length;a>o;o++)if(n[o]>=t)return n[o];console.error("not suppose to be here",t,n,i)},d=function(e,r,n,u,s,c,l,f,h){if(r++>1)return h(0);var g=p(e.getMinutes(),n,60),v=p(e.getHours()+t(g/60),u,24),m=e.getDate(),y=e.getMonth(),b=e.getFullYear(),S=new Date(b,y,0).getDate();if(l){var k=e.getDay()+t(v/24),x=p(k,l,7);m+=x-k}else m=p(m+t(v/24),s,S);if(y=p(y+1+t(m/S),c,12),e.getMonth()+1!==y)return d(new Date(b,y-1),r,n,u,s,c,l,f,h);if(b=p(b+t((y-1)/12),f,0),e.getFullYear()!==b)return d(new Date(b,y-1),r,n,u,s,c,l,f,h);var w=new Date(b,(y-1)%12).getTime();return w+=(m%S-1)*i,w+=v%24*o,w+=g%60*a,h(w)};return{deltaToNext:function(e,r,t,n,i){var s=new Date,c=s.getTime()%o-((t||0)*a+(n||0)*u+(i||0)),l=(r||0)+24*e-s.getHours();return l*o-c},timeOfNext:function(e,r,t,n,i){return new Date(Date.now()+this.deltaToNext(e,r,t,n,i)).getTime()},parse:function(e){var r=e.split(" ");if(r.length<6)return 0;var t=f(r[0],0,59);if(null==t)return 0;var n=f(r[1],0,23);if(null==n)return 0;var i=f(r[2],1,31);if(null==i)return 0;var o=f(r[3],1,12);if(null==o)return 0;var a=f(r[4],0,6);if(null==a)return 0;var u=f(r[5],1975,2075);return null==u?0:[t,n,i,o,a,u]},nearest:function(e,r,t,n,i,o){var u=new Date,s=p(u.getFullYear(),o,0),c=p(u.getMonth()+1,n,12)-1;if(u.getFullYear()!==s||u.getMonth()!==c)u=new Date(s,c);else{var l=u.getTime();u=new Date(l+a)}return d(u,0,e,r,t,n,i,o,function(e){return e})},daynum:s,weeknum:c,day:function(e,r){var t=new Date,n=new Date(t.getFullYear(),t.getMonth(),t.getDate(),12,0,0),o=n-e,a=1.5*i;return o>=0&&a>=o||0>=o&&o>-a?t.getDate()===e.getDate()?"Today":t>e?"Yesterday":"Tomorrow":(r=r||"en-US",t.getFullYear()===e.getFullYear()&&c(t)===c(e)?e.toLocaleDateString(r,{weekday:"long"}):e.toLocaleDateString(r,{weekday:"short",month:"short",day:"numeric"}))}}}),D("pico/web",function(e,r,t,i,o,a){function u(e){return e.url?(w(this,e),this.reqId=1+l(1e3*f()),this.inbox=[],this.outbox=[],this.uploads=[],this.callbacks={},this.acks=[],this.reqs=[],this.resEndPos=0,this.head=null,this.body=[],this.currPT=d,this.serverTime=0,this.serverTimeAtClient=0,void(this.beatId=0)):console.error("url is not set")}var s=r("pico/json"),c=Math.abs,l=Math.floor,f=Math.random,p="ack",d=1,h=2,g=!0,v=function(e){e&&console.error(e)},m=function(e,r,t){e.append(r,t)},y=function(e,r,t){e[r]=t},b=function(e,r){r=r||v,n("get",e.url,null,null,function(t,n,i){if(4===n){if(t)return r(t);var o=parseInt(i);if(isNaN(o))return r("invalid timesync response");e.serverTime=o,e.serverTimeAtClient=Date.now(),e.beatId=setInterval(k,e.beatRate,e),r()}})},S=function(e,r,t,n){if(e){if(4!==r)return;var i,o;if(t){try{i=JSON.parse(t).reqId}catch(a){return console.error(a)}return o=n.callbacks[i],void(o&&(delete n.callbacks[i],o(e)))}for(var u,l=n.reqs,f=n.delimiter,g=0,v=l.length;v>g;g++)if(u=l[g]){try{i=JSON.parse(u.split(f)[0]).reqId}catch(a){console.error(a);continue}o=n.callbacks[i],o&&(delete n.callbacks[i],o(e))}return l.length=0,b(n)}switch(r){case 2:n.head=null,n.currPT=d;break;case 3:break;case 4:n.beatId||(n.beatId=setInterval(k,n.beatRate,n))}var m,y=n.resEndPos,S=-1,f=n.delimiter,x=f.length,w=n.body;try{for(;;){if(S=t.indexOf(f,y),-1===S)break;switch(n.currPT){case d:n.head=JSON.parse(t.substring(y,S)),w.length=0,n.currPT=h;break;case h:w.push(t.substring(y,S))}if(m=n.head,m&&m.len===w.length){if(n.currPT=d,m.resId&&n.request(p,{resId:m.resId}),!m.reqId)return void console.error("incomplete response header: "+JSON.stringify(m));if(n.cullAge&&n.cullAge<c(n.getServerTime()-m.date))return void console.error("invalid server time: "+JSON.stringify(m)+" "+c(n.getServerTime()-m.date));if(n.secretKey&&w.length){for(var I=CryptoJS.algo.HMAC.create(CryptoJS.algo.MD5,n.secretKey+m.date),g=0,v=w.length;v>g;g++)I.update(w[g]);if(m.key!==I.finalize().toString(CryptoJS.enc.Base64))return void console.error("invalid server key: "+JSON.stringify(m))}m.len&&(m.data=s.parse(w,!0)),n.inbox.push(m),n.head=null}y=S+x}}catch(a){console.error(a)}n.resEndPos=y},k=function(e){if(e.inbox.length)for(var r,t,i,o=e.inbox,a=e.callbacks;i=o.pop();)r=i.reqId,t=a[r],t&&(delete a[r],t(i.error,i.data));if(g&&(e.uploads.length||e.outbox.length||e.acks.length)){if(e.resEndPos=0,e.uploads.length)n("post",e.url,e.uploads.shift(),null,S,e);else{var u=e.reqs=e.acks.concat(e.outbox);e.acks.length=e.outbox.length=0,n("post",e.url,u.join(e.delimiter)+e.delimiter,null,S,e)}return clearInterval(e.beatId),void(e.beatId=0)}},x=function(e,r,t,n){n=n||"";for(var i,o,a,u,s=t instanceof FormData?m:y,c=e.baseURI,l=0,f=e.elements;u=f[l];l++)if(u.hasAttribute("name"))if(i=u.hasAttribute("type")?u.getAttribute("type").toUpperCase():"TEXT","FILE"===i)for(o=0,a=u.files.length;a>o;s(t,n+u.name,u.files[o++]));else("RADIO"!==i&&"CHECKBOX"!==i||u.checked)&&s(t,n+u.name,u.value);for(var p in r)s(t,n+p,r[p]);return c=c.substring(0,c.lastIndexOf("/")+1),e.action.substr(c.length)},w=function(e,r){e.url=r.url||e.url,e.secretKey=r.secretKey||e.secretKey,e.cullAge=r.cullAge||e.cullAge||0,e.delimiter=r.delimiter?JSON.stringify(r.delimiter):e.delimiter||JSON.stringify(["&"]),e.beatRate=!r.beatRate||r.beatRate<100?e.beatRate||5e3:r.beatRate},I=function(e){e.resEndPos=e.outbox.length=e.acks.length=0,e.currPT=d};return u.prototype={reconnect:function(e,r){w(this,e),I(this),b(this,function(e){r(e,this)})},submit:function(e,r,t){if(!("undefined"!=typeof window&&e&&e instanceof HTMLFormElement))return console.error("No HTMLFormElement submitted");var n=0;t&&(n=this.reqId++,this.callbacks[n]=t);var i=new FormData;i.append("api",x(e,r,i,"data/")),i.append("reqId",n),this.uploads.push(i),this.beatId||(this.beatId=setInterval(k,this.beatRate,this))},request:function(e,r,t,n){switch(arguments.length){case 2:r instanceof Function&&(n=r,r=t=void 0);break;case 3:t instanceof Function&&(n=t,t=void 0);break;case 4:break;default:return console.error("wrong request params!")}if("undefined"!=typeof window&&r instanceof HTMLFormElement){var i={};e=x(r,t,i),r=i}else if(t)for(var o in t)r[o]=t[o];if(!e)return console.error("Missing api,  data["+JSON.stringify(r)+"]");var a=this.acks;if(e!==p&&(a=this.outbox,a.length)){var u=a.shift();-1===u.indexOf(e)&&a.unshift(u)}var c=0;n&&(c=this.reqId++,this.callbacks[c]=n);var l=r?s.stringify(r,!0):[];if(l.length&&this.secretKey){for(var f=this.getServerTime(),d=CryptoJS.algo.HMAC.create(CryptoJS.algo.MD5,this.secretKey+f),h=0,g=l.length;g>h;h++)d.update(l[h]);l.unshift(JSON.stringify({api:e,reqId:c,len:l.length,date:f,key:d.finalize().toString(CryptoJS.enc.Base64)}))}else l.unshift(JSON.stringify({api:e,reqId:c,len:l.length}));a.push(l.join(this.delimiter)),this.beatId||(this.beatId=setInterval(k,this.beatRate,this))},getServerTime:function(){return this.serverTime+(Date.now()-this.serverTimeAtClient)}},{create:function(e,r){var t=new u(e);b(t,function(e){r(e,t)})},ajax:n,online:function(){g=!0},offline:function(){g=!1}}})}).apply(null,"undefined"==typeof window?[module,"exports",require]:[window,"pico"]);
-//# sourceMappingURL=/opt/pico/common/pico.min.js.map
+(function(module,exports,require){var
+dummyCB=function(){},
+dummyLoader=function(){arguments[arguments.length-1]()},
+dummyPico={run:dummyCB,build:dummyCB,reload:dummyCB,parse:dummyCB,define:dummyCB,import:dummyCB,export:dummyCB,env:dummyCB,ajax:dummyCB},
+htmlescape= { "'":'&#039;', '\n':'\\n','\r':'\\n' },
+esc=function(m){return htmlescape[m]},
+modules={},
+updates={},
+EXT_JS='.js',EXT_JSON='.json',
+DEF="pico.define('URL','FUNC')\n",
+MOD_PREFIX='"use strict";\n',
+MOD_POSTFIX='//# sourceURL=',
+PLACE_HOLDER='return arguments.callee.__proto__.apply(this,arguments)',
+// call when pico.run done
+ajax,ran,
+paths={},
+env={},
+preprocessors={},
+schedule= (function(){
+	return ('undefined'===typeof requestAnimationFrame) ? function(cb){ return setTimeout(cb, 100) }: requestAnimationFrame
+})(),
+funcBody=function(func){
+    return func.substring(func.indexOf('{')+1,func.lastIndexOf('}'))
+},
+getExt=function(url){
+    if (!url)return null
+    var idx=url.lastIndexOf('.')
+    return -1!==idx && -1===url.indexOf('/',idx) ? url.substr(idx) : null
+},
+// link to all deps
+linker=function(deps, cb){
+    if (!deps.length) return cb()
+    loader(deps.shift(),function(err){
+        if (err) return cb(err)
+        linker(deps, cb)
+    })
+},
+// load files, and execute them based on ext
+loader=function(url,cb){
+    if (modules[url])return cb(null, modules[url])
+
+    var
+    ext=getExt(url),
+    symbolIdx=url.indexOf('/'),
+    path=paths[-1===symbolIdx?url : url.substr(0,symbolIdx)]
+
+    if (!path){
+        symbolIdx=-1
+        path=paths['*']||''
+    }
+
+    var fname=-1===symbolIdx?url : url.substr(symbolIdx+1)
+
+    if (path instanceof Function){
+        path(fname, function(err, m){
+            if (err) return cb(err)
+            modules[url]=m
+            cb(null, m)
+        })
+    }else{
+        ajax('get',path+fname+(ext?'':EXT_JS),null,null,function(err,state,txt){
+            if (err) return cb(err)
+            if (4!==state) return
+            switch(ext || EXT_JS){
+            case EXT_JS: return js(url,txt,cb)
+            default: return cb(null, define(url,txt))
+            }
+        })
+    }
+},
+placeHolder=function(){
+    return Function(PLACE_HOLDER)
+},
+getMod=function(url,cb){
+    var mod=modules[url]
+    if(mod){
+        setTimeout(cb||dummyCB, 0, null, mod) // make sure consistent async behaviour
+        return mod
+    }
+    if (cb) return loader(url,cb)
+    return modules[url]=placeHolder()
+},
+// do not run the module but getting the deps and inherit
+compile=function(url,txt,deps,base,me){
+    me=me||dummyPico
+    var
+    script=url ? MOD_PREFIX+txt+(env.live ? '' : MOD_POSTFIX+url) : txt,
+    frequire=function(k){if(!modules[k])deps.push(k);return modules[k]},
+    inherit=function(k){base.unshift(k),frequire(k)}
+
+    try{ var func=Function('exports','require','module','define','inherit','pico',script) }
+    catch(e){return console.error(url, e.message)}
+
+    func.call({}, {},frequire,{},dummyCB,inherit,me)
+    return func
+},
+// run the module and register the module output
+define=function(url, func, base, mute){
+    var
+    ext=getExt(url)||EXT_JS,
+    pp=preprocessors[ext]
+
+    if (pp) func=pp(url, func)
+
+    switch(ext){
+    case EXT_JS:
+        var
+        module={exports:{}},
+        evt={},
+        m=func.call(mute?{}:evt,module.exports,getMod,module,define,dummyCB,pico)||module.exports
+
+        if (base)m.__proto__=base
+
+        if(evt.load)evt.load(m)
+        if ('function'===typeof evt.update)updates[url]=[evt.update,m]
+
+        if (!url) return m
+
+
+        var o=modules[url]
+
+        if(o){
+            o.prototype=m.prototype
+            o.__proto__=m
+            return modules[url]=o
+        }
+        return modules[url]=m
+    case EXT_JSON:
+        try{ return modules[url]=JSON.parse(func) }
+        catch(e){return console.error(url, e.message)}
+    default: return modules[url]=func
+    }
+},
+// js file executer
+js=function(url,txt,cb){
+    cb=cb||dummyCB
+    if (modules[url])return cb(null, modules[url])
+
+    var
+    deps=[],
+    base=[],
+    func=compile(url,txt,deps,base)
+
+    if(url)modules[url]=placeHolder()
+
+    linker(deps, function(err){
+        if (err) return cb(err)
+        
+        cb(null,define(url,func,modules[base[0]]))
+    })
+},
+tick=function(timestamp){
+	schedule(tick)
+	for(var i=0,keys=Object.keys(updates),f; f=updates[keys[i]]; i++){
+		f[0](f[1],timestamp)
+	}
+}
+
+var pico=module[exports]={
+    run:function(options,func){
+        pico.ajax=ajax=options.ajax||ajax
+        paths=options.paths||paths
+        env=options.env||env
+        preprocessors=options.preprocessors||preprocessors
+
+        var pp
+        for(var url in modules){
+            pp=preprocessors[getExt(url)||EXT_JS]
+            if (pp) modules[url]=pp(url, modules[url])
+        }
+
+        ;(options.onLoad||dummyLoader)(function(){
+            js(options.name||null,funcBody(func.toString()),function(err,main){
+                if (err) return console.error(err)
+                if (main instanceof Function) main()
+                if(ran)ran()
+
+				schedule(tick)
+            })
+        })
+    },
+    build:function(options){
+        var
+        fs=require('fs'),
+        entry=options.entry,
+        output=options.output,
+        exclude=options.exclude,
+        orgDefine=define,
+        addDeps=function(output, deps){
+            if (!deps || !deps.length) return
+            fs.appendFileSync(output, fs.readFileSync(deps.shift()))
+            fs.appendFileSync(output, '\n')
+            addDeps(output, deps)
+        },
+        addInclude=function(include, cb){
+            if (!include || !include.length) return cb()
+            loader(include.shift(), function(err){
+                addInclude(include, cb)
+            })
+        }
+
+        // overide tick to write function
+        tick=dummyCB
+
+        // overide define to write function
+        define=function(url, func, base){
+            orgDefine(url, func, base, true)
+            if(!url)return
+            if (-1 !== exclude.indexOf(url)) return
+            // TODO why appendFile not working?
+            switch(getExt(url)||EXT_JS){
+            case EXT_JS: return fs.appendFileSync(output, DEF.replace('URL',url).replace("'FUNC'",func.toString()))
+            case EXT_JSON: return fs.appendFileSync(output, DEF.replace('URL',url).replace('FUNC',JSON.stringify(JSON.parse(func)).replace(/['\n\r]/g, esc)))
+            default: return fs.appendFileSync(output, DEF.replace('URL',url).replace('FUNC',func.replace(/['\n\r]/g, esc)))
+            }
+        }
+
+        fs.unlink(output, function(){
+            addDeps(output, options.deps)
+            fs.readFile(entry, 'utf8', function(err, txt){
+                if (err) return console.error(err)
+                // overide define to write function
+                var func=compile(null,txt,[],[],pico) // since no define, compile with real pico
+                if (-1 !== exclude.indexOf(entry)) return
+                ran=function(){
+                    fs.appendFileSync(output, funcBody(func.toString()))
+                    addInclude(options.include, function(err){
+                        if (err) console.error(err)
+                        // TODO why need to kill?
+                        process.exit()
+                    })
+                }
+            })
+        })
+    },
+    reload:function(url, script, cb){
+        if ('function'===typeof script) cb=script
+        cb=cb||dummyCB
+        var o=modules[url]
+        delete modules[url]
+        if (EXT_JS !== (getExt(url)||EXT_JS)) return cb(null, o)
+        var reattach=function(err, m){
+            if (err) return cb(err)
+            if (!o) return cb(null, m)
+            o.prototype=m.prototype
+            o.__proto__=m
+            return cb(null, modules[url]=o)
+        }
+        if ('string'=== typeof script) js(url, script, reattach)
+        else loader(url, reattach)
+    },
+    parse:js,
+    define:define,
+    import:require,
+    export:getMod,
+    env:function(k){ return env[k] }
+}
+if('object'===typeof process){
+    ajax=ajax||function(method, url, params, headers, cb, userData){
+        /* TODO why readfile not working?
+        require('fs').readFile(url, 'utf8', function(err, txt){
+            if (err) return cb(err,2,null,userData)
+            cb(null,4,txt,userData)
+        })
+        */
+        var txt = require('fs').readFileSync(url, 'utf8')
+        if (txt) return setImmediate(cb, null, 4, txt, userData)
+        setImmediate(cb, 'failed', 2, null, userData)
+    }
+}
+
+define('pico/json',function(exports,require,module,define,inherit,pico){
+    return {
+        parse:function(pjson,deep){
+            return JSON.parse(pjson[0], function(k, v){
+                switch(k[0]){
+                case '$': if(deep)return JSON.parse(pjson[v])
+                case '_': return pjson[v]
+                default: return v
+                }
+            })
+        },
+        stringify:function(json, deep){
+            var pjson=[]
+            pjson.unshift(JSON.stringify(json, function(k, v){
+                switch(k[0]){
+                case '$': if(deep)return pjson.push(JSON.stringify(v))
+                case '_': return pjson.push(v)
+                default: return v
+                }
+            }))
+            return pjson
+        }
+    }
+})
+define('pico/obj',function(){
+    var allows = ['object','function']
+    return  {
+        extend: function(to, from, options){
+            var tf=allows.indexOf(typeof to)
+            if (-1 === tf) return from
+            var ft=allows.indexOf(typeof from)
+            if (-1 === ft)return to
+            if (1===ft && ft===tf) return from
+            options=options||{}
+            var tidy = options.tidy, callee=arguments.callee,key, value
+            if (1===ft || undefined === from.length){ // function or object (non array)
+                for (key in from){
+                    value = from[key]
+                    if (undefined === value && tidy) continue
+                    to[key] = callee(to[key], value, options)
+                }
+            }else{
+                if (options.mergeArr){
+                    // TODO: change unique to Set when is more commonly support on mobile
+                    var i, l, unique={}
+                    for (i=0,l=to.length; i<l; i++){
+                        if (undefined === (value = to[i]) && tidy) continue
+                        unique[value] = value
+                    }
+                    for (i=0,l=from.length; i<l; i++){
+                        if (undefined === (value = from[i]) && tidy) continue
+                        unique[value] = value
+                    }
+                    to = []
+                    for (key in unique) to.push(unique[key]);
+                }else{
+                    to = from
+                }
+            }
+            return to
+        },
+        extends: function(to, list, options){
+            var e = this.extend
+            for(var i=0,f; f=list[i]; i++){
+                to= e(to, f, options)
+            }
+            return to
+        },
+        parseInts: function(arr){
+            for(var i=0,l=arr.length; i<l; i++){
+                arr[i] = parseInt(arr[i])
+            }
+            return arr
+        },
+        // pluck([{k:1},{k:2}], 'k') = [1,2]
+        pluck: function(objs, key){
+            var arr = []
+            if (objs.length){
+                var map = {}, obj, id, i, l, k
+                for(i=0,l=objs.length; i<l; i++){
+                    obj = objs[i]
+                    if (!obj) continue
+                    id = obj[key]
+                    if (undefined === id) continue
+                    map[id] = id
+                }
+                for(k in map){
+                    arr.push(map[k])
+                }
+            }
+            return arr
+        },
+        // strip([{k:1,q:1},{k:2,q:2}], 'k') = [{q:1},{q:2}]
+        strip: function(objs, key){
+            if (objs.length){
+                for(var i=0,o; o=objs[i]; i++){
+                    o[key] = undefined
+                }
+            }
+            return objs 
+        },
+        // keyValues([{k:1, v:5},{k:2, v:6}], 'k', 'v') = {1:5, 2:6}
+        keyValues: function(arr, key, value){
+            var kv = {}
+            for(var i=0,a; a=arr[i]; i++){
+                kv[a[key]] = a[value]
+            }
+            return kv
+        },
+        // map([{k:1, v:5},{k:2, v:6}], {1:'key1', 2:'key2'}, 'k', 'v') = {key1:5, key2:6}
+        map: function(arr, keys, K, V){
+            var output = {}
+            for(var i=0,a; a=arr[i]; i++){
+                output[keys[a[K]]] = a[V]
+            }
+            return output
+        },
+        // replace([{k:1, v:5},{k:2, v:6}], {1:'key1', 2:'key2'}, 'k') = [{k:'key1', v:5},{k:'key2', v:6}]
+        replace: function(arr, keys, K){
+            for(var i=0,a; a=arr[i]; i++){
+                a[K] = keys[a[K]]
+            }
+            return arr
+        },
+        // group([{k:1, v:5},{k:1, v:6}], 'k', {1:'key1', 2:'key2'}) = {key1:[{k:1,v:5},{k:1,v:6}]}
+        group: function(arr, K, keys){
+            var output = {}
+            keys=keys||{}
+            for(var i=0,a,v; a=arr[i]; i++){
+                v = a[K]
+                v = keys[v] || v
+                output[v] = output[v] || []
+                output[v].push(a)
+            }
+            return output
+        },
+        // values({key1:1, key2:2}, ['key1','key2']) = [1,2]
+        values: function(kv, keys){
+            var output = []
+            for(var i=0,k; k=keys[i]; i++){
+                output.push(kv[k])
+            }
+            return output
+        },
+        // merge({key1:1, key2:2}, {key3:3, key4:4}) = {key1:1,key2:2,key3:3,key4:4}
+        merge: function(obj1, obj2){
+            if (!obj1) return obj2
+            if (!obj2) return obj1
+            for(var i=0,keys = Object.keys(obj2),k; k=keys[i]; i++){
+                obj1[k] = obj2[k]
+            }
+            return obj1
+        },
+        // mergeByKey({key1:1, key2:2}, {key1:2, key3:3}, {key1:1, key3:4}, 'key1') = [{key1:1,key2:2,key3:4},{key1:2,key3:3}]
+        mergeByKey: function(arr1, arr2, KEY){
+            var m=this.merge,k, obj={}, arr=[]
+            if (arr1){
+                for(var i=0,a1; a1=arr1[i]; i++){
+                    k = a1[KEY]
+                    if (undefined === k) continue
+                    obj[k] = a1
+                }
+            }
+            if (arr2){
+                for(var j=0,a2; a2=arr2[j]; j++){
+                    k = a2[KEY]
+                    if (undefined === k) continue
+                    a1 = obj[k]
+                    obj[k] = a1 ? m(a1,a2) : a2
+                }
+            }
+            for(k in obj){
+                arr.push(obj[k])
+            }
+            return arr
+        },
+        // filter([{key1:1,key2:2},{key1:2,key2:3}], [1], 'key1') = [{key1:2,key2:3}]
+        filter: function(list, exclude, key){
+            var arr=[],k
+            for(var i=0,l; l=list[i]; i++){
+                k = l[key]
+                if (!k || -1 !== exclude.indexOf(k)) continue
+                arr.push(l)
+            }
+            return arr
+        },
+        // insert([{key2:2}, {key3:3}, {key1:3}], {key4:4,key5:5}) = [{key2:2,key4:4,key5:5},{key3:3,key4:4,key5:5},{key1:3,key4:4,key5:5}]
+        insert: function(arr, obj){
+            var m = this.merge
+            for(var i=0,a; a=arr[i]; i++){
+                a = m(a, obj)
+            }
+            return arr
+        }
+    }
+})
+define('pico/str', function(){
+    var
+    Ceil=Math.ceil, Random=Math.random,
+    callerFormat = function(_, stack){
+        var r = stack[0]
+        return '['+
+            (r.getFunctionName() || r.getTypeName()+'.'+r.getMethodName())+
+            '@'+r.getFileName() + ':' + r.getLineNumber() + ':' + r.getColumnNumber()+']'
+    }
+    return {
+        codec: function(num, str){
+            for(var i=0,ret='',c; c=str.charCodeAt(i); i++){
+                ret += String.fromCharCode(c ^ num)
+            }
+            return ret
+        },
+        hash: function(str){
+            for (var i=0,h=0,c; c=str.charCodeAt(i); i++) {
+				h = (h * 31 + c) | 0 // same as h = ((h<<5)-h)+c;  h = h | 0 or h = h & h <= Convert to 32bit integer
+            }
+            return h
+        },
+        rand: function(){
+            return Random().toString(36).substr(2)
+        },
+        pad:function(val,n,str){
+			return this.tab(val,n,str)+val
+        },
+		tab:function(val,n,str){
+            return Array(n-String(val).length+1).join(str||'0')
+		},
+        log: function(){
+            var
+            orgPrepare = Error.prepareStackTrace,
+            orgCount = Error.stackTraceLimit
+
+            Error.prepareStackTrace = callerFormat
+            Error.stackTraceLimit = 1
+
+            var err = new Error
+            Error.captureStackTrace(err, arguments.callee)
+            var params = [(new Date).toISOString(), err.stack]
+            console.log.apply(console, params.concat(Array.prototype.slice.call(arguments)))
+
+            Error.prepareStackTrace = orgPrepare
+            Error.stackTraceLimit = orgCount
+        },
+        error: function(){
+            var orgCount = Error.stackTraceLimit
+
+            Error.stackTraceLimit = 4
+
+            var err = new Error
+            Error.captureStackTrace(err, arguments.callee)
+            var params = [(new Date).toISOString()]
+            params = params.concat(Array.prototype.slice.call(arguments))
+            params.push('\n')
+            console.error.apply(console, params.concat(err.stack))
+
+            Error.stackTraceLimit = orgCount
+        }
+    }
+})
+define('pico/test',function(){
+    var
+    str=pico.export('pico/str'),
+    format='undefined' === typeof require ? JSON.stringify : require('util').inspect
+
+    return {
+        ensure: function(msg, task){
+            task(function(err, result){
+                if (err) return console.error(msg+':'+str.tab(msg,100,'-')+err)
+                console.log(msg+':'+str.tab(msg,100,'.')+format(result,{colors:true}))
+            })
+        }
+    }
+})
+define('pico/time',function(){
+    var
+    Max=Math.max,
+    Min=Math.min,
+    Floor=Math.floor,
+    Ceil=Math.ceil,
+    DAY= 86400000,
+    HR = 3600000,
+    MIN = 60000,
+    SEC = 1000,
+	daynum=function(end,start){
+		return (end-start) / DAY
+	},
+	weeknum=function(date, us, yearoff){
+	    var
+		offset=us?1:0,
+		jan1= new Date(date.getFullYear()+(yearoff||0), 0, 1),
+		day1=((7-jan1.getDay())%7 + offset),
+		days=daynum(date, jan1)
+
+		if (days > day1) return Ceil((days - day1)/7)
+		return weeknum(date, us, -1)
+	},
+    parseQuark=function(quark, min, max){
+        var
+        q=quark.split('/'),
+        q1=q[0]
+
+        if ('*'===q1){
+            q[0]=min
+        }else{
+            q1=q[0]=parseInt(q1)
+            if (q1<min || q1>max) return // error
+        }
+
+        if (1===q.length) q.push(0) // interval=1
+        else q[1]=parseInt(q[1])
+
+        return q
+    },
+    parseAtom=function(atom, min, max){
+        if ('*'===atom) return 0
+        var 
+        ret=[]
+        list=atom.split(',')
+        for(var i=0,l,range,j,r,r1,r2,rm,ri; l=list[i]; i++){
+            r=l.split('-')
+            if (!r.length) return null// error
+            r1=parseQuark(r[0],min,max)
+            if (1===r.length){
+                ri=r1[1]
+                if (ri) for(j=r1[0]; j<=max; j+=ri) ret.push(j);
+                else ret.push(r1[0])
+                continue
+            }
+            r2=parseQuark(r[1],min,max)
+            j=r1[0]
+            rm=r2[0]
+            ri=r2[1]||1
+            if (j>rm){
+                // wrap around
+                for(rm=max; j<=rm; j+=ri) ret.push(j);
+                for(j=min,rm=r2[0]; j<=rm; j+=ri) ret.push(j);
+            }else{
+                for(; j<=rm; j+=ri) ret.push(j);
+            }
+        }
+        ret.sort(function(a,b){return a-b})
+        return ret
+    },
+    nearest=function(now, list, max){
+        if (!list) return now
+        if (Max.apply(Math, list.concat(now))===now) return now+(max-now)+Min.apply(Math, list)
+        for(var i=0,l=list.length; i<l; i++){
+            if (list[i]>=now) return list[i]
+        }
+        console.error('not suppose to be here',now, list, max)
+    },
+    closest=function(now, count, mins, hrs, doms, mons, dows, yrs, cb){
+        if (count++ > 1) return cb(0)
+
+        var
+        min=nearest(now.getMinutes(), mins, 60),
+        hr=nearest(now.getHours()+Floor(min/60), hrs, 24),
+        dom=now.getDate(),
+        mon=now.getMonth(),
+        yr=now.getFullYear(),
+        days=(new Date(yr, mon, 0)).getDate()
+
+        if (dows){
+            // if dow set ignore dom fields
+            var
+            day=now.getDay()+Floor(hr/24),
+            dow=nearest(day, dows, 7)
+            dom+=(dow-day)
+        }else{
+            dom=nearest(dom+Floor(hr/24), doms, days)
+        }
+        mon=nearest(mon+1+Floor(dom/days), mons, 12)
+
+        if (now.getMonth()+1 !== mon) return closest(new Date(yr, mon-1), count, mins, hrs, doms, mons, dows, yrs, cb)
+
+        yr=nearest(yr+Floor((mon-1)/12), yrs, 0)
+        if (now.getFullYear() !== yr) return closest(new Date(yr, mon-1), count, mins, hrs, doms, mons, dows, yrs, cb)
+
+        var then=(new Date(yr, (mon-1)%12)).getTime()
+        then+=(dom%days-1)*DAY // beginning of day
+        then+=(hr%24)*HR
+        then+=(min%60)*MIN
+
+        return cb(then)
+    }
+
+    return {
+        deltaToNext: function(day, hr, min, sec, msec){
+            var 
+            d = new Date,
+            remain = (d.getTime() % HR) - ((min||0)*MIN + (sec||0)*SEC + (msec||0)),
+            deltaHr = (hr||0) + (24*day) - d.getHours()
+
+            return (deltaHr * HR) - remain
+        },
+        timeOfNext: function(day, hr, min, sec, msec){
+            return (new Date(Date.now()+this.deltaToNext(day, hr, min, sec, msec))).getTime()
+        },
+        // fmt: min, hr, dom, M, dow, yr
+        parse: function(fmt){
+            var atoms=fmt.split(' ')
+            if (atoms.length < 6) return 0
+            var mins=parseAtom(atoms[0], 0, 59)
+            if (null == mins) return 0
+            var hrs=parseAtom(atoms[1], 0, 23)
+            if (null == hrs) return 0
+            var doms=parseAtom(atoms[2], 1, 31)
+            if (null == doms) return 0
+            var mons=parseAtom(atoms[3], 1, 12)
+            if (null == mons) return 0
+            var dows=parseAtom(atoms[4], 0, 6)
+            if (null == dows) return 0
+            var yrs=parseAtom(atoms[5], 1975, 2075)
+            if (null == yrs) return 0
+
+            return [mins, hrs, doms, mons, dows, yrs]
+        },
+        nearest:function(mins, hrs, doms, mons, dows, yrs){
+            var
+            now=new Date,
+            yr=nearest(now.getFullYear(), yrs, 0),
+            mon=nearest(now.getMonth()+1, mons, 12)-1
+
+            if (now.getFullYear()!==yr || now.getMonth()!==mon){
+                now=new Date(yr, mon)
+            }else{
+                var time=now.getTime()
+                now=new Date(time+MIN)// round up sec n msec
+            }
+
+            return closest(now, 0, mins, hrs, doms, mons, dows, yrs, function(then){ return then })
+        },
+		daynum:daynum,
+		weeknum:weeknum,
+		// node.js should compile with
+		// ./configure --with-intl=full-icu --download=all
+		// ./configure --with-intl=small-icu --download=all
+		day: function(date, locale){
+			var
+			now=new Date,
+			mid=new Date(now.getFullYear(),now.getMonth(),now.getDate(),12,0,0),
+			diff=mid-date,
+			DAY15=DAY*1.5
+			if ((diff >= 0 && diff <= DAY15) || (diff <= 0 && diff > -DAY15)){
+				if (now.getDate()===date.getDate())return'Today'
+				if (now > date) return 'Yesterday'
+				return 'Tomorrow'
+			}
+
+			locale=locale||'en-US'
+			if (now.getFullYear()===date.getFullYear() && weeknum(now)===weeknum(date)) return date.toLocaleDateString(locale, {weekday:'long'})
+			return date.toLocaleDateString(locale,{weekday: 'short', month: 'short', day: 'numeric'})
+		}
+    }
+})
+define('pico/web',function(exports,require,module,define,inherit,pico){
+    var
+    PJSON=require('pico/json'),
+    Abs = Math.abs,Floor=Math.floor,Random=Math.random,
+    API_ACK = 'ack',
+    PT_HEAD = 1,
+    PT_BODY = 2,
+    isOnline = true,
+    stdCB = function(err){if (err) console.error(err)},
+    appendFD = function(fd, name, value){ fd.append(name, value) },
+    appendObj = function(obj, name, value){ obj[name] = value },
+    timeSync = function(net, cb){
+        cb = cb || stdCB
+        ajax('get', net.url, null, null, function(err, readyState, response){
+            if (4 !== readyState) return
+            if (err) return cb(err)
+            var st = parseInt(response)
+            if (isNaN(st)) return cb('invalid timesync response')
+            net.serverTime = st
+            net.serverTimeAtClient = Date.now()
+            cb()
+        })
+    },
+    onResponse = function(err, readyState, response, net){
+        if (err) {
+            // network or auth error, return error to callbacks
+            if (4 !== readyState) return
+            var reqId, cb
+            if (response){
+                try{ reqId=JSON.parse(response).reqId }
+                catch(exp){ return console.error(exp) }
+                cb=net.callbacks[reqId]
+                if (cb){
+                    delete net.callbacks[reqId]
+                    cb(err)
+                }
+                return
+            }
+            var
+            reqs = net.reqs,
+            sep = net.delimiter
+            for (var i=0,l=reqs.length,r; i<l; i++){
+                r = reqs[i]
+                if (!r) continue
+                try{ reqId = JSON.parse(r.split(sep)[0]).reqId }
+                catch(exp){ console.error(exp); continue }
+                cb = net.callbacks[reqId]
+                if (!cb) continue
+                delete net.callbacks[reqId]
+                cb(err)
+            }
+            reqs.length = 0
+            return timeSync(net) // sync time, in case it was due to time error
+        }
+
+        // schedule next update
+        switch(readyState){
+        case 2: // send() and header received
+            net.head = null
+            net.currPT = PT_HEAD
+			net.resEndPos = 0
+            break
+        case 3: break // body loading 
+        case 4: // body received
+            break
+        }
+
+        var
+        startPos = net.resEndPos, endPos = -1,
+        sep = net.delimiter,
+        sepLen = sep.length,
+        body = net.body,
+        head
+
+        try{
+            while(true){
+                endPos = response.indexOf(sep, startPos)
+                if (-1 === endPos) break
+
+                switch(net.currPT){
+                case PT_HEAD:
+                    net.head = JSON.parse(response.substring(startPos, endPos))
+                    body.length = 0
+                    net.currPT = PT_BODY
+                    break
+                case PT_BODY:
+                    body.push(response.substring(startPos, endPos))
+                    break
+                }
+                head = net.head
+                if (head && head.len === body.length){
+                    net.currPT = PT_HEAD
+
+                    if (head.resId){
+                        net.request(API_ACK, {resId:head.resId})
+                    }
+                    if (!head.reqId) {
+                        console.error('incomplete response header: '+JSON.stringify(head))
+                        return 
+                    }
+                    if (net.cullAge && net.cullAge < Abs(net.getServerTime()-head.date)) {
+                        console.error('invalid server time: '+JSON.stringify(head)+' '+Abs(net.getServerTime()-head.date))
+                        return 
+                    }
+                    if (net.secretKey && body.length){
+                        var hmac = CryptoJS.algo.HMAC.create(CryptoJS.algo.MD5, net.secretKey+head.date)
+
+                        //key: CryptoJS.HmacMD5(JSON.stringify(data), this.secretKey+t).toString(CryptoJS.enc.Base64),
+                        for(var i=0,l=body.length; i<l; i++){
+                            hmac.update(body[i])
+                        }
+
+                        if (head.key !== hmac.finalize().toString(CryptoJS.enc.Base64)){
+                            console.error('invalid server key: '+JSON.stringify(head))
+                            return 
+                        }
+                    }
+                    if (head.len) head.data = PJSON.parse(body,true) 
+                    net.inbox.push(head)
+                    net.head = null
+                }
+
+                startPos = endPos + sepLen
+            }
+        }catch(exp){
+            // something is wrong
+            console.error(exp)
+        }
+        net.resEndPos = startPos
+    },
+    formation = function(form, addon, dst, prefix){
+        prefix = prefix || ''
+
+        var
+        append = dst instanceof FormData ? appendFD : appendObj,
+        uri = form.baseURI,
+        fieldType, f, fl
+
+        for (var i=0,elements = form.elements,field; field = elements[i]; i++) {
+            if (!field.hasAttribute('name')) continue
+            fieldType = field.hasAttribute('type') ? field.getAttribute('type').toUpperCase() : 'TEXT'
+            if (fieldType === 'FILE') {
+                for (f = 0, fl=field.files.length; f<fl; append(dst, prefix+field.name, field.files[f++]));
+            } else if ((fieldType !== 'RADIO' && fieldType !== 'CHECKBOX') || field.checked) {
+                append(dst, prefix+field.name, field.value)
+            }//TODO: implement checkbox and radio
+        }
+        for (var k in addon) { append(dst, prefix+k, addon[k]) }
+
+        uri = uri.substring(0, uri.lastIndexOf('/')+1)
+
+        return form.action.substr(uri.length)
+    },
+    netConfig = function(net, cfg){
+        net.url = cfg.url || net.url
+        net.secretKey = cfg.secretKey || net.secretKey
+        net.cullAge = cfg.cullAge || net.cullAge || 0
+        net.delimiter = cfg.delimiter ? JSON.stringify(cfg.delimiter) : net.delimiter || JSON.stringify(['&'])
+    },
+    netReset = function(net){
+        net.resEndPos = net.outbox.length = net.acks.length = 0
+        net.currPT = PT_HEAD
+    }
+
+
+    function Net(cfg){
+        if (!cfg.url) return console.error('url is not set')
+        netConfig(this, cfg)
+        this.reqId = 1 + Floor(Random() * 1000)
+        this.inbox = []
+        this.outbox = []
+        this.uploads = []
+        this.callbacks = {}
+        this.acks = []
+        this.reqs = []
+        this.resEndPos = 0
+        this.head = null,
+        this.body = [],
+        this.currPT = PT_HEAD,
+        this.serverTime = 0
+        this.serverTimeAtClient = 0
+    }
+
+    Net.prototype = {
+		beat: function(){
+			if (this.inbox.length){
+				var
+				inbox = this.inbox,
+				callbacks = this.callbacks,
+				reqId, cb
+
+				for(var res; res=inbox.pop();){
+					reqId = res.reqId
+					cb = callbacks[reqId]
+					if (cb){
+						delete callbacks[reqId]
+						cb(res.error, res.data)
+					}
+				}
+			}
+
+			// post update tasks, buffer data in memory network if offline
+			if (isOnline && (this.uploads.length || this.outbox.length || this.acks.length)){
+				var uploads=this.uploads,outbox=this.outbox,acks=this.acks
+
+				if (uploads.length){
+					ajax('post', this.url, uploads.shift(), null, onResponse, this)
+				}else{
+					var reqs = this.reqs = acks.concat(outbox)
+					acks.length = outbox.length = 0
+
+					ajax('post', this.url, reqs.join(this.delimiter)+this.delimiter, null, onResponse, this)
+				}
+			}
+		},
+        reconnect: function(cfg, cb){
+            netConfig(this, cfg)
+            netReset(this)
+            timeSync(this, function(err){
+                cb(err, this)
+            })
+        },
+        submit: function(form, addon, cb){
+            if ('undefined'===typeof window || !form || !(form instanceof HTMLFormElement)) return console.error('No HTMLFormElement submitted')
+
+            var reqId = 0
+
+            if (cb){
+                reqId = this.reqId++
+                this.callbacks[reqId] = cb
+            }
+
+            var fd = new FormData()
+
+            fd.append('api', formation(form, addon, fd, 'data/'))
+            fd.append('reqId', reqId)
+
+            this.uploads.push(fd)
+        },
+        // data: optional, usually api specific data
+        // addon: optional, usually common data for every api
+        // cb: optional, without cb, reqId will be 0
+        request: function(api, data, addon, cb){
+            switch(arguments.length){
+            case 2:
+                if (data instanceof Function){
+                    cb = data
+                    data = addon = undefined
+                }
+                break
+            case 3:
+                if (addon instanceof Function){
+                    cb = addon 
+                    addon = undefined
+                }
+                break
+            case 4: break
+            default: return console.error('wrong request params!')
+            }
+            if ('undefined'!==typeof window && data instanceof HTMLFormElement){
+                var obj = {}
+                api = formation(data, addon, obj)
+                data = obj
+            }else if(addon){
+                for (var k in addon) { data[k] = addon[k] }
+            }
+            if (!api) return console.error('Missing api,  data['+JSON.stringify(data)+']')
+
+            var queue = this.acks
+            if (api !== API_ACK){
+                queue = this.outbox
+                if (queue.length){
+                    var lastReq = queue.shift()
+                    if (-1 === lastReq.indexOf(api)){
+                        queue.unshift(lastReq)
+                    }
+                }
+            }
+
+            var reqId = 0
+            if (cb){
+                reqId = this.reqId++
+                this.callbacks[reqId] = cb
+            }
+
+            var dataList=data?PJSON.stringify(data,true):[]
+
+            if (dataList.length && this.secretKey){
+                var
+                t = this.getServerTime(),
+                hmac = CryptoJS.algo.HMAC.create(CryptoJS.algo.MD5, this.secretKey+t) // result of utf8 is diff from node.crypto
+
+                //key: CryptoJS.HmacMD5(JSON.stringify(data), this.secretKey+t).toString(CryptoJS.enc.Base64),
+                for(var i=0,l=dataList.length; i<l; i++){
+                    hmac.update(dataList[i])
+                }
+
+                dataList.unshift(JSON.stringify({
+                    api: api,
+                    reqId: reqId,
+                    len:dataList.length,
+                    date: t,
+                    key: hmac.finalize().toString(CryptoJS.enc.Base64)
+                }))
+            }else{
+                dataList.unshift(JSON.stringify({
+                    api: api,
+                    reqId: reqId,
+                    len:dataList.length
+                }))
+            }
+            queue.push(dataList.join(this.delimiter))
+        },
+        getServerTime: function(){
+            return this.serverTime + (Date.now() - this.serverTimeAtClient)
+        }
+    }
+
+    return {
+        create: function(cfg, cb){
+            var net= new Net(cfg)
+            timeSync(net, function(err){
+                cb(err, net)
+            })
+        },
+        ajax:ajax,
+        //window.addEventListener('online', online)
+        online: function(){isOnline=true},
+        //window.addEventListener('offline', offlie)
+        offline: function(){isOnline=false}
+    }
+})
+}).apply(null, 'undefined' === typeof window ? [module, 'exports', require] : [window, 'pico'])
 pico.define('js/Model',function anonymous(exports,require,module,define,inherit,pico
 /**/) {
 "use strict";
@@ -1196,7 +2253,10 @@ return{
     signals:['menu','headerButtonClicked'],
     deps:{
         paneId:'int',
-        tpl:'file'
+        tpl:'file',
+		title:'title',
+		btnLeft:'map',
+		btnRight:'map'
     },
     create: function(deps){
         this.el.innerHTML=deps.tpl({title:''})
@@ -1204,6 +2264,8 @@ return{
 		this.btnLeft=this.el.querySelector('svg.icon.left use')
 		this.btnRight=this.el.querySelector('svg.icon.right use')
 		this.el.classList.add('hidden')
+
+		this.slots.header.call(this,null,null,deps.title,deps.btnLeft,deps.btnRight)
     },
     events: {
         'tap svg': function(e){
@@ -1315,7 +2377,7 @@ return {
 }
 //# sourceURL=footer/Menu
 })
-pico.define('footer/Menu.asp','<%for(var i=0,btn; btn=d[i]; i++){%>\n<li id="<%=btn.id%>">\n    <svg class="icon <%=btn.url?btn.url:""%>"><use xlink:href="#icon-<%=btn.icon%>" xlink:role="<%=btn.url%>"/></svg>\n	<span><%=btn.name%></span>\n</li>\n<%}%>\n')
+pico.define('footer/Menu.asp','<%for(var i=0,btn; btn=d[i]; i++){%>\n<li id="<%=btn.id%>">\n    <svg class="icon <%=btn.url?btn.url:""%>"><use xlink:href="#<%=btn.icon%>" xlink:role="<%=btn.url%>"/></svg>\n	<span><%=btn.name%></span>\n</li>\n<%}%>\n')
 pico.define('Keypad',function anonymous(exports,require,module,define,inherit,pico
 /**/) {
 "use strict";
@@ -1448,13 +2510,12 @@ addRow=function(model){
 }
 
 this.update=function(){
-	var
-	now=Date.now(),
-	d=now-lastUpdate
+	if (!scrolls.length) return lastUpdate=Date.now()
 
+	var now=Date.now()
+
+	scrolls=scrolls.filter(scrollTo, now-lastUpdate)
 	lastUpdate=now
-	if (!scrolls.length) return
-	scrolls=scrolls.filter(scrollTo, d)
 }
 
 return{
@@ -1482,14 +2543,17 @@ return{
 		deps=this.deps,
 		list=deps.list
 
-        var li=document.createElement('li')
-        li.classList.add('empty-message')
-        li.innerHTML=deps.emptyMsg
-        this.el.appendChild(li)
-
+		if (deps.emptyMsg){
+			var li=document.createElement('li')
+			li.classList.add('empty-message')
+			li.innerHTML=deps.emptyMsg
+			this.el.appendChild(li)
+		}
 		this.loadDependencies(list,function(){
             list.each(addRow,self)
         })
+
+		this.postRender()
 	},
 	slots:{
 		scrollTo:function(from, sender, to, duration){
@@ -1498,7 +2562,7 @@ return{
 			scrolls.push([el, to, (to-el.scrollTop)/duration,Ceil(duration/10)])
 		}
 	},
-	events:{
+	postRender:function(){
 	},
     loadDependencies:function(list, cb){
         cb()
