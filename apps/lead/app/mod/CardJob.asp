@@ -9,7 +9,7 @@
 </header>
 <footer>
 <div class=name>Address</div>
-<div class=info><%=d.locker.street%></div>
-<div class=info><%=d.locker.city%></div>
-<button type=button>Scan</button>
+<div class=info><%=d.locker.address%></div>
+<div class=info><%=d.locker.postcode%></div>
+<button type=button>Connect</button>
 </footer>

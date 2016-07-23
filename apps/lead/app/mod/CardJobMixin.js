@@ -1,5 +1,5 @@
 var
-COLORS=['purple','green','orange','red'],
+COLORS=['purple','orange','green','red'],
 STATES=['Cancelled','Order placed','Collected','Delivered'],
 picoTime=require('pico/time'),
 picoStr=require('pico/str')
@@ -39,6 +39,7 @@ return {
     },
 	slots:{
 		lockStatus:function(from, sender, id, state){
+			if (id !== this.deviceId) return
 			var btn=this.el.querySelector('button')
 			btn.removeAttribute('disabled')
 			switch(state){
@@ -50,7 +51,7 @@ return {
 				btn.textContent='Open'
 				break
 			case 'disconnected':
-				btn.textContent='Scan'
+				btn.textContent='Connect'
 				break
 			case 'locked':
 				btn.textContent='Open'
@@ -76,7 +77,7 @@ return {
 
 			var btn=e.srcElement
 			switch(btn.textContent){
-			case 'Scan':
+			case 'Connect':
 				lockers.reset()
 				lockers.create(null,{
 					data:{
@@ -84,8 +85,9 @@ return {
 						requestId:request.id
 					},
 					success:function(model){
-						self.signals.scan(model.get('$detail').deviceId).send(self.host)
-						btn.textContent='Scanning...'
+						self.deviceId=model.get('$detail').deviceId
+						self.signals.scan(self.deviceId).send(self.host)
+						btn.textContent='Connecting...'
 						btn.setAttribute('disabled',1)
 					}
 				})
@@ -106,7 +108,7 @@ return {
                     },
                     error:function(err){
                         console.error(err)
-                        btn.textContent='Scan'
+                        btn.textContent='Connect'
                     }
                 })
 				break

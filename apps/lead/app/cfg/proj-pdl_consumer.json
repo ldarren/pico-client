@@ -112,7 +112,7 @@
 				["options","map",{"className":"header"}],
                 ["tpl","file","header/Basic.asp"],
                 ["css","file","Header.css"],
-                ["title","text","Add Request"],
+                ["title","text","New Request"],
                 ["btnLeft","map",{"icon":"icon_ko"}],
                 ["btnRight","map",{"icon":"icon_ok"}]
             ],"header/Basic"],
@@ -173,7 +173,7 @@
 				["lockers","ref","lockers"],
                 ["laundryOpt","ref","laundryOpt"],
                 ["surcharges","ref","surcharges"],
-				["buttonText","text","Add Request"],
+				["buttonText","text","New Request"],
 				["Cell","view",[
 					["options","map",{"className":"card request"}],
 					["tpl","file","CardRequest.asp"],
@@ -194,8 +194,8 @@
                     [
                         {"type":"text","name":"name","label":"Name","holder":"Joe's Locker","required":1},
                         {"type":"text","name":"deviceId","label":"Device Id","value":"AF131569","required":1},
-                        {"type":"text","name":"street","label":"Street","required":1},
-                        {"type":"text","name":"city","label":"City","required":1}
+                        {"type":"text","name":"address","label":"Address","required":1},
+                        {"type":"text","name":"postcode","label":"Postcode","required":1}
                     ]
 				]]
 			]],
@@ -206,7 +206,7 @@
 				["lockers","models",{
 					"create":"lead/locker/unlock"
 				}],
-				["buttonText","text","Add Job"],
+				["buttonText","text","New Locker"],
 				["Cell","view",[
 					["options","map",{"className":"card locker"}],
 					["tpl","file","CardLocker.asp"],

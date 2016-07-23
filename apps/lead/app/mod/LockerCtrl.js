@@ -22,7 +22,7 @@ return {
 			this.deps.lockers.create(null,{
 				data:{
 					name:form.name,
-					$detail:{street:form.street,city:form.city,deviceId:form.deviceId}
+					$detail:form
 				},
 				wait:true,
 				success:function(){

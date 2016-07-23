@@ -20,7 +20,7 @@ return {
 				btn.textContent='Open'
 				break
 			case 'disconnected':
-				btn.textContent='Scan'
+				btn.textContent='Connect'
 				break
 			case 'locked':
 				btn.textContent='Open'
@@ -42,9 +42,9 @@ return {
 
 			var btn=e.srcElement
 			switch(btn.textContent){
-			case 'Scan':
+			case 'Connect':
 				this.signals.scan(detail.deviceId).send(this.host)
-				btn.textContent='Scanning...'
+				btn.textContent='Connecting...'
 				btn.setAttribute('disabled',1)
 				break
 			case 'Open':
@@ -63,7 +63,7 @@ return {
                     },
                     error:function(err){
                         console.error(err)
-                        btn.textContent='Scan'
+                        btn.textContent='Connect'
                     }
                 })
 				break
