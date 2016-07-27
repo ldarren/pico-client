@@ -7,14 +7,30 @@ ID=0,TYPE=1,VALUE=2,EXTRA=3
 var
 fs=require('fs'),
 path=require('path'),
+args=require('pico-args'),
 CleanCSS=require('clean-css'),
-proj=process.argv[2],
-env=process.argv[3]||'pro',
-cwd=path.resolve(process.cwd(),process.argv[4]||'.'),
-modDir=path.resolve(cwd,process.argv[5]||'mod'),
-cfgDir=path.resolve(cwd,process.argv[6]||'cfg'),
-distDir=path.resolve(cwd,process.argv[7]||'bin'),
-mainjs=process.argv[8]||'main.js',
+defaults={
+	proj:['','project name'],
+	env:['pro','environment: dev, st or pro'],
+	wd:['.','working directory'],
+	url:['//192.168.1.1','server url'],
+	mod:['mod','path to module directory'],
+	cfg:['cfg','path to configuration directory'],
+	bin:['bin','path to binary/output directory'],
+	entry:['main.js','entry point filename'],
+	underscore:[true,'embed underscore library'],
+	backbone:[true,'embed backbone library'],
+	lean:[true,'embed lean library'],
+	pico:[true,'embed pico library']
+},
+opt=args.parse(defaults),
+proj=opt.proj,
+env=opt.env,
+cwd=path.resolve(process.cwd(),opt.wd),
+modDir=path.resolve(cwd,opt.mod),
+cfgDir=path.resolve(cwd,opt.cfg),
+distDir=path.resolve(cwd,opt.bin),
+mainjs=opt.entry,
 setup=function(cb){
     var
     rawProjPath=path.resolve(cfgDir,`proj-${proj}.json`),
@@ -112,7 +128,8 @@ writeCSS=function(style, cb){
 	})
 }
 
-if (3 > process.argv.length) return console.log(process.argv[1],'PROJ_NAME','[ENV]','[cwd]','[mod]','[cfg]','[bin]','[main.js]')
+if (!opt.proj) return args.usage(defaults)
+args.print('build options',opt)
 
 process.chdir(cwd)
 
@@ -120,11 +137,13 @@ setup((err, project, projPath, outPath)=>{
 	if (err) return console.error(err)
 
 	var deps=new Set(project[DEPS])
-	deps.add('lib/underscore-min.js')
-	deps.add('lib/backbone-min.js')
-	deps.add('lib/backbone.native.min.js')
-	deps.add('lib/lean/lean.min.js')
-	deps.add('lib/pico.js')
+	if (opt.underscore) deps.add('lib/underscore-min.js')
+	if (opt.backbone){
+		deps.add('lib/backbone-min.js')
+		deps.add('lib/backbone.native.min.js')
+	}
+	if (opt.lean)deps.add('lib/lean/lean.min.js')
+	if (opt.pico)deps.add('lib/pico.min.js')
 
 	// global
 	__={ajax:null,onLoad:null}
@@ -133,7 +152,7 @@ setup((err, project, projPath, outPath)=>{
 	pico=require('./lib/pico.js')
 	window={localStorage:{},location:{}}
 
-	var filteredProj=[project[DEPS], [...project[STYLE],proj+'.css'], [], {}, project[FLYER]]
+	var filteredProj=[project[DEPS], [...project[STYLE],`${opt.url}${proj}.css`], [], {}, project[FLYER]]
 
 	scan(project[SPEC], filteredProj[SPEC], new Set, new Set, (err, include, style)=>{
 		if (err) return console.error(err)

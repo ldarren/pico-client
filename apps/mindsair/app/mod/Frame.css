@@ -1,0 +1,33 @@
+@import url(main.css);
+#mindsair .frame{
+	display:flex;
+	flex-direction:column;
+    position:relative;
+    margin:auto;
+	width:100%;
+	height:100%;
+    animation-duration: 0.001s;
+	animation-name: frameresize1;
+}
+
+@keyframes frameresize1 {
+  from { clip: rect(1px, auto, auto, auto) }
+    to { clip: rect(0px, auto, auto, auto) }
+}
+#mindsair .frame #title{
+	flex-shrink:0;
+}
+#mindsair .frame #page{
+	display:flex;
+	position:relative;
+	flex-grow:1;
+}
+#mindsair .frame #page>div{
+	display:flex;
+	position:absolute;
+	width:100%;
+	height:100%;
+}
+#mindsair .frame #footer{
+	flex-shrink:0;
+}

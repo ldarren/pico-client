@@ -3,7 +3,12 @@
 var
 fs = require('fs'),
 path = require('path'),
-destDir = path.resolve(process.cwd(),process.argv[2]||'.'), // relative between cwd and run/update
+args= require('pico-args'),
+defaults={
+	path:['.','working directory']
+},
+options=args.parse(defaults),
+destDir = path.resolve(process.cwd(),options.path), // relative between cwd and run/update
 runPath=path.dirname(process.argv[1])
 
 fs.readlink(process.argv[1], (err, realPath)=>{
@@ -15,7 +20,7 @@ fs.readlink(process.argv[1], (err, realPath)=>{
         dest = path.resolve(destDir, files.shift(), fname)
         fs.createReadStream(path.resolve(srcDir,fname)).pipe(fs.createWriteStream(dest))
         arguments.callee(files, cb)
-    })([
+})([
         'Frame.js','js',
         'Model.js','js',
         'Module.js','js',

@@ -1,0 +1,29 @@
+[
+    [
+    ],[
+    ],[
+        ["options","map",{"el":"#mindsair"}],
+        ["html","file","Frame.html"],
+        ["css","file","Frame.css"],
+		["layers","list",["#layer0","#layer1"]],
+		["auth/NoSession","ctrl",[]],
+        ["js/Pane","view",[
+			["options","map",{"el":"#mindsair #layer0"}],
+            ["paneId","int",0],
+            ["html","file","Pane.html"],
+			["allmodels","refs","models"]
+        ]],
+		["Page","view",[
+			["options","map",{"el":"#mindsair>#page"}],
+			["paneId","int",0]
+		]],
+		["FloatBtn","view",[
+		]]
+    ],{
+        "home":[
+			["options","map",{"el":"#mindsair>#page"}]
+        ]
+    },[
+        ["*action","home"]
+    ]
+]

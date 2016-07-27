@@ -19,3 +19,15 @@
 [submodule "apps/lead/app/mod/scrollable"]
 	path = apps/lead/app/mod/scrollable
 	url = https://github.com/ldarren/pico-mod-scrollable.git
+[submodule "apps/mindsair/app/mod/auth"]
+	path = apps/mindsair/app/mod/auth
+	url = https://github.com/ldarren/pico-mod-auth.git
+[submodule "apps/mindsair/app/mod/scrollable"]
+	path = apps/mindsair/app/mod/scrollable
+	url = https://github.com/ldarren/pico-mod-scrollable.git
+[submodule "apps/mindsair/app/mod/header"]
+	path = apps/mindsair/app/mod/header
+	url = https://github.com/ldarren/pico-mod-header.git
+[submodule "apps/mindsair/app/mod/footer"]
+	path = apps/mindsair/app/mod/footer
+	url = https://github.com/ldarren/pico-mod-header.git

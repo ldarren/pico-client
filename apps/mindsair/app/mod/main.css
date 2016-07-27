@@ -1,0 +1,29 @@
+#mindsair *, *:before, *:after{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+#mindsair{
+    display:flex;
+    background:#fff;
+    font-family:"HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,"Lucida Grande","Lucida Sans Unicode",Tahoma,sans-serif;
+}
+#mindsair input,button,select{
+    outline:none;
+    border:none;
+}
+#mindsair ul{
+    list-style:none;
+}
+#mindsair .hidden{
+    display:none !important;
+}
+#mindsair .invisible{
+    visibility:hidden !important;
+}
