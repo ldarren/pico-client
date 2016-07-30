@@ -9,10 +9,24 @@
 	-ms-user-select: none;
 	user-select: none;
 }
+#mindsair input,textarea{
+	-webkit-touch-callout: auto;
+	-webkit-user-select: auto;
+	-khtml-user-select: auto;
+	-moz-user-select: auto;
+	-ms-user-select: auto;
+	user-select: auto;
+}
 #mindsair{
     display:flex;
-    background:#fff;
+	position:fixed;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
     font-family:"HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,"Lucida Grande","Lucida Sans Unicode",Tahoma,sans-serif;
+	pointer-events:none;
+	z-index:999;
 }
 #mindsair input,button,select{
     outline:none;
@@ -26,4 +40,7 @@
 }
 #mindsair .invisible{
     visibility:hidden !important;
+}
+#mindsair .icon{
+	cursor:pointer;
 }

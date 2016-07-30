@@ -1,33 +1,36 @@
 @import url(main.css);
-#mindsair .frame{
+#mindsair .layer{
 	display:flex;
 	flex-direction:column;
-    position:relative;
+    position:absolute;
     margin:auto;
 	width:100%;
 	height:100%;
+	pointer-events:none;
+}
+#mindsair #layer0{
+	right:0;
+	width:512px;
+	min-width:256px;
     animation-duration: 0.001s;
 	animation-name: frameresize1;
 }
-
 @keyframes frameresize1 {
   from { clip: rect(1px, auto, auto, auto) }
     to { clip: rect(0px, auto, auto, auto) }
 }
-#mindsair .frame #title{
+#mindsair .layer #title{
 	flex-shrink:0;
+	pointer-events:auto;
 }
-#mindsair .frame #page{
+#mindsair .layer #page{
 	display:flex;
-	position:relative;
 	flex-grow:1;
+	flex-direction:column;
+	position:relative;
+	pointer-events:auto;
 }
-#mindsair .frame #page>div{
-	display:flex;
-	position:absolute;
-	width:100%;
-	height:100%;
-}
-#mindsair .frame #footer{
+#mindsair .layer #footer{
 	flex-shrink:0;
+	pointer-events:auto;
 }

@@ -172,7 +172,7 @@ function mindsair_add_div() {
 function mindsair_enqueue_script(){
 	wp_enqueue_script(
 		'mindsair.js',
-		MINDSAIR_DOMAIN.'app/bin/mindsair/project.js',
+		MINDSAIR_DOMAIN.'app/bin/wp/project.js',
 		array( 'underscore', 'backbone' ),
 		'1.0',
 		true // Load JS in footer so that templates in DOM can be referenced.

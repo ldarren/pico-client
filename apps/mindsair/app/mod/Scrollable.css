@@ -1,0 +1,31 @@
+#mindsair .scrollable{
+	flex:1 1 auto;
+	flex-direction:column;
+	display:flex;
+	position:relative;
+	background: #fff;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width:100%;
+	padding:0 1rem;
+}
+#mindsair .scrollable li.empty-message {
+	display: none;
+}
+#mindsair .scrollable li.empty-message:last-child {
+	display: block;
+	margin: 1rem;
+	text-align: center;
+	font-size: 1.5rem;
+}
+#mindsair .scrollable.glass {
+    background:rgba(0,0,0,0.5)
+}
+#mindsair .scrollable::-webkit-scrollbar {
+    width: 5px;
+    background-color: none;
+}
+#mindsair .scrollable::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background-color: rgba(0,0,0,0.3);
+}
