@@ -1,0 +1,63 @@
+[
+    [
+    ],[
+    ],[
+        ["options","map",{"el":"#mindsair"}],
+        ["html","file","Frame.html"],
+        ["css","file","Frame.css"],
+		["layers","list",["#layer0","#layer1"]],
+		["auth/NoSession","ctrl",[]],
+        ["js/Pane","view",[
+			["options","map",{"el":"#mindsair #layer0"}],
+            ["paneId","int",0],
+            ["html","file","Pane.html"],
+			["allmodels","refs","models"]
+        ]],
+		["Page","view",[
+			["options","map",{"el":"#mindsair #page"}],
+			["paneId","int",0]
+		]],
+		["header/Basic","view",[
+			["options","map",{"el":"#mindsair #header"}],
+			["paneId","int",0],
+			["tpl","file","header/Basic.asp"],
+			["css","file","Header.css"],
+			["title","text","Chat"],
+			["btnLeft","map",{"icon":"icon_name"}],
+			["btnRight","map",{"icon":"icon_ko"}]
+		]],
+		["chats","models",{}],
+		["FloatBtn","view",[
+			["css","file","FloatBtn.css"],
+			["tpl","file","FloatBtn.asp"],
+			["icon","text","icon_chat"]
+		]]
+    ],{
+        "home":[
+			["options","map",{"el":"#mindsair #page"}],
+			["chats","ref","chats"],
+			["ChatCtrl","ctrl",[
+			]],
+			["scrollable/ListView","view",[
+				["options","map",{"className":"scrollable"}],
+				["css","file","Scrollable.css"],
+				["list","ref","chats"],
+				["Cell","view",[
+					["options","map",{"className":"bubble right-top"}],
+					["tpl","file","Bubble.asp"],
+					["css","file","Bubble.css"]
+				],"Bubble"]
+			]],
+			[["footer/ChatBar","ChatBar"],"view",[
+				["options","map",{"className":"footer chatbar"}],
+				["paneId","int",0],
+				["tpl","file","footer/ChatBar.asp"],
+				["css","file","ChatBar.css"],
+				["icon","text","icon_next"],
+				["chats","ref","chats"]
+			]]
+        ]
+    },[
+        ["*action","home"]
+    ]
+]

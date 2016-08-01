@@ -13,7 +13,7 @@ defaults={
 	proj:['','project name'],
 	env:['pro','environment: dev, st or pro'],
 	wd:['.','working directory'],
-	url:['//192.168.1.1','server url'],
+	url:['','server url'],
 	mod:['mod','path to module directory'],
 	cfg:['cfg','path to configuration directory'],
 	bin:['bin','path to binary/output directory'],

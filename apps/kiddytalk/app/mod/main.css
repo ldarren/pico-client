@@ -9,14 +9,21 @@
 	-ms-user-select: none;
 	user-select: none;
 }
+input,textarea{
+	-webkit-touch-callout: auto;
+	-webkit-user-select: auto;
+	-khtml-user-select: auto;
+	-moz-user-select: auto;
+	-ms-user-select: auto;
+	user-select: auto;
+}
 html,body{
-    width:100%;
     height:100%;
-    font-size: 62.5%;
 }
 body{
     display:flex;
     background:#fff;
+    font-size: 62.5%;
     font-family:"HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,"Lucida Grande","Lucida Sans Unicode",Tahoma,sans-serif;
 }
 input,button,select{
@@ -31,4 +38,7 @@ ul{
 }
 .invisible{
     visibility:hidden !important;
+}
+.icon{
+	cursor:pointer;
 }
