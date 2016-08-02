@@ -1,0 +1,33 @@
+*, *:before, *:after{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+#mindsair #layer0{
+	width:100%;
+}
+@media (max-width:1024px){
+    #mindsair{
+        width:100%;
+        min-width:320px;
+        height:100%;
+        animation-name: frameresize2;
+    }
+}
+
+@media (max-width:568px){
+    #mindsair{
+        animation-name: frameresize1;
+    }
+    #mindsair>.layer>div:nth-child(1){
+        flex-basis:100%;
+    }
+    #mindsair>.layer>div:nth-child(2){
+        display:none;
+    }
+}
+
+@keyframes frameresize2 {
+  from { clip: rect(1px, auto, auto, auto) }
+    to { clip: rect(0px, auto, auto, auto) }
+}

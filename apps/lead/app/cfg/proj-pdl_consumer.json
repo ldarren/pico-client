@@ -132,7 +132,6 @@
     ],{
         "":[
             ["options","map",{"className":"fulpage active"}],
-            ["options","map",{"el":"#pane0 #page"}],
             ["Void","view",[
 				["tpl","file","Void.asp"],
 				["css","file","Void.css"]

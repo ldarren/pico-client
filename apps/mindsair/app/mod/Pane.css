@@ -1,0 +1,14 @@
+#mindsair #layer0{
+	flex-direction:row;
+}
+.layer .pane{
+	display:flex;
+	flex-direction:column;
+	height:100%;
+}
+.layer #pane0{
+	flex: 0 0 30%;
+}
+.layer #pane1{
+	flex: 1 1 60%;
+}

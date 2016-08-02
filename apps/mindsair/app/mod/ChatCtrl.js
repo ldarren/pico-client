@@ -1,12 +1,17 @@
 return {
-	signals:['hideChat'],
+	signals:['header','hideChat'],
 	deps:{
-		showByDefault:['bool',false]
+		showByDefault:['bool',false],
+		paneId:'int',
+		title:'text',
+		btnLeft:'map',
+		btnRight:'map'
 	},
 	create:function(deps){
 		var layer0=document.querySelector('#mindsair #layer0')
 		this.layer0=layer0.classList
 		if (deps.showByDefault) this.layer0.remove('hidden')
+		this.signals.header(deps.paneId,deps.title,deps.btnLeft,deps.btnRight).send(this.host)
 	},
 	slots:{
 		showChat:function(from,sender){
