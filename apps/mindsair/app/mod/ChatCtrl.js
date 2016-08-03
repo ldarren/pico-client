@@ -11,7 +11,7 @@ return {
 		var layer0=document.querySelector('#mindsair #layer0')
 		this.layer0=layer0.classList
 		if (deps.showByDefault) this.layer0.remove('hidden')
-		this.signals.header(deps.paneId,deps.title,deps.btnLeft,deps.btnRight).send(this.host)
+		if(deps.title)this.signals.header(deps.paneId,deps.title,deps.btnLeft,deps.btnRight).send(this.host)
 	},
 	slots:{
 		showChat:function(from,sender){
