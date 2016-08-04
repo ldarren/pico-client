@@ -1,0 +1,48 @@
+{
+    "deps":{
+        "util":"api/util",
+        "room":"api/room",
+        "web":["context","webServer"]
+    },
+    "routes":{
+        "": [
+            ["util","help"]
+        ],
+        "ERR": [
+            [0]
+        ],
+        "ERR//msair/stream": [
+            ["web","SSEAbort","error","res"]
+        ],
+        "END": [
+            [0]
+        ],
+        "room.404": [
+            ["util","sep",["#DEBUG# room.404 #DEBUG#"]]
+        ],
+        "web.dc":[
+            ["room","remove","res"]
+        ],
+        "/msair":[
+            ["util","route","req"],
+            ["web","parse","req","res"]
+        ],
+        "/msair/stream":[
+            ["user","verify","input","user"],
+            ["util","prepareStream","input","output"],
+            ["user","poll","input","user","output"],
+            ["request","poll","input","user","output"],
+            ["locker","poll","input","user","output"],
+            ["room","add","res","user"],
+            ["web","SSEStart","req","res"],
+            ["room","stream",["poll"],"user","output"]
+        ],
+		"msair/broadcast":[
+            ["room","broadcast",["poll"],"input"]
+		],
+        "msair/util/ping":[
+            ["user","verify","input","user"],
+            [0]
+        ]
+    }
+}
