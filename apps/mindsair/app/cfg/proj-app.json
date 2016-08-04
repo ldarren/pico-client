@@ -26,7 +26,18 @@
 			["title","text","Chat"],
 			["btnLeft","map",{"icon":"icon_name"}]
 		]],
-		["chats","models",{}]
+		["chats","models",{
+			"create":"msair/chat/create"
+		}],
+		["auth/DataStream","ctrl",[
+			["models","refs","models"],
+			["push","stream",{
+				"channel":"msair",
+				"path":"/stream",
+				"events":[],
+				"autoconnect":false
+			}]
+		]]
     ],{
         "home":[
 			["options","map",{"el":"#mindsair #page"}],

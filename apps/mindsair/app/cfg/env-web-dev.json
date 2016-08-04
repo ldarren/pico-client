@@ -1,4 +1,5 @@
 {
     "domains":{
+        "msair":{"url":"http://54.83.28.108:4888/msair","delimiter":["&"]}
     }
 }

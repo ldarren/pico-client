@@ -45,14 +45,14 @@ Backbone.ajax = function(req){
             return req.error(err)
         }
         Backbone.trigger('networkRecv', null, api, data)
-        return req.success(data, 'success')
+        return req.success(data)
     }
 
-    if (!c) return
+    if (!c) return req.error(getKey(api)+' domain undefined')
 
     if (reqData.charAt){
         try {reqData=JSON.parse(reqData)}
-        catch(e){console.error(e)}
+        catch(e){return req.error(null, err)}
     }
 
     if (reqData instanceof HTMLFormElement){

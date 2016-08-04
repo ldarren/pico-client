@@ -22,3 +22,6 @@
 	stroke:#0c9;
 	padding:10px;
 }
+#mindsair .charbar .icon.disabled{
+	stroke:red;
+}

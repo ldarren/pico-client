@@ -2,8 +2,19 @@ return {
 	deps:{
 		chats:'models'
 	},
-	sendMsg:function(msg){
+	sendMsg:function(msg, cb){
 		var chats=this.deps.chats
-		chats.add({id:chats.length,msg:msg})
+		chats.create(null,{
+			data:{
+				msg:msg
+			},
+			wait:true,
+			success:function(){
+				cb()
+			},
+			error:function(coll, err, opt){
+				cb(err)
+			}
+		})
 	}
 }
