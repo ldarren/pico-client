@@ -197,7 +197,7 @@ var View = Backbone.View.extend(_.extend(Module, {
         var
 		s=spec && spec.length ? Mod.spec.concat(spec) : Mod.spec,
         m=new (View.extend(Mod.Class))(
-			specMgr.find('options',s),
+			specMgr.getViewOptions(s),
 			Mod,
 			s,
 			params,

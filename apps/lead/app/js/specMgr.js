@@ -134,5 +134,12 @@ return {
     getId:getId,
     getType:getType,
     getValue:getValue,
-    getExtra:getExtra
+    getExtra:getExtra,
+	getViewOptions:function(spec){
+		var opt=find('options',spec)
+		if (!opt || !opt.els) return opt
+		var paneId=find('paneId',spec)||0
+		opt.el=opt.els[paneId]
+		return opt
+	}
 }

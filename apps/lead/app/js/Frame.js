@@ -13,8 +13,8 @@ includeAll= function(urls, func, type, cb){
     func(urls.shift(), type, function(){ includeAll(urls, func, type, cb) })
 },
 resized=function(self, paneCount){
-    if (paneCount === self.deps.paneCount) return
-    self.deps.paneCount=paneCount
+    if (paneCount === self.paneCount) return
+    self.paneCount=paneCount
     if (Backbone.History.started && self.currPath) changeRoute.call(self, self.currPath, self.currParams)
 	self.signals.paneCount(paneCount).send()
 },
@@ -38,7 +38,7 @@ changeRoute = function(path, params){
 
     var
     pages=this.pages,
-    pc=this.deps.paneCount || 1,
+    pc=this.paneCount || 1,
     i=f.length < pc ? 0 : f.length-pc
 
     for(var j=0,p; i<pc; i++,j++){
@@ -63,11 +63,11 @@ Body=Module.View.extend({
     signals:['online','offline','changeRoute','frameAdded','paneAdded','paneUpdate','paneCount'],
     deps:{
         html:   ['file','<div class=frame><div class=layer></div><div class=layer></div></div>'],
-        layers: ['list', ['.frame>div:nth-child(1)','.frame>div:nth-child(2)']],
-		paneCount:['int',1]
+        layers: ['list', ['.frame>div:nth-child(1)','.frame>div:nth-child(2)']]
     },
     initialize: function(options, p, e){
         var self=this
+		this.paneCount=1
 
         network.create(e.domains, function(err){
             if (err) return console.error(err)

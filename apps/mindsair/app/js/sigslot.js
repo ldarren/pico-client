@@ -1,10 +1,11 @@
 var
 picoObj=require('pico/obj'),
 trigger = Backbone.Events.trigger,
+extOpt={mergeArr:1},
 evts=[],
 sigslot = function(self, def){
     var
-    ss = picoObj.extend(self.signals, def || [], {mergeArr:1}),
+    ss = picoObj.extend(self.signals, def || [], extOpt),
     signals = {}
     
     ss.forEach(function(evt){
@@ -57,8 +58,8 @@ dispatch = function(a, from){
 }
 
 this.update= function(){
-    if (evts.length){
-        var e=evts.shift()
+	for(var i=0,l=evts.length,e; i<l; i++){
+        e=evts.shift()
         dispatch.call(e[0], e[1], e[2])
     }
 }
