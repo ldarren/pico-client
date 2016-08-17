@@ -1,48 +1,45 @@
 {
     "deps":{
         "util":"api/util",
-        "room":"api/room",
+        "safari":"api/safari",
         "web":["context","webServer"]
     },
     "routes":{
-        "": [
-            ["util","help"]
-        ],
-        "ERR": [
+        "ERR|#msg": [
             [0]
         ],
-        "ERR//msair/stream": [
-            ["web","SSEAbort","error","res"]
-        ],
-        "END": [
+        "END|#msg": [
             [0]
         ],
-        "room.404": [
-            ["util","sep",["#DEBUG# room.404 #DEBUG#"]]
+        "/msair/v%ver/pushPackages/:pushId":[
+            ["web","getBody","req","body"],
+            ["util","sep","body"],
+            ["safari","redirect","res"],
+			[0]
         ],
-        "web.dc":[
-            ["room","remove","res"]
+        "/msair/v%ver/devices/:deviceToken/registrations/:pushId":[
+            ["safari","decision","req"]
+        ],
+		"safari.pushId.remove":[
+            ["safari","remove"],
+			[0]
+		],
+		"safari.pushId.update":[
+            ["safari","update"],
+			[0]
+		],
+        "/msair/v%ver/log":[
+            ["web","getBody","req","body"],
+            ["util","sep","body"],
+            ["safari","log"],
+			[0]
         ],
         "/msair":[
             ["util","route","req"],
             ["web","parse","req","res"]
         ],
-        "/msair/stream":[
-            ["user","verify","input","user"],
-            ["util","prepareStream","input","output"],
-            ["user","poll","input","user","output"],
-            ["request","poll","input","user","output"],
-            ["locker","poll","input","user","output"],
-            ["room","add","res","user"],
-            ["web","SSEStart","req","res"],
-            ["room","stream",["poll"],"user","output"]
-        ],
-		"msair/broadcast":[
-            ["room","broadcast",["poll"],"input"]
-		],
-        "msair/util/ping":[
-            ["user","verify","input","user"],
-            [0]
+        "#help": [
+            ["util","help"]
         ]
     }
 }

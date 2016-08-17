@@ -1,0 +1,33 @@
+<script>
+var pushId='web.com.jasaws.mindsair-st'
+ 
+var checkRemotePermission = function (permissionData) {
+	switch(permissionData.permission){
+	case 'default':
+        // This is a new web service URL and its validity is unknown.
+        window.safari.pushNotification.requestPermission(
+            'https://elb.jasaws.com/msair', // The web service URL.
+            pushId,     // The Website Push ID.
+            {username:'darren'}, // Data that you choose to send to your server to help you identify the user.
+            checkRemotePermission         // The callback function.
+        );
+		break
+	case 'denied':
+        // The user said no.
+		console.warn('permission rejected')
+		break
+	case 'granted':
+        // The web service URL is a valid push provider, and the user said yes.
+        // permissionData.deviceToken is now available to use.
+		console.warn('permission granted:'+permissionData.deviceToken)
+		break
+	}
+};
+
+window.onload = function() {
+    // Ensure that the user can receive Safari Push Notifications.
+    if ('safari' in window && 'pushNotification' in window.safari) {
+        checkRemotePermission(window.safari.pushNotification.permission(pushId));
+    }
+};
+</script>
