@@ -2,9 +2,12 @@ var Router=require('js/Router')
 
 return {
 	signals:['callAccepted','header','WebAudio_stop'],
+	deps:{
+		paneId:'int'
+	},
 	create:function(deps){
 		this.el.innerHTML=deps.html
-		this.signals.header().send(this.host)
+		this.signals.header(deps.paneId).send(this.host)
 	},
 	events:{
 		'touchend .btn':function(e){

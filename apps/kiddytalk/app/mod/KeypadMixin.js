@@ -3,6 +3,7 @@ var Router=require('js/Router')
 return {
 	signals:['header'],
 	deps:{
+		paneId:'int',
 		contacts:'models'
 	},
 	create:function(deps){
@@ -10,7 +11,7 @@ return {
 		el.innerHTML=deps.html
 		this.display=el.querySelector('.display')
 		this.value=[]
-		this.signals.header().send(this.host)
+		this.signals.header(deps.paneId).send(this.host)
 	},
 	events:{
 		'touchend .btn':function(e){

@@ -114,11 +114,11 @@
 			["options","map",{"el":".frame>#page"}],
 			["paneId","int",0]
 		]],
-		["footer/Menu","view",[
+		["footer/MenuBar","view",[
 			["options","map",{"el":".frame>#footer"}],
 			["paneId","int",0],
-			["tpl","file","footer/Menu.asp"],
-			["css","file","footer/Menu.css"],
+			["tpl","file","footer/MenuBar.asp"],
+			["css","file","footer/MenuBar.css"],
 			["list","list",[
 				{"name":"Keypad","id":"keypad","icon":"icon-keyboard","url":""},
 				{"name":"Contacts","id":"contacts","icon":"icon-address-book","url":"contacts"},
@@ -132,6 +132,7 @@
 			[["Keypad","KeypadMixin"],"view",[
 				["html","file","Keypad.html"],
 				["css","file","Keypad.css"],
+				["paneId","ref","paneId"],
 				["contacts","ref","contacts"]
 			]]
         ],
@@ -140,11 +141,12 @@
 			["recents","ref","recents"],
 			["contacts","ref","contacts"],
 			["PageCtrl","ctrl",[
+				["paneId","ref","paneId"],
 				["title","text","All Recents"]
 			]],
 			["scrollable/ListView","view",[
 				["options","map",{"className":"scrollable"}],
-				["css","file","scrollable/style.css"],
+				["css","file","scrollable/Scrollable.css"],
 				["list","ref","recents"],
 				["contacts","ref","contacts"],
 				["Cell","view",[
@@ -159,11 +161,12 @@
 			["options","map",{"el":".frame>#page"}],
 			["contacts","ref","contacts"],
 			["PageCtrl","ctrl",[
+				["paneId","ref","paneId"],
 				["title","text","All Contacts"]
 			]],
 			["scrollable/ListView","view",[
 				["options","map",{"className":"scrollable"}],
-				["css","file","scrollable/style.css"],
+				["css","file","scrollable/Scrollable.css"],
 				["list","ref","contacts"],
 				["Cell","view",[
 					["options","map",{"className":"row contact"}],
@@ -179,10 +182,12 @@
 			["Call","view",[
 				["tpl","file","Call.asp"],
 				["css","file","Call.css"],
+				["paneId","ref","paneId"],
 				["maxDelay","int",0],
 				["contact","model","contacts",0],
 				["recents","ref","recents"],
 				["Keypad","view",[
+					["paneId","ref","paneId"],
 					["html","file","CallinKeypad.html"],
 					["css","file","Keypad.css"]
 				],["Keypad","CallKeypadMixin"]]
@@ -195,9 +200,11 @@
 			["Call","view",[
 				["tpl","file","Call.asp"],
 				["css","file","Call.css"],
+				["paneId","ref","paneId"],
 				["contact","model","contacts",0],
 				["recents","ref","recents"],
 				["Keypad","view",[
+					["paneId","ref","paneId"],
 					["html","file","CalloutKeypad.html"],
 					["css","file","Keypad.css"]
 				],["Keypad","CallKeypadMixin"]]

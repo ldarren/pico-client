@@ -11,7 +11,7 @@ getId = function(spec){return spec[ID]},
 getType = function(spec){return spec[TYPE]},
 getValue = function(spec){return spec[VALUE]},
 getExtra = function(spec,idx){return spec[EXTRA+(idx||0)]},
-find = function(id, list){ for(var i=0,o; o=list[i]; i++){ if (id === o[ID]) return o } },
+find = function(id, list, all){ for(var i=0,o; o=list[i]; i++){ if (id === o[ID]) return all?o:o[VALUE] } },
 findAll = function(cond, list, by, all){
     var arr = []
     for(var i=0,o; o=list[i]; i++){ if (cond === o[by]) arr.push(all?o:o[VALUE]) }
@@ -36,7 +36,7 @@ load = function(host, params, spec, idx, deps, cb, userData){
 
     switch(t){
     case 'ref': //ID[id] TYPE[ref] VALUE[orgId]
-        f = find(s[VALUE], context)
+        f = find(s[VALUE], context, true)
 		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
         deps.push(create(s[ID], f[TYPE], f[VALUE]))
         break
@@ -44,7 +44,7 @@ load = function(host, params, spec, idx, deps, cb, userData){
         Array.prototype.push.apply(deps, findAll(s[VALUE], context, TYPE, 1))
         break
     case 'model': // ID[id] TYPE[model/field] VALUE[models] EXTRA[paramId] EXTRA1[field name]
-		f = find(s[VALUE], context)
+        f = find(s[VALUE], context, true)
 		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
 		var m = f[VALUE].get(params[s[EXTRA]])
 		if (!m || !m.get) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',params[s[EXTRA]]), deps, userData)
@@ -54,7 +54,7 @@ load = function(host, params, spec, idx, deps, cb, userData){
         deps.push(create(s[ID], t, new Model(s[EXTRA], s[VALUE], s[ID])))
         break
 	case 'fields': // ID[id] TYPE[fields] VALUE[models] EXTRA[filter] EXTRA1[field names]
-		f = find(s[VALUE], context)
+        f = find(s[VALUE], context, true)
 		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
 		var m = s[EXTRA] ? new Model(f[VALUE].where(s[EXTRA])) : f[VALUE]
 		if (!m || !m.pluck) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',s[EXTRA]), deps, userData)
@@ -127,11 +127,19 @@ return {
         setTimeout(load,0,host, params, spec, 0, [], cb, userData)
     },
     unload:unload,
+	find:find,
     findAllById: function(cond, list, all){ return findAll(cond, list, ID, all) },
     findAllByType:function(cond, list, all){ return findAll(cond, list, TYPE, all) },
     create:create,
     getId:getId,
     getType:getType,
     getValue:getValue,
-    getExtra:getExtra
+    getExtra:getExtra,
+	getViewOptions:function(spec){
+		var opt=find('options',spec)
+		if (!opt || !opt.els) return opt
+		var paneId=find('paneId',spec)||0
+		opt.el=opt.els[paneId]
+		return opt
+	}
 }

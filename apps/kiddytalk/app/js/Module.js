@@ -71,10 +71,6 @@ specLoaded = function(err, spec, userData){
         }
     }
 },
-getViewOptions=function(spec){
-    for(var i=0,o; o=spec[i]; i++){ if ('options'===o[ID]) return o[VALUE]}
-	return null
-},
 // dun remove mod here, mod may be removed
 hideByIndex= function(self, i, host){
     host = host || self.el
@@ -201,7 +197,7 @@ var View = Backbone.View.extend(_.extend(Module, {
         var
 		s=spec && spec.length ? Mod.spec.concat(spec) : Mod.spec,
         m=new (View.extend(Mod.Class))(
-			getViewOptions(s),
+			specMgr.getViewOptions(s),
 			Mod,
 			s,
 			params,
@@ -259,6 +255,5 @@ var View = Backbone.View.extend(_.extend(Module, {
 
 return {
     Ctrl:Ctrl,
-    View:View,
-	getViewOptions:getViewOptions
+    View:View
 }

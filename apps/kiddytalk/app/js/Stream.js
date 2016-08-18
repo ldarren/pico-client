@@ -27,17 +27,12 @@ callbacks=function(self){
         self.trigger(e.type, data, e.lastEventId)
     }
     ]
-}
-
-function Stream(options){
-    init(this, options.channel, options.path, options.events, options.withCredentials)
-}           
-            
-function init(self, channel, path, events, withCredentials, dcCount){
+},
+init=function(self, channel, path, events, withCredentials, autoconnect){
     self.channel=channel
     self.events=events
-	self.dcCount=dcCount||0
-    if (!path) return
+	self.dcCount=0
+    if (!autoconnect || !path) return
 
     var
     cbList=callbacks(self),
@@ -53,7 +48,11 @@ function init(self, channel, path, events, withCredentials, dcCount){
         s.addEventListener(e,cbList[2],false)
     }
 	self.sse=s
-}       
+} 
+
+function Stream(options){
+    init(this, options.channel, options.path, options.events, options.autoconnect, options.withCredentials)
+}           
 
 _.extend(Stream.prototype, Backbone.Events,{
     reconnect:function(channel, path, events, withCredentials){
@@ -65,14 +64,15 @@ _.extend(Stream.prototype, Backbone.Events,{
                 channel||this.channel,
                 path||s.url,
                 events||this.events,
-                withCredentials||s.withCredentials,
-                this.dcCount)
+				true,
+                withCredentials||s.withCredentials)
         }else{
             init(
                 this,
                 channel||this.channel,
                 path,
                 events||this.events,
+				true,
                 withCredentials)
         }
     },

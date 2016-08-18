@@ -2,7 +2,7 @@ var
 web=require('pico/web'),
 picoObj=require('pico/obj'),
 channels = {}, directory={},
-addon,
+addon,count=30,
 create = function(keys, domains, cb){
     if (!keys.length) return cb()
 
@@ -25,6 +25,14 @@ getKey=function(p){
     return -1===i ? p : p.substr(0, i)
 }
 
+this.update=function(){
+	if (count--) return
+	count=30
+	for(var i=0,keys=Object.keys(channels),c; c=channels[keys[i]]; i++){
+		c.beat()
+	}
+}
+
 Backbone.ajax = function(req){
     if (!req) return
     var
@@ -37,14 +45,14 @@ Backbone.ajax = function(req){
             return req.error(err)
         }
         Backbone.trigger('networkRecv', null, api, data)
-        return req.success(data, 'success')
+        return req.success(data)
     }
 
-    if (!c) return
+    if (!c) return req.error(getKey(api)+' domain undefined')
 
     if (reqData.charAt){
         try {reqData=JSON.parse(reqData)}
-        catch(e){console.error(e)}
+        catch(e){return req.error(null, err)}
     }
 
     if (reqData instanceof HTMLFormElement){
@@ -73,6 +81,7 @@ return{
         directory=picoObj.extend(directory, domains)
         create(Object.keys(domains), domains, cb)
     },
+	//TODO: per domain addon
     addon:function(){ addon = arguments[0] },
     getAddon:function(){ return addon ? JSON.parse(JSON.stringify(addon)) : ''},
     getDomain:function(url){ return directory[getKey(url)] || {} }

@@ -8,7 +8,7 @@ return Backbone.Collection.extend({
             sync: function(method, model, options){
                 if(!options.url) options.url=config[method]
                 if (options.url) return Backbone.sync(method, model, options)
-                return options.success()
+                return options.error(this.collection.name+'.'+method+' undefined')
             }
         })
         if (config.preload) this.fetch()

@@ -1,4 +1,5 @@
 .scrollable .row{
+	flex:0 0 80px;
 	font-size:1.2rem;
 	border-bottom: 1px solid #b3b3b3;
 	padding:0.5rem;
