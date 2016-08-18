@@ -7,7 +7,7 @@
 	flex-direction:column;
 	width:100%;
 	height:100%;
-    font-size: 5rem;
+    font-size: 2rem;
 	justify-content:space-around;
 }
 .callscr .profile li{
@@ -15,12 +15,12 @@
 	margin:1rem auto;
 }
 .callscr .profile .picture{
-    width:30rem;
-    height:30rem;
+    width:15rem;
+    height:15rem;
     border-radius:50%;
     display:block;
     background-position:50%;
-    background-size:80rem;
+    background-size:30rem;
 }
 .callscr .endcall{
     border: 1px solid red;

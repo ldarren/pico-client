@@ -14,15 +14,15 @@
 }
 .keypad .display{
 	width:100%;
-	height:6rem;
-	line-height:10rem;
+	height:7rem;
+	line-height:5rem;
 	text-align:right;
 	padding:1rem 0;
 }
 .keypad .btn{
 	display: block;
 	position:relative;
-    width:calc(80% / 3);
+    width:calc(70% / 3);
     text-align: center;
     border: 1px solid brown;
     border-radius: 50%;
