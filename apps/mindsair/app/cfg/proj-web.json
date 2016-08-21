@@ -2,21 +2,21 @@
     [
     ],[
     ],[
-        ["options","map",{"el":"#mindsair"}],
+        ["options","map",{"el":".__"}],
         ["html","file","Frame.html"],
         ["css","file","Frame.css"],
         ["css","file","Web.css"],
 		["layers","list",["#layer0","#layer1"]],
 		["auth/NoSession","ctrl",[]],
         ["js/Pane","view",[
-			["options","map",{"el":"#mindsair #layer0 #pane0"}],
+			["options","map",{"el":".__ #layer0 #pane0"}],
             ["paneId","int",0],
             ["html","file","Pane.html"],
 			["css","file","Pane.css"],
 			["allmodels","refs","models"]
         ]],
         ["js/Pane","view",[
-			["options","map",{"el":"#mindsair #layer0 #pane1"}],
+			["options","map",{"el":".__ #layer0 #pane1"}],
             ["paneId","int",1],
             ["html","file","Pane.html"],
 			["css","file","Pane.css"],
@@ -30,7 +30,7 @@
 			["options","map",{"el":"#pane0 #header"}],
 			["paneId","int",0],
 			["tpl","file","header/Basic.asp"],
-			["css","file","Header.css"]
+			["css","file","header/Basic.css"]
 		]],
 		["Page","view",[
 			["options","map",{"el":"#pane1 #page"}],
@@ -40,7 +40,7 @@
 			["options","map",{"el":"#pane1 #header"}],
 			["paneId","int",1],
 			["tpl","file","header/Basic.asp"],
-			["css","file","Header.css"]
+			["css","file","header/Basic.css"]
 		]],
 		["chats","models",{}]
     ],{
@@ -62,7 +62,7 @@
 			]],
 			["scrollable/ListView","view",[
 				["options","map",{"className":"scrollable"}],
-				["css","file","Scrollable.css"],
+				["css","file","scrollable/Scrollable.css"],
 				["list","ref","chats"],
 				["Cell","view",[
 					["options","map",{"className":"bubble right-top"}],
@@ -74,7 +74,7 @@
 				["options","map",{"className":"footer chatbar"}],
 				["paneId","int",0],
 				["tpl","file","footer/ChatBar.asp"],
-				["css","file","ChatBar.css"],
+				["css","file","footer/ChatBar.css"],
 				["icon","text","icon_next"],
 				["chats","ref","chats"]
 			]]

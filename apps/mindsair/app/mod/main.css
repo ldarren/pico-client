@@ -1,4 +1,4 @@
-#mindsair *, *:before, *:after{
+.__, .__ *, .__ *:before, .__ *:after{
     margin:0;
     padding:0;
     box-sizing:border-box;
@@ -9,7 +9,7 @@
 	-ms-user-select: none;
 	user-select: none;
 }
-#mindsair input,textarea{
+.__ input, .__ textarea{
 	-webkit-touch-callout: auto;
 	-webkit-user-select: auto;
 	-khtml-user-select: auto;
@@ -17,7 +17,7 @@
 	-ms-user-select: auto;
 	user-select: auto;
 }
-#mindsair{
+.__{
     display:flex;
 	position:fixed;
 	top:0;
@@ -29,19 +29,19 @@
 	pointer-events:none;
 	z-index:999;
 }
-#mindsair input,button,select{
+.__ input,.__ button,.__ select{
     outline:none;
     border:none;
 }
-#mindsair ul{
+.__ ul{
     list-style:none;
 }
-#mindsair .hidden{
+.__ .hidden{
     display:none !important;
 }
-#mindsair .invisible{
+.__ .invisible{
     visibility:hidden !important;
 }
-#mindsair .icon{
+.__ .icon{
 	cursor:pointer;
 }

@@ -1,5 +1,5 @@
 /* CSS talk bubble */
-#mindsair .bubble {
+.__ .bubble {
 	flex-shrink:0;
 	margin: 10px 30px;
   display: inline-block;
@@ -7,7 +7,7 @@
 	height: auto;
 	background-color: lightyellow;
 }
-#mindsair .bubble.round{
+.__ .bubble.round{
   border-radius: 30px;
 	-webkit-border-radius: 30px;
 	-moz-border-radius: 30px;
@@ -15,7 +15,7 @@
 }
 
 /* Right triangle placed top left flush. */
-#mindsair .bubble.left-top:after{
+.__ .bubble.left-top:after{
 	content: ' ';
 	position: absolute;
 	width: 0;
@@ -29,7 +29,7 @@
 }
 
 /* Right triangle, left side slightly down */
-#mindsair .bubble.left-in:after{
+.__ .bubble.left-in:after{
 	content: ' ';
 	position: absolute;
 	width: 0;
@@ -43,7 +43,7 @@
 }
 
 /*Right triangle, placed bottom left side slightly in*/
-#mindsair .bubble.left-btm:after{
+.__ .bubble.left-btm:after{
 	content: ' ';
 	position: absolute;
 	width: 0;
@@ -57,7 +57,7 @@
 }
 
 /*Right triangle, placed bottom left side slightly in*/
-#mindsair .bubble.left-btm-in:after{
+.__ .bubble.left-btm-in:after{
 	content: ' ';
 	position: absolute;
 	width: 0;
@@ -71,7 +71,7 @@
 }
 
 /*Right triangle, placed bottom right side slightly in*/
-#mindsair .bubble.right-btm-in:after{
+.__ .bubble.right-btm-in:after{
 	content: ' ';
 	position: absolute;
 	width: 0;
@@ -84,7 +84,7 @@
 }
 
 /*Right triangle, placed bottom right side slightly in*/
-#mindsair .bubble.right-btm:after{
+.__ .bubble.right-btm:after{
 	content: ' ';
 	position: absolute;
 	width: 0;
@@ -97,7 +97,7 @@
 }
 
 /* Right triangle, right side slightly down*/
-#mindsair .bubble.right-in:after{
+.__ .bubble.right-in:after{
 	content: ' ';
 	position: absolute;
 	width: 0;
@@ -111,7 +111,7 @@
 }
 
 /* Right triangle placed top right flush. */
-#mindsair .bubble.right-top:after{
+.__ .bubble.right-top:after{
 	content: ' ';
 	position: absolute;
 	width: 0;
@@ -125,12 +125,12 @@
 }
 
 /* talk bubble contents */
-#mindsair .talktext{
+.__ .talktext{
   padding: 1em;
 	text-align: left;
   line-height: 1.5em;
 }
-#mindsair .talktext p{
+.__ .talktext p{
   /* remove webkit p margins */
   -webkit-margin-before: 0em;
   -webkit-margin-after: 0em;

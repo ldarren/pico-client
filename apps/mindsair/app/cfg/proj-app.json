@@ -2,27 +2,27 @@
     [
     ],[
     ],[
-        ["options","map",{"el":"#mindsair"}],
+        ["options","map",{"el":".__"}],
         ["html","file","Frame.html"],
         ["css","file","Frame.css"],
         ["css","file","App.css"],
 		["layers","list",["#layer0","#layer1"]],
 		["auth/NoSession","ctrl",[]],
         ["js/Pane","view",[
-			["options","map",{"el":"#mindsair #layer0"}],
+			["options","map",{"el":".__ #layer0"}],
             ["paneId","int",0],
             ["html","file","Pane.html"],
 			["allmodels","refs","models"]
         ]],
 		["Page","view",[
-			["options","map",{"el":"#mindsair #page"}],
+			["options","map",{"el":".__ #page"}],
 			["paneId","int",0]
 		]],
 		["header/Basic","view",[
-			["options","map",{"el":"#mindsair #header"}],
+			["options","map",{"el":".__ #header"}],
 			["paneId","int",0],
 			["tpl","file","header/Basic.asp"],
-			["css","file","Header.css"],
+			["css","file","header/Basic.css"],
 			["title","text","Chat"],
 			["btnLeft","map",{"icon":"icon_name"}]
 		]],
@@ -40,14 +40,14 @@
 		]]
     ],{
         "home":[
-			["options","map",{"el":"#mindsair #page"}],
+			["options","map",{"el":".__ #page"}],
 			["chats","ref","chats"],
 			["ChatCtrl","ctrl",[
 				["showByDefault","bool",true]
 			]],
 			["scrollable/ListView","view",[
 				["options","map",{"className":"scrollable"}],
-				["css","file","Scrollable.css"],
+				["css","file","scrollable/Scrollable.css"],
 				["list","ref","chats"],
 				["Cell","view",[
 					["options","map",{"className":"bubble right-top"}],
@@ -59,7 +59,7 @@
 				["options","map",{"className":"footer chatbar"}],
 				["paneId","int",0],
 				["tpl","file","footer/ChatBar.asp"],
-				["css","file","ChatBar.css"],
+				["css","file","footer/ChatBar.css"],
 				["icon","text","icon_next"],
 				["chats","ref","chats"]
 			]]

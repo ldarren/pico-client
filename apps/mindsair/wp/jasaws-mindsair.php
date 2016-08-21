@@ -164,7 +164,7 @@ function mindsair_dashboard() {
 function mindsair_add_div() {
     if(get_option('mindsairId')) {
 		?>
-		<div id=mindsair></div>
+		<div class=__></div>
 		<?php
     }
 }

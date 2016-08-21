@@ -1,26 +1,21 @@
-*, *:before, *:after{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-#mindsair #layer0{
+.__ #layer0{
 	width:100%;
 	animation-name:unset;
 }
 @media (max-width:1024px){
-    #mindsair{
+    .__{
         animation-name: frameresize2;
     }
 }
 
 @media (max-width:568px){
-    #mindsair{
+    .__{
         animation-name: frameresize1;
     }
-    #mindsair>#layer0>div:nth-child(1){
+    .__>#layer0>div:nth-child(1){
         flex-basis:100%;
     }
-    #mindsair>#layer0>div:nth-child(2){
+    .__>#layer0>div:nth-child(2){
         display:none;
     }
 }
