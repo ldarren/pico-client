@@ -21,7 +21,7 @@
 			["options","map",{"el":".__ #header"}],
 			["paneId","int",0],
 			["tpl","file","header/Basic.asp"],
-			["css","file","header/Basic.css"],
+			["css","file","header.css"],
 			["title","text","Chat"],
 			["btnLeft","map",{"icon":"icon_name"}],
 			["btnRight","map",{"icon":"icon_ko"}]

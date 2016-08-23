@@ -31,3 +31,6 @@
 [submodule "apps/mindsair/app/mod/footer"]
 	path = apps/mindsair/app/mod/footer
 	url = https://github.com/ldarren/pico-mod-footer.git
+[submodule "apps/mindsair/app/mod/native"]
+	path = apps/mindsair/app/mod/native
+	url = https://github.com/ldarren/pico-mod-native.git

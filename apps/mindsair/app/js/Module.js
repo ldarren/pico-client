@@ -194,16 +194,20 @@ var View = Backbone.View.extend(_.extend(Module, {
 
         if ('ctrl'===Mod.type) return Ctrl.prototype.spawn.call(this, Mod, params, spec, hidden, chains)
 
-        var
-		s=spec && spec.length ? Mod.spec.concat(spec) : Mod.spec,
-        m=new (View.extend(Mod.Class))(
-			specMgr.getViewOptions(s),
-			Mod,
-			s,
-			params,
-			this,
-			!hidden,
-			chains instanceof Function ? [chains,spec]:chains)
+        try{
+			var
+			s=spec && spec.length ? Mod.spec.concat(spec) : Mod.spec,
+			m=new (View.extend(Mod.Class))(
+				specMgr.getViewOptions(s),
+				Mod,
+				s,
+				params,
+				this,
+				!hidden,
+				chains instanceof Function ? [chains,spec]:chains)
+		}catch(exp){
+			return console.error(Mod.name,'failed to spawn:',exp)
+		}
         this.modules.push(m)
         return m
     },

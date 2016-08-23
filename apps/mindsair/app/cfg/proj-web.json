@@ -30,7 +30,7 @@
 			["options","map",{"el":"#pane0 #header"}],
 			["paneId","int",0],
 			["tpl","file","header/Basic.asp"],
-			["css","file","header/Basic.css"]
+			["css","file","header.css"]
 		]],
 		["Page","view",[
 			["options","map",{"el":"#pane1 #page"}],
@@ -40,7 +40,7 @@
 			["options","map",{"el":"#pane1 #header"}],
 			["paneId","int",1],
 			["tpl","file","header/Basic.asp"],
-			["css","file","header/Basic.css"]
+			["css","file","header.css"]
 		]],
 		["chats","models",{}]
     ],{

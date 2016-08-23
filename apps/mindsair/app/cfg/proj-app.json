@@ -22,12 +22,27 @@
 			["options","map",{"el":".__ #header"}],
 			["paneId","int",0],
 			["tpl","file","header/Basic.asp"],
-			["css","file","header/Basic.css"],
+			["css","file","header.css"],
 			["title","text","Chat"],
 			["btnLeft","map",{"icon":"icon_name"}]
 		]],
+		["footer/MenuBar","view",[
+			["options","map",{"el":".__ #footer"}],
+			["paneId","int",0],
+			["tpl","file","footer/MenuBar.asp"],
+			["css","file","footer/MenuBar.css"],
+			["list","list",[
+				{"name":"Home","id":"home","icon":"icon_home","url":""},
+				{"name":"Chats","id":"chats","icon":"icon_chat","url":"chats"},
+				{"name":"Settings","id":"settings","icon":"icon_power","url":"settings"}
+			]]
+		]],
 		["chats","models",{
 			"create":"msair/chat/create"
+		}],
+		["notes","models",{
+		}],
+		["devices","models",{
 		}],
 		["auth/DataStream","ctrl",[
 			["models","refs","models"],
@@ -37,9 +52,16 @@
 				"events":[],
 				"autoconnect":false
 			}]
+		]],
+		["native/push",[
+			["senderId","text","AIzaSyCq_Er3AbH98OW2SPPG9cc5I1PSok6nnj4"],
+			["devices","ref","devices"]
+		]],
+		["pushclient","ctrl",[
+			["path","text","pushworker.js"]
 		]]
     ],{
-        "home":[
+        "noteList":[
 			["options","map",{"el":".__ #page"}],
 			["chats","ref","chats"],
 			["ChatCtrl","ctrl",[
@@ -63,8 +85,40 @@
 				["icon","text","icon_next"],
 				["chats","ref","chats"]
 			]]
-        ]
+        ],
+		"chatList":[
+		],
+		"chat":[
+			["options","map",{"el":".__ #page"}],
+			["chats","ref","chats"],
+			["ChatCtrl","ctrl",[
+				["showByDefault","bool",true]
+			]],
+			["scrollable/ListView","view",[
+				["options","map",{"className":"scrollable"}],
+				["css","file","scrollable/Scrollable.css"],
+				["list","ref","chats"],
+				["Cell","view",[
+					["options","map",{"className":"bubble right-top"}],
+					["tpl","file","Bubble.asp"],
+					["css","file","Bubble.css"]
+				],"Bubble"]
+			]],
+			[["footer/ChatBar","ChatBar"],"view",[
+				["options","map",{"className":"footer chatbar"}],
+				["paneId","int",0],
+				["tpl","file","footer/ChatBar.asp"],
+				["css","file","footer/ChatBar.css"],
+				["icon","text","icon_next"],
+				["chats","ref","chats"]
+			]]
+		],
+		"settings":[
+		]
     },[
-        ["*action","home"]
+        ["*action","nodeList"],
+        ["chats","chatList"],
+        ["chat/:chatId","chat"],
+        ["settings","settings"]
     ]
 ]

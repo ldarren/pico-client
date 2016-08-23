@@ -1,0 +1,29 @@
+return {
+	deps:{
+		path:'text',
+		device:'models'
+	},
+	create:function(deps,params){
+		if (!navigator.serviceWorker || !deps.path){
+			this.slots={}
+			return
+		}
+		navigator.serviceWorker.register(deps.path).then(function(reg){
+			reg.pushManager.subscribe({
+				userVisibleOnly:true
+			}).then(function(sub){
+				deps.device.create(null,{
+					data:{
+						endPoint:sub.endPoint
+					},
+					success:function(){
+					},
+					error:function(){
+					}
+				})
+			})
+		}).catch(console.error)
+	},
+	slots:{
+	}
+}
