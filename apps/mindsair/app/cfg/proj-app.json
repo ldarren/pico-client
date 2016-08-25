@@ -43,6 +43,7 @@
 		["notes","models",{
 		}],
 		["devices","models",{
+			"create":"msair/device/create"
 		}],
 		["auth/DataStream","ctrl",[
 			["models","refs","models"],
@@ -54,11 +55,15 @@
 			}]
 		]],
 		["native/push",[
-			["senderId","text","AIzaSyCq_Er3AbH98OW2SPPG9cc5I1PSok6nnj4"],
+			["senderId","int",778770064661],
 			["devices","ref","devices"]
 		]],
 		["pushclient","ctrl",[
-			["path","text","pushworker.js"]
+			["path","text","pushworker.js"],
+			["devices","ref","devices"],
+			["safariPushId","text","web.com.jasaws.mindsair-st"],
+			["safariServiceURL","text","https://elb.jasaws.com/msair"],
+			["safariData","map",{"app":"msair"}]
 		]]
     ],{
         "noteList":[
@@ -116,7 +121,7 @@
 		"settings":[
 		]
     },[
-        ["*action","nodeList"],
+        ["*action","noteList"],
         ["chats","chatList"],
         ["chat/:chatId","chat"],
         ["settings","settings"]

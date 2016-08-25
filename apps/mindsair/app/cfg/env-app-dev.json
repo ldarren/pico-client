@@ -1,4 +1,6 @@
 {
     "domains":{
+        "msair":{"url":"//st.jasaws.com/msair","delimiter":["&"]},
+		"pico":{"url":"//st.jasaws.com/pico","delimiter":["&"]}
     }
 }

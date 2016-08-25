@@ -2,6 +2,7 @@
     "deps":{
         "util":"api/util",
         "safari":"api/safari",
+        "device":"api/device",
         "web":["context","webServer"]
     },
     "routes":{
@@ -20,6 +21,12 @@
         "/msair/v%ver/devices/:deviceToken/registrations/:pushId":[
             ["safari","decision","req"]
         ],
+        "/msair/v%ver/log":[
+            ["web","getBody","req","body"],
+            ["util","sep","body"],
+            ["safari","log"],
+			[0]
+        ],
 		"safari.pushId.remove":[
             ["safari","remove"],
 			[0]
@@ -28,12 +35,10 @@
             ["safari","update"],
 			[0]
 		],
-        "/msair/v%ver/log":[
-            ["web","getBody","req","body"],
-            ["util","sep","body"],
-            ["safari","log"],
+		"msair/device/create":[
+			["device","send","input"],
 			[0]
-        ],
+		],
         "/msair":[
             ["util","route","req"],
             ["web","parse","req","res"]
