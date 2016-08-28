@@ -1,0 +1,5 @@
+{
+    "domains":{
+        "KEY":{"url":"http://{SERVER_IP:SERVER_PORT/SERVER_PATH}","delimiter":["&"]}
+    }
+}

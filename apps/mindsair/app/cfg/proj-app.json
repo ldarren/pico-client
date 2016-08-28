@@ -32,8 +32,8 @@
 			["tpl","file","footer/MenuBar.asp"],
 			["css","file","footer/MenuBar.css"],
 			["list","list",[
-				{"name":"Home","id":"home","icon":"icon_home","url":""},
-				{"name":"Chats","id":"chats","icon":"icon_chat","url":"chats"},
+				{"name":"Home","id":"noteList","icon":"icon_home","url":""},
+				{"name":"Chats","id":"chatList","icon":"icon_chat","url":"chats"},
 				{"name":"Settings","id":"settings","icon":"icon_power","url":"settings"}
 			]]
 		]],
@@ -58,11 +58,11 @@
 			["senderId","int",778770064661],
 			["devices","ref","devices"]
 		]],
-		["pushclient","ctrl",[
+		["native/webpush","ctrl",[
 			["path","text","pushworker.js"],
 			["devices","ref","devices"],
 			["safariPushId","text","web.com.jasaws.mindsair-st"],
-			["safariServiceURL","text","https://elb.jasaws.com/msair"],
+			["safariServiceURL","text","https://st.jasaws.com/msair"],
 			["safariData","map",{"app":"msair"}]
 		]]
     ],{

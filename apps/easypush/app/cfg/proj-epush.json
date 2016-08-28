@@ -1,0 +1,17 @@
+[
+    [
+        "lib/3rdparty.js"
+    ],[
+        "lib/3rdparty.css"
+    ],[
+        ["options","map",{"el":"body"}],
+        ["html","file","path/to/frame/html"]
+    ],{
+        "home":[
+            ["options","map",{"className":"home"}],
+            ["html","file","path/to/page/html"]
+        ]
+    },[
+        ["*action","home"]
+    ]
+]

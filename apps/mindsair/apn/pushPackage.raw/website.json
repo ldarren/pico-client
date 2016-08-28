@@ -1,8 +1,8 @@
 {
 	"websiteName": "Mindsair",
 	"websitePushID": "web.com.jasaws.mindsair-st",
-	"allowedDomains": ["https://elb.jasaws.com","http://54.83.28.108","http://st.jasaws.com"],
-	"urlFormatString": "https://elb.jasaws.com/sandbox/%@/?page=%@",
+	"allowedDomains": ["https://elb.jasaws.com","http://54.83.28.108","https://st.jasaws.com"],
+	"urlFormatString": "https://st.jasaws.com/sandbox/%@/?page=%@",
 	"authenticationToken": "19f8d7a6e9fb8a7f6d9330dabe",
-	"webServiceURL": "https://elb.jasaws.com/msair"
+	"webServiceURL": "https://st.jasaws.com/msair"
 }
