@@ -1,0 +1,95 @@
+[
+    [
+    ],[
+    ],[
+        ["options","map",{"el":".__"}],
+        ["html","file","Frame.html"],
+        ["css","file","Frame.css"],
+		["layers","list",["#layer0","#layer1"]],
+		["auth/NoSession","ctrl",[]],
+        ["js/Pane","view",[
+			["options","map",{"el":".__ #layer0"}],
+            ["paneId","int",0],
+            ["html","file","Pane.html"],
+			["allmodels","refs","models"]
+        ]],
+		["Page","view",[
+			["options","map",{"el":".__ #page"}],
+			["paneId","int",0]
+		]],
+		["header/Basic","view",[
+			["options","map",{"el":".__ #header"}],
+			["paneId","int",0],
+			["tpl","file","header/Basic.asp"],
+			["css","file","header.css"],
+			["title","text","Chat"],
+			["btnLeft","map",{"icon":"icon_name"}]
+		]],
+		["footer/MenuBar","view",[
+			["options","map",{"el":".__ #footer"}],
+			["paneId","int",0],
+			["tpl","file","footer/MenuBar.asp"],
+			["css","file","footer/MenuBar.css"],
+			["list","list",[
+				{"name":"Notes","id":"noteList","icon":"icon_home","url":""},
+				{"name":"Settings","id":"settings","icon":"icon_power","url":"settings"}
+			]]
+		]],
+		["notes","models",{
+		}],
+		["devices","models",{
+			"create":"msair/device/create"
+		}],
+		["auth/DataStream","ctrl",[
+			["models","refs","models"],
+			["push","stream",{
+				"channel":"msair",
+				"path":"/stream",
+				"events":[],
+				"autoconnect":false
+			}]
+		]],
+		["native/webpush","ctrl",[
+			["path","text","pushworker.js"],
+			["devices","ref","devices"],
+			["safariPushId","text","web.com.jasaws.mindsair-st"],
+			["safariServiceURL","text","https://st.jasaws.com/msair"],
+			["safariData","map",{"app":"msair"}]
+		]]
+    ],{
+        "noteList":[
+			["options","map",{"el":".__ #page"}],
+			["notes","ref","notes"],
+			["NoteCtrl","ctrl",[
+				["showByDefault","bool",true]
+			]],
+			["scrollable/ListView","view",[
+				["options","map",{"className":"scrollable"}],
+				["css","file","scrollable/Scrollable.css"],
+				["list","ref","notes"],
+				["Cell","view",[
+					["tpl","file","scrollable/Row.asp"],
+					["css","file","scrollable/Row.css"]
+				],"scrollable/Row"]
+			]]
+        ],
+		"settings":[
+			["options","map",{"el":".__ #page"}],
+			["devices","ref","devices"],
+			["SettingCtrl","ctrl",[
+				["showByDefault","bool",true]
+			]],
+			["scrollable/ScrollView","view",[
+				["css","file","scrollable/Scrollable.css"],
+				["list","ref","devices"],
+				["Cell","view",[
+					["tpl","file","scrollable/Row.asp"],
+					["css","file","scrollable/Row.css"]
+				],"scrollable/Row"]
+			]]
+		]
+    },[
+        ["settings","settings"],
+        ["*action","noteList"]
+    ]
+]

@@ -81,6 +81,23 @@
 					["tpl","file","Bubble.asp"],
 					["css","file","Bubble.css"]
 				],"Bubble"]
+			]]
+        ],
+		"chatList":[
+			["options","map",{"el":".__ #page"}],
+			["chats","ref","chats"],
+			["ChatCtrl","ctrl",[
+				["showByDefault","bool",true]
+			]],
+			["scrollable/ListView","view",[
+				["options","map",{"className":"scrollable"}],
+				["css","file","scrollable/Scrollable.css"],
+				["list","ref","chats"],
+				["Cell","view",[
+					["options","map",{"className":"bubble right-top"}],
+					["tpl","file","Bubble.asp"],
+					["css","file","Bubble.css"]
+				],"Bubble"]
 			]],
 			[["footer/ChatBar","ChatBar"],"view",[
 				["options","map",{"className":"footer chatbar"}],
@@ -90,8 +107,6 @@
 				["icon","text","icon_next"],
 				["chats","ref","chats"]
 			]]
-        ],
-		"chatList":[
 		],
 		"chat":[
 			["options","map",{"el":".__ #page"}],
@@ -119,11 +134,26 @@
 			]]
 		],
 		"settings":[
+			["options","map",{"el":".__ #page"}],
+			["chats","ref","chats"],
+			["ChatCtrl","ctrl",[
+				["showByDefault","bool",true]
+			]],
+			["scrollable/ListView","view",[
+				["options","map",{"className":"scrollable"}],
+				["css","file","scrollable/Scrollable.css"],
+				["list","ref","chats"],
+				["Cell","view",[
+					["options","map",{"className":"bubble right-top"}],
+					["tpl","file","Bubble.asp"],
+					["css","file","Bubble.css"]
+				],"Bubble"]
+			]]
 		]
     },[
-        ["*action","noteList"],
         ["chats","chatList"],
         ["chat/:chatId","chat"],
-        ["settings","settings"]
+        ["settings","settings"],
+        ["*action","noteList"]
     ]
 ]
