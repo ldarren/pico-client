@@ -1,0 +1,39 @@
+{
+    "deps":{
+        "util":"api/util",
+        "user":"api/user",
+        "web":["context","webServer"]
+    },      
+    "routes":{
+        "/jasy":[
+            ["util","route","req"],
+			["web","parse","req","res"]
+        ],
+        "ERR|#msg": [
+			["util","logParams"],
+            [0]
+        ],
+        "END|#msg": [
+            [0] 
+        ],
+        "jasy/user/signup":[
+            ["user","signup","input"],
+            [0]
+        ],
+        "jasy/user/signin":[
+            ["user","signin","input"],
+            [0]
+        ],
+        "jasy/user/update":[
+            ["user","update","input"],
+            [0]
+        ],
+        "jasy/user/remove":[
+            ["user","remove","input"],
+            [0]
+        ],
+        "#help": [
+            ["util","help"] 
+        ] 
+    }
+}   
