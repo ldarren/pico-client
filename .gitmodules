@@ -34,3 +34,15 @@
 [submodule "apps/mindsair/app/mod/native"]
 	path = apps/mindsair/app/mod/native
 	url = https://github.com/ldarren/pico-mod-native.git
+[submodule "apps/jasy/app/mod/auth"]
+	path = apps/jasy/app/mod/auth
+	url = https://github.com/ldarren/pico-mod-auth.git
+[submodule "apps/jasy/app/mod/header"]
+	path = apps/jasy/app/mod/header
+	url = https://github.com/ldarren/pico-mod-header.git
+[submodule "apps/jasy/app/mod/footer"]
+	path = apps/jasy/app/mod/footer
+	url = https://github.com/ldarren/pico-mod-footer.git
+[submodule "apps/jasy/app/mod/scrollable"]
+	path = apps/jasy/app/mod/scrollable
+	url = https://github.com/ldarren/pico-mod-scrollable.git
