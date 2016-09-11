@@ -63,6 +63,11 @@
         "entities":[
 			["options","map",{"els":["#pane0 #page","#pane1 #pane"]}],
 			["entities","ref","entities"],
+			["worker","worker",[
+				["SayHello.worker",{
+					"msg":"Good Morning"
+				}]
+			]],
 			["EntityListCtrl","ctrl",[
 				["showByDefault","bool",true],
 				["paneId","ref","paneId"],

@@ -3,6 +3,7 @@ picoObj=require('pico/obj'),
 Model= require('js/Model'),
 Stream= require('js/Stream'),
 Socket= require('js/Socket'),
+WorkerProxy= require('js/WorkerProxy'),
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
 ERR1='ref of REF not found',ERR2='record RECORD of ref of REF not found',
 extOpt={mergeArr:1},
@@ -81,6 +82,9 @@ load = function(host, params, spec, idx, deps, cb, userData){
         break
     case 'socket': // ID[id] TYPE[socket] VALUE[config]
         deps.push(create(s[ID], t, new Socket(s[VALUE])))
+        break
+    case 'worker': // ID[id] TYPE[socket] VALUE[config]
+        deps.push(create(s[ID], t, new WorkerProxy(s[VALUE])))
         break
     case 'param': // ID[id] TYPE[param] VALUE[index]
         deps.push(create(s[ID], t, params[s[VALUE]]))

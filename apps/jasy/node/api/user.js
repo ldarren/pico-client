@@ -1,5 +1,7 @@
 var
 picoStr=require('pico/str'),
+tmplTxt=require('tmpl/email_confirmation.txt'),
+tmplHtml=require('tmpl/email_confirmation.html'),
 sqlUser,
 createKey=function(){
 	return picoStr.rand().substr(0,20)
@@ -11,6 +13,7 @@ createSecret=function(){
 return {
 	setup:function(context,cb){
 		sqlUser=context.mainDB
+		context.email.ses.send(['ldarren@gmail.com'],'confirmation',tmplTxt,{html:tmplHtml})
 		cb()
 	},
     reply:function(output,next){
@@ -27,6 +30,20 @@ return {
     },
 	// TODO: ses email verification
 	signup:function(input,output,next){
+		this.ses.send([input.email],'Confirmation',tmplTxt,{html:tmplHtml,(err,data)=>{
+			if (err) return next(this.error(400, err))
+			next()
+		})
+	},
+	signin:function(input,next){
+	},
+	update:function(input,next){
+	},
+	remove:function(input,next){
+	},
+	verify:function(input,next){
+	},
+	confirmEmail:function(input,next){
 		var
 		name=input.name,
 		email=input.email
@@ -40,13 +57,5 @@ return {
 			})
 			next()
 		})
-	},
-	signin:function(input,next){
-	},
-	update:function(input,next){
-	},
-	remove:function(input,next){
-	},
-	verify:function(input,next){
 	}
 }
