@@ -1,14 +1,14 @@
-.__ #layer0{
+#__ #layer0{
 	flex-direction:row;
 }
-.__ .layer .pane{
+#__ .layer .pane{
 	display:flex;
 	flex-direction:column;
 	height:100%;
 }
-.__ .layer #pane0{
+#__ .layer #pane0{
 	flex: 0 0 30%;
 }
-.__ .layer #pane1{
+#__ .layer #pane1{
 	flex: 1 1 60%;
 }

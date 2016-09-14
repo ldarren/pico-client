@@ -46,3 +46,9 @@
 [submodule "apps/jasy/app/mod/scrollable"]
 	path = apps/jasy/app/mod/scrollable
 	url = https://github.com/ldarren/pico-mod-scrollable.git
+[submodule "apps/jasy/app/mod/dialog"]
+	path = apps/jasy/app/mod/dialog
+	url = https://github.com/ldarren/pico-mod-dialog.git
+[submodule "apps/jasy/app/mod/panel"]
+	path = apps/jasy/app/mod/panel
+	url = https://github.com/ldarren/pico-mod-panel.git

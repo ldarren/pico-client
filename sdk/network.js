@@ -41,10 +41,10 @@ Backbone.ajax = function(req){
     reqData = req.data || {},
     onReceive = function(err, data){
         if (err) {
-            Backbone.trigger('networkErr', err)
+            Backbone.trigger('network.error', err)
             return req.error(err)
         }
-        Backbone.trigger('networkRecv', null, api, data)
+        Backbone.trigger('network.recv', null, api, data)
         return req.success(data)
     }
 
@@ -72,7 +72,7 @@ Backbone.ajax = function(req){
     }else{
         c.request(api, reqData, addon, onReceive)
     }
-    Backbone.trigger('networkSend', null, api)
+    Backbone.trigger('network.send', null, api)
 }
 
 return{

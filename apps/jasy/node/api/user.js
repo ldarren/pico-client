@@ -1,8 +1,13 @@
+const
+SUBJECT='Confirmation',
+tmplTxt=require('tmpl/email_confirmation.txt'),
+tmplHtml=require('tmpl/email_confirmation.html')
+
 var
 picoStr=require('pico/str'),
-tmplTxt=require('tmpl/email_confirmation.txt'),
-tmplHtml=require('tmpl/email_confirmation.html'),
-sqlUser,
+sqlUser=require('sql/user'),
+redisUser=require('redis/user'),
+ses,
 createKey=function(){
 	return picoStr.rand().substr(0,20)
 },
@@ -11,51 +16,64 @@ createSecret=function(){
 }
 
 return {
-	setup:function(context,cb){
-		sqlUser=context.mainDB
-		context.email.ses.send(['ldarren@gmail.com'],'confirmation',tmplTxt,{html:tmplHtml})
+	setup(context,cb){
+		ses=context.email.ses
 		cb()
 	},
-    reply:function(output,next){
+    reply(output,next){
         this.setOutput(output,sqlUser.clean,sqlUser)
         next()
     },
-    replyToSelf:function(output,next){
+    replyToSelf(output,next){
         this.setOutput(output,sqlUser.cleanSelf,sqlUser)
         next()
     },
-    replyList:function(list,next){
+    replyList(list,next){
         this.setOutput(list,sqlUser.cleanList,sqlUser)
         next()
     },
 	// TODO: ses email verification
-	signup:function(input,output,next){
-		this.ses.send([input.email],'Confirmation',tmplTxt,{html:tmplHtml,(err,data)=>{
+	signup(input,output,next){
+		var email=input.email
+		if (!email || !input.pwd) return next(this.error(400))
+		var verifyId=createKey()
+		ses.send(
+		[email],
+		SUBJECT,
+		tmplTxt.replace('VERIFYID',verifyId),
+		{html:tmplHtml.replace('VERIFYID',verifyId)},
+		(err,data)=>{
 			if (err) return next(this.error(400, err))
+			Object.assign(output,input,{pwd:0})
+			redisUser.setRegisterCache(email,verifyId,input)
 			next()
 		})
 	},
-	signin:function(input,next){
+	signin(input,next){
 	},
-	update:function(input,next){
+	signout(input,next){
 	},
-	remove:function(input,next){
+	read(input,next){
 	},
-	verify:function(input,next){
+	update(input,next){
 	},
-	confirmEmail:function(input,next){
+	remove(input,next){
+	},
+	verify(input,next){
+	},
+	confirmEmail(input,output,next){
 		var
-		name=input.name,
-		email=input.email
-		if (!email || !input.pwd || !name) return next(this.error(401))
-		sqlUser.add(name, email, input.pwd, (err, userId)=>{
-			if (err) return next(this.error(401, err))
-			Object.assign(output,{
-				id:userId,
-				name:name,
-				email:email
+		email=input.email,
+		verifyId=input.verifyId
+		if (!email || !verifyId) return next(this.error(400))
+		redisUser.getRegisterCache(email,verifyId,(err,user)=>{
+			if (err) return next(this.error(403))
+			user.role='user'
+			sqlUser.set(user,0,(err, userId)=>{
+				if (err) return next(this.error(401, err))
+				Object.assign(output,user,{id:userId})
+				redisUser.removeRegisterCache(email,verifyId,next)
 			})
-			next()
 		})
 	}
 }

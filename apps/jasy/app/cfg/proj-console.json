@@ -2,42 +2,42 @@
     [
     ],[
     ],[
-        ["options","map",{"el":".__"}],
+        ["options","map",{"el":"#__"}],
         ["html","file","Frame.html"],
         ["css","file","Frame.css"],
         ["css","file","Console.css"],
 		["layers","list",["#layer0","#layer1"]],
 		["auth/NoSession","ctrl",[]],
         ["js/Pane","view",[
-			["options","map",{"el":".__ #layer0 #pane0"}],
+			["options","map",{"el":"#__ #layer0 #pane0"}],
             ["paneId","int",0],
             ["html","file","Pane.html"],
 			["css","file","Pane.css"],
 			["allmodels","refs","models"]
         ]],
         ["js/Pane","view",[
-			["options","map",{"el":".__ #layer0 #pane1"}],
+			["options","map",{"el":"#__ #layer0 #pane1"}],
             ["paneId","int",1],
             ["html","file","Pane.html"],
 			["css","file","Pane.css"],
 			["allmodels","refs","models"]
         ]],
 		["Page","view",[
-			["options","map",{"el":".__ #pane0 #page"}],
+			["options","map",{"el":"#__ #pane0 #page"}],
 			["paneId","int",0]
 		]],
 		["header/Basic","view",[
-			["options","map",{"el":".__ #pane0 #header"}],
+			["options","map",{"el":"#__ #pane0 #header"}],
 			["paneId","int",0],
 			["tpl","file","header/Basic.asp"],
 			["css","file","header/Basic.css"]
 		]],
 		["Page","view",[
-			["options","map",{"el":".__ #pane1 #page"}],
+			["options","map",{"el":"#__ #pane1 #page"}],
 			["paneId","int",1]
 		]],
 		["header/Basic","view",[
-			["options","map",{"el":".__ #pane1 #header"}],
+			["options","map",{"el":"#__ #pane1 #header"}],
 			["paneId","int",1],
 			["tpl","file","header/Basic.asp"],
 			["css","file","header/Basic.css"]
@@ -45,13 +45,45 @@
 		["users","models",{
 		}],
 		["owner","models",{
+			"update":"jasy/user/update",
+			"read":"jasy/user/read",
+			"delete":"jasy/user/signout"
 		}],
 		["entities","models",{
 		}],
 		["app","models",{
 		}],
 		["node","models",{
-		}]
+		}],
+		[["dialog/Modal","DialogAuth"],"view",[
+			["options","map",{"className":"modal fullpage"}],
+			["css","file","dialog/Modal.css"],
+			["formSignin","list",[
+				{"type":"text","name":"email","label":"Email","required":1},
+				{"type":"text","name":"pwd","label":"Password","required":1},
+				{"type":"button","name":"signin","label":"Sign in"},
+				{"type":"button","name":"signup","label":"Sign up"}
+			]],
+			["formSignup","list",[
+				{"type":"text","name":"name","label":"Name","required":1},
+				{"type":"text","name":"email","label":"Email","required":1},
+				{"type":"password","name":"pwd","label":"Password","required":1},
+				{"type":"password","name":"confirm_pwd","label":"Confirm Password","required":1},
+				{"type":"button","name":"signin","label":"Sign in"},
+				{"type":"button","name":"signup","label":"Sign up"}
+			]],
+			["Header","view",[
+				["options","map",{"className":"header"}],
+				["tpl","file","header/Basic.asp"],
+				["title","text","Title"],
+				["btnLeft","map",{"icon":"icon_ko"}],
+				["btnRight","map",{"icon":"icon_ok"}]
+			],"header/Basic"],
+			["Form","view",[
+				["tpl","file","panel/Form.asp"],
+				["css","file","panel/Form.css"]
+			],"panel/Form"]
+		]]
     ],{
         "":[
             ["options","map",{"el":"#pane1 #page"}],
@@ -70,6 +102,7 @@
 			]],
 			["EntityListCtrl","ctrl",[
 				["showByDefault","bool",true],
+				["layerSelector","text","#__ #layer0"],
 				["paneId","ref","paneId"],
 				["title","text","Chat"],
 				["btnLeft","map",{"icon":"icon_name"}]

@@ -1,5 +1,5 @@
 @import url(main.css);
-.__ .layer{
+#__ .layer{
 	display:flex;
 	flex-direction:column;
     position:absolute;
@@ -8,7 +8,7 @@
 	height:100%;
 	pointer-events:none;
 }
-.__ #layer0{
+#__ #layer0{
 	right:0;
 	width:512px;
 	min-width:256px;
@@ -19,18 +19,18 @@
   from { clip: rect(1px, auto, auto, auto) }
     to { clip: rect(0px, auto, auto, auto) }
 }
-.__ .layer #title{
+#__ .layer #title{
 	flex-shrink:0;
 	pointer-events:auto;
 }
-.__ .layer #page{
+#__ .layer #page{
 	display:flex;
 	flex-grow:1;
 	flex-direction:column;
 	position:relative;
 	pointer-events:auto;
 }
-.__ .layer #footer{
+#__ .layer #footer{
 	flex-shrink:0;
 	pointer-events:auto;
 }

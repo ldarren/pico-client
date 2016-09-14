@@ -24,12 +24,16 @@
             ["user","signin","input"],
             [0]
         ],
+        "jasy/user/signout":[
+            ["user","signout","input"],
+            [0]
+        ],
         "jasy/user/update":[
             ["user","update","input"],
             [0]
         ],
-        "jasy/user/remove":[
-            ["user","remove","input"],
+        "jasy/user/read":[
+            ["user","read","input"],
             [0]
         ],
         "#help": [

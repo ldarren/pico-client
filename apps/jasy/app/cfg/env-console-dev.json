@@ -1,4 +1,6 @@
 {
     "domains":{
+		"jasy":{"url":"https://st.jasaws.com/jasy"},
+		"pico":{"url":"https://st.jasaws.com/pico"}
     }
 }

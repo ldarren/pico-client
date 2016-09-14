@@ -2,13 +2,14 @@ return {
 	signals:['header','hideChat'],
 	deps:{
 		showByDefault:['bool',false],
+		layerSelector:'text',
 		paneId:'int',
 		title:'text',
 		btnLeft:'map',
 		btnRight:'map'
 	},
 	create:function(deps){
-		var layer0=document.querySelector('.__ #layer0')
+		var layer0=document.querySelector(deps.layerSelector)
 		this.layer0=layer0.classList
 		if (deps.showByDefault) this.layer0.remove('hidden')
 		if(deps.title)this.signals.header(deps.paneId,deps.title,deps.btnLeft,deps.btnRight).send(this.host)
