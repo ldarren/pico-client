@@ -1,5 +1,4 @@
 var
-PARAMS=['deps','signals','importScripts','XMLHttpRequest'],
 dummyCB=function(){},
 funcBody=function(func){
     return func.substring(func.indexOf('{')+1,func.lastIndexOf('}'))
@@ -18,6 +17,7 @@ _import=function(worker,queue,cb){
 },
 bootstrap=function(self,importScripts,postMessage,close){
 	var
+	PARAMS=['deps','signals','importScripts','XMLHttpRequest'],
 	actives={},
 	suspended={},
 	start=function(url,code,deps){
@@ -25,8 +25,8 @@ bootstrap=function(self,importScripts,postMessage,close){
 
 		var
 		signals={},
-		w=Function(...PARAMS,code)(deps,signals),
-		defaults=w.deps,
+		job=Function(...PARAMS,code)(deps,signals),
+		defaults=job.deps,
 		v
 
 		for(var key in defaults){
@@ -36,37 +36,37 @@ bootstrap=function(self,importScripts,postMessage,close){
 			deps[key] = v[1]
 		}
 
-		w.signals.forEach(function(evt){
+		job.signals.forEach(function(evt){
 			signals[evt]=function(){
 				postMessage([evt,...arguments])
 			}
 		})
 
-		w.create()
+		job.create()
 
-		actives[url]=w
+		actives[url]=job
 
 		return true
 	},
 	stop=function(url){
-		var w=actives[url]||suspended[url]
-		if (!w) return false
-		w.close()
+		var job=actives[url]||suspended[url]
+		if (!job) return false
+		job.close()
 		delete actives[url]
 		delete suspended[url]
 		return true
 	},
 	pause=function(url){
-		var w=actives[url]
-		if (!w) return false
-		suspended[url]=w
+		var job=actives[url]
+		if (!job) return false
+		suspended[url]=job
 		delete actives[url]
 		return true
 	},
 	resume=function(url){
-		var w=suspended[url]
-		if (!w) return false
-		actives[url]=w
+		var job=suspended[url]
+		if (!job) return false
+		actives[url]=job
 		delete suspended[url]
 		return true
 	},
@@ -74,11 +74,11 @@ bootstrap=function(self,importScripts,postMessage,close){
 		return actives[url] ? 1 : suspended[url] ? -1 : 0
 	},
 	signal=function(evt,params){
-		var w
+		var job
 		for(var key in actives){
-			w=actives[key]
-			if (!w.slots || !w.slots[evt]) continue
-			w.slots[evt](...params)
+			job=actives[key]
+			if (!job.slots || !job.slots[evt]) continue
+			job.slots[evt](...params)
 		}
 	}
 
@@ -128,10 +128,10 @@ callbacks=function(self){
 	}]
 }
 
-function WorkerProxy(scripts){
+function WorkerProxy(jobs){
 	if (!window.Worker) return console.error('WebWorker not supported')
 
-	this.queue=scripts||[]
+	this.queue=jobs||[]
 
 	var
 	dataurl= URL.createObjectURL(new Blob([funcBody(bootstrap.toString())], {type: 'application/javascript'})),
@@ -144,20 +144,20 @@ function WorkerProxy(scripts){
 }           
 
 _.extend(WorkerProxy.prototype, Backbone.Events,{
-	run:function(scripts){
-		if (!scripts || !Array.isArray(scripts)) return
+	run:function(jobs){
+		if (!jobs || !Array.isArray(jobs)) return
 		var q=this.queue
-		if (q.length) return q.push.apply(q, scripts) // loading in progress
-		this.queue=scripts
-		_import(this.worker,scripts,dummyCB)
+		if (q.length) return q.push.apply(q, jobs) // loading in progress
+		this.queue=jobs
+		_import(this.worker,jobs,dummyCB)
 	},
-	stop:function(scripts,cb){
+	stop:function(jobs,cb){
 	},
-	pause:function(scripts,cb){
+	pause:function(jobs,cb){
 	},
-	resume:function(scripts,cb){
+	resume:function(jobs,cb){
 	},
-	state:function(scripts,cb){
+	state:function(jobs,cb){
 	},
 	postMessage:function(){
 		this.worker.postMessage(Array.prototype.slice.call(arguments))

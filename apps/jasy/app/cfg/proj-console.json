@@ -7,7 +7,6 @@
         ["css","file","Frame.css"],
         ["css","file","Console.css"],
 		["layers","list",["#layer0","#layer1"]],
-		["auth/NoSession","ctrl",[]],
         ["js/Pane","view",[
 			["options","map",{"el":"#__ #layer0 #pane0"}],
             ["paneId","int",0],
@@ -42,6 +41,39 @@
 			["tpl","file","header/Basic.asp"],
 			["css","file","header/Basic.css"]
 		]],
+		[["dialog/Modal","DialogAuth"],"view",[
+			["options","map",{"className":"modal fullpage"}],
+			["css","file","dialog/Modal.css"],
+			["formSignin","list",[
+				[
+					{"type":"text","name":"email","label":"Email","required":1},
+					{"type":"password","name":"pwd","label":"Password","required":1},
+					{"type":"button","name":"signin","label":"Sign in"},
+					{"type":"button","name":"signup","label":"Sign up"}
+				]
+			]],
+			["formSignup","list",[
+				[
+					{"type":"text","name":"name","label":"Name","required":1},
+					{"type":"text","name":"email","label":"Email","required":1},
+					{"type":"password","name":"pwd","label":"Password","required":1},
+					{"type":"password","name":"confirm_pwd","label":"Confirm Password","required":1},
+					{"type":"button","name":"signin","label":"Sign in"},
+					{"type":"button","name":"signup","label":"Sign up"}
+				]
+			]],
+			["Header","view",[
+				["options","map",{"className":"header"}],
+				["tpl","file","header/Basic.asp"],
+				["title","text","Title"],
+				["btnLeft","map",{"icon":"icon_ko"}],
+				["btnRight","map",{"icon":"icon_ok"}]
+			],"header/Basic"],
+			["Form","view",[
+				["tpl","file","panel/Form.asp"],
+				["css","file","panel/Form.css"]
+			],"panel/Form"]
+		]],
 		["users","models",{
 		}],
 		["owner","models",{
@@ -55,34 +87,9 @@
 		}],
 		["node","models",{
 		}],
-		[["dialog/Modal","DialogAuth"],"view",[
-			["options","map",{"className":"modal fullpage"}],
-			["css","file","dialog/Modal.css"],
-			["formSignin","list",[
-				{"type":"text","name":"email","label":"Email","required":1},
-				{"type":"text","name":"pwd","label":"Password","required":1},
-				{"type":"button","name":"signin","label":"Sign in"},
-				{"type":"button","name":"signup","label":"Sign up"}
-			]],
-			["formSignup","list",[
-				{"type":"text","name":"name","label":"Name","required":1},
-				{"type":"text","name":"email","label":"Email","required":1},
-				{"type":"password","name":"pwd","label":"Password","required":1},
-				{"type":"password","name":"confirm_pwd","label":"Confirm Password","required":1},
-				{"type":"button","name":"signin","label":"Sign in"},
-				{"type":"button","name":"signup","label":"Sign up"}
-			]],
-			["Header","view",[
-				["options","map",{"className":"header"}],
-				["tpl","file","header/Basic.asp"],
-				["title","text","Title"],
-				["btnLeft","map",{"icon":"icon_ko"}],
-				["btnRight","map",{"icon":"icon_ok"}]
-			],"header/Basic"],
-			["Form","view",[
-				["tpl","file","panel/Form.asp"],
-				["css","file","panel/Form.css"]
-			],"panel/Form"]
+		["auth/Session","ctrl",[
+			["owner","ref","owner"],
+			["users","ref","users"]
 		]]
     ],{
         "":[
@@ -96,7 +103,7 @@
 			["options","map",{"els":["#pane0 #page","#pane1 #pane"]}],
 			["entities","ref","entities"],
 			["worker","worker",[
-				["SayHello.worker",{
+				["SayHello.job",{
 					"msg":"Good Morning"
 				}]
 			]],
