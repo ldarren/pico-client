@@ -87,7 +87,7 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
             if (err) return cb(err, deps, userData)
 			deps.push(create(s[ID], t, new Worker.Proxy(config)))
 		})
-        break
+        return
     case 'job': // ID[id] TYPE[job] VALUE[spec]
         require(s[ID], function(err, mod){
 			load(deps, params, s[VALUE], 0, [], function(err, config){
@@ -96,14 +96,14 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
 				load(ctx, params, spec, idx, deps, cb, userData)
 			})
 		})
-        break
+        return
     case 'use': // ID[id] TYPE[use] VALUE[spec]
 		load(deps, params, s[VALUE], 0, {}, function(err, config){
             if (err) return cb(err, deps, userData)
 			deps.push(create(s[ID], t, new Worker.Use(s[ID],config)))
 			load(ctx, params, spec, idx, deps, cb, userData)
 		})
-        break
+        return
     case 'param': // ID[id] TYPE[param] VALUE[index]
         deps.push(create(s[ID], t, params[s[VALUE]]))
         break
@@ -138,6 +138,9 @@ unload = function(rawSpec, spec){
         }
     }
     for(j=0; s=spec[j]; j++){
+		switch(s[TYPE]){
+		case 'worker': s[VALUE].close(); break
+		}
         delete s[VALUE]
     }
     spec.length = 0

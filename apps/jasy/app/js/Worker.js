@@ -96,13 +96,13 @@ bootstrap=function(self,importScripts,postMessage,close){
 			postMessage(['_started',params[0],start(params[0],params[1],params[2])])
 			return postMessage(['_import'])
 		case '_stop':
-			return all(params.length?[params[0]]:keys(),'_stopped',stop)
+			return all(params.length?params[0]:keys(),'_stopped',stop)
 		case '_pause':
-			return all(params.length?[params[0]]:keys(),'_paused',pause)
+			return all(params.length?params[0]:keys(),'_paused',pause)
 		case '_resume':
-			return all(params.length?[params[0]]:keys(),'_resumed',resume)
+			return all(params.length?params[0]:keys(),'_resumed',resume)
 		case '_state':
-			return all(params.length?[params[0]]:keys(),'_state',state)
+			return all(params.length?params[0]:keys(),'_state',state)
 		case '_close':
 			all(keys(),'_stopped',stop)
 			return close()
@@ -136,7 +136,7 @@ callbacks=function(self){
 }
 
 function WorkerProxy(spec){
-	if (!window.Worker) return console.error('WebWorker not supported')
+	if (!window.Worker) return console.error('Web Worker is not supported')
 
 	this.queue=specMgr.findAllByType('job',spec)
 
@@ -148,6 +148,24 @@ function WorkerProxy(spec){
 	URL.revokeObjectURL(dataurl)
     w.onmessage=cbs[0]
     w.onerror=cbs[1]
+
+	var use=specMgr.findAllByType('use',spec)[0]
+	if (!use) return
+	if (!window.navigator || !navigator.serviceWorker) console.log('Service Worker is not supported')
+	navigator.serviceWorker.register(use.url).then(function(reg) {
+		console.log(':^)', reg)
+		// TODO should have a delay here, it fails on first time due to service worker on yet activated
+		// use navigator.serviceWorker.ready?
+		if (use.deps.pushManager){
+			reg.pushManager.subscribe({
+				userVisibleOnly: true
+			}).then(function(sub) {
+				console.log('endpoint:', sub.endpoint)
+			})
+		}
+	}).catch(function(error) {
+		console.log(':^(', error)
+	})
 }           
 
 _.extend(WorkerProxy.prototype, Backbone.Events,{
@@ -158,13 +176,18 @@ _.extend(WorkerProxy.prototype, Backbone.Events,{
 		this.queue=jobs
 		_import(this.worker,jobs)
 	},
-	stop:function(jobs,cb){
+	// TODO: a more elegant way to stop 1 url, a list or url and all
+	// TODO: a more elegant way to get callback from worker
+	stop:function(urls,cb){
 	},
-	pause:function(jobs,cb){
+	stopAll:function(cb){
+		this.worker.postMessage(['_stop'])
 	},
-	resume:function(jobs,cb){
+	pause:function(urls,cb){
 	},
-	state:function(jobs,cb){
+	resume:function(urls,cb){
+	},
+	state:function(urls,cb){
 	},
 	postMessage:function(){
 		this.worker.postMessage(Array.prototype.slice.call(arguments))
@@ -175,7 +198,7 @@ _.extend(WorkerProxy.prototype, Backbone.Events,{
 		f=function(){clearTimeout(t),w.terminate()},
 		t=setTimeout(f,5000)
 
-		this.stop(f)
+		this.stopAll(f)
 	}
 })
 
