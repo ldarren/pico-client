@@ -97,10 +97,10 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
 			})
 		})
         return
-    case 'use': // ID[id] TYPE[use] VALUE[spec]
+    case 'service': // ID[id] TYPE[use] VALUE[spec]
 		load(deps, params, s[VALUE], 0, {}, function(err, config){
             if (err) return cb(err, deps, userData)
-			deps.push(create(s[ID], t, new Worker.Use(s[ID],config)))
+			deps.push(create(s[ID], t, new Worker.Service(s[ID],config)))
 			load(ctx, params, spec, idx, deps, cb, userData)
 		})
         return

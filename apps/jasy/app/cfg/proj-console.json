@@ -108,7 +108,7 @@
 				["SayHello.job","job",[
 					["msg","ref","msg"]
 				]],
-				["noti.use","use",[
+				["noti.sw","service",[
 				]]
 			]],
 			["EntityListCtrl","ctrl",[
