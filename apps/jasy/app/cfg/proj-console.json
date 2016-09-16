@@ -102,10 +102,14 @@
         "entities":[
 			["options","map",{"els":["#pane0 #page","#pane1 #pane"]}],
 			["entities","ref","entities"],
+			["msg","text","Good Morning"],
 			["worker","worker",[
-				["SayHello.job",{
-					"msg":"Good Morning"
-				}]
+				["msg","ref","msg"],
+				["SayHello.job","job",[
+					["msg","ref","msg"]
+				]],
+				["noti.use","use",[
+				]]
 			]],
 			["EntityListCtrl","ctrl",[
 				["showByDefault","bool",true],

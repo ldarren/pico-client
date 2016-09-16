@@ -7,7 +7,7 @@ return {
 	create:function(){
 		signals.showSomething(deps.msg)
 		for(var i=0,l=deps.count; i<l; i++){
-			console.log(typeof importScripts, typeof XMLHttpRequest)
+			console.log(deps.msg)
 		}
 	},
 	update:function(){

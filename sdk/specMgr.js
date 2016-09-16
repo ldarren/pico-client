@@ -3,7 +3,7 @@ picoObj=require('pico/obj'),
 Model= require('js/Model'),
 Stream= require('js/Stream'),
 Socket= require('js/Socket'),
-WorkerProxy= require('js/WorkerProxy'),
+Worker= require('js/Worker'),
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
 ERR1='ref of REF not found',ERR2='record RECORD of ref of REF not found',
 extOpt={mergeArr:1},
@@ -26,26 +26,25 @@ loadDeps = function(links, idx, klass, cb){
         loadDeps(links, idx, picoObj.extend(klass, mod, extOpt), cb)
     })
 },
-load = function(host, params, spec, idx, deps, cb, userData){
+load = function(ctx, params, spec, idx, deps, cb, userData){
     if (spec.length <= idx) return cb(null, deps, userData)
 
     var
-    context = host ? host.spec : [],
     s = spec[idx++],
     t = s[TYPE],
     f
 
     switch(t){
     case 'ref': //ID[id] TYPE[ref] VALUE[orgId]
-        f = find(s[VALUE], context, true)
+        f = find(s[VALUE], ctx, true)
 		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
         deps.push(create(s[ID], f[TYPE], f[VALUE]))
         break
     case 'refs': // ID[id] TYPE[refs] VALUE[orgType]
-        Array.prototype.push.apply(deps, findAll(s[VALUE], context, TYPE, 1))
+        Array.prototype.push.apply(deps, findAll(s[VALUE], ctx, TYPE, 1))
         break
     case 'model': // ID[id] TYPE[model/field] VALUE[models] EXTRA[paramId] EXTRA1[field name]
-        f = find(s[VALUE], context, true)
+        f = find(s[VALUE], ctx, true)
 		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
 		var m = f[VALUE].get(params[s[EXTRA]])
 		if (!m || !m.get) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',params[s[EXTRA]]), deps, userData);
@@ -55,7 +54,7 @@ load = function(host, params, spec, idx, deps, cb, userData){
         deps.push(create(s[ID], t, new Model(s[EXTRA], s[VALUE], s[ID])))
         break
 	case 'fields': // ID[id] TYPE[fields] VALUE[models] EXTRA[filter] EXTRA1[field names]
-        f = find(s[VALUE], context, true)
+        f = find(s[VALUE], ctx, true)
 		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
 		var m = s[EXTRA] ? new Model(f[VALUE].where(s[EXTRA])) : f[VALUE]
 		if (!m || !m.pluck) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',s[EXTRA]), deps, userData)
@@ -67,14 +66,14 @@ load = function(host, params, spec, idx, deps, cb, userData){
             if (err) return cb(err, deps, userData)
             f=s[ID]
             deps.push(create(f, t, {name:f, type:t, spec:s[VALUE], Class:klass}))
-            load(host, params, spec, idx, deps, cb, userData)
+            load(ctx, params, spec, idx, deps, cb, userData)
         })
         return
     case 'file': // ID[id] TYPE[file] VALUE[path]
         require(s[VALUE], function(err, mod){
             if (err) return cb(err, deps, userData)
             deps.push(create(s[ID], t, mod))
-            load(host, params, spec, idx, deps, cb, userData)
+            load(ctx, params, spec, idx, deps, cb, userData)
         })
         return
     case 'stream': // ID[id] TYPE[stream] VALUE[config]
@@ -83,8 +82,27 @@ load = function(host, params, spec, idx, deps, cb, userData){
     case 'socket': // ID[id] TYPE[socket] VALUE[config]
         deps.push(create(s[ID], t, new Socket(s[VALUE])))
         break
-    case 'worker': // ID[id] TYPE[socket] VALUE[config]
-        deps.push(create(s[ID], t, new WorkerProxy(s[VALUE])))
+    case 'worker': // ID[id] TYPE[worker] VALUE[spec]
+		load(deps, params, s[VALUE], 0, [], function(err, config){
+            if (err) return cb(err, deps, userData)
+			deps.push(create(s[ID], t, new Worker.Proxy(config)))
+		})
+        break
+    case 'job': // ID[id] TYPE[job] VALUE[spec]
+        require(s[ID], function(err, mod){
+			load(deps, params, s[VALUE], 0, [], function(err, config){
+				if (err) return cb(err, deps, userData)
+				deps.push(create(s[ID], t, new Worker.Job(s[ID],mod,config)))
+				load(ctx, params, spec, idx, deps, cb, userData)
+			})
+		})
+        break
+    case 'use': // ID[id] TYPE[use] VALUE[spec]
+		load(deps, params, s[VALUE], 0, {}, function(err, config){
+            if (err) return cb(err, deps, userData)
+			deps.push(create(s[ID], t, new Worker.Use(s[ID],config)))
+			load(ctx, params, spec, idx, deps, cb, userData)
+		})
         break
     case 'param': // ID[id] TYPE[param] VALUE[index]
         deps.push(create(s[ID], t, params[s[VALUE]]))
@@ -98,7 +116,7 @@ load = function(host, params, spec, idx, deps, cb, userData){
         deps.push(create(s[ID], t, s[VALUE]))
         break
     }
-    load(host, params, spec, idx, deps, cb, userData)
+    load(ctx, params, spec, idx, deps, cb, userData)
 },
 // need to get original spec, the one before spec.load, no way to diff ref and models
 unload = function(rawSpec, spec){
@@ -128,7 +146,7 @@ unload = function(rawSpec, spec){
 return {
     load:function(host, params, spec, cb, userData){
         if (!spec) return cb(null, [], userData)
-        setTimeout(load,0,host, params, spec, 0, [], cb, userData)
+        setTimeout(load,0,host?host.spec||[]:[], params, spec, 0, [], cb, userData)
     },
     unload:unload,
 	find:find,

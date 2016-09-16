@@ -1,5 +1,7 @@
-var ID=0,TYPE=1,VALUE=2,EXTRA=3,
+var
+ID=0,TYPE=1,VALUE=2,EXTRA=3,
 REFS='refs',
+STD_SIGNALS=['moduleAdded'],
 specMgr = require('js/specMgr'),
 sigslot= require('js/sigslot'),
 dummyCB=function(){},
@@ -166,7 +168,7 @@ function Ctrl(prop, rawSpec, params, host, show, chains){
     this._removed = false 
     this._show=show?[host.el,false]:null // view in chains migh need to show
 
-    this.signals = sigslot(this, ['moduleAdded'])
+    this.signals = sigslot(this, STD_SIGNALS)
     specMgr.load(host, params || [], rawSpec, specLoaded, [this,chains])
 }
 
