@@ -44,24 +44,26 @@
 		[["dialog/Modal","DialogAuth"],"view",[
 			["options","map",{"className":"modal fullpage"}],
 			["css","file","dialog/Modal.css"],
-			["formSignin","list",[
+			["form","list",[
 				[
 					{"type":"text","name":"email","label":"Email","required":1},
 					{"type":"password","name":"pwd","label":"Password","required":1},
 					{"type":"button","name":"signin","label":"Sign in"},
-					{"type":"button","name":"signup","label":"Sign up"}
-				]
-			]],
-			["formSignup","list",[
+					{"type":"button","name":"gosignup","label":"Sign up"}
+				],
 				[
 					{"type":"text","name":"name","label":"Name","required":1},
 					{"type":"text","name":"email","label":"Email","required":1},
 					{"type":"password","name":"pwd","label":"Password","required":1},
 					{"type":"password","name":"confirm_pwd","label":"Confirm Password","required":1},
-					{"type":"button","name":"signin","label":"Sign in"},
-					{"type":"button","name":"signup","label":"Sign up"}
+					{"type":"button","name":"signup","label":"Sign up"},
+					{"type":"button","name":"gosignin","label":"Cancel"}
 				]
 			]],
+			["cred","models",{
+				"create":"jasy/user/signup",
+				"read":"jasy/user/signin"
+			}],
 			["Header","view",[
 				["options","map",{"className":"header"}],
 				["tpl","file","header/Basic.asp"],

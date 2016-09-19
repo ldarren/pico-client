@@ -17,7 +17,8 @@
             [0] 
         ],
         "jasy/user/signup":[
-            ["user","signup","input"],
+            ["user","signup","input","output"],
+            ["user","reply","output"],
             [0]
         ],
         "jasy/user/signin":[
