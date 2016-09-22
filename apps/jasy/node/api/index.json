@@ -18,11 +18,17 @@
         ],
         "jasy/user/signup":[
             ["user","signup","input","output"],
-            ["user","reply","output"],
+            ["user","replyToSelf","output"],
+            [0]
+        ],
+        "jasy/user/confirm":[
+            ["user","confirmEmail","input","output"],
+            ["user","replyToSelf","output"],
             [0]
         ],
         "jasy/user/signin":[
-            ["user","signin","input"],
+            ["user","signin","input","output"],
+            ["user","replyToSelf","output"],
             [0]
         ],
         "jasy/user/signout":[
@@ -34,7 +40,8 @@
             [0]
         ],
         "jasy/user/read":[
-            ["user","read","input"],
+            ["user","read","input","output"],
+            ["user","reply","output"],
             [0]
         ],
         "#help": [

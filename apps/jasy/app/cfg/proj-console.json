@@ -6,6 +6,20 @@
         ["html","file","Frame.html"],
         ["css","file","Frame.css"],
         ["css","file","Console.css"],
+		["owner","models",{
+			"list":"jasy/user/signin",
+			"update":"jasy/user/update",
+			"delete":"jasy/user/signout"
+		}],
+		["users","models",{
+			"read":"jasy/user/read"
+		}],
+		["entities","models",{
+		}],
+		["app","models",{
+		}],
+		["node","models",{
+		}],
 		["layers","list",["#layer0","#layer1"]],
         ["js/Pane","view",[
 			["options","map",{"el":"#__ #layer0 #pane0"}],
@@ -62,8 +76,10 @@
 			]],
 			["cred","models",{
 				"create":"jasy/user/signup",
-				"read":"jasy/user/signin"
+				"read":"jasy/user/confirm"
 			}],
+			["owner","ref","owner"],
+			["users","ref","users"],
 			["Header","view",[
 				["options","map",{"className":"header"}],
 				["tpl","file","header/Basic.asp"],
@@ -76,19 +92,6 @@
 				["css","file","panel/Form.css"]
 			],"panel/Form"]
 		]],
-		["users","models",{
-		}],
-		["owner","models",{
-			"update":"jasy/user/update",
-			"read":"jasy/user/read",
-			"delete":"jasy/user/signout"
-		}],
-		["entities","models",{
-		}],
-		["app","models",{
-		}],
-		["node","models",{
-		}],
 		["auth/Session","ctrl",[
 			["owner","ref","owner"],
 			["users","ref","users"]

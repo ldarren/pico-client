@@ -2,8 +2,8 @@ const
 SUBJECT='Confirmation',
 TEXT_CONFIRM=require('tmpl/email_confirmation.txt'),
 HTML_CONFIRM=require('tmpl/email_confirmation.html'),
-URL_CONFIRM_DEV='https://st.jasaws.com/jasy/app/#/email/confirm/VID',
-URL_CONFIRM_PRO='https://console.jasaws.com/jasy/app/#email/confirm/VID',
+URL_CONFIRM_DEV='https://st.jasaws.com/jasy/app/#email/confirm/EMAIL/VID',
+URL_CONFIRM_PRO='https://console.jasaws.com/jasy/app/#email/confirm/EMAIL/VID',
 URL_DOC_DEV='https://st.jasaws.com/jasy/app/#doc',
 URL_DOC_PRO='https://console.jasaws.com/jasy/app/#doc'
 
@@ -41,30 +41,70 @@ return {
 	// TODO: ses email verification
 	signup(input,output,next){
 		var email=input.email
-		if (!email || !input.pwd) return next(this.error(400))
-		var
-		verifyId=createKey(),
-		urlConfirm=(isPro?URL_CONFIRM_PRO:URL_CONFIRM_DEV).replace('VID',verifyId),
-		urlDoc=isPro?URL_DOC_PRO:URL_DOC_DEV
+		if (!email || !input.pwd) return next(this.error(401))
+		sqlUser.findByEmail(email, (err, users)=>{
+			if (err) return next(this.error(500))
+			if (users.length) return next(this.error(401))
 
-		ses.send([email],SUBJECT,
-			TEXT_CONFIRM.replace('URL_EMAIL_CONFIRM',urlConfirm).replace('URL_DOC',urlDoc),
-			{html:HTML_CONFIRM.replace('URL_EMAIL_CONFIRM',urlConfirm).replace('URL_DOC',urlDoc)},
-			(err,data)=>
-			{
-				if (err) return next(this.error(400, err))
-				Object.assign(output,input,{pwd:0})
-				redisUser.setRegisterCache(email,verifyId,input)
+			var
+			verifyId=createKey(),
+			urlConfirm=(isPro?URL_CONFIRM_PRO:URL_CONFIRM_DEV).replace('EMAIL',email).replace('VID',verifyId),
+			urlDoc=isPro?URL_DOC_PRO:URL_DOC_DEV
+
+			ses.send([email],SUBJECT,
+				TEXT_CONFIRM.replace('URL_EMAIL_CONFIRM',urlConfirm).replace('URL_DOC',urlDoc),
+				{html:HTML_CONFIRM.replace('URL_EMAIL_CONFIRM',urlConfirm).replace('URL_DOC',urlDoc)},
+				(err,data)=>
+				{
+					if (err) return next(this.error(400, err))
+					Object.assign(output,input,{id:0})
+					redisUser.setRegisterCache(email,verifyId,input)
+					next()
+				})
+		})
+	},
+	confirmEmail(input,output,next){
+		var
+		email=input.email,
+		verifyId=input.verifyId
+		if (!email || !verifyId) return next(this.error(400))
+		sqlUser.findByEmail(email, (err, users)=>{
+			if (err) return next(this.error(500))
+			if (users.length) return next(this.error(401))
+
+			redisUser.getRegisterCache(email,(err,vid,user)=>{
+				if (err) return next(this.error(403))
+				if (vid!==verifyId) return next(this.error(403))
+				user.role='user'
+				Object.assign(output,user,{sess:createKey()})
+				this.addJob([output,0],sqlUser.set,sqlUser)
+				this.addJob([email],redisUser.removeRegisterCache,redisUser)
 				next()
 			})
+		})
 	},
-	signin(input,next){
-		next()
+	signin(input,output,next){
+		var email=input.email
+		if (!email || !input.pwd) return next(this.error(401))
+		sqlUser.findByEmail(email, (err, users)=>{
+			if (err) return next(this.error(500))
+			if (!users || !users.length) return next(this.error(401))
+
+			var user=users[0]
+
+			sqlUser.map_getByKey(user, 'pwd', (err, map)=>{
+				if (err) return next(this.error(500))
+				if (input.pwd !== map.pwd) return next(this.error(401))
+
+				Object.assign(output,user,{sess:createKey()})
+				next()
+			})
+		})
 	},
 	signout(input,next){
 		next()
 	},
-	read(input,next){
+	read(input,output,next){
 		next()
 	},
 	update(input,next){
@@ -75,20 +115,5 @@ return {
 	},
 	verify(input,next){
 		next()
-	},
-	confirmEmail(input,output,next){
-		var
-		email=input.email,
-		verifyId=input.verifyId
-		if (!email || !verifyId) return next(this.error(400))
-		redisUser.getRegisterCache(email,verifyId,(err,user)=>{
-			if (err) return next(this.error(403))
-			user.role='user'
-			sqlUser.set(user,0,(err, userId)=>{
-				if (err) return next(this.error(401, err))
-				Object.assign(output,user,{id:userId})
-				redisUser.removeRegisterCache(email,verifyId,next)
-			})
-		})
 	}
 }
