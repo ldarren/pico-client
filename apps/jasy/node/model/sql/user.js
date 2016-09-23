@@ -66,7 +66,7 @@ module.exports={
 	},
 	map_getByKey(user,key,cb){
 		if (!user||!user.id) return cb(ERR_INVALID_INPUT)
-		client.query(MAP_GET_BY_KEY,[user.id,key],(err,rows)=>{
+		client.query(MAP_GET_BY_KEY,[user.id,hash.val(key)],(err,rows)=>{
 			if (err) return cb(err)
 			cb(null,client.mapDecode(rows,user,hash,ENUM))
 		})

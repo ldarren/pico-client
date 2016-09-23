@@ -2,7 +2,7 @@ var
 picoStr=require('pico/str'),
 signin=function(from,sender,data){
 	var self=this
-	this.deps.owner.fetch(null,{
+	this.deps.owner.fetch({
 		data:{
 			email:data.email,
 			pwd:picoStr.hash(data.pwd)
@@ -35,6 +35,25 @@ signup=function(from,sender,data){
 		}
 	})
 },
+confirmEmail=function(self){
+	var arr=location.hash.split('/')
+	location.hash='#'
+	if ('#email'===arr[0] && 'confirm'===arr[1]){
+		self.deps.cred.read({email:arr[2],verifyId:arr[3]},function(err,model,res){
+			if (err) return __.dialogs.alert(err,'Email Confirmation Error')
+			var
+			coll=[model],
+			silent={silent:true},
+			deps=self.deps
+			deps.owner.reset(null,silent)
+			deps.users.reset(null,silent)
+			deps.owner.add(model)
+			deps.users.add(model)
+		})
+		return true
+	}
+	return false
+},
 dummyPageResult=function(from,sender,data,cb){ cb() }
 
 return {
@@ -47,21 +66,10 @@ return {
 	},
 	slots:{
 		signin:function(from,sender,user){
-			var
-			self=this,
-			arr=window.location.hash.split('/')
-			if ('#email'===arr[0] && 'confirm'===arr[1]){
-				this.deps.cred.read({email:arr[2],verifyId:arr[3]},function(err,model,res){
-					if (err) return __.dialogs.alert(err,'Email Confirmation Error')
-					var coll=[model]
-					self.deps.owner.reset(coll)
-					self.deps.users.reset(coll)
-				})
-			}
-			this.slots.modalHide.call(this,from,this)
+			if(!confirmEmail(this))this.slots.modalHide.call(this,from,this)
 		},
 		signout:function(from,sender){
-			this.slots.modalShow.call(this,from,this,this.deps.form)
+			if(!confirmEmail(this))this.slots.modalShow.call(this,from,this,this.deps.form)
 		},
 		pageCreate:function(from,sender,curr,total,page,cb){
 			cb(null,page)

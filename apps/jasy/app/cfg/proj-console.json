@@ -92,7 +92,7 @@
 				["css","file","panel/Form.css"]
 			],"panel/Form"]
 		]],
-		["auth/Session","ctrl",[
+		[["auth/Session","SessionMixin"],"ctrl",[
 			["owner","ref","owner"],
 			["users","ref","users"]
 		]]

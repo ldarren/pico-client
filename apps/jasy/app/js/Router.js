@@ -36,10 +36,13 @@ Router= Backbone.Router.extend({
     },
     home: function(replace){ Router.go('', replace) },
     add: function(paths){
-        for(var i=paths.length-1,p; p=paths[i]; i--){
-            context.route(p, p)
-        }
+		if (!paths) return
+        for(var i=paths.length-1,p; p=paths[i]; i--) context.route(p, p);
     },
+	reset: function(paths){
+		Backbone.history.handlers=[]
+		Router.add(paths)
+	},
     currPath: function(){ return currPath },
     isBack: function(){ return index < lastIndex }
 })
