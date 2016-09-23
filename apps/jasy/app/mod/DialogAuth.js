@@ -7,9 +7,9 @@ signin=function(from,sender,data){
 			email:data.email,
 			pwd:picoStr.hash(data.pwd)
 		},
-		success:function(model,res){
+		success:function(coll,res){
 			console.log('signup succeed',res)
-			self.deps.owner.add(model)
+			self.deps.owner.add(res)
 		},
 		error:function(model,res){
 			console.log('signup failed',res)

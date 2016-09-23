@@ -30,5 +30,14 @@ module.exports={
 		.del(`vid:${email}`)
 		.del(`rgc:${email}`)
 		.exec(cb)
+	},
+	getSession(user,cb){
+		client.get(`sess:${user.app}:${user.id}`,cb)
+	},
+	setSession(user,cb){
+		client.setex(`sess:${user.app}:${user.id}`,DAY1,user.sess,cb)
+	},
+	removeSession(user,cb){
+		client.del(`sess:${user.app}:${user.id}`,cb)
 	}
 }

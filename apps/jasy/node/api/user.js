@@ -76,9 +76,10 @@ return {
 				if (err) return next(this.error(403))
 				if (vid!==verifyId) return next(this.error(403))
 				user.role='user'
-				Object.assign(output,user,{sess:createKey()})
+				Object.assign(output,user,{app:input.app,sess:createKey()})
 				this.addJob([output,0],sqlUser.set,sqlUser)
 				this.addJob([email],redisUser.removeRegisterCache,redisUser)
+				this.addJob([output],redisUser.setSession,redisUser)
 				next()
 			})
 		})
@@ -96,7 +97,8 @@ return {
 				if (err) return next(this.error(500))
 				if (input.pwd !== map.pwd) return next(this.error(401))
 
-				Object.assign(output,user,{sess:createKey()})
+				Object.assign(output,user,{app:input.app,sess:createKey()})
+				this.addJob([output],redisUser.setSession,redisUser)
 				next()
 			})
 		})
