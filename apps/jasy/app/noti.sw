@@ -10,6 +10,7 @@ self.addEventListener('activate', function(evt){
 	console.log('Activated', evt)
 })
 self.addEventListener('message',function(evt){
+	// evt.data and evt.ports
 })
 
 self.addEventListener('push', function(evt){

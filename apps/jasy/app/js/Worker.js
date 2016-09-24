@@ -113,7 +113,7 @@ bootstrap=function(self,importScripts,postMessage,close){
 
 	postMessage(['_init'])
 },
-callbacks=function(self){
+workerCBs=function(self){
 	return [
 	function(e){
 		var params=e.data
@@ -137,35 +137,16 @@ callbacks=function(self){
 
 function WorkerProxy(spec){
 	if (!window.Worker) return console.error('Web Worker is not supported')
-
 	this.queue=specMgr.findAllByType('job',spec)
 
 	var
 	dataurl= URL.createObjectURL(new Blob([funcBody(bootstrap.toString())], {type: 'application/javascript'})),
 	w=this.worker = new Worker(dataurl),
-	cbs=callbacks(this)
+	cbs=workerCBs(this)
 
 	URL.revokeObjectURL(dataurl)
-    w.onmessage=cbs[0]
-    w.onerror=cbs[1]
-
-	var service=specMgr.findAllByType('service',spec)[0]
-	if (!service) return
-	if (!window.navigator || !navigator.serviceWorker) console.log('Service Worker is not supported')
-	navigator.serviceWorker.register(service.url).then(function(reg) {
-		console.log(':^)', reg)
-		// TODO should have a delay here, it fails on first time due to service worker on yet activated
-		// use navigator.serviceWorker.ready?
-		if (service.deps.pushManager){
-			reg.pushManager.subscribe({
-				userVisibleOnly: true
-			}).then(function(sub) {
-				console.log('endpoint:', sub.endpoint)
-			})
-		}
-	}).catch(function(error) {
-		console.log(':^(', error)
-	})
+	w.addEventListener('message',cbs[0])
+	w.addEventListener('error',cbs[1])
 }           
 
 _.extend(WorkerProxy.prototype, Backbone.Events,{
@@ -203,25 +184,13 @@ _.extend(WorkerProxy.prototype, Backbone.Events,{
 	}
 })
 
-function spec2Deps(spec){
-	var deps={}
-	for(var i=0,s;s=spec[i];i++){ deps[specMgr.getId(s)]=specMgr.getValue(s) }
-	return deps
-}
-
 function Job(url,script,spec){
 	this.url=url
 	this.script=script
-	this.deps=spec2Deps(spec)
-}
-
-function Service(url,spec){
-	this.url=url
-	this.deps=spec2Deps(spec)
+	this.deps=specMgr.spec2Obj(spec)
 }
 
 return {
 	Proxy:WorkerProxy,
-	Job:Job,
-	Service:Service
+	Job:Job
 }

@@ -4,6 +4,7 @@ Model= require('js/Model'),
 Stream= require('js/Stream'),
 Socket= require('js/Socket'),
 Worker= require('js/Worker'),
+Service= require('js/Service'),
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
 ERR1='ref of REF not found',ERR2='record RECORD of ref of REF not found',
 extOpt={mergeArr:1},
@@ -17,6 +18,11 @@ findAll = function(cond, list, by, all){
     var arr = []
     for(var i=0,o; o=list[i]; i++){ if (cond === o[by]) arr.push(all?o:o[VALUE]) }
     return arr
+},
+spec2Obj=function(spec){
+	var obj={}
+	for(var i=0,s;s=spec[i];i++){ obj[s[ID]]=s[VALUE] }
+	return obj
 },
 loadDeps = function(links, idx, klass, cb){
     if (!links || links.length <= idx) return cb(null, klass)
@@ -100,7 +106,7 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
     case 'service': // ID[id] TYPE[use] VALUE[spec]
 		load(deps, params, s[VALUE], 0, {}, function(err, config){
             if (err) return cb(err, deps, userData)
-			deps.push(create(s[ID], t, new Worker.Service(s[ID],config)))
+			deps.push(create(s[ID], t, new Service(s[ID],config)))
 			load(ctx, params, spec, idx, deps, cb, userData)
 		})
         return
@@ -155,6 +161,7 @@ return {
 	find:find,
     findAllById: function(cond, list, all){ return findAll(cond, list, ID, all) },
     findAllByType:function(cond, list, all){ return findAll(cond, list, TYPE, all) },
+	spec2Obj:spec2Obj,
     create:create,
     getId:getId,
     getType:getType,
