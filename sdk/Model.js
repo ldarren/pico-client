@@ -8,7 +8,7 @@ return Backbone.Collection.extend({
             sync: function(method, model, options){
                 if(!options.url) options.url=config[method]
                 if (options.url) return Backbone.sync(method, model, options)
-                return options.error(this.collection.name+'.'+method+' undefined')
+                return options.error(name+'.'+method+' undefined')
             }
         })
         if (config.preload) this.fetch()
@@ -33,8 +33,8 @@ return Backbone.Collection.extend({
         coll.fetch({
             data:{ set: nf, field:field },
             remove: false,
-            success: function(coll, raw){cb(null, coll, raw)},
-            error: function(coll, raw){cb(raw)}
+            success: function(coll, res){cb(null, coll, res)},
+            error: function(coll, res){cb(res)}
         })
     },
     read: function(data, cb){
@@ -43,12 +43,12 @@ return Backbone.Collection.extend({
         model=new this.model
         model.fetch({
             data:data,
-            success:function(model, raw){
+            success:function(model, res){
                 self.add(model)
-                cb(null, model, raw)
+                cb(null, model, res)
             },
-            error:function(model, err){
-                cb(err)
+            error:function(model, res){
+                cb(res)
             }
         })
     }
