@@ -29,6 +29,7 @@ fs.readlink(process.argv[1], (err, realPath)=>{
         'Socket.js','js',
         'Stream.js','js',
         'Worker.js','js',
+        'Service.js','js',
         'network.js','js',
         'sigslot.js','js',
         'specMgr.js','js'
