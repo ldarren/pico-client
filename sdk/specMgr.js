@@ -92,6 +92,7 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
 		load(deps, params, s[VALUE], 0, [], function(err, config){
             if (err) return cb(err, deps, userData)
 			deps.push(create(s[ID], t, new Worker.Proxy(config)))
+			load(ctx, params, spec, idx, deps, cb, userData)
 		})
         return
     case 'job': // ID[id] TYPE[job] VALUE[spec]
