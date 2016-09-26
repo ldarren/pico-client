@@ -104,7 +104,7 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
 		})
         return
     case 'service': // ID[id] TYPE[use] VALUE[spec]
-		load(deps, params, s[VALUE], 0, {}, function(err, config){
+		load(deps, params, s[VALUE], 0, [], function(err, config){
             if (err) return cb(err, deps, userData)
 			deps.push(create(s[ID], t, new Service(s[ID],config)))
 			load(ctx, params, spec, idx, deps, cb, userData)

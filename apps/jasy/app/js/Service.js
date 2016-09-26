@@ -1,35 +1,54 @@
 var
 specMgr=require('js/specMgr'),
+dummyCB=function(){},
 onMessage=function(self){
 	return function(evt){
+		console.log('received msg from sw',arguments)
+		var msg=evt.data
+		switch(msg[0]){
+		case 'activated':
+			break
+		}
 	}
 },
-postMessage=function(msg,cb){
-	var messageChannel = new MessageChannel()
-	messageChannel.port1.onmessage = function(evt) { cb(evt.data.error,evt.data) }
+postMessage=function(evt,msg,cb){
+	var ctrl=navigator.serviceWorker.controller
+	if (!ctrl) return
+	cb=cb||dummyCB	
+	var channel= new MessageChannel()
 
-	navigator.serviceWorker.controller.postMessage(message, [messageChannel.port2])
+	channel.port1.onmessage = function(evt) { cb(evt.data.error,evt.data) }
+
+	ctrl.postMessage([evt,msg], [channel.port2])
 }
 
 function ServiceProxy(url,spec){
 	if (!window.navigator || !navigator.serviceWorker) return console.log('Service Worker is not supported')
 
-	navigator.serviceWorker.addEventListener('message',onMessage(this))
-	navigator.serviceWorker.register(url).then(function(reg) {
-		console.log(':^)', reg)
-		// TODO should have a delay here, it fails on first time due to service worker on yet activated
-		// use navigator.serviceWorker.ready?a
-		var deps=specMgr.spec2Obj(spec)
-		if (deps.pushManager){
-			reg.pushManager.subscribe({
-				userVisibleOnly: true
-			}).then(function(sub) {
-				console.log('endpoint:', sub.endpoint)
-				this.trigger(['endpoint',sub.endpoint])
-			})
-		}
-	}).catch(function(error) {
-		console.log(':^(', error)
+	var
+	self=this,
+	sw=navigator.serviceWorker
+
+	sw.addEventListener('message',onMessage(this))
+	sw.register(url).then(function(reg){
+		console.log('serviceworker registered', reg)
+		// wait for service installation and activation
+		sw.ready.then(function(reg){
+			// TODO should have a delay here, it fails on first time due to service worker on yet activated
+			var deps=specMgr.spec2Obj(spec)
+			self.deps=deps
+			if (deps.pushMgrOpt){
+				reg.pushManager.subscribe({
+					userVisibleOnly: true
+				}).then(function(sub) {
+					console.log('endpoint:', sub.endpoint)
+					self.trigger(['endpoint',sub.endpoint])
+					postMessage('pushMgrOpt',deps.pushMgrOpt)
+				})
+			}
+		})
+	}).catch(function(err) {
+		console.error('serviceworker registration error', err)
 	})
 } 
 

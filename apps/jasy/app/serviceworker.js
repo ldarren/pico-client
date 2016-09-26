@@ -1,4 +1,14 @@
-console.log('Started', self)
+var
+pushMgrOpt,
+broadcast=function(options){
+	var params=Array.prototype.slice.call(arguments,1)
+	self.clients.matchAll(options).then(function(clients) {
+		clients.forEach(function(client) {
+			client.postMessage(params)
+		})
+	})
+}
+
 self.addEventListener('install', function(evt){
 	// this can be used to start the process of populating an IndexedDB, and caching site assets
 	self.skipWaiting() // skip waiting old client to close, skip directly to activation
@@ -6,27 +16,39 @@ self.addEventListener('install', function(evt){
 })
 self.addEventListener('activate', function(evt){
 	// The primary use of onactivate is for cleanup of resources used in previous versions of a Service worker script.
-	//self.clients.claim() // capture client without restart them
+	self.clients.claim() // capture client without restart them, without this sw.controller maybe null
+	broadcast(null,'activated')
 	console.log('Activated', evt)
 })
 self.addEventListener('message',function(evt){
-	// evt.data and evt.ports
+	// evt.data and evt.ports[0].postMessage()
+	console.log('sw onMessage',arguments)
+	var
+	params=evt.data[0],
+	port=evt.ports[0]
+
+	switch(params[0]){
+	case 'pushMgrOpt': pushMgrOpt=params[1]; break
+	case 'showNoti':
+		evt.waitUntil(
+			self.registration.showNotification('PushNoti Title', {
+				body: 'The Message',
+				icon: 'images/icon.png',
+				tag: 'my-tag' // notification grouping
+			})
+		)
+		break
+	}
 })
 
+/* Push Related Events*/
 self.addEventListener('push', function(evt){
 	console.log('Push message received', evt)
-	var title = 'Push message'
-	evt.waitUntil(
-		self.registration.showNotification(title, {
-			body: 'The Message',
-			icon: 'images/icon.png',
-			tag: 'my-tag' // notification grouping
-		})
-	)
+	broadcast(null,'pushed')
 })
-
 self.addEventListener('pushsubscriptionchange',function(evt){
 	// TODO: update endpoint to backend
+	console.log('pushsubscriptionchange', evt)
 })
 self.addEventListener('notificationclick', function(evt){  
 	console.log('On notification click: ', evt.notification.tag)  
@@ -42,11 +64,11 @@ self.addEventListener('notificationclick', function(evt){
 		}).then(function(clientList) {  
 			for (var i=0,c; c=clientList[i]; i++) {  
 				console.log(c.url)
-				if (-1!==c.url.indexOf('/sandbox/chrome-push/') && 'focus' in c)  
+				if (-1!==c.url.indexOf(pushMgrOpt.url) && 'focus' in c)  
 				return c.focus()  
 			}  
 			if (clients.openWindow) {
-				return clients.openWindow('/sandbox/chrome-push/')  
+				return clients.openWindow(pushMgrOpt.url)  
 			}
 		})
 	)

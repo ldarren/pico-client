@@ -2,7 +2,10 @@
     [
     ],[
     ],[
-		["console.sw","service",[
+		["serviceworker.js#.txt","service",[
+			["pushMgrOpt","map",{
+				"url":"/sandbox/chrome-push/"
+			}]
 		]],
 		["appName","text","console"],
         ["options","map",{"el":"#__"}],
@@ -114,7 +117,7 @@
 			["msg","text","Good Morning"],
 			["worker","worker",[
 				["msg","ref","msg"],
-				["SayHello.job","job",[
+				["SayHello.js#.txt","job",[
 					["msg","ref","msg"]
 				]]
 			]],
