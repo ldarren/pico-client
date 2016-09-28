@@ -1,5 +1,6 @@
 var
-pushMgrOpt,
+dummyPort={postMessage:function(){}},
+pushOpt,
 broadcast=function(options){
 	var params=Array.prototype.slice.call(arguments,1)
 	self.clients.matchAll(options).then(function(clients) {
@@ -11,30 +12,27 @@ broadcast=function(options){
 
 self.addEventListener('install', function(evt){
 	// this can be used to start the process of populating an IndexedDB, and caching site assets
-	self.skipWaiting() // skip waiting old client to close, skip directly to activation
-	console.log('Installed', evt)
+	evt.waitUntil(self.skipWaiting()) // skip waiting old client to close, skip directly to activation
 })
 self.addEventListener('activate', function(evt){
 	// The primary use of onactivate is for cleanup of resources used in previous versions of a Service worker script.
-	self.clients.claim() // capture client without restart them, without this sw.controller maybe null
-	broadcast(null,'activated')
-	console.log('Activated', evt)
+	evt.waitUntil(self.clients.claim()) // capture client without restart them, without this sw.controller is null?
 })
 self.addEventListener('message',function(evt){
 	// evt.data and evt.ports[0].postMessage()
 	console.log('sw onMessage',arguments)
 	var
-	params=evt.data[0],
-	port=evt.ports[0]
+	params=evt.data,
+	port=evt.ports[0]||dummyPort
 
 	switch(params[0]){
-	case 'pushMgrOpt': pushMgrOpt=params[1]; break
 	case 'showNoti':
+		pushOpt=params[1]
 		evt.waitUntil(
-			self.registration.showNotification('PushNoti Title', {
-				body: 'The Message',
-				icon: 'images/icon.png',
-				tag: 'my-tag' // notification grouping
+			self.registration.showNotification(pushOpt.title||'', {
+				body: pushOpt.body,
+				icon: pushOpt.icon,
+				tag: pushOpt.tag // notification grouping
 			})
 		)
 		break
@@ -64,11 +62,11 @@ self.addEventListener('notificationclick', function(evt){
 		}).then(function(clientList) {  
 			for (var i=0,c; c=clientList[i]; i++) {  
 				console.log(c.url)
-				if (-1!==c.url.indexOf(pushMgrOpt.url) && 'focus' in c)  
+				if (-1!==c.url.indexOf(pushOpt.url) && 'focus' in c)  
 				return c.focus()  
 			}  
 			if (clients.openWindow) {
-				return clients.openWindow(pushMgrOpt.url)  
+				return clients.openWindow(pushOpt.url)  
 			}
 		})
 	)
