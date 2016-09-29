@@ -30,8 +30,8 @@ return {
         this.setOutput(output,sqlUser.clean,sqlUser)
         next()
     },
-    replyToSelf(output,next){
-        this.setOutput(output,sqlUser.cleanSelf,sqlUser)
+    replyPrivate(output,next){
+        this.setOutput(output,sqlUser.cleanSecret,sqlUser)
         next()
     },
     replyList(list,next){
@@ -116,6 +116,10 @@ return {
 		next()
 	},
 	verify(input,next){
-		next()
+		redisUser.getSession(input,(err,sess)=>{
+			if (err) return next(this.error(500))
+			if (!sess || sess!==input.sess) return next(this.error(403))
+			next()
+		})
 	}
 }

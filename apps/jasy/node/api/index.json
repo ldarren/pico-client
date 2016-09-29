@@ -2,6 +2,7 @@
     "deps":{
         "util":"api/util",
         "user":"api/user",
+        "entity":"api/entity",
         "web":["context","webServer"]
     },      
     "routes":{
@@ -18,17 +19,17 @@
         ],
         "jasy/user/signup":[
             ["user","signup","input","output"],
-            ["user","replyToSelf","output"],
+            ["user","replyPrivate","output"],
             [0]
         ],
         "jasy/user/confirm":[
             ["user","confirmEmail","input","output"],
-            ["user","replyToSelf","output"],
+            ["user","replyPrivate","output"],
             [0]
         ],
         "jasy/user/signin":[
             ["user","signin","input","output"],
-            ["user","replyToSelf","output"],
+            ["user","replyPrivate","output"],
             [0]
         ],
         "jasy/user/signout":[
@@ -42,6 +43,12 @@
         "jasy/user/read":[
             ["user","read","input","output"],
             ["user","reply","output"],
+            [0]
+        ],
+        "jasy/entity/create":[
+            ["user","verify","input"],
+            ["entity","create","input","output"],
+            ["entity","replyPrivate","output"],
             [0]
         ],
         "#help": [

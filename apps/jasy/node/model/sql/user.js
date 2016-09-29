@@ -1,7 +1,7 @@
 const
 INDEX=				['email'],
 PRIVATE=			['pwd'],
-PRIVATE_SELF=		['pwd'],
+SECRET=				['pwd'],
 ENUM=				['role'],
 
 GET=				'SELECT * FROM `user` WHERE `id`=? AND `s`!=0;',
@@ -31,8 +31,8 @@ module.exports={
         for(var i=0,l; l=list[i]; i++) list[i]=this.clean(l)
 		return list
 	},
-	cleanSelf(model){
-        for(var i=0,k; k=PRIVATE_SELF[i]; i++) delete model[k];
+	cleanSecret(model){
+        for(var i=0,k; k=SECRET[i]; i++) delete model[k];
 		return model
 	},
 	get(user,cb){

@@ -44,26 +44,26 @@ function ServiceProxy(url,spec){
 
 	sw.addEventListener('message',onMessage(this))
 	sw.register(url).then(function(reg){
-		console.log('serviceworker registered', reg)
+		console.log('ServiceWorker registered', reg)
 		// wait for service installation and activation, sw.controller could be null at this stage
 		// var ctrl=sw.controller||reg.installing||reg.waiting||reg.active
 		// ctrl.addEventListener('statechange', onStateChange)
 		// ctrl.addEventListener('error', console.error)
-		sw.ready.then(function(reg){
-			// TODO should have a delay here, it fails on first time due to service worker on yet activated
-			var deps=specMgr.spec2Obj(spec)
-			self.deps=deps
-			if (deps.enablePushMgr){
-				reg.pushManager.subscribe({
-					userVisibleOnly: true
-				}).then(function(sub) {
-					console.log('endpoint:', sub.endpoint)
-					self.trigger(['endpoint',sub.endpoint])
-				})
-			}
-		})
+		return sw.ready
+	}).then(function(reg){
+		// TODO should have a delay here, it fails on first time due to service worker on yet activated
+		var deps=specMgr.spec2Obj(spec)
+		self.deps=deps
+		if (deps.enablePushMgr){
+			reg.pushManager.subscribe({
+				userVisibleOnly: true
+			}).then(function(sub) {
+				console.log('endpoint:', sub.endpoint)
+				self.trigger(['endpoint',sub.endpoint])
+			})
+		}
 	}).catch(function(err) {
-		console.error('serviceworker registration error', err)
+		console.error('ServiceWorker registration error', err)
 	})
 } 
 

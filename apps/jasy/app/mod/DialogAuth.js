@@ -35,6 +35,26 @@ signup=function(from,sender,data){
 		}
 	})
 },
+pageCreate=function(from,sender,curr,total,page,cb){
+	cb(null,page)
+},
+pageItemChange=function(from,sender,name,value,cb){
+	var self=this
+	switch(name){
+	case 'signin':
+		this.slots.modal_pageResult=signin
+		return this.signals.modal_collectPageResult().send(sender)
+	case 'signup':
+		this.slots.modal_pageResult=signup
+		return this.signals.modal_collectPageResult().send(sender)
+	case 'gosignin':
+		this.slots.modal_pageResult=dummyPageResult
+		return this.signals.modal_pageChange(0,false).send(sender)
+	case 'gosignup':
+		this.slots.modal_pageResult=dummyPageResult
+		return this.signals.modal_pageChange(1,false).send(sender)
+	}
+},
 confirmEmail=function(self){
 	var arr=location.hash.split('/')
 	location.hash='#'
@@ -57,7 +77,7 @@ confirmEmail=function(self){
 dummyPageResult=function(from,sender,data,cb){ cb() }
 
 return {
-	signals:['pageChange','collectPageResult'],
+	signals:['modal_pageChange','modal_collectPageResult'],
 	deps:{
 		form:'list',
 		cred:'models',
@@ -66,33 +86,23 @@ return {
 	},
 	slots:{
 		signin:function(from,sender,user){
-			if(!confirmEmail(this))this.slots.modalHide.call(this,from,this)
-		},
-		signout:function(from,sender){
-			if(!confirmEmail(this))this.slots.modalShow.call(this,from,this,this.deps.form)
-		},
-		pageCreate:function(from,sender,curr,total,page,cb){
-			cb(null,page)
-		},
-		pageItemChange:function(from,sender,name,value,cb){
-			var self=this
-			switch(name){
-			case 'signin':
-				this.slots.pageResult=signin
-				return this.signals.collectPageResult().send(sender)
-			case 'signup':
-				this.slots.pageResult=signup
-				return this.signals.collectPageResult().send(sender)
-			case 'gosignin':
-				this.slots.pageResult=dummyPageResult
-				return this.signals.pageChange(0,false).send(sender)
-			case 'gosignup':
-				this.slots.pageResult=dummyPageResult
-				return this.signals.pageChange(1,false).send(sender)
+			var s=this.slots
+			if(!confirmEmail(this)){
+				s.modal_hide.call(this,from,this)
+				s.modal_pageItemChange=undefined
+				s.modal_pageCreate=undefined
 			}
 		},
-		pageResult:dummyPageResult,
-		modalResult:function(from,sender,data){
-		}
+		signout:function(from,sender){
+			var s=this.slots
+			if(!confirmEmail(this)){
+				s.modal_pageCreate=pageCreate
+				s.modal_pageItemChange=pageItemChange
+				s.modal_show.call(this,from,this,this.deps.form)
+			}
+		},
+		modal_pageItemChange:undefined,
+		modal_pageCreate:undefined,
+		modal_pageResult:dummyPageResult
 	}
 }

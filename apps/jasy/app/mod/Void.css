@@ -1,10 +1,12 @@
 #__ .void{
+	display:flex;
+	flex-direction:column;
+	justify-content:center;
 	flex:1 1 100%;
-    background-color:rgba(255,255,255,0.5);
+    background-color:WhiteSmoke;
     text-align:center;
-    font-size:5rem;
-    color:white;
 }
 #__ .void p{
-	margin:auto;
+	font-size:1.5rem;
+	color:#007AFF;
 }
