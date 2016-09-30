@@ -55,6 +55,7 @@ function Stream(options){
 }           
 
 _.extend(Stream.prototype, Backbone.Events,{
+	events:[],
     reconnect:function(channel, path, events, withCredentials){
         var s=this.sse
         if (s){

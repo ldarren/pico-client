@@ -97,6 +97,16 @@
 				["css","file","panel/Form.css"]
 			],"panel/Form"]
 		]],
+		["auth/DataStream","ctrl",[
+			["models","refs","models"],
+			["push","stream",{
+				"channel":"jasy",
+				"path":"/stream",
+				"events":["poll"],
+				"withCredentials":false,
+				"autoconnect":false
+			}]
+		]],
 		[["auth/Session","SessionMixin"],"ctrl",[
 			["owner","ref","owner"],
 			["users","ref","users"],
