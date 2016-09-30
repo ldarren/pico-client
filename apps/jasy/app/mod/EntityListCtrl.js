@@ -6,7 +6,7 @@ return {
 		btnLeft:'map',
 		btnRight:'map',
 		entities:'models',
-		owner:'field',
+		owner:'models',
 		newEntityForm:'list'
 	},
 	create:function(deps){
@@ -14,7 +14,8 @@ return {
 	},
 	slots:{
 		headerButtonClicked:function(from,sender,hash){
-			if (!this.deps.owner.id) return __.dialogs.alert('You need to confirm your email first','Not signin')
+			var o=this.deps.owner.at(0)
+			if (!o || !o.id) return __.dialogs.alert('You need to confirm your email first','Not signin')
 			switch(hash){
 			case 'plus':
 				this.signals.modal_show(this.deps.newEntityForm).send(this.host)
@@ -26,7 +27,12 @@ return {
 		},
 		modal_result:function(from,sender,result){
 			this.deps.entities.create(null,{
-				data:result,
+				data:{
+					name:result.name,
+					type:result.type,
+					parentId:this.deps.owner.at(0).id,
+					$public:{desc:result.desc}
+				},
 				wait:true,
 				success:function(coll,res){
 					console.log('added new entity')

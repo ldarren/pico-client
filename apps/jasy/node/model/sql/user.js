@@ -1,8 +1,8 @@
 const
 INDEX=				['email'],
-PRIVATE=			['pwd'],
+PRIVATE=			['email','pwd','$private','log'],
 SECRET=				['pwd'],
-ENUM=				['role'],
+ENUM=				[],
 
 GET=				'SELECT * FROM `user` WHERE `id`=? AND `s`!=0;',
 FIND_BY_EMAIL=		'SELECT * FROM `user` WHERE `email`=? AND `s`!=0;',

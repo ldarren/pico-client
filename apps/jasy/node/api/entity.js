@@ -26,19 +26,14 @@ return {
     },
 	// TODO: ses email verification
 	create(input,output,next){
-console.log(1,input)
 		if (!input.name|| !input.type) return next(this.error(400))
 		Object.assign(input,{
-			parentId:0,
 			key:createKey(),
 			secret:createSecret()
 		})
-console.log(2,input)
-		sqlEntity.set(input, (err, entity)=>{
-console.log(3,err,entity)
+		sqlEntity.set(input, input.id, (err, entity)=>{
 			if (err) return next(this.error(500))
 			Object.assign(output,entity)
-console.log(4,output)
 			next()
 		})
 	},

@@ -1,12 +1,12 @@
 const
-INDEX=						['name','parentId'],
-PRIVATE=					['trigger','key','secret','setting','log'],
+INDEX=						['name','parentId','type'],
+PRIVATE=					['trigger','key','secret','$setting','log'],
 SECRET=						[],
-ENUM=						['type'],
+ENUM=						['type','role'],
 
 GET=						'SELECT * FROM `entity` WHERE `id`=? AND `s`!=0;',
-FIND_BY_PARENTID_AND_NAME=	'SELECT * FROM `entity` WHERE `parentId`=? AND `name`=? AND `s`!=0;',
-SET=						'INSERT INTO `entity` (`parentId`,`name`,`cby`) VALUES (?);',
+FIND_BY_INDEX=				'SELECT * FROM `entity` WHERE `name`=? AND `parentId`=? AND `type`=? AND `s`!=0;',
+SET=						'INSERT INTO `entity` (`name`,`parentId`,`type`,`cby`) VALUES (?);',
 
 MAP_GET=					'SELECT `entityId`,`k`,`v1`,`v2` FROM `entityMap` WHERE `entityId`=?;',
 MAP_GET_BY_KEY=				'SELECT `entityId`,`k`,`v1`,`v2` FROM `entityMap` WHERE `entityId`=? AND `k`=?;',
@@ -42,8 +42,8 @@ module.exports={
 			this.map_get(client.decode(entities[0],hash,ENUM),cb)
 		})
 	},
-	findByEmail(email,cb){
-		client.query(FIND_BY_EMAIL, [email], (err,rows)=>{
+	findByIndex(name,parentId,type,cb){
+		client.query(FIND_BY_INDEX, [name,parentId,type], (err,rows)=>{
 			if (err) return cb(err)
 			cb(null,client.decodes(rows,hash,ENUM))
 		})

@@ -131,16 +131,15 @@
 				["title","text","Entities"],
 				["btnRight","map",{"icon":"icon_plus"}],
 				["entities","ref","entities"],
-				["owner","field","owner",0],
+				["owner","ref","owner"],
 				["newEntityForm","list",[
 					[
 						{"type":"text","name":"name","label":"Name","holder":"Entity Name","required":1},
 						{"type":"text","name":"desc","label":"Description","holder":"Entity Description","required":1},
 						{"type":"select","name":"type","label":"type","holder":"Select a Entity Type","options":[
-							["service","Backend Service"],
-							["app","Mobile Application"],
-							["web","Web Application"],
-							["wp","Wordpress Plugin"]
+							["api","API Service"],
+							["app","Mobile/Web Application"],
+							["suite","Composite Suite"]
 						],"value":2}
 					]
 				]]
