@@ -5,7 +5,7 @@ SECRET=						[],
 ENUM=						['type','role'],
 
 GET=						'SELECT * FROM `entity` WHERE `id`=? AND `s`!=0;',
-FIND_BY_INDEX=				'SELECT * FROM `entity` WHERE `name`=? AND `parentId`=? AND `type`=? AND `s`!=0;',
+FIND_BY_INDEX=				'SELECT * FROM `entity` WHERE `name`=? AND `parentId`=? AND `s`!=0;',
 SET=						'INSERT INTO `entity` (`name`,`parentId`,`type`,`cby`) VALUES (?);',
 
 MAP_GET=					'SELECT `entityId`,`k`,`v1`,`v2` FROM `entityMap` WHERE `entityId`=?;',
@@ -39,11 +39,15 @@ module.exports={
 		if (!entity || !entity.id) return cb(ERR_INVALID_INPUT)
 		client.query(GET,[entity.id],(err,entities)=>{
 			if (err) return cb(err)
-			this.map_get(client.decode(entities[0],hash,ENUM),cb)
+			this.map_get(client.decode(entities[0],hash,ENUM),(err,ret)=>{
+				if(err) return cb(err)
+				Object.assign(entity,ret)
+				cb(null,entity)
+			})
 		})
 	},
-	findByIndex(name,parentId,type,cb){
-		client.query(FIND_BY_INDEX, [name,parentId,type], (err,rows)=>{
+	findByIndex(name,parentId,cb){
+		client.query(FIND_BY_INDEX, [name,parentId], (err,rows)=>{
 			if (err) return cb(err)
 			cb(null,client.decodes(rows,hash,ENUM))
 		})

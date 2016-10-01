@@ -39,7 +39,11 @@ module.exports={
 		if (!user || !user.id) return cb(ERR_INVALID_INPUT)
 		client.query(GET,[user.id],(err,users)=>{
 			if (err) return cb(err)
-			this.map_get(client.decode(users[0],hash,ENUM),cb)
+			this.map_get(client.decode(users[0],hash,ENUM),(err,ret)=>{
+				if(err) return cb(err)
+				Object.assign(user,ret)
+				cb(null,user)
+			})
 		})
 	},
 	findByEmail(email,cb){

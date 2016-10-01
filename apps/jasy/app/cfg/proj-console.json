@@ -3,6 +3,7 @@
     ],[
     ],[
 		["appName","text","console"],
+		["appParentId","int",0],
         ["options","map",{"el":"#__"}],
         ["html","file","Frame.html"],
         ["css","file","Frame.css"],
@@ -110,7 +111,8 @@
 		[["auth/Session","SessionMixin"],"ctrl",[
 			["owner","ref","owner"],
 			["users","ref","users"],
-			["appName","ref","appName"]
+			["appName","ref","appName"],
+			["appParentId","ref","appParentId"]
 		]]
     ],{
         "":[

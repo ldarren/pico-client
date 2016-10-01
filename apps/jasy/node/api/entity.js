@@ -33,7 +33,8 @@ return {
 		})
 		sqlEntity.set(input, input.id, (err, entity)=>{
 			if (err) return next(this.error(500))
-			Object.assign(output,entity)
+			Object.assign(output,{id:entity.id})
+			this.addJob([output], sqlEntity.get, sqlEntity)
 			next()
 		})
 	},

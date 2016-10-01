@@ -32,12 +32,12 @@ module.exports={
 		.exec(cb)
 	},
 	getSession(user,cb){
-		client.get(`sess:${user.app}:${user.id}`,cb)
+		client.get(`sess:${user.appp}:${user.app}:${user.id}`,cb)
 	},
 	setSession(user,cb){
-		client.setex(`sess:${user.app}:${user.id}`,DAY1,user.sess,cb)
+		client.setex(`sess:${user.appp}:${user.app}:${user.id}`,DAY1,user.sess,cb)
 	},
 	removeSession(user,cb){
-		client.del(`sess:${user.app}:${user.id}`,cb)
+		client.del(`sess:${user.appp}:${user.app}:${user.id}`,cb)
 	}
 }
