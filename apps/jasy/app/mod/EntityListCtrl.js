@@ -6,7 +6,7 @@ return {
 		btnLeft:'map',
 		btnRight:'map',
 		entities:'models',
-		owner:'models',
+		cred:'models',
 		newEntityForm:'list'
 	},
 	create:function(deps){
@@ -14,7 +14,7 @@ return {
 	},
 	slots:{
 		headerButtonClicked:function(from,sender,hash){
-			var o=this.deps.owner.at(0)
+			var o=this.deps.cred.at(0)
 			if (!o || !o.id) return __.dialogs.alert('You need to confirm your email first','Not signin')
 			switch(hash){
 			case 'plus':
@@ -30,7 +30,7 @@ return {
 				data:{
 					name:result.name,
 					type:result.type,
-					parentId:this.deps.owner.at(0).id,
+					parentId:this.deps.cred.at(0).id,
 					$public:{desc:result.desc}
 				},
 				wait:true,

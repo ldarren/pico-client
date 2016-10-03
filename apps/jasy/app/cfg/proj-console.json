@@ -8,7 +8,7 @@
         ["html","file","Frame.html"],
         ["css","file","Frame.css"],
         ["css","file","Console.css"],
-		["owner","models",{
+		["cred","models",{
 			"list":"jasy/user/signin",
 			"update":"jasy/user/update",
 			"delete":"jasy/user/signout"
@@ -82,12 +82,11 @@
 					{"type":"button","name":"gosignin","label":"Cancel"}
 				]
 			]],
-			["cred","models",{
+			["auth","models",{
 				"create":"jasy/user/signup",
 				"read":"jasy/user/confirm"
 			}],
-			["owner","ref","owner"],
-			["users","ref","users"],
+			["cred","ref","cred"],
 			["Header","view",[
 				["options","map",{"className":"header"}],
 				["paneId","ref","paneId"],
@@ -109,7 +108,7 @@
 			}]
 		]],
 		[["auth/Session","SessionMixin"],"ctrl",[
-			["owner","ref","owner"],
+			["credential","ref","cred"],
 			["users","ref","users"],
 			["appName","ref","appName"],
 			["appParentId","ref","appParentId"]
@@ -137,13 +136,13 @@
         "entities":[
 			["options","map",{"els":["#pane0 #page","#pane1 #pane"]}],
 			["entities","ref","entities"],
-			["owner","ref","owner"],
+			["cred","ref","cred"],
 			["EntityListCtrl","ctrl",[
 				["paneId","ref","paneId"],
 				["title","text","Entities"],
 				["btnRight","map",{"icon":"icon_plus"}],
 				["entities","ref","entities"],
-				["owner","ref","owner"],
+				["cred","ref","cred"],
 				["newEntityForm","list",[
 					[
 						{"type":"text","name":"name","label":"Name","holder":"Entity Name","required":1},

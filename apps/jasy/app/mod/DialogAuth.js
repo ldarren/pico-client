@@ -4,7 +4,7 @@ signup=function(from,sender,data){
 	if (data.pwd!==data.confirm_pwd) return __.dialogs.alert('Password not matched','Sign Up Error')
 	this.slots.modal_pageResult=dummyPageResult
 	var self=this
-	this.deps.cred.create(null,{
+	this.deps.auth.create(null,{
 		data:{
 			name:data.name,
 			email:data.email,
@@ -12,7 +12,8 @@ signup=function(from,sender,data){
 		},
 		success:function(model,res){
 			console.log('signup succeed',res)
-			self.deps.owner.add(model)
+			self.deps.cred.reset(null,{silent:true})
+			self.deps.cred.add(model)
 		},
 		error:function(res){
 			console.log('signup failed',res)
@@ -23,13 +24,10 @@ confirmEmail=function(self){
 	var arr=location.hash.split('/')
 	location.hash='#'
 	if ('#email'===arr[0] && 'confirm'===arr[1]){
-		self.deps.cred.read({email:arr[2],verifyId:arr[3]},function(err,model,res){
+		self.deps.auth.read({email:arr[2],verifyId:arr[3]},function(err,model,res){
 			if (err) return __.dialogs.alert('Error in your email confirmation','Email Confirmation')
-			var
-			silent={silent:true},
-			deps=self.deps
-			deps.owner.reset(null,silent)
-			deps.owner.add(model)
+			self.deps.cred.reset(null,{silent:true})
+			self.deps.cred.add(model)
 			__.dialogs.alert('Thanks for signing up, your email has been confirmed','Email Confirmation')
 		})
 		return true
@@ -38,7 +36,7 @@ confirmEmail=function(self){
 },
 signin=function(from,sender,data){
 	this.slots.modal_pageResult=dummyPageResult
-	this.deps.owner.fetch({
+	this.deps.cred.fetch({
 		data:{
 			email:data.email,
 			pwd:picoStr.hash(data.pwd)
@@ -77,9 +75,8 @@ return {
 	signals:['modal_pageChange','modal_collectPageResult'],
 	deps:{
 		form:'list',
-		cred:'models',
-		owner:'models',
-		users:'models'
+		auth:'models',
+		cred:'models'
 	},
 	slots:{
 		signin:function(from,sender,user){
