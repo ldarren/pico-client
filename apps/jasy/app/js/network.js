@@ -2,7 +2,7 @@ var
 web=require('pico/web'),
 picoObj=require('pico/obj'),
 channels = {}, directory={},
-addon,count=30,
+credential,count=30,
 create = function(keys, domains, cb){
     if (!keys.length) return cb()
 
@@ -12,8 +12,7 @@ create = function(keys, domains, cb){
 
     web.create({
         url: c.url,
-        delimiter: c.delimiter || ['&'],
-        beatRate: c.beatRate || 500,
+        delimiter: c.delimiter || ['&']
     }, function(err, client){
         if (err) return cb(err)
         channels[k]=client
@@ -65,12 +64,12 @@ Backbone.ajax = function(req){
             }
         }
         if (hasFile){
-            c.submit(reqData, addon, onReceive)
+            c.submit(reqData, credential, onReceive)
         }else{
-            c.request(null, reqData, addon, onReceive)
+            c.request(null, reqData, credential, onReceive)
         }
     }else{
-        c.request(api, reqData, addon, onReceive)
+        c.request(api, reqData, credential, onReceive)
     }
     Backbone.trigger('network.send', null, api)
 }
@@ -81,8 +80,7 @@ return{
         directory=picoObj.extend(directory, domains)
         create(Object.keys(domains), domains, cb)
     },
-	//TODO: per domain addon
-    addon:function(){ addon = arguments[0] },
-    getAddon:function(){ return addon ? JSON.parse(JSON.stringify(addon)) : ''},
+    credential:function(cred){ credential=cred },
+    getCredential:function(){ return credential ? JSON.parse(JSON.stringify(credential)) : ''},
     getDomain:function(url){ return directory[getKey(url)] || {} }
 }

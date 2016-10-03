@@ -8,10 +8,11 @@ module.exports={
 		client=context.mainCache
 		cb()
 	},
-	getRegisterCache(email,cb){
+	getRegisterCache(cred,email,cb){
+		var key=`${cred.appp}:${cred.app}:${email}`
 		client.multi()
-		.get(`vid:${email}`)
-		.get(`rgc:${email}`)
+		.get(`vid:${key}`)
+		.get(`rgc:${key}`)
 		.exec((err,res)=>{
 			if (err) return cb(err)
 			try{var user=JSON.parse(res[1])}
@@ -19,25 +20,27 @@ module.exports={
 			cb(null, res[0], user)
 		})
 	},
-	setRegisterCache(email,verifyId,user,cb){
+	setRegisterCache(cred,email,verifyId,user,cb){
+		var key=`${cred.appp}:${cred.app}:${email}`
 		client.multi()
-		.setex(`vid:${email}`,DAY1,verifyId)
-		.setex(`rgc:${email}`,DAY1,JSON.stringify(user))
+		.setex(`vid:${key}`,DAY1,verifyId)
+		.setex(`rgc:${key}`,DAY1,JSON.stringify(user))
 		.exec(cb)
 	},
-	removeRegisterCache(email,cb){
+	removeRegisterCache(cred,email,cb){
+		var key=`${cred.appp}:${cred.app}:${email}`
 		client.multi()
-		.del(`vid:${email}`)
-		.del(`rgc:${email}`)
+		.del(`vid:${key}`)
+		.del(`rgc:${key}`)
 		.exec(cb)
 	},
-	getSession(user,cb){
-		client.get(`sess:${user.appp}:${user.app}:${user.id}`,cb)
+	getSession(cred,cb){
+		client.get(`sess:${cred.appp}:${cred.app}:${cred.id}`,cb)
 	},
-	setSession(user,cb){
-		client.setex(`sess:${user.appp}:${user.app}:${user.id}`,DAY1,user.sess,cb)
+	setSession(cred,cb){
+		client.setex(`sess:${cred.appp}:${cred.app}:${cred.id}`,DAY1,cred.sess,cb)
 	},
-	removeSession(user,cb){
-		client.del(`sess:${user.appp}:${user.app}:${user.id}`,cb)
+	removeSession(cred,cb){
+		client.del(`sess:${cred.appp}:${cred.app}:${cred.id}`,cb)
 	}
 }

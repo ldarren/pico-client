@@ -39,7 +39,7 @@ init=function(self, channel, path, events, withCredentials, autoconnect){
     s=new EventSource(
             encodeURI(-1===path.indexOf('//')?network.getDomain(channel).url+path:path)+
             (-1===path.lastIndexOf('?')?'?':'&')+
-            __.querystring(network.getAddon()),
+            __.querystring(network.getCredential()),
             {withCredentials:withCredentials})
 
     s.addEventListener('open', cbList[0], false)   

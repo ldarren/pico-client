@@ -11,7 +11,7 @@ var
 picoStr=require('pico/str'),
 sqlUser=require('sql/user'),
 redisUser=require('redis/user'),
-ses,
+ses,apiUser,
 isPro=true,
 createKey=function(){
 	return picoStr.rand().substr(0,20)
@@ -24,6 +24,7 @@ return {
 	setup(context,cb){
 		isPro='pro'===pico.env('env')
 		ses=context.email.ses
+		apiUser=this
 		cb()
 	},
     reply(output,next){
@@ -39,7 +40,7 @@ return {
         next()
     },
 	// TODO: ses email verification
-	signup(input,output,next){
+	signup(cred,input,output,next){
 		var email=input.email
 		if (!email || !input.pwd) return next(this.error(401))
 		sqlUser.findByEmail(email, (err, users)=>{
@@ -57,13 +58,13 @@ return {
 				(err,data)=>
 				{
 					if (err) return next(this.error(400, err))
-					Object.assign(output,input,{id:0})
-					redisUser.setRegisterCache(email,verifyId,input)
+					Object.assign(output,cred,{id:0})
+					redisUser.setRegisterCache(cred,email,verifyId,input)
 					next()
 				})
 		})
 	},
-	confirmEmail(input,output,next){
+	confirmEmail(cred,input,output,next){
 		var
 		email=input.email,
 		verifyId=input.verifyId
@@ -72,19 +73,30 @@ return {
 			if (err) return next(this.error(500))
 			if (users.length) return next(this.error(401))
 
-			redisUser.getRegisterCache(email,(err,vid,user)=>{
+			redisUser.getRegisterCache(cred,email,(err,vid,user)=>{
 				if (err) return next(this.error(403))
 				if (vid!==verifyId) return next(this.error(403))
 				user.role='user'
-				Object.assign(output,user,{app:input.app,sess:createKey()})
-				this.addJob([output,0],sqlUser.set,sqlUser)
-				this.addJob([email],redisUser.removeRegisterCache,redisUser)
+				Object.assign(output,cred)
+				this.addJob([user,0],sqlUser.set,sqlUser)
+				this.addJob([cred,email],redisUser.removeRegisterCache,redisUser)
+				this.addJob([input,output],apiUser.addCredential,apiUser)
 				this.addJob([output],redisUser.setSession,redisUser)
 				next()
 			})
 		})
 	},
-	signin(input,output,next){
+	addCredential(input,output,cb){
+		sqlUser.findByEmail(input.email, (err, users)=>{
+			if (err) return cb(this.error(500))
+			if (!users || !users.length) return cb(this.error(401))
+
+			Object.assign(output,{id:users[0].id,sess:createKey()})
+
+			cb()
+		})
+	},
+	signin(cred,input,output,next){
 		var email=input.email
 		if (!email || !input.pwd) return next(this.error(401))
 		sqlUser.findByEmail(email, (err, users)=>{
@@ -97,28 +109,32 @@ return {
 				if (err) return next(this.error(500))
 				if (input.pwd !== map.pwd) return next(this.error(401))
 
-				Object.assign(output,user,{app:input.app,sess:createKey()})
+				Object.assign(output,cred,{id:user.id,sess:createKey()})
 				this.addJob([output],redisUser.setSession,redisUser)
 				next()
 			})
 		})
 	},
-	signout(input,next){
+	signout(cred,next){
+		next()
+	},
+	update(cred,input,next){
+		next()
+	},
+	list(input,output,next){
+		output.push(...input.set)
+		this.addJob([output],sqlUser.list,sqlUser)
 		next()
 	},
 	read(input,output,next){
+		Object.assign(output,{id:input.id})
+		this.addJob([output],sqlUser.get,sqlUser)
 		next()
 	},
-	update(input,next){
-		next()
-	},
-	remove(input,next){
-		next()
-	},
-	verify(input,next){
-		redisUser.getSession(input,(err,sess)=>{
+	verify(cred,next){
+		redisUser.getSession(cred,(err,sess)=>{
 			if (err) return next(this.error(500))
-			if (!sess || sess!==input.sess) return next(this.error(403))
+			if (!sess || sess!==cred.sess) return next(this.error(403))
 			next()
 		})
 	}

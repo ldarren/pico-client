@@ -18,36 +18,46 @@
             [0] 
         ],
         "jasy/user/signup":[
-            ["user","signup","input","output"],
+            ["user","signup","cred","input","output"],
             ["user","replyPrivate","output"],
             [0]
         ],
         "jasy/user/confirm":[
-            ["user","confirmEmail","input","output"],
+            ["user","confirmEmail","cred","input","output"],
             ["user","replyPrivate","output"],
             [0]
         ],
         "jasy/user/signin":[
-            ["user","signin","input","output"],
+            ["user","signin","cred","input","output"],
             ["user","replyPrivate","output"],
             [0]
         ],
         "jasy/user/signout":[
-            ["user","signout","input"],
+            ["user","verify","cred"],
+            ["user","signout","cred"],
             [0]
         ],
         "jasy/user/update":[
-            ["user","update","input"],
+            ["user","verify","cred"],
+            ["user","update","cred","input","output"],
+            ["user","replyPrivate","output"],
+            [0]
+        ],
+        "jasy/user/list":[
+            ["user","verify","cred"],
+            ["user","list","input",":output"],
+            ["user","replyList",":output"],
             [0]
         ],
         "jasy/user/read":[
+            ["user","verify","cred"],
             ["user","read","input","output"],
             ["user","reply","output"],
             [0]
         ],
         "jasy/entity/create":[
-            ["user","verify","input"],
-            ["entity","create","input","output"],
+            ["user","verify","cred"],
+            ["entity","create","cred","input","output"],
             ["entity","replyPrivate","output"],
             [0]
         ],
