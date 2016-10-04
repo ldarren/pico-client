@@ -24,7 +24,7 @@ html{
 	pointer-events:none;
 	z-index:999;
 }
-#__ input, #__ textarea{
+#__ input, #__ textarea, #__ .input{
 	-webkit-touch-callout: auto;
 	-webkit-user-select: auto;
 	-khtml-user-select: auto;

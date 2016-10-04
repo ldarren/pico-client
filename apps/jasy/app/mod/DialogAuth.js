@@ -22,8 +22,8 @@ signup=function(from,sender,data){
 },
 confirmEmail=function(self){
 	var arr=location.hash.split('/')
-	location.hash='#'
 	if ('#email'===arr[0] && 'confirm'===arr[1]){
+		location.hash='#'
 		self.deps.auth.read({email:arr[2],verifyId:arr[3]},function(err,model,res){
 			if (err) return __.dialogs.alert('Error in your email confirmation','Email Confirmation')
 			self.deps.cred.reset(null,{silent:true})

@@ -134,7 +134,7 @@
 			]]
 		],
         "entities":[
-			["options","map",{"els":["#pane0 #page","#pane1 #pane"]}],
+			["options","map",{"els":["#pane0 #page","#pane1 #page"]}],
 			["entities","ref","entities"],
 			["cred","ref","cred"],
 			["EntityListCtrl","ctrl",[
@@ -159,13 +159,42 @@
 				["options","map",{"className":"scrollable"}],
 				["css","file","scrollable/Scrollable.css"],
 				["list","ref","entities"],
+				["selected","param",0],
 				["Cell","view",[
 					["tpl","file","EntityRow.asp"],
-					["css","file","scrollable/Row.css"]
-				],"scrollable/Row"]
+					["css","file","scrollable/Row.css"],
+					["selected","ref","selected"]
+				],["scrollable/Row","EntityRow"]]
+			]]
+		],
+        "entity":[
+			["options","map",{"els":["#pane0 #page","#pane1 #page"]}],
+			["entity","model","entities",0],
+			["cred","ref","cred"],
+			["EntityCtrl","ctrl",[
+				["paneId","ref","paneId"],
+				["title","text","Entity"],
+				["btnRight","map",{"icon":"icon_edit"}],
+				["entity","ref","entity"]
+			]],
+			["scrollable/ScrollView","view",[
+				["options","map",{"className":"scrollable"}],
+				["css","file","scrollable/Scrollable.css"],
+				["model","ref","entity"],
+				["panel/Static","view",[
+					["tpl","file","panel/Form.asp"],
+					["css","file","panel/Form.css"],
+					["models","refs","model"],
+					["fields","list",[
+						{"label":"Description","model":"model","field":"$public","value":"desc"},
+						{"label":"Key","model":"model","field":"key"},
+						{"label":"Secret","model":"model","field":"secret"}
+					]]
+				]]
 			]]
         ]
     },[
+        ["entity/:id","entities","entity"],
         ["*action","entities"]
     ]
 ]
