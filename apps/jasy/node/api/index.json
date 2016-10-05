@@ -2,6 +2,7 @@
     "deps":{
         "util":"api/util",
         "user":"api/user",
+        "email":"api/email",
         "entity":"api/entity",
         "web":["context","webServer"]
     },      
@@ -17,24 +18,42 @@
         "END|#msg": [
             [0] 
         ],
-        "jasy/user/signup":[
-            ["user","signup","cred","input","output"],
+        "jasy/email/signup":[
+            ["util","have","input",[["email","pwd"]]],
+            ["email","verifyEmail","input",[null]],
+            ["util","randomStr",["$verifyId",20]],
+            ["email","sendConfirmation","cred","input","$verifyId","output"],
             ["user","replyPrivate","output"],
             [0]
         ],
-        "jasy/user/confirm":[
-            ["user","confirmEmail","cred","input","output"],
-            ["user","replyPrivate","output"],
+        "jasy/email/confirm":[
+            ["util","have","input",[["email","verifyId"]]],
+            ["email","verifyEmail","input",[null]],
+            ["email","confirmation","cred","input","user"],
+            ["user","create","cred","user",["user"]],
+            ["util","randomStr",["$sessKey",20]],
+            ["user","createSession","cred","user","$sessKey","session"],
+            ["user","replyPrivate","session"],
             [0]
         ],
-        "jasy/user/signin":[
-            ["user","signin","cred","input","output"],
+        "jasy/email/signin":[
+            ["util","have","input",[["email","pwd"]]],
+            ["email","verifyEmail","input","user"],
+            ["email","verifyPwd","input","user"],
+            ["util","randomStr",["$sessKey",20]],
+            ["user","createSession","cred","user","$sessKey","session"],
+            ["user","replyPrivate","session"],
+            [0]
+        ],
+        "jasy/email/update":[
+            ["user","verify","cred"],
+            ["email","update","cred","input","output"],
             ["user","replyPrivate","output"],
             [0]
         ],
         "jasy/user/signout":[
             ["user","verify","cred"],
-            ["user","signout","cred"],
+            ["user","removeSession","cred"],
             [0]
         ],
         "jasy/user/update":[
@@ -56,8 +75,11 @@
             [0]
         ],
         "jasy/entity/create":[
+            ["util","have","input",[["name","type","parentId"]]],
             ["user","verify","cred"],
-            ["entity","create","cred","input","output"],
+            ["util","randomStr",["$key",20]],
+            ["util","randomStr",["$secret",40]],
+            ["entity","create","cred","input","$key","$secret","output"],
             ["entity","replyPrivate","output"],
             [0]
         ],

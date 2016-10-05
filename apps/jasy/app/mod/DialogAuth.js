@@ -25,7 +25,10 @@ confirmEmail=function(self){
 	if ('#email'===arr[0] && 'confirm'===arr[1]){
 		location.hash='#'
 		self.deps.auth.read({email:arr[2],verifyId:arr[3]},function(err,model,res){
-			if (err) return __.dialogs.alert('Error in your email confirmation','Email Confirmation')
+			if (err) {
+				__.dialogs.alert('Error in your email confirmation','Email Confirmation')
+				return location.reload()
+			}
 			self.deps.cred.reset(null,{silent:true})
 			self.deps.cred.add(model)
 			__.dialogs.alert('Thanks for signing up, your email has been confirmed','Email Confirmation')
@@ -36,12 +39,15 @@ confirmEmail=function(self){
 },
 signin=function(from,sender,data){
 	this.slots.modal_pageResult=dummyPageResult
-	this.deps.cred.fetch({
+	var self=this
+	this.deps.auth.fetch({
 		data:{
 			email:data.email,
 			pwd:picoStr.hash(data.pwd)
 		},
 		success:function(coll,res){
+			self.deps.cred.reset(null,{silent:true})
+			self.deps.cred.add(res)
 			console.log('signup succeed',res)
 		},
 		error:function(model,res){

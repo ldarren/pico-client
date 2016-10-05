@@ -9,7 +9,6 @@
         ["css","file","Frame.css"],
         ["css","file","Console.css"],
 		["cred","models",{
-			"list":"jasy/user/signin",
 			"update":"jasy/user/update",
 			"delete":"jasy/user/signout"
 		}],
@@ -83,8 +82,9 @@
 				]
 			]],
 			["auth","models",{
-				"create":"jasy/user/signup",
-				"read":"jasy/user/confirm"
+				"list":"jasy/email/signin",
+				"create":"jasy/email/signup",
+				"read":"jasy/email/confirm"
 			}],
 			["cred","ref","cred"],
 			["Header","view",[

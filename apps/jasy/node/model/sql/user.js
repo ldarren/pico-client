@@ -1,18 +1,19 @@
 const
-INDEX=				['email'],
+INDEX=				[],
 PRIVATE=			['email','pwd','$private','log'],
 SECRET=				['pwd'],
 ENUM=				[],
 
 GET=				'SELECT * FROM `user` WHERE `id`=? AND `s`!=0;',
 GETS=				'SELECT * FROM `user` WHERE `id` IN (?) AND `s`!=0;',
-FIND_BY_EMAIL=		'SELECT * FROM `user` WHERE `email`=? AND `s`!=0;',
-SET=				'INSERT INTO `user` (`email`,`cby`) VALUES (?);',
+SET=				'INSERT INTO `user` (`cby`) VALUES (?);',
 
 MAP_GET=			'SELECT `userId`,`k`,`v1`,`v2` FROM `userMap` WHERE `userId`=?;',
 MAP_GETS=			'SELECT `userId`,`k`,`v1`,`v2` FROM `userMap` WHERE `userId` IN (?);',
 MAP_GET_BY_KEY=		'SELECT `userId`,`k`,`v1`,`v2` FROM `userMap` WHERE `userId`=? AND `k`=?;',
 MAP_SET=			'INSERT INTO `userMap` (`userId`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
+MAP_FIND_TEXT=		'SELECT `userId` FROM `userMap` WHERE `k`=? AND `v1`=?;',
+MAP_FIND_INT=		'SELECT `userId` FROM `userMap` WHERE `k`=? AND `v2`=?;',
 
 ERR_INVALID_INPUT=	'INVALID INPUT'
 
@@ -37,12 +38,6 @@ module.exports={
 	cleanSecret(model){
         for(var i=0,k; k=SECRET[i]; i++) delete model[k];
 		return model
-	},
-	findByEmail(email,cb){
-		client.query(FIND_BY_EMAIL, [email], (err,rows)=>{
-			if (err) return cb(err)
-			cb(null,client.decodes(rows,hash,ENUM))
-		})
 	},
 	list(set,cb){
 		client.query(GETS,[set],(err,users)=>{
@@ -98,5 +93,8 @@ module.exports={
 	},
 	map_set(user,by,cb){
 		client.query(MAP_SET, [client.mapEncode(user,by,hash,INDEX,ENUM)], cb)
+	},
+	map_findText(key,value,cb){
+		client.query(MAP_FIND_TEXT, [hash.val(key),value], cb)
 	}
 }
