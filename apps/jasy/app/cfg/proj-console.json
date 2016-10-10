@@ -144,16 +144,27 @@
 				["entities","ref","entities"],
 				["cred","ref","cred"],
 				["newEntityForm","list",[
-					[
-						{"type":"text","name":"name","label":"Name","holder":"Entity Name","required":1},
-						{"type":"text","name":"desc","label":"Description","holder":"Entity Description","required":1},
-						{"type":"select","name":"type","label":"type","holder":"Select a Entity Type","options":[
-							["api","API Service"],
-							["app","Mobile/Web Application"],
-							["suite","Composite Suite"]
-						],"value":2}
-					]
-				]]
+					{"type":"text","name":"name","label":"Name","holder":"Entity Name","required":1},
+					{"type":"text","name":"desc","label":"Description","holder":"Entity Description","required":1},
+					{"type":"select","name":"type","label":"type","holder":"Select a Entity Type","options":[
+						["api","API Service"],
+						["epi","Extension for API Service"],
+						["app","Mobile/Web Application"],
+						["epp","Extension fo application"],
+						["suite","Composite Suite"],
+						["group","Group for user and app"]
+					],"value":2}
+				]],
+				["extraForm","map",{
+					"api":[
+						{"type":"text","name":"webhook","label":"Webhook","holder":"Webhook address","required":1},
+						{"type":"text","name":"group","label":"Group Id","holder":"Group id","required":1}
+					],
+					"epi":[],
+					"app":[],
+					"suite":[],
+					"group":[]
+				}]
 			]],
 			["scrollable/ListView","view",[
 				["options","map",{"className":"scrollable"}],

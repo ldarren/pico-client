@@ -146,7 +146,7 @@ setup((err, project, projPath, outPath)=>{
 	if (opt.pico)deps.add('lib/pico.min.js')
 
 	// global
-	__={ajax:null,onLoad:null}
+	__={ajax:null,onLoad:null,store:()=>{}}
 	_=require('underscore')
 	Backbone=require('backbone')
 	pico=require('./lib/pico.js')

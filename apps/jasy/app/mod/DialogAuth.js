@@ -1,6 +1,6 @@
 var
 picoStr=require('pico/str'),
-signup=function(from,sender,data){
+signup=function(from,sender,curr,total,data){
 	if (data.pwd!==data.confirm_pwd) return __.dialogs.alert('Password not matched','Sign Up Error')
 	this.slots.modal_pageResult=dummyPageResult
 	var self=this
@@ -37,7 +37,7 @@ confirmEmail=function(self){
 	}
 	return false
 },
-signin=function(from,sender,data){
+signin=function(from,sender,curr,total,data){
 	this.slots.modal_pageResult=dummyPageResult
 	var self=this
 	this.deps.auth.fetch({
@@ -75,7 +75,7 @@ pageItemChange=function(from,sender,name,value,cb){
 		return this.signals.modal_pageChange(1,false).send(sender)
 	}
 },
-dummyPageResult=function(from,sender,data,cb){ cb() }
+dummyPageResult=function(from,sender,curr,total,data,cb){ cb() }
 
 return {
 	signals:['modal_pageChange','modal_collectPageResult'],
