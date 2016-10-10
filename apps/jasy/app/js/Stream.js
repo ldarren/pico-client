@@ -30,8 +30,9 @@ callbacks=function(self){
 },
 init=function(self, channel, path, events, withCredentials, autoconnect){
     self.channel=channel
+	self.path=path
     self.events=events
-	self.dcCount=0
+	self.withCredentials=withCredentials
     if (!autoconnect || !path) return
 
     var
@@ -51,6 +52,7 @@ init=function(self, channel, path, events, withCredentials, autoconnect){
 } 
 
 function Stream(options){
+	this.dcCount=0
     init(this, options.channel, options.path, options.events, options.autoconnect, options.withCredentials)
 }           
 
@@ -58,24 +60,14 @@ _.extend(Stream.prototype, Backbone.Events,{
 	events:[],
     reconnect:function(channel, path, events, withCredentials){
         var s=this.sse
-        if (s){
-            s.close()
-            init(
-                this,
-                channel||this.channel,
-                path||s.url,
-                events||this.events,
-				true,
-                withCredentials||s.withCredentials)
-        }else{
-            init(
-                this,
-                channel||this.channel,
-                path,
-                events||this.events,
-				true,
-                withCredentials)
-        }
+        if (s) s.close()
+		init(
+			this,
+			channel||this.channel,
+			path||this.path,
+			events||this.events,
+			withCredentials||this.withCredentials,
+			true)
     },
     close:function(){
         var s=this.sse
