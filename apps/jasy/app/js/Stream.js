@@ -28,7 +28,7 @@ callbacks=function(self){
     }
     ]
 },
-init=function(self, channel, path, events, withCredentials, autoconnect){
+init=function(self, params, channel, path, events, withCredentials, autoconnect){
     self.channel=channel
 	self.path=path
     self.events=events
@@ -40,7 +40,7 @@ init=function(self, channel, path, events, withCredentials, autoconnect){
     s=new EventSource(
             encodeURI(-1===path.indexOf('//')?network.getDomain(channel).url+path:path)+
             (-1===path.lastIndexOf('?')?'?':'&')+
-            __.querystring(network.getCredential()),
+            __.querystring(Object.assign(params,network.getCredential())),
             {withCredentials:withCredentials})
 
     s.addEventListener('open', cbList[0], false)   
@@ -51,18 +51,19 @@ init=function(self, channel, path, events, withCredentials, autoconnect){
 	self.sse=s
 } 
 
-function Stream(options){
+function Stream(opt){
 	this.dcCount=0
-    init(this, options.channel, options.path, options.events, options.autoconnect, options.withCredentials)
+    init(this, opt.params, opt.channel, opt.path, opt.events, opt.autoconnect, opt.withCredentials)
 }           
 
 _.extend(Stream.prototype, Backbone.Events,{
 	events:[],
-    reconnect:function(channel, path, events, withCredentials){
+    reconnect:function(params, channel, path, events, withCredentials){
         var s=this.sse
         if (s) s.close()
 		init(
 			this,
+			params,
 			channel||this.channel,
 			path||this.path,
 			events||this.events,
