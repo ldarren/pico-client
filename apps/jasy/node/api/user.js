@@ -7,7 +7,7 @@ URL_CONFIRM_PRO='https://console.jasaws.com/jasy/app/#email/confirm/EMAIL/VID',
 URL_DOC_DEV='https://st.jasaws.com/jasy/app/#doc',
 URL_DOC_PRO='https://console.jasaws.com/jasy/app/#doc'
 
-var
+let
 sqlUser=require('sql/user'),
 redisUser=require('redis/user'),
 ses,apiUser,
@@ -71,5 +71,8 @@ return {
 			if (!sess || sess!==cred.sess) return next(this.error(403))
 			next()
 		})
+	},
+	poll(input,output,next){
+		next()
 	}
 }

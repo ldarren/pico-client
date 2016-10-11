@@ -5,7 +5,7 @@ var client
 
 module.exports={
 	setup(context,cb){
-		client=context.mainCache
+		client=context.userCache
 		cb()
 	},
 	getRegisterCache(cred,email,cb){

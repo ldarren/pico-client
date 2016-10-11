@@ -4,6 +4,7 @@
         "user":"api/user",
         "email":"api/email",
         "entity":"api/entity",
+		"stream":"api/stream",
         "web":["context","webServer"]
     },      
     "routes":{
@@ -11,6 +12,15 @@
             ["util","route","req"],
 			["web","parse","req","res"]
         ],
+		"/jasy/stream":[
+            ["user","verify","input"],
+			["stream","prepare","input","output"],
+			["user","poll","input","output"],
+			["entity","poll","input","output"],
+			["stream","add","res","input"],
+			["web","SSEStart","req","res"],
+			["stream","render",["poll"],"input","output"]
+		],
         "ERR|#msg": [
 			["util","logParams"],
             [0]

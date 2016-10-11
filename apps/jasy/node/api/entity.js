@@ -44,5 +44,8 @@ return {
 	},
 	update(input,next){
 		next()
+	},
+	poll(input,output,next){
+		next()
 	}
 }
