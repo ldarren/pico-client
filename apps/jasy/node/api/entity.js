@@ -27,10 +27,13 @@ return {
 	// TODO: ses email verification
 	create(cred,input,key,secret,output,next){
 		sqlEntity.set(Object.assign({},input,{key:key,secret:secret}), cred.id, (err, entity)=>{
-			if (err) return next(this.error(500))
+			if (err) return next(this.error(500,err.message))
 			Object.assign(output,{id:entity.id})
 			this.addJob([output], sqlEntity.get, sqlEntity)
-			next()
+			sqlEntity.usermap_set(output,cred,{role:'root'},cred.id,(err)=>{
+				if (err) return next(this.error(500))
+				next()
+			})
 		})
 	},
 	remove(input,next){
@@ -46,6 +49,13 @@ return {
 		next()
 	},
 	poll(input,output,next){
-		next()
+		sqlEntity.usermap_findEntityId(input,'role',(err,entities)=>{
+			if (err) return cb(this.error(500,err.message))
+			if (!entities.length) return next()
+			sqlEntity.gets(entities,(err)=>{
+				if (err) return cb(this.error(500,err.message))
+				next()
+			})
+		})
 	}
 }

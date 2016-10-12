@@ -7,6 +7,8 @@ ENUM=				[],
 GET=				'SELECT * FROM `user` WHERE `id`=? AND `s`!=0;',
 GETS=				'SELECT * FROM `user` WHERE `id` IN (?) AND `s`!=0;',
 SET=				'INSERT INTO `user` (`cby`) VALUES (?);',
+TOUCH=				'UPDATE `user` SET `uat`=NOW() WHERE id=?;',
+POLL=				'SELECT * FROM `user` WHERE id IN (?) AND `uat`>? AND `s`!=0;',
 
 MAP_GET=			'SELECT `userId`,`k`,`v1`,`v2` FROM `userMap` WHERE `userId`=?;',
 MAP_GETS=			'SELECT `userId`,`k`,`v1`,`v2` FROM `userMap` WHERE `userId` IN (?);',
@@ -17,10 +19,17 @@ MAP_FIND_INT=		'SELECT `userId` FROM `userMap` WHERE `k`=? AND `v2`=?;',
 
 ERR_INVALID_INPUT=	'INVALID INPUT'
 
-var
+let
 picoObj=require('pico/obj'),
 hash=require('sql/hash'),
-client
+client,
+gets=function(items,idx,get,cb){
+	if (items.length <= idx) return cb(null,items)
+	get(items[idx++],(err)=>{
+		if(err) return cb(err)
+		gets(items,idx,get,cb)
+	})
+}
 
 module.exports={
 	setup(context,cb){
@@ -28,15 +37,15 @@ module.exports={
 		cb()
 	},
 	clean(model){
-        for(var i=0,k; k=PRIVATE[i]; i++) delete model[k];
+        for(let i=0,k; k=PRIVATE[i]; i++) delete model[k];
 		return model
 	},
 	cleanList(list){
-        for(var i=0,l; l=list[i]; i++) list[i]=this.clean(l)
+        for(let i=0,l; l=list[i]; i++) list[i]=this.clean(l)
 		return list
 	},
 	cleanSecret(model){
-        for(var i=0,k; k=SECRET[i]; i++) delete model[k];
+        for(let i=0,k; k=SECRET[i]; i++) delete model[k];
 		return model
 	},
 	list(set,cb){
@@ -61,6 +70,9 @@ module.exports={
 			})
 		})
 	},
+	gets(users,cb){
+		gets(users,0,this.get,cb)
+	},
 	set(user,by,cb){
 		client.query(SET, [client.encode(user,by,hash,INDEX,ENUM)], (err, result)=>{
 			if (err) return cb(err)
@@ -70,6 +82,13 @@ module.exports={
 			})
 		})
 	},
+	touch(user,cb){
+		client.query(TOUCH, [user.id], cb)
+	},
+	poll(ids,date,cb){
+		client.query(POLL,[ids,date],cb)
+	},
+
 	map_gets(users,cb){
 		if (!users || !Array.isArray(users)) return cb(ERR_INVALID_INPUT)
 		client.query(MAP_GETS,[picoObj.pluck(users,'id')],(err,rows)=>{

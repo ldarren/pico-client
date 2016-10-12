@@ -73,6 +73,14 @@ return {
 		})
 	},
 	poll(input,output,next){
-		next()
+		sqlUser.poll([input.id],input.t,(err,rows)=>{
+			if (err) return next(this.error(500,err.message))
+			if (!rows.length) return next()
+			sqlUser.gets(rows,(err,map)=>{
+				if (err) return next(this.error(500,err.message))
+				output['users']=map
+				next()
+			})
+		})
 	}
 }
