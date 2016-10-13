@@ -52,9 +52,8 @@ return {
 		next()
 	},
 	prepare(input,output,next){
-		let t=parseInt(input.t)
-		output['seen']=t
-		input.t=new Date(t)
+		output['t']=parseInt(input.t)
+		input.t=new Date(output.t)
 		next()
 	},
 	render(evt,user,msg,next){

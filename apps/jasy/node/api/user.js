@@ -1,4 +1,5 @@
 const
+Max=Math.max,
 SUBJECT='Confirmation',
 TEXT_CONFIRM=require('tmpl/email_confirmation.txt'),
 HTML_CONFIRM=require('tmpl/email_confirmation.html'),
@@ -10,6 +11,7 @@ URL_DOC_PRO='https://console.jasaws.com/jasy/app/#doc'
 let
 sqlUser=require('sql/user'),
 redisUser=require('redis/user'),
+picoObj=require('pico/obj'),
 ses,apiUser,
 isPro=true
 
@@ -73,12 +75,17 @@ return {
 		})
 	},
 	poll(input,output,next){
-		sqlUser.poll([input.id],input.t,(err,rows)=>{
+		let uid=input.id
+		sqlUser.poll([uid],input.t,(err,rows)=>{
 			if (err) return next(this.error(500,err.message))
 			if (!rows.length) return next()
-			sqlUser.gets(rows,(err,map)=>{
+			sqlUser.gets(rows,(err,list)=>{
 				if (err) return next(this.error(500,err.message))
-				output['users']=map
+				let users=output['users']=[]
+				for(let i=0,u; u=list[i]; i++){
+					users.push(u.id===uid?sqlUser.cleanSecret(u):sqlUser.clean(u))
+				}
+				output['t']=Max(...picoObj.pluck(users,'uat'),output.t)
 				next()
 			})
 		})

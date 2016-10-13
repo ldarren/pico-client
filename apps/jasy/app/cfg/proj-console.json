@@ -15,6 +15,8 @@
 		["users","models",{
 			"read":"jasy/user/read"
 		}],
+		["userLog","models",{
+		}],
 		["entities","models",{
 			"list":"jasy/entity/list",
 			"create":"jasy/entity/create",
@@ -22,9 +24,9 @@
 			"update":"jasy/entity/update",
 			"delete":"jasy/entity/remove"
 		}],
-		["app","models",{
+		["entityLog","models",{
 		}],
-		["node","models",{
+		["userEntityMap","models",{
 		}],
 		["layers","list",["#layer0","#layer1"]],
         ["js/Pane","view",[

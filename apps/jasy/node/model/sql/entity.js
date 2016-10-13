@@ -1,6 +1,6 @@
 const
 INDEX=						['name','parentId','type'],
-PRIVATE=					['trigger','key','secret','$setting','log'],
+PRIVATE=					['webhook','key','secret','$private','log'],
 SECRET=						[],
 ENUM=						['type','role'],
 
@@ -23,11 +23,11 @@ var
 picoObj=require('pico/obj'),
 hash=require('sql/hash'),
 client,
-gets=function(items,idx,get,cb){
+gets=function(ctx,items,idx,cb){
 	if (items.length <= idx) return cb(null,items)
-	get(items[idx++],(err)=>{
+	ctx.get(items[idx++],(err)=>{
 		if(err) return cb(err)
-		gets(items,idx,get,cb)
+		gets(ctx,items,idx,cb)
 	})
 }
 
@@ -67,7 +67,7 @@ module.exports={
 		})
 	},
 	gets(entities,cb){
-		gets(entities,0,this.get,cb)
+		gets(this,entities,0,cb)
 	},
 	set(entity,by,cb){
 		client.query(SET, [client.encode(entity,by,hash,INDEX,ENUM)], (err, result)=>{
@@ -108,7 +108,11 @@ module.exports={
 	usermap_findEntityId(user,key,cb){
 		client.query(USERMAP_FIND_ENTITYID,[user.id,hash.val(key)],(err,rows)=>{
 			if (err) return cb(err)
-			cb(null,picoObj.replaceKey(rows,'entityId','id'))
+			let entities=[]
+			for(let i=0,r; r=rows[i]; i++){
+				entities.push({id:r.entityId})
+			}
+			cb(null,client.mapDecodes(rows,entities,'entityId',hash,ENUM))
 		})
 	}
 }

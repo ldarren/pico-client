@@ -1,5 +1,7 @@
 var
+Max=Math.max,
 picoStr=require('pico/str'),
+picoObj=require('pico/obj'),
 sqlEntity=require('sql/entity'),
 createKey=function(){
 	return picoStr.rand().substr(0,20)
@@ -52,8 +54,21 @@ return {
 		sqlEntity.usermap_findEntityId(input,'role',(err,entities)=>{
 			if (err) return cb(this.error(500,err.message))
 			if (!entities.length) return next()
-			sqlEntity.gets(entities,(err)=>{
+			sqlEntity.gets(entities,(err,list)=>{
 				if (err) return cb(this.error(500,err.message))
+				for(let i=0,e; e=entities[i]; i++){
+					switch(e.role){
+					case 'root':
+					case 'admin':
+						entities[i]=sqlEntity.cleanSecret(e)
+						break
+					default:
+						entities[i]=sqlEntity.clean(e)
+						break
+					}
+				}
+				output['t']=Max(...picoObj.pluck(entities,'uat'),output.t)
+				output['entities']=entities
 				next()
 			})
 		})

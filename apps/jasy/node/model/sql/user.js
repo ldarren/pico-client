@@ -23,11 +23,11 @@ let
 picoObj=require('pico/obj'),
 hash=require('sql/hash'),
 client,
-gets=function(items,idx,get,cb){
+gets=function(ctx,items,idx,cb){
 	if (items.length <= idx) return cb(null,items)
-	get(items[idx++],(err)=>{
+	ctx.get(items[idx++],(err)=>{
 		if(err) return cb(err)
-		gets(items,idx,get,cb)
+		gets(ctx,items,idx,cb)
 	})
 }
 
@@ -71,7 +71,7 @@ module.exports={
 		})
 	},
 	gets(users,cb){
-		gets(users,0,this.get,cb)
+		gets(this,users,0,cb)
 	},
 	set(user,by,cb){
 		client.query(SET, [client.encode(user,by,hash,INDEX,ENUM)], (err, result)=>{
