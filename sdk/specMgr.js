@@ -49,22 +49,29 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
     case 'refs': // ID[id] TYPE[refs] VALUE[orgType]
         Array.prototype.push.apply(deps, findAll(s[VALUE], ctx, TYPE, 1))
         break
-    case 'model': // ID[id] TYPE[model/field] VALUE[models] EXTRA[paramId] EXTRA1[field name]
+    case 'model': // ID[id] TYPE[model] VALUE[models] EXTRA[paramIdx]
         f = find(s[VALUE], ctx, true)
 		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
 		var m = f[VALUE].get(params[s[EXTRA]])
-		if (!m || !m.get) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',params[s[EXTRA]]), deps, userData);
-		'field' === t ? deps.push(create(s[ID], t, m.get(s[EXTRA+1]))) : deps.push(create(s[ID], t, m)) 
+		if (!m || !m.get) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',params[s[EXTRA]]), deps, userData)
+		deps.push(create(s[ID], t, m)) 
 		break
     case 'models': // ID[id] TYPE[models] VALUE[options] EXTRA[default value]
         deps.push(create(s[ID], t, new Model(s[EXTRA], s[VALUE], s[ID])))
         break
-	case 'fields': // ID[id] TYPE[fields] VALUE[models] EXTRA[filter] EXTRA1[field names]
+	case 'field': // ID[id] TYPE[field] VALUE[models] EXTRA[filter] EXTRA1[field name]
+        f = find(s[VALUE], ctx, true)
+		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
+		var m = isFinite(s[EXTRA])?f[VALUE].at(s[EXTRA]):f[VALUE].findWhere(s[EXTRA])
+		if (!m || !m.get) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',s[EXTRA]), deps, userData)
+		deps.push(create(s[ID], t, s[EXTRA+1]?m.get(s[EXTRA+1]):m.toJSON()))
+		break
+	case 'fields': // ID[id] TYPE[fields] VALUE[models] EXTRA[filter] EXTRA1[field name]
         f = find(s[VALUE], ctx, true)
 		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
 		var m = s[EXTRA] ? new Model(f[VALUE].where(s[EXTRA])) : f[VALUE]
 		if (!m || !m.pluck) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',s[EXTRA]), deps, userData)
-		deps.push(create(s[ID], t, m.pluck(s[EXTRA+1])))
+		deps.push(create(s[ID], t, s[EXTRA+1]?m.pluck(s[EXTRA+1]):m.toJSON()))
 		break
     case 'ctrl':
     case 'view': // ID[id/path] TYPE[ctrl/view] VALUE[spec] EXTRA[path/path+mixins]

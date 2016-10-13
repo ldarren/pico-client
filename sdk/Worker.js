@@ -1,3 +1,9 @@
+/*
+ * TODO: worker and job declaration should be separated,
+ * job should be together with UI and css, but execute in worker.
+ * worker proxy should run multiple workers (define in spec), when job come
+ * worker proxy use round robin way to choose worker to run job
+ */
 var
 specMgr=require('js/specMgr'),
 dummyCB=function(){},

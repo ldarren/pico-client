@@ -42,9 +42,8 @@ changeRoute = function(path, params){
     i=f.length <= pc ? 0 : f.length-pc
 
     for(var j=0,p; j<pc; i++,j++){
-        p=f[i]
-        if (p) this.signals.paneUpdate(j, path+'.'+p, pages[p], params).sendNow()
-        else this.signals.paneUpdate(j, path+'.', pages[''], params).sendNow()
+        p=f[i]||''
+        this.signals.paneUpdate(j, pc, path, p, pages[p], params).sendNow()
     }
 
     this.signals.changeRoute(path, params).sendNow()

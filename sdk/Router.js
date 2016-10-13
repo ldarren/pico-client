@@ -28,7 +28,7 @@ Router= Backbone.Router.extend({
         window.setTimeout(function(){
             // BUG: android reverse the replace url
             // http://stackoverflow.com/questions/15193359/does-android-support-window-location-replace-or-any-equivalent
-            context.navigate(url, trigger)//, replace ? triggerReplace : trigger)
+            context.navigate(url, replace ? triggerReplace : trigger)
         }, 0)
     },
     back: function(step){

@@ -13,7 +13,7 @@ function init(self, channel, path, protocols, auto){
     var
 	url=(-1===path.indexOf('://')?network.getDomain(channel).url+path:path).replace('http','ws'),
     s=new WebSocket(
-            encodeURI(url)+'?'+__.querystring(network.getAddon()),
+            encodeURI(url)+'?'+__.querystring(network.getCredential()),
             protocols)
 
     s.addEventListener('open', function(e){
