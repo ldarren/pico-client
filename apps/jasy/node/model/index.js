@@ -4,5 +4,6 @@ return [
 	require('sql/device'),
 	require('sql/entity'),
 	require('redis/user'),
-	require('redis/stream')
+	require('redis/stream'),
+	require('fs/group')
 ]

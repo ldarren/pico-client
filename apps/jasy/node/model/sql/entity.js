@@ -4,10 +4,11 @@ PRIVATE=					['webhook','key','secret','$private','log'],
 SECRET=						[],
 ENUM=						['type','role'],
 
-GET=						'SELECT * FROM `entity` WHERE `id`=? AND `s`!=0;',
 FIND_ID=					'SELECT * FROM `entity` WHERE `name`=? AND `parentId`=? AND `s`!=0;',
+GET=						'SELECT * FROM `entity` WHERE `id`=? AND `s`!=0;',
 SET=						'INSERT INTO `entity` (`name`,`parentId`,`type`,`cby`) VALUES (?);',
 
+POLL=						'SELECT * FROM `entity` WHERE `id` IN (?) AND `uat`>?;', // should return s==0 entities
 TOUCH=						'UPDATE `entity` SET `uat`=NOW() WHERE `id`=?;',
 
 MAP_GET_ALL=				'SELECT `entityId`,`k`,`v1`,`v2` FROM `entityMap` WHERE `entityId`=?;',
@@ -77,6 +78,9 @@ module.exports={
 				cb(err, entity)
 			})
 		})
+	},
+	poll(ids,uat,cb){
+		client.query(POLL, [ids,uat], cb)
 	},
 	touch(entity,cb){
 		client.query(TOUCH, [entity.id], cb)
