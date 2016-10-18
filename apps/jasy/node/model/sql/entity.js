@@ -2,7 +2,7 @@ const
 INDEX=						['name','parentId','type'],
 PRIVATE=					['webhook','key','secret','$private','log'],
 SECRET=						[],
-ENUM=						['type','role'],
+ENUM=						['type'],
 
 FIND_ID=					'SELECT * FROM `entity` WHERE `name`=? AND `parentId`=? AND `s`!=0;',
 GET=						'SELECT * FROM `entity` WHERE `id`=? AND `s`!=0;',

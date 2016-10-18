@@ -40,9 +40,10 @@
             ["util","have","input",[["email","verifyId"]]],
             ["email","verifyEmail","input",[null]],
             ["email","confirmation","cred","input","user"],
-            ["user","create","cred","user",["user"]],
+            ["user","create","cred","user"],
             ["util","randomStr",["$sessKey",20]],
             ["user","createSession","cred","user","$sessKey","session"],
+            ["user","joinGroup","session"],
             ["user","replyPrivate","session"],
             [0]
         ],

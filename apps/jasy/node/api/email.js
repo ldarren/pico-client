@@ -54,13 +54,11 @@ return {
 			})
 	},
 	confirmation(cred,input,output,next){
-		var
-		email=input.email,
-		verifyId=input.verifyId
+		let email=input.email
 
 		redisUser.getRegisterCache(cred,email,(err,vid,user)=>{
 			if (err) return next(this.error(403))
-			if (vid!==verifyId) return next(this.error(403))
+			if (vid!==input.verifyId) return next(this.error(403))
 			Object.assign(output,user)
 			this.addJob([cred,email],redisUser.removeRegisterCache,redisUser)
 			next()

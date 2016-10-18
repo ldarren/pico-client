@@ -2,8 +2,8 @@
     [
     ],[
     ],[
-		["appName","text","console"],
-		["appParentId","int",0],
+		["grpName","text","jasy"],
+		["grpParentId","int",0],
         ["options","map",{"el":"#__"}],
         ["html","file","Frame.html"],
         ["css","file","Frame.css"],
@@ -112,8 +112,8 @@
 		[["auth/Session","SessionMixin"],"ctrl",[
 			["credential","ref","cred"],
 			["users","ref","users"],
-			["appName","ref","appName"],
-			["appParentId","ref","appParentId"]
+			["grpName","ref","grpName"],
+			["grpParentId","ref","grpParentId"]
 		]]
     ],{
         "":[

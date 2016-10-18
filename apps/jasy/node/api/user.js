@@ -11,6 +11,7 @@ URL_DOC_PRO='https://console.jasaws.com/jasy/app/#doc'
 let
 sqlUser=require('sql/user'),
 redisUser=require('redis/user'),
+fsGroup=require('fs/group'),
 picoObj=require('pico/obj'),
 ses,apiUser,
 isPro=true
@@ -34,8 +35,7 @@ return {
         this.setOutput(list,sqlUser.cleanList,sqlUser)
         next()
     },
-	create(cred,user,role,next){
-		user.role=role
+	create(cred,user,next){
 		sqlUser.set(user,cred.id||0,(err)=>{
 			if (err) return next(this.error(500))
 			next()
@@ -56,19 +56,27 @@ return {
 	},
 	createSession(cred,user,key,session,next){
 		Object.assign(session,cred,{id:user.id,sess:key})
-		redisUser.setSession(session,(err)=>{
+		fsGroup.addSession(session,(err)=>{
 			if (err) return next(this.error(500))
 			next()
 		})
 	},
 	removeSession(cred,next){
-		redisUser.removeSession(cred,(err)=>{
+		fsGroup.removeSession(cred,(err)=>{
 			if (err) return next(this.error(500))
 			next()
 		})
 	},
+	joinGroup(session,next){
+		fsGroup.join(session,(err)=>{
+			if(err) return next(this.error(500))
+		})
+	},
+	leaveGroup(session,next){
+		next()
+	},
 	verify(cred,next){
-		redisUser.getSession(cred,(err,sess)=>{
+		fsGroup.getSession(cred,(err,sess)=>{
 			if (err) return next(this.error(500))
 			if (!sess || sess!==cred.sess) return next(this.error(403))
 			next()

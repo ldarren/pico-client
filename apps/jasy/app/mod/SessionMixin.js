@@ -1,9 +1,9 @@
 return {
 	deps:{
-		appName:'text',
-		appParentId:'int'
+		grpName:'text',
+		grpParentId:'int'
 	},
 	credential:function(att){
-		return {id:att.id, sess:att.sess, app:this.deps.appName, appp:this.deps.appParentId}
+		return {id:att.id, sess:att.sess, grp:this.deps.grpName, grpp:this.deps.grpParentId}
 	}
 }
