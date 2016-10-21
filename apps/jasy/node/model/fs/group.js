@@ -14,32 +14,37 @@ addRight=function(db,id,dir,right,cb){
 	db.create(grp, right, right, TYPE.DIR, MODE.NONE, (err)=>{
 		if (err) return cb(err)
 		if (!id) return cb()
-		id=id.toString()
-		db.createp(db.join(grp,right,db.path(id)),id,TYPE.LINK, MODE.NONE, cb)
+		id=db.path(id.toString())
+		db.createp(db.join(grp,right,id),id,TYPE.LINK, MODE.NONE, cb)
 	})
 },
-checkRight=function(db,id,right,root,url,cb){
+cr=function(db,id,rights,root,url,cb){
 	if (!url.length) return cb()
-	db.read(db.path(...root,...url),(err,data,type)=>{
+	let u=db.path(...url)
+	db.read(db.join(root,u),(err,data,type)=>{
 		if (err) return cb(err)
 		if (data !== url[url.length-1]) return cb('checking right on wrong path')
 		if (TYPE.DIR !== type) return cb('checking right on non group')
-		db.findLink(db.path(id),db.path(...root),[db.join(db.path(...url),right)], (err, found)=>{
+		let paths=[]
+		for(let i=0,r; r=rights[i]; i++){
+			paths.push(db.join(u,r))
+		}
+		db.findLink(id,root,paths, (err, found)=>{
 			if (err || found) return cb(err, found)
 			url.pop()
-			checkRight(db,id,right,root,url,cb)
+			cr(db,id,rights,root,url,cb)
 		})
 	})
+},
+checkRight=function(db,id,rights,root,url,cb){
+	cr(db,db.path(id),rights,db.path(...root),url,cb)
 },
 newGroup=function(db, dir, cby, cb){
 	db.createp(db.path(...dir), dir[dir.length-1], TYPE.DIR, MODE.A_RX, (err)=>{
 		if (err) return cb(err)
 		addRight(db, cby, dir, DIR_ROOT, (err)=>{
 			if (err) return cb(err)
-			addRight(db, cby, dir, DIR_SUDO, (err)=>{
-				if (err) return cb(err)
-				addRight(db, 0, dir, DIR_NOOB, cb)
-			})
+			addRight(db, 0, dir, DIR_NOOB, cb)
 		})
 	})
 }
@@ -54,7 +59,7 @@ module.exports= {
 		META=db.META
 	},
 	createSession(session,cb){
-		db.create(db.path(session.id), session.sess, TYPE.FILE, MODE.G_X | MODE.A_X, cb)
+		db.create(db.path(session.id), session.sess, TYPE.DIR, MODE.G_RX, cb)
 	},
 	joinGroup(session,cb){
 		let
@@ -72,10 +77,10 @@ module.exports= {
 			})
 		})
 	},
-	createGroup(root,name,meta,cby,cb){
-		checkRight(db,cby,DIR_ROOT,root,name,(err)=>{
+	createGroup(root,name,cby,cb){
+		checkRight(db,cby,[DIR_ROOT],root,name,(err)=>{
 			if (err) return cb(err)
-			newGroup(root+name,meta,cby,cb)
+			newGroup(db,[root,name],cby,cb)
 		})
 	},
 	removeGroup(root,name,cby,cb){
