@@ -1,8 +1,6 @@
 const
 DIR_ROOT=		'.root/',
 DIR_SUDO=		'.sudo/',
-DIR_EDIT=		'.edit/',
-DIR_READ=		'.read/',
 DIR_NOOB=		'.noob/',
 DIR_OUST=		'.oust/',
 DIR_API=		'.api/',
@@ -11,38 +9,36 @@ DIR_EPI=		'.epi/',
 DIR_EPP=		'.epp/',
 DIR_GRP=		'.grp/',
 
-addRight=function(db,group,id,right,meta,cb){
-	db.create(group, right, meta, TYPE.DIR, MODE.G_X | MODE.A_X, (err)=>{
+addRight=function(db,id,dir,right,cb){
+	let grp=db.path(...dir)
+	db.create(grp, right, right, TYPE.DIR, MODE.NONE, (err)=>{
 		if (err) return cb(err)
 		if (!id) return cb()
 		id=id.toString()
-		db.createp(db.join(group,right,id),db.path(id),TYPE.LINK, MODE.G_X | MODE.A_X, cb)
+		db.createp(db.join(grp,right,db.path(id)),id,TYPE.LINK, MODE.NONE, cb)
 	})
 },
 checkRight=function(db,id,right,root,url,cb){
-	let
-	us=db.split(url),
-	urls=[]
-	while(us.length){
-		urls.push(db.join(...us,right))
-		urls.pop()
-	}
-	db.findLink(db.path(id),root,urls,cb)
-},
-newGroup=function(db, root, meta, cby, cb){
-	db.createp(root, meta, TYPE.DIR, MODE.G_X | MODE.A_X, (err)=>{
+	if (!url.length) return cb()
+	db.read(db.path(...root,...url),(err,data,type)=>{
 		if (err) return cb(err)
-		addRight(db, root, cby, DIR_ROOT, 'root', (err)=>{
+		if (data !== url[url.length-1]) return cb('checking right on wrong path')
+		if (TYPE.DIR !== type) return cb('checking right on non group')
+		db.findLink(db.path(id),db.path(...root),[db.join(db.path(...url),right)], (err, found)=>{
+			if (err || found) return cb(err, found)
+			url.pop()
+			checkRight(db,id,right,root,url,cb)
+		})
+	})
+},
+newGroup=function(db, dir, cby, cb){
+	db.createp(db.path(...dir), dir[dir.length-1], TYPE.DIR, MODE.A_RX, (err)=>{
+		if (err) return cb(err)
+		addRight(db, cby, dir, DIR_ROOT, (err)=>{
 			if (err) return cb(err)
-			addRight(db, root, cby, DIR_SUDO, 'sudo', (err)=>{
+			addRight(db, cby, dir, DIR_SUDO, (err)=>{
 				if (err) return cb(err)
-				addRight(db, root, cby, DIR_EDIT, 'edit', (err)=>{
-					if (err) return cb(err)
-					addRight(db, root, cby, DIR_READ, 'read', (err)=>{
-						if (err) return cb(err)
-						addRight(db, root, 0, DIR_NOOB, 'noob', cb)
-					})
-				})
+				addRight(db, 0, dir, DIR_NOOB, cb)
 			})
 		})
 	})
