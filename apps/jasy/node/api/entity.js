@@ -1,8 +1,9 @@
-var
+const
 Max=Math.max,
 picoStr=require('pico/str'),
 picoObj=require('pico/obj'),
 sqlEntity=require('sql/entity'),
+fsGroup=require('fs/group'),
 createKey=function(){
 	return picoStr.rand().substr(0,20)
 },
@@ -32,8 +33,8 @@ return {
 			if (err) return next(this.error(500,err.message))
 			Object.assign(output,{id:entity.id})
 			this.addJob([output], sqlEntity.get, sqlEntity)
-			sqlEntity.usermap_set(output,cred,{role:'root'},cred.id,(err)=>{
-				if (err) return next(this.error(500))
+			fsGroup.createGroup([cred.id.toString()],input.name,cred.id,(err)=>{
+				if (err) return next(this.error(500,err.message))
 				next()
 			})
 		})

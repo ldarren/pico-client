@@ -19,7 +19,7 @@ addRight=function(db,id,dir,right,cb){
 		db.createp(db.join(grp,right,id),id,TYPE.LINK, MODE.NONE, cb)
 	})
 },
-checkRight=function(db,id,rights,root,url,cb){
+cr=function(db,id,rights,root,url,cb){
 	if (!url.length) return cb()
 	let u=db.path(...url)
 	db.read(db.join(root,u),(err,data,type)=>{
@@ -36,6 +36,9 @@ checkRight=function(db,id,rights,root,url,cb){
 			cr(db,id,rights,root,url,cb)
 		})
 	})
+},
+checkRight=function(db,id,rights,root,url,cb){
+	cr(db,db.path(id),rights,db.path(...root),url,cb)
 },
 newGroup=function(db, dir, cby, cb){
 	db.createp(db.path(...dir), dir[dir.length-1], TYPE.DIR, MODE.A_RX, (err)=>{
@@ -57,9 +60,7 @@ module.exports= {
 		META=db.META
 		cb()
 	},
-	checkRight(db,id,rights,root,url,cb){
-		checkRight(db,db.path(id),rights,db.path(...root),url,cb)
-	},
+	checkRight,
 	createUser(user,cb){
 		var uid=user.id.toString()
 		db.createp(db.path(uid), uid, TYPE.DIR, MODE.G_RX, cb)
@@ -81,13 +82,13 @@ module.exports= {
 		})
 	},
 	createGroup(root,name,cby,cb){
-		checkRight(db,cby,[DIR_ROOT],root,name,(err)=>{
+		checkRight(db,cby,[DIR_ROOT,DIR_SUDO],root,[],(err)=>{
 			if (err) return cb(err)
-			newGroup(db,[root,name],cby,cb)
+			newGroup(db,[...root,name],cby,cb)
 		})
 	},
 	removeGroup(root,name,cby,cb){
-		checkRight(db,cby,DIR_ROOT,root,name,(err)=>{
+		checkRight(db,cby,[DIR_ROOT,DIR_SUDO],root,name,(err)=>{
 			if (err) return cb(err)
 			db.remove(db.path(root,name),cb)
 		})

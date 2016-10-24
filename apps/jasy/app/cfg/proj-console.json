@@ -150,11 +150,11 @@
 					{"type":"text","name":"desc","label":"Description","holder":"Entity Description","required":1},
 					{"type":"select","name":"type","label":"type","holder":"Select a Entity Type","options":[
 						["api","API Service"],
-						["epi","Extension for API Service"],
+						["epi","API Service Extension"],
 						["app","Mobile/Web Application"],
-						["epp","Extension fo application"],
+						["epp","Mobile/Web Application Extension"],
 						["suite","Composite Suite"],
-						["group","Group for user and app"]
+						["group","Group"]
 					],"value":2}
 				]],
 				["extraForm","map",{
