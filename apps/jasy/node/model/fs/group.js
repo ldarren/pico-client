@@ -8,6 +8,7 @@ DIR_APP=		'.app/',
 DIR_EPI=		'.epi/',
 DIR_EPP=		'.epp/',
 DIR_GRP=		'.grp/',
+EXPIRE=			1000*60*60*24,
 
 addRight=function(db,id,dir,right,cb){
 	let grp=db.path(...dir)
@@ -18,7 +19,7 @@ addRight=function(db,id,dir,right,cb){
 		db.createp(db.join(grp,right,id),id,TYPE.LINK, MODE.NONE, cb)
 	})
 },
-cr=function(db,id,rights,root,url,cb){
+checkRight=function(db,id,rights,root,url,cb){
 	if (!url.length) return cb()
 	let u=db.path(...url)
 	db.read(db.join(root,u),(err,data,type)=>{
@@ -35,9 +36,6 @@ cr=function(db,id,rights,root,url,cb){
 			cr(db,id,rights,root,url,cb)
 		})
 	})
-},
-checkRight=function(db,id,rights,root,url,cb){
-	cr(db,db.path(id),rights,db.path(...root),url,cb)
 },
 newGroup=function(db, dir, cby, cb){
 	db.createp(db.path(...dir), dir[dir.length-1], TYPE.DIR, MODE.A_RX, (err)=>{
@@ -57,23 +55,28 @@ module.exports= {
 		TYPE=db.TYPE
 		MODE=db.MODE
 		META=db.META
+		cb()
 	},
-	createSession(session,cb){
-		db.create(db.path(session.id), session.sess, TYPE.DIR, MODE.G_RX, cb)
+	checkRight(db,id,rights,root,url,cb){
+		checkRight(db,db.path(id),rights,db.path(...root),url,cb)
 	},
-	joinGroup(session,cb){
-		let
-		uid=session.id.toString(),
-		u=db.path(uid),
-		grp=db.join(u,session.grp)
-
+	createUser(user,cb){
+		var uid=user.id.toString()
+		db.createp(db.path(uid), uid, TYPE.DIR, MODE.G_RX, cb)
+	},
+	join(session,cb){
+		let grp=db.path(session.grpp.toString(),session.grp)
 		db.mode(grp, (err,mode)=>{
-			if (!err) return cb(err)
+			if (err) return cb(err)
 			if (!mode) return cb(`${grp} not found`)
 			let noob=db.join(grp,DIR_NOOB)
 			db.mode(noob, (err,mode)=>{
-				if (mode) return db.create(db.join(noob,uid),u,TYPE.LINK, MODE.G_X | MODE.A_X, cb)
-				db.create(db.join(grp,uid),u,TYPE.LINK, MODE.G_X | MODE.A_X, cb)
+				if (err) return cb(err)
+				let
+				uid=session.id.toString(),
+				u=db.path(uid)
+				if (mode) return db.createp(db.join(noob,u),u,TYPE.LINK, MODE.NONE, cb)
+				db.createp(db.join(grp,u),u,TYPE.LINK, MODE.NONE, cb)
 			})
 		})
 	},

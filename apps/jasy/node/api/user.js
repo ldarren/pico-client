@@ -6,13 +6,14 @@ HTML_CONFIRM=require('tmpl/email_confirmation.html'),
 URL_CONFIRM_DEV='https://st.jasaws.com/jasy/app/#email/confirm/EMAIL/VID',
 URL_CONFIRM_PRO='https://console.jasaws.com/jasy/app/#email/confirm/EMAIL/VID',
 URL_DOC_DEV='https://st.jasaws.com/jasy/app/#doc',
-URL_DOC_PRO='https://console.jasaws.com/jasy/app/#doc'
+URL_DOC_PRO='https://console.jasaws.com/jasy/app/#doc',
 
-let
 sqlUser=require('sql/user'),
 redisUser=require('redis/user'),
 fsGroup=require('fs/group'),
-picoObj=require('pico/obj'),
+picoObj=require('pico/obj')
+
+let
 ses,apiUser,
 isPro=true
 
@@ -38,7 +39,10 @@ return {
 	create(cred,user,next){
 		sqlUser.set(user,cred.id||0,(err)=>{
 			if (err) return next(this.error(500))
-			next()
+			fsGroup.createUser(user,(err)=>{
+				if (err) return next(this.error(500))
+				next()
+			})
 		})
 	},
 	update(cred,input,next){
@@ -56,13 +60,7 @@ return {
 	},
 	createSession(cred,user,key,session,next){
 		Object.assign(session,cred,{id:user.id,sess:key})
-		fsGroup.addSession(session,(err)=>{
-			if (err) return next(this.error(500))
-			next()
-		})
-	},
-	removeSession(cred,next){
-		fsGroup.removeSession(cred,(err)=>{
+		redisUser.setSession(session,(err)=>{
 			if (err) return next(this.error(500))
 			next()
 		})
@@ -70,13 +68,14 @@ return {
 	joinGroup(session,next){
 		fsGroup.join(session,(err)=>{
 			if(err) return next(this.error(500))
+			next()
 		})
 	},
 	leaveGroup(session,next){
 		next()
 	},
 	verify(cred,next){
-		fsGroup.getSession(cred,(err,sess)=>{
+		redisUser.getSession(cred,(err,sess)=>{
 			if (err) return next(this.error(500))
 			if (!sess || sess!==cred.sess) return next(this.error(403))
 			next()
