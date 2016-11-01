@@ -10,7 +10,6 @@ URL_DOC_PRO='https://console.jasaws.com/jasy/app/#doc',
 
 sqlUser=require('sql/user'),
 redisUser=require('redis/user'),
-fsGroup=require('fs/group'),
 picoObj=require('pico/obj')
 
 let
@@ -39,10 +38,7 @@ return {
 	create(cred,user,next){
 		sqlUser.set(user,cred.id||0,(err)=>{
 			if (err) return next(this.error(500))
-			fsGroup.createUser(user,(err)=>{
-				if (err) return next(this.error(500))
-				next()
-			})
+			next()
 		})
 	},
 	update(cred,input,next){
@@ -62,12 +58,6 @@ return {
 		Object.assign(session,cred,{id:user.id,sess:key})
 		redisUser.setSession(session,(err)=>{
 			if (err) return next(this.error(500))
-			next()
-		})
-	},
-	joinGroup(session,next){
-		fsGroup.join(session,(err)=>{
-			if(err) return next(this.error(500))
 			next()
 		})
 	},

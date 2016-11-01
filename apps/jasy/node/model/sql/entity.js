@@ -11,19 +11,17 @@ SET=						'INSERT INTO `entity` (`name`,`parentId`,`type`,`cby`) VALUES (?);',
 POLL=						'SELECT * FROM `entity` WHERE `id` IN (?) AND `uat`>?;', // should return s==0 entities
 TOUCH=						'UPDATE `entity` SET `uat`=NOW() WHERE `id`=?;',
 
-MAP_GET_ALL=				'SELECT `entityId`,`k`,`v1`,`v2` FROM `entityMap` WHERE `entityId`=?;',
-MAP_GET=					'SELECT `entityId`,`k`,`v1`,`v2` FROM `entityMap` WHERE `entityId`=? AND `k`=?;',
-MAP_SET=					'INSERT INTO `entityMap` (`entityId`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
+MAP_GET_ALL=				'SELECT `id`,`k`,`v1`,`v2` FROM `entityMap` WHERE `id`=?;',
+MAP_GET=					'SELECT `id`,`k`,`v1`,`v2` FROM `entityMap` WHERE `id`=? AND `k`=?;',
+MAP_SET=					'INSERT INTO `entityMap` (`id`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE `_id`=LAST_INSERT_ID(`_id`), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
 
-USERMAP_SET=				'INSERT INTO `entityUserMap` (`entityId`,`userId`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
-USERMAP_FIND_ENTITYID=		'SELECT `entityId`,`userId`,`k`,`v1`,`v2` FROM `entityUserMap` WHERE `userId`=? AND `k`=?;',
+USERMAP_SET=				'INSERT INTO `entityUserMap` (`id`,`userId`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE `_id`=LAST_INSERT_ID(`_id`), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
+USERMAP_FIND_ENTITYID=		'SELECT `id`,`userId`,`k`,`v1`,`v2` FROM `entityUserMap` WHERE `userId`=? AND `k`=?;',
 
-ERR_INVALID_INPUT=			'INVALID INPUT'
+ERR_INVALID_INPUT=			'INVALID INPUT',
 
-var
 picoObj=require('pico/obj'),
 hash=require('sql/hash'),
-client,
 gets=function(ctx,items,idx,cb){
 	if (items.length <= idx) return cb(null,items)
 	ctx.get(items[idx++],(err)=>{
@@ -32,21 +30,23 @@ gets=function(ctx,items,idx,cb){
 	})
 }
 
+let client
+
 module.exports={
 	setup(context,cb){
 		client=context.mainDB
 		cb()
 	},
 	clean(model){
-        for(var i=0,k; k=PRIVATE[i]; i++) delete model[k];
+        for(let i=0,k; k=PRIVATE[i]; i++) delete model[k];
 		return model
 	},
 	cleanList(list){
-        for(var i=0,l; l=list[i]; i++) list[i]=this.clean(l)
+        for(let i=0,l; l=list[i]; i++) list[i]=this.clean(l)
 		return list
 	},
 	cleanSecret(model){
-        for(var i=0,k; k=SECRET[i]; i++) delete model[k];
+        for(let i=0,k; k=SECRET[i]; i++) delete model[k];
 		return model
 	},
 
@@ -114,9 +114,9 @@ module.exports={
 			if (err) return cb(err)
 			let entities=[]
 			for(let i=0,r; r=rows[i]; i++){
-				entities.push({id:r.entityId})
+				entities.push({id:r.id})
 			}
-			cb(null,client.mapDecodes(rows,entities,'entityId',hash,ENUM))
+			cb(null,client.mapDecodes(rows,entities,hash,ENUM))
 		})
 	}
 }

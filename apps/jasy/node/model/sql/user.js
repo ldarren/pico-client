@@ -10,12 +10,12 @@ SET=				'INSERT INTO `user` (`cby`) VALUES (?);',
 TOUCH=				'UPDATE `user` SET `uat`=NOW() WHERE id=?;',
 POLL=				'SELECT * FROM `user` WHERE id IN (?) AND `uat`>? AND `s`!=0;',
 
-MAP_GET=			'SELECT `userId`,`k`,`v1`,`v2` FROM `userMap` WHERE `userId`=?;',
-MAP_GETS=			'SELECT `userId`,`k`,`v1`,`v2` FROM `userMap` WHERE `userId` IN (?);',
-MAP_GET_BY_KEY=		'SELECT `userId`,`k`,`v1`,`v2` FROM `userMap` WHERE `userId`=? AND `k`=?;',
-MAP_SET=			'INSERT INTO `userMap` (`userId`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
-MAP_FIND_TEXT=		'SELECT `userId` FROM `userMap` WHERE `k`=? AND `v1`=?;',
-MAP_FIND_INT=		'SELECT `userId` FROM `userMap` WHERE `k`=? AND `v2`=?;',
+MAP_GET=			'SELECT `id`,`k`,`v1`,`v2` FROM `userMap` WHERE `id`=?;',
+MAP_GETS=			'SELECT `id`,`k`,`v1`,`v2` FROM `userMap` WHERE `id` IN (?);',
+MAP_GET_BY_KEY=		'SELECT `id`,`k`,`v1`,`v2` FROM `userMap` WHERE `id`=? AND `k`=?;',
+MAP_SET=			'INSERT INTO `userMap` (`id`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE `_id`=LAST_INSERT_ID(`_id`), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
+MAP_FIND_TEXT=		'SELECT `id` FROM `userMap` WHERE `k`=? AND `v1`=?;',
+MAP_FIND_INT=		'SELECT `id` FROM `userMap` WHERE `k`=? AND `v2`=?;',
 
 ERR_INVALID_INPUT=	'INVALID INPUT'
 
@@ -93,7 +93,7 @@ module.exports={
 		if (!users || !Array.isArray(users)) return cb(ERR_INVALID_INPUT)
 		client.query(MAP_GETS,[picoObj.pluck(users,'id')],(err,rows)=>{
 			if (err) return cb(err)
-			cb(null,client.mapDecodes(picoObj.group(rows,'userId'),users,hash,ENUM))
+			cb(null,client.mapDecodes(picoObj.group(rows,'id'),users,hash,ENUM))
 		})
 	},
 	map_get(user,cb){

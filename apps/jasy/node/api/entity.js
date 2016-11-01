@@ -2,14 +2,7 @@ const
 Max=Math.max,
 picoStr=require('pico/str'),
 picoObj=require('pico/obj'),
-sqlEntity=require('sql/entity'),
-fsGroup=require('fs/group'),
-createKey=function(){
-	return picoStr.rand().substr(0,20)
-},
-createSecret=function(){
-	return (picoStr.rand()+picoStr.rand()).substr(0,40)
-}
+sqlEntity=require('sql/entity')
 
 return {
 	setup(context,cb){
@@ -33,10 +26,7 @@ return {
 			if (err) return next(this.error(500,err.message))
 			Object.assign(output,{id:entity.id})
 			this.addJob([output], sqlEntity.get, sqlEntity)
-			fsGroup.createGroup([cred.id.toString()],input.name,cred.id,(err)=>{
-				if (err) return next(this.error(500,err.message))
-				next()
-			})
+			next()
 		})
 	},
 	remove(input,next){

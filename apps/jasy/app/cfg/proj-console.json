@@ -24,6 +24,14 @@
 			"update":"jasy/entity/update",
 			"delete":"jasy/entity/remove"
 		}],
+		["groups","models",{
+			"idAttributes":"dir",
+			"list":"jasy/group/list",
+			"create":"jasy/group/create",
+			"read":"jasy/group/read",
+			"update":"jasy/group/update",
+			"delete":"jasy/group/remove"
+		}],
 		["entityLog","models",{
 		}],
 		["userEntityMap","models",{
@@ -34,14 +42,18 @@
             ["paneId","int",0],
             ["html","file","Pane.html"],
 			["css","file","Pane.css"],
-			["allmodels","refs","models"]
+			["allmodels","refs","models"],
+			["allint","refs","int"],
+			["alltext","refs","text"]
         ]],
         ["js/Pane","view",[
 			["options","map",{"el":"#__ #layer0 #pane1"}],
             ["paneId","int",1],
             ["html","file","Pane.html"],
 			["css","file","Pane.css"],
-			["allmodels","refs","models"]
+			["allmodels","refs","models"],
+			["allint","refs","int"],
+			["alltext","refs","text"]
         ]],
 		["Page","view",[
 			["options","map",{"el":"#__ #pane0 #page"}],
@@ -205,9 +217,37 @@
 					]]
 				]]
 			]]
+		],
+        "group":[
+			["options","map",{"els":["#pane0 #page","#pane1 #page"]}],
+			["entity","model","entities",0],
+			["cred","ref","cred"],
+			["groups","ref","groups"],
+			["icons","models",{
+			}],
+			["grpName","ref","grpName"],
+			["grpParentId","ref","grpParentId"],
+			["GroupCtrl","ctrl",[
+				["paneId","ref","paneId"],
+				["title","text","Group"],
+				["btnRight","map",{"icon":"icon_address-book"}],
+				["entity","ref","entity"],
+				["groups","ref","groups"],
+				["icons","ref","icons"],
+				["grpName","ref","grpName"],
+				["grpParentId","ref","grpParentId"]
+			]],
+			["scrollable/ListView","view",[
+				["options","map",{"className":"scrollable icons"}],
+				["css","file","scrollable/IconView.css"],
+				["list","ref","icons"],
+				["Cell","view",[
+				]]
+			]]
         ]
     },[
         ["entity/:id","entities","entity"],
+        ["group/:id","entities","group"],
         ["*action","entities"]
     ]
 ]

@@ -1,5 +1,5 @@
 return {
-	signals:['header','modal_show'],
+	signals:['header'],
 	deps:{
 		paneId:'int',
 		title:'text',

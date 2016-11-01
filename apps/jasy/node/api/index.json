@@ -4,6 +4,7 @@
         "user":"api/user",
         "email":"api/email",
         "entity":"api/entity",
+        "directory":"api/directory",
 		"stream":"api/stream",
         "web":["context","webServer"]
     },      
@@ -17,6 +18,7 @@
 			["stream","prepare","input","output"],
 			["user","poll","input","output"],
 			["entity","poll","input","output"],
+			["directory","poll","input","output"],
 			["stream","add","res","input"],
 			["web","SSEStart","req","res"],
 			["stream","render",["poll"],"input","output"]
@@ -41,9 +43,10 @@
             ["email","verifyEmail","input",[null]],
             ["email","confirmation","cred","input","user"],
             ["user","create","cred","user"],
+            ["directory","createUser","cred","user"],
+            ["directory","userJoin","cred","user"],
             ["util","randomStr",["$sessKey",20]],
             ["user","createSession","cred","user","$sessKey","session"],
-            ["user","joinGroup","session"],
             ["user","replyPrivate","session"],
             [0]
         ],
@@ -91,9 +94,17 @@
             ["util","randomStr",["$key",20]],
             ["util","randomStr",["$secret",40]],
             ["entity","create","cred","input","$key","$secret","output"],
+            ["directory","newGroup","cred","input"],
             ["entity","replyPrivate","output"],
             [0]
         ],
+		"jasy/directory/read":[
+            ["util","have","input",[["path"]]],
+            ["user","verify","cred"],
+			["directory","read","input","output"],
+            ["directory","replyPrivate","output"],
+			[0]
+		],
         "#help": [
             ["util","help"] 
         ] 
