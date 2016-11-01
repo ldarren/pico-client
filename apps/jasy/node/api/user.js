@@ -61,6 +61,9 @@ return {
 			next()
 		})
 	},
+	removeSession(cred,next){
+		next()
+	},
 	leaveGroup(session,next){
 		next()
 	},

@@ -80,10 +80,10 @@ module.exports={
 		})
 	},
 	userJoin(url,name,userId,role,by,cb){
-		client.query(FIND_ID,[url.join(SEP),name],(err,rows)=>{
+		client.query(FIND_ID,[SEP+url.join(SEP),name],(err,rows)=>{
 			if (err) return cb(err)
 			if (!rows.length) return cb(ERR_INVALID_INPUT)
-			client.query(USERMAP_SET,[[[rows[0].id,userId,,null,hash.val(role),by]]],cb)
+			client.query(USERMAP_SET,[[[rows[0].id,userId,hash.val('role'),null,hash.val(role),by]]],cb)
 		})
 	}
 }

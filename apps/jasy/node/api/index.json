@@ -25,10 +25,10 @@
 		],
         "ERR|#msg": [
 			["util","logParams"],
-            [0]
+            []
         ],
         "END|#msg": [
-            [0] 
+            [] 
         ],
         "jasy/email/signup":[
             ["util","have","input",[["email","pwd"]]],
@@ -36,19 +36,19 @@
             ["util","randomStr",["$verifyId",20]],
             ["email","sendConfirmation","cred","input","$verifyId","output"],
             ["user","replyPrivate","output"],
-            [0]
+            []
         ],
         "jasy/email/confirm":[
             ["util","have","input",[["email","verifyId"]]],
             ["email","verifyEmail","input",[null]],
             ["email","confirmation","cred","input","user"],
             ["user","create","cred","user"],
-            ["directory","createUser","cred","user"],
+            ["directory","newUser","cred","user"],
             ["directory","userJoin","cred","user"],
             ["util","randomStr",["$sessKey",20]],
             ["user","createSession","cred","user","$sessKey","session"],
             ["user","replyPrivate","session"],
-            [0]
+            []
         ],
         "jasy/email/signin":[
             ["util","have","input",[["email","pwd"]]],
@@ -57,36 +57,36 @@
             ["util","randomStr",["$sessKey",20]],
             ["user","createSession","cred","user","$sessKey","session"],
             ["user","replyPrivate","session"],
-            [0]
+            []
         ],
         "jasy/email/update":[
             ["user","verify","cred"],
             ["email","update","cred","input","output"],
             ["user","replyPrivate","output"],
-            [0]
+            []
         ],
         "jasy/user/signout":[
             ["user","verify","cred"],
             ["user","removeSession","cred"],
-            [0]
+            []
         ],
         "jasy/user/update":[
             ["user","verify","cred"],
             ["user","update","cred","input","output"],
             ["user","replyPrivate","output"],
-            [0]
+            []
         ],
         "jasy/user/list":[
             ["user","verify","cred"],
             ["user","list","input",":output"],
             ["user","replyList",":output"],
-            [0]
+            []
         ],
         "jasy/user/read":[
             ["user","verify","cred"],
             ["user","read","input","output"],
             ["user","reply","output"],
-            [0]
+            []
         ],
         "jasy/entity/create":[
             ["util","have","input",[["name","type","parentId"]]],
@@ -96,14 +96,14 @@
             ["entity","create","cred","input","$key","$secret","output"],
             ["directory","newGroup","cred","input"],
             ["entity","replyPrivate","output"],
-            [0]
+            []
         ],
 		"jasy/directory/read":[
             ["util","have","input",[["path"]]],
             ["user","verify","cred"],
 			["directory","read","input","output"],
             ["directory","replyPrivate","output"],
-			[0]
+			[]
 		],
         "#help": [
             ["util","help"] 
