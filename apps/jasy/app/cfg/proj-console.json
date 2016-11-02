@@ -174,8 +174,15 @@
 						{"type":"text","name":"webhook","label":"Webhook","holder":"Webhook address","required":1},
 						{"type":"text","name":"group","label":"Group Id","holder":"Group id","required":1}
 					],
-					"epi":[],
-					"app":[],
+					"epi":[
+						{"type":"select","name":"entity","label":"Dependencies","holder":"Select a entity","options":[],"value":1,"required":1}
+					],
+					"app":[
+						{"type":"select","name":"entity","label":"Dependencies","holder":"Select a entity","options":[],"value":1,"required":1}
+					],
+					"epp":[
+						{"type":"select","name":"entity","label":"Dependencies","holder":"Select a entity","options":[],"value":1,"required":1}
+					],
 					"suite":[],
 					"group":[]
 				}]

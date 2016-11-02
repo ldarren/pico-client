@@ -76,7 +76,7 @@ module.exports={
 		modBuf.writeUInt16LE(MOD_DIR|MOD_G_RX)
 		client.query(SET,[[[url.join(SEP),name,modBuf,by]]],(err,meta)=>{
 			if (err) return cb(err)
-			client.query(USERMAP_SET,[[[meta.insertId,by,,null,hash.val(role),by]]],cb)
+			client.query(USERMAP_SET,[[[meta.insertId,by,hash.val('role'),null,hash.val('root'),by]]],cb)
 		})
 	},
 	userJoin(url,name,userId,role,by,cb){
