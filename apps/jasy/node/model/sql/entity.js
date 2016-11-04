@@ -1,12 +1,12 @@
 const
-INDEX=						['name','parentId','type'],
+INDEX=						['name','userId','type'],
 PRIVATE=					['webhook','key','secret','$private','log'],
 SECRET=						[],
 ENUM=						['type'],
 
-FIND_ID=					'SELECT * FROM `entity` WHERE `name`=? AND `parentId`=? AND `s`!=0;',
+FIND_ID=					'SELECT * FROM `entity` WHERE `name`=? AND `userId`=? AND `s`!=0;',
 GET=						'SELECT * FROM `entity` WHERE `id`=? AND `s`!=0;',
-SET=						'INSERT INTO `entity` (`name`,`parentId`,`type`,`cby`) VALUES (?);',
+SET=						'INSERT INTO `entity` (`name`,`userId`,`type`,`cby`) VALUES (?);',
 
 POLL=						'SELECT * FROM `entity` WHERE `id` IN (?) AND `uat`>?;', // should return s==0 entities
 TOUCH=						'UPDATE `entity` SET `uat`=NOW() WHERE `id`=?;',
@@ -18,7 +18,7 @@ MAP_SET=					'INSERT INTO `entityMap` (`id`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUP
 USERMAP_SET=				'INSERT INTO `entityUserMap` (`id`,`userId`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE `_id`=LAST_INSERT_ID(`_id`), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
 USERMAP_FIND_ENTITYID=		'SELECT `id`,`userId`,`k`,`v1`,`v2` FROM `entityUserMap` WHERE `userId`=? AND `k`=?;',
 
-ERR_INVALID_INPUT=			'INVALID INPUT',
+ERR_INVALID_INPUT=			{message:'INVALID INPUT'},
 
 picoObj=require('pico/obj'),
 hash=require('sql/hash'),
@@ -50,8 +50,8 @@ module.exports={
 		return model
 	},
 
-	findId(name,parentId,cb){
-		client.query(FIND_ID, [name,parentId], (err,rows)=>{
+	findId(name,userId,cb){
+		client.query(FIND_ID, [name,userId], (err,rows)=>{
 			if (err) return cb(err)
 			cb(null,client.decodes(rows,hash,ENUM))
 		})

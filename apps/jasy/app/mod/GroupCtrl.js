@@ -22,8 +22,7 @@ return {
 		entity:'model',
 		groups:'models',
 		icons:'models',
-		grpName:'text',
-		grpParentId:'int'
+		group:'text'
 	},
 	create:function(deps){
 		if(deps.title)this.signals.header(
@@ -33,7 +32,7 @@ return {
 			deps.btnRight
 		).send(this.host)
 
-		this.cwd=[deps.grpParentId,deps.grpName].join('.')
+		this.cwd=deps.group
 
 		let
 		self=this,
@@ -43,7 +42,7 @@ return {
 			listDir(dir,deps.icons)
 		}else{
 			deps.groups.read({
-				path:this.cwd
+				grp:this.cwd
 			},function(err,model,res){
 				listDir(model,deps.icons)
 			})

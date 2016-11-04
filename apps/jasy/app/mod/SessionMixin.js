@@ -1,9 +1,8 @@
 return {
 	deps:{
-		grpName:'text',
-		grpParentId:'int'
+		group:'text'
 	},
 	credential:function(att){
-		return {id:att.id, sess:att.sess, grp:this.deps.grpName, grpp:this.deps.grpParentId}
+		return {id:att.id, sess:att.sess, grp:this.deps.group}
 	}
 }

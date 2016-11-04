@@ -17,7 +17,7 @@ MAP_SET=			'INSERT INTO `userMap` (`id`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICA
 MAP_FIND_TEXT=		'SELECT `id` FROM `userMap` WHERE `k`=? AND `v1`=?;',
 MAP_FIND_INT=		'SELECT `id` FROM `userMap` WHERE `k`=? AND `v2`=?;',
 
-ERR_INVALID_INPUT=	'INVALID INPUT'
+ERR_INVALID_INPUT=	{message:'INVALID INPUT'}
 
 let
 picoObj=require('pico/obj'),

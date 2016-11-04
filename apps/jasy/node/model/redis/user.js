@@ -9,7 +9,7 @@ module.exports={
 		cb()
 	},
 	getRegisterCache(cred,email,cb){
-		var key=`${cred.grpp}:${cred.grp}:${email}`
+		var key=`${cred.grp}:${email}`
 		client.multi()
 		.get(`vid:${key}`)
 		.get(`rgc:${key}`)
@@ -21,26 +21,26 @@ module.exports={
 		})
 	},
 	setRegisterCache(cred,email,verifyId,user,cb){
-		var key=`${cred.grpp}:${cred.grp}:${email}`
+		var key=`${cred.grp}:${email}`
 		client.multi()
 		.setex(`vid:${key}`,DAY1,verifyId)
 		.setex(`rgc:${key}`,DAY1,JSON.stringify(user))
 		.exec(cb)
 	},
 	removeRegisterCache(cred,email,cb){
-		var key=`${cred.grpp}:${cred.grp}:${email}`
+		var key=`${cred.grp}:${email}`
 		client.multi()
 		.del(`vid:${key}`)
 		.del(`rgc:${key}`)
 		.exec(cb)
 	},
 	getSession(cred,cb){
-		client.get(`sess:${cred.grpp}:${cred.grp}:${cred.id}`,cb)
+		client.get(`sess:${cred.grp}:${cred.id}`,cb)
 	},
 	setSession(cred,cb){
-		client.setex(`sess:${cred.grpp}:${cred.grp}:${cred.id}`,DAY1,cred.sess,cb)
+		client.setex(`sess:${cred.grp}:${cred.id}`,DAY1,cred.sess,cb)
 	},
 	removeSession(cred,cb){
-		client.del(`sess:${cred.grpp}:${cred.grp}:${cred.id}`,cb)
+		client.del(`sess:${cred.grp}:${cred.id}`,cb)
 	}
 }

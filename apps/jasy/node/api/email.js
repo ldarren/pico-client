@@ -24,14 +24,14 @@ return {
 			if (err) return next(this.error(500))
 			if (output){
 				if (!users.length) return next(this.error(401))
-				Object.assign(output,{id:users[0].userId})
+				Object.assign(output,{id:users[0].id})
 			}else if (users.length) return next(this.error(401))
 			next()
 		})
 	},
 	verifyPwd(input,user,next){
 		sqlUser.map_getByKey(user, 'pwd', (err, map)=>{
-			if (err) return next(this.error(500))
+			if (err) return next(this.error(500,err.message))
 			if (input.pwd !== map.pwd) return next(this.error(401))
 			next()
 		})

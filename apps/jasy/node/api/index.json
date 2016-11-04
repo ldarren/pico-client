@@ -89,12 +89,12 @@
             []
         ],
         "jasy/entity/create":[
-            ["util","have","input",[["name","type","parentId"]]],
+            ["util","have","input",[["name","type","userId"]]],
             ["user","verify","cred"],
             ["util","randomStr",["$key",20]],
             ["util","randomStr",["$secret",40]],
             ["entity","create","cred","input","$key","$secret","output"],
-            ["directory","newGroup","cred","input"],
+            ["directory","newGroup","cred","input","output"],
             ["entity","replyPrivate","output"],
             []
         ],

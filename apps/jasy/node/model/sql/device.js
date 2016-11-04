@@ -15,7 +15,7 @@ MAP_GET =               'SELECT `deviceId`, `k`, `v1`, `v2` FROM deviceMap WHERE
 MAP_GETS =              'SELECT `deviceId`, `k`, `v1`, `v2` FROM deviceMap WHERE `deviceId` IN (?);',
 MAP_SET =               'INSERT INTO deviceMap (`deviceId`, `k`, `v1`, `v2`, `cby`) VALUES ? ON DUPLICATE KEY UPDATE id=LAST_INSERT_ID(id), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
 
-ERR_INVALID_INPUT = 'INVALID INPUT',
+ERR_INVALID_INPUT=	{message:'INVALID INPUT'},
 
 picoObj=require('pico/obj'),
 hash=require('sql/hash'),

@@ -2,7 +2,8 @@ const
 Max=Math.max,
 picoStr=require('pico/str'),
 picoObj=require('pico/obj'),
-sqlEntity=require('sql/entity')
+sqlEntity=require('sql/entity'),
+sqlDir=require('sql/directory')
 
 return {
 	setup(context,cb){
@@ -42,7 +43,8 @@ return {
 		next()
 	},
 	poll(input,output,next){
-		sqlEntity.usermap_findEntityId(input,'role',(err,entities)=>{
+		return next()
+		sqlDir.poll(input,'role',(err,entities)=>{
 			if (err) return cb(this.error(500,err.message))
 			if (!entities.length) return next()
 			sqlEntity.gets(entities,(err,list)=>{

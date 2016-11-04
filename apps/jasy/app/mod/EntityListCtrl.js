@@ -43,7 +43,7 @@ return {
 				data:{
 					name:result.name,
 					type:result.type,
-					parentId:this.deps.cred.at(0).id,
+					userId:this.deps.cred.at(0).id,
 					$public:{desc:result.desc},
 					$private:this.extraData
 				},

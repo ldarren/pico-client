@@ -2,8 +2,7 @@
     [
     ],[
     ],[
-		["grpName","text","jasy"],
-		["grpParentId","int",0],
+		["group","text",""],
         ["options","map",{"el":"#__"}],
         ["html","file","Frame.html"],
         ["css","file","Frame.css"],
@@ -24,13 +23,12 @@
 			"update":"jasy/entity/update",
 			"delete":"jasy/entity/remove"
 		}],
-		["groups","models",{
-			"idAttributes":"dir",
-			"list":"jasy/group/list",
-			"create":"jasy/group/create",
-			"read":"jasy/group/read",
-			"update":"jasy/group/update",
-			"delete":"jasy/group/remove"
+		["directory","models",{
+			"list":"jasy/directory/list",
+			"create":"jasy/directory/create",
+			"read":"jasy/directory/read",
+			"update":"jasy/directory/update",
+			"delete":"jasy/directory/remove"
 		}],
 		["entityLog","models",{
 		}],
@@ -124,8 +122,7 @@
 		[["auth/Session","SessionMixin"],"ctrl",[
 			["credential","ref","cred"],
 			["users","ref","users"],
-			["grpName","ref","grpName"],
-			["grpParentId","ref","grpParentId"]
+			["group","ref","group"]
 		]]
     ],{
         "":[
@@ -229,27 +226,25 @@
 			["options","map",{"els":["#pane0 #page","#pane1 #page"]}],
 			["entity","model","entities",0],
 			["cred","ref","cred"],
-			["groups","ref","groups"],
+			["directory","ref","directory"],
 			["icons","models",{
 			}],
-			["grpName","ref","grpName"],
-			["grpParentId","ref","grpParentId"],
+			["group","ref","group"],
 			["GroupCtrl","ctrl",[
 				["paneId","ref","paneId"],
 				["title","text","Group"],
 				["btnRight","map",{"icon":"icon_address-book"}],
 				["entity","ref","entity"],
-				["groups","ref","groups"],
+				["directory","ref","directory"],
 				["icons","ref","icons"],
-				["grpName","ref","grpName"],
-				["grpParentId","ref","grpParentId"]
+				["group","ref","group"]
 			]],
 			["scrollable/ListView","view",[
 				["options","map",{"className":"scrollable icons"}],
 				["css","file","scrollable/IconView.css"],
 				["list","ref","icons"],
 				["Cell","view",[
-				]]
+				],"scrollable/Row"]
 			]]
         ]
     },[
