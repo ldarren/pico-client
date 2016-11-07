@@ -48,16 +48,20 @@ return {
 			})
 		})
 	},
-	userJoin(cred,user,next){
+	getRole(cred,output,next){
+		next()
+	},
+	userJoin(cred,user,input,next){
 		sqlDir.findId(cred.grp,(err,rows)=>{
 			if (err) return next(this.error(500,err.message))
 			if (!rows.length) return next(this.error(400))
 			const dir=rows[0]
+			// TODO: root and sudo cred should skip this check
 			let key,val
-			if (MOD_FREE & dir.s.readUInt16LE()){
+			if (MOD.FREE & dir.s.readUInt16LE()){
 				key='role',val='member'
 			}else{
-				key='applicant',val=''
+				key='applicant',val=input.msg||''
 			}
 			sqlDir.usermap_set(dir.id,user.id,key,val,cred.id,(err)=>{
 				if(err) return next(this.error(500))
@@ -66,15 +70,15 @@ return {
 		})
 	},
 	getMyEntityIds(cred,output,next){
-		sqlDir.usermap_findId(cred.id,'role',(err,rows)=>{
+		sqlDir.usermap_findId(cred.id,'role',(err,usermaps)=>{
 			if (err) return next(this.error(500,err.message))
-			if (!rows.length) return next()
-			sqlDir.filter(pObj.pluck(rows,'id'),cred.grp,(err,rows)=>{
+			if (!usermaps.length) return next()
+			sqlDir.filter(usermaps,cred.grp,(err,usermaps)=>{
 				if (err) return next(this.error(500,err.message))
-				if (!rows.length) return next()
-				sqlDir.map_getList(pObj.pluck(rows,'id'),'entityId',(err,rows)=>{
+				if (!usermaps.length) return next()
+				sqlDir.map_getList(usermaps,'entityId',(err,usermaps)=>{
 					if (err) return next(this.error(500,err.message))
-					output.push(...pObj.pluck(rows,'id'))
+					output.push(...usermaps)
 					next()
 				})
 			})
