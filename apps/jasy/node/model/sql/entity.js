@@ -8,19 +8,20 @@ FIND_ID=					'SELECT * FROM `entity` WHERE `name`=? AND `userId`=? AND `s`!=0;',
 GET=						'SELECT * FROM `entity` WHERE `id`=? AND `s`!=0;',
 SET=						'INSERT INTO `entity` (`name`,`userId`,`type`,`cby`) VALUES (?);',
 
-POLL=						'SELECT * FROM `entity` WHERE `id` IN (?) AND `uat`>?;', // should return s==0 entities
+LAST=						'SELECT * FROM `entity` WHERE `id` IN (?) AND `uat`>?;', // should return s==0 entities
 TOUCH=						'UPDATE `entity` SET `uat`=NOW() WHERE `id`=?;',
 
 MAP_GET_ALL=				'SELECT `id`,`k`,`v1`,`v2` FROM `entityMap` WHERE `id`=?;',
 MAP_GET=					'SELECT `id`,`k`,`v1`,`v2` FROM `entityMap` WHERE `id`=? AND `k`=?;',
 MAP_SET=					'INSERT INTO `entityMap` (`id`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE `_id`=LAST_INSERT_ID(`_id`), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
+MAP_LAST=					'SELECT `id`,`k`,`v1`,`v2` FROM `entityMap` WHERE `id` IN (?) AND `uat`=?;',
 
-USERMAP_SET=				'INSERT INTO `entityUserMap` (`id`,`userId`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE `_id`=LAST_INSERT_ID(`_id`), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
-USERMAP_FIND_ENTITYID=		'SELECT `id`,`userId`,`k`,`v1`,`v2` FROM `entityUserMap` WHERE `userId`=? AND `k`=?;',
+LIST_LAST=					'SELECT `id`,`k`,`v1`,`v2` FROM `entityList` WHERE `id` IN (?) AND `uat`=?;',
 
 ERR_INVALID_INPUT=			{message:'INVALID INPUT'},
 
-picoObj=require('pico/obj'),
+Max=Math.max,
+pObj=require('pico/obj'),
 hash=require('sql/hash'),
 gets=function(ctx,items,idx,cb){
 	if (items.length <= idx) return cb(null,items)
@@ -79,8 +80,17 @@ module.exports={
 			})
 		})
 	},
-	poll(ids,uat,cb){
-		client.query(POLL, [ids,uat], cb)
+	last(ids,uat,cb){
+		client.query(LAST, [ids,uat], (err,rows)=>{
+			if (err) return cb(err)
+			const
+			seen=Max(...pObj.pluck(rows,'uat'),uat),
+			entities=client.decodes(rows,hash,ENUM)
+			client.query(MAP_LAST, [ids,uat], (err,rows)=>{
+				if (err) return cb(err)
+				cb(null,client.mapDecodes(rows,entities,hash,ENUM),seen)
+			})
+		})
 	},
 	touch(entity,cb){
 		client.query(TOUCH, [entity.id], cb)
@@ -105,18 +115,10 @@ module.exports={
 		client.query(MAP_SET, [client.mapEncode(entity,by,hash,INDEX,ENUM)], cb)
 	},
 
-	usermap_set(entity,user,map,by,cb){
-		if (!entity||!entity.id||!user||!user.id) return cb(ERR_INVALID_INPUT)
-		client.query(USERMAP_SET, [client.map2Encode(entity,user,map,by,hash,INDEX,ENUM)], cb)
-	},
-	usermap_findEntityId(user,key,cb){
-		client.query(USERMAP_FIND_ENTITYID,[user.id,hash.val(key)],(err,rows)=>{
+	list_last(ids,key,uat,cb){
+		client.query(LIST_LAST,[ids,hash.val(key),uat],(err,rows)=>{
 			if (err) return cb(err)
-			let entities=[]
-			for(let i=0,r; r=rows[i]; i++){
-				entities.push({id:r.id})
-			}
-			cb(null,client.mapDecodes(rows,entities,hash,ENUM))
+			cb(null, client.listDecodes(rows,key,hash,ENUM))
 		})
 	}
 }

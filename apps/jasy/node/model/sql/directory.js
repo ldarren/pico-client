@@ -25,18 +25,23 @@ SET=				'INSERT INTO `dir` (`grp`,`name`,`s`,`cby`) VALUES ? ON DUPLICATE KEY UP
 GET=				'SELECT * FROM `dir` WHERE `id`=? AND `s` & 0x8000;',
 FIND_ID=			'SELECT `id`, `s` FROM `dir` WHERE `grp`=? AND `name`=? AND `s` & 0x8000;',
 FILTER=				'SELECT `id`, `s` FROM `dir` WHERE `id` IN (?) AND ((`grp`=? AND `name`=?) OR `grp` LIKE ?);',
+LAST=				'SELECT * FROM `dir` WHERE `id` IN (?) AND `uat`>?;',
 
 MAP_SET=			'INSERT INTO `dirMap` (`id`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE `_id`=LAST_INSERT_ID(`_id`), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
 MAP_GET=			'SELECT `id`,`k`,`v1`,`v2` FROM `dirMap` WHERE `id`=? AND `k`=?;',
 MAP_GETS=			'SELECT `id`,`k`,`v1`,`v2` FROM `dirMap` WHERE `id`=?;',
 MAP_GET_LIST=		'SELECT `id`,`k`,`v1`,`v2` FROM `dirMap` WHERE `id` IN (?) AND `k`=?;',
 MAP_GETS_LIST=		'SELECT `id`,`k`,`v1`,`v2` FROM `dirMap` WHERE `id` IN (?);',
+MAP_LAST=			'SELECT `id`,`k`,`v1`,`v2`,`uat` FROM `dirMap` WHERE `id` IN (?) AND `uat`>?;',
 
 USERMAP_SET=		'INSERT INTO `dirUserMap` (`id`,`userId`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE `_id`=LAST_INSERT_ID(`_id`), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
 USERMAP_GET=		'SELECT `id`,`userId`,`k`,`v1`,`v2` FROM `dirUserMap` WHERE `id`=? AND `userId`=? AND `k`=?;',
 USERMAP_FIND_ID=	'SELECT `id`,`userId`,`k`,`v1`,`v2` FROM `dirUserMap` WHERE `userId`=? AND `k`=?;',
-USERMAP_TOUCH=		'UPDATE `dirUserMap` SET `uat`=NOW WHERE `id`=? AND `userId`=? AND `k`=?;',
-USERMAP_POLL=		'SELECT `id`, `uat` FROM `dirUserMap` WHERE `userId`=? AND `k`=? AND `uat`>?;',
+USERMAP_TOUCH=		'UPDATE `dirUserMap` SET `uat`=NOW() WHERE `id`=? AND `k`=?;',
+USERMAP_POLL=		'SELECT `id`,`userId`,`k`,`v1`,`v2`,`uat` FROM `dirUserMap` WHERE `userId`=? AND `k`=? AND `uat`>?;',
+USERMAP_LAST=		'SELECT `id`,`userId`,`k`,`v1`,`v2`,`uat` FROM `dirUserMap` WHERE `id` IN (?) `userId`=? AND `uat`>?;',
+
+USERLIST_LAST=		'SELECT `id`,`userId`,`k`,`v1`,`v2`,`uat` FROM `dirUserList` WHERE `id` IN (?) `userId`=? AND `uat`>?;',
 
 ERR_INVALID_INPUT=	{message:'INVALID INPUT'},
 
@@ -63,7 +68,7 @@ up=function(grp){
 	return [grp.substr(0,i),grp.substr(i+1)]
 }
 
-let client
+let client,ROLE
 
 module.exports={
 	MOD:{
@@ -85,6 +90,7 @@ module.exports={
 	},
 	setup(context,cb){
 		client=context.mainDB
+		ROLE=hash.val('role')
 		cb()
 	},
     clean(model){
@@ -143,17 +149,20 @@ module.exports={
 		client.query(USERMAP_FIND_ID,[userId,hash.val(key)],(err,rows)=>{
 			if (err) return cb(err)
 			let outputs=[]
-			for(let i=0,r; r=rows[i]; i++){
-				outputs.push({id:r.id,userId:userId})
-			}
+			for(let i=0,r; r=rows[i]; i++) outputs.push({id:r.id});
 			cb(null, client.mapDecodes(rows,outputs,hash,ENUM))
 		})
 	},
 
-	touch(id,userId,cb){
-		client.query(USERMAP_TOUCH,[id,userId,ROLE],cb)
+	touch(id,cb){
+		client.query(USERMAP_TOUCH,[id,ROLE],cb)
 	},
-	poll(userId,lastSeenAtcb){
-		client.query(USERMAP_POLL,[userId,ROLE,lastSeenAt],cb)
+	poll(userId,uat,cb){
+		client.query(USERMAP_POLL,[userId,ROLE,uat],(err,rows)=>{
+			if (err) return cb(err)
+			let outputs=[]
+			for(let i=0,r; r=rows[i]; i++) outputs.push({id:r.id});
+			cb(null, client.mapDecodes(rows,outputs,hash,ENUM))
+		})
 	}
 }

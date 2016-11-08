@@ -17,9 +17,8 @@
             ["user","verify","input"],
 			["stream","prepare","input","output"],
 			["user","poll","input","output"],
-			["directory","getMyEntityIds","cred",":entities"],
-			["entity","poll","input",":entities","output"],
-			["directory","poll","input","output"],
+			["directory","poll","cred",":dirs","output"],
+			["entity","last",":dirs","output"],
 			["stream","add","res","input"],
 			["web","SSEStart","req","res"],
 			["stream","render",["poll"],"input","output"]

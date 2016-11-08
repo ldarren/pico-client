@@ -2,7 +2,8 @@ const
 Max=Math.max,
 pStr=require('pico/str'),
 pObj=require('pico/obj'),
-sqlDir=require('sql/directory')
+sqlDir=require('sql/directory'),
+sqlEntity=require('sql/entity') // tmp
 
 let MOD
 
@@ -10,10 +11,14 @@ return {
 	setup(context,cb){
 		MOD=sqlDir.MOD
 		cb()
-		let output=[]
-		this.getMyEntityIds.call({error:console.error},{id:1,grp:'/'},output,(err)=>{
+		let dirs=[]
+		this.poll.call({error:console.error},{id:1,grp:'/'},dirs,{t:Date.now()},(err)=>{
 			if (err) return console.error(err)
-			console.log(output)
+			console.log(dirs)
+			sqlEntity.poll(pObj.pluck(dirs,'entityId'),Date.now(),(err,entities,lastseen)=>{
+				if (err) return console.error(err)
+				console.log(entities,lastseen)
+			})
 		})
 	},
     reply(output,next){
@@ -69,8 +74,17 @@ return {
 			})
 		})
 	},
-	getMyEntityIds(cred,output,next){
-		sqlDir.usermap_findId(cred.id,'role',(err,usermaps)=>{
+	touch(id,next){
+		sqlDir.touch(id,(err)=>{
+			if (err) return next(this.error(500,err.message))
+			next()
+		})
+	},
+	// should return pure dirs
+	poll(cred,dirs,output,next){
+console.log(output.t)
+		sqlDir.poll(cred.id,output.t,(err,usermaps)=>{
+console.log(usermaps)
 			if (err) return next(this.error(500,err.message))
 			if (!usermaps.length) return next()
 			sqlDir.filter(usermaps,cred.grp,(err,usermaps)=>{
@@ -78,7 +92,7 @@ return {
 				if (!usermaps.length) return next()
 				sqlDir.map_getList(usermaps,'entityId',(err,usermaps)=>{
 					if (err) return next(this.error(500,err.message))
-					output.push(...usermaps)
+					dirs.push(...usermaps)
 					next()
 				})
 			})
@@ -89,9 +103,6 @@ return {
 	getMembers(cred,input,next){
 	},
 	read(input,output,next){
-		next()
-	},
-	poll(input,output,next){
 		next()
 	}
 }

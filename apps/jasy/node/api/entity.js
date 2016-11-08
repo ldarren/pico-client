@@ -1,5 +1,4 @@
 const
-Max=Math.max,
 picoStr=require('pico/str'),
 picoObj=require('pico/obj'),
 sqlEntity=require('sql/entity'),
@@ -42,15 +41,14 @@ return {
 	update(input,next){
 		next()
 	},
-	poll(input,output,next){
-		return next()
-		sqlDir.poll(input,'role',(err,entities)=>{
-			if (err) return cb(this.error(500,err.message))
-			if (!entities.length) return next()
-			sqlEntity.gets(entities,(err,list)=>{
-				if (err) return cb(this.error(500,err.message))
-				for(let i=0,e; e=entities[i]; i++){
-					switch(e.role){
+	poll(input,dirs,output,next){
+		sqlEntity.poll(pObj.pluck(dirs,'entityId'),output.t,(err,entities,lastseen)=>{
+			if (err) return next(this.error(500,err.message))
+			console.log(entities,lastseen)
+			for(let i=0,e,j,d; e=entities[i]; i++){
+				for(j=0; d=dirs[i]; i++){
+					if (d.entityId !== e.id) continue
+					switch(d.role){
 					case 'root':
 					case 'admin':
 						entities[i]=sqlEntity.cleanSecret(e)
@@ -59,11 +57,12 @@ return {
 						entities[i]=sqlEntity.clean(e)
 						break
 					}
+					break
 				}
-				output['t']=Max(...picoObj.pluck(entities,'uat'),output.t)
-				output['entities']=entities
-				next()
-			})
+			}
+			output['t']=lastseen
+			output['entities']=entities
+			next()
 		})
 	}
 }
