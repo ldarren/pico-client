@@ -41,14 +41,14 @@ return {
 	update(input,next){
 		next()
 	},
-	poll(input,dirs,output,next){
-		sqlEntity.poll(pObj.pluck(dirs,'entityId'),output.t,(err,entities,lastseen)=>{
+	last(input,poll,output,next){
+		sqlEntity.last(pObj.pluck(poll,'entityId'),input.t,(err,entities,lastseen)=>{
 			if (err) return next(this.error(500,err.message))
 			console.log(entities,lastseen)
 			for(let i=0,e,j,d; e=entities[i]; i++){
-				for(j=0; d=dirs[i]; i++){
-					if (d.entityId !== e.id) continue
-					switch(d.role){
+				for(j=0; p=poll[i]; i++){
+					if (p.entityId !== e.id) continue
+					switch(p.role){
 					case 'root':
 					case 'admin':
 						entities[i]=sqlEntity.cleanSecret(e)

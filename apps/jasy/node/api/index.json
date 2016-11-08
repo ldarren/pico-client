@@ -17,8 +17,8 @@
             ["user","verify","input"],
 			["stream","prepare","input","output"],
 			["user","poll","input","output"],
-			["directory","poll","cred",":dirs","output"],
-			["entity","last",":dirs","output"],
+			["directory","poll","cred","input",":poll","output"],
+			["entity","last","input",":poll","output"],
 			["stream","add","res","input"],
 			["web","SSEStart","req","res"],
 			["stream","render",["poll"],"input","output"]

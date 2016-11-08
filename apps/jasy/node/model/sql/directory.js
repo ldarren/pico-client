@@ -39,7 +39,7 @@ USERMAP_GET=		'SELECT `id`,`userId`,`k`,`v1`,`v2` FROM `dirUserMap` WHERE `id`=?
 USERMAP_FIND_ID=	'SELECT `id`,`userId`,`k`,`v1`,`v2` FROM `dirUserMap` WHERE `userId`=? AND `k`=?;',
 USERMAP_TOUCH=		'UPDATE `dirUserMap` SET `uat`=NOW() WHERE `id`=? AND `k`=?;',
 USERMAP_POLL=		'SELECT `id`,`userId`,`k`,`v1`,`v2`,`uat` FROM `dirUserMap` WHERE `userId`=? AND `k`=? AND `uat`>?;',
-USERMAP_LAST=		'SELECT `id`,`userId`,`k`,`v1`,`v2`,`uat` FROM `dirUserMap` WHERE `id` IN (?) `userId`=? AND `uat`>?;',
+USERMAP_LAST=		'SELECT `id`,`userId`,`k`,`v1`,`v2`,`uat` FROM `dirUserMap` WHERE `id` IN (?) AND `userId`=? AND `uat`>?;',
 
 USERLIST_LAST=		'SELECT `id`,`userId`,`k`,`v1`,`v2`,`uat` FROM `dirUserList` WHERE `id` IN (?) `userId`=? AND `uat`>?;',
 
@@ -47,6 +47,7 @@ ERR_INVALID_INPUT=	{message:'INVALID INPUT'},
 
 pObj=				require('pico/obj'),
 hash=				require('sql/hash'),
+Max=				Math.max,
 modBuf=				Buffer.alloc(2),
 value=function(val){
 	let ret=[]
@@ -125,6 +126,22 @@ module.exports={
 				if (!d.s) dirs.splice(i,1)
 			}
 			cb(null,dirs)
+		})
+	},
+	last(ids,userId,uat,cb){
+		client.query(LAST, [ids,uat], (err,rows)=>{
+			if (err) return cb(err)
+			const
+			seen=Max(...pObj.pluck(rows,'uat'),uat),
+			dirs=client.decodes(rows,hash,ENUM)
+			client.query(MAP_LAST, [ids,uat], (err,rows)=>{
+				if (err) return cb(err)
+				client.mapDecodes(rows,dirs,hash,ENUM)
+				client.query(USERMAP_LAST, [ids,userId,uat], (err,rows)=>{
+					if (err) return cb(err)
+					cb(null,client.mapDecodes(rows,dirs,hash,ENUM),seen)
+				})
+			})
 		})
 	},
 

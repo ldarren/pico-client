@@ -1,9 +1,7 @@
 const
-Max=Math.max,
 pStr=require('pico/str'),
 pObj=require('pico/obj'),
-sqlDir=require('sql/directory'),
-sqlEntity=require('sql/entity') // tmp
+sqlDir=require('sql/directory')
 
 let MOD
 
@@ -11,26 +9,17 @@ return {
 	setup(context,cb){
 		MOD=sqlDir.MOD
 		cb()
-		let dirs=[]
-		this.poll.call({error:console.error},{id:1,grp:'/'},dirs,{t:Date.now()},(err)=>{
-			if (err) return console.error(err)
-			console.log(dirs)
-			sqlEntity.poll(pObj.pluck(dirs,'entityId'),Date.now(),(err,entities,lastseen)=>{
-				if (err) return console.error(err)
-				console.log(entities,lastseen)
-			})
-		})
 	},
     reply(output,next){
-        this.setOutput(output)
+        this.setOutput(output,sqlDir.clean,sqlDir)
         next()
     },
     replyPrivate(output,next){
-        this.setOutput(output)
+        this.setOutput(output,sqlDir.cleanSecret,sqlDir)
         next()
     },
     replyList(list,next){
-        this.setOutput(list)
+        this.setOutput(list,sqlDir.cleanList,sqlDir)
         next()
     },
 	newUser(cred,user,next){
@@ -81,10 +70,8 @@ return {
 		})
 	},
 	// should return pure dirs
-	poll(cred,dirs,output,next){
-console.log(output.t)
-		sqlDir.poll(cred.id,output.t,(err,usermaps)=>{
-console.log(usermaps)
+	poll(cred,input,poll,output,next){
+		sqlDir.poll(cred.id,input.t,(err,usermaps)=>{
 			if (err) return next(this.error(500,err.message))
 			if (!usermaps.length) return next()
 			sqlDir.filter(usermaps,cred.grp,(err,usermaps)=>{
@@ -92,8 +79,28 @@ console.log(usermaps)
 				if (!usermaps.length) return next()
 				sqlDir.map_getList(usermaps,'entityId',(err,usermaps)=>{
 					if (err) return next(this.error(500,err.message))
-					dirs.push(...usermaps)
-					next()
+					poll.push(...usermaps)
+					sqlDir.last(pObj.pluck(poll,'id'),cred.id,input.t,(err,dirs,lastseen)=>{
+						if (err) return next(this.error(500,err.message))
+						for(let i=0,d,j,p; d=dirs[i]; i++){
+							for(j=0; p=poll[i]; i++){
+								if (p.id !== d.id) continue
+								switch(p.role){
+								case 'root':
+								case 'admin':
+									dirs[i]=sqlDir.cleanSecret(d)
+									break
+								default:
+									dirs[i]=sqlDir.clean(d)
+									break
+								}
+								break
+							}
+						}
+						output['t']=lastseen
+						output['entities']=entities
+						next()
+					})
 				})
 			})
 		})
