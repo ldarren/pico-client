@@ -1,10 +1,12 @@
 let
-redis=require('redis/stream'),
 web,
+pingId=0
+
+const
+redis=require('redis/stream'),
+userPipeMap={},
 userIds=[],
 pipes=[],
-userPipeMap=new Map,
-pingId=0,
 pingTick=function(){
 	clearTimeout(pingId)
 	pingId=setTimeout(ping, 45000)
@@ -20,8 +22,8 @@ ping=function(){
 remove=function(idx){
 	if (-1===idx) return
 	pipes.splice(idx,1)
-	let uid=userIds.splice(idx,1)[0]
-	userPipeMap.delete(uid)
+	const uid=userIds.splice(idx,1)[0]
+	delete userPipeMap[uid]
 	console.log(`removed stream[${uid}], count[${pipes.length}]`)
 }
 
@@ -33,9 +35,9 @@ return {
 	},
 	add(res,user,next){
 		if (!user || !user.id) return next()
-		let uid=user.id
-		if (userPipeMap.has(uid)){
-			let idx=userIds.indexOf(uid)
+		const uid=user.id
+		if (userPipeMap[uid]){
+			const idx=userIds.indexOf(uid)
 			pipes[idx]=res
 			userIds[idx]=uid
 			this.log(`replaced stream[${uid}]`)
@@ -44,21 +46,21 @@ return {
 			userIds.push(uid)
 			this.log(`added stream[${uid}], count[${pipes.length}]`)
 		}
-		userPipeMap.set(uid,res)
+		userPipeMap[uid]=res
 		next()
 	},
 	remove(res,next){
 		res.finished=true
 		next()
 	},
-	prepare(input,output,next){
-		output['t']=parseInt(input.t)
+	prepare(cred,input,output,next){
+		output['t']=parseInt(cred.t)
 		input.t=new Date(output.t)
 		next()
 	},
-	render(evt,user,msg,next){
-		if (!user || !user.id) return next(this.error(404))
-		let res=userPipeMap.get(user.id)
+	render(evt,cred,msg,next){
+		if (!cred || !cred.id) return next(this.error(404))
+		const res=userPipeMap[cred.id]
 		if (!res || res.finished) return next()
 
 		web.SSE(res,msg,evt)
@@ -70,13 +72,13 @@ return {
 		next()
 	},
 	broadcast(evt,input,next){
-		let users=input.list
+		const users=input.list
 		if (!users || !users.length) return next(this.error(400))
 
-		let output=input.msg
+		const output=input.msg
 
 		for(let i=users.length-1,uid,res; uid=users[i]; i--){
-			res=userPipeMap.get(uid)
+			res=userPipeMap[uid]
 			if (!res || res.finish) continue
 			web.SSE(res,output,evt)
 		}

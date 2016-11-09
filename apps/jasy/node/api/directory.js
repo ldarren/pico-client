@@ -9,6 +9,12 @@ return {
 	setup(context,cb){
 		MOD=sqlDir.MOD
 		cb()
+/*		const poll=[],output={}
+		this.poll({id:1},{t:new Date('1947')},poll,output,(err)=>{
+			if (err) return console.error(err)
+			console.log('poll',poll)
+			console.log('output',output)
+		})*/
 	},
     reply(output,next){
         this.setOutput(output,sqlDir.clean,sqlDir)
@@ -83,7 +89,7 @@ return {
 					sqlDir.last(pObj.pluck(poll,'id'),cred.id,input.t,(err,dirs,lastseen)=>{
 						if (err) return next(this.error(500,err.message))
 						for(let i=0,d,j,p; d=dirs[i]; i++){
-							for(j=0; p=poll[i]; i++){
+							for(j=0; p=poll[j]; j++){
 								if (p.id !== d.id) continue
 								switch(p.role){
 								case 'root':
@@ -97,8 +103,9 @@ return {
 								break
 							}
 						}
+console.log(dirs,lastseen)
 						output['t']=lastseen
-						output['entities']=entities
+						output['groups']=dirs
 						next()
 					})
 				})
