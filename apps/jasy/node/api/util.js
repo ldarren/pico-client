@@ -20,7 +20,7 @@ return {
 	},
 	have(input,fields,next){
 		for(var i=0,f; f=fields[i]; i++){
-			if (!input[f]) return next(this.error(400))
+			if (undefined===input[f]) return next(this.error(400))
 		}
 		next()
 	},

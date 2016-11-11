@@ -1,8 +1,7 @@
 const
 SEP=				'/',
-MOD_STAT=			0x8000,
-MOD_DIR=			0xC000,
-MOD_LINK=			0xA000,
+MOD_DIR=			0x4000,
+MOD_LINK=			0x2000,
 MOD_SAFE=			0x8400,	// password protected?
 MOD_FREE=			0x8200,	// free seating?
 MOD_G_R=			0x8040,
@@ -21,21 +20,23 @@ PRIVATE=			['$private','log','applicant','banned'],
 SECRET=				[],
 ENUM=				['role'],
 
-SET=				'INSERT INTO `dir` (`grp`,`name`,`s`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE `id`=LAST_INSERT_ID(`id`), `s`=VALUES(`s`), `uby`=VALUES(`cby`);',
-GET=				'SELECT * FROM `dir` WHERE `id`=? AND `s` & 0x8000;',
-FIND_ID=			'SELECT `id`, `s` FROM `dir` WHERE `grp`=? AND `name`=? AND `s` & 0x8000;',
+SET=				'INSERT INTO `dir` (`grp`,`name`,`s`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE `s`=VALUES(`s`), `uby`=VALUES(`cby`);',
+GET=				'SELECT * FROM `dir` WHERE `id`=? AND `s` != 0;',
+FIND_ID=			'SELECT `id`, `s` FROM `dir` WHERE `grp`=? AND `name`=? AND `s` != 0;',
+FIND_NAMES=			'SELECT * FROM `dir` WHERE `grp`=? AND `s` != 0;',
 FILTER=				'SELECT `id`, `s` FROM `dir` WHERE `id` IN (?) AND ((`grp`=? AND `name`=?) OR `grp` LIKE ?);',
 LAST=				'SELECT * FROM `dir` WHERE `id` IN (?) AND `uat`>?;',
 
-MAP_SET=			'INSERT INTO `dirMap` (`id`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE `_id`=LAST_INSERT_ID(`_id`), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
+MAP_SET=			'INSERT INTO `dirMap` (`id`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
 MAP_GET=			'SELECT `id`,`k`,`v1`,`v2` FROM `dirMap` WHERE `id`=? AND `k`=?;',
 MAP_GETS=			'SELECT `id`,`k`,`v1`,`v2` FROM `dirMap` WHERE `id`=?;',
 MAP_GET_LIST=		'SELECT `id`,`k`,`v1`,`v2` FROM `dirMap` WHERE `id` IN (?) AND `k`=?;',
 MAP_GETS_LIST=		'SELECT `id`,`k`,`v1`,`v2` FROM `dirMap` WHERE `id` IN (?);',
 MAP_LAST=			'SELECT `id`,`k`,`v1`,`v2`,`uat` FROM `dirMap` WHERE `id` IN (?) AND `uat`>?;',
 
-USERMAP_SET=		'INSERT INTO `dirUserMap` (`id`,`userId`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE `_id`=LAST_INSERT_ID(`_id`), `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
+USERMAP_SET=		'INSERT INTO `dirUserMap` (`id`,`userId`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
 USERMAP_GET=		'SELECT `id`,`userId`,`k`,`v1`,`v2` FROM `dirUserMap` WHERE `id`=? AND `userId`=? AND `k`=?;',
+USERMAP_GETS=		'SELECT `id`,`userId`,`k`,`v1`,`v2` FROM `dirUserMap` WHERE `id`=? AND `k`=?;',
 USERMAP_FIND_ID=	'SELECT `id`,`userId`,`k`,`v1`,`v2` FROM `dirUserMap` WHERE `userId`=? AND `k`=?;',
 USERMAP_TOUCH=		'UPDATE `dirUserMap` SET `uat`=NOW() WHERE `id`=? AND `k`=?;',
 USERMAP_POLL=		'SELECT `id`,`userId`,`k`,`v1`,`v2`,`uat` FROM `dirUserMap` WHERE `userId`=? AND `k`=? AND `uat`>?;',
@@ -73,7 +74,6 @@ let client,ROLE
 
 module.exports={
 	MOD:{
-		STAT:	MOD_STAT,
 		DIR:	MOD_DIR,
 		LINK:	MOD_LINK,
 		SAFE:	MOD_SAFE,
@@ -89,6 +89,8 @@ module.exports={
 		O_RX:	MOD_O_RX,
 		O_RWX:	MOD_O_RWX
 	},
+	dirname,
+	up,
 	setup(context,cb){
 		client=context.mainDB
 		ROLE=hash.val('role')
@@ -108,11 +110,15 @@ module.exports={
     },
 
 	set(grp,name,mod,by,cb){
-		modBuf.writeUInt16LE(MOD_DIR|MOD_G_RX)
+		modBuf.writeUInt16LE(mod)
 		client.query(SET,[[[dirname(grp),name,modBuf,by]]],cb)
 	},
 	findId(grp,cb){
 		client.query(FIND_ID,[...up(dirname(grp))],cb)
+	},
+	findNames(grp,cb){
+console.log(client.format(FIND_NAMES,[dirname(grp)]))
+		client.query(FIND_NAMES,[dirname(grp)],cb)
 	},
 	filter(dirs,grp,cb){
 		let g=dirname(grp)
@@ -161,6 +167,9 @@ module.exports={
 		client.query(USERMAP_SET,[[[id,userId,hash.val(key),v1,v2,by]]],cb)
 	},
 	usermap_get(){
+	},
+	usermap_gets(id,key,cb){
+		client.query(USERMAP_GETS,[id,hash.val(key)],cb)
 	},
 	usermap_findId(userId,key,cb){
 		client.query(USERMAP_FIND_ID,[userId,hash.val(key)],(err,rows)=>{

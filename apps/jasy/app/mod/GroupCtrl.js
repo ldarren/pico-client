@@ -1,8 +1,8 @@
 var
-DIR=[{name:'.',icon:'icon_prev',type:'f'},{name:'+',icon:'icon_plus',type:'f'}],
+DIR=[{id:'.',icon:'icon_prev',type:'f'},{id:'+',icon:'icon_plus',type:'f'}],
 listDir=function(dir,icons){
 	var
-	content=dir.get('content'),
+	content=dir.get('d'),
 	dir=DIR.slice()
 
 	for(var i=0,c; c=content[i]; i++){
@@ -20,7 +20,7 @@ return {
 		btnLeft:'map',
 		btnRight:'map',
 		entity:'model',
-		groups:'models',
+		directory:'models',
 		icons:'models',
 		group:'text'
 	},
@@ -36,14 +36,15 @@ return {
 
 		let
 		self=this,
-		dir=deps.groups.get(this.cwd)
+		dir=deps.directory.get(this.cwd)
 
 		if (dir){
 			listDir(dir,deps.icons)
 		}else{
-			deps.groups.read({
-				grp:this.cwd
+			deps.directory.read({
+				cwd:this.cwd
 			},function(err,model,res){
+				if (err) return __.dialogs.alert('failed to list directory "'+this.cwd+'"')
 				listDir(model,deps.icons)
 			})
 		}

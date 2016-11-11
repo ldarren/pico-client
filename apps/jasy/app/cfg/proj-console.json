@@ -24,6 +24,7 @@
 			"delete":"jasy/entity/remove"
 		}],
 		["directory","models",{
+			"idAttribute":"cwd",
 			"list":"jasy/directory/list",
 			"create":"jasy/directory/create",
 			"read":"jasy/directory/read",
@@ -169,16 +170,17 @@
 				["extraForm","map",{
 					"api":[
 						{"type":"text","name":"webhook","label":"Webhook","holder":"Webhook address","required":1},
-						{"type":"text","name":"group","label":"Group Id","holder":"Group id","required":1}
+						{"type":"text","name":"group","label":"Group Name","holder":"Group Name","required":0}
 					],
 					"epi":[
-						{"type":"select","name":"entity","label":"Dependencies","holder":"Select a entity","options":[],"value":1,"required":1}
+						{"type":"select","name":"entity","label":"Dependencies","holder":"Select a entity","options":[],"value":1,"required":0}
 					],
 					"app":[
-						{"type":"select","name":"entity","label":"Dependencies","holder":"Select a entity","options":[],"value":1,"required":1}
+						{"type":"select","name":"entity","label":"Dependencies","holder":"Select a entity","options":[],"value":1,"required":0},
+						{"type":"text","name":"group","label":"Group Name","holder":"Group Name","required":0}
 					],
 					"epp":[
-						{"type":"select","name":"entity","label":"Dependencies","holder":"Select a entity","options":[],"value":1,"required":1}
+						{"type":"select","name":"entity","label":"Dependencies","holder":"Select a entity","options":[],"value":1,"required":0}
 					],
 					"suite":[],
 					"group":[]
@@ -243,7 +245,11 @@
 				["options","map",{"className":"scrollable icons"}],
 				["css","file","scrollable/IconView.css"],
 				["list","ref","icons"],
+				["selected","param",0],
 				["Cell","view",[
+					["tpl","file","DirLargeIcon.asp"],
+					["css","file","DirLargeIcon.css"],
+					["selected","ref","selected"]
 				],"scrollable/Row"]
 			]]
         ]

@@ -99,9 +99,9 @@
             []
         ],
 		"jasy/directory/read":[
-            ["util","have","input",[["path"]]],
+            ["util","have","input",[["cwd"]]],
             ["user","verify","cred"],
-			["directory","read","input","output"],
+			["directory","read","cred","input","output"],
             ["directory","replyPrivate","output"],
 			[]
 		],

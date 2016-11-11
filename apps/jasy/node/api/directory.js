@@ -8,6 +8,10 @@ let MOD
 return {
 	setup(context,cb){
 		MOD=sqlDir.MOD
+		let buf=Buffer.alloc(2,0,'hex')
+		buf.writeUInt16LE(MOD.DIR|MOD.G_RX)
+		console.log((MOD.DIR|MOD.G_RX).toString(2))
+		console.log((buf).toString('hex'))
 		cb()
 /*		const poll=[],output={}
 		this.poll({id:1},{t:new Date('1947')},poll,output,(err)=>{
@@ -105,7 +109,7 @@ return {
 						}
 console.log(dirs,lastseen)
 						output['t']=lastseen
-						output['groups']=dirs
+						output['directory']=dirs
 						next()
 					})
 				})
@@ -116,7 +120,25 @@ console.log(dirs,lastseen)
 	},
 	getMembers(cred,input,next){
 	},
-	read(input,output,next){
-		next()
+	read(cred,input,output,next){
+		let 
+		cwd=input.cwd,
+		d=[],f=[]
+		output.cwd=cwd
+		output.d=d
+		output.f=f
+		sqlDir.findId(cwd,(err,rows)=>{
+			if (err) return next(this.error(500,err.message))
+			if (!rows.length) return next()
+			sqlDir.usermap_gets(rows[0].id,'role',(err,rows)=>{
+				if (err) return next(this.error(500,err.message))
+				f.push(...pObj.pluck(rows,'userId'))
+				sqlDir.findNames(cwd,(err,rows)=>{
+					if (err) return next(this.error(500,err.message))
+					d.push(...pObj.pluck(rows,'name'))
+					next()
+				})
+			})
+		})
 	}
 }
