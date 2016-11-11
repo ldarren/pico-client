@@ -75,20 +75,18 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
 		break
     case 'ctrl':
     case 'view': // ID[id/path] TYPE[ctrl/view] VALUE[spec] EXTRA[path/path+mixins]
-        loadDeps(s[EXTRA]||s[ID], 0, {}, function(err, klass){
+        return loadDeps(s[EXTRA]||s[ID], 0, {}, function(err, klass){
             if (err) return cb(err, deps, userData)
             f=s[ID]
             deps.push(create(f, t, {name:f, type:t, spec:s[VALUE], Class:klass}))
             load(ctx, params, spec, idx, deps, cb, userData)
         })
-        return
     case 'file': // ID[id] TYPE[file] VALUE[path]
-        require(s[VALUE], function(err, mod){
+        return require(s[VALUE], function(err, mod){
             if (err) return cb(err, deps, userData)
             deps.push(create(s[ID], t, mod))
             load(ctx, params, spec, idx, deps, cb, userData)
         })
-        return
     case 'stream': // ID[id] TYPE[stream] VALUE[config]
         deps.push(create(s[ID], t, new Stream(s[VALUE])))
         break
@@ -96,28 +94,25 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
         deps.push(create(s[ID], t, new Socket(s[VALUE])))
         break
     case 'worker': // ID[id] TYPE[worker] VALUE[spec]
-		load(deps, params, s[VALUE], 0, [], function(err, config){
+		return load(deps, params, s[VALUE], 0, [], function(err, config){
             if (err) return cb(err, deps, userData)
 			deps.push(create(s[ID], t, new Worker.Proxy(config)))
 			load(ctx, params, spec, idx, deps, cb, userData)
 		})
-        return
     case 'job': // ID[id] TYPE[job] VALUE[spec]
-        require(s[ID], function(err, mod){
+        return require(s[ID], function(err, mod){
 			load(deps, params, s[VALUE], 0, [], function(err, config){
 				if (err) return cb(err, deps, userData)
 				deps.push(create(s[ID], t, new Worker.Job(s[ID],mod,config)))
 				load(ctx, params, spec, idx, deps, cb, userData)
 			})
 		})
-        return
     case 'service': // ID[id] TYPE[use] VALUE[spec]
-		load(deps, params, s[VALUE], 0, [], function(err, config){
+		return load(deps, params, s[VALUE], 0, [], function(err, config){
             if (err) return cb(err, deps, userData)
 			deps.push(create(s[ID], t, new Service(s[ID],config)))
 			load(ctx, params, spec, idx, deps, cb, userData)
 		})
-        return
     case 'param': // ID[id] TYPE[param] VALUE[index]
         deps.push(create(s[ID], t, params[s[VALUE]]))
         break
@@ -126,6 +121,9 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
     case 'datetime': // ID[id] TYPE[date/datetime] VALUE[unixtime/time in string]
         deps.push(create(s[ID], t, new Date(s[VALUE])))
         break
+	case 'int': // ID[id] TYPE[int] VALUE[number or number in string]
+		deps.push(create(s[ID], t, parseInt(s[VALUE])))
+		break
     default:
         deps.push(create(s[ID], t, s[VALUE]))
         break
