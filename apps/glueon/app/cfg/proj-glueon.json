@@ -2,32 +2,24 @@
     [
     ],[
     ],[
-		["group","text",""],
+		["group","text","/1/Glueon"],
         ["options","map",{"el":"#__"}],
         ["html","file","Frame.html"],
         ["css","file","Frame.css"],
-        ["css","file","Console.css"],
+        ["css","file","Glueon.css"],
 		["cred","models",{
-			"update":"jasy/user/update",
-			"delete":"jasy/user/signout"
+			"update":"glueon/user/update",
+			"delete":"glueon/user/signout"
 		}],
 		["users","models",{
-			"read":"jasy/user/read"
+			"read":"glueon/user/read"
 		}],
-		["entities","models",{
-			"list":"jasy/entity/list",
-			"create":"jasy/entity/create",
-			"read":"jasy/entity/read",
-			"update":"jasy/entity/update",
-			"delete":"jasy/entity/remove"
-		}],
-		["directory","models",{
-			"idAttribute":"cwd",
-			"list":"jasy/directory/list",
-			"create":"jasy/directory/create",
-			"read":"jasy/directory/read",
-			"update":"jasy/directory/update",
-			"delete":"jasy/directory/remove"
+		["chats","models",{
+			"list":"glueon/chat/list",
+			"create":"glueon/chat/create",
+			"read":"glueon/chat/read",
+			"update":"glueon/chat/update",
+			"delete":"glueon/chat/remove"
 		}],
 		["layers","list",["#layer0","#layer1"]],
         ["js/Pane","view",[
@@ -89,9 +81,9 @@
 				]
 			]],
 			["auth","models",{
-				"list":"jasy/email/signin",
-				"create":"jasy/email/signup",
-				"read":"jasy/email/confirm"
+				"list":"glueon/email/signin",
+				"create":"glueon/email/signup",
+				"read":"glueon/email/confirm"
 			}],
 			["cred","ref","cred"],
 			["Header","view",[
@@ -107,7 +99,7 @@
 		["auth/DataStream","ctrl",[
 			["models","refs","models"],
 			["push","stream",{
-				"channel":"jasy",
+				"channel":"glueon",
 				"path":"/stream",
 				"events":["poll"],
 				"withCredentials":false,
@@ -127,85 +119,46 @@
 				["css","file","Void.css"]
             ]]
         ],
-		"WorkersTest":[
-			["serviceworker.js#.txt","service",[
-				["enablePushMgr","bool",1]
-			]],
-			["msg","text","Good Morning"],
-			["worker","worker",[
-				["msg","ref","msg"],
-				["SayHello.js#.txt","job",[
-					["msg","ref","msg"]
-				]]
-			]]
-		],
-        "entities":[
+        "chats":[
 			["options","map",{"els":["#pane0 #page","#pane1 #page"]}],
-			["entities","ref","entities"],
+			["chats","ref","chats"],
 			["cred","ref","cred"],
-			["EntityListCtrl","ctrl",[
+			["ChatListCtrl","ctrl",[
 				["paneId","ref","paneId"],
-				["title","text","Entities"],
+				["title","text","Chats"],
 				["btnRight","map",{"icon":"icon_plus"}],
-				["entities","ref","entities"],
+				["chats","ref","chats"],
 				["cred","ref","cred"],
-				["newEntityForm","list",[
-					{"type":"text","name":"name","label":"Name","holder":"Entity Name","required":1},
-					{"type":"text","name":"desc","label":"Description","holder":"Entity Description","required":1},
-					{"type":"select","name":"type","label":"type","holder":"Select a Entity Type","options":[
-						["api","API Service"],
-						["epi","API Service Extension"],
-						["app","Mobile/Web Application"],
-						["epp","Mobile/Web Application Extension"],
-						["suite","Composite Suite"],
-						["group","Group"]
-					],"value":2}
-				]],
-				["extraForm","map",{
-					"api":[
-						{"type":"text","name":"webhook","label":"Webhook","holder":"Webhook address","required":1},
-						{"type":"text","name":"group","label":"Group Name","holder":"Group Name","required":0}
-					],
-					"epi":[
-						{"type":"select","name":"entity","label":"Dependencies","holder":"Select a entity","options":[],"value":1,"required":0}
-					],
-					"app":[
-						{"type":"select","name":"entity","label":"Dependencies","holder":"Select a entity","options":[],"value":1,"required":0},
-						{"type":"text","name":"group","label":"Group Name","holder":"Group Name","required":0}
-					],
-					"epp":[
-						{"type":"select","name":"entity","label":"Dependencies","holder":"Select a entity","options":[],"value":1,"required":0}
-					],
-					"suite":[],
-					"group":[]
-				}]
+				["newChatForm","list",[
+					{"type":"text","name":"name","label":"Name","holder":"Chat Name","required":1}
+				]]
 			]],
 			["scrollable/ListView","view",[
 				["options","map",{"className":"scrollable"}],
 				["css","file","scrollable/Scrollable.css"],
-				["list","ref","entities"],
+				["list","ref","chats"],
 				["selected","param",0],
 				["Cell","view",[
-					["tpl","file","EntityRow.asp"],
+					["tpl","file","ChatRow.asp"],
 					["css","file","scrollable/Row.css"],
 					["selected","ref","selected"]
-				],["scrollable/Row","EntityRow"]]
+				],["scrollable/Row","ChatRow"]]
 			]]
 		],
-        "entity":[
+        "chat":[
 			["options","map",{"els":["#pane0 #page","#pane1 #page"]}],
-			["entity","model","entities",0],
+			["chat","model","chats",0],
 			["cred","ref","cred"],
-			["EntityCtrl","ctrl",[
+			["ChatCtrl","ctrl",[
 				["paneId","ref","paneId"],
-				["title","text","Entity"],
+				["title","text","Chat"],
 				["btnRight","map",{"icon":"icon_edit"}],
-				["entity","ref","entity"]
+				["chat","ref","chat"]
 			]],
 			["scrollable/ScrollView","view",[
 				["options","map",{"className":"scrollable"}],
 				["css","file","scrollable/Scrollable.css"],
-				["model","ref","entity"],
+				["model","ref","chat"],
 				["panel/Static","view",[
 					["tpl","file","panel/Form.asp"],
 					["css","file","panel/Form.css"],
@@ -217,39 +170,8 @@
 					]]
 				]]
 			]]
-		],
-        "group":[
-			["options","map",{"els":["#pane0 #page","#pane1 #page"]}],
-			["entity","model","entities",0],
-			["cred","ref","cred"],
-			["directory","ref","directory"],
-			["icons","models",{
-			}],
-			["group","ref","group"],
-			["GroupCtrl","ctrl",[
-				["paneId","ref","paneId"],
-				["title","text","Group"],
-				["btnRight","map",{"icon":"icon_address-book"}],
-				["entity","ref","entity"],
-				["directory","ref","directory"],
-				["icons","ref","icons"],
-				["group","ref","group"]
-			]],
-			["scrollable/ListView","view",[
-				["options","map",{"className":"scrollable icons"}],
-				["css","file","scrollable/IconView.css"],
-				["list","ref","icons"],
-				["selected","param",0],
-				["Cell","view",[
-					["tpl","file","DirLargeIcon.asp"],
-					["css","file","DirLargeIcon.css"],
-					["selected","ref","selected"]
-				],"scrollable/Row"]
-			]]
         ]
     },[
-        ["entity/:id","entities","entity"],
-        ["group/:id","entities","group"],
-        ["*action","entities"]
+        ["chats/:id","chats","chat"],
+        ["*action","chats"]
     ]
-]
