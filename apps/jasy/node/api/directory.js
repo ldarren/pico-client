@@ -63,7 +63,6 @@ return {
 			}else{
 				key='applicant',val=input.msg||''
 			}
-console.log(MOD.FREE.toString(16),dir.s.readUInt16LE().toString(16),key,val)
 			sqlDir.usermap_set(dir.id,user.id,key,val,cred.id,(err)=>{
 				if(err) return next(this.error(500))
 				next()

@@ -2,16 +2,15 @@ const
 SEP=				'/',
 MOD_DIR=			0x4000,
 MOD_LINK=			0x2000,
-MOD_SAFE=			0x8400,	// password protected?
-MOD_FREE=			0x8200,	// free seating?
-MOD_G_R=			0x8040,
-MOD_G_W=			0x8020,
-MOD_G_X=			0x8010,
+MOD_FREE=			0x0200,	// free seating?
+MOD_G_R=			0x0040,
+MOD_G_W=			0x0020,
+MOD_G_X=			0x0010,
 MOD_G_RX=			MOD_G_R  | MOD_G_X,
 MOD_G_RWX=			MOD_G_RX | MOD_G_W,
-MOD_O_R=			0x8044,
-MOD_O_W=			0x8022,
-MOD_O_X=			0x8011,
+MOD_O_R=			0x0044,
+MOD_O_W=			0x0022,
+MOD_O_X=			0x0011,
 MOD_O_RX=			MOD_O_R  | MOD_O_X,
 MOD_O_RWX=			MOD_O_RX | MOD_O_W,
 
@@ -76,7 +75,6 @@ module.exports={
 	MOD:{
 		DIR:	MOD_DIR,
 		LINK:	MOD_LINK,
-		SAFE:	MOD_SAFE,
 		FREE:	MOD_FREE,
 		G_R:	MOD_G_R,
 		G_W:	MOD_G_W,
