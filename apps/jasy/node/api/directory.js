@@ -8,10 +8,6 @@ let MOD
 return {
 	setup(context,cb){
 		MOD=sqlDir.MOD
-		let buf=Buffer.alloc(2,0,'hex')
-		buf.writeUInt16LE(MOD.DIR|MOD.G_RX)
-		console.log((MOD.DIR|MOD.G_RX).toString(2))
-		console.log((buf).toString('hex'))
 		cb()
 /*		const poll=[],output={}
 		this.poll({id:1},{t:new Date('1947')},poll,output,(err)=>{
@@ -33,7 +29,7 @@ return {
         next()
     },
 	newUser(cred,user,next){
-		sqlDir.set(cred.grp,user.id,MOD.DIR|MOD.G_RX,cred.id,(err)=>{
+		sqlDir.set('',user.id,MOD.DIR|MOD.G_RX,cred.id,(err)=>{
 			if (err) return next(this.error(500))
 			next()
 		})
@@ -67,6 +63,7 @@ return {
 			}else{
 				key='applicant',val=input.msg||''
 			}
+console.log(MOD.FREE.toString(16),dir.s.readUInt16LE().toString(16),key,val)
 			sqlDir.usermap_set(dir.id,user.id,key,val,cred.id,(err)=>{
 				if(err) return next(this.error(500))
 				next()

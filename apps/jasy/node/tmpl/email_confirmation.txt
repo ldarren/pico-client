@@ -12,4 +12,4 @@ To learn more about Jasa Web Services, please refer to the JasaWS Developer Guid
 
 Sincerely,
 
-The Amazon SES Team
+The Jasa Web Services Tea

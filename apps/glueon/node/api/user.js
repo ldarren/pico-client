@@ -1,0 +1,43 @@
+const
+pStr=require('pico/str'),
+pObj=require('pico/obj'),
+redisUser=require('redis/user')
+
+return {
+	setup(context,cb){
+		cb()
+	},
+    reply(output,next){
+        this.setOutput(output)
+        next()
+    },
+    replyPrivate(output,next){
+        this.setOutput(output)
+        next()
+    },
+    replyList(list,next){
+        this.setOutput(list)
+        next()
+    },
+	verify(cred,next){
+		next()
+	},
+	poll(input,output,next){
+		next()
+	},
+	removeSession(cred,next){
+		next()
+	},
+	update(cred,input,output,next){
+		next()
+	},
+	list(input,output,next){
+		next()
+	},
+	read(input,output,next){
+		next()
+	},
+	last(input,poll,output,next){
+		next()
+	}
+}

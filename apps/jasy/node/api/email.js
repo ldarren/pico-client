@@ -2,14 +2,15 @@ const
 SUBJECT='Confirmation',
 TEXT_CONFIRM=require('tmpl/email_confirmation.txt'),
 HTML_CONFIRM=require('tmpl/email_confirmation.html'),
-URL_CONFIRM_DEV='https://st.jasaws.com/jasy/app/#email/confirm/EMAIL/VID',
-URL_CONFIRM_PRO='https://console.jasaws.com/jasy/app/#email/confirm/EMAIL/VID',
-URL_DOC_DEV='https://st.jasaws.com/jasy/app/#doc',
-URL_DOC_PRO='https://console.jasaws.com/jasy/app/#doc'
+URL_CONFIRM_DEV='https://st.jasaws.com/APP/app/#email/confirm/EMAIL/VID',
+URL_CONFIRM_PRO='https://console.jasaws.com/APP/app/#email/confirm/EMAIL/VID',
+URL_DOC_DEV='https://st.jasaws.com/APP/app/#doc',
+URL_DOC_PRO='https://console.jasaws.com/APP/app/#doc',
 
-var
 sqlUser=require('sql/user'),
-redisUser=require('redis/user'),
+redisUser=require('redis/user')
+
+let
 isPro=true,
 ses
 
@@ -37,10 +38,11 @@ return {
 		})
 	},
 	sendConfirmation(cred,input,verifyId,output,next){
-		var
+		const
+		app=cred.app,
 		email=input.email,
-		urlConfirm=(isPro?URL_CONFIRM_PRO:URL_CONFIRM_DEV).replace('EMAIL',email).replace('VID',verifyId),
-		urlDoc=isPro?URL_DOC_PRO:URL_DOC_DEV
+		urlConfirm=(isPro?URL_CONFIRM_PRO:URL_CONFIRM_DEV).replace('APP',app).replace('EMAIL',email).replace('VID',verifyId),
+		urlDoc=(isPro?URL_DOC_PRO:URL_DOC_DEV).replace('APP',app)
 
 		ses.send([email],SUBJECT,
 			TEXT_CONFIRM.replace('URL_EMAIL_CONFIRM',urlConfirm).replace('URL_DOC',urlDoc),
@@ -54,7 +56,7 @@ return {
 			})
 	},
 	confirmation(cred,input,output,next){
-		let email=input.email
+		const email=input.email
 
 		redisUser.getRegisterCache(cred,email,(err,vid,user)=>{
 			if (err) return next(this.error(403))

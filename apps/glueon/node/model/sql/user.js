@@ -17,12 +17,10 @@ MAP_SET=			'INSERT INTO `userMap` (`id`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICA
 MAP_FIND_TEXT=		'SELECT `id` FROM `userMap` WHERE `k`=? AND `v1`=?;',
 MAP_FIND_INT=		'SELECT `id` FROM `userMap` WHERE `k`=? AND `v2`=?;',
 
-ERR_INVALID_INPUT=	{message:'INVALID INPUT'}
+ERR_INVALID_INPUT=	{message:'INVALID INPUT'},
 
-let
 picoObj=require('pico/obj'),
 hash=require('sql/hash'),
-client,
 gets=function(ctx,items,idx,cb){
 	if (items.length <= idx) return cb(null,items)
 	ctx.get(items[idx++],(err)=>{
@@ -30,6 +28,8 @@ gets=function(ctx,items,idx,cb){
 		gets(ctx,items,idx,cb)
 	})
 }
+
+let client
 
 module.exports={
 	setup(context,cb){

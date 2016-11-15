@@ -1,4 +1,7 @@
 {
     "domains":{
+		"glueon":{"url":"https://st.jasaws.com/glueon"},
+		"jasy":{"url":"https://st.jasaws.com/jasy"},
+		"pico":{"url":"https://st.jasaws.com/pico"}
     }
 }

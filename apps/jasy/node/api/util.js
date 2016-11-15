@@ -1,4 +1,4 @@
-var picoStr=require('pico/str')
+const pStr=require('pico/str')
 
 return {
     setup(context,cb){ cb() },  
@@ -10,16 +10,16 @@ return {
         } 
     },  
 	randomStr(key,size,next){
-		var str=''
+		let str=''
 		while(1){
-			str+=picoStr.rand()
+			str+=pStr.rand()
 			if (str.length >= size) break
 		}
 		this.set(key,str.substr(0,size))
 		next()
 	},
 	have(input,fields,next){
-		for(var i=0,f; f=fields[i]; i++){
+		for(let i=0,f; f=fields[i]; i++){
 			if (undefined===input[f]) return next(this.error(400))
 		}
 		next()

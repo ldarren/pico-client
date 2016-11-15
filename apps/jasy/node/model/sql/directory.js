@@ -117,7 +117,6 @@ module.exports={
 		client.query(FIND_ID,[...up(dirname(grp))],cb)
 	},
 	findNames(grp,cb){
-console.log(client.format(FIND_NAMES,[dirname(grp)]))
 		client.query(FIND_NAMES,[dirname(grp)],cb)
 	},
 	filter(dirs,grp,cb){

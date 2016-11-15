@@ -4,7 +4,7 @@ return {
 		group:'text'
 	},
 	credential:function(att){
-		let deps=this.deps
+		var deps=this.deps
 		return {id:att.id, sess:att.sess, app:deps.app, grp:deps.group}
 	}
 }

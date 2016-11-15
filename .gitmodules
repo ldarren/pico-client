@@ -52,3 +52,21 @@
 [submodule "apps/jasy/app/mod/panel"]
 	path = apps/jasy/app/mod/panel
 	url = https://github.com/ldarren/pico-mod-panel.git
+[submodule "apps/glueon/app/mod/scrollable"]
+	path = apps/glueon/app/mod/scrollable
+	url = https://github.com/ldarren/pico-mod-scrollable.git
+[submodule "apps/glueon/app/mod/auth"]
+	path = apps/glueon/app/mod/auth
+	url = https://github.com/ldarren/pico-mod-auth.git
+[submodule "apps/glueon/app/mod/footer"]
+	path = apps/glueon/app/mod/footer
+	url = https://github.com/ldarren/pico-mod-footer.git
+[submodule "apps/glueon/app/mod/dialog"]
+	path = apps/glueon/app/mod/dialog
+	url = https://github.com/ldarren/pico-mod-dialog.git
+[submodule "apps/glueon/app/mod/header"]
+	path = apps/glueon/app/mod/header
+	url = https://github.com/ldarren/pico-mod-header.git
+[submodule "apps/glueon/app/mod/panel"]
+	path = apps/glueon/app/mod/panel
+	url = https://github.com/ldarren/pico-mod-panel.git
