@@ -1,13 +1,14 @@
-return {
-	signals:['header'],
+return{
+	signals:['header','showLogin'],
 	deps:{
 		paneId:'int',
 		title:'text',
-		btnLeft:'map',
 		btnRight:'map',
-		entity:'model'
+		cred:'models',
+		users:'models',
+		owner:'models'
 	},
-	create:function(deps){
+	create: function(deps){
 		if(deps.title)this.signals.header(
 			deps.paneId,
 			deps.title,
@@ -18,9 +19,10 @@ return {
 	slots:{
 		headerButtonClicked:function(from,sender,hash){
 			switch(hash){
-			case 'edit':
+			case 'power':
+				this.signals.showLogin().send(this.host)
 				break
 			}
 		}
-	}
+    }
 }

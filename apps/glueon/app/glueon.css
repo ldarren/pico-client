@@ -2,6 +2,7 @@
 @import url(mod/Glueon.css);
 @import url(mod/Pane.css);
 @import url(mod/header/Basic.css);
+@import url(mod/footer/MenuBar.css);
 @import url(mod/dialog/Modal.css);
 @import url(mod/panel/Form.css);
 @import url(mod/Void.css);

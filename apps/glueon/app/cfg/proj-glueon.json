@@ -55,6 +55,16 @@
 			["options","map",{"el":"#__ #pane1 #page"}],
 			["paneId","int",1]
 		]],
+		["footer/MenuBar","view",[
+			["options","map",{"el":"#__ #pane0 #footer"}],
+			["paneId","int",0],
+			["tpl","file","footer/MenuBar.asp"],
+			["css","file","footer/MenuBar.css"],
+			["list","list",[
+				{"id":"chats","className":"icon1","icon":"icon_chat","name":"Chats","url":"chats"},
+				{"id":"profile","className":"icon3","icon":"icon_user","name":"Profile","url":"profile"}
+			]]
+		]],
 		["header/Basic","view",[
 			["options","map",{"el":"#__ #pane1 #header"}],
 			["paneId","int",1],
@@ -70,7 +80,8 @@
 					{"type":"text","name":"email","label":"Email","required":1},
 					{"type":"password","name":"pwd","label":"Password","required":1},
 					{"type":"button","name":"signin","label":"Sign in"},
-					{"type":"button","name":"gosignup","label":"Sign up"}
+					{"type":"button","name":"gosignup","label":"Sign up"},
+					{"type":"button","name":"close","label":"Close"}
 				],
 				[
 					{"type":"text","name":"name","label":"Name","required":1},
@@ -121,6 +132,33 @@
 				["css","file","Void.css"]
             ]]
         ],
+		"profile":[
+			["options","map",{"el":"#pane0 #page"}],
+			["cred","ref","cred"],
+			["users","ref","users"],
+			["owner","models",{}],
+			["ProfileCtrl","ctrl",[
+				["paneId","ref","paneId"],
+				["title","text","Profile"],
+				["btnRight","map",{"icon":"icon_power"}],
+				["cred","ref","cred"],
+				["users","ref","users"],
+				["owner","ref","owner"]
+			]],
+			["scrollable/ScrollView","view",[
+				["options","map",{"className":"scrollable"}],
+				["css","file","scrollable/Scrollable.css"],
+				["owner","ref","owner"],
+				["panel/Static","view",[
+					["tpl","file","panel/Form.asp"],
+					["css","file","panel/Form.css"],
+					["models","refs","models"],
+					["fields","list",[
+						{"model":"owner","field":1,"value":"name","label":"Name"}
+					]]
+				]]
+			]]
+		],
         "chats":[
 			["options","map",{"els":["#pane0 #page","#pane1 #page"]}],
 			["chats","ref","chats"],
@@ -175,6 +213,7 @@
         ]
     },[
         ["chats/:id","chats","chat"],
+        ["profile","profile"],
         ["*action","chats"]
     ]
 ]

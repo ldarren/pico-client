@@ -73,6 +73,8 @@ pageItemChange=function(from,sender,name,value,cb){
 	case 'gosignup':
 		this.slots.modal_pageResult=dummyPageResult
 		return this.signals.modal_pageChange(1,false).send(sender)
+	case 'close':
+		return this.slots.modal_hide.call(this,from,this)
 	}
 },
 dummyPageResult=function(from,sender,curr,total,data,cb){ cb() }
@@ -93,7 +95,7 @@ return {
 				s.modal_pageCreate=undefined
 			}
 		},
-		signout:function(from,sender){
+		showLogin:function(from,sender){
 			var s=this.slots
 			if(!confirmEmail(this)){
 				s.modal_pageCreate=pageCreate
