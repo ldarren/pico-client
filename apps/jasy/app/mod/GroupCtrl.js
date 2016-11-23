@@ -19,10 +19,10 @@ return {
 		title:'text',
 		btnLeft:'map',
 		btnRight:'map',
+		cred:'model',
 		entity:'model',
 		directory:'models',
-		icons:'models',
-		group:'text'
+		icons:'models'
 	},
 	create:function(deps){
 		if(deps.title)this.signals.header(
@@ -32,7 +32,7 @@ return {
 			deps.btnRight
 		).send(this.host)
 
-		this.cwd=deps.group
+		this.cwd=deps.cred.at(0).get('cwd')
 
 		let
 		self=this,

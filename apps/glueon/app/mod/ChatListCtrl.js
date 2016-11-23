@@ -5,10 +5,9 @@ return {
 		title:'text',
 		btnLeft:'map',
 		btnRight:'map',
-		entities:'models',
 		cred:'models',
-		newEntityForm:'list',
-		extraForm:'map'
+		chats:'models',
+		newChatForm:'list'
 	},
 	create:function(deps){
 		if(deps.title)this.signals.header(deps.paneId,deps.title,deps.btnLeft,deps.btnRight).send(this.host)

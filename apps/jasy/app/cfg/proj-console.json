@@ -2,12 +2,13 @@
     [
     ],[
     ],[
-		["app","text","jasy"],
-		["group","text",""],
         ["options","map",{"el":"#__"}],
         ["html","file","Frame.html"],
         ["css","file","Frame.css"],
         ["css","file","Console.css"],
+		["credExtra","models",{},[
+			{"app":"jasy","cwd":""}
+		]],
 		["cred","models",{
 			"update":"jasy/user/update",
 			"delete":"jasy/user/signout"
@@ -118,8 +119,7 @@
 		[["auth/Session","SessionMixin"],"ctrl",[
 			["credential","ref","cred"],
 			["users","ref","users"],
-			["app","ref","app"],
-			["group","ref","group"]
+			["credExtra","ref","credExtra"]
 		]]
     ],{
         "":[
@@ -225,17 +225,15 @@
 			["entity","model","entities",0],
 			["cred","ref","cred"],
 			["directory","ref","directory"],
-			["icons","models",{
-			}],
-			["group","ref","group"],
+			["icons","models",{}],
 			["GroupCtrl","ctrl",[
 				["paneId","ref","paneId"],
 				["title","text","Group"],
 				["btnRight","map",{"icon":"icon_address-book"}],
+				["cred","ref","cred"],
 				["entity","ref","entity"],
 				["directory","ref","directory"],
-				["icons","ref","icons"],
-				["group","ref","group"]
+				["icons","ref","icons"]
 			]],
 			["scrollable/ListView","view",[
 				["options","map",{"className":"scrollable icons"}],

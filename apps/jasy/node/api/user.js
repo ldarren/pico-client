@@ -8,9 +8,10 @@ URL_CONFIRM_PRO='https://console.jasaws.com/jasy/app/#email/confirm/EMAIL/VID',
 URL_DOC_DEV='https://st.jasaws.com/jasy/app/#doc',
 URL_DOC_PRO='https://console.jasaws.com/jasy/app/#doc',
 
+path=pico.import('path'),
 sqlUser=require('sql/user'),
 redisUser=require('redis/user'),
-picoObj=require('pico/obj')
+pObj=require('pico/obj')
 
 let
 ses,apiUser,
@@ -54,9 +55,9 @@ return {
 		this.addJob([output],sqlUser.get,sqlUser)
 		next()
 	},
-	createSession(cred,user,key,session,next){
+	createSession(cred,user,key,grp,session,next){
 		Object.assign(session,cred,{id:user.id,sess:key})
-		redisUser.setSession(session,(err)=>{
+		redisUser.setSession(session,grp,(err)=>{
 			if (err) return next(this.error(500))
 			next()
 		})
@@ -68,9 +69,11 @@ return {
 		next()
 	},
 	verify(cred,next){
-		redisUser.getSession(cred,(err,sess)=>{
+		console.log('..........',cred)
+		redisUser.getSession(cred,(err,grp)=>{
 			if (err) return next(this.error(500))
-			if (!sess || sess!==cred.sess) return next(this.error(403))
+			if (undefined===grp) return next(this.error(403))
+			cred.cwd=path.join(grp,cred.cwd)
 			next()
 		})
 	},
@@ -85,7 +88,7 @@ return {
 				for(let i=0,u; u=list[i]; i++){
 					users.push(u.id===uid?sqlUser.cleanSecret(u):sqlUser.clean(u))
 				}
-				output['t']=Max(...picoObj.pluck(users,'uat'),output.t)
+				output['t']=Max(...pObj.pluck(users,'uat'),output.t)
 				next()
 			})
 		})

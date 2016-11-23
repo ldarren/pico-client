@@ -1,15 +1,15 @@
 const
-INDEX=						['name','userId','type'],
+INDEX=						['key'],
 PRIVATE=					['webhook','key','secret','$private','log'],
 SECRET=						[],
 ENUM=						['type'],
 
-FIND_ID=					'SELECT * FROM `entity` WHERE `name`=? AND `userId`=? AND `s`!=0;',
+FIND_ID=					'SELECT * FROM `entity` WHERE `key`=? AND `s`!=0;',
 GET=						'SELECT * FROM `entity` WHERE `id`=? AND `s`!=0;',
-SET=						'INSERT INTO `entity` (`name`,`userId`,`type`,`cby`) VALUES (?);',
+SET=						'INSERT INTO `entity` (`key`,`cby`) VALUES (?);',
 
-LAST=						'SELECT * FROM `entity` WHERE `id` IN (?) AND `uat`>?;', // should return s==0 entities
-TOUCH=						'UPDATE `entity` SET `uat`=NOW() WHERE `id`=?;',
+POLL=						'SELECT id FROM `entityUserMap` WHERE `userId`=? AND `k`=? AND `uat`>?;', // should return s==0 entities
+TOUCH=						'UPDATE `entityUserMap` SET `uat`=NOW() WHERE `id`=? AND `k`=?;',
 
 MAP_GET_ALL=				'SELECT `id`,`k`,`v1`,`v2` FROM `entityMap` WHERE `id`=?;',
 MAP_GET=					'SELECT `id`,`k`,`v1`,`v2` FROM `entityMap` WHERE `id`=? AND `k`=?;',
@@ -51,8 +51,8 @@ module.exports={
 		return model
 	},
 
-	findId(name,userId,cb){
-		client.query(FIND_ID, [name,userId], (err,rows)=>{
+	findId(key,cb){
+		client.query(FIND_ID, [key], (err,rows)=>{
 			if (err) return cb(err)
 			cb(null,client.decodes(rows,hash,ENUM))
 		})

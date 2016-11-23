@@ -43,6 +43,8 @@ USERMAP_LAST=		'SELECT `id`,`userId`,`k`,`v1`,`v2`,`uat` FROM `dirUserMap` WHERE
 
 USERLIST_LAST=		'SELECT `id`,`userId`,`k`,`v1`,`v2`,`uat` FROM `dirUserList` WHERE `id` IN (?) `userId`=? AND `uat`>?;',
 
+ENTITYMAP_FIND_ID=	'SELECT `id`,`entityId`,`k`,`v1`,`v2` FROM `dirEntityMap` WHERE `entityId`=? AND `k`=?;',
+
 ERR_INVALID_INPUT=	{message:'INVALID INPUT'},
 
 pObj=				require('pico/obj'),
@@ -111,6 +113,9 @@ module.exports={
 		modBuf.writeUInt16LE(mod)
 		client.query(SET,[[[dirname(grp),name,modBuf,by]]],cb)
 	},
+	getOnly(dir,cb){
+		client.query(GET,[dir.id],cb)
+	},
 	findId(grp,cb){
 		client.query(FIND_ID,[...up(dirname(grp))],cb)
 	},
@@ -170,6 +175,15 @@ module.exports={
 	},
 	usermap_findId(userId,key,cb){
 		client.query(USERMAP_FIND_ID,[userId,hash.val(key)],(err,rows)=>{
+			if (err) return cb(err)
+			let outputs=[]
+			for(let i=0,r; r=rows[i]; i++) outputs.push({id:r.id});
+			cb(null, client.mapDecodes(rows,outputs,hash,ENUM))
+		})
+	},
+
+	entityMap_findId(entityId,key,cb){
+		client.query(USERMAP_FIND_ID,[entityId,hash.val(key)],(err,rows)=>{
 			if (err) return cb(err)
 			let outputs=[]
 			for(let i=0,r; r=rows[i]; i++) outputs.push({id:r.id});

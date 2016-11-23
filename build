@@ -2,9 +2,8 @@
 
 const
 DEPS=0,STYLE=1,SPEC=2,PANE=3,FLYER=4,
-ID=0,TYPE=1,VALUE=2,EXTRA=3
+ID=0,TYPE=1,VALUE=2,EXTRA=3,
 
-var
 fs=require('fs'),
 path=require('path'),
 args=require('pico-args'),
@@ -32,7 +31,7 @@ cfgDir=path.resolve(cwd,opt.cfg),
 distDir=path.resolve(cwd,opt.bin),
 mainjs=opt.entry,
 setup=function(cb){
-    var
+    const
     rawProjPath=path.resolve(cfgDir,`proj-${proj}.json`),
     rawEnvPath=path.resolve(cfgDir,`env-${proj}-${env}.json`),
     projPath=path.resolve(cfgDir,'project.json'),
@@ -67,11 +66,11 @@ getPath=function(spec, narr, include, style){
 		return false
 	case 'view':
 	case 'ctrl':
-		var path=spec[EXTRA]||spec[ID]
+		const path=spec[EXTRA]||spec[ID]
 		if (Array.isArray(path)) path.forEach((p)=>{include.add(p)})
 		else include.add(path)
 
-		var nspec=spec.slice()
+		const nspec=spec.slice()
 		nspec[VALUE]=[]
 		narr.push(nspec)
 		break
@@ -83,7 +82,7 @@ getPath=function(spec, narr, include, style){
 },
 scan=function(arr, narr, include, style, cb){
     if (!arr || !Array.isArray(arr) || !arr.length) return cb(null, include, style)
-    var spec=arr.shift()
+    const spec=arr.shift()
     if (getPath(spec, narr, include, style)){
         scan(spec[VALUE], narr[narr.length-1][VALUE], include, style, (err, include, style)=>{
             if (err) return console.error(err)
@@ -95,11 +94,11 @@ scan=function(arr, narr, include, style, cb){
 },
 scanPane=function(keys, panes, npanes, include, style, cb){
     if (!keys || !keys.length) return cb(null, include, style)
-    var
+    const 
 	key=keys.shift(),
 	pane=panes[key]
     if (!pane) return scanPane(keys, panes, npanes, include, style, cb)
-	var npane=[]
+	const npane=[]
 	npanes[key]=npane
     scan(pane, npane, include, style, (err, include, style)=>{
         if (err) return console.error(err)
@@ -107,11 +106,12 @@ scanPane=function(keys, panes, npanes, include, style, cb){
     })
 },
 writeCSS=function(style, cb){
-	var
-	content='',
+	const	
 	src=proj+'.css',
 	target=path.resolve(distDir,proj,proj+'.css'),
 	relative=path.relative(cwd,modDir)
+
+	let content=''
 
 	style.forEach((v)=>{
 		content+=`@import url(${relative+path.sep+v});\n`
@@ -136,7 +136,7 @@ process.chdir(cwd)
 setup((err, project, projPath, outPath)=>{
 	if (err) return console.error(err)
 
-	var deps=new Set(project[DEPS])
+	const deps=new Set(project[DEPS])
 	if (opt.underscore) deps.add('lib/underscore-min.js')
 	if (opt.backbone){
 		deps.add('lib/backbone-min.js')
@@ -145,18 +145,19 @@ setup((err, project, projPath, outPath)=>{
 	if (opt.lean)deps.add('lib/lean/lean.min.js')
 	if (opt.pico)deps.add('lib/pico.min.js')
 
+	const handler={get(target,name){return ()=>{}}}
+
 	// global
-	__={ajax:null,onLoad:null,store:()=>{}}
 	_=require('underscore')
 	Backbone=require('backbone')
 	pico=require('./lib/pico.js')
-	window={localStorage:{},location:{}}
+	__=window=document=new Proxy({},handler)
 
-	var filteredProj=[project[DEPS], [...project[STYLE],`${opt.url}${proj}.css`], [], {}, project[FLYER]]
+	const filteredProj=[project[DEPS], [...project[STYLE],`${opt.url}${proj}.css`], [], {}, project[FLYER]]
 
 	scan(project[SPEC], filteredProj[SPEC], new Set, new Set, (err, include, style)=>{
 		if (err) return console.error(err)
-		var
+		const
 		panes=project[PANE],
 		keys=Object.keys(panes)
 

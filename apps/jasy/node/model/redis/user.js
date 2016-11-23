@@ -1,5 +1,4 @@
-const
-DAY1=60*60*24
+const DAY1=60*60*24
 
 var client
 
@@ -35,10 +34,10 @@ module.exports={
 		.exec(cb)
 	},
 	getSession(cred,cb){
-		client.get(`sess:${cred.grp}:${cred.id}`,cb)
+		client.get(`sess:${cred.app}:${cred.id}:${cred.sess}`,cb)
 	},
-	setSession(cred,cb){
-		client.setex(`sess:${cred.grp}:${cred.id}`,DAY1,cred.sess,cb)
+	setSession(cred,grp,cb){
+		client.setex(`sess:${cred.app}:${cred.id}:${cred.sess}`,DAY1,grp,cb)
 	},
 	removeSession(cred,cb){
 		client.del(`sess:${cred.grp}:${cred.id}`,cb)

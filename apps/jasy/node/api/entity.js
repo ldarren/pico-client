@@ -1,8 +1,12 @@
 const
+ABS=Math.abs,
 pStr=require('pico/str'),
 pObj=require('pico/obj'),
 sqlEntity=require('sql/entity'),
-sqlDir=require('sql/directory')
+sqlDir=require('sql/directory'),
+posTrim=function(val,n){
+	return pStr.pad(ABS(val).toString(32).substr(0,n),n)
+}
 
 return {
 	setup(context,cb){
@@ -53,6 +57,14 @@ return {
         this.setOutput(list,sqlEntity.cleanList,sqlEntity)
         next()
     },
+	uuid(cred,input,$key,next){
+		this.set($key,
+		posTrim(str.hash(Date.now().toString()),8) +
+		posTrim(str.hash(input.type),6) +
+		posTrim(str.hash(input.name),8) +
+		posTrim(str.hash(cred.id.toString()),10))
+		next()
+	},
 	// TODO: ses email verification
 	create(cred,input,key,secret,output,next){
 		sqlEntity.set(Object.assign({},input,{key:key,secret:secret}), cred.id, (err, entity)=>{
@@ -73,6 +85,22 @@ return {
 	},
 	update(input,next){
 		next()
+	},
+	getGrp(cred,$grp,next){
+		sqlEntity.findId(cred.app,(err,ent)=>{
+			if (err) return next(this.error(500,err.message))
+			if (!ent) return next(this.error(401))
+			sqlDir.entityMap_findId(ent.id,'entity',(err,dir)=>{
+				if (err) return next(this.error(500,err.message))
+				if (!dir) return next(this.error(401))
+				sqlDir.getOnly(dir,(err,rows)=>{
+					if (err) return next(this.error(500,err.message))
+					if (!rows.length) return next(this.error(401))
+					this.set($grp,rows[0].grp)
+					next()
+				})
+			})
+		})
 	},
 	last(input,poll,output,next){
 		if (!poll.length) return next()

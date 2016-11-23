@@ -8,14 +8,14 @@ return {
         case 'GET': this.setOutput(this.time)
         default: return next(null, this.sigslot.abort())
         } 
-    },  
-	randomStr(key,size,next){
+    },
+	randomStr($key,size,next){
 		let str=''
 		while(1){
 			str+=pStr.rand()
 			if (str.length >= size) break
 		}
-		this.set(key,str.substr(0,size))
+		this.set($key,str.substr(0,size))
 		next()
 	},
 	have(input,fields,next){

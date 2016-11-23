@@ -29,6 +29,7 @@ add_action('wp_enqueue_scripts', 'mindsair_enqueue_script');
 add_action('wp_ajax_mindsair_save_settings', 'mindsair_save_settings');
 add_filter('plugin_action_links', 'mindsair_name_links', 10, 2); // under name
 add_filter('plugin_row_meta', 'mindsair_desc_links',10,2); // under description
+add_filter('clean_url','mindsair_add_dataset',10,3); // add dataset
 register_deactivation_hook(__FILE__, 'mindsair_uninstall');
 register_uninstall_hook(__FILE__, 'mindsair_uninstall');
 
@@ -167,6 +168,14 @@ function mindsair_add_div() {
 		<div class=__></div>
 		<?php
     }
+}
+
+function mindsair_add_dataset( $good_protocol_url, $original_url, $_context){
+	if (!strpos($original_url, MINDSAIR_DOMAIN)) return $good_protocol_url;
+
+	remove_filter('clean_url','mindsair_add_dataset',10,3);
+	$url_parts = parse_url($good_protocol_url);
+	return $url_parts['scheme'] . '://' . $url_parts['host'] . $url_parts['path'] . "' data-default-group='/1/Glueon";
 }
 
 function mindsair_enqueue_script(){

@@ -1,13 +1,13 @@
-var opt={variable:'d'}
 pico.run({
     name: 'main',
     ajax: __.ajax,
     onLoad: __.onLoad,
     env:{
-        live:false
+        live:false,
+		dataset:(function(el){ if (el) return el.dataset })(document.getElementById('picoDataSet'))
     },
     preprocessors:{
-        '.asp':function(url,txt){ return _.template(txt,opt) }
+        '.asp':function(url,txt){ return _.template(txt,{variable:'d'}) }
     },
     paths:{
         '*': 'mod/',
