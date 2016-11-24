@@ -37,9 +37,8 @@ return {
 			next()
 		})
 	},
-	sendConfirmation(cred,input,verifyId,output,next){
+	sendConfirmation(cred,input,app,verifyId,output,next){
 		const
-		app=cred.app,
 		email=input.email,
 		urlConfirm=(isPro?URL_CONFIRM_PRO:URL_CONFIRM_DEV).replace('APP',app).replace('EMAIL',email).replace('VID',verifyId),
 		urlDoc=(isPro?URL_DOC_PRO:URL_DOC_DEV).replace('APP',app)

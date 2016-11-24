@@ -183,7 +183,7 @@ module.exports={
 	},
 
 	entityMap_findId(entityId,key,cb){
-		client.query(USERMAP_FIND_ID,[entityId,hash.val(key)],(err,rows)=>{
+		client.query(ENTITYMAP_FIND_ID,[entityId,hash.val(key)],(err,rows)=>{
 			if (err) return cb(err)
 			let outputs=[]
 			for(let i=0,r; r=rows[i]; i++) outputs.push({id:r.id});

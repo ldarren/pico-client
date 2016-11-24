@@ -69,7 +69,6 @@ return {
 		next()
 	},
 	verify(cred,next){
-		console.log('..........',cred)
 		redisUser.getSession(cred,(err,grp)=>{
 			if (err) return next(this.error(500))
 			if (undefined===grp) return next(this.error(403))

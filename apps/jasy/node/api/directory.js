@@ -28,6 +28,18 @@ return {
         this.setOutput(list,sqlDir.cleanList,sqlDir)
         next()
     },
+	getEntityGrp(entId,$grp,next){
+		sqlDir.entityMap_findId(entId,'entity',(err,rows)=>{
+			if (err) return next(this.error(500,err.message))
+			if (!rows.length) return next(this.error(401))
+			sqlDir.getOnly(rows[0],(err,rows)=>{
+				if (err) return next(this.error(500,err.message))
+				if (!rows.length) return next(this.error(401))
+				this.set($grp,rows[0].grp)
+				next()
+			})
+		})
+	},
 	newUser(cred,user,next){
 		sqlDir.set('',user.id,MOD.DIR|MOD.G_RX,cred.id,(err)=>{
 			if (err) return next(this.error(500))

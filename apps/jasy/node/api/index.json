@@ -34,7 +34,9 @@
             ["util","have","input",[["email","pwd"]]],
             ["email","verifyEmail","input",[null]],
             ["util","randomStr",["$verifyId",20]],
-            ["email","sendConfirmation","cred","input","$verifyId","output"],
+			["entity","getId","cred",["$entId"]],
+			["entity","getName","$entId",["$appName"]],
+            ["email","sendConfirmation","cred","input","$appName","$verifyId","output"],
             ["user","replyPrivate","output"],
             []
         ],
@@ -46,7 +48,8 @@
             ["directory","newUser","cred","user"],
             ["directory","userJoin","cred","user","input"],
             ["util","randomStr",["$sessKey",20]],
-			["entity","getGrp","cred","$grp"],
+			["entity","getId","cred",["$entId"]],
+			["directory","getEntityGrp","$entId",["$grp"]],
             ["user","createSession","cred","user","$sessKey","$grp","session"],
             ["user","replyPrivate","session"],
             []
@@ -56,7 +59,8 @@
             ["email","verifyEmail","input","user"],
             ["email","verifyPwd","input","user"],
             ["util","randomStr",["$sessKey",20]],
-			["entity","getGrp","cred",["$grp"]],
+			["entity","getId","cred",["$entId"]],
+			["directory","getEntityGrp","$entId",["$grp"]],
             ["user","createSession","cred","user","$sessKey","$grp","session"],
             ["user","replyPrivate","session"],
             []
