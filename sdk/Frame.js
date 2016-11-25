@@ -69,7 +69,9 @@ Body=Module.View.extend({
 		this.paneCount=1
 
         network.create(e.domains, function(err){
-            if (err) return console.error(err)
+            if (err) return __.dialogs.alert('Code['+err.code+'] msg['+err.error+'], restart?','Network Error','ok',function(){
+				location.reload(false)
+			})
         
 			self.pages= p[PAGES]
 			parseFlyers(p[FLYERS],function(flyers,routes){

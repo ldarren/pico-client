@@ -81,6 +81,7 @@ return{
         create(Object.keys(domains), domains, cb)
     },
     credential:function(cred){ credential=cred },
+	updateCredential:function(key,value){credential=credential||{},credential[key]=value},
     getCredential:function(){ return credential ? JSON.parse(JSON.stringify(credential)) : ''}, // caniuse Object.assign now?
     getDomain:function(url){ return directory[getKey(url)] || {} }
 }
