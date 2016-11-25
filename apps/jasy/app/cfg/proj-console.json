@@ -64,6 +64,16 @@
 			["options","map",{"el":"#__ #pane1 #page"}],
 			["paneId","int",1]
 		]],
+		["footer/MenuBar","view",[
+			["options","map",{"el":"#__ #pane0 #footer"}],
+			["paneId","int",0],
+			["tpl","file","footer/MenuBar.asp"],
+			["css","file","footer/MenuBar.css"],
+			["list","list",[
+				{"id":"dir","className":"icon1","icon":"icon_address-book","name":"Directory","url":"dir"},
+				{"id":"entity","className":"icon1","icon":"icon_history","name":"Entities","url":"entities"}
+			]]
+		]],
 		["header/Basic","view",[
 			["options","map",{"el":"#__ #pane1 #header"}],
 			["paneId","int",1],
@@ -159,8 +169,7 @@
 						["epi","API Service Extension"],
 						["app","Mobile/Web Application"],
 						["epp","Mobile/Web Application Extension"],
-						["suite","Composite Suite"],
-						["group","Group"]
+						["suite","Composite Suite"]
 					],"value":2}
 				]],
 				["extraForm","map",{
@@ -178,8 +187,7 @@
 					"epp":[
 						{"type":"select","name":"entity","label":"Dependencies","holder":"Select a entity","options":[],"value":1,"required":0}
 					],
-					"suite":[],
-					"group":[]
+					"suite":[]
 				}]
 			]],
 			["scrollable/ListView","view",[
@@ -220,6 +228,33 @@
 				]]
 			]]
 		],
+        "dir":[
+			["options","map",{"els":["#pane0 #page","#pane1 #page"]}],
+			["directory","ref","directory"],
+			["cred","ref","cred"],
+			["DirectoryCtrl","ctrl",[
+				["paneId","ref","paneId"],
+				["title","text","Directory"],
+				["btnRight","map",{"icon":"icon_user"}],
+				["directory","ref","directory"],
+				["cred","ref","cred"],
+				["newGroupForm","list",[
+					{"type":"text","name":"name","label":"Name","holder":"Group Name","required":1},
+					{"type":"text","name":"desc","label":"Description","holder":"Group Description","required":1}
+				]]
+			]],
+			["scrollable/ListView","view",[
+				["options","map",{"className":"scrollable"}],
+				["css","file","scrollable/Scrollable.css"],
+				["list","ref","directory"],
+				["selected","param",0],
+				["Cell","view",[
+					["tpl","file","DirLargeIcon.asp"],
+					["css","file","DirLargeIcon.css"],
+					["selected","ref","selected"]
+				],"scrollable/Row"]
+			]]
+		],
         "group":[
 			["options","map",{"els":["#pane0 #page","#pane1 #page"]}],
 			["entity","model","entities",0],
@@ -248,8 +283,10 @@
 			]]
         ]
     },[
+		["entities","entities"],
         ["entity/:id","entities","entity"],
-        ["group/:id","entities","group"],
-        ["*action","entities"]
+		["dir","dir"],
+        ["dir/:id","dir","group"],
+        ["*action","dir"]
     ]
 ]
