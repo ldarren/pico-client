@@ -45,8 +45,6 @@
             ["email","verifyEmail","input",[null]],
             ["email","confirmation","cred","input","user"],
             ["user","create","cred","user"],
-            ["directory","newUser","cred","user"],
-            ["directory","userJoin","cred","user","input"],
             ["util","randomStr",["$sessKey",20]],
 			["entity","getId","cred",["$entId"]],
 			["directory","getEntityGrp","$entId",["$grp"]],
@@ -110,6 +108,23 @@
             ["user","verify","cred"],
 			["directory","read","cred","input","output"],
             ["directory","replyPrivate","output"],
+			[]
+		],
+		"jasy/directory/user/new":[
+            ["user","verify","cred"],
+			["user","read","input","user"],
+            ["directory","newUser","cred","user"],
+			[]
+		],
+		"jasy/directory/group/new":[
+            ["user","verify","cred"],
+			["entity","read","input","entity"],
+            ["directory","newGroup","cred","input","entity"],
+			[]
+		],
+		"jasy/directory/group/join":[
+            ["user","verify","cred"],
+            ["directory","userJoin","cred","input"],
 			[]
 		],
         "#help": [

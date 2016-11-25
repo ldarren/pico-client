@@ -63,7 +63,7 @@ return {
 	getRole(cred,output,next){
 		next()
 	},
-	userJoin(cred,user,input,next){
+	userJoin(cred,input,next){
 		sqlDir.findId(cred.grp,(err,rows)=>{
 			if (err) return next(this.error(500,err.message))
 			if (!rows.length) return next(this.error(400))
@@ -75,7 +75,7 @@ return {
 			}else{
 				key='applicant',val=input.msg||''
 			}
-			sqlDir.usermap_set(dir.id,user.id,key,val,cred.id,(err)=>{
+			sqlDir.usermap_set(dir.id,input.id,key,val,cred.id,(err)=>{
 				if(err) return next(this.error(500))
 				next()
 			})
