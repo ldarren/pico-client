@@ -51,9 +51,12 @@ return {
 		next()
 	},
 	read(input,output,next){
-		Object.assign(output,{id:input.id})
-		this.addJob([output],sqlUser.get,sqlUser)
-		next()
+		sqlUser.get({id:input.id},(err,user)=>{
+			if (err) return next(this.error(500,err.message))
+			if (!user) return next(this.error(400))
+			Object.assign(output,user)
+			next()
+		})
 	},
 	createSession(cred,user,key,grp,session,next){
 		Object.assign(session,cred,{id:user.id,sess:key})
@@ -71,7 +74,7 @@ return {
 	verify(cred,next){
 		redisUser.getSession(cred,(err,grp)=>{
 			if (err) return next(this.error(500))
-			if (undefined===grp) return next(this.error(403))
+			if (!grp && !grp.charAt) return next(this.error(403))
 			cred.cwd=path.join(grp,cred.cwd)
 			next()
 		})
