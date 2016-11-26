@@ -6,9 +6,6 @@
         ["html","file","Frame.html"],
         ["css","file","Frame.css"],
         ["css","file","Console.css"],
-		["credExtra","models",{},[
-			{"app":"00s6ft8v0022ox0000fqi63b000014k2","cwd":""}
-		]],
 		["cred","models",{
 			"update":"jasy/user/update",
 			"delete":"jasy/user/signout"
@@ -129,7 +126,9 @@
 		[["auth/Session","SessionMixin"],"ctrl",[
 			["credential","ref","cred"],
 			["users","ref","users"],
-			["credExtra","ref","credExtra"]
+			["credExtra","models",{},[
+				{"app":"00s6ft8v0022ox0000fqi63b000014k2","cwd":""}
+			]]
 		]]
     ],{
         "":[

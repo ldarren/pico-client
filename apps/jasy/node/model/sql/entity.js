@@ -1,24 +1,26 @@
 const
-INDEX=						['key'],
-PRIVATE=					['webhook','key','secret','$private','log'],
-SECRET=						[],
-ENUM=						['type'],
+INDEX=					['key'],
+PRIVATE=				['webhook','key','secret','$private','log'],
+SECRET=					[],
+ENUM=					['type'],
 
-FIND_ID=					'SELECT * FROM `entity` WHERE `key`=? AND `s`!=0;',
-GET=						'SELECT * FROM `entity` WHERE `id`=? AND `s`!=0;',
-SET=						'INSERT INTO `entity` (`key`,`cby`) VALUES (?);',
+FIND_ID=				'SELECT * FROM `entity` WHERE `key`=? AND `s`!=0;',
+GET=					'SELECT * FROM `entity` WHERE `id`=? AND `s`!=0;',
+SET=					'INSERT INTO `entity` (`key`,`cby`) VALUES (?);',
+LAST=					'SELECT * FROM `entity` WHERE `id` IN (?) AND `uat`>?;',
 
-POLL=						'SELECT id FROM `entityUserMap` WHERE `userId`=? AND `k`=? AND `uat`>?;', // should return s==0 entities
-TOUCH=						'UPDATE `entityUserMap` SET `uat`=NOW() WHERE `id`=? AND `k`=?;',
+MAP_GET_ALL=			'SELECT `id`,`k`,`v1`,`v2` FROM `entityMap` WHERE `id`=?;',
+MAP_GET=				'SELECT `id`,`k`,`v1`,`v2` FROM `entityMap` WHERE `id`=? AND `k`=?;',
+MAP_SET=				'INSERT INTO `entityMap` (`id`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
+MAP_LAST=				'SELECT `id`,`k`,`v1`,`v2` FROM `entityMap` WHERE `id` IN (?) AND `uat`>?;',
 
-MAP_GET_ALL=				'SELECT `id`,`k`,`v1`,`v2` FROM `entityMap` WHERE `id`=?;',
-MAP_GET=					'SELECT `id`,`k`,`v1`,`v2` FROM `entityMap` WHERE `id`=? AND `k`=?;',
-MAP_SET=					'INSERT INTO `entityMap` (`id`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
-MAP_LAST=					'SELECT `id`,`k`,`v1`,`v2` FROM `entityMap` WHERE `id` IN (?) AND `uat`>?;',
+LIST_LAST=				'SELECT `id`,`k`,`v1`,`v2` FROM `entityList` WHERE `id` IN (?) AND `uat`>?;',
 
-LIST_LAST=					'SELECT `id`,`k`,`v1`,`v2` FROM `entityList` WHERE `id` IN (?) AND `uat`>?;',
+USERMAP_POLL=			'SELECT id, uat FROM `entityUserMap` WHERE `userId`=? AND `k`=? AND `uat`>?;', // should return s==0
+USERMAP_TOUCH=			'UPDATE `entityUserMap` SET `uat`=NOW() WHERE `id`=? AND `k`=?;',
+USERMAP_LAST=			'SELECT `id`,`userId`,`k`,`v1`,`v2`,`uat` FROM `entityUserMap` WHERE `id` IN (?) AND `userId`=? AND `uat`>?;',
 
-ERR_INVALID_INPUT=			{message:'INVALID INPUT'},
+ERR_INVALID_INPUT=		{message:'INVALID INPUT'},
 
 Max=Math.max,
 pObj=require('pico/obj'),
@@ -31,11 +33,12 @@ gets=function(ctx,items,idx,cb){
 	})
 }
 
-let client
+let client,POLL
 
 module.exports={
 	setup(context,cb){
 		client=context.mainDB
+		POLL=hash.val('poll')
 		cb()
 	},
 	clean(model){
@@ -83,17 +86,16 @@ module.exports={
 	last(ids,uat,cb){
 		client.query(LAST, [ids,uat], (err,rows)=>{
 			if (err) return cb(err)
-			const
-			seen=Max(...pObj.pluck(rows,'uat'),uat),
-			entities=client.decodes(rows,hash,ENUM)
+			const entities=client.decodes(rows,hash,ENUM)
 			client.query(MAP_LAST, [ids,uat], (err,rows)=>{
 				if (err) return cb(err)
-				cb(null,client.mapDecodes(rows,entities,hash,ENUM),seen)
+				client.mapDecodes(rows,entities,hash,ENUM)
+				client.query(USERMAP_LAST, [ids,userId,uat], (err,rows)=>{
+					if (err) return cb(err)
+					cb(null,client.mapDecodes(rows,entities,hash,ENUM))
+				})
 			})
 		})
-	},
-	touch(entity,cb){
-		client.query(TOUCH, [entity.id], cb)
 	},
 
 	map_getAll(entity,cb){
@@ -119,6 +121,16 @@ module.exports={
 		client.query(LIST_LAST,[ids,hash.val(key),uat],(err,rows)=>{
 			if (err) return cb(err)
 			cb(null, client.listDecodes(rows,key,hash,ENUM))
+		})
+	},
+
+	touch(id,cb){
+		client.query(USERMAP_TOUCH, [id,POLL], cb)
+	},
+	poll(userId,uat,cb){
+		client.query(USERMAP_POLL,[userId,POLL,uat],(err,rows)=>{
+			if (err) return cb(err)
+			cb(err, rows, Max(...pObj.pluck(rows,'uat'),uat))
 		})
 	}
 }

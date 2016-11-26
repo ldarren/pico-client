@@ -38,7 +38,7 @@ USERMAP_GET=		'SELECT `id`,`userId`,`k`,`v1`,`v2` FROM `dirUserMap` WHERE `id`=?
 USERMAP_GETS=		'SELECT `id`,`userId`,`k`,`v1`,`v2` FROM `dirUserMap` WHERE `id`=? AND `k`=?;',
 USERMAP_FIND_ID=	'SELECT `id`,`userId`,`k`,`v1`,`v2` FROM `dirUserMap` WHERE `userId`=? AND `k`=?;',
 USERMAP_TOUCH=		'UPDATE `dirUserMap` SET `uat`=NOW() WHERE `id`=? AND `k`=?;',
-USERMAP_POLL=		'SELECT `id`,`userId`,`k`,`v1`,`v2`,`uat` FROM `dirUserMap` WHERE `userId`=? AND `k`=? AND `uat`>?;',
+USERMAP_POLL=		'SELECT `id`,`uat` FROM `dirUserMap` WHERE `userId`=? AND `k`=? AND `uat`>?;',
 USERMAP_LAST=		'SELECT `id`,`userId`,`k`,`v1`,`v2`,`uat` FROM `dirUserMap` WHERE `id` IN (?) AND `userId`=? AND `uat`>?;',
 
 USERLIST_LAST=		'SELECT `id`,`userId`,`k`,`v1`,`v2`,`uat` FROM `dirUserList` WHERE `id` IN (?) `userId`=? AND `uat`>?;',
@@ -61,9 +61,8 @@ value=function(val){
 	}
 	return ret
 },
-dirname=function(grp){
-	if (Array.isArray(grp)) return grp.join(SEP)
-	return grp
+join=function(grp){
+	return Array.isArray(grp) ? grp.join(SEP) : grp
 },
 up=function(grp){
 	grp=grp||SEP
@@ -89,7 +88,7 @@ module.exports={
 		O_RX:	MOD_O_RX,
 		O_RWX:	MOD_O_RWX
 	},
-	dirname,
+	join,
 	up,
 	setup(context,cb){
 		client=context.mainDB
@@ -111,19 +110,20 @@ module.exports={
 
 	set(grp,name,mod,by,cb){
 		modBuf.writeUInt16LE(mod)
-		client.query(SET,[[[dirname(grp),name,modBuf,by]]],cb)
+		client.query(SET,[[[join(grp),name,modBuf,by]]],cb)
 	},
 	getOnly(dir,cb){
 		client.query(GET,[dir.id],cb)
 	},
 	findId(grp,cb){
-		client.query(FIND_ID,[...up(dirname(grp))],cb)
+		client.query(FIND_ID,[...up(join(grp))],cb)
 	},
 	findNames(grp,cb){
-		client.query(FIND_NAMES,[dirname(grp)],cb)
+		client.query(FIND_NAMES,[join(grp)],cb)
 	},
 	filter(dirs,grp,cb){
-		let g=dirname(grp)
+		let g=join(grp)
+		if (!g) return cb(null,dirs)
 		client.query(FILTER,[pObj.pluck(dirs,'id'),...up(g),g+'%'],(err,rows)=>{
 			if (err) return cb(err)
 			for(let i=dirs.length-1,d,j,r; d=dirs[i]; i--){
@@ -139,15 +139,13 @@ module.exports={
 	last(ids,userId,uat,cb){
 		client.query(LAST, [ids,uat], (err,rows)=>{
 			if (err) return cb(err)
-			const
-			seen=Max(...pObj.pluck(rows,'uat'),uat),
-			dirs=client.decodes(rows,hash,ENUM)
+			const dirs=client.decodes(rows,hash,ENUM)
 			client.query(MAP_LAST, [ids,uat], (err,rows)=>{
 				if (err) return cb(err)
 				client.mapDecodes(rows,dirs,hash,ENUM)
 				client.query(USERMAP_LAST, [ids,userId,uat], (err,rows)=>{
 					if (err) return cb(err)
-					cb(null,client.mapDecodes(rows,dirs,hash,ENUM),seen)
+					cb(null,client.mapDecodes(rows,dirs,hash,ENUM))
 				})
 			})
 		})
@@ -197,9 +195,7 @@ module.exports={
 	poll(userId,uat,cb){
 		client.query(USERMAP_POLL,[userId,ROLE,uat],(err,rows)=>{
 			if (err) return cb(err)
-			let outputs=[]
-			for(let i=0,r; r=rows[i]; i++) outputs.push({id:r.id});
-			cb(null, client.mapDecodes(rows,outputs,hash,ENUM))
+			cb(err, rows, Max(...pObj.pluck(rows,'uat'),uat))
 		})
 	}
 }

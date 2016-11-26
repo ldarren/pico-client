@@ -74,14 +74,15 @@ return {
 	verify(cred,next){
 		redisUser.getSession(cred,(err,grp)=>{
 			if (err) return next(this.error(500))
-			if (!grp && !grp.charAt) return next(this.error(403))
+			if (null===grp) return next(this.error(403))
+			cred.grp=grp
 			cred.cwd=path.join(grp,cred.cwd)
 			next()
 		})
 	},
 	poll(input,output,next){
 		let uid=input.id
-		sqlUser.poll([uid],input.t,(err,rows)=>{
+		sqlUser.poll(uid,input.t,(err,rows)=>{
 			if (err) return next(this.error(500,err.message))
 			if (!rows.length) return next()
 			sqlUser.gets(rows,(err,list)=>{

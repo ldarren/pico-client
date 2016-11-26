@@ -8,7 +8,7 @@ GET=				'SELECT * FROM `user` WHERE `id`=? AND `s`!=0;',
 GETS=				'SELECT * FROM `user` WHERE `id` IN (?) AND `s`!=0;',
 SET=				'INSERT INTO `user` (`cby`) VALUES (?);',
 TOUCH=				'UPDATE `user` SET `uat`=NOW() WHERE id=?;',
-POLL=				'SELECT * FROM `user` WHERE id IN (?) AND `uat`>? AND `s`!=0;',
+POLL=				'SELECT * FROM `user` WHERE id=? AND `uat`>? AND `s`!=0;',
 
 MAP_GET=			'SELECT `id`,`k`,`v1`,`v2` FROM `userMap` WHERE `id`=?;',
 MAP_GETS=			'SELECT `id`,`k`,`v1`,`v2` FROM `userMap` WHERE `id` IN (?);',
@@ -86,8 +86,8 @@ module.exports={
 	touch(user,cb){
 		client.query(TOUCH, [user.id], cb)
 	},
-	poll(ids,date,cb){
-		client.query(POLL,[ids,date],cb)
+	poll(id,date,cb){
+		client.query(POLL,[id,date],cb)
 	},
 
 	map_gets(users,cb){
