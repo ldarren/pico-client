@@ -9,11 +9,13 @@ return {
 	setup(context,cb){
 		MOD=sqlDir.MOD
 		cb()
-/*		const poll=[],output={}
+/*
+		const poll=[],output={}
 		this.poll({id:1},{t:new Date('1947')},output,(err)=>{
 			if (err) return console.error(err)
 			console.log('output',output)
-		})*/
+		})
+*/
 	},
     reply(output,next){
         this.setOutput(output,sqlDir.clean,sqlDir)
@@ -89,6 +91,7 @@ return {
 	// should return pure dirs
 	poll(cred,input,output,next){
 		sqlDir.poll(cred.id,input.t,(err,usermaps,lastseen)=>{
+console.log(err,usermaps,lastseen)
 			if (err) return next(this.error(500,err.message))
 			if (!usermaps.length) return next()
 			sqlDir.filter(usermaps,cred.grp,(err,usermaps)=>{
@@ -98,7 +101,7 @@ return {
 					if (err) return next(this.error(500,err.message))
 					for(let i=0,d,j,p; d=dirs[i]; i++){
 						for(j=0; p=usermaps[j]; j++){
-							if (p.id !== d.id) continue
+							if (p.id !== d.id) continuea
 							switch(p.role){
 							case 'root':
 							case 'admin':
@@ -111,7 +114,6 @@ return {
 							break
 						}
 					}
-console.log(dirs,lastseen)
 					output['t']=lastseen
 					output['directory']=dirs
 					next()

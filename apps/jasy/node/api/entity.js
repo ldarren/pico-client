@@ -11,9 +11,8 @@ return {
 	setup(context,cb){
 		cb()
 /*
-		let
-		output={},
-		this.poll({t:new Date('1947')},output,(err)=>{
+		const output={}
+		this.poll({id:1},{t:new Date('1947')},output,(err)=>{
 			if (err) return console.error(err)
 			console.log('output',output)
 		})
@@ -77,11 +76,11 @@ return {
 	},
 	poll(cred,input,output,next){
 		sqlEntity.poll(cred.id,input.t,(err,poll,lastseen)=>{
+console.log(err,poll,lastseen)
 			if (err) return next(this.error(500,err.message))
 			if (!poll.length) return next()
-			sqlEntity.last(pObj.pluck(poll,'id'),input.t,(err,entities)=>{
+			sqlEntity.last(pObj.pluck(poll,'id'),cred.id,input.t,(err,entities)=>{
 				if (err) return next(this.error(500,err.message))
-console.log(entities,lastseen)
 				for(let i=0,e,j,p; e=entities[i]; i++){
 					for(j=0; p=poll[j]; j++){
 						if (p.entityId !== e.id) continue

@@ -83,7 +83,7 @@ module.exports={
 			})
 		})
 	},
-	last(ids,uat,cb){
+	last(ids,userId,uat,cb){
 		client.query(LAST, [ids,uat], (err,rows)=>{
 			if (err) return cb(err)
 			const entities=client.decodes(rows,hash,ENUM)

@@ -96,6 +96,8 @@ module.exports={
 		cb()
 	},
     clean(model){
+		let s=model.s
+		if (s) model.s=s.readUInt16LE()
         for(let i=0,k; k=PRIVATE[i]; i++) delete model[k];
         return model
     },
@@ -104,6 +106,8 @@ module.exports={
         return list
     },
     cleanSecret(model){
+		let s=model.s
+		if (s) model.s=s.readUInt16LE()
         for(let i=0,k; k=SECRET[i]; i++) delete model[k];
         return model
     },

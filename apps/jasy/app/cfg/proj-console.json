@@ -68,7 +68,7 @@
 			["css","file","footer/MenuBar.css"],
 			["list","list",[
 				{"id":"dir","className":"icon1","icon":"icon_address-book","name":"Directory","url":"dir"},
-				{"id":"entity","className":"icon1","icon":"icon_history","name":"Entities","url":"entities"}
+				{"id":"entities","className":"icon1","icon":"icon_history","name":"Entities","url":"entities"}
 			]]
 		]],
 		["header/Basic","view",[
