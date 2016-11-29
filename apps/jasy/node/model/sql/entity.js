@@ -7,6 +7,7 @@ ENUM=					['type'],
 FIND_ID=				'SELECT * FROM `entity` WHERE `key`=? AND `s`!=0;',
 GET=					'SELECT * FROM `entity` WHERE `id`=? AND `s`!=0;',
 SET=					'INSERT INTO `entity` (`key`,`cby`) VALUES (?);',
+TOUCH=					'UPDATE `entity` SET `uat`=NOW() WHERE `id`=?;',
 LAST=					'SELECT * FROM `entity` WHERE `id` IN (?) AND `uat`>?;',
 
 MAP_GET_ALL=			'SELECT `id`,`k`,`v1`,`v2` FROM `entityMap` WHERE `id`=?;',
@@ -15,10 +16,6 @@ MAP_SET=				'INSERT INTO `entityMap` (`id`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPL
 MAP_LAST=				'SELECT `id`,`k`,`v1`,`v2` FROM `entityMap` WHERE `id` IN (?) AND `uat`>?;',
 
 LIST_LAST=				'SELECT `id`,`k`,`v1`,`v2` FROM `entityList` WHERE `id` IN (?) AND `uat`>?;',
-
-USERMAP_POLL=			'SELECT id, uat FROM `entityUserMap` WHERE `userId`=? AND `k`=? AND `uat`>?;', // should return s==0
-USERMAP_TOUCH=			'UPDATE `entityUserMap` SET `uat`=NOW() WHERE `id`=? AND `k`=?;',
-USERMAP_LAST=			'SELECT `id`,`userId`,`k`,`v1`,`v2`,`uat` FROM `entityUserMap` WHERE `id` IN (?) AND `userId`=? AND `uat`>?;',
 
 ERR_INVALID_INPUT=		{message:'INVALID INPUT'},
 
@@ -33,12 +30,11 @@ gets=function(ctx,items,idx,cb){
 	})
 }
 
-let client,POLL
+let client
 
 module.exports={
 	setup(context,cb){
 		client=context.mainDB
-		POLL=hash.val('poll')
 		cb()
 	},
 	clean(model){
@@ -83,17 +79,17 @@ module.exports={
 			})
 		})
 	},
+
+	touch(id,cb){
+		client.query(TOUCH, [id], cb)
+	},
 	last(ids,userId,uat,cb){
 		client.query(LAST, [ids,uat], (err,rows)=>{
 			if (err) return cb(err)
 			const entities=client.decodes(rows,hash,ENUM)
 			client.query(MAP_LAST, [ids,uat], (err,rows)=>{
 				if (err) return cb(err)
-				client.mapDecodes(rows,entities,hash,ENUM)
-				client.query(USERMAP_LAST, [ids,userId,uat], (err,rows)=>{
-					if (err) return cb(err)
-					cb(null,client.mapDecodes(rows,entities,hash,ENUM))
-				})
+				cb(null,client.mapDecodes(rows,entities,hash,ENUM))
 			})
 		})
 	},
@@ -121,16 +117,6 @@ module.exports={
 		client.query(LIST_LAST,[ids,hash.val(key),uat],(err,rows)=>{
 			if (err) return cb(err)
 			cb(null, client.listDecodes(rows,key,hash,ENUM))
-		})
-	},
-
-	touch(id,cb){
-		client.query(USERMAP_TOUCH, [id,POLL], cb)
-	},
-	poll(userId,uat,cb){
-		client.query(USERMAP_POLL,[userId,POLL,uat],(err,rows)=>{
-			if (err) return cb(err)
-			cb(err, rows, Max(...pObj.pluck(rows,'uat'),uat))
 		})
 	}
 }

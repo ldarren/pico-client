@@ -44,6 +44,7 @@ USERMAP_LAST=		'SELECT `id`,`userId`,`k`,`v1`,`v2`,`uat` FROM `dirUserMap` WHERE
 USERLIST_LAST=		'SELECT `id`,`userId`,`k`,`v1`,`v2`,`uat` FROM `dirUserList` WHERE `id` IN (?) `userId`=? AND `uat`>?;',
 
 ENTITYMAP_FIND_ID=	'SELECT `id`,`entityId`,`k`,`v1`,`v2` FROM `dirEntityMap` WHERE `entityId`=? AND `k`=?;',
+ENTITYMAP_FIND_EID=	'SELECT `id`,`entityId`,`k`,`v1`,`v2` FROM `dirEntityMap` WHERE `id` IN (?) AND `k`=?;',
 
 ERR_INVALID_INPUT=	{message:'INVALID INPUT'},
 
@@ -176,21 +177,14 @@ module.exports={
 		client.query(USERMAP_GETS,[id,hash.val(key)],cb)
 	},
 	usermap_findId(userId,key,cb){
-		client.query(USERMAP_FIND_ID,[userId,hash.val(key)],(err,rows)=>{
-			if (err) return cb(err)
-			let outputs=[]
-			for(let i=0,r; r=rows[i]; i++) outputs.push({id:r.id});
-			cb(null, client.mapDecodes(rows,outputs,hash,ENUM))
-		})
+		client.query(USERMAP_FIND_ID,[userId,hash.val(key)],cb)
 	},
 
 	entityMap_findId(entityId,key,cb){
-		client.query(ENTITYMAP_FIND_ID,[entityId,hash.val(key)],(err,rows)=>{
-			if (err) return cb(err)
-			let outputs=[]
-			for(let i=0,r; r=rows[i]; i++) outputs.push({id:r.id});
-			cb(null, client.mapDecodes(rows,outputs,hash,ENUM))
-		})
+		client.query(ENTITYMAP_FIND_ID,[entityId,hash.val(key)],cb)
+	},
+	entityMap_findEntityIds(ids,key,cb){
+		client.query(ENTITYMAP_FIND_EID,[ids,hash.val(key)],cb)
 	},
 
 	touch(id,cb){

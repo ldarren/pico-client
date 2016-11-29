@@ -2,6 +2,7 @@ const
 ABS=Math.abs,
 pStr=require('pico/str'),
 pObj=require('pico/obj'),
+sqlDir=require('sql/directory'),
 sqlEntity=require('sql/entity'),
 posTrim=function(val,n){
 	return pStr.pad(ABS(val).toString(36).substr(0,n),n)
@@ -12,7 +13,7 @@ return {
 		cb()
 /*
 		const output={}
-		this.poll({id:1},{t:new Date('1947')},output,(err)=>{
+		this.last({id:1},{t:new Date('1947')},output,(err)=>{
 			if (err) return console.error(err)
 			console.log('output',output)
 		})
@@ -74,29 +75,16 @@ return {
 			next()
 		})
 	},
-	poll(cred,input,output,next){
-		sqlEntity.poll(cred.id,input.t,(err,poll,lastseen)=>{
-console.log(err,poll,lastseen)
+	last(cred,input,poll,output,next){
+		sqlDir.entityMap_findEntityIds(pObj.pluck(poll,'id'),'entity',(err,rows)=>{
+console.log(err,rows)
 			if (err) return next(this.error(500,err.message))
-			if (!poll.length) return next()
-			sqlEntity.last(pObj.pluck(poll,'id'),cred.id,input.t,(err,entities)=>{
+			if (!rows.length) return next()
+			sqlEntity.last(pObj.pluck(rows,'entityId'),cred.id,input.t,(err,entities)=>{
 				if (err) return next(this.error(500,err.message))
-				for(let i=0,e,j,p; e=entities[i]; i++){
-					for(j=0; p=poll[j]; j++){
-						if (p.entityId !== e.id) continue
-						switch(p.role){
-						case 'root':
-						case 'admin':
-							entities[i]=sqlEntity.cleanSecret(e)
-							break
-						default:
-							entities[i]=sqlEntity.clean(e)
-							break
-						}
-						break
-					}
+				for(let i=0,e; e=entities[i]; i++){
+					entities[i]=sqlEntity.clean(e)
 				}
-				output['t']=lastseen
 				output['entities']=entities
 				next()
 			})

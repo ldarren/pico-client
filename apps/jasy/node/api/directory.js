@@ -89,35 +89,27 @@ return {
 		})
 	},
 	// should return pure dirs
-	poll(cred,input,output,next){
+	poll(cred,input,poll,output,next){
 		sqlDir.poll(cred.id,input.t,(err,usermaps,lastseen)=>{
 console.log(err,usermaps,lastseen)
 			if (err) return next(this.error(500,err.message))
 			if (!usermaps.length) return next()
-			sqlDir.filter(usermaps,cred.grp,(err,usermaps)=>{
+			output['t']=lastseen
+			poll.push(...usermaps)
+			next()
+		})
+	},
+	last(cred,input,poll,output,next){
+		sqlDir.filter(poll,cred.grp,(err,usermaps)=>{
+			if (err) return next(this.error(500,err.message))
+			if (!usermaps.length) return next()
+			sqlDir.last(pObj.pluck(usermaps,'id'),cred.id,input.t,(err,dirs)=>{
 				if (err) return next(this.error(500,err.message))
-				if (!usermaps.length) return next()
-				sqlDir.last(pObj.pluck(usermaps,'id'),cred.id,input.t,(err,dirs)=>{
-					if (err) return next(this.error(500,err.message))
-					for(let i=0,d,j,p; d=dirs[i]; i++){
-						for(j=0; p=usermaps[j]; j++){
-							if (p.id !== d.id) continuea
-							switch(p.role){
-							case 'root':
-							case 'admin':
-								dirs[i]=sqlDir.cleanSecret(d)
-								break
-							default:
-								dirs[i]=sqlDir.clean(d)
-								break
-							}
-							break
-						}
-					}
-					output['t']=lastseen
-					output['directory']=dirs
-					next()
-				})
+				for(let i=0,d; d=dirs[i]; i++){
+					dirs[i]=sqlDir.clean(d)
+				}
+				output['directory']=dirs
+				next()
 			})
 		})
 	},
