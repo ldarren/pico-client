@@ -21,7 +21,6 @@
 			"delete":"jasy/entity/remove"
 		}],
 		["directory","models",{
-			"idAttribute":"cwd",
 			"list":"jasy/directory/list",
 			"create":"jasy/directory/create",
 			"read":"jasy/directory/read",
@@ -167,8 +166,7 @@
 						["api","API Service"],
 						["epi","API Service Extension"],
 						["app","Mobile/Web Application"],
-						["epp","Mobile/Web Application Extension"],
-						["suite","Composite Suite"]
+						["epp","Mobile/Web Application Extension"]
 					],"value":2}
 				]],
 				["extraForm","map",{
@@ -185,8 +183,7 @@
 					],
 					"epp":[
 						{"type":"select","name":"entity","label":"Dependencies","holder":"Select a entity","options":[],"value":1,"required":0}
-					],
-					"suite":[]
+					]
 				}]
 			]],
 			["scrollable/ListView","view",[

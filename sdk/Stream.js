@@ -14,6 +14,11 @@ callbacks=function(self){
 		self.dcCount++
         switch(e.target.readyState){
         case EventSource.CONNECTING: self.trigger('connecting',self.dcCount); break
+		case EventSource.OPEN:
+			try{var d=JSON.parse(e.data)}
+			catch(ex){console.error(ex)}
+			self.trigger('error',d);
+			break
         case EventSource.CLOSED:
         default:
             self.trigger('closed',self.dcCount);

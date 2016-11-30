@@ -14,15 +14,19 @@
 			["web","parse","req","res"]
         ],
 		"/jasy/stream":[
-			["stream","prepare","cred","input","output"],
+			["web","SSEStart","req","res"],
             ["user","verify","cred"],
+			["stream","prepare","cred","input","output"],
 			["user","poll","input","output"],
 			["directory","poll","cred","input",":poll","output"],
 			["directory","last","cred","input",":poll","output"],
 			["entity","last","cred","input",":poll","output"],
 			["stream","add","res","cred"],
-			["web","SSEStart","req","res"],
-			["stream","render",["poll"],"cred","output"]
+			["stream","render","res",["poll"],"output"]
+		],
+		"ERR//jasy/stream":[
+			["stream","render","res",["error"],"error"],
+			["stream","remove","res"]
 		],
         "ERR|#msg": [
 			["util","logParams"],
