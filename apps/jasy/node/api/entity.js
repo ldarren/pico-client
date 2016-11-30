@@ -76,6 +76,7 @@ return {
 		})
 	},
 	last(cred,input,poll,output,next){
+		if (!poll.length) return next()
 		sqlDir.entityMap_findEntityIds(pObj.pluck(poll,'id'),'entity',(err,rows)=>{
 console.log(err,rows)
 			if (err) return next(this.error(500,err.message))

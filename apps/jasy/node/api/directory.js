@@ -100,6 +100,7 @@ console.log(err,usermaps,lastseen)
 		})
 	},
 	last(cred,input,poll,output,next){
+		if (!poll.length) return next()
 		sqlDir.filter(poll,cred.grp,(err,usermaps)=>{
 			if (err) return next(this.error(500,err.message))
 			if (!usermaps.length) return next()

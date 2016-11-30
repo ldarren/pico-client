@@ -50,6 +50,7 @@ ERR_INVALID_INPUT=	{message:'INVALID INPUT'},
 
 pObj=				require('pico/obj'),
 hash=				require('sql/hash'),
+path=				pico.import('path'),
 Max=				Math.max,
 modBuf=				Buffer.alloc(2),
 value=function(val){
@@ -63,7 +64,7 @@ value=function(val){
 	return ret
 },
 join=function(grp){
-	return Array.isArray(grp) ? grp.join(SEP) : grp
+	return Array.isArray(grp) ? path.join(...grp) : grp
 },
 up=function(grp){
 	grp=grp||SEP
