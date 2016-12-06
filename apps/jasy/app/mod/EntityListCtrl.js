@@ -19,7 +19,7 @@ return {
 			if (!o || !o.id) return __.dialogs.alert('You need to confirm your email first','Not signin')
 			switch(hash){
 			case 'plus':
-				this.extraData=this.extraForm=null
+				this.extraForm=null
 				this.signals.modal_show([this.deps.newEntityForm,[]]).send(this.host)
 				break
 			}
@@ -33,20 +33,37 @@ return {
 			case 0:
 				this.extraForm=this.deps.extraForm[data.type]
 				break
-			case 1:
-				this.extraData=data
 			}
 			cb()
 		},
 		modal_result:function(from,sender,result){
+			var
+			$public={
+				desc:result.desc
+			},
+			$private={
+			},
+			data={
+				name:result.name,
+				type:result.type,
+				$public:$public,
+				$private:$private
+			}
+
+			switch(result.type){
+			case 'api':
+				data.webhook=result.webhook
+				break
+			case 'epi':
+				break
+			case 'app':
+				break
+			case 'epp':
+				break
+			}
+
 			this.deps.entities.create(null,{
-				data:{
-					name:result.name,
-					type:result.type,
-					userId:this.deps.cred.at(0).id,
-					$public:{desc:result.desc},
-					$private:this.extraData
-				},
+				data:data,
 				wait:true,
 				success:function(coll,res){
 					console.log('added new entity')

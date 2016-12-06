@@ -24,6 +24,10 @@ return {
 		}
 		next()
 	},
+	read(input,$key,$output,next){
+		this.set($output,input[$key])
+		next()
+	},
     sep(msg,next){console.log(msg); return next()},
     logParams(next){this.log(this.params); return next()},
     delay(period,next){ setTimeout(next,period) },  

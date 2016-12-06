@@ -42,17 +42,17 @@ return {
 		})
 	},
 	newUser(cred,user,next){
-		sqlDir.set('',user.id,MOD.DIR|MOD.G_RX,cred.id,(err)=>{
+		sqlDir.set('/',user.id,MOD.DIR|MOD.G_RX,cred.id,(err)=>{
 			if (err) return next(this.error(500))
 			next()
 		})
 	},
-	newGroup(cred,input,entity,next){
-		let userId=cred.id
-		sqlDir.set([cred.grp,userId],input.name,MOD.DIR|MOD.G_RX,userId,(err,meta)=>{
+	newGroup(cred,name,entity,next){
+		const userId=cred.id
+		sqlDir.set(cred.cwd,name,MOD.DIR|MOD.G_RX,userId,(err,meta)=>{
 			if(err) return next(this.error(500))
-			let id=meta.insertId
-			sqlDir.map_set(id,'entityId',entity.id,userId,(err)=>{
+			const id=meta.insertId
+			sqlDir.entitymap_set(id,entity.id,'entity',null,userId,(err)=>{
 				if(err) return next(this.error(500))
 				sqlDir.usermap_set(id,userId,'role','root',userId,(err)=>{
 					if(err) return next(this.error(500))

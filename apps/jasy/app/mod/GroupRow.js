@@ -4,7 +4,7 @@ return {
 	events:{
 		click:function(e){
 			this.select()
-			Router.go('entity/'+this.deps.data.id)
+			Router.go('dir/'+this.deps.data.id)
 		}
 	}
 }

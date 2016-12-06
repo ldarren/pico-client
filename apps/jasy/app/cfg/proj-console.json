@@ -22,7 +22,7 @@
 		}],
 		["directory","models",{
 			"list":"jasy/directory/list",
-			"create":"jasy/directory/create",
+			"create":"jasy/directory/group/create",
 			"read":"jasy/directory/read",
 			"update":"jasy/directory/update",
 			"delete":"jasy/directory/remove"
@@ -163,10 +163,10 @@
 					{"type":"text","name":"name","label":"Name","holder":"Entity Name","required":1},
 					{"type":"text","name":"desc","label":"Description","holder":"Entity Description","required":1},
 					{"type":"select","name":"type","label":"type","holder":"Select a Entity Type","options":[
-						["api","API Service"],
-						["epi","API Service Extension"],
-						["app","Mobile/Web Application"],
-						["epp","Mobile/Web Application Extension"]
+						["api","Backend Service"],
+						["epi","Backend Service Extension"],
+						["app","Frontend Application"],
+						["epp","Frontend Application Extension"]
 					],"value":2}
 				]],
 				["extraForm","map",{
@@ -175,14 +175,14 @@
 						{"type":"text","name":"group","label":"Group Name","holder":"Group Name","required":0}
 					],
 					"epi":[
-						{"type":"select","name":"entity","label":"Dependencies","holder":"Select a entity","options":[],"value":1,"required":0}
+						{"type":"text","name":"source","label":"Source URL","holder":"url","required":1}
 					],
 					"app":[
-						{"type":"select","name":"entity","label":"Dependencies","holder":"Select a entity","options":[],"value":1,"required":0},
-						{"type":"text","name":"group","label":"Group Name","holder":"Group Name","required":0}
+						{"type":"text","name":"source","label":"Source URL","holder":"url","required":1},
+						{"type":"text","name":"cwd","label":"Working Directory","holder":"directory","required":0}
 					],
 					"epp":[
-						{"type":"select","name":"entity","label":"Dependencies","holder":"Select a entity","options":[],"value":1,"required":0}
+						{"type":"text","name":"source","label":"Source URL","holder":"url","required":1}
 					]
 				}]
 			]],
@@ -231,7 +231,7 @@
 			["DirectoryCtrl","ctrl",[
 				["paneId","ref","paneId"],
 				["title","text","Directory"],
-				["btnRight","map",{"icon":"icon_user"}],
+				["btnRight","map",{"icon":"icon_plus"}],
 				["directory","ref","directory"],
 				["cred","ref","cred"],
 				["newGroupForm","list",[
@@ -245,10 +245,10 @@
 				["list","ref","directory"],
 				["selected","param",0],
 				["Cell","view",[
-					["tpl","file","DirLargeIcon.asp"],
-					["css","file","DirLargeIcon.css"],
+					["tpl","file","GroupRow.asp"],
+					["css","file","scrollable/Row.css"],
 					["selected","ref","selected"]
-				],"scrollable/Row"]
+				],["scrollable/Row","GroupRow"]]
 			]]
 		],
         "group":[

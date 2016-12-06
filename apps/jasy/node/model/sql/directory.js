@@ -43,6 +43,7 @@ USERMAP_LAST=		'SELECT `id`,`userId`,`k`,`v1`,`v2`,`uat` FROM `dirUserMap` WHERE
 
 USERLIST_LAST=		'SELECT `id`,`userId`,`k`,`v1`,`v2`,`uat` FROM `dirUserList` WHERE `id` IN (?) `userId`=? AND `uat`>?;',
 
+ENTITYMAP_SET=		'INSERT INTO `dirEntityMap` (`id`,`entityId`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
 ENTITYMAP_FIND_ID=	'SELECT `id`,`entityId`,`k`,`v1`,`v2` FROM `dirEntityMap` WHERE `entityId`=? AND `k`=?;',
 ENTITYMAP_FIND_EID=	'SELECT `id`,`entityId`,`k`,`v1`,`v2` FROM `dirEntityMap` WHERE `id` IN (?) AND `k`=?;',
 
@@ -181,6 +182,10 @@ module.exports={
 		client.query(USERMAP_FIND_ID,[userId,hash.val(key)],cb)
 	},
 
+	entitymap_set(id,entityId,key,val,by,cb){
+		const [v1,v2]=value(val)
+		client.query(ENTITYMAP_SET,[[[id,entityId,hash.val(key),v1,v2,by]]],cb)
+	},
 	entityMap_findId(entityId,key,cb){
 		client.query(ENTITYMAP_FIND_ID,[entityId,hash.val(key)],cb)
 	},

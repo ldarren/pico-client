@@ -99,12 +99,12 @@
             []
         ],
         "jasy/entity/create":[
-            ["util","have","input",[["name","type","userId"]]],
+            ["util","have","input",[["name","type"]]],
             ["user","verify","cred"],
-            ["util","randomStr",["$key",20]],
+            ["entity","uuid","cred","input",["$key"]],
             ["util","randomStr",["$secret",40]],
             ["entity","create","cred","input","$key","$secret","output"],
-            ["directory","newGroup","cred","input","output"],
+            ["directory","newGroup","cred","$key","output"],
             ["entity","replyPrivate","output"],
             []
         ],
@@ -115,16 +115,18 @@
             ["directory","replyPrivate","output"],
 			[]
 		],
-		"jasy/directory/user/new":[
+		"jasy/directory/user/create":[
             ["user","verify","cred"],
 			["user","read","input","user"],
             ["directory","newUser","cred","user"],
 			[]
 		],
-		"jasy/directory/group/new":[
+		"jasy/directory/group/create":[
+            ["util","have","input",[["name"]]],
+			["util","read","input",["name","$key"]],
             ["user","verify","cred"],
 			["entity","read","input","entity"],
-            ["directory","newGroup","cred","input","entity"],
+            ["directory","newGroup","cred","$key","entity"],
 			[]
 		],
 		"jasy/directory/group/join":[

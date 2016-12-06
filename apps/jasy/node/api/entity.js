@@ -33,10 +33,10 @@ return {
     },
 	uuid(cred,input,$key,next){
 		this.set($key,
-		posTrim(str.hash(Date.now().toString()),8) +
-		posTrim(str.hash(input.type),6) +
-		posTrim(str.hash(input.name),10) +
-		posTrim(str.hash((529+cred.id).toString()),8))
+			posTrim(pStr.hash(Date.now().toString()),8) +
+			posTrim(pStr.hash(input.type),6) +
+			posTrim(pStr.hash(input.name),10) +
+			posTrim(pStr.hash((529+cred.id).toString()),8))
 		next()
 	},
 	// TODO: ses email verification
