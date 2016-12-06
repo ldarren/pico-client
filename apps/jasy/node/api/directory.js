@@ -41,24 +41,29 @@ return {
 			})
 		})
 	},
-	newUser(cred,user,next){
-		sqlDir.set('/',user.id,MOD.DIR|MOD.G_RX,cred.id,(err)=>{
+	newUser(cred,cwd,user,next){
+		sqlDir.set(cwd,user.id,MOD.DIR|MOD.G_RX,cred.id,(err)=>{
 			if (err) return next(this.error(500))
 			next()
 		})
 	},
-	newGroup(cred,name,entity,next){
+	newGroup(cred,cwd,name,output,next){
 		const userId=cred.id
-		sqlDir.set(cred.cwd,name,MOD.DIR|MOD.G_RX,userId,(err,meta)=>{
+		sqlDir.set(cwd,name,MOD.DIR|MOD.G_RX,userId,(err,meta)=>{
 			if(err) return next(this.error(500))
 			const id=meta.insertId
-			sqlDir.entitymap_set(id,entity.id,'entity',null,userId,(err)=>{
+			output.id=id
+			sqlDir.usermap_set(id,userId,'role','root',userId,(err)=>{
 				if(err) return next(this.error(500))
-				sqlDir.usermap_set(id,userId,'role','root',userId,(err)=>{
-					if(err) return next(this.error(500))
-					next()
-				})
+				this.addJob([output],sqlDir.get,sqlDir)
+				next()
 			})
+		})
+	},
+	linkEntity(cred,dir,entity,next){
+		sqlDir.entitymap_set(dir.id,entity.id,'entity',null,cred.id,(err)=>{
+			if(err) return next(this.error(500,err.message))
+			next()
 		})
 	},
 	getRole(cred,output,next){

@@ -28,7 +28,7 @@ LAST=				'SELECT * FROM `dir` WHERE `id` IN (?) AND `uat`>?;',
 
 MAP_SET=			'INSERT INTO `dirMap` (`id`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
 MAP_GET=			'SELECT `id`,`k`,`v1`,`v2` FROM `dirMap` WHERE `id`=? AND `k`=?;',
-MAP_GETS=			'SELECT `id`,`k`,`v1`,`v2` FROM `dirMap` WHERE `id`=?;',
+MAP_GET_ALL=		'SELECT `id`,`k`,`v1`,`v2` FROM `dirMap` WHERE `id`=?;',
 MAP_GET_LIST=		'SELECT `id`,`k`,`v1`,`v2` FROM `dirMap` WHERE `id` IN (?) AND `k`=?;',
 MAP_GETS_LIST=		'SELECT `id`,`k`,`v1`,`v2` FROM `dirMap` WHERE `id` IN (?);',
 MAP_LAST=			'SELECT `id`,`k`,`v1`,`v2`,`uat` FROM `dirMap` WHERE `id` IN (?) AND `uat`>?;',
@@ -119,6 +119,17 @@ module.exports={
 		modBuf.writeUInt16LE(mod)
 		client.query(SET,[[[join(grp),name,modBuf,by]]],cb)
 	},
+	get(dir,cb){
+		if (!dir || !dir.id) return cb(ERR_INVALID_INPUT)
+		client.query(GET,[dir.id],(err,dirs)=>{
+			if (err) return cb(err)
+			this.map_getAll(client.decode(dirs[0],hash,ENUM),(err,ret)=>{
+				if(err) return cb(err)
+				Object.assign(dir,ret)
+				cb(null,dir)
+			})
+		})
+	},
 	getOnly(dir,cb){
 		client.query(GET,[dir.id],cb)
 	},
@@ -161,6 +172,13 @@ module.exports={
 	map_set(id,key,val,by,cb){
 		const [v1,v2]=value(val)
 		client.query(MAP_SET,[[[id,hash.val(key),v1,v2,by]]],cb)
+	},
+	map_getAll(dir,cb){
+		if (!dir||!dir.id) return cb(ERR_INVALID_INPUT)
+		client.query(MAP_GET_ALL,[dir.id],(err,rows)=>{
+			if (err) return cb(err)
+			cb(null,client.mapDecode(rows,dir,hash,ENUM))
+		})
 	},
 	map_getList(dirs,key,cb){
 		client.query(MAP_GET_LIST,[pObj.pluck(dirs,'id'),hash.val(key)],(err,rows)=>{

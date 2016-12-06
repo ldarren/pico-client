@@ -1,8 +1,13 @@
+var network=require('js/network')
+
 return {
 	deps:{
 		credExtra:'models'
 	},
 	slots:{
+		signin:function(from,sender,model){
+			network.updateCredential('cwd',model.id.toString())
+		},
 		cd:function(from,sender,dir){
 			var deps=this.deps
 			deps.credExtra.at(0).set({cwd:dir})
