@@ -96,7 +96,7 @@ return {
 	// should return pure dirs
 	poll(cred,input,poll,output,next){
 		sqlDir.poll(cred.id,input.t,(err,usermaps,lastseen)=>{
-console.log(err,usermaps,lastseen)
+console.log('poll',err,usermaps,lastseen)
 			if (err) return next(this.error(500,err.message))
 			if (!usermaps.length) return next()
 			output['t']=lastseen
@@ -106,15 +106,12 @@ console.log(err,usermaps,lastseen)
 	},
 	last(cred,input,poll,output,next){
 		if (!poll.length) return next()
-		sqlDir.filter(poll,cred.grp,(err,usermaps)=>{
+		sqlDir.filter(poll.slice(),cred.cwd,(err,usermaps)=>{
 			if (err) return next(this.error(500,err.message))
 			if (!usermaps.length) return next()
 			sqlDir.last(pObj.pluck(usermaps,'id'),cred.id,input.t,(err,dirs)=>{
 				if (err) return next(this.error(500,err.message))
-				for(let i=0,d; d=dirs[i]; i++){
-					dirs[i]=sqlDir.clean(d)
-				}
-				output['directory']=dirs
+				output['directory']=sqlDir.cleanList(dirs)
 				next()
 			})
 		})

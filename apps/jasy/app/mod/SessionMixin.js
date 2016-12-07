@@ -6,7 +6,7 @@ return {
 	},
 	slots:{
 		signin:function(from,sender,model){
-			network.updateCredential('cwd',model.id.toString())
+			this.deps.credential.at(0).set({cwd:model.id.toString()})
 		},
 		cd:function(from,sender,dir){
 			var deps=this.deps

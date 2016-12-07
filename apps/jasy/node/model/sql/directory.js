@@ -139,8 +139,8 @@ module.exports={
 	findNames(grp,cb){
 		client.query(FIND_NAMES,[join(grp)],cb)
 	},
-	filter(dirs,grp,cb){
-		let g=join(grp)
+	filter(dirs,cwd,cb){
+		let g=join(cwd)
 		if (!g) return cb(null,dirs)
 		client.query(FILTER,[pObj.pluck(dirs,'id'),...up(g),g+'%'],(err,rows)=>{
 			if (err) return cb(err)

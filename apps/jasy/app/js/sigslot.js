@@ -1,11 +1,11 @@
 var
-picoObj=require('pico/obj'),
+pObj=require('pico/obj'),
 trigger = Backbone.Events.trigger,
 extOpt={mergeArr:1},
 evts=[],
 sigslot = function(self, def){
     var
-    ss = picoObj.extend(self.signals, def || [], extOpt),
+    ss = pObj.extend(self.signals, def || [], extOpt),
     signals = {}
     
     ss.forEach(function(evt){
@@ -36,19 +36,17 @@ recv = function(evt, from, params){
     forward = true 
                 
     if (func) forward = func.apply(this, [from, params.sender].concat(params.args))
-    if (forward) (params.queue?send:dispatch).call(params, [from], this)
+    if (forward) (params.queue?send:dispatch).call(params, [from,this], this)
 },
 dispatch = function(a, from){
-    var isArr=a&&a.length
-    if (!isArr && a) return trigger.call(a, this.evt, from, this)
-
     from=from||this.sender
+
+    var isArr=Array.isArray(a)
+    if (!isArr && a) return trigger.call(a, this.evt, from, this)
 
     var
     host = from.host,
-    modules = from.modules
-
-    modules = host ? modules.concat([host]) : modules
+    modules = from.modules.concat(host ? [host,from] : [from])
 
     if (isArr){
         for(var i=0,m; m=modules[i]; i++) if (-1 === a.indexOf(m)) trigger.call(m, this.evt, from, this);
