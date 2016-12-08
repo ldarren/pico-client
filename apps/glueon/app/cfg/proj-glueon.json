@@ -2,9 +2,6 @@
     [
     ],[
     ],[
-		["app","text","glueon"],
-		["group","text","/1/Glueon"],
-		["cwd","text","/1/Glueon"],
         ["options","map",{"el":"#__"}],
         ["html","file","Frame.html"],
         ["css","file","Frame.css"],
@@ -16,12 +13,12 @@
 		["users","models",{
 			"read":"glueon/user/read"
 		}],
-		["dirs","models",{
-			"list":"glueon/dir/list",
-			"create":"glueon/dir/create",
-			"read":"glueon/dir/read",
-			"update":"glueon/dir/update",
-			"delete":"glueon/dir/remove"
+		["directory","models",{
+			"list":"glueon/directory/list",
+			"create":"glueon/directory/create",
+			"read":"glueon/directory/read",
+			"update":"glueon/directory/update",
+			"delete":"glueon/directory/remove"
 		}],
 		["chats","models",{
 			"list":"glueon/chat/list",
@@ -129,9 +126,11 @@
 		[["auth/Session","SessionMixin"],"ctrl",[
 			["credential","ref","cred"],
 			["users","ref","users"],
-			["app","ref","app"],
-			["group","ref","group"],
-			["cwd","ref","cwd"]
+			["forceAuth","bool",0],
+			["credExtra","models",{},[
+				{"app":"00mjvyn50022oq0000zbpt6c000014k2","cwd":""}
+			]],
+			["directory","ref","directory"]
 		]]
     ],{
         "":[
@@ -179,7 +178,7 @@
 				["cred","ref","cred"],
 				["chats","ref","chats"],
 				["newChatForm","list",[
-					{"type":"text","name":"name","label":"Name","holder":"Chat Name","required":1}
+					{"type":"text","name":"title","label":"Title","holder":"Chat Title","required":1}
 				]]
 			]],
 			["scrollable/ListView","view",[

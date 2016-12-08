@@ -67,7 +67,8 @@
 			["css","file","footer/MenuBar.css"],
 			["list","list",[
 				{"id":"dir","className":"icon1","icon":"icon_address-book","name":"Directory","url":"dir"},
-				{"id":"entities","className":"icon1","icon":"icon_history","name":"Entities","url":"entities"}
+				{"id":"entities","className":"icon1","icon":"icon_history","name":"Entities","url":"entities"},
+				{"id":"profile","className":"icon3","icon":"icon_user","name":"Profile","url":"profile"}
 			]]
 		]],
 		["header/Basic","view",[

@@ -18,7 +18,7 @@ return {
 			if (!o || !o.id) return __.dialogs.alert('You need to confirm your email first','Not signin')
 			switch(hash){
 			case 'plus':
-				this.signals.modal_show([this.deps.newGroupForm,[]]).send(this.host)
+				this.signals.modal_show([this.deps.newGroupForm]).send(this.host)
 				break
 			}
 		},
