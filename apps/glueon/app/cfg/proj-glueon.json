@@ -145,13 +145,17 @@
 			["cred","ref","cred"],
 			["users","ref","users"],
 			["owner","models",{}],
+			["userProfile","list",[
+				{"model":"owner","field":1,"value":"name","label":"Name"}
+			]],
 			["ProfileCtrl","ctrl",[
 				["paneId","ref","paneId"],
 				["title","text","Profile"],
 				["btnRight","map",{"icon":"icon_power"}],
 				["cred","ref","cred"],
 				["users","ref","users"],
-				["owner","ref","owner"]
+				["owner","ref","owner"],
+				["userProfile","ref","userProfile"]
 			]],
 			["scrollable/ScrollView","view",[
 				["options","map",{"className":"scrollable"}],
@@ -161,9 +165,7 @@
 					["tpl","file","panel/Form.asp"],
 					["css","file","panel/Form.css"],
 					["models","refs","models"],
-					["fields","list",[
-						{"model":"owner","field":1,"value":"name","label":"Name"}
-					]]
+					["fields","list","userProfile"]
 				]]
 			]]
 		],
