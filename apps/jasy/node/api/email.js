@@ -55,13 +55,14 @@ return {
 			})
 	},
 	confirmation(cred,input,output,next){
-		const email=input.email
+		const
+		email=input.email,
+		vid=input.verifyId
 
-		redisUser.getRegisterCache(cred,email,(err,vid,user)=>{
+		redisUser.getRegisterCache(cred,email,vid,(err,user)=>{
 			if (err) return next(this.error(403))
-			if (vid!==input.verifyId) return next(this.error(403))
 			Object.assign(output,user)
-			this.addJob([cred,email],redisUser.removeRegisterCache,redisUser)
+			this.addJob([cred,email,vid],redisUser.removeRegisterCache,redisUser)
 			next()
 		})
 	},

@@ -24,6 +24,9 @@
 			["stream","add","res","cred"],
 			["stream","render","res",["poll"],"output"]
 		],
+		"0 0 * * * *":[
+			["user","rotate"]
+		],
 		"ERR//jasy/stream":[
 			["stream","render","res",["error"],"error"],
 			["stream","remove","res"]
@@ -53,7 +56,7 @@
             ["util","randomStr",["$sessKey",20]],
 			["entity","getId","cred",["$entId"]],
 			["directory","getEntityGrp","$entId",["$grp"]],
-            ["user","createSession","cred","user","$sessKey","$grp","session"],
+            ["user","createSession","cred","user","$sessKey","$entId","$grp","session"],
             ["user","replyPrivate","session"],
             []
         ],
@@ -64,7 +67,7 @@
             ["util","randomStr",["$sessKey",20]],
 			["entity","getId","cred",["$entId"]],
 			["directory","getEntityGrp","$entId",["$grp"]],
-            ["user","createSession","cred","user","$sessKey","$grp","session"],
+            ["user","createSession","cred","user","$sessKey","$entId","$grp","session"],
             ["user","replyPrivate","session"],
             []
         ],

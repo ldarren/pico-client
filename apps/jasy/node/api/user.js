@@ -24,6 +24,9 @@ return {
 		apiUser=this
 		cb()
 	},
+	rotate(next){
+		redisUser.rotate(next)
+	},
     reply(output,next){
         this.setOutput(output,sqlUser.clean,sqlUser)
         next()
@@ -58,9 +61,9 @@ return {
 			next()
 		})
 	},
-	createSession(cred,user,key,grp,session,next){
+	createSession(cred,user,key,entId,grp,session,next){
 		Object.assign(session,cred,{id:user.id,sess:key})
-		redisUser.setSession(session,grp,(err)=>{
+		redisUser.setSession(session,entId,grp,(err)=>{
 			if (err) return next(this.error(500))
 			next()
 		})
