@@ -1,33 +1,61 @@
 const
-MIN5=5*60*1000,
+MIN1=60*1000,
 Floor=Math.floor,
 sqlEntity=require('sql/entity'),
 redisRemote=require('redis/remote'),
 pStr=require('pico/str'),
-ajax=pico.ajax
+pWeb=require('pico/web'),
+codec=function(secret,token){
+	return pStr.codec(Floor(Date.now()/MIN1)+pStr.hash(secret),token)
+},
+channels={},
+credentials={}
 
-let running=false
+let
+running=false,
+count=30
+
+this.update=function(){
+	if (count--) return
+	count=30
+	for(let i=0,keys=Object.keys(channels),c; c=channels[keys[i]]; i++){
+		c.beat()
+	}
+}
 
 return {
-	setup(context,cb){
+	setup(context,cb){a
+		// set reset to all entities
 		cb()
 	},
-	getSession(cred,entId,$sessKey,next){
-		//TODO: cache this info?
-		sqlEntity.map_getAll({id:entId},(err,ent)=>{
-			if (err || !ent.webhook) return next(this.error(400))
-			ajax('post',ent.webhook,{
-				act:'user/getSession',
-				key:pStr.codec(Floor(Date.now()/MIN5)+pStr.hash(ent.secret),cred.app),
-				userId:cred.id
-			},null,(err,state,res)=>{
-				if (4!==state) return
-				if (err) return next(this.error(500,err))
-				try{var sess=JSON.parse(res)}
-				catch(ex){return next(this.error(500))}
-				this.set($sessKey,sess.key)
-				next()
+	connect(cred,input,output,next){
+		const app=cred.app
+		sqlEntity.findId(app,(err,ent)=>{
+			if (err || !ent.id) return next(this.error(400))
+			sqlEntity.map_getAll(ent,(err,ent)=>{
+				if (err || !ent.secret) return next(this.error(400))
+				if (app !== codec(ent.secret,input.token)) return next(this.error(400))
+				pWeb.create({url:ent.webhook,delimiter:['&']},(err,client)=>{
+					if (err) return next(this.error(400))
+					channels[ent.id]=client
+					const sess=pStr.rand()
+					credentials[ent.id]={sess}
+					this.setOutput({key:sess})
+					next()
+				})
 			})
+		})
+	},
+	getSession(cred,entId,$sessKey,next){
+		const
+		c=channels[entId],
+		s=credentials[entId]
+
+		if (!c||!s) return next(this.error(400))
+		c.request('remote/user/getSession',{userId:cred.id},s,(err,data)=>{
+			if (err) return next(this.error(500,err))
+			this.set($sessKey,data.key)
+			next()
 		})
 	},
 	trigger(next){
