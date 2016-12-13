@@ -1,6 +1,6 @@
 var
 web=require('pico/web'),
-picoObj=require('pico/obj'),
+pObj=require('pico/obj'),
 channels = {}, directory={},
 credential,count=30,
 create = function(keys, domains, cb){
@@ -77,7 +77,7 @@ Backbone.ajax = function(req){
 return{
     create:function(domains,cb){
         if (!domains) return cb()
-        directory=picoObj.extend(directory, domains)
+        directory=pObj.extend(directory, domains)
         create(Object.keys(domains), domains, cb)
     },
     credential:function(cred){ credential=cred },
