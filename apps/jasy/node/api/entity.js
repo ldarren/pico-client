@@ -86,5 +86,8 @@ return {
 				next()
 			})
 		})
+	},
+	branch(entId,key,next){
+		next(null,`${key}.${1===entId?'local':'remote'}`)
 	}
 }

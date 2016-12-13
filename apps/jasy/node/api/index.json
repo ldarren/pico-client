@@ -6,6 +6,7 @@
         "entity":"api/entity",
         "directory":"api/directory",
 		"stream":"api/stream",
+		"remote":"api/remote",
         "web":["context","webServer"]
     },      
     "routes":{
@@ -27,6 +28,9 @@
 		"0 0 * * * *":[
 			["user","rotate"]
 		],
+		"*/5 * * * * *":[
+			["remote","trigger"]
+		],
 		"ERR//jasy/stream":[
 			["stream","render","res",["error"],"error"],
 			["stream","remove","res"]
@@ -38,6 +42,18 @@
         "END|#msg": [
             [] 
         ],
+		"session.remote":[
+			["remote","getSession","cred","$entId",["$sessKey"]],
+            ["user","createSession","cred","user","$sessKey","$entId","$grp","session"],
+            ["user","replyPrivate","session"],
+            []
+		],
+		"session.local":[
+            ["util","randomStr",["$sessKey",20]],
+            ["user","createSession","cred","user","$sessKey","$entId","$grp","session"],
+            ["user","replyPrivate","session"],
+            []
+		],
         "jasy/email/signup":[
             ["util","have","input",[["email","pwd"]]],
             ["email","verifyEmail","input",[null]],
@@ -64,12 +80,9 @@
             ["util","have","input",[["email","pwd"]]],
             ["email","verifyEmail","input","user"],
             ["email","verifyPwd","input","user"],
-            ["util","randomStr",["$sessKey",20]],
 			["entity","getId","cred",["$entId"]],
 			["directory","getEntityGrp","$entId",["$grp"]],
-            ["user","createSession","cred","user","$sessKey","$entId","$grp","session"],
-            ["user","replyPrivate","session"],
-            []
+			["entity","branch","$entId",["session"]]
         ],
         "jasy/email/update":[
             ["user","verify","cred"],
