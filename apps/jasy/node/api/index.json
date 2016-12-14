@@ -42,8 +42,12 @@
         "END|#msg": [
             [] 
         ],
+		"remote/connect":[
+			["remote","connect","cred","input"],
+			[]
+		],
 		"session.remote":[
-			["remote","getSession","cred","$entId",["$sessKey"]],
+			["remote","getSession","user","$entId",["$sessKey"]],
             ["user","createSession","cred","user","$sessKey","$entId","$grp","session"],
             ["user","replyPrivate","session"],
             []
@@ -69,12 +73,9 @@
             ["email","verifyEmail","input",[null]],
             ["email","confirmation","cred","input","user"],
             ["user","create","cred","user"],
-            ["util","randomStr",["$sessKey",20]],
 			["entity","getId","cred",["$entId"]],
 			["directory","getEntityGrp","$entId",["$grp"]],
-            ["user","createSession","cred","user","$sessKey","$entId","$grp","session"],
-            ["user","replyPrivate","session"],
-            []
+			["entity","branch","$entId",["session"]]
         ],
         "jasy/email/signin":[
             ["util","have","input",[["email","pwd"]]],

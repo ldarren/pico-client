@@ -5,6 +5,7 @@
         "user":"api/user",
         "directory":"api/directory",
 		"stream":"api/stream",
+		"remote":"api/remote",
         "web":["context","webServer"]
     },      
     "routes":{
@@ -13,13 +14,27 @@
 			["web","parse","req","res"]
         ],
 		"/glueon/stream":[
-			["stream","prepare","cred","input","output"],
+			["web","SSEStart","req","res"],
             ["user","verify","cred"],
+			["stream","prepare","cred","input","output"],
 			["user","poll","input","output"],
 			["directory","poll","cred","input",":poll","output"],
 			["stream","add","res","cred"],
-			["web","SSEStart","req","res"],
 			["stream","render",["poll"],"cred","output"]
+		],
+		"remote/reset":[
+			["remote","reset"],
+			[]
+		],
+		"remote/user/getSession":[
+            ["util","randomStr",["$sessKey",20]],
+            ["user","createSession","input","$sessKey","session"],
+            ["user","replyPrivate","session"],
+            []
+		],
+		"ERR//glueon/stream":[
+			["stream","render","res",["error"],"error"],
+			["stream","remove","res"]
 		],
         "ERR|#msg": [
 			["util","logParams"],
@@ -28,6 +43,8 @@
         "END|#msg": [
             [] 
         ],
+		"glueon/webhook":[
+		],
         "glueon/user/signout":[
             ["user","verify","cred"],
             ["user","removeSession","cred"],

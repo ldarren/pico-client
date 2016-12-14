@@ -19,14 +19,28 @@ return {
         this.setOutput(list)
         next()
     },
-	verify(cred,next){
-		next()
+	verify(cred,output,next){
+		redisUser.getSession(cred,(err,user)=>{
+			if (err) return next(this.error(500))
+			Object.assign(output,user)
+			next()
+		})
 	},
 	poll(input,output,next){
 		next()
 	},
+	createSession(input,sessKey,output,next){
+		redisUser.setSession(input,sessKey,(err)=>{
+			if (err) return next(this.error(500))
+			Object.assign(output,{sess:sessKey})
+			next()
+		})
+	},
 	removeSession(cred,next){
-		next()
+		redisUser.delSession(cred,(err)=>{
+			if (err) return next(this.error(500))
+			next()
+		})
 	},
 	update(cred,input,output,next){
 		next()

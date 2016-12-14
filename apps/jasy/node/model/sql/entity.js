@@ -11,6 +11,7 @@ TOUCH=					'UPDATE `entity` SET `uat`=NOW() WHERE `id`=?;',
 LAST=					'SELECT * FROM `entity` WHERE `id` IN (?) AND `uat`>?;',
 
 MAP_GET_ALL=			'SELECT `id`,`k`,`v1`,`v2` FROM `entityMap` WHERE `id`=?;',
+MAP_GET_LIST=			'SELECT `id`,`k`,`v1`,`v2` FROM `entityMap` WHERE `k`=?;',
 MAP_GET=				'SELECT `id`,`k`,`v1`,`v2` FROM `entityMap` WHERE `id`=? AND `k`=?;',
 MAP_SET=				'INSERT INTO `entityMap` (`id`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
 MAP_LAST=				'SELECT `id`,`k`,`v1`,`v2` FROM `entityMap` WHERE `id` IN (?) AND `uat`>?;',
@@ -100,6 +101,9 @@ module.exports={
 			if (err) return cb(err)
 			cb(null,client.mapDecode(rows,entity,hash,ENUM))
 		})
+	},
+	map_getList(key,cb){
+		client.query(MAP_GET_LIST,[hash.val(key)],cb)
 	},
 	map_get(entity,key,cb){
 		if (!entity||!entity.id) return cb(ERR_INVALID_INPUT)

@@ -151,7 +151,6 @@
 			["ProfileCtrl","ctrl",[
 				["paneId","ref","paneId"],
 				["title","text","Profile"],
-				["btnRight","map",{"icon":"icon_power"}],
 				["cred","ref","cred"],
 				["users","ref","users"],
 				["owner","ref","owner"],
@@ -161,11 +160,13 @@
 				["options","map",{"className":"scrollable"}],
 				["css","file","scrollable/Scrollable.css"],
 				["owner","ref","owner"],
-				["panel/Static","view",[
+				["cred","ref","cred"],
+				["userProfile","ref","userProfile"],
+				[["panel/Static","UserProfileMixin"],"view",[
 					["tpl","file","panel/Form.asp"],
 					["css","file","panel/Form.css"],
 					["models","refs","models"],
-					["fields","list","userProfile"]
+					["fields","ref","userProfile"]
 				]]
 			]]
 		],
