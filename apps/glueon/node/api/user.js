@@ -21,7 +21,8 @@ return {
     },
 	verify(cred,output,next){
 		redisUser.getSession(cred,(err,user)=>{
-			if (err) return next(this.error(500))
+			if (err) return next(this.error(500,err.message))
+			if (!user) return next(this.error(404))
 			Object.assign(output,user)
 			next()
 		})

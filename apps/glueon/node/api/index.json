@@ -15,7 +15,7 @@
         ],
 		"/glueon/stream":[
 			["web","SSEStart","req","res"],
-            ["user","verify","cred"],
+            ["user","verify","cred","user"],
 			["stream","prepare","cred","input","output"],
 			["user","poll","input","output"],
 			["directory","poll","cred","input",":poll","output"],
@@ -43,34 +43,35 @@
         "END|#msg": [
             [] 
         ],
-		"glueon/webhook":[
-		],
         "glueon/user/signout":[
-            ["user","verify","cred"],
+            ["user","verify","cred","user"],
             ["user","removeSession","cred"],
             []
         ],
         "glueon/user/update":[
-            ["user","verify","cred"],
+            ["user","verify","cred","user"],
             ["user","update","cred","input","output"],
             ["user","replyPrivate","output"],
             []
         ],
         "glueon/user/list":[
-            ["user","verify","cred"],
+            ["user","verify","cred","user"],
             ["user","list","input",":output"],
             ["user","replyList",":output"],
             []
         ],
         "glueon/user/read":[
-            ["user","verify","cred"],
+            ["user","verify","cred","user"],
             ["user","read","input","output"],
             ["user","reply","output"],
             []
         ],
+		"glueon/directory/list":[
+			[]
+		],
 		"glueon/directory/read":[
             ["util","have","input",[["cwd"]]],
-            ["user","verify","cred"],
+            ["user","verify","cred","user"],
 			["directory","read","cred","input","output"],
             ["directory","replyPrivate","output"],
 			[]

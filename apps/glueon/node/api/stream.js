@@ -1,7 +1,3 @@
-let
-web,
-pingId=0
-
 const
 redis=require('redis/stream'),
 userPipeMap={},
@@ -26,6 +22,10 @@ remove=function(idx){
 	delete userPipeMap[uid]
 	console.log(`removed stream[${uid}], count[${pipes.length}]`)
 }
+
+let
+web,
+pingId=0
 
 return {
 	setup(context,next){
@@ -58,9 +58,7 @@ return {
 		input.t=new Date(output.t)
 		next()
 	},
-	render(evt,cred,msg,next){
-		if (!cred || !cred.id) return next(this.error(404))
-		const res=userPipeMap[cred.id]
+	render(res,evt,msg,next){
 		if (!res || res.finished) return next()
 
 		web.SSE(res,msg,evt)

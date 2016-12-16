@@ -7,7 +7,14 @@ return {
 	},
 	slots:{
 		signin:function(from,sender,model){
-			this.deps.directory.fetch()
+			this.deps.directory.fetch({
+				success:function(){
+					debugger
+				},
+				error:function(){
+					debugger
+				}
+			})
 		},
 		cd:function(from,sender,dir){
 			specMgr.setValue(cwd,dir)
