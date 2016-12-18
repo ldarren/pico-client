@@ -9,7 +9,9 @@ module.exports={
 		cb()
 	},
 	getSession(cred,cb){
+console.log('!!!!!!!!!!!!',cred)
 		client.get(`sess:${cred.id}:${cred.sess}`,(err,res)=>{
+console.log('!!!!!!!!!!!!',err,res)
 			if (err) return cb(err)
 			try{cb(null,JSON.parse(res))}
 			catch(ex){return cb(ex)}

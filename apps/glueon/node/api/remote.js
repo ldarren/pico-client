@@ -6,15 +6,11 @@ pWeb=require('pico/web'),
 codec=function(secret,token){
 	return pStr.codec(Floor(Date.now()/MIN1)+pStr.hash(secret),token)
 },
-connect=function(cb){
-	pWeb.create({url:app.jasy,delimiter:['&']},(err,client)=>{
-		if (err) return cb(`failed to create channel for jasy ${err}`)
-		client.request('remote/connect',null,{token:codec(app.secret,app.key)},(err,data)=>{
-			if (err) return cb(`failed to connect jasy ${err}`)
-			channel=client
-			credential=data
-			cb()
-		})
+connect=function(config,cb){
+	pWeb.create({url:config.parent,delimiter:['&']},(err,client)=>{
+		channel=client
+		if (err) return cb(`failed to create channel for parent ${err}`)
+		client.request('remote/connect',{token:Buffer.from(codec(config.secret,config.key)).toString('base64')},{app:config.key},cb)
 	})
 }
 
@@ -34,13 +30,17 @@ this.update=function(){
 return {
 	setup(context,cb){
 		app=context.config.app
-		connect((err)=>{
+		setTimeout(connect,1000,app,(err,data)=>{
+			if (err) return console.error(`failed to connect parent ${err}`)
+			credential=data
 		})
 		cb()
 	},
-	reset(next){
-		connect((err)=>{
+	reset(cred,input,next){
+		if (app.key!==codec(app.secret,Buffer.from(input.token,'base64').toString())) return next(this.error(403))
+		connect(app,(err,data)=>{
 			if (err) return next(this.error(500))
+			credential=data
 			next()
 		})
 	},

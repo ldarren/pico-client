@@ -10,19 +10,21 @@ codec=function(secret,token){
 },
 channels={},
 credentials={},
-createChannels=function(list){
+broadcastReset=function(list){
 	if (!list.length) return
 	const ent=list.pop()
 	pWeb.create({url:ent.webhook,delimiter:['&']},(err,client)=>{
 		if (err) return console.error('failed to create channel for entity',ent.id,'error',err)
-		client.request('remote/reset',null,{token:codec(ent.secret,ent.key)},(err,data)=>{
+		channels[ent.id]=client
+		client.request('remote/reset',{token:Buffer.from(codec(ent.secret,ent.key)).toString('base64')},{app:appConfig.key},(err,data)=>{
 			if (err) return console.error('failed to reset entity',ent.id,'error',err)
 		})
 	})
-	createChannels(list)
+	broadcastReset(list)
 }
 
 let
+appConfig,
 running=false,
 count=30
 
@@ -36,23 +38,24 @@ this.update=function(){
 
 return {
 	setup(context,cb){
+		appConfig=context.config.app
 		// set reset to all entities
 		sqlEntity.map_getList('webhook',(err,list)=>{
 			if (err) return cb(err)
 			sqlEntity.gets(list,(err,ents)=>{
 				if (err) return cb(err)
-				createChannels(ents)
-				cb()
+				broadcastReset(ents)
 			})
 		})
+		cb()
 	},
 	connect(cred,input,next){
 		const app=cred.app
-		sqlEntity.findId(app,(err,ent)=>{
-			if (err || !ent.id) return next(this.error(400))
-			sqlEntity.map_getAll(ent,(err,ent)=>{
+		sqlEntity.findId(app,(err,rows)=>{
+			if (err || !rows || !rows.length) return next(this.error(400))
+			sqlEntity.map_getAll(rows[0],(err,ent)=>{
 				if (err || !ent.secret) return next(this.error(400))
-				if (app !== codec(ent.secret,input.token)) return next(this.error(400))
+				if (app !== codec(ent.secret,Buffer.from(input.token,'base64').toString())) return next(this.error(400))
 				pWeb.create({url:ent.webhook,delimiter:['&']},(err,client)=>{
 					if (err) return console.error(err)
 					channels[ent.id]=client
@@ -69,7 +72,6 @@ return {
 		const
 		c=channels[entId],
 		s=credentials[entId]
-
 		if (!c||!s) return next(this.error(400))
 		c.request('remote/user/getSession',user,s,(err,data)=>{
 			if (err) return next(this.error(500,err))

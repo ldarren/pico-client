@@ -23,7 +23,7 @@
 			["stream","render",["poll"],"cred","output"]
 		],
 		"remote/reset":[
-			["remote","reset"],
+			["remote","reset","cred","input"],
 			[]
 		],
 		"remote/user/getSession":[
