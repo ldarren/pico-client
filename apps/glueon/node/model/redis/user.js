@@ -1,5 +1,6 @@
 const
-DAY3=3*60*60*24
+DAY1=60*60*24,
+DAY3=3*DAY1
 
 let client
 
@@ -8,10 +9,21 @@ module.exports={
 		client=context.userCache
 		cb()
 	},
+	get(cred,cb){
+		client.get(`u:${cred.id}`,(err,res)=>{
+			if (err) return cb(err)
+			try{cb(null,JSON.parse(res))}
+			catch(ex){return cb(ex)}
+		})
+	},
+	set(user,cb){
+		client.setex(`u:${user.id}`,DAY1,JSON.stringify(user),cb)
+	},
+	del(cred,cb){
+		client.del(`u:${cred.id}`,cb)
+	},
 	getSession(cred,cb){
-console.log('!!!!!!!!!!!!',cred)
 		client.get(`sess:${cred.id}:${cred.sess}`,(err,res)=>{
-console.log('!!!!!!!!!!!!',err,res)
 			if (err) return cb(err)
 			try{cb(null,JSON.parse(res))}
 			catch(ex){return cb(ex)}

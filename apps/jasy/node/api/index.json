@@ -42,8 +42,7 @@
         "END|#msg": [
             [] 
         ],
-		"remote/connect":[
-["util","sep",["^^^^^^^^^^^^^^ remote connection"]],
+		"from/remote/connect":[
 			["remote","connect","cred","input"],
 			[]
 		],

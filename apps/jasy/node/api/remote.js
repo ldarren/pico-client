@@ -16,7 +16,7 @@ broadcastReset=function(list){
 	pWeb.create({url:ent.webhook,delimiter:['&']},(err,client)=>{
 		if (err) return console.error('failed to create channel for entity',ent.id,'error',err)
 		channels[ent.id]=client
-		client.request('remote/reset',{token:Buffer.from(codec(ent.secret,ent.key)).toString('base64')},{app:appConfig.key},(err,data)=>{
+		client.request('from/remote/reset',{token:Buffer.from(codec(ent.secret,ent.key)).toString('base64')},{app:appConfig.key},(err,data)=>{
 			if (err) return console.error('failed to reset entity',ent.id,'error',err)
 		})
 	})
@@ -73,7 +73,7 @@ return {
 		c=channels[entId],
 		s=credentials[entId]
 		if (!c||!s) return next(this.error(400))
-		c.request('remote/user/getSession',user,s,(err,data)=>{
+		c.request('from/remote/user/getSession',user,s,(err,data)=>{
 			if (err) return next(this.error(500,err))
 			this.set($sessKey,data.sess)
 			next()

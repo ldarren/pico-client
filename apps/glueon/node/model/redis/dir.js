@@ -8,39 +8,17 @@ module.exports={
 		client=context.dirCache
 		cb()
 	},
-	getRegisterCache(cred,email,cb){
-		const key=`${cred.grp}:${email}`
-		client.multi()
-		.get(`vid:${key}`)
-		.get(`rgc:${key}`)
-		.exec((err,res)=>{
+	get(cred,dir,cb){
+		client.get(`d:${cred.id}:${dir.grp}`,(err,res)=>{
 			if (err) return cb(err)
-			try{var user=JSON.parse(res[1])}
-			catch(e){return cb(e)}
-			cb(null, res[0], user)
+			try{cb(null,JSON.parse(res))}
+			catch(ex){return cb(ex)}
 		})
 	},
-	setRegisterCache(cred,email,verifyId,user,cb){
-		const key=`${cred.grp}:${email}`
-		client.multi()
-		.setex(`vid:${key}`,DAY1,verifyId)
-		.setex(`rgc:${key}`,DAY1,JSON.stringify(user))
-		.exec(cb)
+	set(cred,dir,cb){
+		client.setex(`u:${user.id}:${dir.grp}`,DAY1,JSON.stringify(dir),cb)
 	},
-	removeRegisterCache(cred,email,cb){
-		const key=`${cred.grp}:${email}`
-		client.multi()
-		.del(`vid:${key}`)
-		.del(`rgc:${key}`)
-		.exec(cb)
-	},
-	getSession(cred,cb){
-		client.get(`sess:${cred.grp}:${cred.id}`,cb)
-	},
-	setSession(cred,cb){
-		client.setex(`sess:${cred.grp}:${cred.id}`,DAY1,cred.sess,cb)
-	},
-	removeSession(cred,cb){
-		client.del(`sess:${cred.grp}:${cred.id}`,cb)
+	del(cred,dir,cb){
+		client.del(`u:${cred.id}:${dir.grp}`,cb)
 	}
 }

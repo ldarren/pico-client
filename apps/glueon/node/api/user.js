@@ -43,14 +43,26 @@ return {
 			next()
 		})
 	},
-	update(cred,input,output,next){
-		next()
+	update(input,next){
+		redisUser.set(input,(err)=>{
+			if (err) return next(this.error(500))
+			next()
+		})
 	},
 	list(input,output,next){
 		next()
 	},
-	read(input,output,next){
-		next()
+	read(cred,input,me,output,next){
+		if (cred.id===input.id){
+			Object.assign(output,me)
+			return next()
+		}
+		redisUser.get(cred,(err,user)=>{
+			if (err) return next(this.error(500))
+			if (!user) return next(null,'to/remote/user/read')
+			Object.assign(output,user)
+			next()
+		})
 	},
 	last(input,poll,output,next){
 		next()

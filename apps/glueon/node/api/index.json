@@ -15,22 +15,36 @@
         ],
 		"/glueon/stream":[
 			["web","SSEStart","req","res"],
-            ["user","verify","cred","user"],
+            ["user","verify","cred","me"],
 			["stream","prepare","cred","input","output"],
 			["user","poll","input","output"],
 			["directory","poll","cred","input",":poll","output"],
 			["stream","add","res","cred"],
-			["stream","render",["poll"],"cred","output"]
+			["stream","render","res",["poll"],"output"]
 		],
-		"remote/reset":[
-			["remote","reset","cred","input"],
+		"from/remote/reset":[
+			["remote","verify","input"],
+			["remote","reset"],
 			[]
 		],
-		"remote/user/getSession":[
+		"from/remote/user/getSession":[
             ["util","randomStr",["$sessKey",20]],
             ["user","createSession","input","$sessKey","session"],
             ["user","replyPrivate","session"],
             []
+		],
+		"to/remote/user/read":[
+			["remote","isConnected"],
+			["remote","readUser","input","user"],
+			["user","update","user"],
+            ["user","replyPrivate","user"],
+			[]
+		],
+		"to/remote/directory/read":[
+			["remote","readDirectory","dir"],
+			["directory","update","dir"],
+            ["directory","replyPrivate","dir"],
+			[]
 		],
 		"ERR//glueon/stream":[
 			["stream","render","res",["error"],"error"],
@@ -44,34 +58,38 @@
             [] 
         ],
         "glueon/user/signout":[
-            ["user","verify","cred","user"],
+            ["user","verify","cred","me"],
             ["user","removeSession","cred"],
             []
         ],
         "glueon/user/update":[
-            ["user","verify","cred","user"],
+            ["user","verify","cred","me"],
             ["user","update","cred","input","output"],
             ["user","replyPrivate","output"],
             []
         ],
         "glueon/user/list":[
-            ["user","verify","cred","user"],
+            ["user","verify","cred","me"],
             ["user","list","input",":output"],
             ["user","replyList",":output"],
             []
         ],
         "glueon/user/read":[
-            ["user","verify","cred","user"],
-            ["user","read","input","output"],
+            ["util","have","input",[["id"]]],
+            ["user","verify","cred","me"],
+            ["user","read","cred","input","me","output"],
             ["user","reply","output"],
             []
         ],
 		"glueon/directory/list":[
+            ["user","verify","cred","me"],
+            ["directory","list","input",":output"],
+            ["directory","replyList",":output"],
 			[]
 		],
 		"glueon/directory/read":[
             ["util","have","input",[["cwd"]]],
-            ["user","verify","cred","user"],
+            ["user","verify","cred","me"],
 			["directory","read","cred","input","output"],
             ["directory","replyPrivate","output"],
 			[]
