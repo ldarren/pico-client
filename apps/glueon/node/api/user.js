@@ -53,10 +53,6 @@ return {
 		next()
 	},
 	read(cred,input,me,output,next){
-		if (cred.id===input.id){
-			Object.assign(output,me)
-			return next()
-		}
 		redisUser.get(cred,(err,user)=>{
 			if (err) return next(this.error(500))
 			if (!user) return next(null,'to/remote/user/read')

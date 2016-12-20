@@ -23,8 +23,7 @@
 			["stream","render","res",["poll"],"output"]
 		],
 		"from/remote/reset":[
-			["remote","verify","input"],
-			["remote","reset"],
+			["remote","reset","input"],
 			[]
 		],
 		"from/remote/user/getSession":[
@@ -40,10 +39,10 @@
             ["user","replyPrivate","user"],
 			[]
 		],
-		"to/remote/directory/read":[
-			["remote","readDirectory","dir"],
+		"to/remote/directory/list":[
+			["remote","readDirectory","cred","dir"],
 			["directory","update","dir"],
-            ["directory","replyPrivate","dir"],
+            ["directory","replyList","dir"],
 			[]
 		],
 		"ERR//glueon/stream":[

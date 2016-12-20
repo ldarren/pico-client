@@ -8,30 +8,30 @@ return {
 		cb()
 	},
     reply(output,next){
-        this.setOutput(output,sqlEntity.clean,sqlEntity)
+        this.setOutput(output)
         next()
     },
     replyPrivate(output,next){
-        this.setOutput(output,sqlEntity.cleanSecret,sqlEntity)
+        this.setOutput(output)
         next()
     },
     replyList(list,next){
-        this.setOutput(list,sqlEntity.cleanList,sqlEntity)
+        this.setOutput(list)
         next()
     },
 	remove(input,next){
 		next()
 	},
-	list(input,next){
-		next()
-	},
-	read(cred,input,output,next){
+	list(input,output,next){
 		redisDir.get(cred,(err,dir)=>{
 			if (err) return next(this.error(500))
-			if (!dir) return next(null,'to/remote/directory/read')
+			if (!dir) return next(null,'to/remote/directory/list')
 			Object.assign(output,dir)
 			next()
 		})
+	},
+	read(cred,input,output,next){
+		next()
 	},
 	update(input,next){
 		redisDir.set(input,(err)=>{

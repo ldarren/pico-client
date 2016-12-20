@@ -117,10 +117,12 @@ console.log('poll',err,usermaps,lastseen)
 		})
 	},
 	getDependencies(cred,input,next){
+		next()
 	},
 	getMembers(cred,input,next){
+		next()
 	},
-	read(cred,input,output,next){
+	read(input,output,next){
 		let 
 		cwd=input.cwd,
 		d=[],f=[]
@@ -140,5 +142,8 @@ console.log('poll',err,usermaps,lastseen)
 				})
 			})
 		})
+	},
+	list(input,output,next){
+		next()
 	}
 }

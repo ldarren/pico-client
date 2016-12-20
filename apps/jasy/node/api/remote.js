@@ -10,6 +10,7 @@ codec=function(secret,token){
 },
 channels={},
 credentials={},
+sessions={},
 broadcastReset=function(list){
 	if (!list.length) return
 	const ent=list.pop()
@@ -49,6 +50,10 @@ return {
 		})
 		cb()
 	},
+	verify(cred,next){
+		if (cred.sess === sessions[cred.app]) return next()
+		next(this.error(403))
+	},
 	connect(cred,input,next){
 		const app=cred.app
 		sqlEntity.findId(app,(err,rows)=>{
@@ -61,8 +66,9 @@ return {
 					channels[ent.id]=client
 					console.log('added channel',ent.name)
 					const sess=pStr.rand()
-					credentials[ent.id]={sess}
-					this.setOutput({key:sess})
+					credentials[ent.id]={app:appConfig.key,sess:input.sess}
+					sessions[cred.app]=sess
+					this.setOutput({sess})
 					next()
 				})
 			})

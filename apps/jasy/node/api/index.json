@@ -46,6 +46,20 @@
 			["remote","connect","cred","input"],
 			[]
 		],
+		"from/remote/user/read":[
+            ["util","have","input",[["id"]]],
+			["remote","verify","cred"],
+			["user","read","input","user"],
+			["user","reply","user"],
+			[]
+		],
+		"from/remote/directory/list":[
+            ["util","have","input",[["id","cwd"]]],
+			["remote","verify","cred"],
+			["directory","list","input","dir"],
+			["directory","replyList","dir"],
+			[]
+		],
 		"session.remote":[
 			["remote","getSession","user","$entId",["$sessKey"]],
             ["user","createSession","cred","user","$sessKey","$entId","$grp","session"],
@@ -129,7 +143,7 @@
 		"jasy/directory/read":[
             ["util","have","input",[["cwd"]]],
             ["user","verify","cred"],
-			["directory","read","cred","input","output"],
+			["directory","read","input","output"],
             ["directory","replyPrivate","output"],
 			[]
 		],
