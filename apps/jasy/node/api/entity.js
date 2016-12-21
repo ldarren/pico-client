@@ -55,16 +55,27 @@ return {
 		next()
 	},
 	read(input,output,next){
-		next()
+		sqlEntity.get({id:entId}, (err, ent)=>{
+			if (err) return next(this.error(500,err.message))
+			Object.assign(output,ent)
+			next()
+		})
 	},
 	update(input,next){
 		next()
 	},
-	getId(cred,$entId,next){
+	findId(cred,$entId,next){
 		sqlEntity.findId(cred.app,(err,rows)=>{
 			if (err) return next(this.error(500,err.message))
 			if (!rows.length) return next(this.error(401))
 			this.set($entId,rows[0].id)
+			next()
+		})
+	},
+	getAllMap(entId,output,next){
+		sqlEntity.map_getAll({id:entId},(err,ent)=>{
+			if (err) return next(this.error(403))
+			Object.assign(output,ent)
 			next()
 		})
 	},

@@ -42,26 +42,27 @@
         "END|#msg": [
             [] 
         ],
-		"from/remote/connect":[
-			["remote","connect","cred","input"],
-			[]
-		],
 		"from/remote/user/read":[
             ["util","have","input",[["id"]]],
-			["remote","verify","cred"],
+			["entity","findId","cred",["$entId"]],
+			["entity","getAllMap","$entId","ent"],
+			["remote","verify","cred","ent"],
 			["user","read","input","user"],
 			["user","reply","user"],
 			[]
 		],
 		"from/remote/directory/list":[
             ["util","have","input",[["id","cwd"]]],
-			["remote","verify","cred"],
+			["entity","findId","cred",["$entId"]],
+			["entity","getAllMap","$entId","ent"],
+			["remote","verify","cred","ent"],
 			["directory","list","input","dir"],
 			["directory","replyList","dir"],
 			[]
 		],
 		"session.remote":[
-			["remote","getSession","user","$entId",["$sessKey"]],
+			["entity","read","$entId","ent"],
+			["remote","getSession","ent","user",["$sessKey"]],
             ["user","createSession","cred","user","$sessKey","$entId","$grp","session"],
             ["user","replyPrivate","session"],
             []
@@ -76,7 +77,7 @@
             ["util","have","input",[["email","pwd"]]],
             ["email","verifyEmail","input",[null]],
             ["util","randomStr",["$verifyId",20]],
-			["entity","getId","cred",["$entId"]],
+			["entity","findId","cred",["$entId"]],
 			["entity","getName","$entId",["$appName"]],
             ["email","sendConfirmation","cred","input","$appName","$verifyId","output"],
             ["user","replyPrivate","output"],
@@ -87,7 +88,7 @@
             ["email","verifyEmail","input",[null]],
             ["email","confirmation","cred","input","user"],
             ["user","create","cred","user"],
-			["entity","getId","cred",["$entId"]],
+			["entity","findId","cred",["$entId"]],
 			["directory","getEntityGrp","$entId",["$grp"]],
 			["entity","branch","$entId",["session"]]
         ],
@@ -95,7 +96,7 @@
             ["util","have","input",[["email","pwd"]]],
             ["email","verifyEmail","input","user"],
             ["email","verifyPwd","input","user"],
-			["entity","getId","cred",["$entId"]],
+			["entity","findId","cred",["$entId"]],
 			["directory","getEntityGrp","$entId",["$grp"]],
 			["entity","branch","$entId",["session"]]
         ],

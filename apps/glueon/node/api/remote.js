@@ -6,26 +6,24 @@ pWeb=require('pico/web'),
 codec=function(secret,token){
 	return pStr.codec(Floor(Date.now()/MIN1)+pStr.hash(secret),token)
 },
-connect=function(config,cb){
-	pWeb.create({url:config.parent,delimiter:['&']},(err,client)=>{
+getChannel=function(cb){
+	if (channel) return cb(null, channel)
+	pWeb.create({url:appConfig.parent,delimiter:['&']},(err,client)=>{
+		if (err) return cb(err)
 		channel=client
-		if (err) return cb(`failed to create channel for parent ${err}`)
-		session=pStr.rand()
-		client.request('from/remote/connect',{
-				token:Buffer.from(codec(config.secret,config.key)).toString('base64'),
-				sess:session
-			},{
-				app:config.key
-			},cb)
+		cb(err,client)
 	})
+},
+getCredential=function(){
+	return {
+		app:appConfig.key,
+		sess:Buffer.from(codec(appConfig.secret,appConfig.key)).toString('base64')
+	}
 }
 
 let
-app,
+appConfig,
 channel,
-credential,
-session,
-running=false,
 count=30
 
 this.update=function(){
@@ -36,41 +34,31 @@ this.update=function(){
 
 return {
 	setup(context,cb){
-		app=context.config.app
-		setTimeout(connect,1000,app,(err,data)=>{
-			if (err) return console.error(`failed to connect parent ${err}`)
-			credential={app:app.key,sess:data.sess}
-		})
+		appConfig=context.config.app
 		cb()
 	},
 	verify(cred,next){
-		if (session !== cred.sess) return next(this.error(403))
+		if (appConfig.key!==codec(appConfig.secret,Buffer.from(cred.token,'base64').toString())) return next(this.error(403))
 		next()
-	},
-	isConnected(next){
-		if (!channel || !credential) return next(this.error(500))
-		next()
-	},
-	reset(input,next){
-		if (app.key!==codec(app.secret,Buffer.from(input.token,'base64').toString())) return next(this.error(403))
-		connect(app,(err,data)=>{
-			if (err) return next(this.error(500))
-			credential={app:app.key,sess:data.sess}
-			next()
-		})
 	},
 	readUser(input,output,next){
-		client.request('from/remote/user/read',{id:input.id},credential,(err,data)=>{
+		getChannel((err,channel)=>{
 			if (err) return next(this.error(500))
-			Object.assign(output,data)
-			next()
+			channel.request('from/remote/user/read',{id:input.id},getCredential(),(err,data)=>{
+				if (err) return next(this.error(500))
+				Object.assign(output,data)
+				next()
+			})
 		})
 	},
-	readDirectory(cred,output,next){
-		client.request('from/remote/directory/list',{id:cred.id,cwd:cred.cwd},credential,(err,data)=>{
+	readDirectory(cred,input,output,next){
+		getChannel((err,channel)=>{
 			if (err) return next(this.error(500))
-			Object.assign(output,data)
-			next()
+			channel.request('from/remote/directory/list',{id:cred.id,cwd:input.cwd},getCredential(),(err,data)=>{
+				if (err) return next(this.error(500))
+				Object.assign(output,data)
+				next()
+			})
 		})
 	},
 	trigger(next){

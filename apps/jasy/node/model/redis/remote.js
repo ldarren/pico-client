@@ -1,8 +1,11 @@
+const
+DAY1=24*60*60
+
 let client
 
 module.exports= {
     setup(context, cb){
-        client=context.pusherCache
+        client=context.remoteCache
         cb()
 	},
 	publish(cb){

@@ -1,7 +1,6 @@
 const
 Floor=Math.floor,
 DAY1=60*60*24,
-PDAY1=DAY1*1000,
 DAY3=3*DAY1
 
 let client,days

@@ -22,18 +22,16 @@
 			["stream","add","res","cred"],
 			["stream","render","res",["poll"],"output"]
 		],
-		"from/remote/reset":[
-			["remote","reset","input"],
-			[]
-		],
 		"from/remote/user/getSession":[
+			["util","have","cred",[["app","sess"]]],
+			["util","have","input",[["id"]]],
+			["remote","verify","cred"],
             ["util","randomStr",["$sessKey",20]],
             ["user","createSession","input","$sessKey","session"],
             ["user","replyPrivate","session"],
             []
 		],
 		"to/remote/user/read":[
-			["remote","isConnected"],
 			["remote","readUser","input","user"],
 			["user","update","user"],
             ["user","replyPrivate","user"],
@@ -81,6 +79,7 @@
             []
         ],
 		"glueon/directory/list":[
+            ["util","have","input",[["cwd"]]],
             ["user","verify","cred","me"],
             ["directory","list","input",":output"],
             ["directory","replyList",":output"],

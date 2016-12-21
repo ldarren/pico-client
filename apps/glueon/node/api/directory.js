@@ -23,7 +23,7 @@ return {
 		next()
 	},
 	list(input,output,next){
-		redisDir.get(cred,(err,dir)=>{
+		redisDir.get(input,(err,dir)=>{
 			if (err) return next(this.error(500))
 			if (!dir) return next(null,'to/remote/directory/list')
 			Object.assign(output,dir)

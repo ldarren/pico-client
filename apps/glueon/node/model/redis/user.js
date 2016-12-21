@@ -25,8 +25,9 @@ module.exports={
 	getSession(cred,cb){
 		client.get(`sess:${cred.id}:${cred.sess}`,(err,res)=>{
 			if (err) return cb(err)
-			try{cb(null,JSON.parse(res))}
+			try{var sess=JSON.parse(res)}
 			catch(ex){return cb(ex)}
+			cb(null,sess)
 		})
 	},
 	setSession(user,sessKey,cb){
