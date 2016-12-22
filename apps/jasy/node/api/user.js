@@ -75,12 +75,11 @@ return {
 	leaveGroup(session,next){
 		next()
 	},
-	verify(cred,next){
+	verify(cred,$grp,next){
 		redisUser.getSession(cred,(err,grp)=>{
 			if (err) return next(this.error(500))
 			if (null===grp) return next(this.error(403))
-			cred.grp=grp
-			cred.cwd=path.join(grp,cred.cwd)
+			this.set($grp,grp)
 			next()
 		})
 	},

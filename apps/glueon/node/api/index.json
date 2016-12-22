@@ -32,14 +32,14 @@
             []
 		],
 		"to/remote/user/read":[
-			["remote","readUser","input","user"],
+			["remote","readUser","cred","input","user"],
 			["user","update","user"],
             ["user","replyPrivate","user"],
 			[]
 		],
 		"to/remote/directory/list":[
-			["remote","readDirectory","cred","dir"],
-			["directory","update","dir"],
+			["remote","readDirectory","cred","input","dir"],
+			["directory","update","cred","input","dir"],
             ["directory","replyList","dir"],
 			[]
 		],
@@ -79,9 +79,9 @@
             []
         ],
 		"glueon/directory/list":[
-            ["util","have","input",[["cwd"]]],
+            ["util","have","input",[["d"]]],
             ["user","verify","cred","me"],
-            ["directory","list","input",":output"],
+            ["directory","list","cred","input",":output"],
             ["directory","replyList",":output"],
 			[]
 		],

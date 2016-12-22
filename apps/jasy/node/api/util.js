@@ -28,6 +28,9 @@ return {
 		this.set($output,input[$key])
 		next()
 	},
+	redirect($api,next){
+		next(null,$api)
+	},
     sep(msg,next){console.log(msg); return next()},
     logParams(next){this.log(this.params); return next()},
     delay(period,next){ setTimeout(next,period) },  

@@ -8,17 +8,18 @@ module.exports={
 		client=context.dirCache
 		cb()
 	},
-	get(cred,dir,cb){
-		client.get(`d:${cred.id}:${dir.grp}`,(err,res)=>{
+	get(cred,input,cb){
+		client.get(`d:${cred.id}:${input.d}`,(err,res)=>{
 			if (err) return cb(err)
-			try{cb(null,JSON.parse(res))}
+			try{var dir=JSON.parse(res)}
 			catch(ex){return cb(ex)}
+			cb(null,dir)
 		})
 	},
-	set(cred,dir,cb){
-		client.setex(`u:${user.id}:${dir.grp}`,DAY1,JSON.stringify(dir),cb)
+	set(cred,input,dir,cb){
+		client.setex(`d:${cred.id}:${input.d}`,DAY1,JSON.stringify(dir),cb)
 	},
-	del(cred,dir,cb){
-		client.del(`u:${cred.id}:${dir.grp}`,cb)
+	del(cred,input,cb){
+		client.del(`d:${cred.id}:${input.d}`,cb)
 	}
 }

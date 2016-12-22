@@ -1,4 +1,5 @@
 const
+path=pico.import('path'),
 pStr=require('pico/str'),
 pObj=require('pico/obj'),
 sqlDir=require('sql/directory')
@@ -69,8 +70,8 @@ return {
 	getRole(cred,output,next){
 		next()
 	},
-	userJoin(cred,input,next){
-		sqlDir.findId(cred.grp,(err,rows)=>{
+	userJoin(cred,grp,input,next){
+		sqlDir.findId(grp,(err,rows)=>{
 			if (err) return next(this.error(500,err.message))
 			if (!rows.length) return next(this.error(400))
 			const dir=rows[0]
@@ -104,9 +105,9 @@ console.log('poll',err,usermaps,lastseen)
 			next()
 		})
 	},
-	last(cred,input,poll,output,next){
+	last(cred,input,grp,poll,output,next){
 		if (!poll.length) return next()
-		sqlDir.filter(poll.slice(),cred.cwd,(err,usermaps)=>{
+		sqlDir.filter(poll.slice(),path.join(grp,cred.cwd),(err,usermaps)=>{
 			if (err) return next(this.error(500,err.message))
 			if (!usermaps.length) return next()
 			sqlDir.last(pObj.pluck(usermaps,'id'),cred.id,input.t,(err,dirs)=>{
@@ -123,12 +124,17 @@ console.log('poll',err,usermaps,lastseen)
 		next()
 	},
 	read(input,output,next){
-		let 
-		cwd=input.cwd,
+		next()
+	},
+	list(grp,input,output,next){
+		const
+		cwd=path.join(grp,input.d),
 		d=[],f=[]
-		output.cwd=cwd
+
+		output.cwd=input.d
 		output.d=d
 		output.f=f
+
 		sqlDir.findId(cwd,(err,rows)=>{
 			if (err) return next(this.error(500,err.message))
 			if (!rows.length) return next()
@@ -142,8 +148,5 @@ console.log('poll',err,usermaps,lastseen)
 				})
 			})
 		})
-	},
-	list(input,output,next){
-		next()
 	}
 }

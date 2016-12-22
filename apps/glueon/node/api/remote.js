@@ -14,8 +14,10 @@ getChannel=function(cb){
 		cb(err,client)
 	})
 },
-getCredential=function(){
+getCredential=function(cred){
 	return {
+		id:cred.id,
+		cwd:cred.cwd,
 		app:appConfig.key,
 		sess:Buffer.from(codec(appConfig.secret,appConfig.key)).toString('base64')
 	}
@@ -41,10 +43,10 @@ return {
 		if (appConfig.key!==codec(appConfig.secret,Buffer.from(cred.token,'base64').toString())) return next(this.error(403))
 		next()
 	},
-	readUser(input,output,next){
+	readUser(cred,input,output,next){
 		getChannel((err,channel)=>{
 			if (err) return next(this.error(500))
-			channel.request('from/remote/user/read',{id:input.id},getCredential(),(err,data)=>{
+			channel.request('from/remote/user/read',{id:input.id},getCredential(cred),(err,data)=>{
 				if (err) return next(this.error(500))
 				Object.assign(output,data)
 				next()
@@ -54,7 +56,7 @@ return {
 	readDirectory(cred,input,output,next){
 		getChannel((err,channel)=>{
 			if (err) return next(this.error(500))
-			channel.request('from/remote/directory/list',{id:cred.id,cwd:input.cwd},getCredential(),(err,data)=>{
+			channel.request('from/remote/directory/list',input,getCredential(cred),(err,data)=>{
 				if (err) return next(this.error(500))
 				Object.assign(output,data)
 				next()

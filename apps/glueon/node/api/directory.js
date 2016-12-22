@@ -22,19 +22,19 @@ return {
 	remove(input,next){
 		next()
 	},
-	list(input,output,next){
-		redisDir.get(input,(err,dir)=>{
+	list(cred,input,output,next){
+		redisDir.get(cred,input,(err,dir)=>{
 			if (err) return next(this.error(500))
 			if (!dir) return next(null,'to/remote/directory/list')
-			Object.assign(output,dir)
+			output.push(...dir)
 			next()
 		})
 	},
 	read(cred,input,output,next){
 		next()
 	},
-	update(input,next){
-		redisDir.set(input,(err)=>{
+	update(cred,input,dir,next){
+		redisDir.set(cred,input,dir,(err)=>{
 			if (err) return next(this.error(500))
 			next()
 		})

@@ -16,11 +16,11 @@
         ],
 		"/jasy/stream":[
 			["web","SSEStart","req","res"],
-            ["user","verify","cred"],
+            ["user","verify","cred",["$grp"]],
 			["stream","prepare","cred","input","output"],
 			["user","poll","input","output"],
 			["directory","poll","cred","input",":poll","output"],
-			["directory","last","cred","input",":poll","output"],
+			["directory","last","cred","input","$grp",":poll","output"],
 			["entity","last","cred","input",":poll","output"],
 			["stream","add","res","cred"],
 			["stream","render","res",["poll"],"output"]
@@ -52,12 +52,13 @@
 			[]
 		],
 		"from/remote/directory/list":[
-            ["util","have","input",[["id","cwd"]]],
+            ["util","have","input",[["d"]]],
 			["entity","findId","cred",["$entId"]],
 			["entity","getAllMap","$entId","ent"],
 			["remote","verify","cred","ent"],
-			["directory","list","input","dir"],
-			["directory","replyList","dir"],
+			["directory","getEntityGrp","$entId",["$grp"]],
+			["directory","list","$grp","input","dir"],
+            ["directory","replyPrivate","dir"],
 			[]
 		],
 		"session.remote":[
@@ -101,38 +102,38 @@
 			["entity","branch","$entId",["session"]]
         ],
         "jasy/email/update":[
-            ["user","verify","cred"],
+            ["user","verify","cred",["$grp"]],
             ["email","update","cred","input","output"],
             ["user","replyPrivate","output"],
             []
         ],
         "jasy/user/signout":[
-            ["user","verify","cred"],
+            ["user","verify","cred",["$grp"]],
             ["user","removeSession","cred"],
             []
         ],
         "jasy/user/update":[
-            ["user","verify","cred"],
+            ["user","verify","cred",["$grp"]],
             ["user","update","cred","input","output"],
             ["user","replyPrivate","output"],
             []
         ],
         "jasy/user/list":[
-            ["user","verify","cred"],
+            ["user","verify","cred",["$grp"]],
             ["user","list","input",":output"],
             ["user","replyList",":output"],
             []
         ],
         "jasy/user/read":[
             ["util","have","input",[["id"]]],
-            ["user","verify","cred"],
+            ["user","verify","cred",["$grp"]],
             ["user","read","input","output"],
             ["user","reply","output"],
             []
         ],
         "jasy/entity/create":[
             ["util","have","input",[["name","type"]]],
-            ["user","verify","cred"],
+            ["user","verify","cred",["$grp"]],
             ["entity","uuid","cred","input",["$key"]],
             ["util","randomStr",["$secret",40]],
             ["entity","create","cred","input","$key","$secret","entity"],
@@ -141,22 +142,22 @@
             ["entity","replyPrivate","entity"],
             []
         ],
-		"jasy/directory/read":[
-            ["util","have","input",[["cwd"]]],
-            ["user","verify","cred"],
-			["directory","read","input","output"],
-            ["directory","replyPrivate","output"],
+		"jasy/directory/list":[
+            ["util","have","input",[["d"]]],
+            ["user","verify","cred",["$grp"]],
+			["directory","list","$grp","input","dir"],
+            ["directory","replyPrivate","dir"],
 			[]
 		],
 		"jasy/directory/user/create":[
-            ["user","verify","cred"],
+            ["user","verify","cred",["$grp"]],
 			["user","read","input","user"],
             ["directory","newUser","cred",["/"],"user"],
 			[]
 		],
 		"jasy/directory/group/create":[
             ["util","have","input",[["name"]]],
-            ["user","verify","cred"],
+            ["user","verify","cred",["$grp"]],
 			["util","read","input",["name","$key"]],
 			["util","read","cred",["cwd","$cwd"]],
             ["directory","newGroup","cred","$cwd","$key","dir"],
@@ -164,8 +165,8 @@
 			[]
 		],
 		"jasy/directory/group/join":[
-            ["user","verify","cred"],
-            ["directory","userJoin","cred","input"],
+            ["user","verify","cred",["$grp"]],
+            ["directory","userJoin","cred","$grp","input"],
 			[]
 		],
         "#help": [

@@ -8,6 +8,9 @@ return {
 	slots:{
 		signin:function(from,sender,model){
 			this.deps.directory.fetch({
+				data:{
+					d:this.deps.credExtra.at(0).get('cwd')
+				},
 				success:function(){
 					debugger
 				},
