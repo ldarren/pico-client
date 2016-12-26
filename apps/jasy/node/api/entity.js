@@ -72,17 +72,17 @@ return {
 			next()
 		})
 	},
-	getAllMap(entId,output,next){
+	getMapAll(entId,output,next){
 		sqlEntity.map_getAll({id:entId},(err,ent)=>{
-			if (err) return next(this.error(403))
+			if (err) return next(this.error(500,err.message))
 			Object.assign(output,ent)
 			next()
 		})
 	},
-	getName(entId,$appName,next){
-		sqlEntity.map_get({id:entId},'name',(err,ent)=>{
+	getMap(entId,$field,$output,next){
+		sqlEntity.map_get({id:entId},$field,(err,ent)=>{
 			if (err) return next(this.error(500,err.message))
-			this.set($appName,ent.name)
+			this.set($output,ent[$field])
 			next()
 		})
 	},

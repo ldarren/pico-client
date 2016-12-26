@@ -1,17 +1,34 @@
-var network=require('js/network')
+var
+network=require('js/network'),
+cd=function(self,d){
+	var deps=self.deps
+	deps.directory.fetch({
+		data:{
+			d:d
+		},
+		success:function(){
+			debugger
+			deps.credExtra.at(0).set({cwd:d})
+			deps.credential.at(0).set({cwd:d})
+		},
+		error:function(){
+			debugger
+		}
+	})
+}
 
 return {
 	deps:{
+		directory:'models',
 		credExtra:'models'
 	},
 	slots:{
-		signin:function(from,sender,model){
-			this.deps.credential.at(0).set({cwd:model.id.toString()})
+		userReady:function(from,sender,model){
+			cd(this,'')
 		},
 		cd:function(from,sender,dir){
-			var deps=this.deps
-			deps.credExtra.at(0).set({cwd:dir})
-			deps.credential.at(0).set({cwd:dir})
+			if (this.deps.directory.findWhere({grp:dir})) return
+			cd(this,dir)
 		}
 	},
 	credential:function(model){

@@ -126,6 +126,7 @@
 		[["auth/Session","SessionMixin"],"ctrl",[
 			["credential","ref","cred"],
 			["users","ref","users"],
+			["directory","ref","directory"],
 			["credExtra","models",{},[
 				{"app":"00s6ft8v0022ox0000fqi63b000014k2","cwd":""}
 			]]
@@ -165,25 +166,24 @@
 					{"type":"text","name":"desc","label":"Description","holder":"Entity Description","required":1},
 					{"type":"select","name":"type","label":"type","holder":"Select a Entity Type","options":[
 						["api","Backend Service"],
-						["epi","Backend Service Extension"],
 						["app","Frontend Application"],
+						["epi","Backend Service Extension"],
 						["epp","Frontend Application Extension"]
-					],"value":2}
+					],"value":2},
+					{"type":"text","name":"url","label":"URL","holder":"https://live.service.com/path","required":1}
 				]],
 				["extraForm","map",{
 					"api":[
-						{"type":"text","name":"webhook","label":"Webhook","holder":"Webhook address","required":1},
-						{"type":"text","name":"group","label":"Group Name","holder":"Group Name","required":0}
-					],
-					"epi":[
-						{"type":"text","name":"source","label":"Source URL","holder":"url","required":1}
+						{"type":"text","name":"webhook","label":"Webhook","holder":"service/web/hook","required":1},
+						{"type":"text","name":"home","label":"Home Directory","holder":"/home/path","required":0}
 					],
 					"app":[
-						{"type":"text","name":"source","label":"Source URL","holder":"url","required":1},
-						{"type":"text","name":"cwd","label":"Working Directory","holder":"directory","required":0}
+						{"type":"text","name":"home","label":"Home Directory","holder":"/home/path","required":0},
+						{"type":"text","name":"cwd","label":"Working Directory","holder":"working/dir","required":0}
+					],
+					"epi":[
 					],
 					"epp":[
-						{"type":"text","name":"source","label":"Source URL","holder":"url","required":1}
 					]
 				}]
 			]],

@@ -55,7 +55,7 @@ path=				pico.import('path'),
 Max=				Math.max,
 modBuf=				Buffer.alloc(2),
 value=function(val){
-	let ret=[]
+	const ret=[]
 	if (Number.isFinite(val)){
 		ret[1]=val
 	}else{
@@ -68,8 +68,8 @@ join=function(grp){
 	return Array.isArray(grp) ? path.join(...grp) : grp
 },
 up=function(grp){
-	grp=grp||SEP
-	let i=grp.lastIndexOf(SEP)
+	if (!grp || SEP === grp) return [SEP,'']
+	const i=grp.lastIndexOf(SEP)
 	return [grp.substr(0,i),grp.substr(i+1)]
 }
 
@@ -134,6 +134,7 @@ module.exports={
 		client.query(GET,[dir.id],cb)
 	},
 	findId(grp,cb){
+console.log(client.format(FIND_ID,[...up(join(grp))]))
 		client.query(FIND_ID,[...up(join(grp))],cb)
 	},
 	findNames(grp,cb){

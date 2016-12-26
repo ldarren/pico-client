@@ -127,21 +127,26 @@ console.log('poll',err,usermaps,lastseen)
 		next()
 	},
 	list(grp,input,output,next){
+console.log(grp,input)
 		const
 		cwd=path.join(grp,input.d),
 		d=[],f=[]
+console.log(cwd)
 
 		output.cwd=input.d
 		output.d=d
 		output.f=f
 
 		sqlDir.findId(cwd,(err,rows)=>{
+console.log('findId',err,rows)
 			if (err) return next(this.error(500,err.message))
 			if (!rows.length) return next()
 			sqlDir.usermap_gets(rows[0].id,'role',(err,rows)=>{
+console.log('usermap_gets',err,rows)
 				if (err) return next(this.error(500,err.message))
 				f.push(...pObj.pluck(rows,'userId'))
 				sqlDir.findNames(cwd,(err,rows)=>{
+console.log('findNames',err,rows)
 					if (err) return next(this.error(500,err.message))
 					d.push(...pObj.pluck(rows,'name'))
 					next()

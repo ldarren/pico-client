@@ -45,7 +45,7 @@
 		"from/remote/user/read":[
             ["util","have","input",[["id"]]],
 			["entity","findId","cred",["$entId"]],
-			["entity","getAllMap","$entId","ent"],
+			["entity","getMapAll","$entId","ent"],
 			["remote","verify","cred","ent"],
 			["user","read","input","user"],
 			["user","reply","user"],
@@ -54,9 +54,9 @@
 		"from/remote/directory/list":[
             ["util","have","input",[["d"]]],
 			["entity","findId","cred",["$entId"]],
-			["entity","getAllMap","$entId","ent"],
+			["entity","getMapAll","$entId","ent"],
 			["remote","verify","cred","ent"],
-			["directory","getEntityGrp","$entId",["$grp"]],
+			["util","read","ent",["home","$grp"]],
 			["directory","list","$grp","input","dir"],
             ["directory","replyPrivate","dir"],
 			[]
@@ -79,7 +79,7 @@
             ["email","verifyEmail","input",[null]],
             ["util","randomStr",["$verifyId",20]],
 			["entity","findId","cred",["$entId"]],
-			["entity","getName","$entId",["$appName"]],
+			["entity","getMap","$entId",["name","$appName"]],
             ["email","sendConfirmation","cred","input","$appName","$verifyId","output"],
             ["user","replyPrivate","output"],
             []
@@ -90,7 +90,7 @@
             ["email","confirmation","cred","input","user"],
             ["user","create","cred","user"],
 			["entity","findId","cred",["$entId"]],
-			["directory","getEntityGrp","$entId",["$grp"]],
+			["entity","getMap","$entId",["home","$grp"]],
 			["entity","branch","$entId",["session"]]
         ],
         "jasy/email/signin":[
@@ -98,7 +98,7 @@
             ["email","verifyEmail","input","user"],
             ["email","verifyPwd","input","user"],
 			["entity","findId","cred",["$entId"]],
-			["directory","getEntityGrp","$entId",["$grp"]],
+			["entity","getMap","$entId",["home","$grp"]],
 			["entity","branch","$entId",["session"]]
         ],
         "jasy/email/update":[
