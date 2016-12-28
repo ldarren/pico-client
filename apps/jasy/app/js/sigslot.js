@@ -36,6 +36,7 @@ recv = function(evt, from, params){
     forward = true 
                 
     if (func) forward = func.apply(this, [from, params.sender].concat(params.args))
+	if (from===this) return // prevent trigger twice from extra 'from'
     if (forward) (params.queue?send:dispatch).call(params, [from,this], this)
 },
 dispatch = function(a, from){
@@ -46,7 +47,7 @@ dispatch = function(a, from){
 
     var
     host = from.host,
-    modules = from.modules.concat(host ? [host,from] : [from])
+    modules = from.modules.concat(host ? [host,from] : [from]) //extra 'from' for mixin
 
     if (isArr){
         for(var i=0,m; m=modules[i]; i++) if (-1 === a.indexOf(m)) trigger.call(m, this.evt, from, this);
