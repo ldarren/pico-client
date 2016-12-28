@@ -34,7 +34,7 @@ return {
 
 		this.cwd=deps.cred.at(0).get('cwd')
 
-		let
+		var
 		self=this,
 		dir=deps.directory.get(this.cwd)
 
@@ -44,7 +44,7 @@ return {
 			deps.directory.read({
 				cwd:this.cwd
 			},function(err,model,res){
-				if (err) return __.dialogs.alert('failed to list directory "'+this.cwd+'"')
+				if (err) return __.dialogs.alert('failed to list directory "'+self.cwd+'"')
 				listDir(model,deps.icons)
 			})
 		}
