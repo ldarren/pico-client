@@ -134,10 +134,11 @@
         "jasy/entity/create":[
             ["util","have","input",[["name","type"]]],
             ["user","verify","cred",["$grp"]],
+            ["directory","role","cred","$grp",[["root","admin"]]],
             ["entity","uuid","cred","input",["$key"]],
             ["util","randomStr",["$secret",40]],
             ["entity","create","cred","input","$key","$secret","entity"],
-            ["directory","newGroup","cred",["/"],"$key","dir"],
+            ["directory","newGroup","cred","$grp","$key","dir"],
             ["directory","linkEntity","cred","dir","entity"],
             ["entity","replyPrivate","entity"],
             []
@@ -149,22 +150,16 @@
             ["directory","replyPrivate","dir"],
 			[]
 		],
-		"jasy/directory/user/create":[
-            ["user","verify","cred",["$grp"]],
-			["user","read","input","user"],
-            ["directory","newUser","cred",["/"],"user"],
-			[]
-		],
-		"jasy/directory/group/create":[
+		"jasy/directory/create":[
             ["util","have","input",[["name"]]],
             ["user","verify","cred",["$grp"]],
-			["util","read","input",["name","$key"]],
-			["util","read","cred",["cwd","$cwd"]],
-            ["directory","newGroup","cred","$cwd","$key","dir"],
+            ["directory","role","cred","$grp",[["root","admin"]]],
+			["util","read","input",["name","$name"]],
+            ["directory","newGroup","cred","$grp","$name","dir"],
             ["directory","replyPrivate","dir"],
 			[]
 		],
-		"jasy/directory/group/join":[
+		"jasy/directory/join":[
             ["user","verify","cred",["$grp"]],
             ["directory","userJoin","cred","$grp","input"],
 			[]

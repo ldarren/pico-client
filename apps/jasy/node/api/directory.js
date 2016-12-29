@@ -42,15 +42,9 @@ return {
 			})
 		})
 	},
-	newUser(cred,cwd,user,next){
-		sqlDir.set(cwd,user.id,MOD.DIR|MOD.G_RX,cred.id,(err)=>{
-			if (err) return next(this.error(500))
-			next()
-		})
-	},
-	newGroup(cred,cwd,name,output,next){
+	newGroup(cred,grp,name,output,next){
 		const userId=cred.id
-		sqlDir.set(cwd,name,MOD.DIR|MOD.G_RX,userId,(err,meta)=>{
+		sqlDir.set(path.join(grp,cred.cwd),name,MOD.DIR|MOD.G_RX,userId,(err,meta)=>{
 			if(err) return next(this.error(500))
 			const id=meta.insertId
 			output.id=id
@@ -117,14 +111,21 @@ console.log('poll',err,usermaps,lastseen)
 			})
 		})
 	},
-	getDependencies(cred,input,next){
+	getDependencies(grp,output,next){
 		next()
 	},
-	getMembers(cred,input,next){
-		next()
-	},
-	read(input,output,next){
-		next()
+	role(cred,grp,roles,next){
+		if (!roles || !roles.length) return next(this.error(401))
+		sqlDir.findId(path.join(grp,cred.cwd),(err,rows)=>{
+			if (err) return next(this.error(500,err.message))
+			if (!rows.length) return next()
+			const dir=rows[0]
+			sqlDir.usermap_get(dir,cred.id,'role',(err,dir)=>{
+				if (err) return next(this.error(500,err.message))
+				if (~roles.indexOf(dir.role)) return next()
+				next(this.error(401))
+			})
+		})
 	},
 	list(grp,input,output,next){
 		const

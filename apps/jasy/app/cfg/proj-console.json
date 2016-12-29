@@ -22,7 +22,7 @@
 		}],
 		["directory","models",{
 			"list":"jasy/directory/list",
-			"create":"jasy/directory/group/create",
+			"create":"jasy/directory/create",
 			"read":"jasy/directory/read",
 			"update":"jasy/directory/update",
 			"delete":"jasy/directory/remove"

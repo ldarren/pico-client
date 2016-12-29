@@ -134,7 +134,6 @@ module.exports={
 		client.query(GET,[dir.id],cb)
 	},
 	findId(grp,cb){
-console.log(client.format(FIND_ID,[...up(join(grp))]))
 		client.query(FIND_ID,[...up(join(grp))],cb)
 	},
 	findNames(grp,cb){
@@ -192,7 +191,12 @@ console.log(client.format(FIND_ID,[...up(join(grp))]))
 		const [v1,v2]=value(val)
 		client.query(USERMAP_SET,[[[id,userId,hash.val(key),v1,v2,by]]],cb)
 	},
-	usermap_get(){
+	usermap_get(dir,userId,key,cb){
+		if (!dir||!dir.id) return cb(ERR_INVALID_INPUT)
+		client.query(USERMAP_GET,[dir.id,userId,hash.val(key)],(err,rows)=>{
+			if (err) return cb(err)
+			cb(null,client.mapDecode(rows,dir,hash,ENUM))
+		})
 	},
 	usermap_gets(id,key,cb){
 		client.query(USERMAP_GETS,[id,hash.val(key)],cb)
