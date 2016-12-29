@@ -42,15 +42,14 @@ return {
 			})
 		})
 	},
-	newGroup(cred,grp,name,output,next){
+	newGroup(cred,wd,name,dir,next){
 		const userId=cred.id
-		sqlDir.set(path.join(grp,cred.cwd),name,MOD.DIR|MOD.G_RX,userId,(err,meta)=>{
+		sqlDir.set(wd,name,MOD.DIR|MOD.G_RX,userId,(err,meta)=>{
 			if(err) return next(this.error(500))
 			const id=meta.insertId
-			output.id=id
+			dir.id=id
 			sqlDir.usermap_set(id,userId,'role','root',userId,(err)=>{
 				if(err) return next(this.error(500))
-				this.addJob([output],sqlDir.get,sqlDir)
 				next()
 			})
 		})
@@ -61,25 +60,17 @@ return {
 			next()
 		})
 	},
-	getRole(cred,output,next){
-		next()
-	},
-	userJoin(cred,grp,input,next){
-		sqlDir.findId(grp,(err,rows)=>{
-			if (err) return next(this.error(500,err.message))
-			if (!rows.length) return next(this.error(400))
-			const dir=rows[0]
-			// TODO: root and sudo cred should skip this check
-			let key,val
-			if (MOD.FREE & dir.s.readUInt16LE()){
-				key='role',val='member'
-			}else{
-				key='applicant',val=input.msg||''
-			}
-			sqlDir.usermap_set(dir.id,input.id,key,val,cred.id,(err)=>{
-				if(err) return next(this.error(500))
-				next()
-			})
+	userJoin(cred,dir,input,next){
+		// TODO: root and sudo cred should skip this check
+		let key,val
+		if (MOD.FREE & dir.s.readUInt16LE()){
+			key='role',val='member'
+		}else{
+			key='applicant',val=input.msg||''
+		}
+		sqlDir.usermap_set(dir.id,input.id,key,val,cred.id,(err)=>{
+			if(err) return next(this.error(500))
+			next()
 		})
 	},
 	touch(id,next){
@@ -114,37 +105,43 @@ console.log('poll',err,usermaps,lastseen)
 	getDependencies(grp,output,next){
 		next()
 	},
-	role(cred,grp,roles,next){
-		if (!roles || !roles.length) return next(this.error(401))
-		sqlDir.findId(path.join(grp,cred.cwd),(err,rows)=>{
+	join(grp,name,$wd,next){
+		this.set($wd,path.join(grp,name))
+		next()
+	},
+	find(wd,dir,next){
+		sqlDir.findId(wd,(err,rows)=>{
 			if (err) return next(this.error(500,err.message))
-			if (!rows.length) return next()
-			const dir=rows[0]
-			sqlDir.usermap_get(dir,cred.id,'role',(err,dir)=>{
-				if (err) return next(this.error(500,err.message))
-				if (~roles.indexOf(dir.role)) return next()
-				next(this.error(401))
-			})
+			if (!rows.length) return next(this.error(400))
+			Object.assign(dir,rows[0])
+			next()
 		})
 	},
-	list(grp,input,output,next){
-		const
-		cwd=path.join(grp,input.d),
-		d=[],f=[]
-
-		sqlDir.findId(cwd,(err,rows)=>{
+	role(cred,dir,roles,next){
+		if (!roles || !roles.length) return next(this.error(401))
+		sqlDir.usermap_get(dir,cred.id,'role',(err,dir)=>{
 			if (err) return next(this.error(500,err.message))
-			if (!rows.length) return next()
-			Object.assign(output,rows[0])
-			sqlDir.usermap_gets(output.id,'role',(err,rows)=>{
+			if (~roles.indexOf(dir.role)) return next()
+			next(this.error(401))
+		})
+	},
+	read(dir,next){
+		sqlDir.get(dir,(err,dir)=>{
+			if (err) return next(this.error(500,err.message))
+			next()
+		})
+	},
+	list(wd,dir,next){
+		const d=[],f=[]
+
+		sqlDir.usermap_gets(dir.id,'role',(err,rows)=>{
+			if (err) return next(this.error(500,err.message))
+			f.push(...pObj.pluck(rows,'userId'))
+			sqlDir.findNames(wd,(err,rows)=>{
 				if (err) return next(this.error(500,err.message))
-				f.push(...pObj.pluck(rows,'userId'))
-				sqlDir.findNames(cwd,(err,rows)=>{
-					if (err) return next(this.error(500,err.message))
-					d.push(...pObj.pluck(rows,'name'))
-					Object.assign(output,{d,f})
-					next()
-				})
+				d.push(...pObj.pluck(rows,'name'))
+				Object.assign(dir,{d,f})
+				next()
 			})
 		})
 	}

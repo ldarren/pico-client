@@ -16,7 +16,7 @@
         ],
 		"/jasy/stream":[
 			["web","SSEStart","req","res"],
-            ["user","verify","cred",["$grp"]],
+            ["user","verify","cred",["$grp","$cwd"]],
 			["stream","prepare","cred","input","output"],
 			["user","poll","input","output"],
 			["directory","poll","cred","input",":poll","output"],
@@ -102,66 +102,75 @@
 			["entity","branch","$entId",["session"]]
         ],
         "jasy/email/update":[
-            ["user","verify","cred",["$grp"]],
+            ["user","verify","cred",["$grp","$cwd"]],
             ["email","update","cred","input","output"],
             ["user","replyPrivate","output"],
             []
         ],
         "jasy/user/signout":[
-            ["user","verify","cred",["$grp"]],
+            ["user","verify","cred",["$grp","$cwd"]],
             ["user","removeSession","cred"],
             []
         ],
         "jasy/user/update":[
-            ["user","verify","cred",["$grp"]],
+            ["user","verify","cred",["$grp","$cwd"]],
             ["user","update","cred","input","output"],
             ["user","replyPrivate","output"],
             []
         ],
         "jasy/user/list":[
-            ["user","verify","cred",["$grp"]],
+            ["user","verify","cred",["$grp","$cwd"]],
             ["user","list","input",":output"],
             ["user","replyList",":output"],
             []
         ],
         "jasy/user/read":[
             ["util","have","input",[["id"]]],
-            ["user","verify","cred",["$grp"]],
+            ["user","verify","cred",["$grp","$cwd"]],
             ["user","read","input","output"],
             ["user","reply","output"],
             []
         ],
         "jasy/entity/create":[
             ["util","have","input",[["name","type"]]],
-            ["user","verify","cred",["$grp"]],
-            ["directory","role","cred","$grp",[["root","admin"]]],
+            ["user","verify","cred",["$grp","$cwd"]],
+			["directory","find","$cwd","dir"],
+            ["directory","role","cred","dir",[["root","admin"]]],
             ["entity","uuid","cred","input",["$key"]],
             ["util","randomStr",["$secret",40]],
             ["entity","create","cred","input","$key","$secret","entity"],
-            ["directory","newGroup","cred","$grp","$key","dir"],
+            ["directory","newGroup","cred","$cwd","$key","dir"],
             ["directory","linkEntity","cred","dir","entity"],
             ["entity","replyPrivate","entity"],
             []
         ],
 		"jasy/directory/list":[
             ["util","have","input",[["d"]]],
-            ["user","verify","cred",["$grp"]],
-			["directory","list","$grp","input","dir"],
+            ["user","verify","cred",["$grp","$cwd"]],
+			["util","read","input",["d","$name"]],
+			["directory","join","$cwd","$name",["$wd"]],
+			["directory","find","$wd","dir"],
+			["directory","list","$wd","dir"],
             ["directory","replyPrivate","dir"],
 			[]
 		],
 		"jasy/directory/create":[
             ["util","have","input",[["name"]]],
-            ["user","verify","cred",["$grp"]],
-            ["directory","role","cred","$grp",[["root","admin"]]],
+            ["user","verify","cred",["$grp","$cwd"]],
+			["directory","find","$cwd","dir"],
+            ["directory","role","cred","dir",[["root","admin"]]],
 			["util","read","input",["name","$name"]],
-            ["directory","newGroup","cred","$grp","$name","dir"],
-            ["directory","replyPrivate","dir"],
+			["directory","join","$cwd","$name",["$wd"]],
+            ["directory","newGroup","cred","$wd","$name","newdir"],
+			["directory","read","newdir"],
+			["directory","list","$wd","newdir"],
+            ["directory","replyPrivate","newdir"],
 			[]
 		],
 		"jasy/directory/join":[
-            ["user","verify","cred",["$grp"]],
-            ["directory","userJoin","cred","$grp","input"],
+            ["user","verify","cred",["$grp","$cwd"]],
+			["directory","find","$cwd","dir"],
+            ["directory","userJoin","cred","dir","input"],
 			[]
 		],
         "#help": [
