@@ -40,7 +40,7 @@ return {
 		cb()
 	},
 	verify(cred,next){
-		if (appConfig.key!==codec(appConfig.secret,Buffer.from(cred.token,'base64').toString())) return next(this.error(403))
+		if (appConfig.key!==codec(appConfig.secret,Buffer.from(cred.sess,'base64').toString())) return next(this.error(403))
 		next()
 	},
 	readUser(cred,input,output,next){

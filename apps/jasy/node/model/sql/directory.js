@@ -70,7 +70,7 @@ join=function(grp){
 up=function(grp){
 	if (!grp || SEP === grp) return [SEP,'']
 	const i=grp.lastIndexOf(SEP)
-	return [grp.substr(0,i),grp.substr(i+1)]
+	return [grp.substr(0,i+1),grp.substr(i+1)]
 }
 
 let client,ROLE

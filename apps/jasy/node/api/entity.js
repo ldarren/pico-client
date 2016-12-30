@@ -1,5 +1,6 @@
 const
 ABS=Math.abs,
+path=pico.import('path'),
 pStr=require('pico/str'),
 pObj=require('pico/obj'),
 sqlDir=require('sql/directory'),
@@ -40,8 +41,8 @@ return {
 		next()
 	},
 	// TODO: ses email verification
-	create(cred,input,key,secret,output,next){
-		sqlEntity.set(Object.assign({},input,{key:key,secret:secret}), cred.id, (err, entity)=>{
+	create(cred,input,cwd,key,secret,output,next){
+		sqlEntity.set(Object.assign({},input,{key:key,secret:secret,home:path.join(cwd,input.home)}), cred.id, (err, entity)=>{
 			if (err) return next(this.error(500,err.message))
 			Object.assign(output,{id:entity.id})
 			this.addJob([output], sqlEntity.get, sqlEntity)
@@ -54,7 +55,7 @@ return {
 	list(input,next){
 		next()
 	},
-	read(input,output,next){
+	read(entId,output,next){
 		sqlEntity.get({id:entId}, (err, ent)=>{
 			if (err) return next(this.error(500,err.message))
 			Object.assign(output,ent)
@@ -70,6 +71,25 @@ return {
 			if (!rows.length) return next(this.error(401))
 			this.set($entId,rows[0].id)
 			next()
+		})
+	},
+	findAPIId(cred,$entId,next){
+		sqlEntity.findId(cred.app,(err,rows)=>{
+			if (err) return next(this.error(500,err.message))
+			if (!rows.length) return next(this.error(401))
+			sqlEntity.map_get(rows[0],'api',(err,ent)=>{
+				if (err) return next(this.error(500,err.message))
+				if (!ent.api){
+					this.set($entId,ent.id)
+					return next()
+				}
+				sqlEntity.findId(ent.api,(err,rows)=>{
+					if (err) return next(this.error(500,err.message))
+					if (!rows.length) return next(this.error(401))
+					this.set($entId,rows[0].id)
+					next()
+				})
+			})
 		})
 	},
 	getMapAll(entId,output,next){

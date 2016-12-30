@@ -1,3 +1,4 @@
+//TODO: should be a popup and separate project
 var
 pStr=require('pico/str'),
 signup=function(from,sender,curr,total,data){

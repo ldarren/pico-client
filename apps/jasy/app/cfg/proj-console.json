@@ -170,20 +170,23 @@
 						["epi","Backend Service Extension"],
 						["epp","Frontend Application Extension"]
 					],"value":2},
-					{"type":"text","name":"url","label":"URL","holder":"https://live.service.com/path","required":1}
+					{"type":"text","name":"src","label":"Source URL","holder":"https://content.com/cdn","required":1}
 				]],
 				["extraForm","map",{
 					"api":[
+						{"type":"text","name":"url","label":"URL","holder":"https://live.service.com/path","required":1},
 						{"type":"text","name":"webhook","label":"Webhook","holder":"service/web/hook","required":1},
-						{"type":"text","name":"home","label":"Home Directory","holder":"/home/path","required":0}
+						{"type":"text","name":"home","label":"Home Directory","holder":"home/path","required":0}
 					],
 					"app":[
-						{"type":"text","name":"home","label":"Home Directory","holder":"/home/path","required":0},
+						{"type":"text","name":"api","label":"Service","holder":"service key","required":1},
 						{"type":"text","name":"cwd","label":"Working Directory","holder":"working/dir","required":0}
 					],
 					"epi":[
+						{"type":"text","name":"api","label":"Service","holder":"service key","required":1}
 					],
 					"epp":[
+						{"type":"text","name":"app","label":"App","holder":"app key","required":1}
 					]
 				}]
 			]],

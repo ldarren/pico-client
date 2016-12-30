@@ -46,7 +46,7 @@ return {
 			data={
 				name:result.name,
 				type:result.type,
-				url:result.url,
+				src:result.src,
 				$public:$public,
 				$private:$private
 			}
@@ -54,18 +54,26 @@ return {
 			switch(result.type){
 			case 'api':
 				Object.assign(data,{
+					url:result.url,
 					webhook:result.webhook,
 					home:result.home
 				})
 				break
 			case 'app':
 				Object.assign(data,{
-					home:result.home,
-					cwd:result.cwd
+					api:result.api,
+					cwd:result.cwd,
 				})
 				break
 			case 'epi':
+				Object.assign(data,{
+					api:result.api
+				})
+				break
 			case 'epp':
+				Object.assign(data,{
+					app:result.app
+				})
 				break
 			}
 
