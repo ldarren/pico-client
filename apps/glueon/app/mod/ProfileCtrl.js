@@ -10,11 +10,12 @@ update=function(){
 	if (me){
 		var user=deps.users.get(me.id)
 		name=user.get('name')
-		deps.owner.set(user)
 		up.push({model:'owner',field:me.id,value:'name',label:'Name'})
 		up.push({type:'button',name:'signout',label:'Sign out'})
+		deps.owner.set(user)
 	}else{
 		up.push({type:'button',name:'signin',label:'Sign in'})
+		deps.owner.reset()
 	}
 	if(deps.title)this.signals.header(
 		deps.paneId,
