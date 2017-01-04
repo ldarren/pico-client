@@ -2,7 +2,13 @@ const
 path=pico.import('path'),
 pStr=require('pico/str'),
 pObj=require('pico/obj'),
-sqlDir=require('sql/directory')
+sqlDir=require('sql/directory'),
+stripGrp=function(grp,len){
+	return grp.substr(len)
+},
+workingGrp=function(grp,name){
+	return path.join(grp,name)
+}
 
 let MOD
 
@@ -18,18 +24,36 @@ return {
 		})
 */
 	},
-    reply(output,next){
+    reply($grp,output,next){
+		output.grp=stripGrp(output.grp,$grp.length)
+		output.wd=workingGrp(output.grp,output.name)
         this.setOutput(output,sqlDir.clean,sqlDir)
         next()
     },
-    replyPrivate(output,next){
+    replyPrivate($grp,output,next){
+		output.grp=stripGrp(output.grp,$grp.length)
+		output.wd=workingGrp(output.grp,output.name)
         this.setOutput(output,sqlDir.cleanSecret,sqlDir)
         next()
     },
-    replyList(list,next){
+    replyList($grp,list,next){
+		for(let i=0,l; l=list[i]; i++){
+			l.grp=stripGrp(l.grp,$grp.length)
+			l.wd=workingGrp(l.grp,l.name)
+		}
         this.setOutput(list,sqlDir.cleanList,sqlDir)
         next()
     },
+	replyStream($grp,output,next){
+		const list=output.directory
+		if (!list) return next()
+		for(let i=0,l; l=list[i]; i++){
+			l.grp=stripGrp(l.grp,$grp.length)
+			l.wd=workingGrp(l.grp,l.name)
+		}
+		sqlDir.cleanList(list)
+        next()
+	},
 	getEntityGrp(entId,$grp,next){
 		sqlDir.entityMap_findId(entId,'entity',(err,rows)=>{
 			if (err) return next(this.error(500,err.message))
@@ -92,12 +116,12 @@ console.log('poll',err,usermaps,lastseen)
 	},
 	last(cred,input,grp,poll,output,next){
 		if (!poll.length) return next()
-		sqlDir.filter(poll.slice(),path.join(grp,cred.cwd),(err,usermaps)=>{
+		sqlDir.filter(poll.slice(),grp,(err,usermaps)=>{
 			if (err) return next(this.error(500,err.message))
 			if (!usermaps.length) return next()
 			sqlDir.last(pObj.pluck(usermaps,'id'),cred.id,input.t,(err,dirs)=>{
 				if (err) return next(this.error(500,err.message))
-				output['directory']=sqlDir.cleanList(dirs)
+				output['directory']=dirs
 				next()
 			})
 		})
@@ -105,16 +129,26 @@ console.log('poll',err,usermaps,lastseen)
 	getDependencies(grp,output,next){
 		next()
 	},
-	join(grp,name,$wd,next){
-		this.set($wd,path.join(grp,name))
+	// ...list,$wd,next
+	join(){
+		const
+		l=arguments.length,
+		next=arguments[l-1]
+
+		if (l<3) return next(this.error(400))
+
+		this.set(arguments[l-2],path.join(...Array.prototype.slice.call(arguments,0,l-2)))
 		next()
 	},
-	find(wd,dir,next){
+	find(wd,output,next){
 		sqlDir.findId(wd,(err,rows)=>{
 			if (err) return next(this.error(500,err.message))
 			if (!rows.length) return next(this.error(400))
-			Object.assign(dir,rows[0])
-			next()
+			sqlDir.get(rows[0],(err,dir)=>{
+				if (err) return next(this.error(500,err.message))
+				Object.assign(output,dir)
+				next()
+			})
 		})
 	},
 	role(cred,dir,roles,next){
@@ -132,17 +166,20 @@ console.log('poll',err,usermaps,lastseen)
 		})
 	},
 	list(wd,dir,next){
-		const d=[],f=[]
+		//const d=[],f=[]
 
 		sqlDir.usermap_gets(dir.id,'role',(err,rows)=>{
 			if (err) return next(this.error(500,err.message))
-			f.push(...pObj.pluck(rows,'userId'))
+			dir.users=rows
+			next()
+			/*
 			sqlDir.findNames(wd,(err,rows)=>{
 				if (err) return next(this.error(500,err.message))
 				d.push(...pObj.pluck(rows,'name'))
 				Object.assign(dir,{d,f})
 				next()
 			})
+			*/
 		})
 	}
 }

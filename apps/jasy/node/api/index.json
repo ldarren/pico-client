@@ -21,6 +21,7 @@
 			["user","poll","input","output"],
 			["directory","poll","cred","input",":poll","output"],
 			["directory","last","cred","input","$grp",":poll","output"],
+			["directory","replyStream","$grp","output"],
 			["entity","last","cred","input",":poll","output"],
 			["stream","add","res","cred"],
 			["stream","render","res",["poll"],"output"]
@@ -61,7 +62,7 @@
 			["directory","join","$grp","$name",["$wd"]],
 			["directory","find","$wd","dir"],
 			["directory","list","$wd","dir"],
-            ["directory","replyPrivate","dir"],
+            ["directory","replyPrivate","$grp","dir"],
 			[]
 		],
 		"session.remote":[
@@ -147,14 +148,15 @@
             ["entity","replyPrivate","entity"],
             []
         ],
-		"jasy/directory/list":[
-            ["util","have","input",[["d"]]],
+		"jasy/group/list":[
+            ["util","have","input",[["grp","name"]]],
             ["user","verify","cred",["$grp","$cwd"]],
-			["util","read","input",["d","$name"]],
-			["directory","join","$cwd","$name",["$wd"]],
+			["util","read","input",["grp","$ngrp"]],
+			["util","read","input",["name","$nname"]],
+			["directory","join","$grp","$ngrp","$nname",["$wd"]],
 			["directory","find","$wd","dir"],
 			["directory","list","$wd","dir"],
-            ["directory","replyPrivate","dir"],
+            ["directory","replyPrivate","$grp","dir"],
 			[]
 		],
 		"jasy/directory/create":[
@@ -167,7 +169,7 @@
 			["directory","read","newdir"],
 			["directory","join","$cwd","$name","$wd"],
 			["directory","list","$wd","newdir"],
-            ["directory","replyPrivate","newdir"],
+            ["directory","replyPrivate","$grp","newdir"],
 			[]
 		],
 		"jasy/directory/join":[

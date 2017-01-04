@@ -199,7 +199,10 @@ module.exports={
 		})
 	},
 	usermap_gets(id,key,cb){
-		client.query(USERMAP_GETS,[id,hash.val(key)],cb)
+		client.query(USERMAP_GETS,[id,hash.val(key)],(err,rows)=>{
+			if (err) return cb(err)
+			cb(null,client.listDecode(rows,key,hash,ENUM))
+		})
 	},
 	usermap_findId(userId,key,cb){
 		client.query(USERMAP_FIND_ID,[userId,hash.val(key)],cb)

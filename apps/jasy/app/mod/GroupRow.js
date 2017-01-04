@@ -1,10 +1,13 @@
 var Router=require('js/Router')
 
 return {
+	signals:['cd'],
 	events:{
 		click:function(e){
 			this.select()
-			Router.go('dir/'+this.deps.data.id)
+			var data=this.deps.data
+			if (data.id) return Router.go('dir/'+data.id)
+			this.signals.cd(data.get('grp'),data.get('name')).send(this.host)
 		}
 	}
 }

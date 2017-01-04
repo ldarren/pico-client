@@ -21,11 +21,13 @@
 			"delete":"jasy/entity/remove"
 		}],
 		["directory","models",{
-			"list":"jasy/directory/list",
 			"create":"jasy/directory/create",
 			"read":"jasy/directory/read",
 			"update":"jasy/directory/update",
 			"delete":"jasy/directory/remove"
+		}],
+		["groups","models",{
+			"list":"jasy/group/list"
 		}],
 		["layers","list",["#layer0","#layer1"]],
         ["js/Pane","view",[
@@ -126,9 +128,10 @@
 		[["auth/Session","SessionMixin"],"ctrl",[
 			["credential","ref","cred"],
 			["users","ref","users"],
+			["groups","ref","groups"],
 			["directory","ref","directory"],
 			["credExtra","models",{},[
-				{"app":"00s6ft8v0022ox0000fqi63b000014k2","cwd":""}
+				{"app":"00s6ft8v0022ox0000fqi63b000014k2","cwd":"."}
 			]]
 		]]
     ],{
@@ -231,12 +234,14 @@
         "dir":[
 			["options","map",{"els":["#pane0 #page","#pane1 #page"]}],
 			["directory","ref","directory"],
+			["folder","models",{}],
 			["cred","ref","cred"],
 			["DirectoryCtrl","ctrl",[
 				["paneId","ref","paneId"],
 				["title","text","Directory"],
 				["btnRight","map",{"icon":"icon_plus"}],
 				["directory","ref","directory"],
+				["folder","ref","folder"],
 				["cred","ref","cred"],
 				["newGroupForm","list",[
 					{"type":"text","name":"name","label":"Name","holder":"Group Name","required":1},
@@ -246,7 +251,7 @@
 			["scrollable/ListView","view",[
 				["options","map",{"className":"scrollable"}],
 				["css","file","scrollable/Scrollable.css"],
-				["list","ref","directory"],
+				["list","ref","folder"],
 				["selected","param",0],
 				["Cell","view",[
 					["tpl","file","GroupRow.asp"],

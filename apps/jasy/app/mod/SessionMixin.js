@@ -1,15 +1,17 @@
 var
 network=require('js/network'),
-cd=function(self,d){
+cd=function(self,grp,name){
+	//TODO: save bandwidth, by comparing directory and groups date, not same fetch then refresh
 	var deps=self.deps
-	deps.directory.fetch({
+	deps.groups.fetch({
 		data:{
-			d:d
+			grp:grp,
+			name:name
 		},
-		success:function(){
-			debugger
-			deps.credExtra.at(0).set({cwd:d})
-			deps.credential.at(0).set({cwd:d})
+		success:function(coll,res){
+			var wd=res.wd
+			deps.credExtra.at(0).set('cwd',wd)
+			deps.credential.at(0).set('cwd',wd)
 		},
 		error:function(){
 			debugger
@@ -19,16 +21,17 @@ cd=function(self,d){
 
 return {
 	deps:{
+		groups:'models',
 		directory:'models',
 		credExtra:'models'
 	},
 	slots:{
 		userReady:function(from,sender,model){
-			cd(this,'')
+			cd(this,'','')
 		},
-		cd:function(from,sender,dir){
+		cd:function(from,sender,grp,name){
 			if (this.deps.directory.findWhere({grp:dir})) return
-			cd(this,dir)
+			cd(this,grp,name)
 		}
 	},
 	credential:function(model){

@@ -14,7 +14,7 @@ signup=function(from,sender,curr,total,data){
 		success:function(model,res){
 			console.log('signup succeed',res)
 			self.deps.cred.reset(null,{silent:true})
-			self.deps.cred.add(model)
+			self.deps.cred.add(res)
 		},
 		error:function(res){
 			console.log('signup failed',res)
@@ -31,7 +31,7 @@ confirmEmail=function(self){
 				return location.reload()
 			}
 			self.deps.cred.reset(null,{silent:true})
-			self.deps.cred.add(model)
+			self.deps.cred.add(res)
 			__.dialogs.alert('Thanks for signing up, your email has been confirmed','Email Confirmation')
 		})
 		return true
