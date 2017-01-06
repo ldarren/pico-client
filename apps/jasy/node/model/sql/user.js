@@ -49,7 +49,9 @@ module.exports={
 		return model
 	},
 	list(set,cb){
+console.log(client.format(GETS,[set]))
 		client.query(GETS,[set],(err,users)=>{
+console.log(err,users)
 			if (err) return cb(err)
 			this.map_gets(client.decodes(users,hash,ENUM),(err,ret)=>{
 				if (err) return cb(err)
@@ -91,7 +93,8 @@ module.exports={
 	},
 
 	map_gets(users,cb){
-		if (!users || !Array.isArray(users)) return cb(ERR_INVALID_INPUT)
+		if (!users || !Array.isArray(users) || !users.length) return cb(ERR_INVALID_INPUT)
+console.log(client.format(MAP_GETS,[picoObj.pluck(users,'id')]))
 		client.query(MAP_GETS,[picoObj.pluck(users,'id')],(err,rows)=>{
 			if (err) return cb(err)
 			cb(null,client.mapDecodes(picoObj.group(rows,'id'),users,hash,ENUM))

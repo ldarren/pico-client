@@ -170,7 +170,7 @@ console.log('poll',err,usermaps,lastseen)
 
 		sqlDir.usermap_gets(dir.id,'role',(err,rows)=>{
 			if (err) return next(this.error(500,err.message))
-			dir.users=rows
+			dir.users=pObj.pluck(rows,'userId')
 			next()
 			/*
 			sqlDir.findNames(wd,(err,rows)=>{

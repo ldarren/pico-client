@@ -6,7 +6,7 @@ return {
 		click:function(e){
 			this.select()
 			var data=this.deps.data
-			if (data.id) return Router.go('dir/'+data.id)
+			if (data.id) Router.go('dir/'+data.id)
 			this.signals.cd(data.get('grp'),data.get('name')).send(this.host)
 		}
 	}

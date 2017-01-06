@@ -11,6 +11,7 @@
 			"delete":"jasy/user/signout"
 		}],
 		["users","models",{
+			"list":"jasy/user/list",
 			"read":"jasy/user/read"
 		}],
 		["entities","models",{
@@ -154,6 +155,36 @@
 				]]
 			]]
 		],
+		"profile":[
+			["options","map",{"el":"#pane0 #page"}],
+			["cred","ref","cred"],
+			["users","ref","users"],
+			["owner","models",{}],
+			["userProfile","list",[
+				{"model":"owner","field":1,"value":"name","label":"Name"}
+			]],
+			["ProfileCtrl","ctrl",[
+				["paneId","ref","paneId"],
+				["title","text","Profile"],
+				["cred","ref","cred"],
+				["users","ref","users"],
+				["owner","ref","owner"],
+				["userProfile","ref","userProfile"]
+			]],
+			["scrollable/ScrollView","view",[
+				["options","map",{"className":"scrollable"}],
+				["css","file","scrollable/Scrollable.css"],
+				["owner","ref","owner"],
+				["cred","ref","cred"],
+				["userProfile","ref","userProfile"],
+				[["panel/Static","UserProfileMixin"],"view",[
+					["tpl","file","panel/Form.asp"],
+					["css","file","panel/Form.css"],
+					["models","refs","models"],
+					["fields","ref","userProfile"]
+				]]
+			]]
+		],
         "entities":[
 			["options","map",{"els":["#pane0 #page","#pane1 #page"]}],
 			["entities","ref","entities"],
@@ -262,17 +293,20 @@
 		],
         "group":[
 			["options","map",{"els":["#pane0 #page","#pane1 #page"]}],
-			["entity","model","entities",0],
 			["cred","ref","cred"],
-			["directory","ref","directory"],
+			["folder","model","directory",0],
+			["groups","ref","groups"],
+			["users","ref","users"],
 			["icons","models",{}],
 			["GroupCtrl","ctrl",[
 				["paneId","ref","paneId"],
 				["title","text","Group"],
 				["btnRight","map",{"icon":"icon_address-book"}],
 				["cred","ref","cred"],
-				["entity","ref","entity"],
-				["directory","ref","directory"],
+				["folder","ref","folder"],
+				["groups","ref","groups"],
+				["users","ref","users"],
+				["dirId","param",0],
 				["icons","ref","icons"]
 			]],
 			["scrollable/ListView","view",[
@@ -288,6 +322,7 @@
 			]]
         ]
     },[
+        ["profile","profile"],
 		["entities","entities"],
         ["entity/:id","entities","entity"],
 		["dir","dir"],

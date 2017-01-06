@@ -14,11 +14,13 @@
 			"read":"glueon/user/read"
 		}],
 		["directory","models",{
-			"list":"glueon/directory/list",
 			"create":"glueon/directory/create",
 			"read":"glueon/directory/read",
 			"update":"glueon/directory/update",
 			"delete":"glueon/directory/remove"
+		}],
+		["groups","models",{
+			"list":"jasy/group/list"
 		}],
 		["chats","models",{
 			"list":"glueon/chat/list",
@@ -130,7 +132,8 @@
 			["credExtra","models",{},[
 				{"app":"00nfmpan0022ox0000v9zkon000014k2","cwd":""}
 			]],
-			["directory","ref","directory"]
+			["directory","ref","directory"],
+			["groups","ref","groups"]
 		]]
     ],{
         "":[

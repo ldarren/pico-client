@@ -1,15 +1,21 @@
 var
-DIR=[{id:'.',icon:'icon_prev',type:'f'},{id:'+',icon:'icon_plus',type:'f'}],
-listDir=function(dir,icons){
+listGrp=function(group){
+	if (!group || group.id !== this.dirId) return
+
 	var
-	content=dir.get('d'),
-	dir=DIR.slice()
+	deps=this.deps,
+	userIds=group.get('users')
 
-	for(var i=0,c; c=content[i]; i++){
-		dir.push({id:c,icon:'icon_user',type:'d'})
-	}
+	deps.users.retrieve(userIds,function(err,users){
+		if (err) return console.error(err)
+		var content=[]
+		for(var i=0,id,u; id=userIds[i]; i++){
+			u=users.get(id)
+			content.push({id:id,name:u.get('name'),icon:'icon_user',type:'f'})
+		}
 
-	icons.reset(dir)
+		deps.icons.reset(content)
+	})
 }
 
 return {
@@ -20,34 +26,25 @@ return {
 		btnLeft:'map',
 		btnRight:'map',
 		cred:'model',
-		entity:'model',
-		directory:'models',
+		folder:'model',
+		groups:'models',
+		users:'models',
+		dirId:'param',
 		icons:'models'
 	},
 	create:function(deps){
 		if(deps.title)this.signals.header(
 			deps.paneId,
-			deps.entity.get('name')||deps.title,
+			deps.title,
 			0===deps.paneId?{icon:'icon_back'}:deps.btnLeft,
 			deps.btnRight
 		).send(this.host)
 
-		this.cwd=deps.cred.at(0).get('cwd')
-
-		var
-		self=this,
-		dir=deps.directory.get(this.cwd)
-
-		if (dir){
-			listDir(dir,deps.icons)
-		}else{
-			deps.directory.read({
-				cwd:this.cwd
-			},function(err,model,res){
-				if (err) return __.dialogs.alert('failed to list directory "'+self.cwd+'"')
-				listDir(model,deps.icons)
-			})
-		}
+		this.dirId=parseInt(deps.dirId)
+		
+		var gs=deps.groups
+		this.listenTo(gs,'add',listGrp)
+		listGrp.call(this,gs.get(this.dirId))
 	},
 	slots:{
 		headerButtonClicked:function(from,sender,hash){
