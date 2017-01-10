@@ -161,7 +161,7 @@
 			["users","ref","users"],
 			["owner","models",{}],
 			["userProfile","list",[
-				{"model":"owner","field":1,"value":"name","label":"Name"}
+				{"model":"owner","props":[1,"name"],"label":"Name"}
 			]],
 			["ProfileCtrl","ctrl",[
 				["paneId","ref","paneId"],
@@ -255,9 +255,9 @@
 					["css","file","panel/Form.css"],
 					["models","refs","model"],
 					["fields","list",[
-						{"label":"Description","model":"model","field":"$public","value":"desc"},
-						{"label":"Key","model":"model","field":"key"},
-						{"label":"Secret","model":"model","field":"secret"}
+						{"label":"Description","model":"model","props":["$public","desc"]},
+						{"label":"Key","model":"model","props":"key"},
+						{"label":"Secret","model":"model","props":"secret"}
 					]]
 				]]
 			]]

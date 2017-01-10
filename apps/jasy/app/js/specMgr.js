@@ -1,5 +1,5 @@
 var
-picoObj=require('pico/obj'),
+pObj=require('pico/obj'),
 Model= require('js/Model'),
 Stream= require('js/Stream'),
 Socket= require('js/Socket'),
@@ -29,7 +29,7 @@ loadDeps = function(links, idx, klass, cb){
     if (links.charAt) return require(links, cb)
     require(links[idx++], function(err, mod){
         if (err) return cb(err)
-        loadDeps(links, idx, picoObj.extend(klass, mod, extOpt), cb)
+        loadDeps(links, idx, pObj.extend(klass, mod, extOpt), cb)
     })
 },
 load = function(ctx, params, spec, idx, deps, cb, userData){
