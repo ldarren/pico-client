@@ -3,11 +3,18 @@ path=pico.import('path'),
 pStr=require('pico/str'),
 pObj=require('pico/obj'),
 sqlDir=require('sql/directory'),
-stripGrp=function(grp,len){
-	return grp.substr(len)
-},
-workingGrp=function(grp,name){
-	return path.join(grp,name)
+hideHome=function($grp,output){
+	let wd=path.join(output.grp,output.name)
+	output.wd=wd=wd.substr($grp.length)
+	const idx=wd.lastIndexOf(output.name)
+	if (-1===idx){ // the folder itself
+		output.grp=wd
+		output.name=''
+	}else{
+		let grp=wd.substr(0,idx)
+		if (grp.endsWith(path.sep)) output.grp=grp.slice(0,-1)
+		else output.grp=grp
+	}
 }
 
 let MOD
@@ -25,21 +32,18 @@ return {
 */
 	},
     reply($grp,output,next){
-		output.grp=stripGrp(output.grp,$grp.length)
-		output.wd=workingGrp(output.grp,output.name)
+		hideHome($grp,output)
         this.setOutput(output,sqlDir.clean,sqlDir)
         next()
     },
     replyPrivate($grp,output,next){
-		output.grp=stripGrp(output.grp,$grp.length)
-		output.wd=workingGrp(output.grp,output.name)
+		hideHome($grp,output)
         this.setOutput(output,sqlDir.cleanSecret,sqlDir)
         next()
     },
     replyList($grp,list,next){
 		for(let i=0,l; l=list[i]; i++){
-			l.grp=stripGrp(l.grp,$grp.length)
-			l.wd=workingGrp(l.grp,l.name)
+			hideHome($grp,l)
 		}
         this.setOutput(list,sqlDir.cleanList,sqlDir)
         next()
@@ -48,8 +52,7 @@ return {
 		const list=output.directory
 		if (!list) return next()
 		for(let i=0,l; l=list[i]; i++){
-			l.grp=stripGrp(l.grp,$grp.length)
-			l.wd=workingGrp(l.grp,l.name)
+			hideHome($grp,l)
 		}
 		sqlDir.cleanList(list)
         next()
@@ -85,16 +88,21 @@ return {
 		})
 	},
 	userJoin(cred,dir,input,next){
-		// TODO: root and sudo cred should skip this check
-		let key,val
-		if (MOD.FREE & dir.s.readUInt16LE()){
-			key='role',val='member'
-		}else{
-			key='applicant',val=input.msg||''
-		}
-		sqlDir.usermap_set(dir.id,input.id,key,val,cred.id,(err)=>{
+		const userId=input.id
+		sqlDir.usermap_getByKeys(dir,userId,['role','applicant'],(err,dir)=>{
 			if(err) return next(this.error(500))
-			next()
+			if (dir.role || undefined !== dir.applicant) return next() // already joined
+
+			let key,val
+			if (MOD.FREE & dir.s.readUInt16LE()){
+				key='role',val='member'
+			}else{
+				key='applicant',val=input.msg||''
+			}
+			sqlDir.usermap_set(dir.id,userId,key,val,cred.id,(err)=>{
+				if(err) return next(this.error(500))
+				next()
+			})
 		})
 	},
 	touch(id,next){
@@ -116,7 +124,7 @@ console.log('poll',err,usermaps,lastseen)
 	},
 	last(cred,input,grp,poll,output,next){
 		if (!poll.length) return next()
-		sqlDir.filter(poll.slice(),grp,(err,usermaps)=>{
+		sqlDir.filter(poll,grp,(err,usermaps)=>{
 			if (err) return next(this.error(500,err.message))
 			if (!usermaps.length) return next()
 			sqlDir.last(pObj.pluck(usermaps,'id'),cred.id,input.t,(err,dirs)=>{
@@ -139,6 +147,21 @@ console.log('poll',err,usermaps,lastseen)
 
 		this.set(arguments[l-2],path.join(...Array.prototype.slice.call(arguments,0,l-2)))
 		next()
+	},
+	listMine(cred,wd,output,next){
+		const userId=cred.id
+		sqlDir.usermap_findId(userId,'role',(err,rows)=>{
+			if (err) return next(this.error(500,err.message))
+			sqlDir.filter(rows,wd,(err,usermaps)=>{
+				if (err) return next(this.error(500,err.message))
+				if (!usermaps.length) return next()
+				sqlDir.gets(pObj.pluck(usermaps,'id'),userId,(err,dirs)=>{
+					if (err) return next(this.error(500,err.message))
+					output.push(...dirs)
+					next()
+				})
+			})
+		})
 	},
 	find(wd,output,next){
 		sqlDir.findId(wd,(err,rows)=>{
@@ -165,7 +188,7 @@ console.log('poll',err,usermaps,lastseen)
 			next()
 		})
 	},
-	list(wd,dir,next){
+	groupList(wd,dir,next){
 		//const d=[],f=[]
 
 		sqlDir.usermap_gets(dir.id,'role',(err,rows)=>{

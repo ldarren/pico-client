@@ -21,6 +21,7 @@ ENUM=				['role'],
 
 SET=				'INSERT INTO `dir` (`grp`,`name`,`s`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE `s`=VALUES(`s`), `uby`=VALUES(`cby`);',
 GET=				'SELECT * FROM `dir` WHERE `id`=? AND `s` != 0;',
+GETS=				'SELECT * FROM `dir` WHERE `id` IN (?) AND `s` != 0;',
 FIND_ID=			'SELECT `id`, `s` FROM `dir` WHERE `grp`=? AND `name`=? AND `s` != 0;',
 FIND_NAMES=			'SELECT * FROM `dir` WHERE `grp`=? AND `s` != 0;',
 FILTER=				'SELECT `id`, `s` FROM `dir` WHERE `id` IN (?) AND ((`grp`=? AND `name`=?) OR `grp` LIKE ?);',
@@ -36,6 +37,8 @@ MAP_LAST=			'SELECT `id`,`k`,`v1`,`v2`,`uat` FROM `dirMap` WHERE `id` IN (?) AND
 USERMAP_SET=		'INSERT INTO `dirUserMap` (`id`,`userId`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
 USERMAP_GET=		'SELECT `id`,`userId`,`k`,`v1`,`v2` FROM `dirUserMap` WHERE `id`=? AND `userId`=? AND `k`=?;',
 USERMAP_GETS=		'SELECT `id`,`userId`,`k`,`v1`,`v2` FROM `dirUserMap` WHERE `id`=? AND `k`=?;',
+USERMAP_GET_LIST=	'SELECT `id`,`userId`,`k`,`v1`,`v2` FROM `dirUserMap` WHERE `id`=? AND `userId`=? AND `k` IN (?);',
+USERMAP_LIST=		'SELECT `id`,`userId`,`k`,`v1`,`v2` FROM `dirUserMap` WHERE `id` IN (?) AND `userId`=?;',
 USERMAP_FIND_ID=	'SELECT `id`,`userId`,`k`,`v1`,`v2` FROM `dirUserMap` WHERE `userId`=? AND `k`=?;',
 USERMAP_TOUCH=		'UPDATE `dirUserMap` SET `uat`=NOW() WHERE `id`=? AND `k`=?;',
 USERMAP_POLL=		'SELECT `id`,`uat` FROM `dirUserMap` WHERE `userId`=? AND `k`=? AND `uat`>?;',
@@ -130,6 +133,20 @@ module.exports={
 			})
 		})
 	},
+	gets(ids,userId,cb){
+		client.query(GETS, [ids], (err,rows)=>{
+			if (err) return cb(err)
+			const dirs=client.decodes(rows,hash,ENUM)
+			client.query(MAP_GETS_LIST, [ids], (err,rows)=>{
+				if (err) return cb(err)
+				client.mapDecodes(rows,dirs,hash,ENUM)
+				client.query(USERMAP_LIST, [ids,userId], (err,rows)=>{
+					if (err) return cb(err)
+					cb(null,client.mapDecodes(rows,dirs,hash,ENUM))
+				})
+			})
+		})
+	},
 	getOnly(dir,cb){
 		client.query(GET,[dir.id],cb)
 	},
@@ -144,14 +161,17 @@ module.exports={
 		if (!g) return cb(null,dirs)
 		client.query(FILTER,[pObj.pluck(dirs,'id'),...up(g),g+'%'],(err,rows)=>{
 			if (err) return cb(err)
-			for(let i=dirs.length-1,d,j,r; d=dirs[i]; i--){
-				for(j=0; r=rows[j]; j++){
-					d.s=r.s;
-					break
+			const output=[]
+			for(let i=0,r,rid,j,d; r=rows[i]; i++){
+				rid=r.id
+				for(j=0,d; d=dirs[j]; j++){
+					if (d.id===rid){
+						output.push(d)
+						break
+					}
 				}
-				if (!d.s) dirs.splice(i,1)
 			}
-			cb(null,dirs)
+			cb(null,output)
 		})
 	},
 	last(ids,userId,uat,cb){
@@ -204,7 +224,14 @@ module.exports={
 			cb(null,client.listDecode(rows,key,hash,ENUM))
 		})
 	},
+	usermap_getByKeys(dir,userId,keys,cb){
+		client.query(USERMAP_GET_LIST,[id,hash.vals(keys)],(err,rows)=>{
+			if (err) return cb(err)
+			cb(null,client.mapDecode(rows,dir,hash,ENUM))
+		})
+	},
 	usermap_findId(userId,key,cb){
+console.log(client.format(USERMAP_FIND_ID,[userId,hash.val(key)]))
 		client.query(USERMAP_FIND_ID,[userId,hash.val(key)],cb)
 	},
 

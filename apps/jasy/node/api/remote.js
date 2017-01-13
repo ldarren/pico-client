@@ -1,5 +1,5 @@
 const
-MIN1=60*1000,
+MIN5=5*60*1000,
 Floor=Math.floor,
 sqlEntity=require('sql/entity'),
 redisRemote=require('redis/remote'),
@@ -7,7 +7,7 @@ pStr=require('pico/str'),
 pWeb=require('pico/web'),
 channels={},
 codec=function(secret,token){
-	return pStr.codec(Floor(Date.now()/MIN1)+pStr.hash(secret),token)
+	return pStr.codec(Floor(Date.now()/MIN5)+pStr.hash(secret),token)
 },
 getChannel=function(ent,cb){
 	const c=channels[ent.id]

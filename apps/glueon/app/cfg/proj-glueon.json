@@ -14,13 +14,14 @@
 			"read":"glueon/user/read"
 		}],
 		["directory","models",{
+			"list":"glueon/directory/list",
 			"create":"glueon/directory/create",
 			"read":"glueon/directory/read",
 			"update":"glueon/directory/update",
 			"delete":"glueon/directory/remove"
 		}],
 		["groups","models",{
-			"list":"jasy/group/list"
+			"list":"glueon/group/list"
 		}],
 		["chats","models",{
 			"list":"glueon/chat/list",
@@ -68,7 +69,7 @@
 			["tpl","file","footer/MenuBar.asp"],
 			["css","file","footer/MenuBar.css"],
 			["list","list",[
-				{"id":"chats","className":"icon1","icon":"icon_chat","name":"Chats","url":"chats"},
+				{"id":"dir","className":"icon1","icon":"icon_chat","name":"Chats","url":"chats"},
 				{"id":"profile","className":"icon3","icon":"icon_user","name":"Profile","url":"profile"}
 			]]
 		]],
@@ -130,7 +131,7 @@
 			["users","ref","users"],
 			["forceAuth","bool",0],
 			["credExtra","models",{},[
-				{"app":"00nfmpan0022ox0000v9zkon000014k2","cwd":""}
+				{"app":"008jvrec0022oq000001tf88000014k2","cwd":""}
 			]],
 			["directory","ref","directory"],
 			["groups","ref","groups"]
@@ -149,7 +150,7 @@
 			["users","ref","users"],
 			["owner","models",{}],
 			["userProfile","list",[
-				{"model":"owner","field":1,"value":"name","label":"Name"}
+				{"model":"owner","props":[1,"name"],"label":"Name"}
 			]],
 			["ProfileCtrl","ctrl",[
 				["paneId","ref","paneId"],
@@ -173,24 +174,29 @@
 				]]
 			]]
 		],
-        "chats":[
+        "dir":[
 			["options","map",{"els":["#pane0 #page","#pane1 #page"]}],
+			["directory","ref","directory"],
 			["chats","ref","chats"],
+			["dialogues","models",{}],
 			["cred","ref","cred"],
-			["ChatListCtrl","ctrl",[
+			["DirectoryCtrl","ctrl",[
 				["paneId","ref","paneId"],
-				["title","text","Chats"],
+				["title","text","Directory"],
 				["btnRight","map",{"icon":"icon_plus"}],
-				["cred","ref","cred"],
+				["directory","ref","directory"],
 				["chats","ref","chats"],
-				["newChatForm","list",[
-					{"type":"text","name":"title","label":"Title","holder":"Chat Title","required":1}
+				["dialogues","ref","dialogues"],
+				["cred","ref","cred"],
+				["newGroupForm","list",[
+					{"type":"text","name":"name","label":"Name","holder":"Group Name","required":1},
+					{"type":"text","name":"desc","label":"Description","holder":"Group Description","required":1}
 				]]
 			]],
 			["scrollable/ListView","view",[
 				["options","map",{"className":"scrollable"}],
 				["css","file","scrollable/Scrollable.css"],
-				["list","ref","chats"],
+				["list","ref","dialogues"],
 				["selected","param",0],
 				["Cell","view",[
 					["tpl","file","ChatRow.asp"],
@@ -218,16 +224,16 @@
 					["css","file","panel/Form.css"],
 					["models","refs","model"],
 					["fields","list",[
-						{"label":"Description","model":"model","field":"$public","value":"desc"},
-						{"label":"Key","model":"model","field":"key"},
-						{"label":"Secret","model":"model","field":"secret"}
+						{"label":"Description","model":"model","props":["$public","desc"]},
+						{"label":"Key","model":"model","props":["key"]},
+						{"label":"Secret","model":"model","props":["secret"]}
 					]]
 				]]
 			]]
         ]
     },[
-        ["chats/:id","chats","chat"],
+        ["chats/:id","dir","chat"],
         ["profile","profile"],
-        ["*action","chats"]
+        ["*action","dir"]
     ]
 ]

@@ -61,9 +61,13 @@ return {
 			next()
 		})
 	},
-	createSession(cred,user,key,entId,grp,session,next){
-		if (!user || !key || !entId) return next(this.error(401))
+	createSession(cred,user,key,session,next){
+		if (!user || !key) return next(this.error(401))
 		Object.assign(session,cred,{id:user.id,sess:key})
+		next()
+	},
+	storeSession(entId,grp,session,next){
+		if (!entId) return next(this.error(401))
 		redisUser.setSession(session,entId,grp,(err)=>{
 			if (err) return next(this.error(500))
 			next()

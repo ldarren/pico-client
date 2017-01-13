@@ -7,7 +7,7 @@ update=function(){
 	name
 
 	up.length=0
-	if (me){
+	if (me && me.id){
 		var user=deps.users.get(me.id)
 		name=user.get('name')
 		up.push({model:'owner',props:[me.id,'name'],label:'Name'})

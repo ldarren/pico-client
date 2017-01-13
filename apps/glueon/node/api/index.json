@@ -17,8 +17,9 @@
 			["web","SSEStart","req","res"],
             ["user","verify","cred","me"],
 			["stream","prepare","cred","input","output"],
-			["user","poll","input","output"],
-			["directory","poll","cred","input",":poll","output"],
+			["user","poll","cred","input","output"],
+			["chat","poll","cred","input","output"],
+			["directory","poll","cred","input","output"],
 			["stream","add","res","cred"],
 			["stream","render","res",["poll"],"output"]
 		],
@@ -32,15 +33,21 @@
             []
 		],
 		"to/remote/user/read":[
-			["remote","readUser","cred","input","user"],
+			["remote","request","cred","input",["from/remote/user/read"],"user"],
 			["user","update","user"],
             ["user","replyPrivate","user"],
 			[]
 		],
+		"to/remote/group/list":[
+			["remote","request","cred","input",["from/remote/group/list"],"group"],
+			["directory","update","cred","input",["g"],"group"],
+            ["directory","replyPrivate","group"],
+			[]
+		],
 		"to/remote/directory/list":[
-			["remote","readDirectory","cred","input","dir"],
-			["directory","update","cred","input","dir"],
-            ["directory","replyPrivate","dir"],
+			["remote","request","cred","input",["from/remote/directory/list"],":dirs"],
+			["directory","update","cred","input",["d"],":dirs"],
+            ["directory","replyList",":dirs"],
 			[]
 		],
 		"ERR//glueon/stream":[
@@ -79,17 +86,25 @@
             []
         ],
 		"glueon/directory/list":[
-            ["util","have","input",[["d"]]],
+            ["util","have","input",[["grp","name"]]],
             ["user","verify","cred","me"],
-            ["directory","list","cred","input","dir"],
+            ["directory","list","cred","input",":dirs"],
+            ["directory","replyList",":dirs"],
+			[]
+		],
+		"glueon/directory/create":[
+            ["util","have","input",[["name"]]],
+            ["user","verify","cred","me"],
+			["remote","request","cred","input",["from/remote/directory/create"],"dir"],
+			["directory","update","cred","input",["d"],"dir"],
             ["directory","replyPrivate","dir"],
 			[]
 		],
-		"glueon/directory/read":[
-            ["util","have","input",[["cwd"]]],
+		"glueon/group/list":[
+            ["util","have","input",[["grp","name"]]],
             ["user","verify","cred","me"],
-			["directory","read","cred","input","output"],
-            ["directory","replyPrivate","output"],
+            ["directory","groupList","cred","input","dir"],
+            ["directory","replyPrivate","dir"],
 			[]
 		],
         "#help": [

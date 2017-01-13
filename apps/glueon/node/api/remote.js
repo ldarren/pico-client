@@ -1,10 +1,10 @@
 const
-MIN1=60*1000,
+MIN5=5*60*1000,
 Floor=Math.floor,
 pStr=require('pico/str'),
 pWeb=require('pico/web'),
 codec=function(secret,token){
-	return pStr.codec(Floor(Date.now()/MIN1)+pStr.hash(secret),token)
+	return pStr.codec(Floor(Date.now()/MIN5)+pStr.hash(secret),token)
 },
 getChannel=function(cb){
 	if (channel) return cb(null, channel)
@@ -43,20 +43,21 @@ return {
 		if (appConfig.key!==codec(appConfig.secret,Buffer.from(cred.sess,'base64').toString())) return next(this.error(403))
 		next()
 	},
-	readUser(cred,input,output,next){
+	request(cred,input,api,output,next){
 		getChannel((err,channel)=>{
 			if (err) return next(this.error(500))
-			channel.request('from/remote/user/read',{id:input.id},getCredential(cred),(err,data)=>{
-				if (err) return next(this.error(500))
-				Object.assign(output,data)
+			channel.request(api,input,getCredential(cred),(err,data)=>{
+				if (err) return next(err)
+				if (data.length) output.push(...data)
+				else Object.assign(output,data)
 				next()
 			})
 		})
 	},
-	readDirectory(cred,input,output,next){
+	createDirectory(cred,input,output,next){
 		getChannel((err,channel)=>{
 			if (err) return next(this.error(500))
-			channel.request('from/remote/directory/list',input,getCredential(cred),(err,data)=>{
+			channel.request('from/remote/directory/create',input,getCredential(cred),(err,data)=>{
 				if (err) return next(this.error(500))
 				Object.assign(output,data)
 				next()

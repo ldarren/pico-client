@@ -52,29 +52,62 @@
 			["user","reply","user"],
 			[]
 		],
-		"from/remote/directory/list":[
-            ["util","have","input",[["d"]]],
+		"from/remote/directory/create":[
+            ["util","have","input",[["name"]]],
 			["entity","findId","cred",["$entId"]],
 			["entity","getMapAll","$entId","ent"],
 			["remote","verify","cred","ent"],
 			["util","read","ent",["home","$grp"]],
-			["util","read","input",["d","$name"]],
-			["directory","join","$grp","$name",["$wd"]],
+			["util","read","cred",["cwd","$wd"]],
+			["directory","join","$grp","$wd",["$cwd"]],
+			["directory","find","$cwd","dir"],
+            ["directory","role","cred","dir",[["root","admin"]]],
+			["util","read","input",["name","$name"]],
+            ["directory","newGroup","cred","$cwd","$name","newdir"],
+			["directory","read","newdir"],
+			["directory","join","$cwd","$name","$wd"],
+			["directory","groupList","$wd","newdir"],
+            ["directory","replyPrivate","$grp","newdir"],
+			[]
+		],
+		"from/remote/directory/list":[
+            ["util","have","input",[["grp","name"]]],
+			["entity","findId","cred",["$entId"]],
+			["entity","getMapAll","$entId","ent"],
+			["remote","verify","cred","ent"],
+			["util","read","ent",["home","$grp"]],
+			["util","read","input",["grp","$ngrp"]],
+			["util","read","input",["name","$name"]],
+			["directory","join","$grp","$ngrp","$name",["$wd"]],
+			["directory","listMine","cred","$wd",":dirs"],
+            ["directory","replyList","$grp",":dirs"],
+			[]
+		],
+		"from/remote/group/list":[
+            ["util","have","input",[["grp","name"]]],
+			["entity","findId","cred",["$entId"]],
+			["entity","getMapAll","$entId","ent"],
+			["remote","verify","cred","ent"],
+			["util","read","ent",["home","$grp"]],
+			["util","read","input",["grp","$ngrp"]],
+			["util","read","input",["name","$name"]],
+			["directory","join","$grp","$ngrp","$name",["$wd"]],
 			["directory","find","$wd","dir"],
-			["directory","list","$wd","dir"],
+			["directory","groupList","$wd","dir"],
             ["directory","replyPrivate","$grp","dir"],
 			[]
 		],
 		"session.remote":[
 			["entity","read","$entId","ent"],
 			["remote","getSession","ent","user",["$sessKey"]],
-            ["user","createSession","cred","user","$sessKey","$entId","$grp","session"],
+            ["user","createSession","cred","user","$sessKey","session"],
             ["user","replyPrivate","session"],
             []
 		],
 		"session.local":[
             ["util","randomStr",["$sessKey",20]],
-            ["user","createSession","cred","user","$sessKey","$entId","$grp","session"],
+            ["user","createSession","cred","user","$sessKey","session"],
+            ["user","storeSession","$entId","$grp","session"],
             ["user","replyPrivate","session"],
             []
 		],
@@ -155,7 +188,7 @@
 			["util","read","input",["name","$nname"]],
 			["directory","join","$grp","$ngrp","$nname",["$wd"]],
 			["directory","find","$wd","dir"],
-			["directory","list","$wd","dir"],
+			["directory","groupList","$wd","dir"],
             ["directory","replyPrivate","$grp","dir"],
 			[]
 		],
@@ -168,7 +201,7 @@
             ["directory","newGroup","cred","$cwd","$name","newdir"],
 			["directory","read","newdir"],
 			["directory","join","$cwd","$name","$wd"],
-			["directory","list","$wd","newdir"],
+			["directory","groupList","$wd","newdir"],
             ["directory","replyPrivate","$grp","newdir"],
 			[]
 		],

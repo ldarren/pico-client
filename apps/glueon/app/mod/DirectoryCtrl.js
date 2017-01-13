@@ -15,7 +15,8 @@ return {
 		btnLeft:'map',
 		btnRight:'map',
 		directory:'models',
-		folder:'models',
+		chats:'models',
+		dialogues:'models',
 		cred:'models',
 		newGroupForm:'list'
 	},
@@ -64,7 +65,7 @@ return {
 					// make sure grp unchanged
 					if (self.grp && self.grp !== grp) return
 					self.grp=grp
-					self.deps.folder.add(model)
+					self.deps.dialogues.add(model)
 					console.log('added new group')
 				},
 				error:function(model,err){
@@ -76,13 +77,13 @@ return {
 			if (this.grp === grp) return
 			this.grp=grp
 			var
-			folder=this.deps.folder,
+			dialogues=this.deps.dialogues,
 			dir=this.deps.directory,
 			p=grp.lastIndexOf('/')
 
-			folder.set(dir.where({grp:this.grp}))
+			dialogues.set(dir.where({grp:this.grp}))
 
-			if (-1 !== p) folder.add(dir.find({grp:grp.substr(0,p),name:''}))
+			if (-1 !== p) dialogues.add(dir.find({grp:grp.substr(0,p),name:''}))
 		}
 	}
 }

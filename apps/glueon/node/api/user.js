@@ -27,7 +27,8 @@ return {
 			next()
 		})
 	},
-	poll(input,output,next){
+	// poll local cache for changes
+	poll(cred,input,output,next){
 		next()
 	},
 	createSession(input,sessKey,output,next){
@@ -59,8 +60,5 @@ return {
 			Object.assign(output,user)
 			next()
 		})
-	},
-	last(input,poll,output,next){
-		next()
 	}
 }
