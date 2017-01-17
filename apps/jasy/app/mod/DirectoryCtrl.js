@@ -60,7 +60,7 @@ return {
 				success:function(model,res){
 					var dir=cwd(self)
 					if (!dir) return
-					var grp=dir/get('grp')
+					var grp=dir.get('grp')
 					// make sure grp unchanged
 					if (self.grp && self.grp !== grp) return
 					self.grp=grp

@@ -163,6 +163,16 @@ console.log('poll',err,usermaps,lastseen)
 			})
 		})
 	},
+	search(wd,output,next){
+		sqlDir.search(wd,(err,rows)=>{
+			if (err) return next(this.error(500,err.message))
+			sqlDir.map_getAllList(rows,(err,dirs)=>{
+				if (err) return next(this.error(500,err.message))
+				output.push(...dirs)
+				next()
+			})
+		})
+	},
 	find(wd,output,next){
 		sqlDir.findId(wd,(err,rows)=>{
 			if (err) return next(this.error(500,err.message))

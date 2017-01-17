@@ -130,11 +130,15 @@
 			["credential","ref","cred"],
 			["users","ref","users"],
 			["forceAuth","bool",0],
-			["credExtra","models",{},[
-				{"app":"008jvrec0022oq000001tf88000014k2","cwd":""}
-			]],
 			["directory","ref","directory"],
-			["groups","ref","groups"]
+			["groups","ref","groups"],
+			["credExtra","models",{},[
+				{"app":"","cwd":""}
+			]],
+			["searchDir","text","Glueon"],
+			["search","models",{
+				"list":"glueon/directory/search"
+			}]
 		]]
     ],{
         "":[

@@ -25,6 +25,7 @@ GETS=				'SELECT * FROM `dir` WHERE `id` IN (?) AND `s` != 0;',
 FIND_ID=			'SELECT `id`, `s` FROM `dir` WHERE `grp`=? AND `name`=? AND `s` != 0;',
 FIND_NAMES=			'SELECT * FROM `dir` WHERE `grp`=? AND `s` != 0;',
 FILTER=				'SELECT `id`, `s` FROM `dir` WHERE `id` IN (?) AND ((`grp`=? AND `name`=?) OR `grp` LIKE ?);',
+SEARCH=				'SELECT `id`, `s` FROM `dir` WHERE ((`grp`=? AND `name`=?) OR `grp`=?) AND s & ?;',
 LAST=				'SELECT * FROM `dir` WHERE `id` IN (?) AND `uat`>?;',
 
 MAP_SET=			'INSERT INTO `dirMap` (`id`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
@@ -56,7 +57,6 @@ pObj=				require('pico/obj'),
 hash=				require('sql/hash'),
 path=				pico.import('path'),
 Max=				Math.max,
-modBuf=				Buffer.alloc(2),
 value=function(val){
 	const ret=[]
 	if (Number.isFinite(val)){
@@ -73,7 +73,7 @@ join=function(grp){
 up=function(grp){
 	if (!grp || SEP === grp) return [SEP,'']
 	const i=grp.lastIndexOf(SEP)
-	return [grp.substr(0,i+1),grp.substr(i+1)]
+	return [grp.substr(0,i),grp.substr(i+1)]
 }
 
 let client,ROLE
@@ -102,8 +102,6 @@ module.exports={
 		cb()
 	},
     clean(model){
-		let s=model.s
-		if (s) model.s=s.readUInt16LE()
         for(let i=0,k; k=PRIVATE[i]; i++) delete model[k];
         return model
     },
@@ -112,15 +110,12 @@ module.exports={
         return list
     },
     cleanSecret(model){
-		let s=model.s
-		if (s) model.s=s.readUInt16LE()
         for(let i=0,k; k=SECRET[i]; i++) delete model[k];
         return model
     },
 
 	set(grp,name,mod,by,cb){
-		modBuf.writeUInt16LE(mod)
-		client.query(SET,[[[join(grp),name,modBuf,by]]],cb)
+		client.query(SET,[[[join(grp),name,mod,by]]],cb)
 	},
 	get(dir,cb){
 		if (!dir || !dir.id) return cb(ERR_INVALID_INPUT)
@@ -157,8 +152,8 @@ module.exports={
 		client.query(FIND_NAMES,[join(grp)],cb)
 	},
 	filter(dirs,cwd,cb){
-		let g=join(cwd)
-		if (!g) return cb(null,dirs)
+		const g=join(cwd)
+		if (!dirs.length || !g) return cb(null,dirs)
 		client.query(FILTER,[pObj.pluck(dirs,'id'),...up(g),g+'%'],(err,rows)=>{
 			if (err) return cb(err)
 			const output=[]
@@ -173,6 +168,12 @@ module.exports={
 			}
 			cb(null,output)
 		})
+	},
+	search(cwd,cb){
+		const g=join(cwd)
+		if (!g) return cb(ERR_INVALID_INPUT)
+console.log(client.format(SEARCH,[...up(g),g,'0x0044']))
+		client.query(SEARCH,[...up(g),g,'0x0044'],cb)
 	},
 	last(ids,userId,uat,cb){
 		client.query(LAST, [ids,uat], (err,rows)=>{
@@ -202,6 +203,12 @@ module.exports={
 	},
 	map_getList(dirs,key,cb){
 		client.query(MAP_GET_LIST,[pObj.pluck(dirs,'id'),hash.val(key)],(err,rows)=>{
+			if (err) return cb(err)
+			cb(null,client.mapDecodes(rows,dirs,hash,ENUM))
+		})
+	},
+	map_getAllList(dirs,cb){
+		client.query(MAP_GETS_LIST,[pObj.pluck(dirs,'id')],(err,rows)=>{
 			if (err) return cb(err)
 			cb(null,client.mapDecodes(rows,dirs,hash,ENUM))
 		})

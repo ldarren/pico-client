@@ -42,7 +42,8 @@ return {
 	},
 	// TODO: ses email verification
 	create(cred,input,cwd,key,secret,output,next){
-		sqlEntity.set(Object.assign({},input,{key:key,secret:secret,home:path.join(cwd,input.home)}), cred.id, (err, entity)=>{
+		const home=input.home?path.join(cwd,input.home):undefined
+		sqlEntity.set(Object.assign({},input,{key,secret,home}), cred.id, (err, entity)=>{
 			if (err) return next(this.error(500,err.message))
 			Object.assign(output,{id:entity.id})
 			this.addJob([output], sqlEntity.get, sqlEntity)

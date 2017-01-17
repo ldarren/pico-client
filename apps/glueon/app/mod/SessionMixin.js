@@ -36,18 +36,36 @@ cd=function(self,grp,name){
 			debugger
 		}
 	})
+},
+search=function(self,grp){
+	if (!grp) return
+	var deps=self.deps
+	deps.search.fetch({
+		data:{ grp:grp },
+		success:function(coll,res){
+			console.log('search suceeded')
+			deps.directory.add(res)
+		},
+		error:function(coll,err){
+			console.error('search failed',err)
+			debugger
+		}
+	})
 }
 
 return {
 	deps:{
 		groups:'models',
 		directory:'models',
-		credExtra:'models'
+		credExtra:'models',
+		searchDir:'text',
+		search:'models'
 	},
 	slots:{
 		userReady:function(from,sender,model){
 			poll(this,'','')
-			cd(this,'','')
+			//cd(this,'','')
+			search(this,this.deps.searchDir) //TODO: move this to create once anonymous user is ready
 		},
 		cd:function(from,sender,grp,name){
 			if (this.deps.directory.findWhere({grp:dir})) return

@@ -83,6 +83,18 @@
             ["directory","replyList","$grp",":dirs"],
 			[]
 		],
+		"from/remote/directory/search":[
+            ["util","have","input",[["grp"]]],
+			["entity","findId","cred",["$entId"]],
+			["entity","getMapAll","$entId","ent"],
+			["remote","verify","cred","ent"],
+			["util","read","ent",["home","$grp"]],
+			["util","read","input",["grp","$ngrp"]],
+			["directory","join","$grp","$ngrp",["$wd"]],
+			["directory","search","$wd",":dirs"],
+            ["directory","replyList","$grp",":dirs"],
+			[]
+		],
 		"from/remote/group/list":[
             ["util","have","input",[["grp","name"]]],
 			["entity","findId","cred",["$entId"]],

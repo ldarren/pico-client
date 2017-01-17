@@ -28,6 +28,14 @@ return {
 	replyStream(output,next){
         next()
 	},
+	search(input,output,next){
+		redisDir.publicGet(input,'p',(err,dirs)=>{
+			if (err) return next(this.error(500))
+			if (!dirs) return next(null,'to/remote/directory/search')
+			output.push(...dirs)
+			next()
+		})
+	},
 	list(cred,input,output,next){
 		redisDir.get(cred,input,'d',(err,dirs)=>{
 			if (err) return next(this.error(500))
@@ -46,6 +54,12 @@ return {
 	},
 	update(cred,input,type,dir,next){
 		redisDir.set(cred,input,type,dir,(err)=>{
+			if (err) return next(this.error(500))
+			next()
+		})
+	},
+	publicUpdate(input,type,dir,next){
+		redisDir.publicSet(input,type,dir,(err)=>{
 			if (err) return next(this.error(500))
 			next()
 		})
