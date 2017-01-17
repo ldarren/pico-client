@@ -24,9 +24,8 @@ return {
 		if(deps.title)this.signals.header(deps.paneId,deps.title,deps.btnLeft,deps.btnRight).send(this.host)
 		
 		var dir=cwd(this)
-		if (!dir) return
-
-		this.slots.cd.call(this,this,this,dir.get('grp'),'')
+		if (dir) this.slots.cd.call(this,this,this,dir.get('grp'),'')
+		this.slots.cd.call(this,this,this,deps.cred.at(0).get('cwd'),'')
 	},
 	slots:{
 		headerButtonClicked:function(from,sender,hash){
@@ -59,9 +58,9 @@ return {
 				data:data,
 				wait:true,
 				success:function(model,res){
-					var dir=cwd(self)
-					if (!dir) return
-					var grp=dir/get('grp')
+					var
+					dir=cwd(self),
+					grp=dir?dir.get('grp'):res.grp // for anonymouse user, dir could be undefined
 					// make sure grp unchanged
 					if (self.grp && self.grp !== grp) return
 					self.grp=grp

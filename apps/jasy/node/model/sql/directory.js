@@ -25,7 +25,7 @@ GETS=				'SELECT * FROM `dir` WHERE `id` IN (?) AND `s` != 0;',
 FIND_ID=			'SELECT `id`, `s` FROM `dir` WHERE `grp`=? AND `name`=? AND `s` != 0;',
 FIND_NAMES=			'SELECT * FROM `dir` WHERE `grp`=? AND `s` != 0;',
 FILTER=				'SELECT `id`, `s` FROM `dir` WHERE `id` IN (?) AND ((`grp`=? AND `name`=?) OR `grp` LIKE ?);',
-SEARCH=				'SELECT `id`, `s` FROM `dir` WHERE ((`grp`=? AND `name`=?) OR `grp`=?) AND s & ?;',
+SEARCH=				'SELECT * FROM `dir` WHERE ((`grp`=? AND `name`=?) OR `grp`=?) AND s & ?;',
 LAST=				'SELECT * FROM `dir` WHERE `id` IN (?) AND `uat`>?;',
 
 MAP_SET=			'INSERT INTO `dirMap` (`id`,`k`,`v1`,`v2`,`cby`) VALUES ? ON DUPLICATE KEY UPDATE `v1`=VALUES(`v1`), `v2`=VALUES(`v2`), `uby`=VALUES(`cby`);',
@@ -73,7 +73,7 @@ join=function(grp){
 up=function(grp){
 	if (!grp || SEP === grp) return [SEP,'']
 	const i=grp.lastIndexOf(SEP)
-	return [grp.substr(0,i),grp.substr(i+1)]
+	return [grp.substr(0,i?i:1),grp.substr(i+1)]//keep the first SEP
 }
 
 let client,ROLE
@@ -172,8 +172,7 @@ module.exports={
 	search(cwd,cb){
 		const g=join(cwd)
 		if (!g) return cb(ERR_INVALID_INPUT)
-console.log(client.format(SEARCH,[...up(g),g,'0x0044']))
-		client.query(SEARCH,[...up(g),g,'0x0044'],cb)
+		client.query(SEARCH,[...up(g),g,0x0004],cb)
 	},
 	last(ids,userId,uat,cb){
 		client.query(LAST, [ids,uat], (err,rows)=>{
@@ -208,6 +207,7 @@ console.log(client.format(SEARCH,[...up(g),g,'0x0044']))
 		})
 	},
 	map_getAllList(dirs,cb){
+		if (!dirs.length) return cb(null,dirs)
 		client.query(MAP_GETS_LIST,[pObj.pluck(dirs,'id')],(err,rows)=>{
 			if (err) return cb(err)
 			cb(null,client.mapDecodes(rows,dirs,hash,ENUM))
@@ -238,7 +238,6 @@ console.log(client.format(SEARCH,[...up(g),g,'0x0044']))
 		})
 	},
 	usermap_findId(userId,key,cb){
-console.log(client.format(USERMAP_FIND_ID,[userId,hash.val(key)]))
 		client.query(USERMAP_FIND_ID,[userId,hash.val(key)],cb)
 	},
 
