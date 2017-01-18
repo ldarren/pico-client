@@ -168,7 +168,7 @@ function Ctrl(prop, rawSpec, params, host, show, chains){
     this._removed = false 
     this._show=show?[host.el,false]:null // view in chains migh need to show
 
-    this.signals = sigslot(this, STD_SIGNALS)
+    this.signals = sigslot.create(this, STD_SIGNALS)
     specMgr.load(host, params || [], rawSpec, specLoaded, [this,chains])
 }
 
