@@ -25,7 +25,7 @@ return {
 		
 		var dir=cwd(this)
 		if (dir) this.slots.cd.call(this,this,this,dir.get('grp'),'')
-		this.slots.cd.call(this,this,this,deps.cred.at(0).get('cwd'),'')
+		else if (deps.cred.length) this.slots.cd.call(this,this,this,deps.cred.at(0).get('cwd'),'')
 	},
 	slots:{
 		headerButtonClicked:function(from,sender,hash){

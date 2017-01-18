@@ -30,6 +30,9 @@
 			"update":"glueon/chat/update",
 			"delete":"glueon/chat/remove"
 		}],
+		["","sigslot",[
+			["log","file","sendLog"]
+		]],
 		["layers","list",["#layer0","#layer1"]],
         ["js/Pane","view",[
 			["options","map",{"el":"#__ #layer0 #pane0"}],
@@ -211,28 +214,30 @@
 		],
         "chat":[
 			["options","map",{"els":["#pane0 #page","#pane1 #page"]}],
-			["chat","model","chats",0],
 			["cred","ref","cred"],
+			["chats","ref","chats"],
 			["ChatCtrl","ctrl",[
 				["paneId","ref","paneId"],
 				["title","text","Chat"],
 				["btnRight","map",{"icon":"icon_edit"}],
-				["chat","ref","chat"]
+				["chats","ref","chats"],
+				["wd","param",0]
 			]],
-			["scrollable/ScrollView","view",[
+			["scrollable/ListView","view",[
 				["options","map",{"className":"scrollable"}],
 				["css","file","scrollable/Scrollable.css"],
-				["model","ref","chat"],
-				["panel/Static","view",[
-					["tpl","file","panel/Form.asp"],
-					["css","file","panel/Form.css"],
-					["models","refs","model"],
-					["fields","list",[
-						{"label":"Description","model":"model","props":["$public","desc"]},
-						{"label":"Key","model":"model","props":["key"]},
-						{"label":"Secret","model":"model","props":["secret"]}
-					]]
-				]]
+				["list","ref","chat"],
+				["selected","param",0],
+				["Cell","view",[
+					["tpl","file","ChatRow.asp"],
+					["css","file","scrollable/Row.css"],
+					["selected","ref","selected"]
+				],["scrollable/Row","ChatRow"]]
+			]],
+			[["footer/ChatBar","ChatBarMixin"],"view",[
+				["tpl","file","footer/ChatBar.asp"],
+				["css","file","footer/ChatBar.css"],
+				["icon","text","icon_chat"]
 			]]
         ]
     },[

@@ -1,14 +1,30 @@
 var
-pObj=require('pico/obj'),
 trigger = Backbone.Events.trigger,
-extOpt={mergeArr:1},
+specMgr=require('js/specMgr'),
 evts=[],
+middlewares=[],
+addMW=function(arr){
+	for(var i=0,a; a=arr[i]; i++){
+		middlewares.push(specMgr.getValue(a))
+	}
+},
+applyMW=function(idx,evt,args,cb){
+	if (middlewares.length <= idx) return cb(null,evt,args)
+	var
+	mw=middlewares[idx++],
+	next=function(err,evt,args){
+		if (err) return cb(err)
+		applyMW(idx,evt,args,cb)
+	}
+	if (mw.run) mw.run(evt,args,next)
+	else if (mw instanceof Function) mw(evt,args,next)
+	else applyMW(idx,evt,args,cb)
+
+},
 sigslot = function(self, def){
-    var
-    ss = pObj.extend(self.signals, def || [], extOpt),
-    signals = {}
+    var signals = {}
     
-    ss.forEach(function(evt){
+    Array.prototype.concat(self.signals||[],def||[]).forEach(function(evt){
         var sender = this
         signals[evt] = function(){
             return {
@@ -16,8 +32,8 @@ sigslot = function(self, def){
                 sender: sender,
                 evt: evt,
                 queue: false,
-                send: send,
-                sendNow: dispatch
+                send: proc,
+                sendNow: procNow
             }
         }
     }, self)
@@ -25,7 +41,25 @@ sigslot = function(self, def){
     self.on('all', recv, self)
         
     return signals
-},      
+},
+proc = function(a, from){
+	var self=this
+	applyMW(0,this.evt,this.args,function(err,evt,args){
+		if (err) return console.warn(self.evt,err)
+		self.evt=evt
+		self.args=args
+		send.call(self,a,from)
+	})
+},
+procNow = function(a, from){
+	var self=this
+	applyMW(0,this.evt,this.args,function(err,evt,args){
+		if (err) return console.warn(self.evt,err)
+		self.evt=evt
+		self.args=args
+		dispatch.call(self,a,from)
+	})
+},
 send = function(a, from){
     this.queue=true
     evts.push([this, a, from||this.sender])
@@ -63,4 +97,7 @@ this.update= function(){
     }
 }
 
-return sigslot
+return {
+	create:sigslot,
+	addMiddleware:addMW
+}
