@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const
-DEPS=0,STYLE=1,SPEC=2,PANE=3,FLYER=4,
+DEPS=0,STYLE=1,MIDDLEWARES=2,SPEC=3,PANE=4,FLYER=5,
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
 
 fs=require('fs'),
@@ -153,31 +153,34 @@ setup((err, project, projPath, outPath)=>{
 	pico=require('./lib/pico.js')
 	__=window=document=new Proxy({},handler)
 
-	const filteredProj=[project[DEPS], [...project[STYLE],`${opt.url}${proj}.css`], [], {}, project[FLYER]]
+	const filteredProj=[project[DEPS], [...project[STYLE],`${opt.url}${proj}.css`], [], [], {}, project[FLYER]]
 
-	scan(project[SPEC], filteredProj[SPEC], new Set, new Set, (err, include, style)=>{
+	scan(project[MIDDLEWARES], filteredProj[MIDDLEWARES], new Set, new Set, (err, include, style)=>{
 		if (err) return console.error(err)
-		const
-		panes=project[PANE],
-		keys=Object.keys(panes)
-
-		scanPane(keys, panes, filteredProj[PANE], include, style, (err, include, style)=>{
+		scan(project[SPEC], filteredProj[SPEC], include, style, (err, include, style)=>{
 			if (err) return console.error(err)
+			const
+			panes=project[PANE],
+			keys=Object.keys(panes)
 
-            fs.writeFile(projPath, JSON.stringify(filteredProj),(err)=>{
+			scanPane(keys, panes, filteredProj[PANE], include, style, (err, include, style)=>{
 				if (err) return console.error(err)
-				writeCSS(style,(err)=>{
-					if (err) return console.error(err)
 
-					pico.build({
-						entry:path.resolve(modDir,mainjs),
-						output:outPath,
-						deps:[...deps],
-						include:[...include],
-						exclude:[path.basename(mainjs,'.js')] 
+				fs.writeFile(projPath, JSON.stringify(filteredProj),(err)=>{
+					if (err) return console.error(err)
+					writeCSS(style,(err)=>{
+						if (err) return console.error(err)
+
+						pico.build({
+							entry:path.resolve(modDir,mainjs),
+							output:outPath,
+							deps:[...deps],
+							include:[...include],
+							exclude:[path.basename(mainjs,'.js')] 
+						})
 					})
 				})
 			})
 		})
-    })
+	})
 })

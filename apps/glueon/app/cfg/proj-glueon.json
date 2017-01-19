@@ -1,6 +1,8 @@
 [
     [
     ],[
+	],[
+		["log","file","sendLog"]
     ],[
         ["options","map",{"el":"#__"}],
         ["html","file","Frame.html"],
@@ -30,9 +32,6 @@
 			"update":"glueon/chat/update",
 			"delete":"glueon/chat/remove"
 		}],
-		["","sigslot",[
-			["log","file","sendLog"]
-		]],
 		["layers","list",["#layer0","#layer1"]],
         ["js/Pane","view",[
 			["options","map",{"el":"#__ #layer0 #pane0"}],
@@ -195,6 +194,7 @@
 				["chats","ref","chats"],
 				["dialogues","ref","dialogues"],
 				["cred","ref","cred"],
+				["filter","file","sendLog"],
 				["newGroupForm","list",[
 					{"type":"text","name":"name","label":"Name","holder":"Group Name","required":1},
 					{"type":"text","name":"desc","label":"Description","holder":"Group Description","required":1}

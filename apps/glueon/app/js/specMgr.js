@@ -5,7 +5,6 @@ Stream= require('js/Stream'),
 Socket= require('js/Socket'),
 Worker= require('js/Worker'),
 Service= require('js/Service'),
-sigslot= require('js/sigslot'),
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
 ERR1='ref of REF not found',ERR2='record RECORD of ref of REF not found',
 extOpt={mergeArr:1},
@@ -112,12 +111,6 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
 		return load(deps, params, s[VALUE], 0, [], function(err, config){
             if (err) return cb(err, deps, userData)
 			deps.push(create(s[ID], t, new Service(s[ID],config)))
-			load(ctx, params, spec, idx, deps, cb, userData)
-		})
-    case 'sigslot': // ID[id] TYPE[sigslot] VALUE[spec]
-		return load(deps, params, s[VALUE], 0, [], function(err, config){
-            if (err) return cb(err, deps, userData)
-			sigslot.addMiddleware(config)
 			load(ctx, params, spec, idx, deps, cb, userData)
 		})
     case 'param': // ID[id] TYPE[param] VALUE[index]

@@ -1,5 +1,5 @@
 var
-DEPS=0,STYLE=1,SPEC=2,PAGES=3,FLYERS=4,
+DEPS=0,STYLE=1,MIDDLEWARES=2,SPEC=3,PAGES=4,FLYERS=5,
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
 EVT_RESIZE='frameresize',
 EVT_RESIZE_LEN=EVT_RESIZE.length,
@@ -8,6 +8,7 @@ Router = require('js/Router'),
 Module = require('js/Module'),
 specMgr= require('js/specMgr'),
 network = require('js/network'),
+sigslot= require('js/sigslot'),
 includeAll= function(urls, func, type, cb){
     if (!urls || !urls.length) return cb()
     func(urls.shift(), type, function(){ includeAll(urls, func, type, cb) })
@@ -87,10 +88,14 @@ Body=Module.View.extend({
 
             includeAll(p[STYLE], __.dom.link, 'css', function(){
                 includeAll(p[DEPS], __.dom.link, 'js', function(){
-                    Module.View.prototype.initialize.call(self, null, {name:'Frame'}, 
-						p[SPEC].concat([
-							['env','map',e]
-						]))
+					specMgr.load(self.host, self.params, p[MIDDLEWARES], function(err, config){
+						if (err) return console.error('middleware err:',err)
+						sigslot.addMiddleware(config)
+						Module.View.prototype.initialize.call(self, null, {name:'Frame'}, 
+							p[SPEC].concat([
+								['env','map',e]
+							]))
+					})
                 })
             })
         })

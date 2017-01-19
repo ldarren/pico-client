@@ -18,10 +18,11 @@ return {
 		chats:'models',
 		dialogues:'models',
 		cred:'models',
+		filter:'file',
 		newGroupForm:'list'
 	},
 	create:function(deps){
-		if(deps.title)this.signals.header(deps.paneId,deps.title,deps.btnLeft,deps.btnRight).send(this.host)
+		if(deps.title)this.signals.header(deps.paneId,deps.title,deps.btnLeft,deps.btnRight).commit(deps.filter).send(this.host)
 		
 		var dir=cwd(this)
 		if (dir) this.slots.cd.call(this,this,this,dir.get('grp'),'')

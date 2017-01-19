@@ -8,13 +8,13 @@ addMW=function(arr){
 		middlewares.push(specMgr.getValue(a))
 	}
 },
-applyMW=function(idx,evt,args,cb){
-	if (middlewares.length <= idx) return cb(null,evt,args)
+applyMW=function(mws,evt,args,cb){
+	if (!mws.length) return cb(null,evt,args)
 	var
-	mw=middlewares[idx++],
+	mw=mws.shift(),
 	next=function(err,evt,args){
 		if (err) return cb(err)
-		applyMW(idx,evt,args,cb)
+		applyMW(mws,evt,args,cb)
 	}
 	if (mw.run) mw.run(evt,args,next)
 	else if (mw instanceof Function) mw(evt,args,next)
@@ -31,7 +31,9 @@ sigslot = function(self, def){
                 args: Array.prototype.slice.call(arguments),
                 sender: sender,
                 evt: evt,
+				mws:[],
                 queue: false,
+				commit:commit,
                 send: proc,
                 sendNow: procNow
             }
@@ -42,22 +44,27 @@ sigslot = function(self, def){
         
     return signals
 },
-proc = function(a, from){
+commit = function(mw){
+	if (mw.length) return Array.prototype.push(this.mws,mw)
+	this.mws.push(mw)
+	return this
+},
+proc = function(a){
 	var self=this
-	applyMW(0,this.evt,this.args,function(err,evt,args){
+	applyMW(middlewares.concat(this.mws),this.evt,this.args,function(err,evt,args){
 		if (err) return console.warn(self.evt,err)
 		self.evt=evt
 		self.args=args
-		send.call(self,a,from)
+		send.call(self,a)
 	})
 },
-procNow = function(a, from){
+procNow = function(a){
 	var self=this
-	applyMW(0,this.evt,this.args,function(err,evt,args){
+	applyMW(middlewares.concat(this.mws),this.evt,this.args,function(err,evt,args){
 		if (err) return console.warn(self.evt,err)
 		self.evt=evt
 		self.args=args
-		dispatch.call(self,a,from)
+		dispatch.call(self,a)
 	})
 },
 send = function(a, from){
