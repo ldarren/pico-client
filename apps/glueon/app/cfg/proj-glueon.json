@@ -194,7 +194,6 @@
 				["chats","ref","chats"],
 				["dialogues","ref","dialogues"],
 				["cred","ref","cred"],
-				["filter","file","sendLog"],
 				["newGroupForm","list",[
 					{"type":"text","name":"name","label":"Name","holder":"Group Name","required":1},
 					{"type":"text","name":"desc","label":"Description","holder":"Group Description","required":1}

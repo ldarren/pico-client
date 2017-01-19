@@ -18,11 +18,13 @@ return {
 		chats:'models',
 		dialogues:'models',
 		cred:'models',
-		filter:'file',
 		newGroupForm:'list'
 	},
 	create:function(deps){
-		if(deps.title)this.signals.header(deps.paneId,deps.title,deps.btnLeft,deps.btnRight).commit(deps.filter).send(this.host)
+		if(deps.title)this.signals.header(deps.paneId,deps.title,deps.btnLeft,deps.btnRight)
+			.run([function(evt,args,next){console.log(1);next(evt,args)},function(evt,args,next){console.log(2);next(evt,args)}])
+			.run(function(evt,args,next){console.log(3);next(evt,args)})
+			.send(this.host)
 		
 		var dir=cwd(this)
 		if (dir) this.slots.cd.call(this,this,this,dir.get('grp'),'')

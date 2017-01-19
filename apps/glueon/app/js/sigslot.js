@@ -9,17 +9,16 @@ addMW=function(arr){
 	}
 },
 applyMW=function(mws,evt,args,cb){
-	if (!mws.length) return cb(null,evt,args)
+	if (!mws.length) return cb(evt,args)
 	var
 	mw=mws.shift(),
-	next=function(err,evt,args){
-		if (err) return cb(err)
+	next=function(evt,args){ 
+		if (!evt) return cb(evt,args)
 		applyMW(mws,evt,args,cb)
 	}
-	if (mw.run) mw.run(evt,args,next)
-	else if (mw instanceof Function) mw(evt,args,next)
-	else applyMW(idx,evt,args,cb)
-
+	if (mw instanceof Function) mw(evt,args,next)
+	else if (mw.run) mw.run(evt,args,next)
+	else applyMW(mws,evt,args,cb)
 },
 sigslot = function(self, def){
     var signals = {}
@@ -33,7 +32,7 @@ sigslot = function(self, def){
                 evt: evt,
 				mws:[],
                 queue: false,
-				commit:commit,
+				run:run,
                 send: proc,
                 sendNow: procNow
             }
@@ -44,15 +43,15 @@ sigslot = function(self, def){
         
     return signals
 },
-commit = function(mw){
-	if (mw.length) return Array.prototype.push(this.mws,mw)
-	this.mws.push(mw)
+run = function(mw){
+	if (mw.length) this.mws=this.mws.concat(mw)
+	else this.mws.push(mw)
 	return this
 },
 proc = function(a){
 	var self=this
-	applyMW(middlewares.concat(this.mws),this.evt,this.args,function(err,evt,args){
-		if (err) return console.warn(self.evt,err)
+	applyMW(this.mws.concat(middlewares),this.evt,this.args,function(evt,args){
+		if (!evt) return console.warn(self.evt,'signal aborted',args)
 		self.evt=evt
 		self.args=args
 		send.call(self,a)
@@ -60,8 +59,8 @@ proc = function(a){
 },
 procNow = function(a){
 	var self=this
-	applyMW(middlewares.concat(this.mws),this.evt,this.args,function(err,evt,args){
-		if (err) return console.warn(self.evt,err)
+	applyMW(this.mws.concat(middlewares),this.evt,this.args,function(evt,args){
+		if (!evt) return console.warn(self.evt,'signal aborted',args)
 		self.evt=evt
 		self.args=args
 		dispatch.call(self,a)
