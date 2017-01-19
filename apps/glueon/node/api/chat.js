@@ -20,11 +20,10 @@ return {
         this.setOutput(list,sqlChat.cleanList,sqlChat)
         next()
     },
-	// TODO: ses email verification
-	create(cred,input,key,secret,output,next){
-		sqlChat.set(Object.assign({},input,{key:key,secret:secret}), cred.id, (err, entity)=>{
+	create(cred,input,output,next){
+		sqlChat.set(input, cred.id, (err, chat)=>{
 			if (err) return next(this.error(500,err.message))
-			Object.assign(output,{id:entity.id})
+			Object.assign(output,chat)
 			this.addJob([output], sqlChat.get, sqlChat)
 			next()
 		})
@@ -35,8 +34,23 @@ return {
 	list(input,next){
 		next()
 	},
-	read(input,output,next){
-		next()
+	read(chat,output,next){
+		sqlChat.get(chat,(err,chat)=>{
+			if (err) return next(this.error(500,err.message))
+			Object.assign(output,chat)
+			next()
+		})
+	},
+	find(cred,input,$external,output,next){
+		const cb=(err,rows)=>{
+			if (err) return next(this.error(500,err.message))
+			if (!rows.length) return next(null,'glueon/chat/create')
+			Object.assign(output,rows[0])
+			next()
+		}
+		if (!cred.id) return next(null,'gluen/chat/create')
+		if ($external) sqlChat.findExternal(input.dirId, cred.id, cb)
+		else sqlChat.find(input.id, cb)
 	},
 	update(input,next){
 		next()

@@ -32,6 +32,10 @@
 			"update":"glueon/chat/update",
 			"delete":"glueon/chat/remove"
 		}],
+		["chatLog","models",{
+			"idAttribute":"_id"
+		}],
+		["data","models",{}],
 		["layers","list",["#layer0","#layer1"]],
         ["js/Pane","view",[
 			["options","map",{"el":"#__ #layer0 #pane0"}],
@@ -214,29 +218,37 @@
         "chat":[
 			["options","map",{"els":["#pane0 #page","#pane1 #page"]}],
 			["cred","ref","cred"],
+			["folder","model","directory",0],
 			["chats","ref","chats"],
+			["data","ref","data"],
+			["chatLog","ref","chatLog"],
+			["msg","models",{
+			}],
 			["ChatCtrl","ctrl",[
 				["paneId","ref","paneId"],
 				["title","text","Chat"],
 				["btnRight","map",{"icon":"icon_edit"}],
+				["folder","ref","folder"],
 				["chats","ref","chats"],
-				["wd","param",0]
+				["chatLog","ref","chatLog"],
+				["msg","ref","msg"]
 			]],
 			["scrollable/ListView","view",[
 				["options","map",{"className":"scrollable"}],
 				["css","file","scrollable/Scrollable.css"],
-				["list","ref","chat"],
-				["selected","param",0],
+				["list","ref","msg"],
+				["data","ref","data"],
 				["Cell","view",[
 					["tpl","file","ChatRow.asp"],
 					["css","file","scrollable/Row.css"],
-					["selected","ref","selected"]
+					["data","ref","data"]
 				],["scrollable/Row","ChatRow"]]
 			]],
 			[["footer/ChatBar","ChatBarMixin"],"view",[
 				["tpl","file","footer/ChatBar.asp"],
 				["css","file","footer/ChatBar.css"],
-				["icon","text","icon_chat"]
+				["icon","text","icon_chat"],
+				["msg","ref","msg"]
 			]]
         ]
     },[

@@ -23,7 +23,7 @@ applyMW=function(mws,evt,args,cb){
 sigslot = function(self, def){
     var signals = {}
     
-    Array.prototype.concat(self.signals||[],def||[]).forEach(function(evt){
+    ;(self.signals||[]).concat(def||[]).forEach(function(evt){
         var sender = this
         signals[evt] = function(){
             return {
@@ -44,8 +44,8 @@ sigslot = function(self, def){
     return signals
 },
 run = function(mw){
-	if (mw.length) this.mws=this.mws.concat(mw)
-	else this.mws.push(mw)
+	if (mw instanceof Function)this.mws.push(mw)
+	else if (mw.length) Array.prototype.push.apply(this.mws,mw)
 	return this
 },
 proc = function(a){

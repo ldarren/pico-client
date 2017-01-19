@@ -64,6 +64,10 @@ return {
 			next()
 		})
 	},
+	isExternal(cred,input,$external,next){
+		this.set($external,1)
+		next()
+	},
 	// poll local cache for changes
 	poll(cred,input,output,next){
 		next()

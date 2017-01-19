@@ -119,6 +119,22 @@
             ["directory","replyPrivate","dir"],
 			[]
 		],
+		"glueon/chat/create":[
+            ["util","have","input",[["dirId"]]],
+            ["user","verify","cred","me"],
+            ["chat","create","cred","input","chat"],
+            ["chat","replyPrivate","chat"],
+			[]
+		],
+		"glueon/chat/read":[
+            ["util","have","input",[["dirId"]]],
+            ["user","verify","cred","me"],
+            ["directory","isExternal","cred","input",["$external"]],
+            ["chat","find","cred","input","$external","chat"],
+            ["chat","read","chat"],
+            ["chat","replyPrivate","chat"],
+			[]
+		],
         "#help": [
             ["util","help"] 
         ] 

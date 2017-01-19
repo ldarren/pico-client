@@ -53,7 +53,7 @@ module.exports={
 		if (!chat || !chat.id) return cb(ERR_INVALID_INPUT)
 		client.query(GET,[chat.id],(err,chats)=>{
 			if (err) return cb(err)
-			cb(null,chat)
+			cb(null,chats[0])
 		})
 	},
 	gets(chats,cb){
@@ -64,6 +64,20 @@ module.exports={
 			if (err) return cb(err)
 			chat.id=result.insertId
 			cb(err, chat)
+		})
+	},
+	find(dirId,cb){
+		if (!chat || !chat.id) return cb(ERR_INVALID_INPUT)
+		client.query(FIND,[dirId,0],(err,chats)=>{
+			if (err) return cb(err)
+			cb(null,chats[0])
+		})
+	},
+	findExternal(dirId,cby,cb){
+		if (!chat || !chat.id) return cb(ERR_INVALID_INPUT)
+		client.query(FIND_EXTERNAL,[dirId,1,cby],(err,chats)=>{
+			if (err) return cb(err)
+			cb(null,chats[0])
 		})
 	},
 	touch(chat,cb){
