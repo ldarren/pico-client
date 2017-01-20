@@ -27,8 +27,7 @@ return {
 			.send(this.host)
 		
 		var dir=cwd(this)
-		if (dir) this.slots.cd.call(this,this,this,dir.get('grp'),'')
-		else if (deps.cred.length) this.slots.cd.call(this,this,this,deps.cred.at(0).get('cwd'),'')
+		if (dir) this.slots.cd.call(this,this,this,dir)
 	},
 	slots:{
 		headerButtonClicked:function(from,sender,hash){
@@ -65,8 +64,8 @@ return {
 					dir=cwd(self),
 					grp=dir?dir.get('grp'):res.grp // for anonymouse user, dir could be undefined
 					// make sure grp unchanged
-					if (self.grp && self.grp !== grp) return
-					self.grp=grp
+					if (self.currFolder && self.currFolder !== model) return
+					self.currFolder=model
 					self.deps.dialogues.add(model)
 					console.log('added new group')
 				},
@@ -75,15 +74,16 @@ return {
 				}
 			})
 		},
-		cd:function(from,sender,grp,name){
-			if (this.grp === grp) return
-			this.grp=grp
+		cd:function(from,sender,folder){
+			if (this.currFolder=== folder) return
+			this.currFolder=folder
 			var
 			dialogues=this.deps.dialogues,
 			dir=this.deps.directory,
+			grp=folder.get('grp'),
 			p=grp.lastIndexOf('/')
 
-			dialogues.set(dir.where({grp:this.grp}))
+			dialogues.set(dir.where({grp:grp}))
 
 			if (-1 !== p) dialogues.add(dir.find({grp:grp.substr(0,p),name:''}))
 		}

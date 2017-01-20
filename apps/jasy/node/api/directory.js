@@ -48,6 +48,10 @@ return {
         this.setOutput(list,sqlDir.cleanList,sqlDir)
         next()
     },
+	output(group,next){
+        this.setOutput(group)
+        next()
+	},
 	replyStream($grp,output,next){
 		const list=output.directory
 		if (!list) return next()
@@ -198,21 +202,11 @@ console.log('poll',err,usermaps,lastseen)
 			next()
 		})
 	},
-	groupList(wd,dir,next){
-		//const d=[],f=[]
-
-		sqlDir.usermap_gets(dir.id,'role',(err,rows)=>{
+	group(input,next){
+		sqlDir.usermap_gets(input.id,'role',(err,rows)=>{
 			if (err) return next(this.error(500,err.message))
-			dir.users=pObj.pluck(rows,'userId')
+			input.users=pObj.pluck(rows,'userId')
 			next()
-			/*
-			sqlDir.findNames(wd,(err,rows)=>{
-				if (err) return next(this.error(500,err.message))
-				d.push(...pObj.pluck(rows,'name'))
-				Object.assign(dir,{d,f})
-				next()
-			})
-			*/
 		})
 	}
 }

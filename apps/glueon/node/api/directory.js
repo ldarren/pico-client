@@ -28,44 +28,50 @@ return {
 	replyStream(output,next){
         next()
 	},
-	search(input,output,next){
-		redisDir.publicGet(input,'p',(err,dirs)=>{
-			if (err) return next(this.error(500))
-			if (!dirs) return next(null,'to/remote/directory/search')
-			output.push(...dirs)
-			next()
-		})
-	},
-	list(cred,input,output,next){
-		redisDir.get(cred,input,'d',(err,dirs)=>{
+	$list(cred,input,output,next){
+		redisDir.get(cred,input,(err,dirs)=>{
 			if (err) return next(this.error(500))
 			if (!dirs) return next(null,'to/remote/directory/list')
 			output.push(...dirs)
 			next()
 		})
 	},
-	groupList(cred,input,output,next){
-		redisDir.get(cred,input,'g',(err,group)=>{
+	$search(input,output,next){
+		redisDir.getPublic(input,(err,dirs)=>{
 			if (err) return next(this.error(500))
-			if (!group) return next(null,'to/remote/group/list')
+			if (!dirs) return next(null,'to/remote/directory/search')
+			output.push(...dirs)
+			next()
+		})
+	},
+	$group(input,output,$remote,next){
+		redisDir.getGroup(input.id,(err,group)=>{
+			if (err) return next(this.error(500))
+			if (!group) return next(null,$remote)
 			Object.assign(output,group)
 			next()
 		})
 	},
-	update(cred,input,type,dir,next){
-		redisDir.set(cred,input,type,dir,(err)=>{
+	update(cred,input,dir,next){
+		redisDir.set(cred,input,dir,(err)=>{
 			if (err) return next(this.error(500))
 			next()
 		})
 	},
-	publicUpdate(input,type,dir,next){
-		redisDir.publicSet(input,type,dir,(err)=>{
+	updatePublic(input,dir,next){
+		redisDir.setPublic(input,dir,(err)=>{
 			if (err) return next(this.error(500))
 			next()
 		})
 	},
-	isExternal(cred,input,$external,next){
-		this.set($external,1)
+	updateGroup(input,group,next){
+		redisDir.setGroup(input,group,(err)=>{
+			if (err) return next(this.error(500))
+			next()
+		})
+	},
+	isExternal(cred,group,$external,next){
+		this.set($external,~group.users.indexOf(cred.id))
 		next()
 	},
 	// poll local cache for changes

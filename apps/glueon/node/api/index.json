@@ -38,22 +38,31 @@
             ["user","replyPrivate","user"],
 			[]
 		],
-		"to/remote/group/list":[
-			["remote","request","cred","input",["from/remote/group/list"],"group"],
-			["directory","update","cred","input",["g"],"group"],
-            ["directory","replyPrivate","group"],
+		"to/remote/directory/list":[
+			["remote","request","cred","input",["from/remote/directory/list"],":dirs"],
+			["directory","update","cred","input",":dirs"],
+            ["directory","replyList",":dirs"],
 			[]
 		],
 		"to/remote/directory/search":[
 			["remote","request","cred","input",["from/remote/directory/search"],":dirs"],
-			["directory","publicUpdate","input",["d"],":dirs"],
+			["directory","updatePublic","input",":dirs"],
             ["directory","replyList",":dirs"],
 			[]
 		],
-		"to/remote/directory/list":[
-			["remote","request","cred","input",["from/remote/directory/list"],":dirs"],
-			["directory","update","cred","input",["d"],":dirs"],
-            ["directory","replyList",":dirs"],
+		"to/remote/group/list":[
+			["remote","request","cred","input",["from/remote/group/list"],"group"],
+			["directory","updateGroup","input","group"],
+            ["directory","replyPrivate","group"],
+			[]
+		],
+		"to/remote/chat/read":[
+			["remote","request","cred","input",["from/remote/group/list"],"group"],
+			["directory","updateGroup","input","group"],
+            ["directory","isExternal","cred","group",["$external"]],
+            ["chat","$find","cred","input","$external","chat"],
+            ["chat","read","chat"],
+            ["chat","replyPrivate","chat"],
 			[]
 		],
 		"ERR//glueon/stream":[
@@ -87,23 +96,10 @@
         "glueon/user/read":[
             ["util","have","input",[["id"]]],
             ["user","verify","cred","me"],
-            ["user","read","cred","input","me","output"],
+            ["user","$read","cred","input","me","output"],
             ["user","reply","output"],
             []
         ],
-		"glueon/directory/list":[
-            ["util","have","input",[["grp","name"]]],
-            ["user","verify","cred","me"],
-            ["directory","list","cred","input",":dirs"],
-            ["directory","replyList",":dirs"],
-			[]
-		],
-		"glueon/directory/search":[
-            ["util","have","input",[["grp"]]],
-            ["directory","search","input",":dirs"],
-            ["directory","replyList",":dirs"],
-			[]
-		],
 		"glueon/directory/create":[
             ["util","have","input",[["name"]]],
             ["user","verify","cred","me"],
@@ -112,25 +108,39 @@
             ["directory","replyPrivate","dir"],
 			[]
 		],
-		"glueon/group/list":[
+		"glueon/directory/list":[
             ["util","have","input",[["grp","name"]]],
             ["user","verify","cred","me"],
-            ["directory","groupList","cred","input","dir"],
-            ["directory","replyPrivate","dir"],
+            ["directory","$list","cred","input",":dirs"],
+            ["directory","replyList",":dirs"],
+			[]
+		],
+		"glueon/directory/search":[
+            ["util","have","input",[["grp"]]],
+            ["directory","$search","input",":dirs"],
+            ["directory","replyList",":dirs"],
+			[]
+		],
+		"glueon/group/list":[
+            ["util","have","input",[["id"]]],
+            ["user","verify","cred","me"],
+            ["directory","$group","input","group",["to/remote/group/list"]],
+            ["directory","replyPrivate","group"],
 			[]
 		],
 		"glueon/chat/create":[
-            ["util","have","input",[["dirId"]]],
+            ["util","have","input",[["id"]]],
             ["user","verify","cred","me"],
             ["chat","create","cred","input","chat"],
             ["chat","replyPrivate","chat"],
 			[]
 		],
 		"glueon/chat/read":[
-            ["util","have","input",[["dirId"]]],
+            ["util","have","input",[["id"]]],
             ["user","verify","cred","me"],
-            ["directory","isExternal","cred","input",["$external"]],
-            ["chat","find","cred","input","$external","chat"],
+            ["directory","$group","input","group",["to/remote/chat/read"]],
+            ["directory","isExternal","cred","group",["$external"]],
+            ["chat","$find","cred","input","$external","chat"],
             ["chat","read","chat"],
             ["chat","replyPrivate","chat"],
 			[]

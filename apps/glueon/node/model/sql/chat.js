@@ -6,7 +6,9 @@ ENUM=				[],
 
 GET=				'SELECT * FROM `chat` WHERE `id`=? AND `s`!=0;',
 GETS=				'SELECT * FROM `chat` WHERE `id` IN (?) AND `s`!=0;',
-SET=				'INSERT INTO `chat` (`cby`) VALUES (?);',
+SET=				'INSERT INTO `chat` (`dirId`,`topic`,`cby`) VALUES (?);',
+FIND=				'SELECT * FROM `chat` WHERE `dirId`=? AND `external`=0 AND `s`!=0;',
+FIND_EXTERNAL=		'SELECT * FROM `chat` WHERE `dirId`=? AND `external`=1 AND cby=? AND `s`!=0;',
 TOUCH=				'UPDATE `chat` SET `uat`=NOW() WHERE id=?;',
 POLL=				'SELECT * FROM `chat` WHERE id IN (?) AND `uat`>? AND `s`!=0;',
 
@@ -67,18 +69,12 @@ module.exports={
 		})
 	},
 	find(dirId,cb){
-		if (!chat || !chat.id) return cb(ERR_INVALID_INPUT)
-		client.query(FIND,[dirId,0],(err,chats)=>{
-			if (err) return cb(err)
-			cb(null,chats[0])
-		})
+		if (!dirId) return cb(ERR_INVALID_INPUT)
+		client.query(FIND,[dirId],cb)
 	},
 	findExternal(dirId,cby,cb){
-		if (!chat || !chat.id) return cb(ERR_INVALID_INPUT)
-		client.query(FIND_EXTERNAL,[dirId,1,cby],(err,chats)=>{
-			if (err) return cb(err)
-			cb(null,chats[0])
-		})
+		if (!dirId) return cb(ERR_INVALID_INPUT)
+		client.query(FIND_EXTERNAL,[dirId,cby],cb)
 	},
 	touch(chat,cb){
 		client.query(TOUCH, [chat.id], cb)

@@ -53,7 +53,7 @@ return {
 	list(input,output,next){
 		next()
 	},
-	read(cred,input,me,output,next){
+	$read(cred,input,me,output,next){
 		redisUser.get(cred,(err,user)=>{
 			if (err) return next(this.error(500))
 			if (!user) return next(null,'to/remote/user/read')

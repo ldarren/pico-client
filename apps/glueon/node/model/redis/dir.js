@@ -8,32 +8,46 @@ module.exports={
 		client=context.dirCache
 		cb()
 	},
-	get(cred,input,type,cb){
-		client.get(`${type}:${cred.id}:${input.grp||''}:${input.name||''}`,(err,res)=>{
+	get(cred,input,cb){
+		client.get(`d:${cred.id}:${input.grp||''}:${input.name||''}`,(err,res)=>{
 			if (err) return cb(err)
 			try{var dir=JSON.parse(res)}
 			catch(ex){return cb(ex)}
 			cb(null,dir)
 		})
 	},
-	set(cred,input,type,dir,cb){
-		client.setex(`${type}:${cred.id}:${input.grp||''}:${input.name||''}`,DAY1,JSON.stringify(dir),cb)
+	set(cred,input,dir,cb){
+		client.setex(`d:${cred.id}:${input.grp||''}:${input.name||''}`,DAY1,JSON.stringify(dir),cb)
 	},
-	del(cred,input,type,cb){
-		client.del(`${type}:${cred.id}:${input.grp||''}:${input.name||''}`,cb)
+	del(cred,input,cb){
+		client.del(`d:${cred.id}:${input.grp||''}:${input.name||''}`,cb)
 	},
-	publicGet(input,type,cb){
-		client.get(`${type}:${input.grp||''}:${input.name||''}:`,(err,res)=>{
+	getPublic(input,cb){
+		client.get(`p:${input.grp||''}:${input.name||''}:`,(err,res)=>{
 			if (err) return cb(err)
 			try{var dir=JSON.parse(res)}
 			catch(ex){return cb(ex)}
 			cb(null,dir)
 		})
 	},
-	publicSet(input,type,dir,cb){
-		client.setex(`${type}:${input.grp||''}:${input.name||''}`,DAY1,JSON.stringify(dir),cb)
+	setPublic(input,dir,cb){
+		client.setex(`p:${input.grp||''}:${input.name||''}`,DAY1,JSON.stringify(dir),cb)
 	},
-	publicDel(input,type,cb){
-		client.del(`${type}:${input.grp||''}:${input.name||''}`,cb)
+	delPublic(input,cb){
+		client.del(`p:${input.grp||''}:${input.name||''}`,cb)
+	},
+	getGroup(dirId,cb){
+		client.get(`g:${dirId}`,(err,res)=>{
+			if (err) return cb(err)
+			try{var group=JSON.parse(res)}
+			catch(ex){return cb(ex)}
+			cb(null,group)
+		})
+	},
+	setGroup(dirId,group,cb){
+		client.setex(`g:${dirId}`,DAY1,JSON.stringify(group),cb)
+	},
+	delGroup(dirId,cb){
+		client.del(`g:${dirId}}`,cb)
 	}
 }

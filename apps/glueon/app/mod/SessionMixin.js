@@ -17,17 +17,16 @@ poll=function(self,grp,name){
 		}
 	})
 },
-cd=function(self,grp,name){
+cd=function(self,dir){
 	//TODO: save bandwidth, by comparing directory and groups date, not same fetch then refresh
 	var deps=self.deps
 	deps.groups.fetch({
 		data:{
-			grp:grp,
-			name:name
+			id:dir.id
 		},
 		success:function(coll,res){
 			console.log('cd suceeded')
-			var wd=res.wd
+			var wd=dir.get('wd')
 			deps.credExtra.at(0).set('cwd',wd)
 			deps.credential.at(0).set('cwd',wd)
 		},
@@ -64,12 +63,11 @@ return {
 	slots:{
 		userReady:function(from,sender,model){
 			poll(this,'','')
-			//cd(this,'','')
 			search(this,this.deps.searchDir) //TODO: move this to create once anonymous user is ready
 		},
-		cd:function(from,sender,grp,name){
-			if (this.deps.directory.findWhere({grp:dir})) return
-			cd(this,grp,name)
+		cd:function(from,sender,dir){
+			if (this.deps.groups.findWhere({id:dir.id})) return
+			cd(this,dir)
 		}
 	},
 	credential:function(model){

@@ -65,8 +65,6 @@
 			["util","read","input",["name","$name"]],
             ["directory","newGroup","cred","$cwd","$name","newdir"],
 			["directory","read","newdir"],
-			["directory","join","$cwd","$name","$wd"],
-			["directory","groupList","$wd","newdir"],
             ["directory","replyPrivate","$grp","newdir"],
 			[]
 		],
@@ -96,17 +94,12 @@
 			[]
 		],
 		"from/remote/group/list":[
-            ["util","have","input",[["grp","name"]]],
+            ["util","have","input",[["id"]]],
 			["entity","findId","cred",["$entId"]],
 			["entity","getMapAll","$entId","ent"],
 			["remote","verify","cred","ent"],
-			["util","read","ent",["home","$grp"]],
-			["util","read","input",["grp","$ngrp"]],
-			["util","read","input",["name","$name"]],
-			["directory","join","$grp","$ngrp","$name",["$wd"]],
-			["directory","find","$wd","dir"],
-			["directory","groupList","$wd","dir"],
-            ["directory","replyPrivate","$grp","dir"],
+			["directory","group","input"],
+            ["directory","output","input"],
 			[]
 		],
 		"session.remote":[
@@ -194,14 +187,10 @@
             []
         ],
 		"jasy/group/list":[
-            ["util","have","input",[["grp","name"]]],
+            ["util","have","input",[["id"]]],
             ["user","verify","cred",["$grp","$cwd"]],
-			["util","read","input",["grp","$ngrp"]],
-			["util","read","input",["name","$nname"]],
-			["directory","join","$grp","$ngrp","$nname",["$wd"]],
-			["directory","find","$wd","dir"],
-			["directory","groupList","$wd","dir"],
-            ["directory","replyPrivate","$grp","dir"],
+			["directory","group","input"],
+            ["directory","output","input"],
 			[]
 		],
 		"jasy/directory/create":[
@@ -212,8 +201,6 @@
 			["util","read","input",["name","$name"]],
             ["directory","newGroup","cred","$cwd","$name","newdir"],
 			["directory","read","newdir"],
-			["directory","join","$cwd","$name","$wd"],
-			["directory","groupList","$wd","newdir"],
             ["directory","replyPrivate","$grp","newdir"],
 			[]
 		],

@@ -7,7 +7,7 @@ return {
 			this.select()
 			var data=this.deps.data
 			if (data.id) Router.go('chats/'+data.id)
-			this.signals.cd(data.get('grp'),data.get('name')).send(this.host)
+			this.signals.cd(data).send(this.host)
 		}
 	}
 }
