@@ -1,24 +1,15 @@
 var
-network=require('js/network'),
 dummyCB=(err)=>{if (err) return console.error(err)},
-cd=function(self,grp,name,cb){
+cd=function(self,dir,cb){
 	cb=cb||dummyCB
 	//TODO: save bandwidth, by comparing directory and groups date, not same fetch then refresh
 	var deps=self.deps
-	deps.groups.fetch({
-		data:{
-			grp:grp,
-			name:name
-		},
-		success:function(coll,res){
-			var wd=res.wd
-			deps.credExtra.at(0).set('cwd',wd)
-			deps.credential.at(0).set('cwd',wd)
-			cb(null,res)
-		},
-		error:function(coll,err){
-			cb(err)
-		}
+	deps.groups.read({id:dir.id}, function(err,model,res){
+		if (err) return cb(err)
+		var wd=dir.wd
+		deps.credExtra.at(0).set('cwd',wd)
+		deps.credential.at(0).set('cwd',wd)
+		cb(null,res)
 	})
 }
 
@@ -30,11 +21,11 @@ return {
 	},
 	slots:{
 		userReady:function(from,sender,model){
-			cd(this,'','')
+			var deps=this.deps
+			cd(this,deps.directory.findWhere({wd:deps.credExtra.at(0).get('cwd')}))
 		},
-		cd:function(from,sender,grp,name,cb){
-			if (this.deps.directory.findWhere({grp:dir})) return
-			cd(this,grp,name,cb)
+		cd:function(from,sender,dir,cb){
+			cd(this,dir,cb)
 		}
 	},
 	credential:function(model){

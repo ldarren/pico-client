@@ -29,7 +29,7 @@
 			"delete":"jasy/directory/remove"
 		}],
 		["groups","models",{
-			"list":"jasy/group/list"
+			"read":"jasy/group/read"
 		}],
 		["layers","list",["#layer0","#layer1"]],
         ["js/Pane","view",[

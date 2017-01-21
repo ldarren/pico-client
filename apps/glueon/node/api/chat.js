@@ -20,8 +20,8 @@ return {
         this.setOutput(list,sqlChat.cleanList,sqlChat)
         next()
     },
-	create(cred,input,output,next){
-		sqlChat.set({dirId:input.id}, cred.id, (err, chat)=>{
+	create(cred,input,$external,output,next){
+		sqlChat.set({dirId:input.id,topic:input.topic||'',external:$external}, cred.id, (err, chat)=>{
 			if (err) return next(this.error(500,err.message))
 			Object.assign(output,chat)
 			this.addJob([output], sqlChat.get, sqlChat)

@@ -8,6 +8,7 @@ poll=function(self,grp,name){
 			grp:grp,
 			name:name
 		},
+		remove:false,// dun remove search data
 		success:function(coll,res){
 			console.log('poll dir suceeded')
 		},
@@ -20,20 +21,12 @@ poll=function(self,grp,name){
 cd=function(self,dir){
 	//TODO: save bandwidth, by comparing directory and groups date, not same fetch then refresh
 	var deps=self.deps
-	deps.groups.fetch({
-		data:{
-			id:dir.id
-		},
-		success:function(coll,res){
-			console.log('cd suceeded')
-			var wd=dir.get('wd')
-			deps.credExtra.at(0).set('cwd',wd)
-			deps.credential.at(0).set('cwd',wd)
-		},
-		error:function(coll,err){
-			console.error('cd failed',err)
-			debugger
-		}
+	deps.groups.read({ id:dir.id }, function(err,model){
+		if (err) return console.error('cd failed')
+		console.log('cd suceeded')
+		var wd=dir.get('wd')
+		deps.credExtra.at(0).set('cwd',wd)
+		deps.credential.at(0).set('cwd',wd)
 	})
 },
 search=function(self,grp){
@@ -41,6 +34,7 @@ search=function(self,grp){
 	var deps=self.deps
 	deps.search.fetch({
 		data:{ grp:grp },
+		remove:false,
 		success:function(coll,res){
 			console.log('search suceeded')
 			deps.directory.add(res)

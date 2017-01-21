@@ -4,11 +4,21 @@ cwd=function(self){
 	deps=self.deps,
 	me=deps.cred.at(0)
 	if (!me) return
-	return deps.directory.findWhere({wd:me.get('cwd')})
+	var
+	dir=deps.directory,
+	d=dir.findWhere({wd:me.get('cwd')})
+	if (!d && dir.length) self.signals.cd(dir.at(0)).send(self.host) // go to the first dir available
+	return d
+},
+add=function(model){
+	if (!this.currFolder) cwd(this)
+},
+remove=function(model){
+	if (this.currFolder===model) cwd(this)
 }
 
 return {
-	signals:['header','modal_show'],
+	signals:['header','modal_show','cd'],
 	deps:{
 		paneId:'int',
 		title:'text',
@@ -28,6 +38,8 @@ return {
 		
 		var dir=cwd(this)
 		if (dir) this.slots.cd.call(this,this,this,dir)
+		this.listenTo(deps.directory,'add',add)
+		this.listenTo(deps.directory,'remove',remove)
 	},
 	slots:{
 		headerButtonClicked:function(from,sender,hash){
@@ -60,11 +72,9 @@ return {
 				data:data,
 				wait:true,
 				success:function(model,res){
-					var
-					dir=cwd(self),
-					grp=dir?dir.get('grp'):res.grp // for anonymouse user, dir could be undefined
-					// make sure grp unchanged
+					// make sure cwd unchanged
 					if (self.currFolder && self.currFolder !== model) return
+					if (!self.currFolder) this.signals.cd(model).send(self.host)
 					self.currFolder=model
 					self.deps.dialogues.add(model)
 					console.log('added new group')

@@ -93,7 +93,7 @@
             ["directory","replyList","$grp",":dirs"],
 			[]
 		],
-		"from/remote/group/list":[
+		"from/remote/group/read":[
             ["util","have","input",[["id"]]],
 			["entity","findId","cred",["$entId"]],
 			["entity","getMapAll","$entId","ent"],
@@ -186,7 +186,7 @@
             ["entity","replyPrivate","entity"],
             []
         ],
-		"jasy/group/list":[
+		"jasy/group/read":[
             ["util","have","input",[["id"]]],
             ["user","verify","cred",["$grp","$cwd"]],
 			["directory","group","input"],

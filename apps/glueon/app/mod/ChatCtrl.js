@@ -2,7 +2,7 @@ var
 getChat=function(chats,dirId,cb){
 	var chat=chats.findWhere({dirId:dirId})
 	if (chat) return cb(null, chat)
-	chats.read({dirId:dirId},cb)
+	chats.read({id:dirId},cb)
 },
 addChatLog=function(model){
 	if (this.currChat.id !== model.id) return
@@ -32,6 +32,7 @@ return {
 	
 		var self=this
 		getChat(deps.chats,deps.folder.id,function(err,chat){
+			if (err) return __.dialogs.alert(err,'Server Error')
 			self.currChat=chat
 			deps.msg.add(deps.chatLog.where({id:chat.id}))
 		})

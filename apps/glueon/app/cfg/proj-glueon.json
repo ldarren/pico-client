@@ -23,7 +23,7 @@
 			"delete":"glueon/directory/remove"
 		}],
 		["groups","models",{
-			"list":"glueon/group/list"
+			"read":"glueon/group/read"
 		}],
 		["chats","models",{
 			"list":"glueon/chat/list",

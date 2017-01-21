@@ -4,11 +4,21 @@ cwd=function(self){
 	deps=self.deps,
 	me=deps.cred.at(0)
 	if (!me) return
-	return deps.directory.findWhere({wd:me.get('cwd')})
+	var
+	dir=deps.directory,
+	d=dir.findWhere({wd:me.get('cwd')})
+	if (!d && dir.length) self.signals.cd(dir.at(0)).send(self.host) // go to the first dir available
+	return d
+},
+add=function(model){
+	if (!this.currFolder) cwd(this)
+},
+remove=function(model){
+	if (this.currFolder===model) cwd(this)
 }
 
 return {
-	signals:['header','modal_show'],
+	signals:['header','modal_show','cd'],
 	deps:{
 		paneId:'int',
 		title:'text',
@@ -23,9 +33,9 @@ return {
 		if(deps.title)this.signals.header(deps.paneId,deps.title,deps.btnLeft,deps.btnRight).send(this.host)
 		
 		var dir=cwd(this)
-		if (!dir) return
-
-		this.slots.cd.call(this,this,this,dir.get('grp'),'')
+		if (dir) this.slots.cd.call(this,this,this,dir)
+		this.listenTo(deps.directory,'add',add)
+		this.listenTo(deps.directory,'remove',remove)
 	},
 	slots:{
 		headerButtonClicked:function(from,sender,hash){
@@ -58,12 +68,10 @@ return {
 				data:data,
 				wait:true,
 				success:function(model,res){
-					var dir=cwd(self)
-					if (!dir) return
-					var grp=dir.get('grp')
-					// make sure grp unchanged
-					if (self.grp && self.grp !== grp) return
-					self.grp=grp
+					// make sure cwd unchanged
+					if (self.currFolder && self.currFolder !== model) return
+					if (!self.currFolder) this.signals.cd(model).send(self.host)
+					self.currFolder=model
 					self.deps.folder.add(model)
 					console.log('added new group')
 				},
@@ -72,15 +80,16 @@ return {
 				}
 			})
 		},
-		cd:function(from,sender,grp,name){
-			if (this.grp === grp) return
-			this.grp=grp
+		cd:function(from,sender,f){
+			if (this.currFolder === f) return
+			this.currFolder=f
 			var
 			folder=this.deps.folder,
 			dir=this.deps.directory,
+			grp=f.get('grp'),
 			p=grp.lastIndexOf('/')
 
-			folder.set(dir.where({grp:this.grp}))
+			folder.set(dir.where({grp:grp}))
 
 			if (-1 !== p) folder.add(dir.find({grp:grp.substr(0,p),name:''}))
 		}

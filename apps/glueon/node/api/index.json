@@ -50,14 +50,14 @@
             ["directory","replyList",":dirs"],
 			[]
 		],
-		"to/remote/group/list":[
-			["remote","request","cred","input",["from/remote/group/list"],"group"],
+		"to/remote/group/read":[
+			["remote","request","cred","input",["from/remote/group/read"],"group"],
 			["directory","updateGroup","input","group"],
             ["directory","replyPrivate","group"],
 			[]
 		],
 		"to/remote/chat/read":[
-			["remote","request","cred","input",["from/remote/group/list"],"group"],
+			["remote","request","cred","input",["from/remote/group/read"],"group"],
 			["directory","updateGroup","input","group"],
             ["directory","isExternal","cred","group",["$external"]],
             ["chat","$find","cred","input","$external","chat"],
@@ -121,17 +121,17 @@
             ["directory","replyList",":dirs"],
 			[]
 		],
-		"glueon/group/list":[
+		"glueon/group/read":[
             ["util","have","input",[["id"]]],
             ["user","verify","cred","me"],
-            ["directory","$group","input","group",["to/remote/group/list"]],
+            ["directory","$group","input","group",["to/remote/group/read"]],
             ["directory","replyPrivate","group"],
 			[]
 		],
 		"glueon/chat/create":[
             ["util","have","input",[["id"]]],
             ["user","verify","cred","me"],
-            ["chat","create","cred","input","chat"],
+            ["chat","create","cred","input","$external","chat"],
             ["chat","replyPrivate","chat"],
 			[]
 		],
