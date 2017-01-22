@@ -1,6 +1,7 @@
 var
 dummyCB=(err)=>{if (err) return console.error(err)},
 cd=function(self,dir,cb){
+	if (!dir) return
 	cb=cb||dummyCB
 	//TODO: save bandwidth, by comparing directory and groups date, not same fetch then refresh
 	var deps=self.deps

@@ -26,7 +26,7 @@ update=function(){
 }
 
 return{
-	signals:['header','showLogin'],
+	signals:['header'],
 	deps:{
 		paneId:'int',
 		title:'text',

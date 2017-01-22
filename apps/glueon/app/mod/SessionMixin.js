@@ -19,6 +19,7 @@ poll=function(self,grp,name){
 	})
 },
 cd=function(self,dir){
+	if (!dir) return
 	//TODO: save bandwidth, by comparing directory and groups date, not same fetch then refresh
 	var deps=self.deps
 	deps.groups.read({ id:dir.id }, function(err,model){

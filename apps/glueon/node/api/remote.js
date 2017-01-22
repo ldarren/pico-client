@@ -1,11 +1,8 @@
 const
-MIN5=5*60*1000,
+MIN2=2*60*1000,
 Floor=Math.floor,
 pStr=require('pico/str'),
 pWeb=require('pico/web'),
-codec=function(secret,token){
-	return pStr.codec(Floor(Date.now()/MIN5)+pStr.hash(secret),token)
-},
 getChannel=function(cb){
 	if (channel) return cb(null, channel)
 	pWeb.create({url:appConfig.parent,delimiter:['&']},(err,client)=>{
@@ -14,12 +11,23 @@ getChannel=function(cb){
 		cb(err,client)
 	})
 },
+checkCredential=function(key,secret,token){
+	const
+	t=Floor(Date.now()/MIN2),
+	hash=pStr.hash(secret)
+console.log('glueon.checkCredential',t,hash,key)
+	return key===pStr.codec(t+hash,token) || key===pStr.codec(t-1+hash,token) || key===pStr.codec(t+1+hash,token)
+},
 getCredential=function(cred){
+	const
+	t=Floor(Date.now()/MIN2),
+	hash=pStr.hash(appConfig.secret)
+console.log('glueon.getCredential',t,hash,appConfig.key)
 	return {
 		id:cred.id,
 		cwd:cred.cwd,
 		app:appConfig.key,
-		sess:Buffer.from(codec(appConfig.secret,appConfig.key)).toString('base64')
+		sess:Buffer.from(pStr.codec(t+hash,appConfig.key)).toString('base64')
 	}
 }
 
@@ -40,7 +48,8 @@ return {
 		cb()
 	},
 	verify(cred,next){
-		if (appConfig.key!==codec(appConfig.secret,Buffer.from(cred.sess,'base64').toString())) return next(this.error(403))
+		console.log('glueon.verify',cred.sess)
+		if (!checkCredential(appConfig.key,appConfig.secret,Buffer.from(cred.sess,'base64').toString())) return next(this.error(403))
 		next()
 	},
 	request(cred,input,api,output,next){
@@ -50,16 +59,6 @@ return {
 				if (err) return next(err)
 				if (data.length) output.push(...data)
 				else Object.assign(output,data)
-				next()
-			})
-		})
-	},
-	createDirectory(cred,input,output,next){
-		getChannel((err,channel)=>{
-			if (err) return next(this.error(500))
-			channel.request('from/remote/directory/create',input,getCredential(cred),(err,data)=>{
-				if (err) return next(this.error(500))
-				Object.assign(output,data)
 				next()
 			})
 		})
