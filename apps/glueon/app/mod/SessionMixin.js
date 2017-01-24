@@ -1,5 +1,4 @@
 var
-network=require('js/network'),
 poll=function(self,grp,name){
 	//TODO: save bandwidth, by comparing directory and groups date, not same fetch then refresh
 	var deps=self.deps

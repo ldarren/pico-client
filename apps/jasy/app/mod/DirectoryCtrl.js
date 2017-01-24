@@ -7,7 +7,11 @@ cwd=function(self){
 	var
 	dir=deps.directory,
 	d=dir.findWhere({wd:me.get('cwd')})
-	if (!d && dir.length) self.signals.cd(dir.at(0)).send(self.host) // go to the first dir available
+
+	if (!self.currFolder && dir.length){
+		if (d) self.signals.cd(d).send()
+		else self.signals.cd(dir.at(0)).send() // go to the first dir available
+	}
 	return d
 },
 add=function(model){
