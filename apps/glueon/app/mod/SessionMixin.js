@@ -24,6 +24,7 @@ cd=function(self,dir){
 	deps.groups.read({ id:dir.id }, function(err,model){
 		if (err) return console.error('cd failed')
 		console.log('cd suceeded')
+		if (!deps.credential.length) return
 		var wd=dir.get('wd')
 		deps.credExtra.at(0).set('cwd',wd)
 		deps.credential.at(0).set('cwd',wd)

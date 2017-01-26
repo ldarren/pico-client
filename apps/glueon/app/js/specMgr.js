@@ -57,7 +57,15 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
 		deps.push(create(s[ID], t, m)) 
 		break
     case 'models': // ID[id] TYPE[models] VALUE[options] EXTRA[default value]
-        deps.push(create(s[ID], t, new Model(s[EXTRA], s[VALUE], s[ID])))
+		if (Array.isArray(s[ID])){
+			f=s[ID].shift()
+			return loadDeps(s[ID],0,{},function(err,klass){
+				deps.push(create(f, t, new (Backbone.Collection.extend(pObj.extends({},[Model,klass])))(s[EXTRA], s[VALUE], s[ID])))
+				load(ctx, params, spec, idx, deps, cb, userData)
+			})
+		}else{
+			deps.push(create(s[ID], t, new (Backbone.Collection.extend(Model))(s[EXTRA], s[VALUE], s[ID])))
+		}
         break
 	case 'field': // ID[id] TYPE[field] VALUE[models] EXTRA[filter] EXTRA1[field name]
         f = find(s[VALUE], ctx, true)

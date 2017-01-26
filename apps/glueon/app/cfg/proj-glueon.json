@@ -32,7 +32,7 @@
 			"update":"glueon/chat/update",
 			"delete":"glueon/chat/remove"
 		}],
-		["chatLog","models",{
+		[["chatLog","ChatLogMixin"],"models",{
 			"idAttribute":"_id"
 		}],
 		["data","models",{}],
