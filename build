@@ -145,7 +145,13 @@ setup((err, project, projPath, outPath)=>{
 	if (opt.lean)deps.add('lib/lean/lean.min.js')
 	if (opt.pico)deps.add('lib/pico.min.js')
 
-	const handler={get(target,name){return ()=>{}}}
+	const handler={get(target,name){
+		switch(name){
+		case 'onLoad':
+		case 'ajax': return null
+		default: return ()=>{}
+		}
+	}}
 
 	// global
 	_=require('underscore')
