@@ -14,6 +14,11 @@ callbacks=function(self){
 		self.dcCount++
         switch(e.target.readyState){
         case EventSource.CONNECTING: self.trigger('connecting',self.dcCount); break
+		case EventSource.OPEN:
+			try{var d=JSON.parse(e.data)}
+			catch(ex){console.error(ex)}
+			self.trigger('error',d);
+			break
         case EventSource.CLOSED:
         default:
             self.trigger('closed',self.dcCount);
@@ -28,10 +33,11 @@ callbacks=function(self){
     }
     ]
 },
-init=function(self, channel, path, events, withCredentials, autoconnect){
+init=function(self, params, channel, path, events, withCredentials, autoconnect){
     self.channel=channel
+	self.path=path
     self.events=events
-	self.dcCount=0
+	self.withCredentials=withCredentials
     if (!autoconnect || !path) return
 
     var
@@ -39,7 +45,7 @@ init=function(self, channel, path, events, withCredentials, autoconnect){
     s=new EventSource(
             encodeURI(-1===path.indexOf('//')?network.getDomain(channel).url+path:path)+
             (-1===path.lastIndexOf('?')?'?':'&')+
-            __.querystring(network.getAddon()),
+            __.querystring(Object.assign(params,network.getCredential())),
             {withCredentials:withCredentials})
 
     s.addEventListener('open', cbList[0], false)   
@@ -50,31 +56,24 @@ init=function(self, channel, path, events, withCredentials, autoconnect){
 	self.sse=s
 } 
 
-function Stream(options){
-    init(this, options.channel, options.path, options.events, options.autoconnect, options.withCredentials)
+function Stream(opt){
+	this.dcCount=0
+    init(this, opt.params, opt.channel, opt.path, opt.events, opt.autoconnect, opt.withCredentials)
 }           
 
 _.extend(Stream.prototype, Backbone.Events,{
-    reconnect:function(channel, path, events, withCredentials){
+	events:[],
+    reconnect:function(params, channel, path, events, withCredentials){
         var s=this.sse
-        if (s){
-            s.close()
-            init(
-                this,
-                channel||this.channel,
-                path||s.url,
-                events||this.events,
-				true,
-                withCredentials||s.withCredentials)
-        }else{
-            init(
-                this,
-                channel||this.channel,
-                path,
-                events||this.events,
-				true,
-                withCredentials)
-        }
+        if (s) s.close()
+		init(
+			this,
+			params,
+			channel||this.channel,
+			path||this.path,
+			events||this.events,
+			withCredentials||this.withCredentials,
+			true)
     },
     close:function(){
         var s=this.sse

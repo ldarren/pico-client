@@ -1,8 +1,8 @@
 var
 web=require('pico/web'),
-picoObj=require('pico/obj'),
+pObj=require('pico/obj'),
 channels = {}, directory={},
-addon,count=30,
+credential,count=30,
 create = function(keys, domains, cb){
     if (!keys.length) return cb()
 
@@ -12,8 +12,7 @@ create = function(keys, domains, cb){
 
     web.create({
         url: c.url,
-        delimiter: c.delimiter || ['&'],
-        beatRate: c.beatRate || 500,
+        delimiter: c.delimiter || ['&']
     }, function(err, client){
         if (err) return cb(err)
         channels[k]=client
@@ -41,10 +40,10 @@ Backbone.ajax = function(req){
     reqData = req.data || {},
     onReceive = function(err, data){
         if (err) {
-            Backbone.trigger('networkErr', err)
+            Backbone.trigger('network.error', err)
             return req.error(err)
         }
-        Backbone.trigger('networkRecv', null, api, data)
+        Backbone.trigger('network.recv', null, api, data)
         return req.success(data)
     }
 
@@ -65,24 +64,24 @@ Backbone.ajax = function(req){
             }
         }
         if (hasFile){
-            c.submit(reqData, addon, onReceive)
+            c.submit(reqData, credential, onReceive)
         }else{
-            c.request(null, reqData, addon, onReceive)
+            c.request(null, reqData, credential, onReceive)
         }
     }else{
-        c.request(api, reqData, addon, onReceive)
+        c.request(api, reqData, credential, onReceive)
     }
-    Backbone.trigger('networkSend', null, api)
+    Backbone.trigger('network.send', null, api)
 }
 
 return{
     create:function(domains,cb){
         if (!domains) return cb()
-        directory=picoObj.extend(directory, domains)
+        directory=pObj.extend(directory, domains)
         create(Object.keys(domains), domains, cb)
     },
-	//TODO: per domain addon
-    addon:function(){ addon = arguments[0] },
-    getAddon:function(){ return addon ? JSON.parse(JSON.stringify(addon)) : ''},
+    credential:function(cred){ credential=cred },
+	updateCredential:function(key,value){credential=credential||{},credential[key]=value},
+    getCredential:function(){ return credential ? JSON.parse(JSON.stringify(credential)) : ''}, // caniuse Object.assign now?
     getDomain:function(url){ return directory[getKey(url)] || {} }
 }

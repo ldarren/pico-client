@@ -1,8 +1,10 @@
 var
-picoObj=require('pico/obj'),
+pObj=require('pico/obj'),
 Model= require('js/Model'),
 Stream= require('js/Stream'),
 Socket= require('js/Socket'),
+Worker= require('js/Worker'),
+Service= require('js/Service'),
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
 ERR1='ref of REF not found',ERR2='record RECORD of ref of REF not found',
 extOpt={mergeArr:1},
@@ -17,71 +19,108 @@ findAll = function(cond, list, by, all){
     for(var i=0,o; o=list[i]; i++){ if (cond === o[by]) arr.push(all?o:o[VALUE]) }
     return arr
 },
+spec2Obj=function(spec){
+	var obj={}
+	for(var i=0,s;s=spec[i];i++){ obj[s[ID]]=s[VALUE] }
+	return obj
+},
 loadDeps = function(links, idx, klass, cb){
     if (!links || links.length <= idx) return cb(null, klass)
     if (links.charAt) return require(links, cb)
     require(links[idx++], function(err, mod){
         if (err) return cb(err)
-        loadDeps(links, idx, picoObj.extend(klass, mod, extOpt), cb)
+        loadDeps(links, idx, pObj.extend(klass, mod, extOpt), cb)
     })
 },
-load = function(host, params, spec, idx, deps, cb, userData){
+load = function(ctx, params, spec, idx, deps, cb, userData){
     if (spec.length <= idx) return cb(null, deps, userData)
 
     var
-    context = host ? host.spec : [],
     s = spec[idx++],
     t = s[TYPE],
     f
 
     switch(t){
     case 'ref': //ID[id] TYPE[ref] VALUE[orgId]
-        f = find(s[VALUE], context, true)
+        f = find(s[VALUE], ctx, true)
 		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
         deps.push(create(s[ID], f[TYPE], f[VALUE]))
         break
     case 'refs': // ID[id] TYPE[refs] VALUE[orgType]
-        Array.prototype.push.apply(deps, findAll(s[VALUE], context, TYPE, 1))
+        Array.prototype.push.apply(deps, findAll(s[VALUE], ctx, TYPE, 1))
         break
-    case 'model': // ID[id] TYPE[model/field] VALUE[models] EXTRA[paramId] EXTRA1[field name]
-        f = find(s[VALUE], context, true)
+    case 'model': // ID[id] TYPE[model] VALUE[models] EXTRA[paramIdx]
+        f = find(s[VALUE], ctx, true)
 		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
 		var m = f[VALUE].get(params[s[EXTRA]])
 		if (!m || !m.get) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',params[s[EXTRA]]), deps, userData)
-		'field' === t ? deps.push(create(s[ID], t, m.get(s[EXTRA+1]))) : deps.push(create(s[ID], t, m)) 
+		deps.push(create(s[ID], t, m)) 
 		break
     case 'models': // ID[id] TYPE[models] VALUE[options] EXTRA[default value]
-        deps.push(create(s[ID], t, new Model(s[EXTRA], s[VALUE], s[ID])))
+		if (Array.isArray(s[ID])){
+			f=s[ID].shift()
+			return loadDeps(s[ID],0,{},function(err,klass){
+				deps.push(create(f, t, new (Backbone.Collection.extend(pObj.extends({},[Model,klass])))(s[EXTRA], s[VALUE], s[ID])))
+				load(ctx, params, spec, idx, deps, cb, userData)
+			})
+		}else{
+			deps.push(create(s[ID], t, new (Backbone.Collection.extend(Model))(s[EXTRA], s[VALUE], s[ID])))
+		}
         break
-	case 'fields': // ID[id] TYPE[fields] VALUE[models] EXTRA[filter] EXTRA1[field names]
-        f = find(s[VALUE], context, true)
+	case 'field': // ID[id] TYPE[field] VALUE[models] EXTRA[filter] EXTRA1[field name]
+        f = find(s[VALUE], ctx, true)
+		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
+		var m = isFinite(s[EXTRA])?f[VALUE].at(s[EXTRA]):f[VALUE].findWhere(s[EXTRA])
+		if (!m || !m.get) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',s[EXTRA]), deps, userData)
+		deps.push(create(s[ID], t, s[EXTRA+1]?m.get(s[EXTRA+1]):m.toJSON()))
+		break
+	case 'fields': // ID[id] TYPE[fields] VALUE[models] EXTRA[filter] EXTRA1[field name]
+        f = find(s[VALUE], ctx, true)
 		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
 		var m = s[EXTRA] ? new Model(f[VALUE].where(s[EXTRA])) : f[VALUE]
 		if (!m || !m.pluck) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',s[EXTRA]), deps, userData)
-		deps.push(create(s[ID], t, m.pluck(s[EXTRA+1])))
+		deps.push(create(s[ID], t, s[EXTRA+1]?m.pluck(s[EXTRA+1]):m.toJSON()))
 		break
     case 'ctrl':
     case 'view': // ID[id/path] TYPE[ctrl/view] VALUE[spec] EXTRA[path/path+mixins]
-        loadDeps(s[EXTRA]||s[ID], 0, {}, function(err, klass){
+        return loadDeps(s[EXTRA]||s[ID], 0, {}, function(err, klass){
             if (err) return cb(err, deps, userData)
             f=s[ID]
             deps.push(create(f, t, {name:f, type:t, spec:s[VALUE], Class:klass}))
-            load(host, params, spec, idx, deps, cb, userData)
+            load(ctx, params, spec, idx, deps, cb, userData)
         })
-        return
     case 'file': // ID[id] TYPE[file] VALUE[path]
-        require(s[VALUE], function(err, mod){
+        return require(s[VALUE], function(err, mod){
             if (err) return cb(err, deps, userData)
             deps.push(create(s[ID], t, mod))
-            load(host, params, spec, idx, deps, cb, userData)
+            load(ctx, params, spec, idx, deps, cb, userData)
         })
-        return
     case 'stream': // ID[id] TYPE[stream] VALUE[config]
         deps.push(create(s[ID], t, new Stream(s[VALUE])))
         break
     case 'socket': // ID[id] TYPE[socket] VALUE[config]
         deps.push(create(s[ID], t, new Socket(s[VALUE])))
         break
+    case 'worker': // ID[id] TYPE[worker] VALUE[spec]
+		return load(deps, params, s[VALUE], 0, [], function(err, config){
+            if (err) return cb(err, deps, userData)
+			deps.push(create(s[ID], t, new Worker.Proxy(config)))
+			load(ctx, params, spec, idx, deps, cb, userData)
+		})
+    case 'job': // ID[id] TYPE[job] VALUE[spec]
+        return require(s[ID], function(err, mod){
+			load(deps, params, s[VALUE], 0, [], function(err, config){
+				if (err) return cb(err, deps, userData)
+				deps.push(create(s[ID], t, new Worker.Job(s[ID],mod,config)))
+				load(ctx, params, spec, idx, deps, cb, userData)
+			})
+		})
+    case 'service': // ID[id] TYPE[service] VALUE[spec]
+		return load(deps, params, s[VALUE], 0, [], function(err, config){
+            if (err) return cb(err, deps, userData)
+			deps.push(create(s[ID], t, new Service(s[ID],config)))
+			load(ctx, params, spec, idx, deps, cb, userData)
+		})
     case 'param': // ID[id] TYPE[param] VALUE[index]
         deps.push(create(s[ID], t, params[s[VALUE]]))
         break
@@ -90,11 +129,14 @@ load = function(host, params, spec, idx, deps, cb, userData){
     case 'datetime': // ID[id] TYPE[date/datetime] VALUE[unixtime/time in string]
         deps.push(create(s[ID], t, new Date(s[VALUE])))
         break
+	case 'int': // ID[id] TYPE[int] VALUE[number or number in string]
+		deps.push(create(s[ID], t, parseInt(s[VALUE])))
+		break
     default:
         deps.push(create(s[ID], t, s[VALUE]))
         break
     }
-    load(host, params, spec, idx, deps, cb, userData)
+    load(ctx, params, spec, idx, deps, cb, userData)
 },
 // need to get original spec, the one before spec.load, no way to diff ref and models
 unload = function(rawSpec, spec){
@@ -116,6 +158,9 @@ unload = function(rawSpec, spec){
         }
     }
     for(j=0; s=spec[j]; j++){
+		switch(s[TYPE]){
+		case 'worker': s[VALUE].close(); break
+		}
         delete s[VALUE]
     }
     spec.length = 0
@@ -124,12 +169,13 @@ unload = function(rawSpec, spec){
 return {
     load:function(host, params, spec, cb, userData){
         if (!spec) return cb(null, [], userData)
-        setTimeout(load,0,host, params, spec, 0, [], cb, userData)
+        setTimeout(load,0,host?host.spec||[]:[], params, spec, 0, [], cb, userData)
     },
     unload:unload,
 	find:find,
     findAllById: function(cond, list, all){ return findAll(cond, list, ID, all) },
     findAllByType:function(cond, list, all){ return findAll(cond, list, TYPE, all) },
+	spec2Obj:spec2Obj,
     create:create,
     getId:getId,
     getType:getType,

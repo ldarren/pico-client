@@ -1,5 +1,7 @@
-var ID=0,TYPE=1,VALUE=2,EXTRA=3,
+var
+ID=0,TYPE=1,VALUE=2,EXTRA=3,
 REFS='refs',
+STD_SIGNALS=['moduleAdded'],
 specMgr = require('js/specMgr'),
 sigslot= require('js/sigslot'),
 dummyCB=function(){},
@@ -166,7 +168,7 @@ function Ctrl(prop, rawSpec, params, host, show, chains){
     this._removed = false 
     this._show=show?[host.el,false]:null // view in chains migh need to show
 
-    this.signals = sigslot(this, ['moduleAdded'])
+    this.signals = sigslot.create(this, STD_SIGNALS)
     specMgr.load(host, params || [], rawSpec, specLoaded, [this,chains])
 }
 
@@ -194,16 +196,20 @@ var View = Backbone.View.extend(_.extend(Module, {
 
         if ('ctrl'===Mod.type) return Ctrl.prototype.spawn.call(this, Mod, params, spec, hidden, chains)
 
-        var
-		s=spec && spec.length ? Mod.spec.concat(spec) : Mod.spec,
-        m=new (View.extend(Mod.Class))(
-			specMgr.getViewOptions(s),
-			Mod,
-			s,
-			params,
-			this,
-			!hidden,
-			chains instanceof Function ? [chains,spec]:chains)
+        try{
+			var
+			s=spec && spec.length ? Mod.spec.concat(spec) : Mod.spec,
+			m=new (View.extend(Mod.Class))(
+				specMgr.getViewOptions(s),
+				Mod,
+				s,
+				params,
+				this,
+				!hidden,
+				chains instanceof Function ? [chains,spec]:chains)
+		}catch(exp){
+			return console.error(Mod.name,'failed to spawn:',exp)
+		}
         this.modules.push(m)
         return m
     },

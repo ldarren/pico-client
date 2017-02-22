@@ -1,5 +1,5 @@
 var
-DEPS=0,STYLE=1,SPEC=2,PAGES=3,FLYERS=4,
+DEPS=0,STYLE=1,MIDDLEWARES=2,SPEC=3,PAGES=4,FLYERS=5,
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
 EVT_RESIZE='frameresize',
 EVT_RESIZE_LEN=EVT_RESIZE.length,
@@ -8,6 +8,7 @@ Router = require('js/Router'),
 Module = require('js/Module'),
 specMgr= require('js/specMgr'),
 network = require('js/network'),
+sigslot= require('js/sigslot'),
 includeAll= function(urls, func, type, cb){
     if (!urls || !urls.length) return cb()
     func(urls.shift(), type, function(){ includeAll(urls, func, type, cb) })
@@ -39,12 +40,11 @@ changeRoute = function(path, params){
     var
     pages=this.pages,
     pc=this.paneCount || 1,
-    i=f.length < pc ? 0 : f.length-pc
+    i=f.length <= pc ? 0 : f.length-pc
 
-    for(var j=0,p; i<pc; i++,j++){
-        p=f[i]
-        if (p) this.signals.paneUpdate(j, path+'.'+p, pages[p], params).sendNow()
-        else this.signals.paneUpdate(j, '', pages[''], params).sendNow()
+    for(var j=0,p; j<pc; i++,j++){
+        p=f[i]||''
+        this.signals.paneUpdate(j, pc, path, p, pages[p], params).sendNow()
     }
 
     this.signals.changeRoute(path, params).sendNow()
@@ -70,7 +70,9 @@ Body=Module.View.extend({
 		this.paneCount=1
 
         network.create(e.domains, function(err){
-            if (err) return console.error(err)
+            if (err) return __.dialogs.alert('Code['+err.code+'] msg['+err.error+'], restart?','Network Error','ok',function(){
+				location.reload(false)
+			})
         
 			self.pages= p[PAGES]
 			parseFlyers(p[FLYERS],function(flyers,routes){
@@ -86,10 +88,14 @@ Body=Module.View.extend({
 
             includeAll(p[STYLE], __.dom.link, 'css', function(){
                 includeAll(p[DEPS], __.dom.link, 'js', function(){
-                    Module.View.prototype.initialize.call(self, null, {name:'Frame'}, 
-						p[SPEC].concat([
-							['env','map',e]
-						]))
+					specMgr.load(self.host, self.params, p[MIDDLEWARES], function(err, config){
+						if (err) return console.error('middleware err:',err)
+						sigslot.addMiddleware(config)
+						Module.View.prototype.initialize.call(self, null, {name:'Frame'}, 
+							p[SPEC].concat([
+								['env','map',e]
+							]))
+					})
                 })
             })
         })

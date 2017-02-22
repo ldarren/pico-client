@@ -1,41 +1,67 @@
-return Backbone.Collection.extend({
+var
+fetch=function(coll,set,idx,cb){
+	if (idx<0) return cb(null,set)
+	coll.lazyFetch(set[idx--],function(err,model){
+		if (err) return cb(err)
+		if (!model) return fetch(coll,set,idx,cb)
+		set.splice(idx+1,1)
+		coll.add(model)
+		fetch(coll,set,idx,cb)
+	})
+},
+lazyFetch=function(valid,coll,set,cb){
+	if (!valid) return cb(null,set)
+	fetch(coll,set,set.length-1,cb)
+}
+
+return {
 	// config is always initialized by bb, config.comparator is consumed by bb
     initialize: function(models, config, name){
         this.name=name
         this.url = config.list
+        this.lazy = config.lazy
         this.model = Backbone.Model.extend({
             idAttribute: config.idAttribute || 'id',
             sync: function(method, model, options){
                 if(!options.url) options.url=config[method]
                 if (options.url) return Backbone.sync(method, model, options)
-                return options.error(this.collection.name+'.'+method+' undefined')
+                return options.error(name+'.'+method+' undefined')
             }
         })
         if (config.preload) this.fetch()
     },
+	lazyFetch: function(id,cb){
+		cb()
+    },
+	//TODO: read from lazy fetch b4 reading from network
     retrieve: function(ids, field, cb){
+		var id=this.model.idAttribute
+		switch(arguments.length){
+		case 3: break
+		case 2:
+			cb=field
+			field=id
+			break
+		default: return console.error('invalid args',arguments)
+		}
+
         var
         coll = this,
         criteria = {},
-        search
-        
-        if (3 === arguments.length){
-            search = function(n){criteria[field] = n; return !coll.findWhere(criteria)}
-        }else{
-            cb = field
-            field = 'id'
-            search = function(n){return !coll.get(n)}
-        }
-        var nf = _.filter(_.without(_.uniq(ids), undefined, null), search)
+        search = (field === id) ? function(n){return !coll.get(n)} : function(n){criteria[field] = n; return !coll.findWhere(criteria)},
+        nf = _.filter(_.without(_.uniq(ids), undefined, null), search)
 
-        if (0 === nf.length) return cb(null, coll)
+		lazyFetch(coll.lazy===field,coll,nf,function(err,set){
+			if (err) return cb(err)
+			if (0 === set.length) return cb(null, coll)
 
-        coll.fetch({
-            data:{ set: nf, field:field },
-            remove: false,
-            success: function(coll, raw){cb(null, coll, raw)},
-            error: function(coll, raw){cb(raw)}
-        })
+			coll.fetch({
+				data:{ set: set, field:field },
+				remove: false,
+				success: function(coll, res){cb(null, coll, res)},
+				error: function(coll, res){cb(res)}
+			})
+		})
     },
     read: function(data, cb){
         var
@@ -43,13 +69,13 @@ return Backbone.Collection.extend({
         model=new this.model
         model.fetch({
             data:data,
-            success:function(model, raw){
+            success:function(model, res){
                 self.add(model)
-                cb(null, model, raw)
+                cb(null, model, res)
             },
-            error:function(model, err){
-                cb(err)
+            error:function(model, res){
+                cb(res)
             }
         })
     }
-})
+}

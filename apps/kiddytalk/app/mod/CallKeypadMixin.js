@@ -10,11 +10,10 @@ return {
 		this.signals.header(deps.paneId).send(this.host)
 	},
 	events:{
-		'touchend .btn':function(e){
+		'click .btn':function(e){
 			var btn=e.target.closest('.btn')
 			if (!btn) return
 			var cl=btn.classList
-			cl.remove('down')
 
 			if (cl.contains('call')){
 				cl.add('hidden')
