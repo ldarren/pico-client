@@ -5,9 +5,9 @@
   "main": "create",
   "dependencies": {
     "backbone": "^1.3.3",
-    "clean-css": "^3.4.18",
-    "less": "^2.7.1",
-    "pico-args": "^1.0.0"
+    "clean-css": "^3.4.24",
+    "less": "^2.7.2",
+    "pico-args": "^1.0.7"
   },
   "devDependencies": {},
   "scripts": {
