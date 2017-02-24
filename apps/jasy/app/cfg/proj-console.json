@@ -3,7 +3,7 @@
     ],[
     ],[
     ],[
-        ["options","map",{"el":"#__"}],
+        ["options","map",{"el":".__"}],
         ["html","file","Frame.html"],
         ["css","file","Frame.css"],
         ["css","file","Console.css"],
@@ -33,7 +33,7 @@
 		}],
 		["layers","list",["#layer0","#layer1"]],
         ["js/Pane","view",[
-			["options","map",{"el":"#__ #layer0 #pane0"}],
+			["options","map",{"el":".__ #layer0 #pane0"}],
             ["paneId","int",0],
             ["html","file","Pane.html"],
 			["css","file","Pane.css"],
@@ -42,7 +42,7 @@
 			["alltext","refs","text"]
         ]],
         ["js/Pane","view",[
-			["options","map",{"el":"#__ #layer0 #pane1"}],
+			["options","map",{"el":".__ #layer0 #pane1"}],
             ["paneId","int",1],
             ["html","file","Pane.html"],
 			["css","file","Pane.css"],
@@ -51,21 +51,21 @@
 			["alltext","refs","text"]
         ]],
 		["Page","view",[
-			["options","map",{"el":"#__ #pane0 #page"}],
+			["options","map",{"el":".__ #pane0 #page"}],
 			["paneId","int",0]
 		]],
 		["header/Basic","view",[
-			["options","map",{"el":"#__ #pane0 #header"}],
+			["options","map",{"el":".__ #pane0 #header"}],
 			["paneId","int",0],
 			["tpl","file","header/Basic.asp"],
 			["css","file","header/Basic.css"]
 		]],
 		["Page","view",[
-			["options","map",{"el":"#__ #pane1 #page"}],
+			["options","map",{"el":".__ #pane1 #page"}],
 			["paneId","int",1]
 		]],
 		["footer/MenuBar","view",[
-			["options","map",{"el":"#__ #pane0 #footer"}],
+			["options","map",{"el":".__ #pane0 #footer"}],
 			["paneId","int",0],
 			["tpl","file","footer/MenuBar.asp"],
 			["css","file","footer/MenuBar.css"],
@@ -76,7 +76,7 @@
 			]]
 		]],
 		["header/Basic","view",[
-			["options","map",{"el":"#__ #pane1 #header"}],
+			["options","map",{"el":".__ #pane1 #header"}],
 			["paneId","int",1],
 			["tpl","file","header/Basic.asp"],
 			["css","file","header/Basic.css"]

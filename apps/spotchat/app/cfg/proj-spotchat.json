@@ -3,13 +3,13 @@
     ],[
 	],[
     ],[
-        ["options","map",{"el":"#__"}],
+        ["options","map",{"el":".__"}],
         ["html","file","Frame.html"],
         ["css","file","Frame.css"],
         ["css","file","SpotChat.css"],
 		["layers","list",["#layer0","#layer1"]],
         ["js/Pane","view",[
-			["options","map",{"el":"#__ #layer0 #pane0"}],
+			["options","map",{"el":".__ #layer0 #pane0"}],
             ["paneId","int",0],
             ["html","file","Pane.html"],
 			["css","file","Pane.css"],
@@ -18,7 +18,7 @@
 			["alltext","refs","text"]
         ]],
         ["js/Pane","view",[
-			["options","map",{"el":"#__ #layer0 #pane1"}],
+			["options","map",{"el":".__ #layer0 #pane1"}],
             ["paneId","int",1],
             ["html","file","Pane.html"],
 			["css","file","Pane.css"],
@@ -27,11 +27,11 @@
 			["alltext","refs","text"]
         ]],
 		["Page","view",[
-			["options","map",{"el":"#__ #pane0 #page"}],
+			["options","map",{"el":".__ #pane0 #page"}],
 			["paneId","int",0]
 		]],
 		["Page","view",[
-			["options","map",{"el":"#__ #pane1 #page"}],
+			["options","map",{"el":".__ #pane1 #page"}],
 			["paneId","int",1]
 		]],
 		["auth/NoSession","ctrl",[
