@@ -1,4 +1,7 @@
+// TODO: add save and load methods
 var
+store=__.store(),
+dummyCB=function(err){if(err)return console.error(err)},
 fetch=function(coll,set,idx,cb){
 	if (idx<0) return cb(null,set)
 	coll.lazyFetch(set[idx--],function(err,model){
@@ -30,9 +33,25 @@ return {
         })
         if (config.preload) this.fetch()
     },
-	lazyFetch: function(id,cb){
-		cb()
-    },
+	load: function(key,cb){
+		cb=cb||dummyCB
+		var coll = this
+		store.getItem(this.name+key,function(err,json){
+			if(err) return cb(err)
+			if(!json) return cb()
+			try{ coll.add(JSON.parse(json)) }
+			catch(exp){ return cb(exp) }
+			cb(null,coll)
+		})
+	},
+	save: function(key,cb){
+		cb=cb||dummyCB
+		if (!this.length) return cb()
+		store.setItem(this.name+key, JSON.stringify(this.toJSON()),cb)
+	},
+	unsave: function(key,cb){
+		store.removeItem(this.name+key,cb)
+	},
 	//TODO: read from lazy fetch b4 reading from network
     retrieve: function(ids, field, cb){
 		var id=this.model.idAttribute
@@ -51,16 +70,13 @@ return {
         search = (field === id) ? function(n){return !coll.get(n)} : function(n){criteria[field] = n; return !coll.findWhere(criteria)},
         nf = _.filter(_.without(_.uniq(ids), undefined, null), search)
 
-		lazyFetch(coll.lazy===field,coll,nf,function(err,set){
-			if (err) return cb(err)
-			if (0 === set.length) return cb(null, coll)
+		if (0 === nf.length) return cb(null, coll)
 
-			coll.fetch({
-				data:{ set: set, field:field },
-				remove: false,
-				success: function(coll, res){cb(null, coll, res)},
-				error: function(coll, res){cb(res)}
-			})
+		coll.fetch({
+			data:{ set: nf, field:field },
+			remove: false,
+			success: function(coll, res){cb(null, coll, res)},
+			error: function(coll, res){cb(res)}
 		})
     },
     read: function(data, cb){
