@@ -2,7 +2,7 @@ html{
 	font-size:62.5%;
     font-family:"HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",Helvetica,Arial,"Lucida Grande","Lucida Sans Unicode",Tahoma,sans-serif;
 }
-#__, #__ *, #__ *:before, #__ *:after{
+.__, .__ *, .__ *:before, .__ *:after{
     margin:0;
     padding:0;
     box-sizing:border-box;
@@ -13,7 +13,7 @@ html{
 	-ms-user-select: none;
 	user-select: none;
 }
-#__{
+.__{
     display:flex;
 	position:fixed;
 	top:0;
@@ -24,7 +24,7 @@ html{
 	pointer-events:none;
 	z-index:999;
 }
-#__ input, #__ textarea, #__ .input{
+.__ input, .__ textarea, .__ .input{
 	-webkit-touch-callout: auto;
 	-webkit-user-select: auto;
 	-khtml-user-select: auto;
@@ -32,19 +32,19 @@ html{
 	-ms-user-select: auto;
 	user-select: auto;
 }
-#__ input,#__ button,#__ select{
+.__ input,.__ button,.__ select{
     outline:none;
     border:none;
 }
-#__ ul{
+.__ ul{
     list-style:none;
 }
-#__ .hidden{
+.__ .hidden{
     display:none !important;
 }
-#__ .invisible{
+.__ .invisible{
     visibility:hidden !important;
 }
-#__ .icon{
+.__ .icon{
 	cursor:pointer;
 }

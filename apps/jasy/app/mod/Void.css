@@ -1,4 +1,4 @@
-#__ .void{
+.__ .void{
 	display:flex;
 	flex-direction:column;
 	justify-content:center;
@@ -6,7 +6,7 @@
     background-color:WhiteSmoke;
     text-align:center;
 }
-#__ .void p{
+.__ .void p{
 	font-size:1.5rem;
 	color:#007AFF;
 }

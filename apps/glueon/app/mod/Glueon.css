@@ -1,21 +1,21 @@
-#__ #layer0{
+.__ #layer0{
 	width:100%;
 	animation-name:unset;
 }
 @media (max-width:1024px){
-    #__{
+    .__{
         animation-name: frameresize2;
     }
 }
 
 @media (max-width:568px){
-    #__{
+    .__{
         animation-name: frameresize1;
     }
-    #__>#layer0>div:nth-child(1){
+    .__>#layer0>div:nth-child(1){
         flex-basis:100%;
     }
-    #__>#layer0>div:nth-child(2){
+    .__>#layer0>div:nth-child(2){
         display:none;
     }
 }
