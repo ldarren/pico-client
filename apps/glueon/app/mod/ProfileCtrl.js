@@ -2,17 +2,24 @@ var
 update=function(){
 	var
 	deps=this.deps,
+	users=deps.users,
 	me=deps.cred.at(0),
 	up=deps.userProfile,
 	name
 
+	this.stopListening(users)
+
 	up.length=0
 	if (me && me.id){
-		var user=deps.users.get(me.id)
-		name=user.get('name')
-		up.push({model:'owner',props:[me.id,'name'],label:'Name'})
-		up.push({type:'button',name:'signout',label:'Sign out'})
-		deps.owner.set(user)
+		var user=users.get(me.id)
+		if (user){
+			name=user.get('name')
+			up.push({model:'owner',props:[me.id,'name'],label:'Name'})
+			up.push({type:'button',name:'signout',label:'Sign out'})
+			deps.owner.set(user)
+		}else{
+			this.listenTo(users,'add',update)
+		}
 	}else{
 		up.push({type:'button',name:'signin',label:'Sign in'})
 		deps.owner.reset()
