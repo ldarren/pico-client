@@ -37,10 +37,11 @@ return {
 			return console.error('Please install cordova-plugin-geolocation and cordova-plugin-googlemaps')
 		}
 
-		geoloc.getCurrentPosition(function(coor){
+		geoloc.getCurrentPosition(function(pos){
 			var
+			coor=pos.coords,
 			latlng=new maps.LatLng(coor.latitude,coor.longitude),
-			map = maps.Map.getMap(this.el,{
+			map = maps.Map.getMap(self.el,{
 				'backgroundColor': 'white',
 				'mapType': maps.MapTypeId.ROADMAP,
 				'controls': {
@@ -57,16 +58,16 @@ return {
 				},
 				'camera': {
 					'latLng': latlng,
-					'tilt': 30,
-					'zoom': 15,
-					'bearing': 50
+					'tilt': 0,
+					'zoom': 18,
+					'bearing': coor.heading
 				}
 			}),
 			Event = maps.event,
-			evts = events(this)
+			evts = events(self)
 
-			this.map=map
-			this.geoloc = geoloc
+			self.map=map
+			self.geoloc = geoloc
 
 			// You have to wait the MAP_READY event.
 			map.on(Event.MAP_READY,					evts[0])
