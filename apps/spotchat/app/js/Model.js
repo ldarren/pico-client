@@ -1,6 +1,5 @@
 // TODO: add save and load methods
 var
-store=__.store(),
 dummyCB=function(err){if(err)return console.error(err)},
 fetch=function(coll,set,idx,cb){
 	if (idx<0) return cb(null,set)
@@ -23,6 +22,7 @@ return {
         this.name=name
         this.url = config.list
         this.lazy = config.lazy
+		this.store=__.store(),
         this.model = Backbone.Model.extend({
             idAttribute: config.idAttribute || 'id',
             sync: function(method, model, options){
@@ -36,7 +36,7 @@ return {
 	load: function(key,cb){
 		cb=cb||dummyCB
 		var coll = this
-		store.getItem(this.name+key,function(err,json){
+		this.store.getItem(this.name+key,function(err,json){
 			if(err) return cb(err)
 			if(!json) return cb()
 			try{ coll.add(JSON.parse(json)) }
@@ -47,10 +47,10 @@ return {
 	save: function(key,cb){
 		cb=cb||dummyCB
 		if (!this.length) return cb()
-		store.setItem(this.name+key, JSON.stringify(this.toJSON()),cb)
+		this.store.setItem(this.name+key, JSON.stringify(this.toJSON()),cb)
 	},
 	unsave: function(key,cb){
-		store.removeItem(this.name+key,cb)
+		this.store.removeItem(this.name+key,cb)
 	},
 	//TODO: read from lazy fetch b4 reading from network
     retrieve: function(ids, field, cb){
