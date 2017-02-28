@@ -48,6 +48,7 @@
             ["options","map",{"el":"#pane0 #page"}],
 			["Map","view",[
 				["options","map",{"id":"googlemap"}],
+				["html","file","Map.html"],
 				["css","file","Map.css"]
 			]]
         ],
@@ -56,8 +57,12 @@
 		],
 		"talk":[
 			["options","map",{"els":["#pane0 #page","#pane1 #page"]}]
+		],
+		"about":[
+			["comment","txt","display google maps api v2 legal notice here"]
 		]
     },[
+		["about","home","about"],
         ["talk/add/:lat/:long","home","create"],
         ["talk/:id","home","talk"],
         ["*action","home"]

@@ -9,6 +9,7 @@
 *.docx
 *.xlsx
 *~
+build.sh
 
 env.json
 project.json
