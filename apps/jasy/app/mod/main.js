@@ -2,7 +2,7 @@ var opt={variable:'d'}
 pico.run({
     name: 'main',
     ajax: __.ajax,
-    onLoad: __.onLoad,
+    onLoad: __.load,
     env:{
         live:false
     },
@@ -10,7 +10,7 @@ pico.run({
         '.asp':function(url,txt){ return _.template(txt,opt) }
     },
     paths:{
-        '*': 'mod/',
+        '~': 'mod/',
         root: './',
         cfg: 'cfg/',
         js: 'js/',

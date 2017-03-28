@@ -4,7 +4,7 @@ pico.run({
     ajax: __.ajax,
     onLoad: __.onLoad,
     paths:{
-        '*': 'mod/',
+        '~': 'mod/',
         root: './',
         cfg: 'cfg/',
         js: 'js/',

@@ -41,8 +41,8 @@ return {
 		// Initialize the map plugin
 		var
 		self=this,
-		maps= __.refChain(window,['plugin','google','maps']),
-		geoloc= __.refChain(window,['navigator','geolocation'])
+		maps= __.dotchain(window,['plugin','google','maps']),
+		geoloc= __.dotchain(window,['navigator','geolocation'])
 
 		if (!maps || !geoloc){
 			this.slots={}

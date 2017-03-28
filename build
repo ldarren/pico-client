@@ -143,7 +143,7 @@ setup((err, project, projPath, outPath)=>{
 		deps.add('lib/backbone.native.min.js')
 	}
 	if (opt.lean)deps.add('lib/lean/lean.min.js')
-	if (opt.pico)deps.add('lib/pico.min.js')
+	if (opt.pico)deps.add('lib/pico-cli.min.js')
 
 	const handler={get(target,name){
 		switch(name){
@@ -156,7 +156,7 @@ setup((err, project, projPath, outPath)=>{
 	// global
 	_=require('underscore')
 	Backbone=require('backbone')
-	pico=require('./lib/pico.js')
+	pico=require('./lib/pico-cli.js')
 	__=window=document=new Proxy({},handler)
 
 	const filteredProj=[project[DEPS], [...project[STYLE],`${opt.url}${proj}.css`], [], [], {}, project[FLYER]]
@@ -177,7 +177,7 @@ setup((err, project, projPath, outPath)=>{
 					writeCSS(style,(err)=>{
 						if (err) return console.error(err)
 
-						pico.build({
+						pico.export('pico/build')({
 							entry:path.resolve(modDir,mainjs),
 							output:outPath,
 							deps:[...deps],

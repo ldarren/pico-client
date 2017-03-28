@@ -73,3 +73,6 @@
 [submodule "apps/spotchat/app/mod/auth"]
 	path = apps/spotchat/app/mod/auth
 	url = https://github.com/ldarren/pico-mod-auth.git
+[submodule "apps/spotchat/app/mod/native"]
+	path = apps/spotchat/app/mod/native
+	url = https://github.com/ldarren/pico-mod-native.git

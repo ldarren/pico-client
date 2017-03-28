@@ -10,7 +10,7 @@ pico.run({
         '.asp':function(url,txt){ return _.template(txt,opt) }
     },
     paths:{
-        '*': 'mod/',
+        '~': 'mod/',
         root: './',
         cfg: 'cfg/',
         js: 'js/',
