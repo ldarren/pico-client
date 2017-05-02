@@ -1,6 +1,0 @@
-{
-    "domains":{
-        "epush":{"url":"//st.jasaws.com/epush","delimiter":["&"]},
-		"pico":{"url":"//st.jasaws.com/pico","delimiter":["&"]}
-    }
-}

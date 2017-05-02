@@ -1,0 +1,37 @@
+header{
+	display:flex;
+	flex-direction:row;
+	justify-content:space-between;
+	align-items:center;
+	height:5rem;
+	background:#6534ff;
+	user-select:none;
+}
+header button{
+	border:none;
+	outline:none;
+	background:rgba(0,0,0,0);
+	color:#fccdd3;
+}
+header button:active{
+	color:#bbc4ef;
+}
+header button.left{
+	flex: 4rem 0 0;
+}
+header button.right{
+	flex: 4rem 0 0;
+}
+header .title{
+	flex: 100% 1 1;
+	display:flex;
+	flex-direction:column;
+	justify-content:space-around;
+}
+header .title .mainText{
+	text-align:center;
+}
+header .title .subText{
+	text-align:center;
+	color:#bbc4ef;
+}

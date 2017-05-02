@@ -1,2 +1,0 @@
-#!/usr/bin/env bash
-run/build --proj wp --env dev --BACKBONE --UNDERSCORE --url //54.83.28.108/mindsair/app/bin/wp/

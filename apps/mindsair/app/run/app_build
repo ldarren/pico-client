@@ -1,2 +1,0 @@
-#!/usr/bin/env bash
-run/build --proj app --env dev

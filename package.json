@@ -1,10 +1,10 @@
 {
   "name": "pico-client",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "pico client",
   "main": "create",
   "dependencies": {
-    "backbone": "^1.3.3",
+    "pojs": "*",
     "pico-args": "*",
     "pico-common": "*",
     "lean-wrap": "*"

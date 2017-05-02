@@ -1,6 +1,0 @@
-{
-    "domains":{
-        "msair":{"url":"//elb.jasaws.com/msair","delimiter":["&"]},
-		"pico":{"url":"//elb.jasaws.com/pico","delimiter":["&"]}
-    }
-}
