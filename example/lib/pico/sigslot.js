@@ -38,7 +38,7 @@ sigslot = function(self, def){
         }
     }, self)
 
-    self.callback.on('all', recv, self)
+    self.callback.on('*', recv, self)
         
     return signals
 },

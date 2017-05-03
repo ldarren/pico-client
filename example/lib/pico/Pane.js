@@ -21,7 +21,7 @@ return {
     },
 
     slots: {
-        paneUpdate: function(from, sender, paneId, paneCount, path, name, pageConfig, params){
+        paneUpdate: function(from, sender, paneId, paneCount, name, pageConfig, params){
             if (this.deps.paneId !== paneId) return
 			if (paneId+1===paneCount){
 				if (name === this.name && this.params && params && _.isEqual(this.params,params)) return
@@ -33,7 +33,7 @@ return {
             if (this.oldPage) removeOldPage.call(this, from, sender, paneId)
             this.oldPage = this.currPage
             this.currPage = this.spawn({
-                name:path+'.'+name+'@'+paneId,
+                name:name+'@'+paneId,
                 spec:pageConfig,
                 Class:{},
                 }, params, this.paneIdSpec, true)

@@ -16,39 +16,35 @@ includeAll= function(urls, func, type, cb){
 resized=function(self, paneCount){
     if (paneCount === self.paneCount) return
     self.paneCount=paneCount
-    if (Backbone.History.started && self.currPath) changeRoute.call(self, self.currPath, self.currParams)
+    if (router.started() && self.currPaths) changeRoute.call('change',self, self.currPaths, self.currParams)
 	self.signals.paneCount(paneCount).send()
 },
 parseFlyers=function(list, cb){
-	var flyers={}, routes=[]
+	var flyers={}
 
 	for(var i=0,f,k; f=list[i]; i++){
 		k=f.shift()
 		flyers[k]=f
-		routes.push(k)
 	}
-	cb(flyers,routes)
+	cb(flyers)
 },
-changeRoute = function(path, params){
-    var f = this.flyers[path]
-
-    if (!f) {
-        console.warn('path not found',path,params)
+changeRoute = function(evt, paths, params){
+    if (!paths) {
+        console.warn('invalid changeRoute',paths,params)
         return router.go()
     }
 
     var
     pages=this.pages,
     pc=this.paneCount || 1,
-    i=f.length <= pc ? 0 : f.length-pc
+    i=paths.length <= pc ? 0 : paths.length-pc
 
     for(var j=0,p; j<pc; i++,j++){
-        p=f[i]||''
-        this.signals.paneUpdate(j, pc, path, p, pages[p], params).sendNow()
+        p=paths[i]||''
+        this.signals.paneUpdate(j, pc, p, pages[p], params).sendNow()
     }
 
-    this.signals.changeRoute(path, params).sendNow()
-    this.currPath=path
+    this.currPaths=paths
     this.currParams=params
 },
 netstat=function(self){
@@ -66,7 +62,7 @@ function Frame(project,env){
 }
 
 Frame.prototype={
-    signals:['online','offline','changeRoute','frameAdded','paneAdded','paneUpdate','paneCount'],
+    signals:['online','offline','frameAdded','paneAdded','paneUpdate','paneCount'],
     deps:{
         html:   ['file','<div class=frame><div class=layer></div><div class=layer></div></div>'],
         layers: ['list', ['.frame>div:nth-child(1)','.frame>div:nth-child(2)']]
@@ -81,9 +77,8 @@ Frame.prototype={
 			})
         
 			self.pages= p[PAGES]
-			parseFlyers(p[FLYERS],function(flyers,routes){
-				self.flyers=flyers;
-				router.start(routes).on('change', changeRoute, self)
+			parseFlyers(p[FLYERS],function(flyers){
+				router.routes(flyers).on('change', changeRoute, self)
 			})
 
 			document.addEventListener('animationstart', function(e){
@@ -144,8 +139,8 @@ Frame.prototype={
         },
         frameResized:resized,
         modelReady: function(from, sender){
-            if (!Backbone.History.started){
-                Backbone.history.start()
+            if (!router.started()){
+                router.start()
                 return true //  continue propagation
             }
             return false

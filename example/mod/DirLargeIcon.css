@@ -1,9 +1,0 @@
-.__ .scrollable.icons .icon{
-	flex:0 0 4rem;
-	flex-direction:column;
-	display:flex;
-	background: #fff;
-    overflow: hidden;
-    width:3.5rem;
-	padding:0 1rem;
-}

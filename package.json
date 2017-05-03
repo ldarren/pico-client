@@ -1,15 +1,15 @@
 {
   "name": "pico-client",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "pico client",
   "main": "create",
   "dependencies": {
     "pojs": "*",
-    "pico-args": "*",
     "pico-common": "*",
     "lean-wrap": "*"
   },
   "devDependencies": {
+    "pico-args": "*",
     "clean-css": "^3.4.24"
   },
   "scripts": {
