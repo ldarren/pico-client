@@ -1,16 +1,15 @@
-var View=inherit('po/View')
-var tmpl=require('Header.asp')
-var css=require('Header.css')
-
 return {
-	start:function(opt,params){
-		opt.css=css
-		opt.childs=tmpl(params)
-		View.prototype.start.call(this,opt)
+	signals:['click'],
+	deps:{
+		tpl:'file',
+		data:'map'
+	},
+	create:function(deps,params){
+		this.el.innerHTML=deps.tpl(deps.data)
 	},
 	events:{
 		'click button':function(e){
-			this.callback.trigger('click',e.target.textContent)
+			this.sigslots.click(e.target.textContent).send(this.host)
 		}
 	}
 }

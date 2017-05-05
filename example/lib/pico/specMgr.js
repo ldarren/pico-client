@@ -53,7 +53,7 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
         f = find(s[VALUE], ctx, true)
 		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
 		var m = f[VALUE].get(params[s[EXTRA]])
-		if (!m || !m.get) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',params[s[EXTRA]]), deps, userData)
+		if (!m) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',params[s[EXTRA]]), deps, userData)
 		deps.push(create(s[ID], t, m)) 
 		break
     case 'models': // ID[id] TYPE[models] VALUE[options] EXTRA[default value]
@@ -71,13 +71,14 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
         f = find(s[VALUE], ctx, true)
 		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
 		var m = isFinite(s[EXTRA])?f[VALUE].at(s[EXTRA]):f[VALUE].findWhere(s[EXTRA])
-		if (!m || !m.get) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',s[EXTRA]), deps, userData)
-		deps.push(create(s[ID], t, s[EXTRA+1]?m.get(s[EXTRA+1]):m.toJSON()))
+		if (!m) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',s[EXTRA]), deps, userData)
+		deps.push(create(s[ID], t, s[EXTRA+1]?m[s[EXTRA+1]]:m.toJSON()))
 		break
 	case 'fields': // ID[id] TYPE[fields] VALUE[models] EXTRA[filter] EXTRA1[field name]
         f = find(s[VALUE], ctx, true)
 		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
 		var m = s[EXTRA] ? new Collection(f[VALUE].where(s[EXTRA])) : f[VALUE]
+		// TODO: implement pluck
 		if (!m || !m.pluck) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',s[EXTRA]), deps, userData)
 		deps.push(create(s[ID], t, s[EXTRA+1]?m.pluck(s[EXTRA+1]):m.toJSON()))
 		break

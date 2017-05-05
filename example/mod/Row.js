@@ -1,17 +1,11 @@
-var View=inherit('po/View')
-var tmpl=require('Row.asp')
-var Row=function(model){
-	Row.__super__.constructor.call(this)
-	this.model
-}
-
-Row.prototype={
-	start:function(opt,params){
-		opt.childs=tmpl(params)
-		View.prototype.start.call(this,opt)
-		this.model=params.model||this.model
-		params.desc=params.desc+Date.now()
+return {
+	deps:{
+		tpl:'file',
+		model:'model'
+	},
+	create:function(deps){
+		// TODO: possible make use of View constuctor to replace innerHTML?
+		this.el.innerHTML=deps.tpl(deps.model)
+		deps.model.desc=deps.model.desc+Date.now()
 	}
 }
-
-return Row
