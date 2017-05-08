@@ -57,6 +57,7 @@ netstat=function(self){
 }
 
 function Frame(project,env){
+	this.paneCount=1
 	this.initialize(specMgr.find('options',project[SPEC]), project, env)
 	netstat(this)
 }
@@ -69,7 +70,6 @@ Frame.prototype={
     },
     initialize: function(options, p, e){
         var self=this
-		this.paneCount=1
 
         network.create(e.domains, function(err){
             if (err) return __.dialogs.alert('Code['+err.code+'] msg['+err.error+'], restart?','Network Error','ok',function(){
@@ -92,7 +92,7 @@ Frame.prototype={
 					specMgr.load(self.host, self.params, p[MIDDLEWARES], function(err, config){
 						if (err) return console.error('middleware err:',err)
 						sigslot.addMiddleware(config)
-						View.call(self, null, {name:'Frame'}, 
+						View.call(self, options, {name:'Frame'}, 
 							p[SPEC].concat([
 								['env','map',e]
 							]))

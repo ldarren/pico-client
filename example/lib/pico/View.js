@@ -1,16 +1,28 @@
 var
 Ctrl=inherit('p/Ctrl'),
-specMgr = require('p/specMgr')
+specMgr = require('p/specMgr'),
+// dun remove mod here, mod may be removed
+hideByIndex= function(self, i, host){
+    host = host || self.el
+
+    var oldEl = self._elements[i]
+
+    if (oldEl && host.contains(oldEl)){
+        host.removeChild(oldEl)
+    }
+    return oldEl
+}
 
 function View(options, prop, spec, params, host, show, chains){
 	Ctrl.call(this, prop, spec, params, host, show, chains)
 	this.super=View.prototype
 	this._elements = []
-	this._el=options && options.el
+	this.start.call(this,options)
 }
 
 View.prototype={
     remove: function(){
+		this.stop.call(this)
         Ctrl.prototype.remove.call(this, arguments)
     },
     // view can spawn ctrl and view

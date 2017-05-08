@@ -57,6 +57,7 @@ specLoaded = function(err, spec, userData){
 
     self.deps = d
     self.create(d,self.params)
+    self.delegateEvents()
 
     var h=self.host
     self.signals.moduleAdded().send(h)
@@ -73,21 +74,10 @@ specLoaded = function(err, spec, userData){
             h.spawn(m, self.params, chains[chains.length-1], !self._show, chains)
         }
     }
-},
-// dun remove mod here, mod may be removed
-hideByIndex= function(self, i, host){
-    host = host || self.el
-
-    var oldEl = self._elements[i]
-
-    if (oldEl && host.contains(oldEl)){
-        host.removeChild(oldEl)
-    }
-    return oldEl
 }
 
 function Ctrl(prop, rawSpec, params, host, show, chains){
-	View.call(this,prop)
+	View.call(this)
 	this.super=Ctrl.prototype
     this.name = prop.name
     this.host = host
@@ -123,8 +113,7 @@ Ctrl.prototype = {
     },
     remove: function(){
         this._removed = true 
-        this.off()
-        this.stopListening()
+        this.callback.off()
         this.dumpAll()
         specMgr.unload(this._rawSpec, this.spec)
     },
