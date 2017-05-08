@@ -8,21 +8,20 @@ var render=function(self,coll,Row){
 
 return {
 	deps:{
-		html:'file',
 		coll:'models',
 		Row:'view'
 	},
 	create:function(deps){
-		this.el.innerHTML=deps.html
 		deps.coll.callback.on('update',function(){console.log('Coll.update',arguments)},this)
 		deps.coll.models[1].callback.on('field.update',function(){console.log('Model.update',arguments)},this)
 
-		// TODO: setElement(this.el.getElementsByTagName('ul')[0])
+		this.el=this.el.getElementsByTagName('ul')[0]
 		render(this,deps.coll,deps.Row)
 	},
 	remove:function(){
-		this.coll.models[1].callback.off(null,null,this)
-		this.coll.callback.off(null,null,this)
-		this.__super__.remove.call(this)
+		var coll=this.deps.coll
+		coll.models[1].callback.off(null,null,this)
+		coll.callback.off(null,null,this)
+		this.super.remove.call(this)
 	}
 }

@@ -9,7 +9,7 @@ return {
 	},
 	events:{
 		'click button':function(e){
-			this.sigslots.click(e.target.textContent).send(this.host)
+			this.signals.click(e.target.textContent).send(this.host)
 		}
 	}
 }
