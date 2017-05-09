@@ -24,7 +24,7 @@ return {
         paneUpdate: function(from, sender, paneId, paneCount, name, pageConfig, params){
             if (this.deps.paneId !== paneId) return
 			if (paneId+1===paneCount){
-				if (name === this.name && this.params && params && _.isEqual(this.params,params)) return
+				if (name === this.name && JSON.stringify(this.params)===JSON.stringify(params)) return
 			}else{
 				if (name === this.name) return
 			}
