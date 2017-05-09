@@ -1,10 +1,10 @@
 var
 pObj=require('pico/obj'),
-Model= require('js/Model'),
-Stream= require('js/Stream'),
-Socket= require('js/Socket'),
-Worker= require('js/Worker'),
-Service= require('js/Service'),
+Collection= require('po/Collection'),
+Stream= require('p/Stream'),
+Socket= require('p/Socket'),
+Worker= require('p/Worker'),
+Service= require('p/Service'),
 ID=0,TYPE=1,VALUE=2,EXTRA=3,
 ERR1='ref of REF not found',ERR2='record RECORD of ref of REF not found',
 extOpt={mergeArr:1},
@@ -53,31 +53,32 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
         f = find(s[VALUE], ctx, true)
 		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
 		var m = f[VALUE].get(params[s[EXTRA]])
-		if (!m || !m.get) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',params[s[EXTRA]]), deps, userData)
+		if (!m) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',params[s[EXTRA]]), deps, userData)
 		deps.push(create(s[ID], t, m)) 
 		break
     case 'models': // ID[id] TYPE[models] VALUE[options] EXTRA[default value]
 		if (Array.isArray(s[ID])){
 			f=s[ID].shift()
 			return loadDeps(s[ID],0,{},function(err,klass){
-				deps.push(create(f, t, new (Backbone.Collection.extend(pObj.extends({},[Model,klass])))(s[EXTRA], s[VALUE], s[ID])))
+				deps.push(create(f, t, new (Collection.extend(pObj.extends({},[klass])))(s[EXTRA], s[VALUE], s[ID])))
 				load(ctx, params, spec, idx, deps, cb, userData)
 			})
 		}else{
-			deps.push(create(s[ID], t, new (Backbone.Collection.extend(Model))(s[EXTRA], s[VALUE], s[ID])))
+			deps.push(create(s[ID], t, new Collection(s[EXTRA], s[VALUE], s[ID])))
 		}
         break
 	case 'field': // ID[id] TYPE[field] VALUE[models] EXTRA[filter] EXTRA1[field name]
         f = find(s[VALUE], ctx, true)
 		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
 		var m = isFinite(s[EXTRA])?f[VALUE].at(s[EXTRA]):f[VALUE].findWhere(s[EXTRA])
-		if (!m || !m.get) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',s[EXTRA]), deps, userData)
-		deps.push(create(s[ID], t, s[EXTRA+1]?m.get(s[EXTRA+1]):m.toJSON()))
+		if (!m) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',s[EXTRA]), deps, userData)
+		deps.push(create(s[ID], t, s[EXTRA+1]?m[s[EXTRA+1]]:m.toJSON()))
 		break
 	case 'fields': // ID[id] TYPE[fields] VALUE[models] EXTRA[filter] EXTRA1[field name]
         f = find(s[VALUE], ctx, true)
 		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, userData)
-		var m = s[EXTRA] ? new Model(f[VALUE].where(s[EXTRA])) : f[VALUE]
+		var m = s[EXTRA] ? new Collection(f[VALUE].where(s[EXTRA])) : f[VALUE]
+		// TODO: implement pluck
 		if (!m || !m.pluck) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',s[EXTRA]), deps, userData)
 		deps.push(create(s[ID], t, s[EXTRA+1]?m.pluck(s[EXTRA+1]):m.toJSON()))
 		break

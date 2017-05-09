@@ -1,8 +1,11 @@
 var
 web=require('pico/web'),
 pObj=require('pico/obj'),
+Callback=require('po/Callback'),
+Collection=require('po/Collection'),
 channels = {}, directory={},
 credential,count=30,
+callback=null,
 create = function(keys, domains, cb){
     if (!keys.length) return cb()
 
@@ -32,51 +35,53 @@ this.update=function(){
 	}
 }
 
-Backbone.ajax = function(req){
-    if (!req) return
-    var
-    api = req.url,
-    c = channels[getKey(api)],
-    reqData = req.data || {},
-    onReceive = function(err, data){
-        if (err) {
-            Backbone.trigger('network.error', err)
-            return req.error(err)
-        }
-        Backbone.trigger('network.recv', null, api, data)
-        return req.success(data)
-    }
+this.load=function(){
+	Collection.ajax = function(method,route,params,cb){
+		var
+		c = channels[getKey(route)],
+		reqData = params || {},
+		onReceive = function(err, data){
+			if (err) {
+				callback.trigger('network.error', err)
+				return cb(err)
+			}
+			callback.trigger('network.recv', null, route, data)
+			return cb(null,data)
+		}
 
-    if (!c) return req.error(getKey(api)+' domain undefined')
+		if (!c) return cb(getKey(route)+' domain undefined')
 
-    if (reqData.charAt){
-        try {reqData=JSON.parse(reqData)}
-        catch(e){return req.error(null, err)}
-    }
+		if (reqData.charAt){
+			try {reqData=JSON.parse(reqData)}
+			catch(e){return cb(err)}
+		}
 
-    if (reqData instanceof HTMLFormElement){
-        api = reqData.action
-        var hasFile = req.hasFile 
-        for(var i=0,es=reqData.elements,e; e=es[i]; i++){
-            if (e.hasAttribute('type') && 'FILE' === e.getAttribute('type').toUpperCase()){
-                hasFile = true
-                break
-            }
-        }
-        if (hasFile){
-            c.submit(reqData, credential, onReceive)
-        }else{
-            c.request(null, reqData, credential, onReceive)
-        }
-    }else{
-        c.request(api, reqData, credential, onReceive)
-    }
-    Backbone.trigger('network.send', null, api)
+		if (reqData instanceof HTMLFormElement){
+			route = reqData.action
+			var hasFile = req.hasFile 
+			for(var i=0,es=reqData.elements,e; e=es[i]; i++){
+				if (e.hasAttribute('type') && 'FILE' === e.getAttribute('type').toUpperCase()){
+					hasFile = true
+					break
+				}
+			}
+			if (hasFile){
+				c.submit(reqData, credential, onReceive)
+			}else{
+				c.request(null, reqData, credential, onReceive)
+			}
+		}else{
+			c.request(route, reqData, credential, onReceive)
+		}
+		callback.trigger('network.send', null, route)
+	}
 }
 
 return{
+	callback:null,
     create:function(domains,cb){
         if (!domains) return cb()
+		this.callback=callback=new Callback
         directory=pObj.extend(directory, domains)
         create(Object.keys(domains), domains, cb)
     },

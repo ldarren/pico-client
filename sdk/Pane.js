@@ -1,5 +1,5 @@
 var
-Router = require('js/Router'),
+router = require('po/router'),
 removeOldPage=function(from, sender, paneId){
     if (paneId !== this.deps.paneId) return
     if (this.oldPage) this.dump(this.oldPage)
@@ -14,32 +14,29 @@ return {
     },
     create: function(deps, params){
         var self=this
-		this.ancestor.create.call(this, deps, params, true, function(){
+		this.super.create.call(this, deps, params, true, function(){
 			self.signals.paneAdd(deps.paneId).send()
 		})
 		this.paneIdSpec=[['paneId','int',deps.paneId]]
     },
 
     slots: {
-        paneUpdate: function(from, sender, paneId, paneCount, path, name, pageConfig, params){
+        paneUpdate: function(from, sender, paneId, name, pageConfig, params){
             if (this.deps.paneId !== paneId) return
-			if (paneId+1===paneCount){
-				if (name === this.name && this.params && params && _.isEqual(this.params,params)) return
-			}else{
-				if (name === this.name) return
-			}
+			if (name === this.name && JSON.stringify(this.params)===JSON.stringify(params)) return
+
             this.name=name
             this.params=params
             if (this.oldPage) removeOldPage.call(this, from, sender, paneId)
             this.oldPage = this.currPage
             this.currPage = this.spawn({
-                name:path+'.'+name+'@'+paneId,
+                name:name+'@'+paneId,
                 spec:pageConfig,
                 Class:{},
                 }, params, this.paneIdSpec, true)
 
             this.el.style.cssText = ''
-            this.signals.pageAdd(paneId, this.currPage.render(), Router.isBack()).send()
+            this.signals.pageAdd(paneId, this.currPage.render()).send()
         },
         pageAdded:removeOldPage,
 		moduleAdded:function(from, sender){

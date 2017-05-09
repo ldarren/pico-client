@@ -1,5 +1,6 @@
 var
-specMgr=require('js/specMgr'),
+Callback=require('po/Callback'),
+specMgr=require('p/specMgr'),
 dummyCB=function(){},
 onStateChange=function(e){
 	switch(e.target.state){
@@ -17,7 +18,7 @@ onMessage=function(self){
 		var msg=evt.data
 		switch(msg[0]){
 		case 'pushed':
-			self.trigger(['pushed'])
+			self.callback.trigger(['pushed'])
 			break
 		}
 	}
@@ -42,6 +43,8 @@ function ServiceProxy(url,spec){
 	self=this,
 	sw=navigator.serviceWorker
 
+	self.callback=new Callback
+
 	sw.addEventListener('message',onMessage(this))
 	sw.register(url).then(function(reg){
 		console.log('ServiceWorker registered', reg)
@@ -59,7 +62,7 @@ function ServiceProxy(url,spec){
 				userVisibleOnly: true
 			}).then(function(sub) {
 				console.log('endpoint:', sub.endpoint)
-				self.trigger(['endpoint',sub.endpoint])
+				self.callback.trigger(['endpoint',sub.endpoint])
 			})
 		}
 	}).catch(function(err) {
@@ -67,7 +70,7 @@ function ServiceProxy(url,spec){
 	})
 } 
 
-_.extend(ServiceProxy.prototype, Backbone.Events, {
+ServiceProxy.prototype={
 	postMessage:postMessage,
 	showNotification:function(title,body,icon,tag){
 		postMessage('showNoti',{
@@ -77,6 +80,6 @@ _.extend(ServiceProxy.prototype, Backbone.Events, {
 			tag:tag
 		})
 	}
-})
+}
 
 return ServiceProxy

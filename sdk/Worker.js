@@ -5,7 +5,8 @@
  * worker proxy use round robin way to choose worker to run job
  */
 var
-specMgr=require('js/specMgr'),
+Callback=require('po/Callback'),
+specMgr=require('p/specMgr'),
 dummyCB=function(){},
 funcBody=function(func){
     return func.substring(func.indexOf('{')+1,func.lastIndexOf('}'))
@@ -123,7 +124,7 @@ workerCBs=function(self){
 	return [
 	function(e){
 		var params=e.data
-		if (!Array.isArray(params)) return self.trigger(params)
+		if (!Array.isArray(params)) return self.callback.trigger(params)
 		switch(params[0]){
 		case '_continue':
 			self.queue.shift()
@@ -131,18 +132,19 @@ workerCBs=function(self){
 		case '_init':
 			return _start(self.worker,self.queue)
 		default:
-			self.trigger.apply(self.trigger,params)
+			self.callback.trigger.apply(self.callback.trigger,params)
 		}
 	},
 	function(e){
 		//e.preventDefault()
 		console.error('WebWorker Error',e.filename,':',e.lineno,':',e.message)
-		self.trigger('error',e.message,e.filename,e.lineno)
+		self.callback.trigger('error',e.message,e.filename,e.lineno)
 	}]
 }
 
 function WorkerProxy(spec){
 	if (!window.Worker) return console.error('Web Worker is not supported')
+	this.callback=new Callback
 	this.queue=specMgr.findAllByType('job',spec)
 
 	var
@@ -155,7 +157,7 @@ function WorkerProxy(spec){
 	w.addEventListener('error',cbs[1])
 }           
 
-_.extend(WorkerProxy.prototype, Backbone.Events,{
+WorkerProxy.prototype={
 	run:function(jobs){
 		if (!jobs || !Array.isArray(jobs)) return
 		var q=this.queue
@@ -188,7 +190,7 @@ _.extend(WorkerProxy.prototype, Backbone.Events,{
 
 		this.worker.postMessage(['_close'])
 	}
-})
+}
 
 function Job(url,script,spec){
 	this.url=url

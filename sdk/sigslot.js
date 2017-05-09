@@ -1,6 +1,5 @@
 var
-trigger = Backbone.Events.trigger,
-specMgr=require('js/specMgr'),
+specMgr=require('p/specMgr'),
 evts=[],
 middlewares=[],
 addMW=function(arr){
@@ -39,7 +38,7 @@ sigslot = function(self, def){
         }
     }, self)
 
-    self.on('all', recv, self)
+    self.callback.on('*', recv, self)
         
     return signals
 },
@@ -83,16 +82,16 @@ dispatch = function(a, from){
     from=from||this.sender
 
     var isArr=Array.isArray(a)
-    if (!isArr && a) return trigger.call(a, this.evt, from, this)
+    if (!isArr && a) return a.callback.trigger(this.evt, from, this)
 
     var
     host = from.host,
     modules = from.modules.concat(host ? [host,from] : [from]) //extra 'from' for mixin
 
     if (isArr){
-        for(var i=0,m; m=modules[i]; i++) if (-1 === a.indexOf(m)) trigger.call(m, this.evt, from, this);
+        for(var i=0,m; m=modules[i]; i++) if (-1 === a.indexOf(m)) m.callback.trigger(this.evt, from, this);
     }else{
-        for(var i=0,m; m=modules[i]; i++) trigger.call(m, this.evt, from, this);
+        for(var i=0,m; m=modules[i]; i++) m.callback.trigger(this.evt, from, this);
     }
 }
 

@@ -1,10 +1,13 @@
-var network=require('js/network')
+var
+Callback=require('po/Callback'),
+network=require('p/network')
 
 function Socket(opt){
     init(this, opt.channel, opt.path, opt.protocols, opt.auto)
 }           
             
 function init(self, channel, path, protocols, auto){
+	self.callback=new Callback
     self.channel=channel
     self.path=path
     self.protocols=protocols
@@ -17,24 +20,24 @@ function init(self, channel, path, protocols, auto){
             protocols)
 
     s.addEventListener('open', function(e){
-        self.trigger(e.type)
+        self.callback.trigger(e.type)
     }, false)   
     s.addEventListener('error', function(e){
-		self.trigger(e.type, e)
+		self.callback.trigger(e.type, e)
     }, false)   
     s.addEventListener('close', function(e){
-		self.trigger(e.type, e)
+		self.callback.trigger(e.type, e)
     }, false)   
     s.addEventListener('message', function(e){
 		var data
 		try{ data=JSON.parse(e.data) }
 		catch(exp){ data=e.data }
-		self.trigger(e.type, data)
+		self.callback.trigger(e.type, data)
     }, false)   
 	self.ws=s
 }       
 
-_.extend(Socket.prototype, Backbone.Events,{
+Socket.prototype={
     reconnect:function(channel, path, protocols){
         var s=this.ws
         if (s){
@@ -67,6 +70,6 @@ _.extend(Socket.prototype, Backbone.Events,{
         if (!s) return
         s.close(code, reason)
     }
-})
+}
 
 return Socket

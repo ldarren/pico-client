@@ -2,26 +2,27 @@
 // authentication(header or cookies) with withCredentials=true
 // how to get sep["&"] from pico/web?
 var
-network=require('js/network'),
+Callback=require('po/Callback'),
+network=require('p/network'),
 PJSON=require('pico/json'),
 callbacks=function(self){
     return [
     function(e){
 		self.dcCount=0
-        self.trigger(e.type)
+        self.callback.trigger(e.type)
     },
     function(e){
 		self.dcCount++
         switch(e.target.readyState){
-        case EventSource.CONNECTING: self.trigger('connecting',self.dcCount); break
+        case EventSource.CONNECTING: self.callback.trigger('connecting',self.dcCount); break
 		case EventSource.OPEN:
 			try{var d=JSON.parse(e.data)}
 			catch(ex){console.error(ex)}
-			self.trigger('error',d);
+			self.callback.trigger('error',d);
 			break
         case EventSource.CLOSED:
         default:
-            self.trigger('closed',self.dcCount);
+            self.callback.trigger('closed',self.dcCount);
             break
         }       
     },
@@ -29,7 +30,7 @@ callbacks=function(self){
         var data
         try{ data=PJSON.parse(e.data.split('["&"]'),true) }
         catch(exp){ data=e.data }
-        self.trigger(e.type, data, e.lastEventId)
+        self.callback.trigger(e.type, data, e.lastEventId)
     }
     ]
 },
@@ -37,6 +38,7 @@ init=function(self, params, channel, path, events, withCredentials, autoconnect)
     self.channel=channel
 	self.path=path
     self.events=events
+	self.callback=new Callback
 	self.withCredentials=withCredentials
     if (!autoconnect || !path) return
 
@@ -61,8 +63,7 @@ function Stream(opt){
     init(this, opt.params, opt.channel, opt.path, opt.events, opt.autoconnect, opt.withCredentials)
 }           
 
-_.extend(Stream.prototype, Backbone.Events,{
-	events:[],
+Stream.prototype={
     reconnect:function(params, channel, path, events, withCredentials){
         var s=this.sse
         if (s) s.close()
@@ -80,6 +81,6 @@ _.extend(Stream.prototype, Backbone.Events,{
         if (!s) return
         s.close()
     }
-})
+}
 
 return Stream
