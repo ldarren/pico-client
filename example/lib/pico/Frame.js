@@ -58,7 +58,38 @@ netstat=function(self){
 
 function Frame(project,env){
 	this.paneCount=1
-	this.initialize(project, env)
+
+	var self=this
+	network.create(env.domains, function(err){
+		if (err) return __.dialogs.alert('Code['+err.code+'] msg['+err.error+'], restart?','Network Error','ok',function(){
+			location.reload(false)
+		})
+	
+		self.pages= project[PAGES]
+		parseFlyers(project[FLYERS],function(flyers){
+			router.routes(flyers).on('change', changeRoute, self)
+		})
+
+		document.addEventListener('animationstart', function(e){
+			console.log(e.animationName)
+			if (-1 === e.animationName.indexOf(EVT_RESIZE)) return
+			resized(self, parseInt(e.animationName.substr(EVT_RESIZE_LEN)))
+		})
+
+		includeAll(project[STYLE], __.dom.link, 'css', function(){
+			includeAll(project[DEPS], __.dom.link, 'js', function(){
+				specMgr.load(self.host, self.params, project[MIDDLEWARES], function(err, config){
+					if (err) return console.error('middleware err:',err)
+					sigslot.addMiddleware(config)
+					View.call(self, {name:'Frame'}, 
+						project[SPEC].concat([
+							['env','map',env]
+						]))
+				})
+			})
+		})
+	})
+
 	netstat(this)
 }
 
@@ -67,39 +98,6 @@ Frame.prototype={
     deps:{
         html:   ['file','<div class=frame><div class=layer></div><div class=layer></div></div>'],
         layers: ['list', ['.frame>div:nth-child(1)','.frame>div:nth-child(2)']]
-    },
-    initialize: function(p, e){
-        var self=this
-
-        network.create(e.domains, function(err){
-            if (err) return __.dialogs.alert('Code['+err.code+'] msg['+err.error+'], restart?','Network Error','ok',function(){
-				location.reload(false)
-			})
-        
-			self.pages= p[PAGES]
-			parseFlyers(p[FLYERS],function(flyers){
-				router.routes(flyers).on('change', changeRoute, self)
-			})
-
-			document.addEventListener('animationstart', function(e){
-				console.log(e.animationName)
-				if (-1 === e.animationName.indexOf(EVT_RESIZE)) return
-				resized(self, parseInt(e.animationName.substr(EVT_RESIZE_LEN)))
-			})
-
-            includeAll(p[STYLE], __.dom.link, 'css', function(){
-                includeAll(p[DEPS], __.dom.link, 'js', function(){
-					specMgr.load(self.host, self.params, p[MIDDLEWARES], function(err, config){
-						if (err) return console.error('middleware err:',err)
-						sigslot.addMiddleware(config)
-						View.call(self, {name:'Frame'}, 
-							p[SPEC].concat([
-								['env','map',e]
-							]))
-					})
-                })
-            })
-        })
     },
 
     create: function(deps, params){
