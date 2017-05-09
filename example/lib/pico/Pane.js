@@ -21,13 +21,10 @@ return {
     },
 
     slots: {
-        paneUpdate: function(from, sender, paneId, paneCount, name, pageConfig, params){
+        paneUpdate: function(from, sender, paneId, name, pageConfig, params){
             if (this.deps.paneId !== paneId) return
-			if (paneId+1===paneCount){
-				if (name === this.name && JSON.stringify(this.params)===JSON.stringify(params)) return
-			}else{
-				if (name === this.name) return
-			}
+			if (name === this.name && JSON.stringify(this.params)===JSON.stringify(params)) return
+
             this.name=name
             this.params=params
             if (this.oldPage) removeOldPage.call(this, from, sender, paneId)
