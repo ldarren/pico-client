@@ -1,4 +1,4 @@
-var render=function(self,coll,Row){
+var populate=function(self,coll,Row){
 	var ids=Object.keys(coll.models)
 	for(var i=0,k; k=ids[i]; i++){
 		// TODO: how to pass model directly wo params
@@ -16,7 +16,7 @@ return {
 		deps.coll.models[1].callback.on('field.update',function(){console.log('Model.update',arguments)},this)
 
 		this.el=this.el.getElementsByTagName('ul')[0]
-		render(this,deps.coll,deps.Row)
+		populate(this,deps.coll,deps.Row)
 	},
 	remove:function(){
 		var coll=this.deps.coll
