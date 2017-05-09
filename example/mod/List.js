@@ -15,7 +15,7 @@ return {
 		deps.coll.callback.on('update',function(){console.log('Coll.update',arguments)},this)
 		deps.coll.models[1].callback.on('field.update',function(){console.log('Model.update',arguments)},this)
 
-		this.el=this.el.getElementsByTagName('ul')[0]
+		this.setElement(this.el.getElementsByTagName('ul')[0])
 		populate(this,deps.coll,deps.Row)
 	},
 	remove:function(){
