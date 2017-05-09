@@ -56,7 +56,7 @@ specLoaded = function(err, spec, userData){
     }
 
     self.deps = d
-    self.create(d,self.params)
+    self.initialize(d,self.params)
     self.delegateEvents()
 
     var h=self.host
@@ -92,6 +92,9 @@ function Ctrl(prop, rawSpec, params, host, show, chains){
 }
 
 Ctrl.prototype = {
+	initialize: function(){
+		this.create.apply(this,arguments);
+	},
     create: function(deps, params, hidden, cb){
         var
 		el=this.el,

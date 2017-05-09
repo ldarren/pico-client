@@ -17,13 +17,13 @@ function View(prop, spec){
 	Ctrl.apply(this, arguments)
 	this.super=View.prototype
 	this._elements = []
-	this.start(specMgr.getViewOptions(spec))
+	this.start(specMgr.getViewOptions(spec)||{})
 }
 
 View.prototype={
-	create: function(){
+	initialize: function(){
 		this.style(specMgr.findAllById('css',this.spec))
-		Ctrl.prototype.create.apply(this,arguments)
+		Ctrl.prototype.initialize.apply(this,arguments)
 	},
     // view can spawn ctrl and view
     spawn: function(Mod, params, spec, hidden, chains){
