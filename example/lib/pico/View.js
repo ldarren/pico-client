@@ -13,18 +13,18 @@ hideByIndex= function(self, i, host){
     return oldEl
 }
 
-function View(options, prop, spec, params, host, show, chains){
-	Ctrl.call(this, prop, spec, params, host, show, chains)
+function View(prop, spec){
+	Ctrl.apply(this, arguments)
 	this.super=View.prototype
 	this._elements = []
-	this.start.call(this,options)
+	this.start(specMgr.getViewOptions(spec))
 }
 
 View.prototype={
-    remove: function(){
-		this.stop.call(this)
-        Ctrl.prototype.remove.call(this, arguments)
-    },
+	create: function(){
+		this.style(specMgr.findAllById('css',this.spec))
+		Ctrl.prototype.create.apply(this,arguments)
+	},
     // view can spawn ctrl and view
     spawn: function(Mod, params, spec, hidden, chains){
         if (!Mod || !Mod.spec) return
@@ -35,7 +35,6 @@ View.prototype={
 			var
 			s=spec && spec.length ? Mod.spec.concat(spec) : Mod.spec,
 			m=new (View.extend(Mod.Class))(
-				specMgr.getViewOptions(s),
 				Mod,
 				s,
 				params,
@@ -67,13 +66,14 @@ View.prototype={
         oldEl = this._elements[i],
         el = mod.render()
         if (el){
+			var _el=mod._el
             if (container.contains(oldEl)){
-                container.replaceChild(el, oldEl)
+                container.replaceChild(_el, oldEl)
             }else{
-                if (first) container.insertBefore(el, container.firstChild)
-                else container.appendChild(el)
+                if (first) container.insertBefore(_el, container.firstChild)
+                else container.appendChild(_el)
             }
-            this._elements[i] = el
+            this._elements[i] = _el
             el.dataset.viewName=mod.name
 			mod.rendered()
         }
@@ -87,10 +87,6 @@ View.prototype={
         return this.el
     },
 	rendered: function(){
-	},
-    slots:{
-        // seldom use, useful only after BB's setElement
-        invalidate: this.show
     }
 }
 

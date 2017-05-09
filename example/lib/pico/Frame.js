@@ -16,7 +16,7 @@ includeAll= function(urls, func, type, cb){
 resized=function(self, paneCount){
     if (paneCount === self.paneCount) return
     self.paneCount=paneCount
-    if (router.started() && self.currPaths) changeRoute.call('change',self, self.currPaths, self.currParams)
+    if (router.started() && self.currPaths) changeRoute.call(self, 'change', self.currPaths, self.currParams)
 	self.signals.paneCount(paneCount).send()
 },
 parseFlyers=function(list, cb){
@@ -58,7 +58,7 @@ netstat=function(self){
 
 function Frame(project,env){
 	this.paneCount=1
-	this.initialize(specMgr.find('options',project[SPEC]), project, env)
+	this.initialize(project, env)
 	netstat(this)
 }
 
@@ -68,7 +68,7 @@ Frame.prototype={
         html:   ['file','<div class=frame><div class=layer></div><div class=layer></div></div>'],
         layers: ['list', ['.frame>div:nth-child(1)','.frame>div:nth-child(2)']]
     },
-    initialize: function(options, p, e){
+    initialize: function(p, e){
         var self=this
 
         network.create(e.domains, function(err){
@@ -92,7 +92,7 @@ Frame.prototype={
 					specMgr.load(self.host, self.params, p[MIDDLEWARES], function(err, config){
 						if (err) return console.error('middleware err:',err)
 						sigslot.addMiddleware(config)
-						View.call(self, options, {name:'Frame'}, 
+						View.call(self, {name:'Frame'}, 
 							p[SPEC].concat([
 								['env','map',e]
 							]))

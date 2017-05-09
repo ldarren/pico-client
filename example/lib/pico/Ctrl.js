@@ -113,9 +113,9 @@ Ctrl.prototype = {
     },
     remove: function(){
         this._removed = true 
-        this.callback.off()
         this.dumpAll()
         specMgr.unload(this._rawSpec, this.spec)
+        this.stop()
     },
     // ctrl can't spawn view
     spawn: function(Mod, params, spec, hidden, chains){
