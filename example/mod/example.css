@@ -1,7 +1,28 @@
-.__ #layer0{
-	width:100%;
+.__ {
 	animation-name:unset;
 }
+#menu{
+	flex: 4rem 0 0;
+	display:flex;
+	flex-direction:column;
+	background:black;
+	color:#bbc4ef;
+}
+#pane0{
+	flex: 40% 1 1;
+	display:flex;
+	flex-direction:column;
+	min-width:25rem;
+	border-right:1px solid #bbc4ef;
+	background:#62bcfa;
+}
+#pane1{
+	flex: 60% 2 2;
+	display:flex;
+	flex-direction:column;
+	background:#62bcfa;
+}
+
 @media (max-width:1024px){
     .__{
         animation-name: frameresize2;
@@ -12,10 +33,10 @@
     .__{
         animation-name: frameresize1;
     }
-    .__>#layer0>div:nth-child(1){
+    #pane0{
         flex-basis:100%;
     }
-    .__>#layer0>div:nth-child(2){
+    #pane1{
         display:none;
     }
 }
