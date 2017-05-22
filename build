@@ -10,17 +10,17 @@ args=require('pico-args'),
 CleanCSS=require('clean-css'),
 defaults={
 	proj:['','project name'],
-	env:['pro','environment: dev, st or pro'],
+	env:['','environment: dev, st or pro'],
 	wd:['.','working directory'],
 	url:['','server url'],
 	mod:['mod','path to module directory'],
 	cfg:['cfg','path to configuration directory'],
 	bin:['bin','path to binary/output directory'],
 	entry:['main.js','entry point filename'],
-	underscore:[true,'embed underscore library'],
-	backbone:[true,'embed backbone library'],
 	lean:[true,'embed lean library'],
-	pico:[true,'embed pico library']
+	pico:[true,'embed pico library'],
+	linkcss:[false,'combine all css into a single file and add it to link section, required "proj"'],
+  help:[false,'show this help']
 },
 opt=args.parse(defaults),
 proj=opt.proj,
@@ -32,9 +32,16 @@ distDir=path.resolve(cwd,opt.bin),
 mainjs=opt.entry,
 setup=function(cb){
     const
-    rawProjPath=path.resolve(cfgDir,`proj-${proj}.json`),
-    rawEnvPath=path.resolve(cfgDir,`env-${proj}-${env}.json`),
-    projPath=path.resolve(cfgDir,'project.json'),
+    rawProjName=['proj'],
+    rawEnvName=['env']
+
+    proj && rawProjName.push(proj) && rawEnvName.push(proj)
+    env && rawEnvName.push(env)
+
+    const
+    rawProjPath=path.resolve(cfgDir,`${rawProjName.join('-')}.json`),
+    rawEnvPath=path.resolve(cfgDir,`${rawEnvName.join('-')}.json`),
+    projPath=path.resolve(cfgDir,'proj.json'),
     envPath=path.resolve(cfgDir,'env.json')
 
     fs.stat(rawProjPath, (err, stat)=>{
@@ -48,7 +55,7 @@ setup=function(cb){
                 if (err && 'EEXIST'!==err.code) return cb(err)
                 fs.mkdir(path.resolve(distDir,proj), 0o755, (err)=>{
                     if (err && 'EEXIST'!==err.code) return cb(err)
-                    cb(null, json, projPath, path.resolve(distDir,proj,'project.js'))
+                    cb(null, json, projPath, path.resolve(distDir,proj,'proj.js'))
                 })
             })
         })
@@ -57,7 +64,7 @@ setup=function(cb){
 getPath=function(spec, narr, include, style){
 	switch(spec[TYPE]){
 	case 'file':
-		if ('css'===spec[ID]){
+		if (opt.linkcss && 'css'===spec[ID]){
 			style.add(spec[VALUE])
 		}else{
 			include.add(spec[VALUE])
@@ -78,7 +85,7 @@ getPath=function(spec, narr, include, style){
 		narr.push(spec)
 		return false
 	}
-    return true
+  return true
 },
 scan=function(arr, narr, include, style, cb){
     if (!arr || !Array.isArray(arr) || !arr.length) return cb(null, include, style)
@@ -106,6 +113,7 @@ scanPane=function(keys, panes, npanes, include, style, cb){
     })
 },
 writeCSS=function(style, cb){
+  if (!opt.linkCSS) return cb()
 	const	
 	src=proj+'.css',
 	target=path.resolve(distDir,proj,proj+'.css'),
@@ -114,7 +122,7 @@ writeCSS=function(style, cb){
 	let content=''
 
 	style.forEach((v)=>{
-		content+=`@import url(${relative+path.sep+v});\n`
+		content+=`@import url(${path.join(relative,v)});\n`
 	})
 	fs.writeFile(src, content, 'utf8', (err)=>{
 		if (err) cb(err)
@@ -128,7 +136,7 @@ writeCSS=function(style, cb){
 	})
 }
 
-if (!opt.proj) return args.usage(defaults)
+if (opt.help || (!opt.proj && opt.linkcss)) return args.usage(defaults)
 args.print('build options',opt)
 
 process.chdir(cwd)
@@ -137,13 +145,9 @@ setup((err, project, projPath, outPath)=>{
 	if (err) return console.error(err)
 
 	const deps=new Set(project[DEPS])
-	if (opt.underscore) deps.add('lib/underscore-min.js')
-	if (opt.backbone){
-		deps.add('lib/backbone-min.js')
-		deps.add('lib/backbone.native.min.js')
-	}
-	if (opt.lean)deps.add('lib/lean/lean.min.js')
-	if (opt.pico)deps.add('lib/pico-cli.min.js')
+	opt.lean && deps.add(path.resolve(cwd,'node_modules','lean-wrap/lean.min.js'))
+	opt.pico && deps.add(path.resolve(cwd,'mode_modules','pico-common/pico.min.js'))
+
 
 	const handler={get(target,name){
 		switch(name){
@@ -154,12 +158,11 @@ setup((err, project, projPath, outPath)=>{
 	}}
 
 	// global
-	_=require('underscore')
-	Backbone=require('backbone')
-	pico=require('./lib/pico-cli.js')
+	pico=require('pico-common/pico-cli.js')
 	__=window=document=new Proxy({},handler)
 
-	const filteredProj=[project[DEPS], [...project[STYLE],`${opt.url}${proj}.css`], [], [], {}, project[FLYER]]
+	const filteredProj=[project[DEPS], project[STYLE], [], [], {}, project[FLYER]]
+	opt.linkcss && filteredProj[STYLE].push(`${opt.url}${proj}.css`)
 
 	scan(project[MIDDLEWARES], filteredProj[MIDDLEWARES], new Set, new Set, (err, include, style)=>{
 		if (err) return console.error(err)
@@ -180,8 +183,8 @@ setup((err, project, projPath, outPath)=>{
 						pico.export('pico/build')({
 							entry:path.resolve(modDir,mainjs),
 							output:outPath,
-							deps:[...deps],
-							include:[...include],
+							deps,
+							include,
 							exclude:[path.basename(mainjs,'.js')] 
 						})
 					})

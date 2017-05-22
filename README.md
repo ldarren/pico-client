@@ -1,8 +1,7 @@
-pico-client
-===========
+# pico-client
 pico app framework
 
-##Browser Compatibility
+## Browser Compatibility
  * Android Browser: compatible
  * Chrome/Chromium: compatible
  * Safari: compatible
@@ -11,7 +10,7 @@ pico app framework
  * IE 11: compatible
  * IE 10 and below: not compatible
 
-##Project Configuration
+## Project Configuration
 ```json
 [
     [
@@ -33,7 +32,7 @@ pico app framework
 ]
 ```
 
-##Asynchronous module definition
+## Asynchronous module definition
 ```javascript
 var
 dep1 = require('vendorA/dep1'),
@@ -44,8 +43,8 @@ this.load=function(){
     dep2.doSomething()
 }
 ```
-##Caveat
-###sub-module readiness
+## Caveat
+### sub-module readiness
 pico modules are loaded in series orderly, what it means is module declared at top always load first and pico ensure it is loaded completely before loading the next module.
 One caveat is submodule may not ready during event call. for example project configuration as follow
 ```json
@@ -57,7 +56,7 @@ One caveat is submodule may not ready during event call. for example project con
 ]
 ```
 if modB event call modA immediately in create function, modA-subA may not ready when modA receive the event. modA should listen to moduleAdded emitted by modA-subA before using any functionality from modA-subA
-##Features
+## Features
 * support circular dependencies
 * syntax similar to commonjs and amd, easy to pickup
 * support static and dynamic javascript loading
