@@ -1,1 +1,1 @@
-../../node_modules/lean-wrap/lean.js
+../../node_modules/lean-wrap/bin/lean.js

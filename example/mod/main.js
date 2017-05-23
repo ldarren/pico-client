@@ -18,7 +18,7 @@ pico.run({
 },function(){
     var
     Frame= require('p/Frame'),
-    project = require('cfg/project.json'),
+    project = require('cfg/proj.json'),
     env = require('cfg/env.json')
 
     return function(){

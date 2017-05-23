@@ -11,10 +11,6 @@
 *~
 build.sh
 
-env.json
-project.json
-index.css
-
 lib-cov
 fontello-*/
 bin/

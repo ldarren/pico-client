@@ -37,6 +37,7 @@ this.update=function(){
 
 this.load=function(){
 	Collection.ajax = function(method,route,params,cb){
+		if (!route) return cb(null, params)
 		var
 		c = channels[getKey(route)],
 		reqData = params || {},

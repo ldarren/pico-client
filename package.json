@@ -1,19 +1,16 @@
 {
   "name": "pico-client",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "pico client",
   "main": "create",
   "dependencies": {
-    "pojs": "*",
+    "lean-wrap": "*",
     "pico-common": "*",
-    "lean-wrap": "*"
+    "pojs": "*"
   },
   "devDependencies": {
     "pico-args": "*",
     "clean-css": "^3.4.24"
-  },
-  "scripts": {
-    "test": "build"
   },
   "author": "Darren Liew",
   "license": "MIT"

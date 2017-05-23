@@ -145,20 +145,20 @@ setup((err, project, projPath, outPath)=>{
 	if (err) return console.error(err)
 
 	const deps=new Set(project[DEPS])
-	opt.lean && deps.add(path.resolve(cwd,'node_modules','lean-wrap/lean.min.js'))
-	opt.pico && deps.add(path.resolve(cwd,'mode_modules','pico-common/pico.min.js'))
+	opt.lean && deps.add(path.resolve(cwd,'lib','lean.js'))
+	opt.pico && deps.add(path.resolve(cwd,'lib','pico.js'))
 
 
 	const handler={get(target,name){
 		switch(name){
-		case 'onLoad':
+		case 'load':
 		case 'ajax': return null
 		default: return ()=>{}
 		}
 	}}
 
 	// global
-	pico=require('pico-common/pico-cli.js')
+	pico=require('pico-common/bin/pico-cli.js')
 	__=window=document=new Proxy({},handler)
 
 	const filteredProj=[project[DEPS], project[STYLE], [], [], {}, project[FLYER]]

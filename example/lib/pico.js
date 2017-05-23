@@ -1,1 +1,1 @@
-../../node_modules/pico-common/pico.js
+../../node_modules/pico-common/bin/pico.js
