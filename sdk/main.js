@@ -4,7 +4,7 @@ pico.run({
     onLoad: __.load,
     env:{
         live:false,
-		dataset:(function(el){ if (el) return el.dataset })(document.getElementById('picoDataSet'))
+		dataset:(function(el){ if (el) return el.dataset })(document.getElementById('picoDS'))
     },
     preprocessors:{
         '.asp':function(url,txt){ return _.template(txt,{variable:'d'}) }

@@ -145,8 +145,8 @@ setup((err, project, projPath, outPath)=>{
 	if (err) return console.error(err)
 
 	const deps=new Set(project[DEPS])
-	opt.lean && deps.add(path.resolve(cwd,'lib','lean.js'))
-	opt.pico && deps.add(path.resolve(cwd,'lib','pico.js'))
+	opt.lean && deps.add(path.resolve(cwd,'lib','lean','lean.min.js'))
+	opt.pico && deps.add(path.resolve(cwd,'lib','common','pico.min.js'))
 
 
 	const handler={get(target,name){

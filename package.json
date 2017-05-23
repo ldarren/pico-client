@@ -3,6 +3,10 @@
   "version": "0.2.8",
   "description": "pico client",
   "main": "create",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ldarren/pico-client.git"
+  },
   "dependencies": {
     "lean-wrap": "*",
     "pico-common": "*",
