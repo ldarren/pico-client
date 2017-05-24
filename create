@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var
+const
 fs = require('fs'),
 path = require('path'),
 Transform = require('stream').Transform,
@@ -9,10 +9,9 @@ argv=process.argv,
 projPath = argv[2],
 projId = argv[3],
 projName = argv[4],
-projLib = argv[5],
 replace = []
 
-if (5 > argv.length) return console.log('USAGE: '+argv[1]+' path id name [lib]')
+if (5 > argv.length) return console.log('USAGE: '+argv[1]+' path id name')
 
 function ReplaceTransform(options){
     if (!(this instanceof ReplaceTransform)) return new ReplaceTransform(options)
@@ -25,34 +24,33 @@ function ReplaceTransform(options){
 util.inherits(ReplaceTransform, Transform)
 
 ReplaceTransform.prototype._transform = function(chunk, encoding, cb){
-    var str = 'string' === typeof chunk ? chunk : chunk.toString()
-    for(var i=0,l=replace.length; i<l; i+=2){
+    let str = 'string' === typeof chunk ? chunk : chunk.toString()
+    for(let i=0,l=replace.length; i<l; i+=2){
         str = str.replace(replace[i], replace[i+1])
     }
     this.push(new Buffer(str), encoding)
     cb(null)
 }
 
-function symlink(fs, from, to, ln, cb){
-	fs.symlink(path.relative(to,from), path.resolve(to, ln), cb)
+function symlink(fs, from, to, ln){
+	fs.symlinkSync(path.relative(to,from), path.resolve(to, ln))
 }
 
 fs.readlink(argv[1], (err, realPath)=>{
     if (err) realPath = argv[1]
 	realPath=path.dirname(realPath)
-	projLib=path.resolve(realPath,'lib')
-    var srcDir = path.resolve(realPath,'sdk')
+    const srcDir = path.resolve(realPath,'sdk')
     fs.mkdir(projPath, 0777, ()=>{
         (function(dirs, cb){
             if (!dirs.length) return cb()
-            var next = arguments.callee
+            const next = arguments.callee
             fs.mkdir(path.resolve(projPath,dirs.shift()), 0777, ()=>{
                 next(dirs, cb) 
             })
         })(['js','mod','cfg','run','bin','dat'], ()=>{
             (function(files, cb){
                 if (!files.length) return cb()
-                var
+                const 
                 fname = files.shift()
                 dest = path.resolve(projPath, files.shift(), files.shift()||fname)
                 fs.createReadStream(path.resolve(srcDir,fname))
@@ -77,13 +75,16 @@ fs.readlink(argv[1], (err, realPath)=>{
 				'sigslot.js','js',null,
 				'specMgr.js','js',null
                 ], ()=>{
-                symlink(fs, projLib, projPath, 'lib', ()=>{
-					symlink(fs, path.resolve(srcDir,'..','build'), path.resolve(projPath,'run'), 'build', ()=>{
-						symlink(fs, path.resolve(srcDir,'..','update'), path.resolve(projPath,'run'), 'update', ()=>{
-							console.log('Done')
-						})
-					})
-                })
+					const projLib=path.resolve(projPath,'lib')
+					const projRun=path.resolve(projPath,'run')
+					fs.mkdirSync(projLib, 0o755)
+					symlink(fs, path.resolve(realPath,'..','lean-wrap','bin'), projLib, 'lean')
+					symlink(fs, path.resolve(realPath,'..','pico-common','bin'), projLib, 'common')
+					symlink(fs, path.resolve(realPath,'..','pojs','lib'), projLib, 'pojs')
+					symlink(fs, path.resolve(realPath,'..','pico-client','sdk'), projLib, 'pico')
+					symlink(fs, path.resolve(realPath,'..','build'), projRun, 'build')
+					symlink(fs, path.resolve(realPath,'..','update'), projRun, 'update')
+					console.log('Done')
             })
         })
     })
