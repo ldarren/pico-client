@@ -1,26 +1,26 @@
+var pStr=pico.export('pico/str')
 pico.run({
     name: 'main',
     ajax: __.ajax,
     onLoad: __.load,
     env:{
         live:false,
-		dataset:(function(el){ if (el) return el.dataset })(document.getElementById('picoDS'))
+		dataset:(function(el){ if (el) return el.dataset })(document.getElementById('picoEnv'))
     },
     preprocessors:{
-        '.asp':function(url,txt){ return _.template(txt,{variable:'d'}) }
+        '.asp':function(url,asp){ return pStr.template(asp) }
     },
     paths:{
         '~': 'mod/',
         root: './',
         cfg: 'cfg/',
-        js: 'js/',
-        json: 'json/'
+		p: './lib/pico/',
+		po: './lib/pojs/'
     }
 },function(){
-    require('js/Module') // reload
     var
-    Frame= require('js/Frame'),
-    project = require('cfg/project.json'),
+    Frame= require('p/Frame'),
+    project = require('cfg/proj.json'),
     env = require('cfg/env.json')
 
     return function(){

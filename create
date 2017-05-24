@@ -7,17 +7,17 @@ Transform = require('stream').Transform,
 util = require('util'),
 argv=process.argv,
 projPath = argv[2],
-projId = argv[3],
+dispName = argv[3],
 projName = argv[4],
 replace = []
 
-if (5 > argv.length) return console.log('USAGE: '+argv[1]+' path id name')
+if (4 > argv.length) return console.log('USAGE: '+argv[1]+' path display_name [proj_name]')
 
 function ReplaceTransform(options){
     if (!(this instanceof ReplaceTransform)) return new ReplaceTransform(options)
 
-    replace.push(/PROJ_ID/g, projId)
     replace.push(/PROJ_NAME/g, projName)
+    replace.push(/DISP_NAME/g, dispName)
 
     Transform.call(this, options)
 }
@@ -39,7 +39,7 @@ function symlink(fs, from, to, ln){
 fs.readlink(argv[1], (err, realPath)=>{
     if (err) realPath = argv[1]
 	realPath=path.dirname(realPath)
-    const srcDir = path.resolve(realPath,'sdk')
+    const sdkDir = path.resolve(realPath,'sdk')
     fs.mkdir(projPath, 0777, ()=>{
         (function(dirs, cb){
             if (!dirs.length) return cb()
@@ -47,33 +47,22 @@ fs.readlink(argv[1], (err, realPath)=>{
             fs.mkdir(path.resolve(projPath,dirs.shift()), 0777, ()=>{
                 next(dirs, cb) 
             })
-        })(['js','mod','cfg','run','bin','dat'], ()=>{
+        })(['mod','cfg','run','bin','dat'], ()=>{
             (function(files, cb){
                 if (!files.length) return cb()
                 const 
-                fname = files.shift()
+                fname = files.shift(),
                 dest = path.resolve(projPath, files.shift(), files.shift()||fname)
-                fs.createReadStream(path.resolve(srcDir,fname))
+                fs.createReadStream(path.resolve(sdkDir,fname))
                 .pipe(new ReplaceTransform({decodeStrings:false}))
                 .pipe(fs.createWriteStream(dest))
                 arguments.callee(files, cb)
             })([
                 'index.html','',null,
-                'project.json','cfg',`proj-${projId}.json`,
-                'env.json','cfg',`env-${projId}-dev.json`,
-                'main.js','mod',null,
-				'Frame.js','js',null,
-				'Model.js','js',null,
-				'Module.js','js',null,
-				'Pane.js','js',null,
-				'Router.js','js',null,
-				'Socket.js','js',null,
-				'Stream.js','js',null,
-				'Worker.js','js',null,
-				'Service.js','js',null,
-				'network.js','js',null,
-				'sigslot.js','js',null,
-				'specMgr.js','js',null
+                'proj.json','cfg',projName?`proj-${projName}.json`:'proj.json',
+                'env.json','cfg',projName?`env-${projName}-dev.json`:'env-dev.json',
+                'env.json','cfg','env.json',
+                'main.js','mod',null
                 ], ()=>{
 					const projLib=path.resolve(projPath,'lib')
 					const projRun=path.resolve(projPath,'run')
@@ -81,9 +70,8 @@ fs.readlink(argv[1], (err, realPath)=>{
 					symlink(fs, path.resolve(realPath,'..','lean-wrap','bin'), projLib, 'lean')
 					symlink(fs, path.resolve(realPath,'..','pico-common','bin'), projLib, 'common')
 					symlink(fs, path.resolve(realPath,'..','pojs','lib'), projLib, 'pojs')
-					symlink(fs, path.resolve(realPath,'..','pico-client','sdk'), projLib, 'pico')
-					symlink(fs, path.resolve(realPath,'..','build'), projRun, 'build')
-					symlink(fs, path.resolve(realPath,'..','update'), projRun, 'update')
+					symlink(fs, path.resolve(realPath,'..','pico-client','lib'), projLib, 'pico')
+					symlink(fs, path.resolve(realPath,'..','pico-client','build'), projRun, 'build')
 					console.log('Done')
             })
         })
