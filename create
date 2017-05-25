@@ -61,7 +61,6 @@ fs.readlink(argv[1], (err, realPath)=>{
                 'index.html','',null,
                 'proj.json','cfg',projName?`proj-${projName}.json`:'proj.json',
                 'env.json','cfg',projName?`env-${projName}-dev.json`:'env-dev.json',
-                'env.json','cfg','env.json',
                 'main.js','mod',null
                 ], ()=>{
 					const projLib=path.resolve(projPath,'lib')

@@ -11,9 +11,9 @@ pico.run({
         '.asp':function(url,asp){ return pStr.template(asp) }
     },
     paths:{
-        '~': 'mod/',
+        '~': './mod/',
         root: './',
-        cfg: 'cfg/',
+        cfg: './cfg/',
 		p: './lib/pico/',
 		po: './lib/pojs/'
     }
@@ -24,6 +24,6 @@ pico.run({
     env = require('cfg/env.json')
 
     return function(){
-        Frame.start(project, env)
+        new Frame(project, env)
     }
 })

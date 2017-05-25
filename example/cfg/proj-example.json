@@ -1,0 +1,117 @@
+[
+    [],
+    [],
+    [],
+    [
+        [ "options", "map", { "el": ".__" } ],
+        [ "css", "file", "main.css" ],
+        [ "css", "file", "Frame.css" ],
+        [ "css", "file", "example.css" ],
+        [ "html", "file", "Frame.html" ],
+        [ "groups", "models", {}, [
+                { "id": 1, "name": "AAA", "desc": "the tail of your dump file indicates that you have" },
+                { "id": 2, "name": "BBB", "desc": "Try using forward slash" },
+                { "id": 3, "name": "CCC", "desc": "When running this on a file that is" }
+            ]
+        ],
+        [ "p/Pane", "view", [
+                [ "options", "map", { "el": ".__ #pane0" } ],
+                [ "paneId", "int", 0 ],
+                [ "allmodels", "refs", "models" ],
+                [ "allint", "refs", "int" ],
+                [ "alltext", "refs", "text" ]
+            ]
+        ],
+        [ "p/Pane", "view", [
+                [ "options", "map", { "el": ".__ #pane1" } ],
+                [ "paneId", "int", 1 ],
+                [ "allmodels", "refs", "models" ],
+                [ "allint", "refs", "int" ],
+                [ "alltext", "refs", "text" ]
+            ]
+        ],
+        [ "Page", "view", [
+                [ "options", "map", { "el": ".__ #pane0" } ],
+                [ "paneId", "int", 0 ]
+            ]
+        ],
+        [ "Page", "view", [
+                [ "options", "map", { "el": ".__ #pane1" } ],
+                [ "paneId", "int", 1 ]
+            ]
+        ],
+        [ "NoSession", "ctrl", [] ]
+    ],
+    {
+        "": [
+            [ "options", "map", { "el": "#pane1" } ],
+            [ "Void", "view", [
+                    [ "options", "map", { "classNames": "void" } ],
+                    [ "tpl", "file", "Void.asp" ],
+                    [ "css", "file", "Void.css" ]
+                ]
+            ]
+        ],
+        "organizations": [
+            [ "options", "map", { "el": "#pane0" } ],
+            [ "groups", "ref", "groups" ],
+            [ "organizations", "css", "organizations.css" ],
+            [ "organizations", "ctrl", [] ],
+            [ "Header", "view",
+                [
+                    [ "options", "map", { "tagName": "header" } ],
+                    [ "tpl", "file", "Header.asp" ],
+                    [ "css", "file", "Header.css" ],
+                    [ "data", "map", {
+                            "rightText": "next",
+                            "title": "Organization",
+                            "subtitle": "A Subtitle"
+                        }
+                    ]
+                ]
+            ],
+            [ "List", "view",
+                [
+                    [ "options", "map",
+                        {
+                            "tagName": "content",
+                            "classNames": [ "scrollable" ],
+                            "content": [ { "tagName": "ul" } ]
+                        }
+                    ],
+                    [ "css", "file", "List.css" ],
+                    [ "coll", "ref", "groups" ],
+                    [ "Row", "view",
+                        [
+                            [ "options", "map", { "tagName": "li" } ],
+                            [ "tpl", "file", "Row.asp" ]
+                        ]
+                    ]
+                ]
+            ]
+        ],
+        "users": [
+            [ "options", "map", { "el": "#pane0" } ],
+            [ "users", "css", "users.css" ],
+            [ "users", "ctrl", [] ],
+            [ "Header", "view",
+                [
+                    [ "options", "map", { "tagName": "header" } ],
+                    [ "tpl", "file", "Header.asp" ],
+                    [ "css", "file", "Header.css" ],
+                    [ "data", "map",
+                        {
+                            "leftText": "back",
+                            "title": "Users",
+                            "subtitle": "A Subtitle"
+                        }
+                    ]
+                ]
+            ]
+        ]
+    },
+    [
+        [ "users/:id", "users" ],
+        [ "#action", "organizations" ]
+    ]
+]
