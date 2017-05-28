@@ -56,6 +56,39 @@ One caveat is submodule may not ready during event call. for example project con
 ]
 ```
 if modB event call modA immediately in create function, modA-subA may not ready when modA receive the event. modA should listen to moduleAdded emitted by modA-subA before using any functionality from modA-subA
+### External editable static property
+ModuleA
+```javascript
+var obj={
+	a:1,
+	print:function(){
+		console.log(obj.a)
+	}
+}
+return obj
+```
+if ModuleA.print method was call in ModuleB
+```javascript
+var modA=require('ModuleA')
+modA.print() // 1
+```
+what if ModuleA.a was changed in ModuleB?
+```javascript
+var modA=require('ModuleA')
+modA.a='hello'
+modA.print() // 1
+```
+print result is still 1, that's because 'hello' is set on modA placeholder, to make ModuleA.a an editable property, make this changes to ModuleA
+```javascript
+var modA=require('ModuleA')
+var obj={
+	a:1,
+	print:function(){
+		console.log(modA.a)
+	}
+}
+return obj
+```
 ## Features
 * support circular dependencies
 * syntax similar to commonjs and amd, easy to pickup
