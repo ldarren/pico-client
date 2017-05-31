@@ -46,7 +46,7 @@
         "": [
             [ "options", "map", { "el": "#pane1" } ],
             [ "Void", "view", [
-                    [ "options", "map", { "classNames": "void" } ],
+                    [ "options", "map", { "className": "void" } ],
                     [ "tpl", "file", "Void.asp" ],
                     [ "css", "file", "Void.css" ]
                 ]
@@ -75,7 +75,7 @@
                     [ "options", "map",
                         {
                             "tagName": "content",
-                            "classNames": [ "scrollable" ],
+                            "className": [ "scrollable" ],
                             "content": [ { "tagName": "ul" } ]
                         }
                     ],
