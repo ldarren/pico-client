@@ -1,4 +1,3 @@
-var pStr=pico.export('pico/str')
 pico.run({
     name: 'main',
     ajax: __.ajax,
@@ -8,7 +7,7 @@ pico.run({
 		dataset:(function(el){ if (el) return el.dataset })(document.getElementById('picoEnv'))
     },
     preprocessors:{
-        '.asp':function(url,asp){ return pStr.template(asp) }
+        '.asp':function(url,asp){ return pico.export('pico/str').template(asp) }
     },
     paths:{
         '~': './mod/',
