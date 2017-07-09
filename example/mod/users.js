@@ -4,7 +4,7 @@ return {
 		click:function(from,sender,name){
 			switch(name){
 			case 'back':
-				router.back()
+				router.go('organizations')
 				break
 			}
 		}
