@@ -4,99 +4,32 @@
     [],
     [
         [ "options", "map", { "el": ".__" } ],
-        [ "css", "file", "main.css" ],
-        [ "css", "file", "Frame.css" ],
-        [ "css", "file", "example.css" ],
         [ "html", "file", "Frame.html" ],
-        [ "groups", "models", {}, [
-                { "id": 1, "name": "AAA", "desc": "the tail of your dump file indicates that you have" },
-                { "id": 2, "name": "BBB", "desc": "Try using forward slash" },
-                { "id": 3, "name": "CCC", "desc": "When running this on a file that is" }
-            ]
-        ],
         [ "p/Pane", "view", [
-                [ "options", "map", { "el": ".__ #pane0" } ],
-                [ "paneId", "int", 0 ],
-				[ "allModels", "refs", "models"],
-				[ "Page", "view", [
-					[ "allModels", "refs", "models"]
-				]]
-            ]
-        ],
-        [ "p/Pane", "view", [
-                [ "options", "map", { "el": ".__ #pane1" } ],
-                [ "paneId", "int", 1 ],
-				[ "Page", "view", [ ]]
-            ]
-        ],
+			[ "options", "map", { "el": ".__ #pane0" } ],
+			[ "paneId", "int", 0 ],
+			[ "Page", "view", [ ]]
+		]],
         [ "NoSession", "ctrl", [] ]
     ],
     {
-        "": [
-            [ "options", "map", { "className": "page" } ],
-            [ "Void", "view", [
-                    [ "options", "map", { "className": "void" } ],
-                    [ "tpl", "file", "Void.asp" ],
-                    [ "css", "file", "Void.css" ]
-                ]
-            ]
-        ],
         "organizations": [
-            [ "options", "map", { "className": "page" } ],
-            [ "groups", "ref", "groups" ],
-            [ "organizations", "css", "organizations.css" ],
-            [ "organizations", "ctrl", [] ],
-            [ "Header", "view",
-                [
-                    [ "options", "map", { "tagName": "header" } ],
-                    [ "tpl", "file", "Header.asp" ],
-                    [ "css", "file", "Header.css" ],
-                    [ "data", "map", {
-                            "rightText": "next",
-                            "title": "Organization",
-                            "subtitle": "A Subtitle"
-                        }
-                    ]
-                ]
-            ],
-            [ "List", "view",
-                [
-                    [ "options", "map",
-                        {
-                            "tagName": "content",
-                            "className": [ "scrollable" ],
-                            "content": [ { "tagName": "ul" } ]
-                        }
-                    ],
-                    [ "css", "file", "List.css" ],
-                    [ "coll", "ref", "groups" ],
-                    [ "Row", "view",
-                        [
-                            [ "options", "map", { "tagName": "li" } ],
-                            [ "tpl", "file", "Row.asp" ]
-                        ]
-                    ]
-                ]
-            ]
+            [ "options", "map", { "className": "content" } ],
+			["organizations","ctrl",[]],
+            [ "Header", "view", [
+				[ "options", "map", { "tagName": "header" } ],
+				[ "tpl", "file", "Header.asp" ],
+				[ "data", "map", { "leftText": "next" } ]
+			]]
         ],
         "users": [
-            [ "options", "map", { "className": "page" } ],
-            [ "users", "css", "users.css" ],
-            [ "users", "ctrl", [] ],
-            [ "Header", "view",
-                [
-                    [ "options", "map", { "tagName": "header" } ],
-                    [ "tpl", "file", "Header.asp" ],
-                    [ "css", "file", "Header.css" ],
-                    [ "data", "map",
-                        {
-                            "leftText": "back",
-                            "title": "Users",
-                            "subtitle": "A Subtitle"
-                        }
-                    ]
-                ]
-            ]
+            [ "options", "map", { "className": "content" } ],
+			["users","ctrl",[]],
+            [ "Header", "view", [
+				[ "options", "map", { "tagName": "header" } ],
+				[ "tpl", "file", "Header.asp" ],
+				[ "data", "map", { "leftText": "back" } ]
+			]]
         ]
     },
     [
