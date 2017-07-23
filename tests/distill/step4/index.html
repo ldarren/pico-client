@@ -1,0 +1,24 @@
+<body>
+<script src=lean.js></script>
+<script src=pico.js></script>
+<script>
+	pico.run({
+		name: 'main',
+		ajax: __.ajax,
+		onLoad: __.load,
+		paths:{
+			'~': './',
+			'po': './pojs/',
+			'p': './pico/'
+		}
+	},()=>{
+		var Frame = require('p/Frame')
+		var proj = require('~/proj.json')
+		var env = require('~/env.json')
+
+		return function(){
+			new Frame(proj, env)
+		}
+	})
+</script>
+</body>

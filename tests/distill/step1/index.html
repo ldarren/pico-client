@@ -1,0 +1,43 @@
+<body>
+<script id=page type=text/tmpl>
+	var el
+	return {
+		start:function(){
+			el=document.createElement('p')
+			el.textContent='TEXT'
+			document.body.appendChild(el)
+			function click(){
+				el.removeEventListener('click',click)
+				cb()
+			}
+			el.addEventListener('click', click)
+		},
+		stop:function(){
+			el.parentElement.removeChild(el)
+		}
+	}
+</script>
+
+<script id=main type=text/tmpl>	
+	var curr=0
+	var page
+	function changePage(){
+		var pageFunc = pages[curr++]
+		if (curr >= pages.length) curr=0
+		page && page.stop()
+		page=pageFunc(changePage)
+		page.start()
+	}
+	changePage()
+</script>
+<script>
+	var page = document.querySelector('script#page').textContent
+	var main = document.querySelector('script#main').textContent
+
+	var page1Func = Function('cb', page.replace('TEXT','page1'))
+	var page2Func = Function('cb', page.replace('TEXT','page2'))
+	var mainFunc = Function('pages', main)
+
+	mainFunc([page1Func, page2Func])
+</script>
+</body>
