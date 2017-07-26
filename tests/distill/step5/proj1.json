@@ -1,0 +1,25 @@
+[
+    [],
+    [],
+    [],
+    [
+        [ "options", "map", { "el": "body" } ],
+        [ "p/Pane", "view", [
+			[ "options", "map", { "el": "body" } ],
+			[ "paneId", "int", 0 ],
+			[ "Content", "view", [ ]]
+		]],
+        [ "NoSession", "ctrl", [] ]
+    ],
+    {
+        "page": [
+			[ "options", "map", { "className": "page" } ],
+			[ "Page", "view", [
+			]]
+		]
+    },
+    [
+        [ "page/%id", "page" ],
+        [ "#action", "page" ]
+    ]
+]
