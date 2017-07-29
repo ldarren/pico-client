@@ -1,0 +1,41 @@
+[
+    [],
+    [],
+    [],
+    [
+        [ "options", "map", { "el": ".__" } ],
+        [ "html", "file", "Frame.html" ],
+        [ "p/Pane", "view", [
+			[ "options", "map", { "el": ".__ #pane0" } ],
+			[ "paneId", "int", 0 ],
+			[ "Content", "view", [ ]]
+		]],
+        [ "NoSession", "ctrl", [] ]
+    ],
+    {
+        "organizations": [
+			[ "options", "map", { "className": "page" } ],
+			[ "Page", "ctrl", [
+				["path","text","users/1"]
+			]],
+            [ "Header", "view", [
+				[ "tpl", "file", "Header.asp" ],
+				[ "data", "map", { "leftText": "next" } ]
+			]]
+		],
+        "users": [
+			[ "options", "map", { "className": "page" } ],
+			[ "Page", "ctrl", [
+				["path","text","organizations"]
+			]],
+            [ "Header", "view", [
+				[ "tpl", "file", "Header.asp" ],
+				[ "data", "map", { "leftText": "back" } ]
+			]]
+		]
+    },
+    [
+        [ "users/:id", "users" ],
+        [ "#action", "organizations" ]
+    ]
+]

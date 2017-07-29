@@ -1,0 +1,27 @@
+<body class=__>
+<script src=lean.js></script>
+<script src=pico.js></script>
+<script>
+	pico.run({
+		name: 'main',
+		ajax: __.ajax,
+		onLoad: __.load,
+		preprocessors:{
+			'.asp':function(url,asp){ return pico.export('pico/str').template(asp) }
+		},
+		paths:{
+			'~': './',
+			'po': './pojs/',
+			'p': './pico/'
+		}
+	},()=>{
+		var Frame = require('p/Frame')
+		var proj = require('~/proj1.json')
+		var env = require('~/env1.json')
+
+		return function(){
+			new Frame(proj, env)
+		}
+	})
+</script>
+</body>
