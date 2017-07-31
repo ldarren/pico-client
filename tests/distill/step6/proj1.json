@@ -20,7 +20,8 @@
 			]],
             [ "Header", "view", [
 				[ "tpl", "file", "Header.asp" ],
-				[ "data", "map", { "leftText": "next" } ]
+				[ "data", "map", { "leftText": "next" } ],
+				["path","text","users/1"]
 			]]
 		],
         "users": [
@@ -30,7 +31,8 @@
 			]],
             [ "Header", "view", [
 				[ "tpl", "file", "Header.asp" ],
-				[ "data", "map", { "leftText": "back" } ]
+				[ "data", "map", { "leftText": "back" } ],
+				["path","text","organizations"]
 			]]
 		]
     },
