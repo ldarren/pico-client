@@ -1,0 +1,23 @@
+<body>
+<script src=lean.js></script>
+<script src=pico.js></script>
+<script>
+	pico.run({
+		name: 'main',
+		ajax: __.ajax,
+		onLoad: __.load,
+		paths:{
+			'~': './',
+			'po': './pojs/',
+			'p': './pico/'
+		}
+	},()=>{
+		var View= require('p/View')
+		var proj = require('~/proj1.json')
+
+		return function(){
+			new View('Frame', proj)
+		}
+	})
+</script>
+</body>

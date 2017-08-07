@@ -3,11 +3,6 @@ ID=0,TYPE=1,VALUE=2,EXTRA=3,
 ERR1='ref of REF not found',ERR2='record RECORD of ref of REF not found',
 extOpt={mergeArr:1},
 pObj=require('pico/obj'),
-Collection= require('po/Collection'),
-Stream= require('p/Stream'),
-Socket= require('p/Socket'),
-Worker= require('p/Worker'),
-Service= require('p/Service'),
 create = function(id, type, value){ return [id, type, value] },
 getId = function(spec){return spec[ID]},
 getType = function(spec){return spec[TYPE]},
@@ -49,40 +44,6 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
     case 'refs': // ID[id] TYPE[refs] VALUE[orgType]
         Array.prototype.push.apply(deps, findAll(s[VALUE], ctx, TYPE, 1))
         break
-    case 'model': // ID[id] TYPE[model] VALUE[models] EXTRA[paramIdx]
-        f = find(s[VALUE], ctx, true)
-		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, params, userData)
-		var m = f[VALUE].get(params[s[EXTRA]])
-		if (!m) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',params[s[EXTRA]]), deps, params, userData)
-		deps.push(create(s[ID], t, m)) 
-		break
-    case 'models': // ID[id] TYPE[models] VALUE[options] EXTRA[default value]
-		if (Array.isArray(s[ID])){
-			f=s[ID].shift()
-			return loadDeps(s[ID],0,{},function(err,klass){
-				deps.push(create(f, t, new (Collection.extend(pObj.extends({},[klass])))(s[EXTRA], s[VALUE], s[ID])))
-				load(ctx, params, spec, idx, deps, cb, userData)
-			})
-		}else{
-			deps.push(create(s[ID], t, new Collection(s[EXTRA], s[VALUE], s[ID])))
-		}
-        break
-	case 'field': // ID[id] TYPE[field] VALUE[models] EXTRA[filter] EXTRA1[field name]
-        f = find(s[VALUE], ctx, true)
-		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, params, userData)
-		var m = isFinite(s[EXTRA])?f[VALUE].at(s[EXTRA]):f[VALUE].findWhere(s[EXTRA])
-		if (!m) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',s[EXTRA]), deps, params, userData)
-		deps.push(create(s[ID], t, s[EXTRA+1]?m[s[EXTRA+1]]:m.toJSON()))
-		break
-	case 'fields': // ID[id] TYPE[fields] VALUE[models] EXTRA[filter] EXTRA1[field name]
-        f = find(s[VALUE], ctx, true)
-		if (!f) return cb(ERR1.replace('REF', s[VALUE]), deps, params, userData)
-		var m = s[EXTRA] ? new Collection(f[VALUE].where(s[EXTRA])) : f[VALUE]
-		// TODO: implement pluck
-		if (!m || !m.pluck) return cb(ERR2.replace('REF', s[VALUE]).replace('RECORD',s[EXTRA]), deps, params, userData)
-		deps.push(create(s[ID], t, s[EXTRA+1]?m.pluck(s[EXTRA+1]):m.toJSON()))
-		break
-    case 'ctrl':
     case 'view': // ID[id/path] TYPE[ctrl/view] VALUE[spec] EXTRA[path/path+mixins]
         return loadDeps(s[EXTRA]||s[ID], 0, {}, function(err, klass){
             if (err) return cb(err, deps, params, userData)
@@ -96,32 +57,6 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
             deps.push(create(s[ID], t, mod))
             load(ctx, params, spec, idx, deps, cb, userData)
         })
-    case 'stream': // ID[id] TYPE[stream] VALUE[config]
-        deps.push(create(s[ID], t, new Stream(s[VALUE])))
-        break
-    case 'socket': // ID[id] TYPE[socket] VALUE[config]
-        deps.push(create(s[ID], t, new Socket(s[VALUE])))
-        break
-    case 'worker': // ID[id] TYPE[worker] VALUE[spec]
-		return load(deps, params, s[VALUE], 0, [], function(err, config){
-            if (err) return cb(err, deps, params, userData)
-			deps.push(create(s[ID], t, new Worker.Proxy(config)))
-			load(ctx, params, spec, idx, deps, cb, userData)
-		})
-    case 'job': // ID[id] TYPE[job] VALUE[spec]
-        return require(s[ID], function(err, mod){
-			load(deps, params, s[VALUE], 0, [], function(err, config){
-				if (err) return cb(err, deps, params, userData)
-				deps.push(create(s[ID], t, new Worker.Job(s[ID],mod,config)))
-				load(ctx, params, spec, idx, deps, cb, userData)
-			})
-		})
-    case 'service': // ID[id] TYPE[service] VALUE[spec]
-		return load(deps, params, s[VALUE], 0, [], function(err, config){
-            if (err) return cb(err, deps, params, userData)
-			deps.push(create(s[ID], t, new Service(s[ID],config)))
-			load(ctx, params, spec, idx, deps, cb, userData)
-		})
     case 'param': // ID[id] TYPE[param] VALUE[index]
         deps.push(create(s[ID], t, params[s[VALUE]]))
         break

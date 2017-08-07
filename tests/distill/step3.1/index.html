@@ -1,0 +1,22 @@
+<body>
+<script src=lean.js></script>
+<script src=pico.js></script>
+<script>
+	pico.run({
+		name: 'main',
+		ajax: __.ajax,
+		onLoad: __.load,
+		paths:{
+			'~': './',
+			'po': './pojs/'
+		}
+	},()=>{
+		var Frame = require('Frame')
+
+		return function(){
+			var frame = new Frame
+			frame.start()
+		}
+	})
+</script>
+</body>

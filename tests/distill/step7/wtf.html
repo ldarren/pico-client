@@ -1,0 +1,13 @@
+<body>
+<div id=Page></div>
+<script>
+var el = document.body.querySelector('div#page')
+var count = 1
+function onClick(e){
+	if (++count > 1) count = 0
+	el.innerHTML = '<button>Page'+count+'</button>'
+	el.addEventListener('click',onClick,false)
+}
+onClick()
+</script>
+</body>

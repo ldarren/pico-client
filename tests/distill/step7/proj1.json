@@ -1,0 +1,7 @@
+[
+	[ "options", "map", { "el": "body" } ],
+	[ "Frame", "view", [
+		[ "options", "map", { "el": "body" } ],
+		[ "Page", "view", [ ]]
+	]]
+]
