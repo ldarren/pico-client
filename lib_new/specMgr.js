@@ -45,9 +45,9 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
         Array.prototype.push.apply(deps, findAll(s[VALUE], ctx, TYPE, 1))
         break
     case 'view': // ID[id/path] TYPE[ctrl/view] VALUE[spec] EXTRA[path/path+mixins]
-        return loadDeps(s[EXTRA]||s[ID], 0, {}, function(err, klass){
+        f=s[ID]
+        return loadDeps(s[EXTRA]||f, 0, {}, function(err, klass){
             if (err) return cb(err, deps, params, userData)
-            f=s[ID]
             deps.push(create(f, t, {name:f, type:t, spec:s[VALUE], Class:klass}))
             load(ctx, params, spec, idx, deps, cb, userData)
         })

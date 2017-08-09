@@ -6,17 +6,24 @@ var sigslot= require('p/sigslot')
 function specLoaded(err, spec, params, userData){
 	console.log('View.specLoaded',arguments)
 	var self = userData[0]
-	var chains = userData[1]
+	var host = self.host
+	var _el = self._el
+
+	host.el && !_el.parentElement && host.el.appendChild(_el)
+	host.modules && host.modules.push(self)
 
 	self.initialize(spec, params)
+
+	self.el = self.render()
+
+	var chains = userData[1]
 
 	if (!chains) return
 	if (2 === chains.length) {
 		var cb = chains[0]
 		return cb && cb()
 	}
-	
-	self.host.spawn(chains.shift(), params, chains[chains.length-1], chains)
+	host.spawn(chains.shift(), params, chains[chains.length-1], chains)
 }
 
 function View(name, specRaw, params, host, chains){
@@ -61,31 +68,28 @@ View.prototype = {
 	},
 	remove: function(){
 		console.log('View.remove',arguments)
+		var ms = this.modules
+		for (var i=0,m; m=ms[i]; i++){
+			m.remove()
+		}
+		ms.length = 0
+		this.stop()
 		this.deps = this.spec = this._specRaw = void 0
 	},
 	render: function(){
-		console.log('View.render',arguments)
+		console.log(this.name,'.render',arguments)
 		return this.el
-	},
-	rendered: function(){
 	},
 	spawn: function(Mod, params, extraSpec, chains){
 		if (!Mod || !Mod.spec) return
 
-		var m = new (View.extend(Mod.Class))(
+		return new (View.extend(Mod.Class))(
 			Mod.name,
-			Mod.spec.concat(extraSpec),
+			Mod.spec.concat(extraSpec||[]),
 			params,
 			this,
 			chains instanceof Function ? [chains, extraSpec] : chains
 		)
-		var newEl = m.render()
-		!newEl.parentElement && this.el.appendChild(newEl)
-		this.rendered()
-
-		this.modules.push(m)
-
-		return m
 	},
 	spawnBySpec: function(spec, params, extraSpec, cb){
 		var list = specMgr.findAllByType('view', spec)

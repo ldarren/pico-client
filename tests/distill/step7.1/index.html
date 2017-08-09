@@ -1,0 +1,27 @@
+<body>
+<script src=lean.js></script>
+<script src=pico.js></script>
+<script>
+	pico.run({
+		name: 'main',
+		ajax: __.ajax,
+		onLoad: __.load,
+		paths:{
+			'~': './',
+			'po': './pojs/',
+			'p': './pico/'
+		}
+	},()=>{
+		var proj = require('~/proj1.json')
+		var specMgr= require('p/specMgr')
+		var View= require('p/View')
+
+		return function(){
+			specMgr.load(null,null,[proj],(err, spec)=>{
+				if (err) return console.log(err)
+				View.prototype.spawn(specMgr.getValue(spec[0]))
+			})
+		}
+	})
+</script>
+</body>
