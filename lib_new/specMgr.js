@@ -44,6 +44,7 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
     case 'refs': // ID[id] TYPE[refs] VALUE[orgType]
         Array.prototype.push.apply(deps, findAll(s[VALUE], ctx, TYPE, 1))
         break
+    case 'ctrl':
     case 'view': // ID[id/path] TYPE[ctrl/view] VALUE[spec] EXTRA[path/path+mixins]
         f=s[ID]
         return loadDeps(s[EXTRA]||f, 0, {}, function(err, klass){
