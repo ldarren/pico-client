@@ -101,11 +101,11 @@ Ctrl.prototype = {
 	},
 	spawn: function(Mod, params, extraSpec, chains){
 		console.log('Ctrl.spawn',arguments)
-		if (!Mod || !Mod.spec) return
+		if (!Mod || !Mod.length) return
 
-		return new (Ctrl.extend(Mod.Class))(
-			Mod.name,
-			Mod.spec.concat(extraSpec||[]),
+		return new (Ctrl.extend(specMgr.getExtra(Mod)))(
+			specMgr.getId(Mod),
+			specMgr.getValue(Mod).concat(extraSpec||[]),
 			params,
 			this,
 			chains instanceof Function ? [chains, extraSpec] : chains
@@ -113,7 +113,7 @@ Ctrl.prototype = {
 	},
 	spawnBySpec: function(spec, params, extraSpec, cb, list){
 		console.log('Ctrl.spawnBySpec',arguments)
-		list = (list || []).concat(specMgr.findAllByType('ctrl', spec))
+		list = (list || []).concat(specMgr.findAllByType('ctrl', spec, true))
 		if (!list.length) return  cb && cb()
 		list.push(cb, extraSpec)
 		return this.spawn(list.shift(), params, extraSpec, list)

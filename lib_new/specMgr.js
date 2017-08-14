@@ -3,7 +3,7 @@ ID=0,TYPE=1,VALUE=2,EXTRA=3,
 ERR1='ref of REF not found',ERR2='record RECORD of ref of REF not found',
 extOpt={mergeArr:1},
 pObj=require('pico/obj'),
-create = function(id, type, value){ return [id, type, value] },
+create = function(id, type, value, extra){ return Array.prototype.slice.call(arguments) },
 getId = function(spec){return spec[ID]},
 getType = function(spec){return spec[TYPE]},
 getValue = function(spec){return spec[VALUE]},
@@ -49,7 +49,7 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
         f=s[ID]
         return loadDeps(s[EXTRA]||f, 0, {}, function(err, klass){
             if (err) return cb(err, deps, params, userData)
-            deps.push(create(f, t, {name:f, type:t, spec:s[VALUE], Class:klass}))
+            deps.push(create(f, t, s[VALUE], klass))
             load(ctx, params, spec, idx, deps, cb, userData)
         })
     case 'file': // ID[id] TYPE[file] VALUE[path]

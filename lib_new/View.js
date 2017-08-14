@@ -9,6 +9,7 @@ function View(name, specRaw, params, host, chains){
         opt = {}
         specRaw.push(['options','map',opt])
     }
+    opt = Object.assign({}, opt)
 	opt.content = specMgr.find('html',specRaw)
 
     Ctrl.apply(this, arguments)
@@ -28,13 +29,13 @@ View.prototype = {
 	},
 	spawn: function(Mod, params, extraSpec, chains){
 		console.log('View.spawn',arguments)
-		if (!Mod || !Mod.spec) return
+		if (!Mod || !Mod.length) return
 
-        if ('ctrl' === Mod.type) return Ctrl.prototype.spawn.apply(this, arguments)
+        if ('ctrl' === specMgr.getType(Mod)) return Ctrl.prototype.spawn.apply(this, arguments)
 
-		return new (View.extend(Mod.Class))(
-			Mod.name,
-			Mod.spec.concat(extraSpec||[]),
+		return new (View.extend(specMgr.getExtra(Mod)))(
+			specMgr.getId(Mod),
+			specMgr.getValue(Mod).concat(extraSpec||[]),
 			params,
 			this,
 			chains instanceof Function ? [chains, extraSpec] : chains
@@ -48,7 +49,7 @@ View.prototype = {
             params,
             extraSpec,
             cb,
-            specMgr.findAllByType('view', spec)
+            specMgr.findAllByType('view', spec, true)
         )
 	}
 }
