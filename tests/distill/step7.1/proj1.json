@@ -1,13 +1,15 @@
-[ "Frame", "view", [
-	[ "options", "map", { "el": "body" } ],
-	["pages","map",{
-		"users":[ "Page", "view", [
-			["html","text","<button>Back</button>"],
-			["next","text","organizations"]
-		]],
-		"#action":[ "Page", "view", [
-			["html","text","<button>Next</button>"],
-			["next","text","users"]
-		]]
-	}]
-]]
+[
+	[ "Frame", "view", [
+		[ "options", "map", { "el": "body" } ],
+		["pages","map",{
+			"users":[ "Page", "view", [
+				["html","text","<button>Back</button>"],
+				["next","text","organizations"]
+			]],
+			"#action":[ "Page", "view", [
+				["html","text","<button>Next</button>"],
+				["next","text","users"]
+			]]
+		}]
+	]]
+]

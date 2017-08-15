@@ -5,12 +5,13 @@ function View(name, specRaw, params, host, chains){
 	console.log('View',arguments)
 
 	var opt = specMgr.getViewOptions(specRaw)
+	// view must contain an options
     if (!opt){
         opt = {}
         specRaw.push(['options','map',opt])
     }
-    opt = Object.assign({}, opt)
-	opt.content = specMgr.find('html',specRaw)
+	// override content with html spec if any
+	opt.content = specMgr.find('html',specRaw) || opt.content
 
     Ctrl.apply(this, arguments)
 

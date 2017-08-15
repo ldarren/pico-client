@@ -17,9 +17,9 @@
 		var View= require('p/View')
 
 		return function(){
-			specMgr.load(null,null,[proj],(err, spec)=>{
+			specMgr.load(null,null,proj,(err, spec)=>{
 				if (err) return console.log(err)
-				View.prototype.spawn(specMgr.getValue(spec[0]))
+				View.prototype.spawnBySpec(spec)
 			})
 		}
 	})
