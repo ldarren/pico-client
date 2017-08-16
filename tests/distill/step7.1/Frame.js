@@ -9,7 +9,8 @@ function pageChanged(evt, state, params){
 
 return {
 	deps:{
-		pages:'map'
+		pages:'map',
+		env: 'models'
 	},
 	create: function(deps, params){
 		this.super.create.call(this, deps, params)

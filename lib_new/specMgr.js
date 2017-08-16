@@ -3,6 +3,7 @@ ID=0,TYPE=1,VALUE=2,EXTRA=3,
 ERR1='ref of REF not found',ERR2='record RECORD of ref of REF not found',
 extOpt={mergeArr:1},
 pObj=require('pico/obj'),
+models=require('p/models'),
 create = function(id, type, value, extra){ return Array.prototype.slice.call(arguments) },
 getId = function(spec){return spec[ID]},
 getType = function(spec){return spec[TYPE]},
@@ -19,12 +20,12 @@ spec2Obj=function(spec){
 	for(var i=0,s;s=spec[i];i++){ obj[s[ID]]=s[VALUE] }
 	return obj
 },
-loadDeps = function(links, idx, klass, cb){
+loadDeps = function(links, idx, cb, klass){
     if (!links || links.length <= idx) return cb(null, klass)
     if (links.charAt) return require(links, cb)
     require(links[idx++], function(err, mod){
         if (err) return cb(err)
-        loadDeps(links, idx, pObj.extend(klass, mod, extOpt), cb)
+        loadDeps(links, idx, cb, pObj.extend(klass || {}, mod, extOpt))
     })
 },
 load = function(ctx, params, spec, idx, deps, cb, userData){
@@ -43,6 +44,20 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
         break
     case 'refs': // ID[id] TYPE[refs] VALUE[orgType]
         Array.prototype.push.apply(deps, findAll(s[VALUE], ctx, TYPE, 1))
+        break
+    case 'models': // ID[id] TYPE[models] VALUE[options]
+		var links=f=s[ID]
+		if (Array.isArray(f)){
+			f=f.shift()
+		}else{
+			links=void 0
+		}
+		return loadDeps(links,0,function(err,klass){
+			models(f, s[VALUE], klass, function(err, Models){
+				deps.push(create((f, t, Models))
+				load(ctx, params, spec, idx, deps, cb, userData)
+			})
+		})
         break
     case 'ctrl':
     case 'view': // ID[id/path] TYPE[ctrl/view] VALUE[spec] EXTRA[path/path+mixins]

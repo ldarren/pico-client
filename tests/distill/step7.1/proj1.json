@@ -1,6 +1,9 @@
 [
 	[ "Frame", "view", [
 		[ "options", "map", { "el": "body" } ],
+		[ "env", "models", [
+			["data","file","env.json"]
+		]],
 		["pages","map",{
 			"users":[ "Page", "view", [
 				["html","text","<button>Back</button>"],
