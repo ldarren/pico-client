@@ -14,6 +14,7 @@ return {
 	},
 	create: function(deps, params){
 		this.super.create.call(this, deps, params)
+		console.log(deps.env.get(1))
 
 		var rawSpec = []
 		var keys = Object.keys(deps.pages)

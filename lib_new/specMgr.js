@@ -54,7 +54,7 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
 		}
 		return loadDeps(links,0,function(err,klass){
 			models(f, s[VALUE], klass, function(err, Models){
-				deps.push(create((f, t, Models))
+				deps.push(create(f, t, Models))
 				load(ctx, params, spec, idx, deps, cb, userData)
 			})
 		})
@@ -62,7 +62,7 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
     case 'ctrl':
     case 'view': // ID[id/path] TYPE[ctrl/view] VALUE[spec] EXTRA[path/path+mixins]
         f=s[ID]
-        return loadDeps(s[EXTRA]||f, 0, {}, function(err, klass){
+        return loadDeps(s[EXTRA]||f, 0, function(err, klass){
             if (err) return cb(err, deps, params, userData)
             deps.push(create(f, t, s[VALUE], klass))
             load(ctx, params, spec, idx, deps, cb, userData)
