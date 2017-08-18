@@ -26,7 +26,7 @@ pHTTP.prototype = {
 			err && console.error(err)
 		})
 	},
-	ajax = function(method,route,params,cb){
+	ajax: function(method,route,params,cb){
 		if (!route) return cb(null, params)
 		var c = this.client
 

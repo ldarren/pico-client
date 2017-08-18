@@ -3,7 +3,7 @@ ID=0,TYPE=1,VALUE=2,EXTRA=3,
 ERR1='ref of REF not found',ERR2='record RECORD of ref of REF not found',
 extOpt={mergeArr:1},
 pObj=require('pico/obj'),
-create=require('p/create'),
+make=require('p/make'),
 create = function(id, type, value, extra){ return Array.prototype.slice.call(arguments) },
 getId = function(spec){return spec[ID]},
 getType = function(spec){return spec[TYPE]},
@@ -53,7 +53,7 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
 			links=void 0
 		}
 		return loadDeps(links,0,function(err,klass){
-			create.models(f, s[VALUE], klass, function(err, Models){
+			make.models(f, s[VALUE], klass, function(err, Models){
 				deps.push(create(f, t, Models))
 				load(ctx, params, spec, idx, deps, cb, userData)
 			})
@@ -67,7 +67,7 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
 			links=void 0
 		}
 		return loadDeps(links,0,function(err,klass){
-			create.pHTTP(s[VALUE], klass, function(err, pHTTP){
+			make.pHTTP(s[VALUE], klass, function(err, pHTTP){
 				deps.push(create(f, t, pHTTP))
 				load(ctx, params, spec, idx, deps, cb, userData)
 			})
