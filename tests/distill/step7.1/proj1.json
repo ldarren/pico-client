@@ -1,8 +1,13 @@
 [
 	[ "Frame", "view", [
 		[ "options", "map", { "el": "body" } ],
+		[ "cred", "models", []],
 		[ "env", "models", [
 			["data","file","env.json"]
+		]],
+		["network","phttp",[
+			["env","ref","env"],
+			["cred","ref","cred"]
 		]],
 		["pages","map",{
 			"users":[ "Page", "view", [
