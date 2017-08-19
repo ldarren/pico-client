@@ -73,6 +73,20 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
 			})
 		})
         break
+    case 'sse': // ID[id] TYPE[sse] VALUE[options]
+		var links=f=s[ID]
+		if (Array.isArray(f)){
+			f=f.shift()
+		}else{
+			links=void 0
+		}
+		return loadDeps(links,0,function(err,klass){
+			make.SSE(s[VALUE], klass, function(err, SSE){
+				deps.push(create(f, t, SSE))
+				load(ctx, params, spec, idx, deps, cb, userData)
+			})
+		})
+        break
     case 'ctrl':
     case 'view': // ID[id/path] TYPE[ctrl/view] VALUE[spec] EXTRA[path/path+mixins]
         f=s[ID]

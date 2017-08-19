@@ -9,6 +9,8 @@
 			["env","ref","env"],
 			["cred","ref","cred"]
 		]],
+		["dummy","models",[
+		]],
 		["pages","map",{
 			"users":[ "Page", "view", [
 				["html","text","<button>Back</button>"],
