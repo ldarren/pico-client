@@ -2,7 +2,6 @@
 // authentication(header or cookies) with withCredentials=true
 // how to get sep["&"] from pico/web?
 var Callback=require('po/Callback')
-var network=require('p/network')
 var PJSON=require('pico/json')
 
 function callbacks(self){

@@ -31,10 +31,9 @@ loadDeps = function(links, idx, cb, klass){
 load = function(ctx, params, spec, idx, deps, cb, userData){
     if (spec.length <= idx) return cb(null, deps, params, userData)
 
-    var
-    s = spec[idx++],
-    t = s[TYPE],
-    f
+    var s = spec[idx++]
+    var t = s[TYPE]
+    var f
 
     switch(t){
     case 'ref': //ID[id] TYPE[ref] VALUE[orgId]
@@ -45,44 +44,13 @@ load = function(ctx, params, spec, idx, deps, cb, userData){
     case 'refs': // ID[id] TYPE[refs] VALUE[orgType]
         Array.prototype.push.apply(deps, findAll(s[VALUE], ctx, TYPE, 1))
         break
-    case 'models': // ID[id] TYPE[models] VALUE[options]
-		var links=f=s[ID]
-		if (Array.isArray(f)){
-			f=f.shift()
-		}else{
-			links=void 0
-		}
-		return loadDeps(links,0,function(err,klass){
-			make.models(f, s[VALUE], klass, function(err, Models){
-				deps.push(create(f, t, Models))
-				load(ctx, params, spec, idx, deps, cb, userData)
-			})
-		})
-        break
-    case 'phttp': // ID[id] TYPE[phttp] VALUE[options]
-		var links=f=s[ID]
-		if (Array.isArray(f)){
-			f=f.shift()
-		}else{
-			links=void 0
-		}
-		return loadDeps(links,0,function(err,klass){
-			make.pHTTP(s[VALUE], klass, function(err, pHTTP){
-				deps.push(create(f, t, pHTTP))
-				load(ctx, params, spec, idx, deps, cb, userData)
-			})
-		})
-        break
-    case 'sse': // ID[id] TYPE[sse] VALUE[options]
-		var links=f=s[ID]
-		if (Array.isArray(f)){
-			f=f.shift()
-		}else{
-			links=void 0
-		}
-		return loadDeps(links,0,function(err,klass){
-			make.SSE(s[VALUE], klass, function(err, SSE){
-				deps.push(create(f, t, SSE))
+    case 'models': // ID[id] TYPE[models] VALUE[options] EXTRA[mixin]
+    case 'phttp': // ID[id] TYPE[phttp] VALUE[options] EXTRA[mixin]
+    case 'sse': // ID[id] TYPE[sse] VALUE[options] EXTRA[mixin]
+		return loadDeps(s[EXTRA],0,function(err,klass){
+			f=s[ID]
+			make(f, t, s[VALUE], klass, function(err, instance){
+				deps.push(create(f, t, instance))
 				load(ctx, params, spec, idx, deps, cb, userData)
 			})
 		})

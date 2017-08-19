@@ -1,0 +1,34 @@
+[
+	[ "Frame", "view", [
+		[ "options", "map", { "el": "body" } ],
+		[ "env", "model", "env.json"],
+		[ "network", "phttp", [
+			["env", "ref", "env"]
+		]],
+		[ "sse", "sse", [
+			["env", "ref", "env"],
+			["events","map",{
+
+			}]
+		]],
+		[ "users", "models", [
+			["network", "ref", "env"],
+			["routes", "map", {
+				"create":"users/create"
+			}],
+			["data","list",[
+				{"id":1,"name":"Darren"}
+			]]
+		]],
+		["pages","map",{
+			"users":[ "Page", "view", [
+				["html","text","<button>Back</button>"],
+				["next","text","organizations"]
+			]],
+			"#action":[ "Page", "view", [
+				["html","text","<button>Next</button>"],
+				["next","text","users"]
+			]]
+		}]
+	]]
+]
