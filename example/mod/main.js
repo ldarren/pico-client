@@ -15,12 +15,14 @@ pico.run({
 		po: './lib/pojs/'
 	}
 },function(){
-    var
-    Frame= require('p/Frame'),
-    project = require('cfg/proj.json'),
-    env = require('cfg/env.json')
+    var specMgr= require('p/specMgr')
+    var View= require('p/View')
+    var project = require('cfg/proj.json')
 
     return function(){
-        new Frame(project, env)
+		specMgr.load(null, null, project, function(err, spec){
+			if (err) return console.error(err)
+			View.prototype.spawnBySpec(spec)
+		})
     }
 })
