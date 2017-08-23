@@ -2,9 +2,15 @@ var router = require('po/router')
 var specMgr = require('p/specMgr')
 var specMap = null
 
-function pageChanged(evt, state, params){
-	var p = this.modules.pop()
+function remove(modules){
+	if (!modules.length) return
+	var p = modules.pop()
 	p && p.remove()
+	remove(modules)
+}
+
+function pageChanged(evt, state, params){
+	remove(this.modules)
 	var spec = []
 	for (var i=0, k; k=state[i]; i++){
 		spec.push(specMap[k])
@@ -28,7 +34,7 @@ return {
 		}
 		specMgr.load(this, params, rawSpec, (err, spec)=>{
 			for (var i=0, k; k=keys[i]; i++){
-				specMap[k]=spec.pop()
+				specMap[k]=spec.shift()
 			}
 			router.on('change',pageChanged,this).start(deps.routes)
 		})
