@@ -8,8 +8,8 @@ return {
 		this.el.innerHTML=deps.tpl(deps.data)
 	},
 	events:{
-		'click button':function(e){
-			this.signals.click(e.target.textContent).send(this.host)
+		'click button':function(e, target){
+			this.signals.click(target.textContent).send(this.host)
 		}
 	}
 }

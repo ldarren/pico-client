@@ -1,150 +1,110 @@
 #!/usr/bin/env node
 
-const
-DEPS=0,STYLE=1,MIDDLEWARES=2,SPEC=3,PANE=4,FLYER=5,
-ID=0,TYPE=1,VALUE=2,EXTRA=3,
+const ID=0,TYPE=1,VALUE=2,EXTRA=3,EXTRA2=4
 
-fs=require('fs'),
-path=require('path'),
-args=require('pico-args'),
-CleanCSS=require('clean-css'),
-defaults={
+const fs=require('fs')
+const path=require('path')
+const args=require('pico-args')
+const CleanCSS=require('clean-css')
+const defaults={
 	proj:['','project name'],
-	env:['','environment: dev, st or pro'],
 	wd:['.','working directory'],
-	url:['','server url'],
 	mod:['mod','path to module directory'],
 	cfg:['cfg','path to configuration directory'],
 	bin:['bin','path to binary/output directory'],
 	entry:['main.js','entry point filename'],
 	lean:[true,'embed lean library'],
 	pico:[true,'embed pico library'],
-	linkcss:[false,'combine all css into a single file and add it to link section, required "proj"'],
-  help:[false,'show this help']
-},
-opt=args.parse(defaults),
-proj=opt.proj,
-env=opt.env,
-cwd=path.resolve(process.cwd(),opt.wd),
-modDir=path.resolve(cwd,opt.mod),
-cfgDir=path.resolve(cwd,opt.cfg),
-distDir=path.resolve(cwd,opt.bin),
-mainjs=opt.entry,
-setup=function(cb){
-    const
-    rawProjName=['proj'],
-    rawEnvName=['env']
+	help:[false,'show this help']
+}
+const opt=args.parse(defaults)
+const proj=opt.proj
+const cwd=path.resolve(process.cwd(),opt.wd)
+const modDir=path.resolve(cwd,opt.mod)
+const cfgDir=path.resolve(cwd,opt.cfg)
+const distDir=path.resolve(cwd,opt.bin)
+const mainjs=opt.entry
 
-    proj && rawProjName.push(proj) && rawEnvName.push(proj)
-    env && rawEnvName.push(env)
+if (opt.help || !opt.proj) return args.usage(defaults)
+args.print('build options',opt)
+
+function setup(cb){
+    const rawProjName=['proj']
+
+    proj && rawProjName.push(proj)
 
     const
     rawProjPath=path.resolve(cfgDir,`${rawProjName.join('-')}.json`),
-    rawEnvPath=path.resolve(cfgDir,`${rawEnvName.join('-')}.json`),
-    projPath=path.resolve(cfgDir,'proj.json'),
-    envPath=path.resolve(cfgDir,'env.json')
+    projPath=path.resolve(cfgDir,'proj.json')
 
     fs.stat(rawProjPath, (err, stat)=>{
         if (err) return cb(err)
-        fs.stat(rawEnvPath, (err, stat)=>{
-            if (err) return cb(err)
-			try{var json=JSON.parse(fs.readFileSync(rawProjPath))}
-			catch(exp){return console.error(exp)}
-            fs.writeFileSync(envPath, fs.readFileSync(rawEnvPath))
-            fs.mkdir(distDir, 0o755, (err)=>{
-                if (err && 'EEXIST'!==err.code) return cb(err)
-                fs.mkdir(path.resolve(distDir,proj), 0o755, (err)=>{
-                    if (err && 'EEXIST'!==err.code) return cb(err)
-                    cb(null, json, projPath, path.resolve(distDir,proj,'proj.js'))
-                })
-            })
-        })
+		try{var json=JSON.parse(fs.readFileSync(rawProjPath))}
+		catch(exp){return console.error(exp)}
+		fs.mkdir(distDir, 0o755, (err)=>{
+			if (err && 'EEXIST'!==err.code) return cb(err)
+			fs.mkdir(path.resolve(distDir,proj), 0o755, (err)=>{
+				if (err && 'EEXIST'!==err.code) return cb(err)
+				cb(null, json, projPath, path.resolve(distDir,proj,'proj.js'))
+			})
+		})
     })
-},
-getPath=function(spec, narr, include, style){
+}
+
+function getPath(spec, include){
 	switch(spec[TYPE]){
 	case 'file':
-		if (opt.linkcss && 'css'===spec[ID]){
-			style.add(spec[VALUE])
-		}else{
-			include.add(spec[VALUE])
-			narr.push(spec)
-		}
+		include.add(spec[VALUE])
 		return false
 	case 'view':
 	case 'ctrl':
 		const path=spec[EXTRA]||spec[ID]
 		if (Array.isArray(path)) path.forEach((p)=>{include.add(p)})
 		else include.add(path)
-
-		const nspec=spec.slice()
-		nspec[VALUE]=[]
-		narr.push(nspec)
-		break
-	default:
-		narr.push(spec)
-		return false
+		return true
+	case 'map':
+	case 'list':
+		return true
 	}
-  return true
-},
-scan=function(arr, narr, include, style, cb){
-    if (!arr || !Array.isArray(arr) || !arr.length) return cb(null, include, style)
-    const spec=arr.shift()
-    if (getPath(spec, narr, include, style)){
-        scan(spec[VALUE], narr[narr.length-1][VALUE], include, style, (err, include, style)=>{
-            if (err) return console.error(err)
-            scan(arr, narr, include, style, cb)
-        })
-    }else{
-        scan(arr, narr, include, style, cb)
-    }
-},
-scanPane=function(keys, panes, npanes, include, style, cb){
-    if (!keys || !keys.length) return cb(null, include, style)
-    const 
-	key=keys.shift(),
-	pane=panes[key]
-    if (!pane) return scanPane(keys, panes, npanes, include, style, cb)
-	const npane=[]
-	npanes[key]=npane
-    scan(pane, npane, include, style, (err, include, style)=>{
-        if (err) return console.error(err)
-        scanPane(keys, panes, npanes, include, style, cb)
-    })
-},
-writeCSS=function(style, cb){
-  if (!opt.linkCSS) return cb()
-	const	
-	src=proj+'.css',
-	target=path.resolve(distDir,proj,proj+'.css'),
-	relative=path.relative(cwd,modDir)
-
-	let content=''
-
-	style.forEach((v)=>{
-		content+=`@import url(${path.join(relative,v)});\n`
-	})
-	fs.writeFile(src, content, 'utf8', (err)=>{
-		if (err) cb(err)
-		new CleanCSS({rebase:true,sourceMap:true,target:target}).minify(content, (err, minified)=>{
-			if (err) return cb(err)
-			fs.writeFile(target, minified.styles, 'utf8', (err)=>{
-				if (err) return cb(err)
-				fs.writeFile(target+'.map', minified.sourceMap.toString(), 'utf8', cb)
-			})
-		})
-	})
+	return false
 }
 
-if (opt.help || (!opt.proj && opt.linkcss)) return args.usage(defaults)
-args.print('build options',opt)
+function scanObj(obj, include, cb){
+    if (!obj) return cb(null, include)
+	
+	const keys = Object.keys(obj)
+    if (!keys.length) return cb(null, include)
+
+	scan( keys.map( k => obj[k] ), include, cb)
+}
+
+function scan(arr, include, cb){
+    if (!arr || !Array.isArray(arr) || !arr.length) return cb(null, include)
+
+    const spec=arr.shift()
+
+    if (getPath(spec, include)){
+		if ('map' === spec[TYPE]){
+			return scanObj(spec[VALUE], include, (err, include)=>{
+				if (err) return cb(err)
+				scan(arr, include, cb)
+			})
+		}
+
+        return scan(spec[VALUE], include, (err, include)=>{
+            if (err) return cb(err)
+            scan(arr, include, cb)
+        })
+    }
+    scan(arr, include, cb)
+}
 
 process.chdir(cwd)
 
 setup((err, project, projPath, outPath)=>{
 	if (err) return console.error(err)
 
-	const deps=new Set(project[DEPS])
+	const deps=new Set()
 	opt.lean && deps.add(path.resolve(cwd,'lib','lean','lean.min.js'))
 	opt.pico && deps.add(path.resolve(cwd,'lib','common','pico.min.js'))
 
@@ -161,34 +121,18 @@ setup((err, project, projPath, outPath)=>{
 	pico=require('pico-common/bin/pico-cli.js')
 	__=window=document=new Proxy({},handler)
 
-	const filteredProj=[project[DEPS], project[STYLE], [], [], {}, project[FLYER]]
-	opt.linkcss && filteredProj[STYLE].push(`${opt.url}${proj}.css`)
-
-	scan(project[MIDDLEWARES], filteredProj[MIDDLEWARES], new Set, new Set, (err, include, style)=>{
+	fs.writeFile(projPath, JSON.stringify(project),(err)=>{
 		if (err) return console.error(err)
-		scan(project[SPEC], filteredProj[SPEC], include, style, (err, include, style)=>{
+
+		scan(project, new Set, (err, include)=>{
 			if (err) return console.error(err)
-			const
-			panes=project[PANE],
-			keys=Object.keys(panes)
 
-			scanPane(keys, panes, filteredProj[PANE], include, style, (err, include, style)=>{
-				if (err) return console.error(err)
-
-				fs.writeFile(projPath, JSON.stringify(filteredProj),(err)=>{
-					if (err) return console.error(err)
-					writeCSS(style,(err)=>{
-						if (err) return console.error(err)
-
-						pico.export('pico/build')({
-							entry:path.resolve(modDir,mainjs),
-							output:outPath,
-							deps,
-							include,
-							exclude:[path.basename(mainjs,'.js')] 
-						})
-					})
-				})
+			pico.export('pico/build')({
+				entry:path.resolve(modDir,mainjs),
+				output:outPath,
+				deps,
+				include,
+				exclude:[path.basename(mainjs,'.js')] 
 			})
 		})
 	})

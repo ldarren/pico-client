@@ -60,17 +60,16 @@ fs.readlink(argv[1], (err, realPath)=>{
             })([
                 'index.html','',null,
                 'proj.json','cfg',projName?`proj-${projName}.json`:'proj.json',
-                'env.json','cfg',projName?`env-${projName}-dev.json`:'env-dev.json',
                 'main.js','mod',null
                 ], ()=>{
 					const projLib=path.resolve(projPath,'lib')
 					const projRun=path.resolve(projPath,'run')
 					fs.mkdirSync(projLib, 0o755)
-					symlink(fs, path.resolve(realPath,'..','lean-wrap','bin'), projLib, 'lean')
-					symlink(fs, path.resolve(realPath,'..','pico-common','bin'), projLib, 'common')
-					symlink(fs, path.resolve(realPath,'..','pojs','lib'), projLib, 'pojs')
-					symlink(fs, path.resolve(realPath,'..','pico-client','lib'), projLib, 'pico')
-					symlink(fs, path.resolve(realPath,'..','pico-client','build'), projRun, 'build')
+					symlink(fs, path.resolve(realPath,'node_modules','lean-wrap','bin'), projLib, 'lean')
+					symlink(fs, path.resolve(realPath,'node_modules','pico-common','bin'), projLib, 'common')
+					symlink(fs, path.resolve(realPath,'node_modules','pojs','lib'), projLib, 'pojs')
+					symlink(fs, path.resolve(realPath,'lib'), projLib, 'pico')
+					symlink(fs, path.resolve(realPath,'node_modules','pico-client','build'), projRun, 'build')
 					console.log('Done')
             })
         })
