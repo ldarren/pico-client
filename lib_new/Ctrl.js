@@ -25,14 +25,16 @@ function specLoaded(err, spec, params, userData){
 	console.log('Ctrl.specLoaded',arguments)
 	var self = userData[0]
 	var host = self.host
-	var _el = self._el
 
-	_el && host.el && !_el.parentElement && host.el.appendChild(_el)
 	host.modules && host.modules.push(self)
 
 	self.initialize(spec, params)
 
-	_el && (self.el = self.render())
+	var _el = self._el
+	if (_el){
+		host.el && !_el.parentElement && host.el.appendChild(_el)
+		self.el = self.render()
+	}
 
 	var chains = userData[1]
 
@@ -47,8 +49,6 @@ function specLoaded(err, spec, params, userData){
 function Ctrl(name, specRaw, params, host, chains){
 	console.log('Ctrl',arguments)
 	Module.call(this, name)
-    var opt = specMgr.getViewOptions(specRaw)
-	opt && this.start(opt, specMgr.find('css',specRaw))
 
 	this._specRaw = specRaw
 	this.host = host
@@ -74,6 +74,10 @@ Ctrl.prototype = {
             case REFS:
                 deps[k]=refs(k,spec,self._specRaw)
                 break
+			case 'ctrl':
+			case 'view':
+                deps[k]=specMgr.find(k, spec, true)
+				break
             default:
                 s=specMgr.findAllById(k, spec)
                 if (1 === s.length){ deps[k]=s[0] }

@@ -4,21 +4,26 @@ var specMgr = require('p/specMgr')
 function View(name, specRaw, params, host, chains){
 	console.log('View',arguments)
 
-	var opt = specMgr.getViewOptions(specRaw)
-	// view must contain an options
-    if (!opt){
-        opt = {}
-        specRaw.push(['options','map',opt])
-    }
-	// override content with html spec if any
-	opt.content = specMgr.find('html',specRaw) || opt.content
-
     Ctrl.apply(this, arguments)
 
 	this.super = View.prototype
 }
 
 View.prototype = {
+	initialize: function(spec, params, cb){
+		var opt = specMgr.getViewOptions(spec)
+		// view must contain an options
+		if (!opt){
+			opt = {}
+			spec.push(['options','map',opt])
+		}
+		// override content with html spec if any
+		opt.content = specMgr.find('html',spec) || opt.content
+
+		this.start(opt, specMgr.findAllById('css',spec))
+
+		Ctrl.prototype.initialize.apply(this, arguments)
+	},
 	remove: function(){
 		console.log('View.remove',arguments)
         Ctrl.prototype.remove.call(this)

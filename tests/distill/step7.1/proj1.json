@@ -13,12 +13,10 @@
 		]],
 		["pages","map",{
 			"users":[ "Page", "view", [
-				["html","text","<button>Back</button>"],
-				["next","text","organizations"]
+				["html","text","<button>Back</button>"]
 			]],
 			"#action":[ "Page", "view", [
-				["html","text","<button>Next</button>"],
-				["next","text","users"]
+				["html","text","<button>users</button>"]
 			]]
 		}]
 	]]
