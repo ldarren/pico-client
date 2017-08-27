@@ -8,17 +8,13 @@ function remove(modules){
 	remove(modules)
 }
 
-function actual(self, state, params){
-	remove(self.modules)
+function pageChanged(evt, state, params){
+	remove(this.modules)
 	var spec = []
 	for (var i=0, k; k=state[i]; i++){
-		spec.push(self.specMap[k])
+		spec.push(this.specMap[k])
 	}
-	self.spawnBySpec(spec, params)
-}
-
-function pageChanged(evt, state, params){
-	setTimeout(actual, 10, this, state, params)
+	this.spawnBySpec(spec, params)
 }
 
 return {

@@ -14,12 +14,12 @@
 	]],
 	["pages","map",{
         "void": ["Void","view",[
-			[ "options", "map", { "el": "#pane1", "className": "page void" } ],
+			[ "options", "map", { "id": "pane1", "className": "page void" } ],
 			[ "tpl", "file", "Void.asp" ],
 			[ "css", "file", "Void.css" ]
         ]],
         "organizations": ["organizations","view",[
-            [ "options", "map", { "el":"#pane0", "className": "page" } ],
+            [ "options", "map", { "id":"pane0", "className": "page" } ],
             [ "groups", "ref", "groups" ],
             [ "organizations", "css", "organizations.css" ],
             [ "Header", "view", [
@@ -47,7 +47,7 @@
 			]]
         ]],
         "users": ["users","view",[
-            [ "options", "map", { "el":"#pane0", "className": "page" } ],
+            [ "options", "map", { "id":"pane0", "className": "page" } ],
             [ "users", "css", "users.css" ],
             [ "Header", "view", [
 				[ "options", "map", { "tagName": "header" } ],
