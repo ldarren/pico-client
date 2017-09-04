@@ -59,7 +59,7 @@ fs.readlink(argv[1], (err, realPath)=>{
                 arguments.callee(files, cb)
             })([
                 'index.html','',null,
-                'proj.json','cfg',projName?`proj-${projName}.json`:'proj.json',
+                'project.json','cfg',projName?`proj-${projName}.json`:'proj.json',
                 'main.js','mod',null
                 ], ()=>{
 					const projLib=path.resolve(projPath,'lib')
