@@ -69,7 +69,7 @@ fs.readlink(argv[1], (err, realPath)=>{
 					symlink(fs, path.resolve(realPath,'node_modules','pico-common','bin'), projLib, 'common')
 					symlink(fs, path.resolve(realPath,'node_modules','pojs','lib'), projLib, 'pojs')
 					symlink(fs, path.resolve(realPath,'lib'), projLib, 'pico')
-					symlink(fs, path.resolve(realPath,'node_modules','pico-client','build'), projRun, 'build')
+					symlink(fs, path.resolve(realPath,'build'), projRun, 'build')
 					console.log('Done')
             })
         })
