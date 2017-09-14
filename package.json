@@ -1,6 +1,7 @@
 {
   "name": "pico-client",
   "version": "0.3.8",
+  "version": "0.3.9",
   "description": "pico client",
   "main": "create",
   "repository": {
