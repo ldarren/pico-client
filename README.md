@@ -1,5 +1,7 @@
 # pico-client
 pico app framework
+[An obligatory Todo App](https://cdn.rawgit.com/ldarren/pico-example-todo/master/bin/todo/index.html)
+[Todo App Repo](https://github.com/ldarren/pico-example-todo)
 
 ## Browser Compatibility
  * Android Browser: compatible
