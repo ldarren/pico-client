@@ -118,6 +118,7 @@ setup((err, project, projPath, outPath)=>{
 	}}
 
 	// global
+	console.log(process.cwd())
 	pico=require('pico-common/bin/pico-cli.js')
 	__=window=document=new Proxy({},handler)
 

@@ -8,13 +8,13 @@
     "url": "https://github.com/ldarren/pico-client.git"
   },
   "dependencies": {
-    "lean-wrap": "^0.2.16",
-    "pico-common": "^0.8.3",
-    "pojs": "^0.4.6"
+    "lean-wrap": "*",
+    "pico-common": "*",
+    "pojs": "*"
   },
   "devDependencies": {
-    "pico-args": "*",
-    "clean-css": "^3.4.24"
+    "clean-css": "^3.4.28",
+    "pico-args": "*"
   },
   "author": "Darren Liew",
   "license": "MIT"
