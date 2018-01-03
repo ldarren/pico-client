@@ -1,6 +1,6 @@
 {
   "name": "pico-client",
-  "version": "0.3.12",
+  "version": "0.3.13",
   "description": "pico client",
   "main": "create",
   "repository": {
@@ -15,6 +15,9 @@
   "devDependencies": {
     "clean-css": "^3.4.28",
     "pico-args": "*"
+  },
+  "bin": {
+  	"pclient-create": "./"
   },
   "author": "Darren Liew",
   "license": "MIT"
