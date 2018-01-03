@@ -6,12 +6,13 @@ path = require('path'),
 Transform = require('stream').Transform,
 util = require('util'),
 argv=process.argv,
+me = argv[1],
 projPath = argv[2],
 dispName = argv[3],
 projName = argv[4],
 replace = []
 
-if (4 > argv.length) return console.log('USAGE: '+argv[1]+' path display_name [proj_name]')
+if (4 > argv.length) return console.log('USAGE: '+me+' path display_name [proj_name]')
 
 function ReplaceTransform(options){
     if (!(this instanceof ReplaceTransform)) return new ReplaceTransform(options)
@@ -36,8 +37,9 @@ function symlink(fs, from, to, ln){
 	fs.symlinkSync(path.relative(to,from), path.resolve(to, ln))
 }
 
-fs.readlink(argv[1], (err, realPath)=>{
-    if (err) realPath = argv[1]
+fs.readlink(me, (err, realPath)=>{
+    if (err) realPath = me
+	if (!path.isAbsolute(realPath)) realPath = path.resolve(path.dirname(me), realPath)
 	realPath=path.dirname(realPath)
     const sdkDir = path.resolve(realPath,'sdk')
     fs.mkdir(projPath, 0777, ()=>{
