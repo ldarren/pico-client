@@ -8,11 +8,11 @@ util = require('util'),
 argv=process.argv,
 me = argv[1],
 projPath = argv[2],
-dispName = argv[3],
-projName = argv[4],
+projName = argv[3] || projPath,
+dispName = argv[4] || projName,
 replace = []
 
-if (4 > argv.length) return console.log('USAGE: '+me+' path display_name [proj_name]')
+if (3 > argv.length) return console.log(`USAGE: ${me} path [project_name] [display_name]`)
 
 function ReplaceTransform(options){
     if (!(this instanceof ReplaceTransform)) return new ReplaceTransform(options)
@@ -42,14 +42,14 @@ fs.readlink(me, (err, realPath)=>{
 	if (!path.isAbsolute(realPath)) realPath = path.resolve(path.dirname(me), realPath)
 	realPath=path.dirname(realPath)
     const sdkDir = path.resolve(realPath,'sdk')
-    fs.mkdir(projPath, 0777, ()=>{
+    fs.mkdir(projPath, 0o755, ()=>{
         (function(dirs, cb){
             if (!dirs.length) return cb()
             const next = arguments.callee
-            fs.mkdir(path.resolve(projPath,dirs.shift()), 0777, ()=>{
+            fs.mkdir(path.resolve(projPath,dirs.shift()), 0o755, ()=>{
                 next(dirs, cb) 
             })
-        })(['mod','cfg','run','bin','dat'], ()=>{
+        })(['mod','cfg','lib','bin','dat'], ()=>{
             (function(files, cb){
                 if (!files.length) return cb()
                 const 
@@ -61,17 +61,14 @@ fs.readlink(me, (err, realPath)=>{
                 arguments.callee(files, cb)
             })([
                 'index.html','',null,
-                'project.json','cfg',projName?`proj-${projName}.json`:'proj.json',
+                'project.json','cfg', `proj-${projName}.json`,
                 'main.js','mod',null
                 ], ()=>{
 			const projLib=path.resolve(projPath,'lib')
-			const projRun=path.resolve(projPath,'run')
-			fs.mkdirSync(projLib, 0o755)
 			symlink(fs, path.resolve(projPath,'node_modules','lean-wrap','bin'), projLib, 'lean')
 			symlink(fs, path.resolve(projPath,'node_modules','pico-common','bin'), projLib, 'common')
 			symlink(fs, path.resolve(projPath,'node_modules','pojs','lib'), projLib, 'pojs')
 			symlink(fs, path.resolve(realPath,'lib'), projLib, 'pico')
-			symlink(fs, path.resolve(realPath,'build'), projRun, 'build')
 			console.log('Done')
             })
         })
