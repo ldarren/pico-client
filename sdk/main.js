@@ -20,11 +20,13 @@ pico.run({
     var specMgr= require('p/specMgr')
     var View= require('p/View')
     var project = require('cfg/proj.json')
+	var main
 
     return function(){
 		specMgr.load(null, null, project, function(err, spec){
 			if (err) return console.error(err)
-			View.prototype.spawnBySpec(spec)
+			main = new View
+			main.spawnBySpec(spec)
 		})
     }
 })
