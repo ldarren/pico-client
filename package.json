@@ -17,8 +17,8 @@
     "pico-args": "*"
   },
   "bin": {
-  	"pclient-create": "./create",
-  	"pclient-build": "./build"
+    "pclient-create": "./create",
+    "pclient-build": "./build"
   },
   "author": "Darren Liew",
   "license": "MIT"
