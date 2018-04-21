@@ -49,7 +49,7 @@ fs.readlink(me, (err, realPath)=>{
             fs.mkdir(path.resolve(projPath,dirs.shift()), 0o755, ()=>{
                 next(dirs, cb) 
             })
-        })(['mod','cfg','lib','bin','dat'], ()=>{
+        })(['mod','cfg','cfg/src','cfg/build','lib','bin','dat'], ()=>{
             (function(files, cb){
                 if (!files.length) return cb()
                 const 
@@ -61,7 +61,7 @@ fs.readlink(me, (err, realPath)=>{
                 arguments.callee(files, cb)
             })([
                 'index.html','',null,
-                'project.json','cfg', `proj-${projName}.json`,
+                'project.json','cfg/src', `proj-${projName}.json`,
                 'main.js','mod',null
                 ], ()=>{
 			const projLib=path.resolve(projPath,'lib')

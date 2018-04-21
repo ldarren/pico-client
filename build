@@ -34,8 +34,9 @@ function setup(cb){
     proj && rawProjName.push(proj)
 
     const
-    rawProjPath=path.resolve(cfgDir,`${rawProjName.join('-')}.json`),
-    projPath=path.resolve(cfgDir,'proj.json')
+	configFName = `${rawProjName.join('-')}.json`,
+    rawProjPath = path.resolve(cfgDir, 'src', configFName),
+    projPath = path.resolve(cfgDir, 'build', configFName)
 
     fs.stat(rawProjPath, (err, stat)=>{
         if (err) return cb(err)
