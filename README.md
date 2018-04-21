@@ -1,9 +1,8 @@
 # pico-client
 pico app framework
 
-[An obligatory Todo App](https://cdn.rawgit.com/ldarren/pico-example-todo/master/bin/todo/index.html)
-
-[Todo App Repo](https://github.com/ldarren/pico-example-todo)
+## Example
+[An obligatory Todo App](https://cdn.rawgit.com/ldarren/pico-example-todo/master/bin/todo/index.html) to demotrate the framework. The example source code can be found [here](https://github.com/ldarren/pico-example-todo)
 
 ## Browser Compatibility
  * Android Browser: compatible
@@ -14,29 +13,26 @@ pico app framework
  * IE 11: compatible
  * IE 10 and below: not compatible
 
-## Project Configuration
+## Features
+### Data Driven
+A pico client project structure is driven by a data file. The data file is in json file format. The data file format is closely assemble to lisp syntax. for example
+
+```json
+["name", "type", "content", "meta data"]
+```
+
+and the example of a complete project file
 ```json
 [
-    [
-        "<JAVASCRIPT DEPENDENCIES>"
-    ],[
-        "<CSS DEPENDENCIES>"
-    ],[
-        "<FRAME MODULES DECLARATION>"
-    ],{
-        "<PANE NAME>":[
-            [
-                "<PANE MODULES DECLARATION>"
-            ]
-        ]
-    },
-	[
-		["<PAGE ROUTE>,"<PANE NAME 1>",...,"<PANE NAME n>"]
-	]
+    ["component1", "view", [
+    	["moduleA", "view", []],
+	["moduleB", "view", []]
+    ]],
+    ["component2", "view", []]
 ]
 ```
 
-## Asynchronous module definition
+### Lazy component Loading
 ```javascript
 var
 dep1 = require('vendorA/dep1'),
@@ -47,6 +43,13 @@ this.load=function(){
     dep2.doSomething()
 }
 ```
+
+### Code Spliting
+Code spliting is done at the project file level, each bundle can hae it own project file and project can be load lazily during runtime
+
+### support circular dependencies
+### syntax similar to commonjs and amd, easy to pickup
+
 ## Caveat
 ### sub-module readiness
 pico modules are loaded in series orderly, what it means is module declared at top always load first and pico ensure it is loaded completely before loading the next module.
@@ -60,6 +63,7 @@ One caveat is submodule may not ready during event call. for example project con
 ]
 ```
 if modB event call modA immediately in create function, modA-subA may not ready when modA receive the event. modA should listen to moduleAdded emitted by modA-subA before using any functionality from modA-subA
+
 ### External editable static property
 ModuleA
 ```javascript
@@ -93,8 +97,3 @@ var obj={
 }
 return obj
 ```
-## Features
-* support circular dependencies
-* syntax similar to commonjs and amd, easy to pickup
-* support static and dynamic javascript loading
-* data driven architecture
