@@ -32,7 +32,7 @@ and the example of a complete project file
 ]
 ```
 
-### Lazy component Loading
+### Lazy Load At Component Level
 ```javascript
 var
 dep1 = require('vendorA/dep1'),
@@ -44,11 +44,17 @@ this.load=function(){
 }
 ```
 
+### Decentralized Configuration
+
+### Dependency Injection At Configuration
+Compoent are not statically depends on their children, children are injected to compoent at configuation level
+
 ### Code Spliting
 Code spliting is done at the project file level, each bundle can hae it own project file and project can be load lazily during runtime
 
-### support circular dependencies
-### syntax similar to commonjs and amd, easy to pickup
+### Support circular dependencies
+
+### Syntax similar to commonjs and amd, easy to pickup
 
 ## Caveat
 ### sub-module readiness
