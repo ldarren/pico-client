@@ -8,9 +8,9 @@
     "url": "https://github.com/ldarren/pico-client.git"
   },
   "dependencies": {
-    "lean-wrap": "*",
-    "pico-common": "*",
-    "pojs": "*"
+    "lean-wrap": "^0.2.24",
+    "pico-common": "^0.9.4",
+    "pojs": "^0.5.2"
   },
   "devDependencies": {
     "clean-css": "^3.4.28",

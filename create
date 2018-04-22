@@ -65,9 +65,9 @@ fs.readlink(me, (err, realPath)=>{
                 'main.js','mod',null
                 ], ()=>{
 			const projLib=path.resolve(projPath,'lib')
-			symlink(fs, path.resolve(projPath,'node_modules','lean-wrap','bin'), projLib, 'lean')
-			symlink(fs, path.resolve(projPath,'node_modules','pico-common','bin'), projLib, 'common')
-			symlink(fs, path.resolve(projPath,'node_modules','pojs','lib'), projLib, 'pojs')
+			symlink(fs, path.resolve(realPath,'node_modules','lean-wrap','bin'), projLib, 'lean')
+			symlink(fs, path.resolve(realPath,'node_modules','pico-common','bin'), projLib, 'common')
+			symlink(fs, path.resolve(realPath,'node_modules','pojs','lib'), projLib, 'pojs')
 			symlink(fs, path.resolve(realPath,'lib'), projLib, 'pico')
 			console.log('Done')
             })
