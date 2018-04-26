@@ -1,6 +1,6 @@
 [
 	["page", "view", [
-		["idx", "int", 3],
+		["idx", "int", 1],
 		["tpl", "file", "page.asp"]
 	]]
 ]

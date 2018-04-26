@@ -1,5 +1,6 @@
 [
-	["Page1", "view", [
-		["options", "map", {"el": ".__"}]
+	["container", "view", [
+		["options", "map", {"el": ".__"}],
+		["html", "file", "container.html"]
 	]]
 ]
