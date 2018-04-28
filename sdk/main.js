@@ -1,5 +1,5 @@
 pico.run({
-  name: 'main',
+  name: 'PROJ_NAME',
   ajax: __.ajax,
   onLoad: __.load,
   env:{
@@ -12,14 +12,15 @@ pico.run({
   paths:{
     '~': './mod/',
     root: './',
-    cfg: './cfg/build/',
+    main: './main/',
+    cfg: './cfg/',
     p: './lib/pico/',
     po: './lib/pojs/'
   }
 },function(){
   var specMgr= require('p/specMgr')
   var View= require('p/View')
-  var project = require('cfg/' + pico.env('dataset').cfg)
+  var project = require('cfg/PROJ_NAME.json')
   var main
 
   return function(){

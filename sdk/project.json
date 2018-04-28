@@ -1,5 +1,5 @@
 [
 	["p/View", "view", [
-		["options", "map", {"el": ".__", "content":"Hello Pico!"}]
+		["options", "map", {"el": ".__", "content":"A hello from 'PROJ_NAME'!"}]
 	]]
 ]

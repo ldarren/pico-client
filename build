@@ -6,9 +6,11 @@ const fs=require('fs')
 const path=require('path')
 const args=require('pico-args')
 const CleanCSS=require('clean-css')
+
 const defaults={
 	proj:['','project name'],
 	wd:['.','working directory'],
+	main:['main','path to main directory'],
 	mod:['mod','path to module directory'],
 	cfg:['cfg','path to configuration directory'],
 	bin:['bin','path to binary/output directory'],
@@ -18,25 +20,21 @@ const defaults={
 	help:[false,'show this help']
 }
 const opt=args.parse(defaults)
+if (opt.help || !opt.proj) return args.usage(defaults)
+args.print('build options',opt)
+
 const proj=opt.proj
 const cwd=path.resolve(process.cwd(),opt.wd)
+const mainDir=path.resolve(cwd,opt.main)
 const modDir=path.resolve(cwd,opt.mod)
 const cfgDir=path.resolve(cwd,opt.cfg)
 const distDir=path.resolve(cwd,opt.bin)
 const mainjs=opt.entry
 
-if (opt.help || !opt.proj) return args.usage(defaults)
-args.print('build options',opt)
-
 function setup(cb){
-    const rawProjName=['proj']
-
-    proj && rawProjName.push(proj)
-
-    const
-	configFName = `${rawProjName.join('-')}.json`,
-    rawProjPath = path.resolve(cfgDir, 'src', configFName),
-    projPath = path.resolve(cfgDir, 'build', configFName)
+    const configFName = proj + '.json'
+    const rawProjPath = path.resolve(cfgDir, configFName)
+    const projPath = path.resolve(cfgDir, 'build', configFName)
 
     fs.stat(rawProjPath, (err, stat)=>{
         if (err) return cb(err)
@@ -46,7 +44,7 @@ function setup(cb){
 			if (err && 'EEXIST'!==err.code) return cb(err)
 			fs.mkdir(path.resolve(distDir,proj), 0o755, (err)=>{
 				if (err && 'EEXIST'!==err.code) return cb(err)
-				cb(null, json, projPath, path.resolve(distDir,proj,'proj.js'))
+				cb(null, json, projPath, path.resolve(distDir, proj, proj + '.js'))
 			})
 		})
     })
