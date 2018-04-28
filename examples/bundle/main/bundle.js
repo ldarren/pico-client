@@ -1,5 +1,5 @@
 pico.run({
-  name: 'main',
+  name: 'bundle',
   ajax: __.ajax,
   onLoad: __.load,
   env:{
@@ -12,6 +12,7 @@ pico.run({
   paths:{
     '~': './mod/',
     root: './',
+	main: './main/',
     cfg: './cfg/build/',
     p: './lib/pico/',
     po: './lib/pojs/'
