@@ -13,14 +13,14 @@ pico.run({
     '~': './mod/',
     root: './',
 	main: './main/',
-    cfg: './cfg/build/',
+    cfg: './cfg/',
     p: './lib/pico/',
     po: './lib/pojs/'
   }
 },function(){
   var specMgr= require('p/specMgr')
   var View= require('p/View')
-  var project = require('cfg/' + pico.env('dataset').cfg)
+  var project = require('cfg/proj-bundle.json')
   var main
 
   return function(){
