@@ -49,7 +49,7 @@ fs.readlink(me, (err, realPath)=>{
             fs.mkdir(path.resolve(projPath,dirs.shift()), 0o755, ()=>{
                 next(dirs, cb) 
             })
-        })(['mod','main','cfg','cfg/build','lib','bin','dat'], ()=>{
+        })(['mod','main','cfg','lib','bin','dat'], ()=>{
             (function(files, cb){
                 if (!files.length) return cb()
                 const 

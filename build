@@ -29,48 +29,41 @@ const distDir = path.resolve(cwd,opt.bin)
 
 function mkdirPSync(targetDir, access, cb) {
 	const sep = path.sep
-	const initDir = sep
-	const baseDir = '.'
 
 	targetDir.split(sep).reduce((parentDir, childDir) => {
-		const curDir = path.resolve(baseDir, parentDir, childDir)
-		try {
-			fs.mkdirSync(curDir, access)
-			console.log(`Directory ${curDir} created!`)
-		} catch (exp) {
-			cb(exp)
-		}
+		const curDir = path.resolve(parentDir, childDir)
+		fs.mkdirSync(curDir, access)
 
 		return curDir
-	}, initDir)
+	}, sep)
 }
 
 function setup(cb){
 	let pair = bundles[0].split(':')
 	const proj = pair[0]
 
-	mkdirPSync(path.resolve(distDir, proj, opt.main), 0o755, err => {
-		if (err && 'EEXIST' !== err.code) return cb(err)
-		bundles.forEach((bundle, index) => {
-			pair = bundle.split(':')
-			const config = pair[0]
-			const entry = pair[1] || pair[0]
-			const configFName = config + '.json'
-			const rawProjPath = path.resolve(cfgDir, configFName)
-			const configPath = path.resolve(cfgDir, 'build', configFName)
+	try { mkdirPSync(path.resolve(distDir, proj, opt.main), 0o755) }
+	catch (exp) { if ('EEXIST' !== exp.code) return cb(err) }
 
-			fs.stat(rawProjPath, (err, stat) => {
-				if (err) return cb(err)
-				try{ var json = JSON.parse(fs.readFileSync(rawProjPath)) }
-				catch(exp){ return cb(exp) }
-				cb(null,
-					json,
-					0 === index,
-					entry,
-					rawProjPath,
-					configPath,
-					path.resolve(distDir, proj, opt.main, entry + '.js'))
-			})
+	bundles.forEach((bundle, index) => {
+		pair = bundle.split(':')
+		const config = pair[0]
+		const entry = pair[1] || pair[0]
+		const configFName = config + '.json'
+		const rawProjPath = path.resolve(cfgDir, configFName)
+		const configPath = path.resolve(cfgDir, 'build', configFName)
+
+		fs.stat(rawProjPath, (err, stat) => {
+			if (err) return cb(err)
+			try{ var json = JSON.parse(fs.readFileSync(rawProjPath)) }
+			catch(exp){ return cb(exp) }
+			cb(null,
+				json,
+				0 === index,
+				entry,
+				rawProjPath,
+				configPath,
+				path.resolve(distDir, proj, opt.main, entry + '.js'))
 		})
 	})
 }
@@ -128,7 +121,7 @@ process.chdir(cwd)
 setup((err, project, isMain, bundlejs, rawProjPath, projPath, outPath) => {
 	if (err) return console.error(err)
 
-	const deps = [projPath]
+	const deps = []
 	if (isMain) {
 		opt.lean && deps.push(path.resolve(cwd,'lib','lean','lean.min.js'))
 		opt.pico && deps.push(path.resolve(cwd,'lib','common','pico.min.js'))
@@ -147,22 +140,21 @@ setup((err, project, isMain, bundlejs, rawProjPath, projPath, outPath) => {
 	pico = require('pico-common/bin/pico-cli.js')
 	__ = window = document = new Proxy({}, handler)
 
-	fs.writeFile(projPath, JSON.stringify(project),(err) => {
+	const replace = {
+		['cfg/' + path.basename(rawProjPath)]: JSON.stringify(project)
+	}
+	scan(project, new Set, (err, include) => {
 		if (err) return console.error(err)
 
-		scan(project, new Set, (err, include) => {
-			if (err) return console.error(err)
-
-			pico.export('pico/build')({
-				entry: path.resolve(mainDir, bundlejs + '.js'),
-				output: outPath,
-				deps,
-				include,
-				exclude: [
-					'cfg/' + path.basename(rawProjPath),
-					'main/' + path.basename(bundlejs)
-				]
-			})
+		pico.export('pico/build')({
+			entry: path.resolve(mainDir, bundlejs + '.js'),
+			output: outPath,
+			deps,
+			include: Array.from(include),
+			exclude: [
+				'main/' + path.basename(bundlejs)
+			],
+			replace
 		})
 	})
 })
