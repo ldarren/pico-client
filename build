@@ -32,7 +32,8 @@ function mkdirPSync(targetDir, access, cb) {
 
 	targetDir.split(sep).reduce((parentDir, childDir) => {
 		const curDir = path.resolve(parentDir, childDir)
-		fs.mkdirSync(curDir, access)
+		try { fs.mkdirSync(curDir, access) }
+		catch (exp) { if ('EEXIST' !== exp.code) throw exp }
 
 		return curDir
 	}, sep)
@@ -43,7 +44,7 @@ function setup(cb){
 	const proj = pair[0]
 
 	try { mkdirPSync(path.resolve(distDir, proj, opt.main), 0o755) }
-	catch (exp) { if ('EEXIST' !== exp.code) return cb(err) }
+	catch (exp) { return cb(exp) }
 
 	bundles.forEach((bundle, index) => {
 		pair = bundle.split(':')
