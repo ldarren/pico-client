@@ -5,7 +5,7 @@ const ID = 0,TYPE = 1,VALUE = 2,EXTRA = 3,EXTRA2 = 4
 const args = require('pico-args')
 
 const defaults = {
-	bundles:['proj:main,bundle1,bundle2','bundle name, comma separated if more than one'],
+	bundle:['', 'bundle name, comma separated if more than one'],
 	wd:['.','working directory'],
 	main:['main','path to main directory'],
 	cfg:['cfg','path to configuration directory'],
@@ -15,60 +15,13 @@ const defaults = {
 	help:[false,'show this help']
 }
 const opt = args.parse(defaults)
-if (!opt || opt.help || !opt.bundles) return args.usage(defaults)
-args.print('build options',opt)
+if (!opt || opt.help || !opt.bundle) return args.usage(defaults)
+args.print('build options', opt)
 
-const fs = require('fs')
 const path = require('path')
+const fs = require('fs')
 const CleanCSS = require('clean-css')
-const bundles =  opt.bundles.split(',')
-const cwd = path.resolve(process.cwd(),opt.wd)
-const mainDir = path.resolve(cwd,opt.main)
-const cfgDir = path.resolve(cwd,opt.cfg)
-const distDir = path.resolve(cwd,opt.bin)
-
-function mkdirPSync(targetDir, access, cb) {
-	const sep = path.sep
-
-	targetDir.split(sep).reduce((parentDir, childDir) => {
-		const curDir = path.resolve(parentDir, childDir)
-		try { fs.mkdirSync(curDir, access) }
-		catch (exp) { if ('EEXIST' !== exp.code) throw exp }
-
-		return curDir
-	}, sep)
-}
-
-function setup(cb){
-	let pair = bundles[0].split(':')
-	const proj = pair[0]
-	const main = pair[1] || pair[0]
-
-	try { mkdirPSync(path.resolve(distDir, proj, opt.main), 0o755) }
-	catch (exp) { return cb(exp) }
-
-	bundles.forEach((bundle, index) => {
-		pair = bundle.split(':')
-		const config = pair[0]
-		const entry = pair[1] || pair[0]
-		const configFName = config + '.json'
-		const rawProjPath = path.resolve(cfgDir, configFName)
-		const configPath = path.resolve(cfgDir, 'build', configFName)
-
-		fs.stat(rawProjPath, (err, stat) => {
-			if (err) return cb(err)
-			try{ var json = JSON.parse(fs.readFileSync(rawProjPath)) }
-			catch(exp){ return cb(exp) }
-			cb(null,
-				json,
-				main,
-				entry,
-				rawProjPath,
-				configPath,
-				path.resolve(distDir, proj, opt.main, entry + '.js'))
-		})
-	})
-}
+const cwd = path.resolve(process.cwd(), opt.wd)
 
 function getPath(spec, include){
 	switch(spec[TYPE]){
@@ -89,87 +42,93 @@ function getPath(spec, include){
 }
 
 function scanObj(obj, include, cb){
-    if (!obj) return cb(null, include)
-	
-	const keys = Object.keys(obj)
-    if (!keys.length) return cb(null, include)
+  if (!obj) return cb(null, include)
 
-	scan(keys.map(k => obj[k] ), include, cb)
+  const keys = Object.keys(obj)
+  if (!keys.length) return cb(null, include)
+
+  scan(keys.map(k => obj[k] ), include, cb)
 }
 
 function scan(arr, include, cb){
-    if (!arr || !Array.isArray(arr) || !arr.length) return cb(null, include)
+  if (!arr || !Array.isArray(arr) || !arr.length) return cb(null, include)
 
-    const spec = arr.shift()
+  const spec = arr.shift()
 
-    if (getPath(spec, include)){
-		if ('map' === spec[TYPE]){
-			return scanObj(spec[VALUE], include, (err, include) => {
-				if (err) return cb(err)
-				scan(arr, include, cb)
-			})
-		}
-
-        return scan(spec[VALUE], include, (err, include) => {
-            if (err) return cb(err)
-            scan(arr, include, cb)
-        })
+  if (getPath(spec, include)){
+    if ('map' === spec[TYPE]){
+      return scanObj(spec[VALUE], include, (err, include) => {
+        if (err) return cb(err)
+        scan(arr, include, cb)
+      })
     }
-    scan(arr, include, cb)
+
+    return scan(spec[VALUE], include, (err, include) => {
+      if (err) return cb(err)
+      scan(arr, include, cb)
+    })
+  }
+  scan(arr, include, cb)
 }
 
-process.chdir(cwd)
+function mkdirPSync(arr, access) {
+	arr.reduce((parentDir, childDir) => {
+		const curDir = path.resolve(parentDir, childDir)
+		try { fs.mkdirSync(curDir, access) }
+		catch (exp) { if ('EEXIST' !== exp.code) throw exp }
 
-setup((err, project, mainjs, bundlejs, rawProjPath, projPath, outPath) => {
-	if (err) return console.error(err)
+		return curDir
+	}, arr.shift())
+}
 
+function deps(){
 	const deps = []
-	if (mainjs === bundlejs) {
-		opt.lean && deps.push(path.resolve(cwd,'lib','lean','lean.min.js'))
-		opt.pico && deps.push(path.resolve(cwd,'lib','common','pico.min.js'))
-	}
+	opt.lean && deps.push(path.resolve(cwd,'lib','lean','lean.min.js'))
+	opt.pico && deps.push(path.resolve(cwd,'lib','common','pico.min.js'))
+	return deps
+}
 
-	const handler = {get(target,name){
-		switch(name){
-		case 'load':
-		case 'ajax': return null
-		default: return () => {}
-		}
-	}}
+function addBundle(output, entry, deps, exclude){
+	const json = fs.readFileSync(path.resolve(cwd, opt.cfg, entry[0] + '.json'))
+	const spec = JSON.parse(json)
 
-	// global
-	pico = require('pico-common/bin/pico-cli.js')
-	const pBuild = pico.export('pico/build')
-	__ = window = document = new Proxy({}, handler)
-
-	const replace = {
-		['cfg/' + path.basename(rawProjPath)]: JSON.stringify(project)
-	}
-	scan(project, new Set, (err, include) => {
-		if (err) return console.error(err)
-
-		if (mainjs === bundlejs) {
-			pBuild({
-				entry: path.resolve(mainDir, mainjs + '.js'),
-				output: outPath,
-				deps,
-				include: Array.from(include),
-				exclude: [
-					'main/' + path.basename(bundlejs)
-				],
-				replace
-			})
-		} else {
-			include.add('main/' + bundlejs)
-			pBuild({
-				entry: path.resolve(mainDir, mainjs + '.js'),
-				output: outPath,
-				include: Array.from(include),
-				exclude: [
-					path.resolve(mainDir, mainjs + '.js')
-				],
-				replace
-			})
-		}
+	scan(spec, new Set, (err, include) => {
+		output.push({
+			entry: entry[1],
+			deps,
+			include: [...include],
+			exclude
+		})
 	})
+}
+
+const bundleNames = opt.bundle.split(',')
+const [mainCfg, mainEntry = mainCfg] = bundleNames.shift().split(':')
+
+mkdirPSync([cwd, opt.bin, mainCfg, opt.main], 0o755)
+
+const output = [
+	path.resolve(cwd, opt.main),
+	path.resolve(cwd, opt.bin, mainCfg, opt.main),
+]
+
+addBundle(output, [mainCfg, mainEntry], deps())
+
+bundleNames.forEach(bundleName => {
+	const [cfgName, entryName = cfgName] = bundleName.split(':')
+	addBundle(output, [cfgName, entryName], void 0, [entryName])
 })
+
+const handler = {get(target,name){
+	switch(name){
+	case 'load':
+	case 'ajax': return null
+	default: return () => {}
+	}
+}}
+
+// global
+pico = require('pico-common/bin/pico-cli.js')
+const pBuild = pico.export('pico/build')
+__ = window = document = new Proxy({}, handler)
+pBuild(output)

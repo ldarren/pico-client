@@ -1,13 +1,11 @@
 const specMgr = require('p/specMgr')
+const project = require('cfg/proj-page2.json')
 
 return {
 	create(deps, params){
-		require('cfg/proj-page2.json', (err, project) => {
+		specMgr.load(null, null, project, (err, spec) => {
 			if (err) return console.error(err)
-			specMgr.load(null, null, project, (err, spec) => {
-				if (err) return console.error(err)
-				this.spawnBySpec(spec)
-			})
+			this.spawnBySpec(spec)
 		})
 	}
 }
