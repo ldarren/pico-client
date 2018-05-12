@@ -2,10 +2,7 @@
 
 const ID = 0,TYPE = 1,VALUE = 2,EXTRA = 3,EXTRA2 = 4
 
-const fs = require('fs')
-const path = require('path')
 const args = require('pico-args')
-const CleanCSS = require('clean-css')
 
 const defaults = {
 	bundles:['proj:main,bundle1,bundle2','bundle name, comma separated if more than one'],
@@ -18,9 +15,12 @@ const defaults = {
 	help:[false,'show this help']
 }
 const opt = args.parse(defaults)
-if (opt.help || !opt.bundles) return args.usage(defaults)
+if (!opt || opt.help || !opt.bundles) return args.usage(defaults)
 args.print('build options',opt)
 
+const fs = require('fs')
+const path = require('path')
+const CleanCSS = require('clean-css')
 const bundles =  opt.bundles.split(',')
 const cwd = path.resolve(process.cwd(),opt.wd)
 const mainDir = path.resolve(cwd,opt.main)
@@ -42,6 +42,7 @@ function mkdirPSync(targetDir, access, cb) {
 function setup(cb){
 	let pair = bundles[0].split(':')
 	const proj = pair[0]
+	const main = pair[1] || pair[0]
 
 	try { mkdirPSync(path.resolve(distDir, proj, opt.main), 0o755) }
 	catch (exp) { return cb(exp) }
@@ -60,7 +61,7 @@ function setup(cb){
 			catch(exp){ return cb(exp) }
 			cb(null,
 				json,
-				0 === index,
+				main,
 				entry,
 				rawProjPath,
 				configPath,
@@ -119,15 +120,14 @@ function scan(arr, include, cb){
 
 process.chdir(cwd)
 
-setup((err, project, isMain, bundlejs, rawProjPath, projPath, outPath) => {
+setup((err, project, mainjs, bundlejs, rawProjPath, projPath, outPath) => {
 	if (err) return console.error(err)
 
 	const deps = []
-	if (isMain) {
+	if (mainjs === bundlejs) {
 		opt.lean && deps.push(path.resolve(cwd,'lib','lean','lean.min.js'))
 		opt.pico && deps.push(path.resolve(cwd,'lib','common','pico.min.js'))
 	}
-
 
 	const handler = {get(target,name){
 		switch(name){
@@ -139,6 +139,7 @@ setup((err, project, isMain, bundlejs, rawProjPath, projPath, outPath) => {
 
 	// global
 	pico = require('pico-common/bin/pico-cli.js')
+	const pBuild = pico.export('pico/build')
 	__ = window = document = new Proxy({}, handler)
 
 	const replace = {
@@ -147,15 +148,28 @@ setup((err, project, isMain, bundlejs, rawProjPath, projPath, outPath) => {
 	scan(project, new Set, (err, include) => {
 		if (err) return console.error(err)
 
-		pico.export('pico/build')({
-			entry: path.resolve(mainDir, bundlejs + '.js'),
-			output: outPath,
-			deps,
-			include: Array.from(include),
-			exclude: [
-				'main/' + path.basename(bundlejs)
-			],
-			replace
-		})
+		if (mainjs === bundlejs) {
+			pBuild({
+				entry: path.resolve(mainDir, mainjs + '.js'),
+				output: outPath,
+				deps,
+				include: Array.from(include),
+				exclude: [
+					'main/' + path.basename(bundlejs)
+				],
+				replace
+			})
+		} else {
+			include.add('main/' + bundlejs)
+			pBuild({
+				entry: path.resolve(mainDir, mainjs + '.js'),
+				output: outPath,
+				include: Array.from(include),
+				exclude: [
+					path.resolve(mainDir, mainjs + '.js')
+				],
+				replace
+			})
+		}
 	})
 })
