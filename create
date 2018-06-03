@@ -1,16 +1,15 @@
 #!/usr/bin/env node
 
-const
-fs = require('fs'),
-path = require('path'),
-Transform = require('stream').Transform,
-util = require('util'),
-argv=process.argv,
-me = argv[1],
-projPath = argv[2],
-projName = argv[3] || projPath,
-dispName = argv[4] || projName,
-replace = []
+const fs = require('fs')
+const path = require('path')
+const Transform = require('stream').Transform
+const util = require('util')
+const argv=process.argv
+const me = argv[1]
+const projPath = argv[2]
+const projName = argv[3] || projPath
+const dispName = argv[4] || projName
+const replace = []
 
 if (3 > argv.length) return console.log(`USAGE: ${me} path [project_name] [display_name]`)
 

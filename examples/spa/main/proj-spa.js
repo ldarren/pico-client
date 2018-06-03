@@ -3,13 +3,16 @@ pico.run({
 	ajax:__.ajax,
 	onLoad: __.load,
     env:{
-        live:false
+		live:false,
+		dataset:(function(el){ if (el) return el.dataset })(document.getElementById('picoEnv'))
     },
 	preprocessors:{
 		'.asp':function(url,asp){ return pico.export('pico/str').template(asp) }
 	},
 	paths:{
 		'~': './mod/',
+		root: './',
+		main: './main/',
 		cfg: './cfg/',
 		p: './lib/pico/',
 		po: './lib/pojs/'
@@ -17,12 +20,14 @@ pico.run({
 },function(){
     var specMgr= require('p/specMgr')
     var View= require('p/View')
-    var project = require('cfg/proj.json')
+    var project = require('cfg/proj-spa.json')
+	var main
 
     return function(){
 		specMgr.load(null, null, project, function(err, spec){
 			if (err) return console.error(err)
-			View.prototype.spawnBySpec(spec)
+			main = new View
+			main.spawnBySpec(spec)
 		})
     }
 })

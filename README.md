@@ -45,6 +45,22 @@ this.load=function(){
 ```
 
 ### Decentralized Configuration
+pico archieved decentralized configuration by making spec files joinable during runtime.
+
+A spec file with a entry point (a special js file) can form a bundle, the build script generate single .js file based on the configuration file and the entry point
+
+to add external spec to current spec, use dynamic `require` load the external spec and `spawn` to render it
+
+```javascript
+require('/path/to/external/spec', (err, spec) => {
+	if (err) return console.error(err)
+	this.spawn(specMgr.create('id-here', 'view', [], spec))
+})
+```
+
+Complete example at `example/bundle`
+
+#### Step of creating bundles (
 
 ### Dependency Injection At Configuration
 Compoent are not statically depends on their children, children are injected to compoent at configuation level

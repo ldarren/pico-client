@@ -1,13 +1,13 @@
 const specMgr = require('p/specMgr')
 
 return {
-  events: {
-  	'click a': function(evt, target){
-		require(target.name, (err, bundle) => {
-			this.clear()
-			if (err) console.error(err)
-			this.spawn([target.name, 'view', [], bundle])
-		})
+	events: {
+		'click a': function(evt, target){
+			require(target.name, (err, bundle) => {
+				if (err) return __.dialogs.alert(err)
+				this.clear()
+				this.spawn(specMgr.create(target.name, 'view', [], bundle))
+			})
+		}
 	}
-  }
 }
