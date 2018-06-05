@@ -6,12 +6,13 @@ const Transform = require('stream').Transform
 const util = require('util')
 const argv=process.argv
 const me = argv[1]
-const projPath = argv[2]
-const projName = argv[3] || projPath
-const dispName = argv[4] || projName
-const replace = []
 
 if (3 > argv.length) return console.log(`USAGE: ${me} path [project_name] [display_name]`)
+
+const projPath = argv[2]
+const projName = argv[3] || path.basename(projPath)
+const dispName = argv[4] || projName
+const replace = []
 
 function ReplaceTransform(options){
     if (!(this instanceof ReplaceTransform)) return new ReplaceTransform(options)
@@ -64,11 +65,16 @@ fs.readlink(me, (err, realPath)=>{
                 'main.js','main',`${projName}.js`
                 ], ()=>{
 			const projLib=path.resolve(projPath,'lib')
-			symlink(fs, path.resolve(realPath,'node_modules','lean-wrap','bin'), projLib, 'lean')
-			symlink(fs, path.resolve(realPath,'node_modules','pico-common','bin'), projLib, 'common')
-			symlink(fs, path.resolve(realPath,'node_modules','pojs','lib'), projLib, 'pojs')
 			symlink(fs, path.resolve(realPath,'lib'), projLib, 'pico')
-			console.log('Done')
+			
+			let nodePath = path.resolve(projPath,'node_modules')
+			fs.access(nodePath, fs.constants.R_OK, (err) => {
+				if (err) nodePath = path.resolve(realPath,'node_modules')
+				symlink(fs, path.resolve(nodePath, 'lean-wrap', 'bin'), projLib, 'lean')
+				symlink(fs, path.resolve(nodePath, 'pico-common', 'bin'), projLib, 'common')
+				symlink(fs, path.resolve(nodePath, 'pojs', 'lib'), projLib, 'pojs')
+				console.log('Done')
+			})
             })
         })
     })
