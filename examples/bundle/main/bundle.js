@@ -24,10 +24,10 @@ pico.run({
 	var main
 
 	return function(){
-		specmgr.load(null, null, project, function(err, spec){
+		specMgr.load(null, null, project, function(err, spec){
 			if (err) return console.error(err)
-			main = new view
-			main.spawnbyspec(spec)
+			main = new View
+			main.spawnBySpec(spec)
 		})
 	}
 })
