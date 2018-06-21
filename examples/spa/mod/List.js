@@ -2,7 +2,7 @@ var populate=function(self,coll,Row){
 	var ids=Object.keys(coll.models)
 	for(var i=0,k; k=ids[i]; i++){
 		// TODO: how to pass model directly wo params
-		self.spawn(Row,[k],[['model','model','coll',0]])
+		self.spawn(Row,{id: k},[['model','model','coll','id']])
 	}
 }
 
