@@ -26,6 +26,7 @@ const cwd = path.resolve(process.cwd(), opt.wd)
 function getPath(spec, include){
 	switch(spec[TYPE]){
 	case 'file':
+	case 'type':
 		include.add(spec[VALUE])
 		return false
 	case 'view':

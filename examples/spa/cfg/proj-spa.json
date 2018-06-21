@@ -1,4 +1,13 @@
 [
+["models", "type", "po/Collection", [
+	"data", "routes", 0, "network", "options"
+]],
+["phttp", "type", "p/pHTTP", [
+	"env", "cred"
+]],
+["sse", "type", "p/SSE", [
+	"env", "cred", "params", "events", "autoconnect"                                                                                                                                                        
+]],
 ["Frame","view",[
 	[ "options", "map", { "el": ".__" } ],
 	[ "css", "file", "main.css" ],
