@@ -1,3 +1,4 @@
+var router=require('po/router')
 return {
 	signals:['click'],
 	deps:{
@@ -9,7 +10,15 @@ return {
 	},
 	events:{
 		'click button':function(e, target){
-			this.signals.click(target.textContent).sendNow(this.host) // dom leak here if used send
+			switch(target.textContent){
+			case 'back':
+				router.go('organizations')
+				break
+			case 'next':
+				router.go('users/u156')
+				break
+			}
+			//this.signals.click(target.textContent).sendNow(this.host) // dom leak here if used send
 		}
 	}
 }
