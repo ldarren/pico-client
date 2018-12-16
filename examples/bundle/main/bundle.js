@@ -4,10 +4,14 @@ pico.run({
 	onLoad: __.load,
 	env:{
 		live:false,
-		dataset:(function(el){ if (el) return el.dataset })(document.getElementById('picoEnv'))
+		dataset:(function(el){
+			if (el) return el.dataset
+		})(document.getElementById('picoEnv'))
 	},
 	preprocessors:{
-		'.asp':function(url,asp){ return pico.export('pico/str').template(asp) }
+		'.asp':function(url,asp){
+			return pico.export('pico/str').template(asp)
+		}
 	},
 	paths:{
 		'~': './mod/',

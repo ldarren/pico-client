@@ -2,12 +2,16 @@ pico.run({
 	name: 'main',
 	ajax:__.ajax,
 	onLoad: __.load,
-    env:{
+	env:{
 		live:false,
-		dataset:(function(el){ if (el) return el.dataset })(document.getElementById('picoEnv'))
-    },
+		dataset:(function(el){
+			if (el) return el.dataset
+		})(document.getElementById('picoEnv'))
+	},
 	preprocessors:{
-		'.asp':function(url,asp){ return pico.export('pico/str').template(asp) }
+		'.asp':function(url,asp){
+			return pico.export('pico/str').template(asp)
+		}
 	},
 	paths:{
 		'~': './mod/',
@@ -18,16 +22,16 @@ pico.run({
 		po: './lib/pojs/'
 	}
 },function(){
-    var specMgr= require('p/specMgr')
-    var View= require('p/View')
-    var project = require('cfg/proj-spa.json')
+	var specMgr= require('p/specMgr')
+	var View= require('p/View')
+	var project = require('cfg/proj-spa.json')
 	var main
 
-    return function(){
+	return function(){
 		specMgr.load(null, null, project, function(err, spec){
 			if (err) return console.error(err)
 			main = new View
 			main.spawnBySpec(spec)
 		})
-    }
+	}
 })

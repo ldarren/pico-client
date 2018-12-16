@@ -1,11 +1,16 @@
 {
   "name": "pico-client",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "pico client",
   "main": "create",
   "repository": {
     "type": "git",
     "url": "https://github.com/ldarren/pico-client.git"
+  },
+  "scripts": {
+    "test": "echo \"needed browser for testing\" && exit 1",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "lean-wrap": "^0.2.24",
