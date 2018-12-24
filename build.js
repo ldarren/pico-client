@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const ID = 0,TYPE = 1,VALUE = 2,EXTRA = 3,EXTRA2 = 4
+const ID = 0,TYPE = 1,VALUE = 2,EXTRA = 3
 
 const args = require('pico-args')
 
@@ -20,7 +20,6 @@ args.print('build options', opt)
 
 const path = require('path')
 const fs = require('fs')
-const CleanCSS = require('clean-css')
 const cwd = path.resolve(process.cwd(), opt.wd)
 
 function getPath(spec, include){
@@ -31,10 +30,12 @@ function getPath(spec, include){
 		return false
 	case 'view':
 	case 'ctrl':
+	{
 		const path = spec[EXTRA] || spec[ID]
 		if (Array.isArray(path)) path.forEach(p => include.add(p))
 		else include.add(path)
 		return true
+	}
 	case 'map':
 	case 'list':
 		return true
@@ -43,40 +44,43 @@ function getPath(spec, include){
 }
 
 function scanObj(obj, include, cb){
-  if (!obj) return cb(null, include)
+	if (!obj) return cb(null, include)
 
-  const keys = Object.keys(obj)
-  if (!keys.length) return cb(null, include)
+	const keys = Object.keys(obj)
+	if (!keys.length) return cb(null, include)
 
-  scan(keys.map(k => obj[k] ), include, cb)
+	scan(keys.map(k => obj[k] ), include, cb)
 }
 
 function scan(arr, include, cb){
-  if (!arr || !Array.isArray(arr) || !arr.length) return cb(null, include)
+	if (!arr || !Array.isArray(arr) || !arr.length) return cb(null, include)
 
-  const spec = arr.shift()
+	const spec = arr.shift()
 
-  if (getPath(spec, include)){
-    if ('map' === spec[TYPE]){
-      return scanObj(spec[VALUE], include, (err, include) => {
-        if (err) return cb(err)
-        scan(arr, include, cb)
-      })
-    }
+	if (getPath(spec, include)){
+		if ('map' === spec[TYPE]){
+			return scanObj(spec[VALUE], include, (err, include) => {
+				if (err) return cb(err)
+				scan(arr, include, cb)
+			})
+		}
 
-    return scan(spec[VALUE], include, (err, include) => {
-      if (err) return cb(err)
-      scan(arr, include, cb)
-    })
-  }
-  scan(arr, include, cb)
+		return scan(spec[VALUE], include, (err, include) => {
+			if (err) return cb(err)
+			scan(arr, include, cb)
+		})
+	}
+	scan(arr, include, cb)
 }
 
 function mkdirPSync(arr, access) {
 	arr.reduce((parentDir, childDir) => {
 		const curDir = path.resolve(parentDir, childDir)
-		try { fs.mkdirSync(curDir, access) }
-		catch (exp) { if ('EEXIST' !== exp.code) throw exp }
+		try {
+			fs.mkdirSync(curDir, access)
+		} catch (exp) {
+			if ('EEXIST' !== exp.code) throw exp
+		}
 
 		return curDir
 	}, arr.shift())

@@ -9,9 +9,11 @@
 		"ecmaVersion": 2018
 	},
 	"globals": {
-		"__": false,
-		"pico": false,
-		"inherit": false
+		"inherit": false,
+		"__": true,
+		"pico": true,
+		"window": true,
+		"document": true
 	},
 	"rules": {
 		"brace-style": "error",
