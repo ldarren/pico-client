@@ -1,6 +1,6 @@
 {
   "name": "pico-client",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "pico client",
   "main": "create",
   "repository": {
@@ -15,7 +15,7 @@
   "dependencies": {
     "lean-wrap": "^0.2.29",
     "pico-common": "^0.10.15",
-    "pojs": "^0.6.2"
+    "pojs": "^0.6.4"
   },
   "devDependencies": {
     "clean-css": "^3.4.28",

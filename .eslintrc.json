@@ -43,7 +43,7 @@
 		"no-console": [
 			"warn",
 			{
-				"allow": ["error", "log"]
+				"allow": ["error", "warn"]
 			}
 		],
 		"no-unused-vars": [
