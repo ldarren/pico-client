@@ -47,7 +47,7 @@ this.load=function(){
 ### Decentralized Configuration
 pico archieved decentralized configuration by making spec files joinable during runtime.
 
-A spec file with a entry point (a special js file) can form a bundle, the build script generate single .js file based on the configuration file and the entry point
+A spec file with a entry point (a special js file) can be compiled to a bundle file, the build script generate single .js file based on the configuration file and the entry point
 
 to add external spec to current spec, use dynamic `require` load the external spec and `spawn` to render it
 
@@ -87,8 +87,10 @@ move environment dependant config to a separate config file, inject the env conf
 Code spliting is done at the project file level, each bundle can hae it own project file and project can be load lazily during runtime
 
 ### Support circular dependencies
+pico-client supported asynchronous module loading, therefore no circular dependencies issue
 
 ### Syntax similar to commonjs and amd, easy to pickup
+syntax of pico-client is heavely burrow from commonjs and amd to reduce learning curve
 
 ## Caveat
 ### sub-module readiness
