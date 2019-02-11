@@ -60,10 +60,28 @@ require('/path/to/external/spec', (err, spec) => {
 
 Complete example at `example/bundle`
 
-#### Step of creating bundles (
+#### Create bundle
+```
+npx pclient-build
+```
 
-### Dependency Injection At Configuration
-Compoent are not statically depends on their children, children are injected to compoent at configuation level
+### Manage environment config with dependency injection
+move environment dependant config to a separate config file, inject the env config to main config in the main js file
+```javascript
+    var specMgr= require('p/specMgr')
+    var View= require('p/View')
+    var project = require('cfg/xin.json')
+    var env = require('cfg/dev.json')
+    var main
+
+    return function(){
+        specMgr.load(null, null, project, function(err, spec){
+            if (err) return console.error(err)
+            main = new View
+            main.spawnBySpec(spec, null, env)
+        })
+    }
+```
 
 ### Code Spliting
 Code spliting is done at the project file level, each bundle can hae it own project file and project can be load lazily during runtime
