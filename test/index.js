@@ -3,7 +3,9 @@ const pico = require('pico-common/bin/pico-cli')
 pico.run({
 	name: 'TestUnit',
 	preprocessors:{
-		'.asp':function(url,asp){ return pico.export('pico/str').template(asp) }
+		'.asp':function(url,asp){
+			return pico.export('pico/str').template(asp)
+		}
 	},
 	paths:{
 		'~': './',
@@ -27,7 +29,7 @@ pico.run({
 					cb(null, 1 === deps.a && null == deps.b && 'a' === deps.c)
 				}
 			}
-			const newCtrl = ctrl.spawn(NewCtrl, null, [['a', 'int', 1], ['b', 'ref', 'b'], ['c', 'str', 'a']])
+			ctrl.spawn(NewCtrl, null, [['a', 'int', 1], ['b', 'ref', 'b'], ['c', 'str', 'a']])
 		})
 	}
 })
