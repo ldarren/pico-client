@@ -1,6 +1,6 @@
 {
   "name": "pico-client",
-  "version": "0.5.13",
+  "version": "0.5.14",
   "description": "pico client",
   "main": "create",
   "repository": {
@@ -13,9 +13,9 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "lean-wrap": "^0.2.31",
-    "pico-common": "^0.10.19",
-    "pojs": "^0.6.9"
+    "lean-wrap": "^0.2.32",
+    "pico-common": "^0.10.24",
+    "pojs": "^0.6.12"
   },
   "devDependencies": {
     "clean-css": "^4.2.1",
