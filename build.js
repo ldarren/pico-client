@@ -12,6 +12,7 @@ const defaults = {
 	bin:['bin','path to binary/output directory'],
 	lean:[true,'embed lean library'],
 	pico:[true,'embed pico library'],
+	global:['', 'global variables, common separated if more than one'],
 	help:[false,'show this help']
 }
 const opt = args.parse(defaults)
@@ -134,6 +135,9 @@ const handler = {get(target,name){
 
 // global
 pico = require('pico-common/bin/pico-cli.js')
-const pBuild = pico.export('pico/build')
 __ = window = document = new Proxy({}, handler)
+opt.global.split(',').forEach(g => {
+	global[g] = __
+})
+const pBuild = pico.export('pico/build')
 pBuild(output)
