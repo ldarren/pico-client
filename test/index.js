@@ -18,7 +18,7 @@ pico.run({
 
 	return function(){
 		const ctrl = new Ctrl
-		test('ensure null in spec doesnt break deps', cb => {
+		test('ensure pico.run works', cb => {
 			function NewCtrl(name, specRaw, params, host, chains){
 				Ctrl.apply(this, arguments)
 			}
@@ -26,10 +26,10 @@ pico.run({
 				deps: {a: 'int', b: 'bool', c: 'str'},
 				create(deps, params){
 					console.log(deps)
-					cb(null, 1 === deps.a && null == deps.b && 'a' === deps.c)
+					cb(null, 1 === deps.a && true === deps.b && 'a' === deps.c)
 				}
 			}
-			ctrl.spawn(NewCtrl, null, [['a', 'int', 1], ['b', 'ref', 'b'], ['c', 'str', 'a']])
+			ctrl.spawn(NewCtrl, null, [['a', 'int', 1], ['b', 'bool', true], ['c', 'str', 'a']])
 		})
 	}
 })
