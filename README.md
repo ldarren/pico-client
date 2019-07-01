@@ -15,7 +15,7 @@ pico app framework
 
 ## Features
 ### Data Driven
-A pico client project structure is driven by a data file. The data file is in json file format. The data file format is closely assemble to lisp syntax. for example
+A pico client is data driven, meaning that the application structure is not defined by script but by data. The data file is in json file format. The data file format is closely assemble to lisp syntax. for example
 
 ```json
 ["name", "type", "content", "meta data"]
