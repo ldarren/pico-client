@@ -9,7 +9,7 @@ return {
 	},
 	events:{
 		'click button':function(e, target){
-			this.signals.click(target.textContent).sendNow(this.host) // dom leak here if used send
+			this.signal.click(target.textContent).send(this.host) // dom leak here if used send
 		}
 	}
 }

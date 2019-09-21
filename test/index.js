@@ -1,4 +1,5 @@
 const pico = require('pico-common/bin/pico-cli')
+global.__ = { dom: { get(){} } } // fake __
 
 pico.run({
 	name: 'TestUnit',
@@ -14,22 +15,21 @@ pico.run({
 	}
 },function(){
 	const {test} = require('pico/test')
-	const Ctrl = require('p/Ctrl')
+	const View = require('p/View')
 
 	return function(){
-		const ctrl = new Ctrl
+		const view = new View
 		test('ensure pico.run works', cb => {
-			function NewCtrl(name, specRaw, params, host, chains){
-				Ctrl.apply(this, arguments)
+			function NewView(name, specRaw, params, host, chains){
+				View.apply(this, arguments)
 			}
-			NewCtrl.prototype = {
+			NewView.prototype = {
 				deps: {a: 'int', b: 'bool', c: 'str'},
 				create(deps, params){
-					console.log(deps)
 					cb(null, 1 === deps.a && true === deps.b && 'a' === deps.c)
 				}
 			}
-			ctrl.spawn(NewCtrl, null, [['a', 'int', 1], ['b', 'bool', true], ['c', 'str', 'a']])
+			view.spawn([0, 0, 0, NewView], null, [['a', 'int', 1], ['b', 'bool', true], ['c', 'str', 'a']])
 		})
 	}
 })
