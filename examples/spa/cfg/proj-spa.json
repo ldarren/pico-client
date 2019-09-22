@@ -30,7 +30,7 @@
         "organizations": ["organizations","view",[
             [ "options", "map", { "id":"pane0", "className": "page" } ],
             [ "groups", "ref", "groups" ],
-            [ "organizations", "css", "organizations.css" ],
+            [ "css", "file", "organizations.css" ],
             [ "Header", "view", [
 				[ "options", "map", { "tagName": "header" } ],
 				[ "tpl", "file", "Header.asp" ],
@@ -57,7 +57,7 @@
         ]],
         "users": ["users","view",[
             [ "options", "map", { "id":"pane0", "className": "page" } ],
-            [ "users", "css", "users.css" ],
+            [ "css", "file", "users.css" ],
             [ "Header", "view", [
 				[ "options", "map", { "tagName": "header" } ],
 				[ "tpl", "file", "Header.asp" ],

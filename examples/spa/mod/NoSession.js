@@ -4,7 +4,7 @@ return{
 	},
 	slots:{
 		frameAdded:function(){
-			this.signals.modelReady().send()
+			this.signal.modelReady().send()
 		}
 	}
 }
