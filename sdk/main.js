@@ -6,7 +6,7 @@ pico.run({
 		live:false,
 		dataset:(function(el){
 			if (el) return el.dataset
-		})(document.getElementById('picoEnv'))
+		})(document.getElementById('pEnv'))
 	},
 	preprocessors:{
 		'.asp':function(url,asp){

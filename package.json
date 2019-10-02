@@ -1,6 +1,6 @@
 {
   "name": "pico-client",
-  "version": "0.6.6",
+  "version": "0.6.7",
   "description": "pico client",
   "main": "create",
   "repository": {
@@ -22,8 +22,8 @@
     "pico-args": "^1.0.13"
   },
   "bin": {
-    "pclient-create": "./create.js",
-    "pclient-build": "./build.js"
+    "pico-client-create": "./create.js",
+    "pico-client-build": "./build.js"
   },
   "author": "Darren Liew",
   "license": "MIT"
