@@ -29,7 +29,7 @@ ReplaceTransform.prototype._transform = function(chunk, encoding, cb){
 	for(let i=0,l=replace.length; i<l; i+=2){
 		str = str.replace(replace[i], replace[i+1])
 	}
-	this.push(new Buffer(str), encoding)
+	this.push(Buffer.from(str), encoding)
 	cb(null)
 }
 

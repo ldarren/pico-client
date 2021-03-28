@@ -30,7 +30,6 @@ function getPath(spec, include){
 		include.add(spec[VALUE])
 		return false
 	case 'view':
-	case 'ctrl':
 	{
 		const path = spec[EXTRA] || spec[ID]
 		if (Array.isArray(path)) path.forEach(p => include.add(p))
@@ -89,8 +88,8 @@ function mkdirPSync(arr, access) {
 
 function deps(){
 	const deps = []
-	opt.lean && deps.push(path.resolve(cwd,'lib','lean','lean.min.js'))
-	opt.pico && deps.push(path.resolve(cwd,'lib','common','pico.min.js'))
+	opt.lean && deps.push(path.join('lib','lean','lean.min.js'))
+	opt.pico && deps.push(path.join('lib','common','pico.min.js'))
 	return deps
 }
 
@@ -114,8 +113,9 @@ const [mainCfg, mainEntry = mainCfg] = bundleNames.shift().split(':')
 mkdirPSync([cwd, opt.bin, mainCfg, opt.main], 0o755)
 
 const output = [
-	path.resolve(cwd, opt.main),
-	path.resolve(cwd, opt.bin, mainCfg, opt.main),
+	cwd,
+	opt.main,
+	path.join(opt.bin, mainCfg, opt.main),
 ]
 
 addBundle(output, [mainCfg, mainEntry], deps())
@@ -134,7 +134,7 @@ const handler = {get(target,name){
 }}
 
 // global
-pico = require('pico-common/bin/pico-cli.js')
+pico = require('pico-common/bin/pico-cli')
 __ = window = document = new Proxy({}, handler)
 opt.global.split(',').forEach(g => {
 	global[g] = __
