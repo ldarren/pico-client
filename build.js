@@ -5,8 +5,9 @@ const ID = 0,TYPE = 1,VALUE = 2,EXTRA = 3
 const args = require('pico-args')
 
 const defaults = {
-	bundle:['', 'bundle name, comma separated if more than one'],
+	bundle:['', 'bundle name, comma separated if more than one, optional colon sperates input and output filename'],
 	wd:['.','working directory'],
+	out: ['', 'output directory'],
 	main:['main','path to main directory'],
 	cfg:['cfg','path to configuration directory'],
 	bin:['bin','path to binary/output directory'],
@@ -110,12 +111,16 @@ function addBundle(output, entry, deps, exclude){
 const bundleNames = opt.bundle.split(',')
 const [mainCfg, mainEntry = mainCfg] = bundleNames.shift().split(':')
 
-mkdirPSync([cwd, opt.bin, mainCfg, opt.main], 0o755)
+let out = [mainCfg, opt.main]
+if (opt.out){
+	out = opt.out.split(path.sep)
+}
+mkdirPSync([cwd, opt.bin, ...out], 0o755)
 
 const output = [
 	cwd,
 	opt.main,
-	path.join(opt.bin, mainCfg, opt.main),
+	path.join(opt.bin, ...out),
 ]
 
 addBundle(output, [mainCfg, mainEntry], deps())
