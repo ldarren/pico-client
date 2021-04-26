@@ -24,23 +24,37 @@ const path = require('path')
 const fs = require('fs')
 const cwd = path.resolve(process.cwd(), opt.wd)
 
+function setAdd(set, ele){
+	if (!ele) return
+	if (Array.isArray(ele)) ele.forEach(set.add)
+	else set.add(ele)
+}
+
+/**
+ * add file path to be included in bundle
+ *
+ * @param {array} spec - module spec
+ * @param {array} include - file paths to be included
+ * @returns {boolean} - true to drill down
+ */
 function getPath(spec, include){
+	let path
 	switch(spec[TYPE]){
 	case 'file':
 	case 'type':
 		include.add(spec[VALUE])
 		return false
 	case 'view':
-	{
-		const path = spec[EXTRA] || spec[ID]
-		if (Array.isArray(path)) path.forEach(p => include.add(p))
-		else include.add(path)
+		setAdd(include, spec[EXTRA] || spec[ID])
 		return true
-	}
 	case 'map':
 	case 'list':
 		return true
+	default:
+		setAdd(include, spec[EXTRA])
+		return false
 	}
+
 	return false
 }
 
@@ -54,9 +68,10 @@ function scanObj(obj, include, cb){
 }
 
 function scan(arr, include, cb){
-	if (!arr || !Array.isArray(arr) || !arr.length) return cb(null, include)
+	if (!Array.isArray(arr) || !arr.length) return cb(null, include)
 
 	const spec = arr.shift()
+	if (!Array.isArray(spec) || !spec.length) return scan(arr, include, cb)
 
 	if (getPath(spec, include)){
 		if ('map' === spec[TYPE]){
