@@ -70,6 +70,7 @@ fs.readlink(me, (err, realPath)=>{
 			})([
 				'index.html','',null,
 				'project.json','cfg', `${projName}.json`,
+				'env.json','cfg', `${projName}.env.json`,
 				'main.js','main',`${projName}.js`
 			], ()=>{
 				const projLib=path.resolve(projPath,'lib')

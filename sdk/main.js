@@ -2,12 +2,12 @@ pico.run({
 	name: 'PROJ_NAME',
 	ajax: __.ajax,
 	onLoad: __.load,
-	env:{
-		live:false,
-		dataset:(function(el){
-			if (el) return el.dataset
+	env: Object.assign(
+		{ build: 'prod' }, 
+		(function(el){
+			return el && el.dataset ? el.dataset : {}
 		})(document.getElementById('pEnv'))
-	},
+	),
 	preprocessors:{
 		'.asp':function(url,asp){
 			return pico.export('pico/str').template(asp)
@@ -25,12 +25,13 @@ pico.run({
 	var specMgr= require('p/specMgr')
 	var View= require('p/View')
 	var project = require('cfg/PROJ_NAME.json')
+	var host = require('cfg/PROJ_NAME.'+ pico.env('build') +'.json')
 	var main
 
 	return function(){
-		specMgr.load(null, null, project, function(err, spec){
+		specMgr.load(null,, null, project, function(err, spec){
 			if (err) return console.error(err)
-			main = new View
+			main = new View('_host', host, null, [])
 			main.spawnBySpec(spec)
 		})
 	}

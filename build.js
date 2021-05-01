@@ -10,6 +10,7 @@ const defaults = {
 	out: ['', 'output directory'],
 	main:['main','path to main directory'],
 	cfg:['cfg','path to configuration directory'],
+	env:['dev','environment file to be bundled'],
 	bin:['bin','path to binary/output directory'],
 	lean:[true,'embed lean library'],
 	pico:[true,'embed pico library'],
@@ -110,15 +111,20 @@ function deps(){
 }
 
 function addBundle(output, entry, deps, exclude){
-	const json = fs.readFileSync(path.resolve(cwd, opt.cfg, entry[0] + '.json'))
+	const json = fs.readFileSync(path.resolve(cwd, opt.cfg, entry[0] + '.' + opt.env + '.json'))
 	const spec = JSON.parse(json)
 
 	scan(spec, new Set, (err, include) => {
-		output.push({
-			entry: entry[1],
-			deps,
-			include: [...include],
-			exclude
+		const json = fs.readFileSync(path.resolve(cwd, opt.cfg, entry[0] + '.json'))
+		const spec = JSON.parse(json)
+
+		scan(spec, include, (err, include) => {
+			output.push({
+				entry: entry[1],
+				deps,
+				include: [...include],
+				exclude
+			})
 		})
 	})
 }
@@ -149,6 +155,7 @@ const handler = {get(target,name){
 	switch(name){
 	case 'load':
 	case 'ajax': return null
+	case 'getElementById': return () => ({dataset:{ build: opt.env}})
 	default: return () => {}
 	}
 }}
