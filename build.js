@@ -5,10 +5,12 @@ const ID = 0,TYPE = 1,VALUE = 2,EXTRA = 3
 const args = require('pico-args')
 
 const defaults = {
-	bundle:['', 'bundle name, comma separated if more than one'],
+	bundle:['', 'bundle name, comma separated if more than one, optional colon sperates input and output filename'],
 	wd:['.','working directory'],
+	out: ['', 'output directory'],
 	main:['main','path to main directory'],
 	cfg:['cfg','path to configuration directory'],
+	env:['dev','environment file to be bundled'],
 	bin:['bin','path to binary/output directory'],
 	lean:[true,'embed lean library'],
 	pico:[true,'embed pico library'],
@@ -23,24 +25,37 @@ const path = require('path')
 const fs = require('fs')
 const cwd = path.resolve(process.cwd(), opt.wd)
 
+function setAdd(set, ele){
+	if (!ele) return
+	if (Array.isArray(ele)) ele.forEach(set.add)
+	else set.add(ele)
+}
+
+/**
+ * add file path to be included in bundle
+ *
+ * @param {array} spec - module spec
+ * @param {array} include - file paths to be included
+ * @returns {boolean} - true to drill down
+ */
 function getPath(spec, include){
+	let path
 	switch(spec[TYPE]){
 	case 'file':
 	case 'type':
 		include.add(spec[VALUE])
 		return false
 	case 'view':
-	case 'ctrl':
-	{
-		const path = spec[EXTRA] || spec[ID]
-		if (Array.isArray(path)) path.forEach(p => include.add(p))
-		else include.add(path)
+		setAdd(include, spec[EXTRA] || spec[ID])
 		return true
-	}
 	case 'map':
 	case 'list':
 		return true
+	default:
+		setAdd(include, spec[EXTRA])
+		return false
 	}
+
 	return false
 }
 
@@ -54,9 +69,10 @@ function scanObj(obj, include, cb){
 }
 
 function scan(arr, include, cb){
-	if (!arr || !Array.isArray(arr) || !arr.length) return cb(null, include)
+	if (!Array.isArray(arr) || !arr.length) return cb(null, include)
 
 	const spec = arr.shift()
+	if (!Array.isArray(spec) || !spec.length) return scan(arr, include, cb)
 
 	if (getPath(spec, include)){
 		if ('map' === spec[TYPE]){
@@ -89,21 +105,26 @@ function mkdirPSync(arr, access) {
 
 function deps(){
 	const deps = []
-	opt.lean && deps.push(path.resolve(cwd,'lib','lean','lean.min.js'))
-	opt.pico && deps.push(path.resolve(cwd,'lib','common','pico.min.js'))
+	opt.lean && deps.push(path.join('lib','lean','lean.min.js'))
+	opt.pico && deps.push(path.join('lib','common','pico.min.js'))
 	return deps
 }
 
 function addBundle(output, entry, deps, exclude){
-	const json = fs.readFileSync(path.resolve(cwd, opt.cfg, entry[0] + '.json'))
+	const json = fs.readFileSync(path.resolve(cwd, opt.cfg, entry[0] + '.' + opt.env + '.json'))
 	const spec = JSON.parse(json)
 
 	scan(spec, new Set, (err, include) => {
-		output.push({
-			entry: entry[1],
-			deps,
-			include: [...include],
-			exclude
+		const json = fs.readFileSync(path.resolve(cwd, opt.cfg, entry[0] + '.json'))
+		const spec = JSON.parse(json)
+
+		scan(spec, include, (err, include) => {
+			output.push({
+				entry: entry[1],
+				deps,
+				include: [...include],
+				exclude
+			})
 		})
 	})
 }
@@ -111,11 +132,16 @@ function addBundle(output, entry, deps, exclude){
 const bundleNames = opt.bundle.split(',')
 const [mainCfg, mainEntry = mainCfg] = bundleNames.shift().split(':')
 
-mkdirPSync([cwd, opt.bin, mainCfg, opt.main], 0o755)
+let out = [mainCfg, opt.main]
+if (opt.out){
+	out = opt.out.split(path.sep)
+}
+mkdirPSync([cwd, opt.bin, ...out], 0o755)
 
 const output = [
-	path.resolve(cwd, opt.main),
-	path.resolve(cwd, opt.bin, mainCfg, opt.main),
+	cwd,
+	opt.main,
+	path.join(opt.bin, ...out),
 ]
 
 addBundle(output, [mainCfg, mainEntry], deps())
@@ -129,12 +155,13 @@ const handler = {get(target,name){
 	switch(name){
 	case 'load':
 	case 'ajax': return null
+	case 'getElementById': return () => ({dataset:{ build: opt.env}})
 	default: return () => {}
 	}
 }}
 
 // global
-pico = require('pico-common/bin/pico-cli.js')
+pico = require('pico-common/bin/pico-cli')
 __ = window = document = new Proxy({}, handler)
 opt.global.split(',').forEach(g => {
 	global[g] = __

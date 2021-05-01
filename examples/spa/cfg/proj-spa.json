@@ -1,6 +1,6 @@
 [
 ["models", "type", "po/Collection", [
-	"data", "routes", 0, "network", "options"
+	"data", 1, "options"
 ]],
 ["phttp", "type", "p/pHTTP", [
 	"env", "cred"
@@ -72,7 +72,8 @@
 	}],
 	["routes","map",{
         "users/:id":["users","void" ],
-        "#action":["organizations","void"]
+        "organizations":["organizations","void"],
+        "":["organizations","void"]
 	}]
 ]]
 ]
