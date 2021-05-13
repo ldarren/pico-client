@@ -51,7 +51,6 @@ function getPath(spec, include){
 	case 'map':
 	case 'list':
 		return true
-	case 'ref':
 	default:
 		setAdd(include, spec[EXTRA])
 		return false
