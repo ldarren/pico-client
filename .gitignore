@@ -12,7 +12,6 @@
 build.sh
 proj.json
 build/
-env.json
 
 lib-cov
 fontello-*/
