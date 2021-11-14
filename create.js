@@ -37,11 +37,10 @@ function symlink(fs, from, to, ln){
 	fs.symlinkSync(path.relative(to,from), path.resolve(to, ln))
 }
 
-function nearestNodeModules(searchPath, cb){
-	const nodePath = path.resolve(searchPath,'node_modules')
-	fs.access(nodePath, fs.constants.R_OK, err => {
-		if (err) return nearestNodeModules(path.resolve(searchPath, '..'), cb)
-		cb(nodePath)
+function nearest(searchPath, target, cb){
+	fs.access(path.resolve(searchPath, target), fs.constants.R_OK, err => {
+		if (err) return nearest(path.resolve(searchPath, '..'), target, cb)
+		cb(searchPath)
 	})
 }
 
@@ -76,11 +75,12 @@ fs.readlink(me, (err, realPath)=>{
 				const projLib=path.resolve(projPath,'lib')
 				symlink(fs, path.resolve(realPath,'lib'), projLib, 'pico')
 
-				nearestNodeModules(projPath, nodePath => {
-					if (!nodePath) return console.error('failed to get node_modules dir')
-					symlink(fs, path.resolve(nodePath, 'lean-wrap', 'bin'), projLib, 'lean')
-					symlink(fs, path.resolve(nodePath, 'pico-common', 'bin'), projLib, 'common')
-					symlink(fs, path.resolve(nodePath, 'pojs', 'lib'), projLib, 'pojs')
+				const NODE_MOD = 'node_modules'
+				nearest(projPath, path.join(NODE_MOD, 'lean-wrap', 'bin'), nodePath => {
+					if (!nodePath) return console.error(`failed to get ${NODE_MOD} dir`)
+					symlink(fs, path.resolve(nodePath, NODE_MOD, 'lean-wrap', 'bin'), projLib, 'lean')
+					symlink(fs, path.resolve(nodePath, NODE_MOD, 'pico-common', 'bin'), projLib, 'common')
+					symlink(fs, path.resolve(nodePath, NODE_MOD, 'pojs', 'lib'), projLib, 'pojs')
 					console.log('Done')
 				})
 			})
