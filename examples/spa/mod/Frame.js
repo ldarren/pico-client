@@ -1,15 +1,8 @@
 var router = require('po/router')
 var specMgr = require('p/specMgr')
 
-function remove(modules){
-	if (!modules.length) return
-	var p = modules.pop()
-	p && p.remove()
-	remove(modules)
-}
-
 function pageChanged(evt, state, params){
-	remove(this.modules)
+	this.clear()
 	var spec = []
 	for (var i=0, k; (k=state[i]); i++){
 		spec.push(this.specMap[k])
