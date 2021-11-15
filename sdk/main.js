@@ -29,7 +29,7 @@ pico.run({
 	var main
 
 	return function(){
-		specMgr.load(null,, null, project, function(err, spec){
+		specMgr.load(null, null, project, function(err, spec){
 			if (err) return console.error(err)
 			main = new View('_host', host, null, [])
 			main.spawnBySpec(spec)
