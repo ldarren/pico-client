@@ -31,5 +31,20 @@ pico.run({
 			}
 			view.spawn([0, 0, 0, NewView], null, [['a', 'int', 1], ['b', 'bool', true], ['c', 'str', 'a']])
 		})
+		test('ensure recursive view works', cb => {
+			function NewView(name, specRaw, params, host, chains){
+				View.apply(this, arguments)
+			}
+			NewView.prototype = {
+				deps: {NewView: 'view'},
+				create(deps, params){
+					if (params.count < 3){
+						this.spawn(deps.NewView, {count: params.count+1})
+					}
+					cb(null, true)
+				}
+			}
+			view.spawn(['NewView', 'view', [], NewView], {count: 0})
+		})
 	}
 })

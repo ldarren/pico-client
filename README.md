@@ -92,6 +92,20 @@ pico-client supported asynchronous module loading, therefore no circular depende
 ### Syntax similar to commonjs and amd, easy to pickup
 syntax of pico-client is heavely burrow from commonjs and amd to reduce learning curve
 
+### Support recursive view component
+for recursive view component such tree view
+```javascript
+// tree-node.js
+return {
+	deps: {
+		'tree_node': 'view', // self referencing
+	},
+	create(deps, params){
+		this.spawn(deps.tree_node) // or, this.spawn(deps.tree_node, null, [deps.tree_node.splice(0, 3)]]
+	}
+}
+```
+
 ## Caveat
 ### sub-module readiness
 pico modules are loaded in series orderly, what it means is module declared at top always load first and pico ensure it is loaded completely before loading the next module.
