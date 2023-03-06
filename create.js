@@ -7,6 +7,7 @@ const util = require('util')
 const argv=process.argv
 const me = argv[1]
 
+// eslint-disable-next-line
 if (3 > argv.length) return console.log(`USAGE: ${me} path [project_name] [display_name]`)
 
 const projPath = argv[2]
@@ -81,6 +82,7 @@ fs.readlink(me, (err, realPath)=>{
 					symlink(fs, path.resolve(nodePath, NODE_MOD, 'lean-wrap', 'bin'), projLib, 'lean')
 					symlink(fs, path.resolve(nodePath, NODE_MOD, 'pico-common', 'bin'), projLib, 'common')
 					symlink(fs, path.resolve(nodePath, NODE_MOD, 'pojs', 'lib'), projLib, 'pojs')
+					// eslint-disable-next-line
 					console.log('Done')
 				})
 			})

@@ -3,7 +3,7 @@ pico.run({
 	ajax: __.ajax,
 	onLoad: __.load,
 	env: Object.assign(
-		{ build: 'prod' }, 
+		{ build: 'prod' },
 		(function(el){
 			return el && el.dataset ? el.dataset : {}
 		})(document.getElementById('pEnv'))
@@ -13,7 +13,7 @@ pico.run({
 			return pico.export('pico/str').template(asp)
 		}
 	},
-	baseurl: location.href,
+	baseurl: window.location.href,
 	paths:{
 		'~': './mod/',
 		root: './',

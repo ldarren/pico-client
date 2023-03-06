@@ -5,17 +5,21 @@ function send(a){
 		case 'object':
 			if (a.length){
 				for(i=0; (m=modules[i]); i++){
+					// eslint-disable-next-line
 					if (-1 === a.indexOf(m)) console.log(m, api, args)
 				}
 			}else{
+				// eslint-disable-next-line
 				console.log(a, api, args)
 			}
 			break
 		case 'string': // actual case dun need
+			// eslint-disable-next-line
 			console.log(a, api, args)
 			break
 		default:
 			for(i=0; (m=modules[i]); i++){
+				// eslint-disable-next-line
 				console.log(m, api, args)
 			}
 			break
