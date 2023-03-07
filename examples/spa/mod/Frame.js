@@ -1,10 +1,10 @@
 var router = require('po/router')
 var specMgr = require('p/specMgr')
 
-function pageChanged(evt, state, params){
+function pageChanged(evt, payload, params){
 	this.clear()
 	var spec = []
-	for (var i=0, k; (k=state[i]); i++){
+	for (var i=0, k; (k=payload[i]); i++){
 		spec.push(this.specMap[k])
 	}
 	this.spawnBySpec(spec, params)
