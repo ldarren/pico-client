@@ -3,7 +3,7 @@ pico.run({
 	ajax: __.ajax,
 	onLoad: __.load,
 	env: Object.assign(
-		{ build: 'prod' }, 
+		{ build: 'prod' },
 		(function(el){
 			return el && el.dataset ? el.dataset : {}
 		})(document.getElementById('pEnv'))
@@ -13,6 +13,7 @@ pico.run({
 			return pico.export('pico/str').template(asp)
 		}
 	},
+	baseurl: window.location.href,
 	paths:{
 		'~': './mod/',
 		root: './',
@@ -29,7 +30,7 @@ pico.run({
 	var main
 
 	return function(){
-		specMgr.load(null,, null, project, function(err, spec){
+		specMgr.load(null, null, project, function(err, spec){
 			if (err) return console.error(err)
 			main = new View('_host', host, null, [])
 			main.spawnBySpec(spec)

@@ -39,7 +39,6 @@ function setAdd(set, ele){
  * @returns {boolean} - true to drill down
  */
 function getPath(spec, include){
-	let path
 	switch(spec[TYPE]){
 	case 'file':
 	case 'type':
@@ -55,8 +54,6 @@ function getPath(spec, include){
 		setAdd(include, spec[EXTRA])
 		return false
 	}
-
-	return false
 }
 
 function scanObj(obj, include, cb){
