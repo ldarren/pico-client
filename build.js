@@ -47,8 +47,9 @@ function getPath(spec, include){
 	case 'view':
 		setAdd(include, spec[EXTRA] || spec[ID])
 		return true
-	case 'map':
 	case 'list':
+	case 'map':
+	case 'model':
 		return true
 	default:
 		setAdd(include, spec[EXTRA])
