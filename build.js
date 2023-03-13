@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 const ID = 0,TYPE = 1,VALUE = 2,EXTRA = 3
 
 const args = require('pico-args')
@@ -23,6 +22,14 @@ args.print('build options', opt)
 
 const path = require('path')
 const fs = require('fs')
+console.log('@@@@@@@@1')
+fs.readdir('node_modules/', (err, files) => {
+console.log('@@@@@@@@2')
+	if (err) return console.error(err)
+	files.forEach(file => {
+		console.log(file);
+	});
+});
 const cwd = path.resolve(process.cwd(), opt.wd)
 
 function setAdd(set, ele){
