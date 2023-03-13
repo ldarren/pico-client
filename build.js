@@ -103,8 +103,8 @@ function mkdirPSync(arr, access) {
 
 function deps(){
 	const deps = []
-	opt.lean && deps.push(path.join('lib','lean','lean.min.js'))
-	opt.pico && deps.push(path.join('lib','common','pico.min.js'))
+	opt.lean && deps.push(path.join('node_modules','lean-wrap', 'bin', 'lean.min.js'))
+	opt.pico && deps.push(path.join('node_modules','pico-common','bin', 'pico.min.js'))
 	return deps
 }
 
