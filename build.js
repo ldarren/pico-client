@@ -22,14 +22,6 @@ args.print('build options', opt)
 
 const path = require('path')
 const fs = require('fs')
-console.log('@@@@@@@@1')
-fs.readdir('node_modules/', (err, files) => {
-console.log('@@@@@@@@2')
-	if (err) return console.error(err)
-	files.forEach(file => {
-		console.log(file);
-	});
-});
 const cwd = path.resolve(process.cwd(), opt.wd)
 
 function setAdd(set, ele){
@@ -110,13 +102,13 @@ function mkdirPSync(arr, access) {
 
 function deps(){
 	const deps = []
-	opt.lean && deps.push(path.join('node_modules','lean-wrap', 'bin', 'lean.min.js'))
-	opt.pico && deps.push(path.join('node_modules','pico-common','bin', 'pico.min.js'))
+	opt.lean && deps.push(path.join('lib','lean','lean.min.js'))
+	opt.pico && deps.push(path.join('lib','common','pico.min.js'))
 	return deps
 }
 
 function addBundle(output, entry, deps, exclude){
-	const json = fs.readFileSync(path.resolve(cwd, opt.cfg, entry[0] + '.' + opt.env + '.json'))
+	const json = fs.readFileSync(path.resolve(cwd, opt.cfg, entry[0] + '.env.json'))
 	const spec = JSON.parse(json)
 
 	scan(spec, new Set, (err, include) => {
