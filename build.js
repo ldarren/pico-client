@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-
 const ID = 0,TYPE = 1,VALUE = 2,EXTRA = 3
 
 const args = require('pico-args')
@@ -47,8 +46,9 @@ function getPath(spec, include){
 	case 'view':
 		setAdd(include, spec[EXTRA] || spec[ID])
 		return true
-	case 'map':
 	case 'list':
+	case 'map':
+	case 'model':
 		return true
 	default:
 		setAdd(include, spec[EXTRA])
@@ -108,7 +108,7 @@ function deps(){
 }
 
 function addBundle(output, entry, deps, exclude){
-	const json = fs.readFileSync(path.resolve(cwd, opt.cfg, entry[0] + '.' + opt.env + '.json'))
+	const json = fs.readFileSync(path.resolve(cwd, opt.cfg, entry[0] + '.env.json'))
 	const spec = JSON.parse(json)
 
 	scan(spec, new Set, (err, include) => {
